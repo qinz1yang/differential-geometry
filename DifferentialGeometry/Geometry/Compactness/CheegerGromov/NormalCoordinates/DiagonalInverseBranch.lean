@@ -1954,7 +1954,7 @@ namespace NormalChartData
 
 theorem exists_pair_readout
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : NormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -2092,7 +2092,7 @@ namespace NormalRadiusProfile
 
 theorem exists_common_dom
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -2177,7 +2177,7 @@ namespace BoundedGeometryNormalData
 
 theorem exists_common_inv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -2282,7 +2282,7 @@ theorem exists_common_inv
 
 theorem exists_common_dom
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,

@@ -44,7 +44,7 @@ noncomputable def decodedCompPts (g : SmoothRiemannianMetric I M)
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem hatPOUDataTwo
     [FiniteDimensional Real E]
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -97,7 +97,7 @@ theorem hatPOUDataTwo
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem exists_hat_radius
     [FiniteDimensional Real E]
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)

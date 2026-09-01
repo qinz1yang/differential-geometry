@@ -33,9 +33,9 @@ namespace BoundedGeometryNormalData
 omit [CompleteSpace E] in
 theorem exists_center_of_mass_scale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology

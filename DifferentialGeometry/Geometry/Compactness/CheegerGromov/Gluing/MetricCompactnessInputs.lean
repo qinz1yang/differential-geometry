@@ -28,7 +28,7 @@ variable [I.Boundaryless]
 
 structure NormalRadiusProfile
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X)
+    (hd : InjectivityRadiusDecay (I := I) X)
     (hb : NormalCoordMetricBounds (I := I) X) where
   ratio : Real
   ratio_pos : 0 < ratio
@@ -46,7 +46,7 @@ namespace NormalRadiusProfile
 
 def subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (f : Nat → Nat) :
     NormalRadiusProfile (hd.subseq f) (hb.subseq f) where
@@ -70,14 +70,14 @@ def subseq
 
 def gpRatio
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) : Real :=
   Real.sqrt (1 / 2 : Real) * h.ratio
 
 theorem gpRatio_pos
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) : 0 < h.gpRatio := by
   rw [gpRatio]
@@ -85,7 +85,7 @@ theorem gpRatio_pos
 
 theorem gpRatio_le_ratio
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) : h.gpRatio ≤ h.ratio := by
   rw [gpRatio]
@@ -96,7 +96,7 @@ theorem gpRatio_le_ratio
 
 theorem floor_pos
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real) :
     0 < h.ratio * hd.mu R :=
@@ -104,7 +104,7 @@ theorem floor_pos
 
 theorem floor_le_radius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {k : Nat} {x : (X.obj k).M} {R : Real}
     (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
@@ -117,7 +117,7 @@ theorem floor_le_radius
 
 theorem floor_le_exp
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {k : Nat} {x : (X.obj k).M} {R : Real}
     (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
@@ -140,7 +140,7 @@ theorem floor_le_exp
 
 theorem floor_le_expGp
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {k : Nat} {x : (X.obj k).M} {R : Real}
     (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
@@ -169,12 +169,12 @@ theorem floor_le_expGp
 
 theorem mul_lambda_lt_floor
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D c R : Real}
     (hD : 0 < D) (hc : c < h.ratio * D) :
     c * hd.lambda D R < h.ratio * hd.mu R := by
-  rw [InjRadiusDecayInput.lambda]
+  rw [InjectivityRadiusDecay.lambda]
   calc
     c * (hd.mu R / D) = (c / D) * hd.mu R := by ring
     _ < h.ratio * hd.mu R :=
@@ -182,7 +182,7 @@ theorem mul_lambda_lt_floor
 
 theorem mul_lambda_lt_radius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D c R : Real}
     (hD : 0 < D) (hc : c < h.ratio * D)
@@ -193,7 +193,7 @@ theorem mul_lambda_lt_radius
 
 theorem mul_lambda_lt_exp
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D c R : Real}
     (hD : 0 < D) (hc : c < h.ratio * D)
@@ -213,7 +213,7 @@ theorem mul_lambda_lt_exp
 
 theorem mul_lambda_lt_expGp
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D c R : Real}
     (hD : 0 < D) (hc : c < h.gpRatio * D)
@@ -230,7 +230,7 @@ theorem mul_lambda_lt_expGp
   let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
   let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
   have hfloor : c * hd.lambda D R < h.gpRatio * hd.mu R := by
-    rw [InjRadiusDecayInput.lambda]
+    rw [InjectivityRadiusDecay.lambda]
     calc
       c * (hd.mu R / D) = (c / D) * hd.mu R := by ring
       _ < h.gpRatio * hd.mu R :=
@@ -239,12 +239,12 @@ theorem mul_lambda_lt_expGp
 
 theorem gpScaleTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D : Real} (hD : 0 < D)
     (h8 : (8 : Real) < h.gpRatio * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData (I := I) hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData (I := I) hd D P)
     (pb : hd.PackingBound D) (r : Real) :
     ExponentialRadiusScaleTail (I := I) hd D P L pb r := by
   have hwin : ∀ᶠ n in atTop, ∀ γ ∈ Finset.range (pb.A r),
@@ -281,12 +281,12 @@ theorem gpScaleTail
 
 theorem halfGpScaleTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D a : Real} (hD : 0 < D)
     (ha : 0 < a) (haRatio : 2 * a < h.ratio * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData (I := I) hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData (I := I) hd D P)
     (pb : hd.PackingBound D) (r : Real) :
     ∀ᶠ n in atTop, ∀ γ : Fin (pb.A r), ∀ c : (X.obj (L.φ n)).M,
       seqCenter hd D P (L.φ n) (γ : Nat) = some c →
@@ -345,12 +345,12 @@ theorem halfGpScaleTail
 
 theorem metricScaleTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D a : Real} (hD : 0 < D)
     (ha : 0 < a) (haRatio : 2 * a < h.ratio * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData (I := I) hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData (I := I) hd D P)
     (pb : hd.PackingBound D) (r : Real) :
     ∀ᶠ n in atTop, ∀ γ : Fin (pb.A r), ∀ c : (X.obj (L.φ n)).M,
       seqCenter hd D P (L.φ n) (γ : Nat) = some c →
@@ -388,12 +388,12 @@ theorem metricScaleTail
 
 theorem radiusScaleTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D a : Real} (hD : 0 < D) (ha : 0 < a)
     (haRatio : 2 * a < h.ratio * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData (I := I) hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData (I := I) hd D P)
     (pb : hd.PackingBound D) (r : Real) :
     ExponentialBallRadiusTail (I := I) hd D P L pb r a := by
   have hwin : ∀ᶠ n in atTop, ∀ γ ∈ Finset.range (pb.A r),
@@ -439,7 +439,7 @@ end NormalRadiusProfile
 structure MetricCompactCore
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
 
-  decay : InjRadiusDecayInput (I := I) X
+  decay : InjectivityRadiusDecay (I := I) X
 
   packAll : ∀ D : Real, 0 < D → decay.PackingBound D
 
@@ -448,7 +448,7 @@ structure MetricCompactCore
 
   pack : decay.PackingBound D
 
-  volume : VolumeComparisonInput (I := I) X
+  volume : BallMultiplicityBound (I := I) X
 
   dist_eq : volume.dist = decay.dist
 
@@ -456,15 +456,15 @@ structure MetricCompactCore
     max 4 (50 * Real.exp (decay.C * (20 * decay.lambda D 0))) *
       decay.lambda D 0 ≤ volume.r0
 
-  realizes : decay.RealizesEdist
+  realizes : decay.RealizesDistance
 
 structure MetricCompactSeed
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
-  decay : InjRadiusDecayInput (I := I) X
+  decay : InjectivityRadiusDecay (I := I) X
   packAll : ∀ D : Real, 0 < D → decay.PackingBound D
-  volume : VolumeComparisonInput (I := I) X
+  volume : BallMultiplicityBound (I := I) X
   dist_eq : volume.dist = decay.dist
-  realizes : decay.RealizesEdist
+  realizes : decay.RealizesDistance
 
 namespace MetricCompactSeed
 
@@ -519,7 +519,7 @@ theorem exists_core
   have hD : 0 < D := zero_lt_one.trans hD_one
   have hqD : q ≤ D := hqB.trans hB_lt.le
   have hmuD : s.decay.mu 0 ≤ D := by
-    simpa only [InjRadiusDecayInput.mu, q, mul_zero, Real.exp_zero, mul_one]
+    simpa only [InjectivityRadiusDecay.mu, q, mul_zero, Real.exp_zero, mul_one]
       using hqD
   have hlam_le : s.decay.lambda D 0 ≤ 1 :=
     s.decay.lambda_le_one_at_zero (by simpa only [q] using hqD)
@@ -542,7 +542,7 @@ theorem exists_core
   have hKlam : K * s.decay.lambda D 0 < s.volume.r0 := by
     calc
       K * s.decay.lambda D 0 = K * q / D := by
-        dsimp only [InjRadiusDecayInput.lambda, InjRadiusDecayInput.mu, q]
+        dsimp only [InjectivityRadiusDecay.lambda, InjectivityRadiusDecay.mu, q]
         simp only [mul_zero, Real.exp_zero, mul_one]
         ring
       _ < s.volume.r0 := (div_lt_iff₀ hD).2 (by
@@ -584,11 +584,11 @@ noncomputable def properMetricsOfCompleteConnected
 
 structure MetricCompactBase
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
-  decay : InjRadiusDecayInput (I := I) X
+  decay : InjectivityRadiusDecay (I := I) X
   pack : ∀ D : Real, 0 < D → decay.PackingBound D
-  volume : VolumeComparisonInput (I := I) X
+  volume : BallMultiplicityBound (I := I) X
   dist_eq : volume.dist = decay.dist
-  realizes : decay.RealizesEdist
+  realizes : decay.RealizesDistance
   normalBounds : NormalCoordMetricBounds (I := I) X
   normalRadius : NormalRadiusProfile decay normalBounds
 
@@ -644,7 +644,7 @@ theorem exists_largeD
   have hD : 0 < D := zero_lt_one.trans hD_one
   have hqD : q ≤ D := hqB.trans hB_lt.le
   have hmuD : b.decay.mu 0 ≤ D := by
-    simpa only [InjRadiusDecayInput.mu, q, mul_zero, Real.exp_zero, mul_one]
+    simpa only [InjectivityRadiusDecay.mu, q, mul_zero, Real.exp_zero, mul_one]
       using hqD
   have hlam_le : b.decay.lambda D 0 ≤ 1 :=
     b.decay.lambda_le_one_at_zero (by simpa only [q] using hqD)
@@ -666,7 +666,7 @@ theorem exists_largeD
   have hKlam : K * b.decay.lambda D 0 < b.volume.r0 := by
     calc
       K * b.decay.lambda D 0 = K * q / D := by
-        dsimp only [InjRadiusDecayInput.lambda, InjRadiusDecayInput.mu, q]
+        dsimp only [InjectivityRadiusDecay.lambda, InjectivityRadiusDecay.mu, q]
         simp only [mul_zero, Real.exp_zero, mul_one]
         ring
       _ < b.volume.r0 := (div_lt_iff₀ hD).2 (by
@@ -731,7 +731,7 @@ theorem exists_large_divisor_for_exponential_scales
     h16Q.trans_lt hQratio
   have hqD :
       b.decay.a * (min b.decay.baseInj.ρ 1) ^ (Module.finrank Real E) ≤ D := by
-    simpa only [InjRadiusDecayInput.mu, mul_zero, Real.exp_zero, mul_one]
+    simpa only [InjectivityRadiusDecay.mu, mul_zero, Real.exp_zero, mul_one]
       using hmuD
   have hlam_le : b.decay.lambda D 0 ≤ 1 :=
     b.decay.lambda_le_one_at_zero hqD
@@ -755,20 +755,20 @@ end MetricCompactBase
 
 structure MetricCompactnessInputs
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
-  decay : InjRadiusDecayInput (I := I) X
+  decay : InjectivityRadiusDecay (I := I) X
 
   packAll : ∀ D : Real, 0 < D → decay.PackingBound D
 
   D : Real
   hD : 0 < D
   pack : decay.PackingBound D
-  volume : VolumeComparisonInput (I := I) X
+  volume : BallMultiplicityBound (I := I) X
   dist_eq : volume.dist = decay.dist
 
   covering_scale_le_volume_radius :
     max 4 (50 * Real.exp (decay.C * (20 * decay.lambda D 0))) *
       decay.lambda D 0 <= volume.r0
-  realizes : decay.RealizesEdist
+  realizes : decay.RealizesDistance
   normalBounds : NormalCoordMetricBounds (I := I) X
 
   normalRadius : NormalRadiusProfile decay normalBounds
@@ -893,15 +893,15 @@ theorem exponential_scale_tails
 
 def ofUniformVolume
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (decay : InjRadiusDecayInput (I := I) X)
+    (decay : InjectivityRadiusDecay (I := I) X)
     (packAll : ∀ D : Real, 0 < D → decay.PackingBound D)
     (D : Real) (hD : 0 < D)
-    (vol : UniformBallPack (I := I) X)
+    (vol : UniformBallVolumeBounds (I := I) X)
     (dist_eq : vol.dist = decay.dist)
     (covering_scale_le_volume_radius :
       max 4 (50 * Real.exp (decay.C * (20 * decay.lambda D 0))) *
         decay.lambda D 0 ≤ vol.r0)
-    (realizes : decay.RealizesEdist)
+    (realizes : decay.RealizesDistance)
     (normalBounds : NormalCoordMetricBounds (I := I) X)
     (normalRadius : NormalRadiusProfile decay normalBounds) :
     MetricCompactnessInputs (I := I) X where
@@ -910,7 +910,7 @@ def ofUniformVolume
   D := D
   hD := hD
   pack := packAll D hD
-  volume := vol.toVCInput
+  volume := vol.toBallMultiplicityBound
   dist_eq := by
     change vol.dist = decay.dist
     exact dist_eq
@@ -989,8 +989,8 @@ theorem net_mult
     (hSR : ∀ x ∈ S, inp.decay.dist k x (X.obj k).basepoint <= R)
     (z : (X.obj k).M) (J : Finset ((X.obj k).M)) (hJS : ↑J ⊆ S)
     (hJz : ∀ x ∈ J, inp.decay.dist k x z <= 4 * inp.decay.lambda inp.D R) :
-    J.card <= inp.volume.Imult 4 := by
-  exact InjRadiusDecayInput.net_multiplicity
+    J.card <= inp.volume.multiplicity 4 := by
+  exact InjectivityRadiusDecay.net_multiplicity
     inp.decay inp.D k inp.hD inp.realizes inp.volume inp.dist_eq R
     (inp.cap_four_of_nonneg hR) hS hSR z J hJS hJz
 
@@ -1005,7 +1005,7 @@ theorem inter_count
       ∀ J : Finset Nat,
         (∀ β ∈ J, BInter inp.decay inp.D P L.lamInf α β (L.φ k)) →
         J.card <=
-          inp.volume.Imult
+          inp.volume.multiplicity
             (50 * Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0))) := by
   exact NetLimitData.inter_count inp.decay inp.hD P L inp.realizes inp.pack
     inp.volume inp.dist_eq inp.cap_inter α
@@ -1042,7 +1042,7 @@ theorem exists_stable_net_with_intersection_bound
           ∀ J : Finset Nat,
             (∀ β ∈ J, BInter inp.decay inp.D P L.lamInf α β (L.φ k)) →
             J.card <=
-              inp.volume.Imult
+              inp.volume.multiplicity
                 (50 * Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0)))) := by
   obtain ⟨L, hstable⟩ := inp.exists_stable_net P
   exact ⟨L, hstable, fun α => inp.inter_count P L α⟩
@@ -1072,7 +1072,7 @@ theorem exists_stable_net_with_intersection_bound_of_complete_connected
               BInter inp.decay inp.D (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
                 L.lamInf α β (L.φ k)) →
             J.card <=
-              inp.volume.Imult
+              inp.volume.multiplicity
                 (50 * Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0)))) :=
   inp.exists_stable_net_with_intersection_bound (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
 
@@ -1112,7 +1112,7 @@ theorem exists_stable_net_with_intersection_bound_subsequence
                   (X.connected_subseq hconn f))
                 L.lamInf α β (L.φ k)) →
             J.card <=
-              (inp.subseq f).volume.Imult
+              (inp.subseq f).volume.multiplicity
                 (50 * Real.exp
                   ((inp.subseq f).decay.C *
                     (20 * (inp.subseq f).decay.lambda (inp.subseq f).D 0)))) := by

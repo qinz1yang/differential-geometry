@@ -31,7 +31,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 def HasHatCmEqn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -128,7 +128,7 @@ def HasHatCmEqn
 
 def HasHatCmStrictAt
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -248,7 +248,7 @@ def HasHatCmStrictAt
 
 def HasHatCmStrict
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -298,10 +298,10 @@ def HasHatCmStrict
 
 theorem exists_hat_cm_tail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (hprof : NormalRadiusProfile hd hb)
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
@@ -572,10 +572,10 @@ theorem exists_hat_cm_tail
 
 theorem exists_hat_cm_tail_support
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (hprof : NormalRadiusProfile hd hb)
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
@@ -754,10 +754,10 @@ theorem exists_hat_cm_tail_support
 
 theorem exists_hat_cm_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (hprof : NormalRadiusProfile hd hb)
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology

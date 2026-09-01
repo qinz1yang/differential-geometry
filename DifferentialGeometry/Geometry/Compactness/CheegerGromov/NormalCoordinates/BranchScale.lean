@@ -33,10 +33,10 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 omit [CompleteSpace E] in
 theorem normalBrHat
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {a D c R : Real} (hD : 0 < D) (hc : c < a * D) :
     c * hd.lambda D R < a * hd.mu R := by
-  rw [InjRadiusDecayInput.lambda]
+  rw [InjectivityRadiusDecay.lambda]
   calc
     c * (hd.mu R / D) = (c / D) * hd.mu R := by ring
     _ < a * hd.mu R :=
@@ -176,7 +176,7 @@ end HasNormalBrFull
 
 theorem normalBrAccept
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -350,7 +350,7 @@ theorem normalBrAccept
 
 theorem normalMinScale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -443,7 +443,7 @@ theorem normalMinScale
 
 theorem normalBrScale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)

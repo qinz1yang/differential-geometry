@@ -35,7 +35,7 @@ namespace BoundedGeometryNormalData
 
 theorem strict_dist_input
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology

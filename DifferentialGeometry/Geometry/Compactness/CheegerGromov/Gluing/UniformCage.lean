@@ -35,7 +35,7 @@ namespace NetLimitData
 omit [Module.Finite ℝ E] in
 theorem unifHatCageComp
     [FiniteDimensional Real E]
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -268,7 +268,7 @@ theorem unifHatCageComp
 omit [Module.Finite ℝ E] in
 theorem unifHatCageSrc
     [FiniteDimensional Real E]
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -487,7 +487,7 @@ theorem unifHatCageSrc
 omit [Module.Finite ℝ E] in
 theorem unifHatCageSelfComp
     [FiniteDimensional Real E]
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)

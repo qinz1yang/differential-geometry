@@ -37,7 +37,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 def HasLiveBrFull
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -54,10 +54,10 @@ def HasLiveBrFull
 
 theorem exists_slot_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -227,9 +227,9 @@ theorem exists_slot_min
 
 theorem exists_live_dom
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real)
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
@@ -256,9 +256,9 @@ theorem exists_live_dom
 
 theorem exists_live_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real)
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
@@ -907,9 +907,9 @@ theorem HasNormalBrFull.exists_cmC
 
 theorem exists_hat_cm_eqn_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D aMin : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
     {hb : NormalCoordMetricBounds (I := I) X}
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -1066,9 +1066,9 @@ theorem exists_hat_cm_eqn_at
 
 theorem exists_hat_cm_sol_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D aMin : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
     {hb : NormalCoordMetricBounds (I := I) X}
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -1250,9 +1250,9 @@ theorem exists_hat_cm_sol_at
 
 theorem exists_hat_cmC_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D aMin : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
     {hb : NormalCoordMetricBounds (I := I) X}
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -1394,9 +1394,9 @@ theorem exists_hat_cmC_at
 
 theorem exists_hat_cm_eqn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D aMin : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
     {hb : NormalCoordMetricBounds (I := I) X}
     (hcomplete : SeqMetricComplete (I := I) X)

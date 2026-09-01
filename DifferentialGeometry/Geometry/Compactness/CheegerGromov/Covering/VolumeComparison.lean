@@ -1,11 +1,9 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-
-
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Comparison.Volume.Packing
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.BallMultiplicityBound
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -26,7 +24,7 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-theorem exists_pairR_of_boundedGeometry
+theorem exists_small_ball_volume_bounds_of_bounded_geometry
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -107,7 +105,7 @@ theorem exists_pairR_of_boundedGeometry
       (rm04Bound_of_geom (I := I) hgeom)
   exact ⟨C, D, Blo, A, δ, hC, hD, hBlo, hδ, hsmall⟩
 
-theorem exists_pairR_of_seqBoundedGeometry
+theorem exists_small_ball_volume_bounds_of_sequence_bounded_geometry
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -186,14 +184,15 @@ theorem exists_pairR_of_seqBoundedGeometry
     nonneg := hgeom.nonneg
     bound := hgeom.bound k }
   obtain ⟨C0, D, Blo, A, δ, hC0, hD, hBlo, hδ, hsmall⟩ :=
-    exists_pairR_of_boundedGeometry (I := I) Y (hcomplete.complete k) (hconn k) hgeom_k p
+    exists_small_ball_volume_bounds_of_bounded_geometry
+      (I := I) Y (hcomplete.complete k) (hconn k) hgeom_k p
   refine ⟨C0, D, Blo, A, δ, hC0, hD, hBlo, hδ, ?_⟩
   intro s hs hsd
   simpa [Y, hgeom_k] using hsmall (s := s) hs hsd
 
 omit [NeZero (Module.finrank Real E)] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ricciLower_of_seq
+theorem ricci_bounded_below_of_sequence_bounded_geometry
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hgeom : SeqBoundedGeometry (I := I) X) (k : Nat) :
     let Y := X.obj k
@@ -216,24 +215,24 @@ theorem ricciLower_of_seq
   simpa [Geometry.Riemannian.VolumeComparison.Rm04GlobalBound] using
     (rm04Bound_of_seq (I := I) hgeom k)
 
-structure UniformBallPack
+structure UniformBallVolumeBounds
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
-  dist : PointedSeqDistance (I := I) X
-  ms : ∀ k : Nat, MetricSpace (X.obj k).M
+  dist : PointedRiemannianSeq.Distance (I := I) X
+  metricSpace : ∀ k : Nat, MetricSpace (X.obj k).M
   dist_eq : ∀ k : Nat, ∀ x y : (X.obj k).M,
     dist k x y =
-      (letI : MetricSpace (X.obj k).M := ms k
+      (letI : MetricSpace (X.obj k).M := metricSpace k
        @Dist.dist (X.obj k).M _ x y)
   r0 : Real
   r0_pos : 0 < r0
-  Imult : Real → Nat
-  L : Real → Real → Real
-  U : Real → Real → Real
-  L_pos : ∀ m r : Real, 0 < r → m * r ≤ r0 → 0 < L m r
-  U_nonneg : ∀ m r : Real, 0 < r → m * r ≤ r0 → 0 ≤ U m r
-  cap : ∀ m r : Real, 0 < r → m * r ≤ r0 →
-    U m r < ((Imult m + 1 : Nat) : Real) * L m r
-  small_meas : ∀ m : Real, ∀ k : Nat, ∀ p : (X.obj k).M, ∀ {r : Real},
+  multiplicity : Real → Nat
+  lowerVolume : Real → Real → Real
+  upperVolume : Real → Real → Real
+  lowerVolume_pos : ∀ m r : Real, 0 < r → m * r ≤ r0 → 0 < lowerVolume m r
+  upperVolume_nonneg : ∀ m r : Real, 0 < r → m * r ≤ r0 → 0 ≤ upperVolume m r
+  upper_lt_multiplicity_mul_lower : ∀ m r : Real, 0 < r → m * r ≤ r0 →
+    upperVolume m r < ((multiplicity m + 1 : Nat) : Real) * lowerVolume m r
+  small_ball_measurable : ∀ m : Real, ∀ k : Nat, ∀ p : (X.obj k).M, ∀ {r : Real},
     0 < r → m * r ≤ r0 →
       let Y := X.obj k
       letI : TopologicalSpace Y.M := Y.topology
@@ -241,10 +240,10 @@ structure UniformBallPack
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-      letI : MetricSpace Y.M := ms k
+      letI : MetricSpace Y.M := metricSpace k
       letI : MeasurableSpace Y.M := borel Y.M
       MeasurableSet (Metric.ball p (r / 2))
-  lower : ∀ m : Real, ∀ k : Nat, ∀ p : (X.obj k).M, ∀ {r : Real},
+  small_ball_volume_lower : ∀ m : Real, ∀ k : Nat, ∀ p : (X.obj k).M, ∀ {r : Real},
     0 < r → m * r ≤ r0 →
       let Y := X.obj k
       letI : TopologicalSpace Y.M := Y.topology
@@ -252,12 +251,12 @@ structure UniformBallPack
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-      letI : MetricSpace Y.M := ms k
+      letI : MetricSpace Y.M := metricSpace k
       letI : MeasurableSpace Y.M := borel Y.M
-      ENNReal.ofReal (L m r) ≤
+      ENNReal.ofReal (lowerVolume m r) ≤
         DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := Y.M) Y.metric
           (Metric.ball p (r / 2))
-  upper : ∀ m : Real, ∀ k : Nat, ∀ z : (X.obj k).M, ∀ {r : Real},
+  large_ball_volume_upper : ∀ m : Real, ∀ k : Nat, ∀ z : (X.obj k).M, ∀ {r : Real},
     0 < r → m * r ≤ r0 →
       let Y := X.obj k
       letI : TopologicalSpace Y.M := Y.topology
@@ -265,22 +264,22 @@ structure UniformBallPack
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-      letI : MetricSpace Y.M := ms k
+      letI : MetricSpace Y.M := metricSpace k
       letI : MeasurableSpace Y.M := borel Y.M
       DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := Y.M) Y.metric
           (Metric.ball z ((m + 1 / 2) * r)) ≤
-        ENNReal.ofReal (U m r)
+        ENNReal.ofReal (upperVolume m r)
 
-namespace UniformBallPack
+namespace UniformBallVolumeBounds
 
-def toVCInput {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : UniformBallPack (I := I) X) :
-    VolumeComparisonInput (I := I) X where
+def toBallMultiplicityBound {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    (h : UniformBallVolumeBounds (I := I) X) :
+    BallMultiplicityBound (I := I) X where
   dist := h.dist
   r0 := h.r0
   r0_pos := h.r0_pos
-  Imult := h.Imult
-  ballMult := by
+  multiplicity := h.multiplicity
+  card_le := by
     intro m k α _ _ centers r hr hcap hsep z J hJz
     let Y := X.obj k
     let : TopologicalSpace Y.M := Y.topology
@@ -288,7 +287,7 @@ def toVCInput {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     let : IsManifold I ∞ Y.M := Y.smooth
     let : T2Space Y.M := Y.t2
     let : SigmaCompactSpace Y.M := Y.sigmaCompact
-    let : MetricSpace Y.M := h.ms k
+    let : MetricSpace Y.M := h.metricSpace k
     let : MeasurableSpace Y.M := borel Y.M
     let μ := DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I)
       (M := Y.M) Y.metric
@@ -304,15 +303,15 @@ def toVCInput {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     exact
       DifferentialGeometry.Geometry.Riemannian.VolumeComparison.ball_card_le_meas
         μ J centers z
-        (h.L_pos m r hr hcap)
-        (h.U_nonneg m r hr hcap)
-        (fun j _hj => h.small_meas m k (centers j) hr hcap)
+        (h.lowerVolume_pos m r hr hcap)
+        (h.upperVolume_nonneg m r hr hcap)
+        (fun j _hj => h.small_ball_measurable m k (centers j) hr hcap)
         hsep_metric hJz_metric
-        (fun j _hj => h.lower m k (centers j) hr hcap)
-        (h.upper m k z hr hcap)
-        (h.cap m r hr hcap)
+        (fun j _hj => h.small_ball_volume_lower m k (centers j) hr hcap)
+        (h.large_ball_volume_upper m k z hr hcap)
+        (h.upper_lt_multiplicity_mul_lower m r hr hcap)
 
-end UniformBallPack
+end UniformBallVolumeBounds
 
 end HCGCompactness
 end DifferentialGeometry

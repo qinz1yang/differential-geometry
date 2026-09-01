@@ -29,7 +29,7 @@ namespace BoundedGeometryNormalData
 
 theorem trans_bounds_on
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
     (x y : ∀ k : Nat, (X.obj k).M) (U V : Set E)
     (hU : IsOpen U) (hV : IsOpen V)
@@ -159,7 +159,7 @@ theorem trans_bounds_on
 
 theorem exists_trans_lim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
     (x y : ∀ k : Nat, (X.obj k).M)
     {U V Ua Va : Set E}

@@ -97,7 +97,7 @@ theorem exists_live_diag
           (Xpsi.obj k).basepoint ≤
             2 * inp.decay.lambda inp.D 0 * (inp.pack.A r : Real) := by
       intro k
-      simpa only [index, Xpsi, c, InjRadiusDecayInput.subseq,
+      simpa only [index, Xpsi, c, InjectivityRadiusDecay.subseq,
         PointedRiemannianSeq.subseq] using hcenter k alpha
     have hgInfAlpha : ContDiffOn Real (∞ : WithTop ℕ∞)
         (fun z ↦ gInf z alpha)
@@ -117,7 +117,7 @@ theorem exists_live_diag
       simpa only [index, Xpsi, c, PointedRiemannianSeq.subseq] using
         (mapCInf_apply Metric.isOpen_ball hconv hstage hgInf alpha)
     simpa only [MetricCompactnessInputs.subseq, NormalRadiusProfile.subseq,
-        InjRadiusDecayInput.subseq, NormalCoordMetricBounds.subseq,
+        InjectivityRadiusDecay.subseq, NormalCoordMetricBounds.subseq,
         NormalRadiusProfile.phaseRadius] using
       (inp.normalRadius.subseq index).exists_diagPair_conv
         (hcomplete.subseq index)
@@ -220,7 +220,7 @@ theorem exists_slot_diag
         (inp.decay.subseq index).dist n (c alpha n)
           (Xpsi.obj n).basepoint ≤ Ralpha := by
       intro n
-      simpa only [Ralpha, index, Xpsi, c, InjRadiusDecayInput.subseq,
+      simpa only [Ralpha, index, Xpsi, c, InjectivityRadiusDecay.subseq,
         PointedRiemannianSeq.subseq] using hcenter n alpha
     have hm := hmetric alpha
     dsimp only at hm
@@ -234,7 +234,7 @@ theorem exists_slot_diag
         (gInf alpha) := by
       simpa only [Ralpha, index, Xpsi, c, PointedRiemannianSeq.subseq] using hm.2.1
     simpa only [Ralpha, NormalRadiusProfile.subseq,
-        InjRadiusDecayInput.subseq, NormalCoordMetricBounds.subseq,
+        InjectivityRadiusDecay.subseq, NormalCoordMetricBounds.subseq,
         NormalRadiusProfile.phaseRadius] using
       (inp.normalRadius.subseq index).exists_diagPair_at
         (hcomplete.subseq index)

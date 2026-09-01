@@ -945,7 +945,7 @@ namespace BoundedGeometryNormalData
 
 
 theorem ratio_gt_48
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) {aMin R : Real} {q : NNReal}
     (hρq : 2 * (aMin * hd.mu R) < (q : Real))
     (hqRadius : 6 * (q : Real) < d.phaseRadius R) :
@@ -996,7 +996,7 @@ theorem pair_lam_lt_three
       _ ≤ inp.D := hright
   have hlambdaSmall :
       (768 * Real.exp inp.decay.C) * inp.decay.lambda inp.D 0 < 1 := by
-    rw [InjRadiusDecayInput.lambda]
+    rw [InjectivityRadiusDecay.lambda]
     calc
       (768 * Real.exp inp.decay.C) * (inp.decay.mu 0 / inp.D) =
           (768 * Real.exp inp.decay.C * inp.decay.mu 0) / inp.D := by ring

@@ -27,7 +27,7 @@ variable [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 def InterSlot
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (alpha : LiveSlot L pb r) :=
@@ -37,7 +37,7 @@ def InterSlot
 
 omit [CompleteSpace E] in
 theorem inter_slot_of_binter
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     {k : Nat} (alpha : LiveSlot L pb r) {gamma : Fin (pb.A r)}

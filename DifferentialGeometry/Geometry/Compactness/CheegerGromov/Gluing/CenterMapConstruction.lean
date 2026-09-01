@@ -196,7 +196,7 @@ theorem properBallImgOfRad'
       _ ≤ R := hgc_le
   exact lt_of_le_of_lt hbound hσ
 
-theorem hatCageImg (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatCageImg (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -235,7 +235,7 @@ theorem hatCageImg (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   exact properBallImgOfRad (I := I) (X.obj (L.φ n)) (P (L.φ n))
     (c := center gamma) (R := 4 * L.lamInf (gamma : Nat)) hR
 
-theorem hatCageImg' (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatCageImg' (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -284,7 +284,7 @@ theorem hatCageImg' (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   exact properBallImgOfRad' (I := I) (X.obj (L.φ n)) (P (L.φ n))
     (c := center gamma) (R := 4 * L.lamInf (gamma : Nat)) (σ := sigma gamma) hR hσ
 
-theorem hUx_of_sigma (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hUx_of_sigma (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real)
@@ -305,7 +305,7 @@ theorem hUx_of_sigma (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   intro gamma k
   exact Metric.ball_subset_ball (hσ gamma k)
 
-def SigmaScaleAt (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+def SigmaScaleAt (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real)
@@ -322,7 +322,7 @@ def SigmaScaleAt (hd : InjRadiusDecayInput (I := I) X) {D : Real}
         Real.sqrt (gpCoerciveConst (I := I) (X.obj (L.φ n)).metric (x gamma n)) < σ gamma ∧
       σ gamma ≤ expMapC2Radius (I := I) (X.obj (L.φ n)).metric (x gamma n)
 
-def SigmaScaleTail (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+def SigmaScaleTail (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real)
@@ -330,7 +330,7 @@ def SigmaScaleTail (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (σ : Fin (pb.A r) -> Real) : Prop :=
   ∀ᶠ n in Filter.atTop, SigmaScaleAt (I := I) hd P L pb r x σ n
 
-def SigmaScaleField (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+def SigmaScaleField (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real)
@@ -345,7 +345,7 @@ def SigmaScaleField (hd : InjRadiusDecayInput (I := I) X) {D : Real}
         Real.sqrt (gpCoerciveConst (I := I) (X.obj (L.φ k)).metric (x gamma k)) < σ gamma ∧
       σ gamma ≤ expMapC2Radius (I := I) (X.obj (L.φ k)).metric (x gamma k)
 
-theorem SigmaScaleField.at {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+theorem SigmaScaleField.at {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : forall k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P}
     {pb : hd.PackingBound D} {r : Real}
@@ -354,7 +354,7 @@ theorem SigmaScaleField.at {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     (hfield : SigmaScaleField (I := I) hd P L pb r x σ) (n : Nat) :
     SigmaScaleAt (I := I) hd P L pb r x σ n := fun gamma => hfield gamma n
 
-theorem SigmaScaleField.to_tail {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+theorem SigmaScaleField.to_tail {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : forall k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P}
     {pb : hd.PackingBound D} {r : Real}
@@ -364,7 +364,7 @@ theorem SigmaScaleField.to_tail {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     SigmaScaleTail (I := I) hd P L pb r x σ :=
   Filter.Eventually.of_forall hfield.at
 
-theorem SigmaScaleTail.subseq {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+theorem SigmaScaleTail.subseq {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : forall k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real)
@@ -379,7 +379,7 @@ theorem SigmaScaleTail.subseq {hd : InjRadiusDecayInput (I := I) X} {D : Real}
   exact hn gamma
 
 theorem SigmaScaleTail.exists_field
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : forall k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real)
@@ -398,7 +398,7 @@ theorem SigmaScaleTail.exists_field
   intro gamma k
   exact hN (ψ k) (by simp only [ψ]; omega) gamma
 
-theorem SigmaScaleField.expRadiusGp {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+theorem SigmaScaleField.expRadiusGp {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : forall k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P}
     {pb : hd.PackingBound D} {r : Real}
@@ -427,12 +427,12 @@ theorem SigmaScaleField.expRadiusGp {hd : InjRadiusDecayInput (I := I) X} {D : R
   exact h1.trans_eq (mul_comm _ _)
 
 theorem NormalRadiusProfile.sigmaCenterTail
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D : Real} (hD : 0 < D)
     (h16 : (16 : Real) < h.ratio * D)
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) :
     SigmaScaleTail (I := I) hd P L pb r
@@ -857,7 +857,7 @@ theorem MetricCompactnessInputs.exists_supp_fin
       hz gamma hweight
 
 noncomputable def interSlot?
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r) (gamma : Fin (pb.A r)) :
@@ -871,7 +871,7 @@ noncomputable def interSlot?
 
 noncomputable def totalPts
     {M : Type u}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (pairPts : (alpha : LiveSlot L pb r) →
@@ -885,7 +885,7 @@ noncomputable def totalPts
 omit [CompleteSpace E] in
 @[simp] theorem activeFill_totalPts_zero
     {M : Type u}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (mu : M → Fin (pb.A r) → Real)
@@ -900,7 +900,7 @@ omit [CompleteSpace E] in
 omit [CompleteSpace E] in
 theorem activeFill_totalPts_of_ne
     {M : Type u}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (mu : M → Fin (pb.A r) → Real)

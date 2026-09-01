@@ -27,7 +27,7 @@ namespace NormalRadiusProfile
 
 theorem diag_end_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)

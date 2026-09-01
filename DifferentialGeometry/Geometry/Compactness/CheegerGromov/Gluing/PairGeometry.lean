@@ -24,7 +24,7 @@ variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 omit [CompleteSpace E] in
 theorem NetLimitData.sigmaBall_nesting
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) {α β : Nat}
     (hfreq : ∃ᶠ k in atTop, BInter hd D P L.lamInf α β (L.φ k))
@@ -102,7 +102,7 @@ theorem NetLimitData.sigmaBall_nesting
       ring
 
 theorem NetLimitData.pair_exp_maps
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (α β : Fin (pb.A r))

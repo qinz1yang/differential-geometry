@@ -45,7 +45,7 @@ noncomputable local instance centerAverageModelBilinearNormedSpace :
     NormedSpace ℝ (E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-theorem uniform_center_average_convergence (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem uniform_center_average_convergence (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -207,7 +207,7 @@ theorem uniform_center_average_convergence (hd : InjRadiusDecayInput (I := I) X)
       hV'sub gamma (binfMemClosed (hB gamma) (hKU gamma hv) (hV'closed gamma)
         (Filter.Eventually.of_forall (hKV0 gamma v hv))))
 
-theorem uniform_center_average_convergence_of_weight_data (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem uniform_center_average_convergence_of_weight_data (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -356,7 +356,7 @@ theorem uniform_center_average_convergence_of_weight_data (hd : InjRadiusDecayIn
       hV'sub gamma (binfMemClosed (hB gamma) (hKU gamma hv) (hV'closed gamma)
         (Filter.Eventually.of_forall (hKV0 gamma v hv))))
 
-theorem exists_center_average_identity_convergence_subsequence (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem exists_center_average_identity_convergence_subsequence (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)

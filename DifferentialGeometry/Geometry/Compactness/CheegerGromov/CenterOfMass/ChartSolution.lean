@@ -32,7 +32,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 def HasLiveChartCenterSolution
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -88,10 +88,10 @@ namespace BoundedGeometryNormalData
 
 theorem has_live_chart_center_solution_of_cage
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
@@ -300,9 +300,9 @@ theorem has_live_chart_center_solution_of_cage
 
 theorem exists_live_chart_center_solutions
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology

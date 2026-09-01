@@ -27,7 +27,7 @@ namespace NormalRadiusProfile
 
 theorem limit_accel_bounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
@@ -123,7 +123,7 @@ theorem limit_accel_bounds
 
 theorem exists_limit_phase
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
@@ -299,7 +299,7 @@ theorem exists_limit_phase
 
 theorem exists_limit_diag
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)

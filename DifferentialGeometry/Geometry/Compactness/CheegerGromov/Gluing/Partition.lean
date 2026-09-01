@@ -190,7 +190,7 @@ end FinitePOU
 
 namespace NetLimitData
 
-noncomputable def hatBall (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+noncomputable def hatBall (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat) (γ : Fin (pb.A r)) :
     Set ((X.obj (L.φ k)).M) :=
@@ -199,7 +199,7 @@ noncomputable def hatBall (hd : InjRadiusDecayInput (I := I) X) (D : Real)
   | some c => Metric.ball c (4 * L.lamInf (γ : Nat))
   | none => ∅
 
-noncomputable def innerBall (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+noncomputable def innerBall (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat) (γ : Fin (pb.A r)) :
     Set ((X.obj (L.φ k)).M) :=
@@ -209,7 +209,7 @@ noncomputable def innerBall (hd : InjRadiusDecayInput (I := I) X) (D : Real)
   | none => ∅
 
 
-@[simp] theorem innerBall_subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+@[simp] theorem innerBall_subseq (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat) (γ : Fin (pb.A r))
     {ψ : Nat -> Nat} (hψ : StrictMono ψ) :
@@ -223,7 +223,7 @@ noncomputable def innerBall (hd : InjRadiusDecayInput (I := I) X) (D : Real)
         hcenter] ; rfl
 
 
-theorem innerBall_open (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+theorem innerBall_open (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat) (γ : Fin (pb.A r)) :
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
@@ -235,7 +235,7 @@ theorem innerBall_open (hd : InjRadiusDecayInput (I := I) X) (D : Real)
   · exact isOpen_empty
 
 
-theorem innerBall_subset_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem innerBall_subset_hat (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (γ : Fin (pb.A r)) :
@@ -251,7 +251,7 @@ theorem innerBall_subset_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       nlinarith
 
 
-@[simp] theorem hatBall_subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+@[simp] theorem hatBall_subseq (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat) (γ : Fin (pb.A r))
     {ψ : Nat -> Nat} (hψ : StrictMono ψ) :
@@ -265,7 +265,7 @@ theorem innerBall_subset_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
         hcenter] ; rfl
 
 
-theorem hatBall_open (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+theorem hatBall_open (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat) (γ : Fin (pb.A r)) :
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
@@ -276,9 +276,9 @@ theorem hatBall_open (hd : InjRadiusDecayInput (I := I) X) (D : Real)
   · exact Metric.isOpen_ball
   · exact isOpen_empty
 
-theorem hatBall_cover (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatBall_cover (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance) (pb : hd.PackingBound D)
     (r : Real) :
     ∀ᶠ k in atTop,
       letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
@@ -293,9 +293,9 @@ theorem hatBall_cover (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   refine mem_iUnion.mpr ⟨⟨γ, hγ⟩, ?_⟩
   simp [hatBall, hc, Metric.mem_ball, hpc]
 
-theorem innerBall_cover (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem innerBall_cover (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance) (pb : hd.PackingBound D)
     (r : Real) :
     ∀ᶠ k in atTop,
       letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
@@ -310,7 +310,7 @@ theorem innerBall_cover (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   refine mem_iUnion.mpr ⟨⟨γ, hγ⟩, ?_⟩
   simp [innerBall, hc, Metric.mem_ball, hpc]
 
-theorem hatPOU_of_cover (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatPOU_of_cover (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (hcover :
@@ -371,9 +371,9 @@ theorem hatPOU_of_cover (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     ho
     hcover
 
-theorem hatPOU_eventually (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatPOU_eventually (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance) (pb : hd.PackingBound D)
     (r : Real) :
     ∀ᶠ k in atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -389,7 +389,7 @@ theorem hatPOU_eventually (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   exact hatPOU_of_cover (I := I) hd P L pb r k hcover
 
 
-theorem hatPOU_nonneg (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatPOU_nonneg (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (ρ :
@@ -418,7 +418,7 @@ theorem hatPOU_nonneg (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   exact ρ.nonneg γ x
 
 
-theorem hatPOU_sum_one (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatPOU_sum_one (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (ρ :
@@ -453,7 +453,7 @@ theorem hatPOU_sum_one (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       at hsum
   rwa [Fintype.sum_subset (by simp)] at hsum
 
-theorem hatPOU_pos (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatPOU_pos (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (ρ :
@@ -485,7 +485,7 @@ theorem hatPOU_pos (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   exact ρ.exists_pos_of_mem hx
 
 
-theorem hatPOU_active_mem (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatPOU_active_mem (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (ρ :
@@ -525,7 +525,7 @@ theorem hatPOU_active_mem (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     simpa [Function.mem_support] using hγx
   exact hρ γ (subset_tsupport (ρ γ) hx_support)
 
-theorem binter_of_mem_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem binter_of_mem_hat (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     {α β : Fin (pb.A r)} {z : (X.obj (L.φ k)).M}
@@ -553,7 +553,7 @@ theorem binter_of_mem_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
           · rw [Metric.mem_ball] at hβ' ⊢
             nlinarith
 
-theorem binter_of_active (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem binter_of_active (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (ρ :
@@ -595,7 +595,7 @@ theorem binter_of_active (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   exact L.binter_of_mem_hat hd hD P pb r k hβx
     (L.hatPOU_active_mem hd P pb r k ρ hρ hγx)
 
-theorem hatPOU_weights (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatPOU_weights (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (ρ :
@@ -630,7 +630,7 @@ theorem hatPOU_weights (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     L.hatPOU_pos hd P pb r k ρ hx,
     L.hatPOU_sum_one hd P pb r k ρ hx⟩
 
-theorem hatPOU_active_data (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem hatPOU_active_data (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (ρ :

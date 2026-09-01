@@ -31,28 +31,28 @@ variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 namespace BoundedGeometryNormalData
 
 def transitionPatch
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : NetLimitData hd D P) {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r) : Set E :=
   Metric.ball 0 ((21 / 10 : Real) * L.lamInf (alpha.1 : Nat))
 
 def innerTransitionCore
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : NetLimitData hd D P) {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r) : Set E :=
   Metric.closedBall 0 ((83 / 40 : Real) * L.lamInf (alpha.1 : Nat))
 
 def outerTransitionCore
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : NetLimitData hd D P) {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r) : Set E :=
   Metric.closedBall 0 ((167 / 80 : Real) * L.lamInf (alpha.1 : Nat))
 
 def transitionCoreBuffer
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : NetLimitData hd D P) {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r) : Real :=
@@ -704,7 +704,7 @@ theorem transition_target_ball_eventually
 
 private theorem trans_fin
     {ι : Type*} (s : Finset ι)
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
     (x y : ι → ∀ k : Nat, (X.obj k).M)
     (U V Ua Va : ι → Set E)
@@ -948,7 +948,7 @@ theorem atomOn_live_conv
 omit [CompleteSpace E] in
 theorem atomOn_dead_conv
     (chart : NormalChartFamily (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
@@ -967,7 +967,7 @@ theorem atomOn_dead_conv
 omit [CompleteSpace E] in
 theorem atomOn_disjoint_conv
     (chart : NormalChartFamily (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (alpha gamma : Fin (pb.A r))

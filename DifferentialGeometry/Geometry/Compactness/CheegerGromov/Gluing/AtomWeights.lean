@@ -199,7 +199,7 @@ theorem gluing_atom_eq_dist
 
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-noncomputable def seqAtom (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+noncomputable def seqAtom (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (gamma : Fin (pb.A r)) : (X.obj (L.φ k)).M → Real :=
@@ -212,7 +212,7 @@ noncomputable def seqAtom (hd : InjRadiusDecayInput (I := I) X) {D : Real}
           (hd.lambda_pos hD (L.rInf (gamma : Nat))) ((dist c q) ^ 2)
 
 
-@[simp] theorem seqAtom_subseq (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+@[simp] theorem seqAtom_subseq (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (k : Nat) (gamma : Fin (pb.A r)) :
@@ -227,7 +227,7 @@ noncomputable def seqAtom (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   | some c => congr 2
 
 
-@[simp] theorem seqAtom_none (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+@[simp] theorem seqAtom_none (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (gamma : Fin (pb.A r))
@@ -236,7 +236,7 @@ noncomputable def seqAtom (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   simp [seqAtom, hc]
 
 
-theorem seqAtom_some (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqAtom_some (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (gamma : Fin (pb.A r)) {c : (X.obj (L.φ k)).M}
@@ -248,7 +248,7 @@ theorem seqAtom_some (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   simp [seqAtom, hc]
 
-theorem seqAtom_contMDiff (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqAtom_contMDiff (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k) (gamma : Fin (pb.A r)) :
@@ -290,7 +290,7 @@ theorem seqAtom_contMDiff (hd : InjRadiusDecayInput (I := I) X) {D : Real}
           (gluingBump lam hlam) ((gluing_bump_outer_radius_lt lam hlam).trans hR)
 
 
-theorem seqAtom_Icc (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqAtom_Icc (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (gamma : Fin (pb.A r)) (q : (X.obj (L.φ k)).M) :
@@ -302,7 +302,7 @@ theorem seqAtom_Icc (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       rw [seqAtom_some hd hD P L pb r k gamma hc]
       exact ⟨(gluingBump _ _).nonneg, (gluingBump _ _).le_one⟩
 
-theorem seqAtom_nonneg (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqAtom_nonneg (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (gamma : Fin (pb.A r)) (q : (X.obj (L.φ k)).M) :
@@ -310,7 +310,7 @@ theorem seqAtom_nonneg (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   (seqAtom_Icc hd hD P L pb r k gamma q).1
 
 
-theorem seqAtom_one_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqAtom_one_raw (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (gamma : Fin (pb.A r)) {q : (X.obj (L.φ k)).M}
@@ -331,7 +331,7 @@ theorem seqAtom_one_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
         abs_of_nonneg (sq_nonneg (dist c q)), gluing_bump_inner_radius]
       exact (sq_le_sq₀ dist_nonneg (by positivity)).2 hdist_lt.le
 
-theorem seqAtom_one (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqAtom_one (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (gamma : Fin (pb.A r)) {q : (X.obj (L.φ k)).M}
@@ -340,7 +340,7 @@ theorem seqAtom_one (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   seqAtom_one_raw hd hD P L pb r k gamma hq
 
 
-theorem seqAtom_mem_hat_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqAtom_mem_hat_raw (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (gamma : Fin (pb.A r)) {q : (X.obj (L.φ k)).M}
@@ -365,7 +365,7 @@ theorem seqAtom_mem_hat_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       have hdist0 : 0 ≤ dist c q := dist_nonneg
       nlinarith
 
-theorem seqAtom_mem_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqAtom_mem_hat (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (gamma : Fin (pb.A r)) {q : (X.obj (L.φ k)).M}
@@ -373,7 +373,7 @@ theorem seqAtom_mem_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     q ∈ L.hatBall hd D P pb r k gamma :=
   seqAtom_mem_hat_raw hd hD P L pb r k gamma hq
 
-theorem seqWeights_data_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqWeights_data_raw (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (i0 : Fin (pb.A r))
@@ -399,7 +399,7 @@ theorem seqWeights_data_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   · intro x _hx gamma hne
     exact seqAtom_mem_hat_raw hd hD P L pb r k gamma hne
 
-theorem seqWeights_data (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqWeights_data (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (i0 : Fin (pb.A r))
@@ -412,9 +412,9 @@ theorem seqWeights_data (hd : InjRadiusDecayInput (I := I) X) {D : Real}
           (seqAtom hd hD P L pb r k) i0)) := by
   exact seqWeights_data_raw hd hD P L pb r k i0 hcover
 
-theorem seqWeights_ev (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqWeights_ev (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance) (pb : hd.PackingBound D)
     (r : Real) (i0 : Fin (pb.A r)) :
     ∀ᶠ k in Filter.atTop,
       centerAverage.WeightDataOn (L.hatSourceBall hd P r k)
@@ -426,8 +426,8 @@ theorem seqWeights_ev (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   exact seqWeights_data hd hD P L pb r k i0 hcover
 
 
-private theorem packA_pos (hd : InjRadiusDecayInput (I := I) X) {D : Real}
-    (hre : hd.RealizesEdist) (pb : hd.PackingBound D) {r : Real} (hr : 0 ≤ r) :
+private theorem packA_pos (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
+    (hre : hd.RealizesDistance) (pb : hd.PackingBound D) {r : Real} (hr : 0 ≤ r) :
     0 < pb.A r := by
   let O := (X.obj 0).basepoint
   have hself : hd.dist 0 O O = 0 := by
@@ -446,19 +446,19 @@ private theorem packA_pos (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       exact False.elim (hxy (hx.trans hy.symm)))
   simpa only [Finset.card_singleton, Nat.succ_le_iff] using hcard
 
-noncomputable def baseIndex (hd : InjRadiusDecayInput (I := I) X) {D : Real}
-    (hre : hd.RealizesEdist) (pb : hd.PackingBound D) {r : Real} (hr : 0 ≤ r) :
+noncomputable def baseIndex (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
+    (hre : hd.RealizesDistance) (pb : hd.PackingBound D) {r : Real} (hr : 0 ≤ r) :
     Fin (pb.A r) :=
   ⟨0, packA_pos hd hre pb hr⟩
 
 
-@[simp] theorem baseIndex_val (hd : InjRadiusDecayInput (I := I) X) {D : Real}
-    (hre : hd.RealizesEdist) (pb : hd.PackingBound D) {r : Real} (hr : 0 ≤ r) :
+@[simp] theorem baseIndex_val (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
+    (hre : hd.RealizesDistance) (pb : hd.PackingBound D) {r : Real} (hr : 0 ≤ r) :
     (baseIndex hd hre pb hr : Nat) = 0 := rfl
 
-theorem seqAtom_base_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqAtom_base_raw (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance) (pb : hd.PackingBound D)
     {r : Real} (hr : 0 ≤ r) (k : Nat) :
     seqAtom hd hD P L pb r k (baseIndex hd hre pb hr)
         (X.obj (L.φ k)).basepoint = 1 := by
@@ -468,18 +468,18 @@ theorem seqAtom_base_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     dist_self]
   exact mul_pos (by norm_num) (hd.lambda_pos hD (L.rInf 0))
 
-theorem seqAtom_base (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqAtom_base (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance) (pb : hd.PackingBound D)
     {r : Real} (hr : 0 ≤ r) (k : Nat)
     :
     seqAtom hd hD P L pb r k (baseIndex hd hre pb hr)
         (X.obj (L.φ k)).basepoint = 1 :=
   seqAtom_base_raw hd hD P L hre pb hr k
 
-theorem seqWeights_base_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqWeights_base_raw (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance) (pb : hd.PackingBound D)
     {r : Real} (hr : 0 ≤ r) (k : Nat) :
     let i0 := baseIndex hd hre pb hr
     let num := cutRaw (seqAtom hd hD P L pb r k i0)
@@ -496,9 +496,9 @@ theorem seqWeights_base_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   rw [hdelta.1, hbase]
   exact one_ne_zero
 
-theorem seqWeights_base (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqWeights_base (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance) (pb : hd.PackingBound D)
     {r : Real} (hr : 0 ≤ r) (k : Nat)
     :
     let i0 := baseIndex hd hre pb hr
@@ -508,9 +508,9 @@ theorem seqWeights_base (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       ∀ j, j ≠ i0 → rawWeights num (X.obj (L.φ k)).basepoint j = 0 :=
   seqWeights_base_raw hd hD P L hre pb hr k
 
-theorem seqWeights_zero_ev (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem seqWeights_zero_ev (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance) (pb : hd.PackingBound D)
     {r : Real} (hr : 0 ≤ r) :
     ∀ᶠ k in Filter.atTop,
       centerAverage.WeightDataOn (L.hatSourceBall hd P r k)

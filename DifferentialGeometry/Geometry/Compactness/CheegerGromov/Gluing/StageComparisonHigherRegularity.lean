@@ -1185,9 +1185,9 @@ theorem stage_data_of
   exact ⟨hdata, hmetric, hjets, hbase⟩
 
 private noncomputable def baseScale
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1195,9 +1195,9 @@ private noncomputable def baseScale
   Classical.choose (d.exists_center_of_mass_scale hre hcomplete hconn)
 
 noncomputable def stageScale
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1206,9 +1206,9 @@ noncomputable def stageScale
 
 omit [CompleteSpace E] in
 theorem stageScale_pos
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1221,9 +1221,9 @@ theorem stageScale_pos
 
 omit [CompleteSpace E] in
 theorem stageScale_ratio
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
-    (hre : hd.RealizesEdist)
+    (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology

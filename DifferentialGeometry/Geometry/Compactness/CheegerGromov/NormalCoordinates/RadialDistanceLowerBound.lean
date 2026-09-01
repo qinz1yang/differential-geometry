@@ -198,7 +198,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem seqChartNorm_ge
     {Z : PointedRiemannianSeq.{u, uE, uH} (I := J')}
-    (hd : InjRadiusDecayInput (I := J') Z) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := J') Z) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := J') (Z.obj k)) (k : Nat) {α : Nat}
     (hα : α ≠ 0) {c : (Z.obj k).M}
     (hc : seqCenter (I := J') (X := Z) hd D P k α = some c)
@@ -425,7 +425,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem seqFramedChartNorm_ge
     {Z : PointedRiemannianSeq.{u, uE, uH} (I := J')}
-    (hd : InjRadiusDecayInput (I := J') Z) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := J') Z) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := J') (Z.obj k)) (k : Nat) {α : Nat}
     (hα : α ≠ 0) {c : (Z.obj k).M}
     (hc : seqCenter (I := J') (X := Z) hd D P k α = some c)

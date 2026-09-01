@@ -30,7 +30,7 @@ namespace BoundedGeometryNormalData
 
 theorem limit_accel_bounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
     (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)
@@ -164,7 +164,7 @@ theorem limit_accel_bounds
 
 theorem exists_limit_phase
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
     (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)
@@ -335,7 +335,7 @@ theorem exists_limit_phase
 
 theorem exists_limit_diag
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
     (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)
@@ -486,7 +486,7 @@ theorem exists_limit_diag
 
 private theorem exists_stage_flow
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -684,7 +684,7 @@ private theorem exists_stage_flow
 
 theorem exists_diagInv_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -858,7 +858,7 @@ theorem exists_diagInv_conv
 
 theorem exists_diagPair_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,

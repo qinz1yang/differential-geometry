@@ -31,7 +31,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 def HasSuppCmFin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -92,7 +92,7 @@ def HasSuppCmFin
 
 theorem HasSuppCmFin.subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real} {n : Nat}
     {hcomplete : SeqMetricComplete (I := I) X}
@@ -233,7 +233,7 @@ theorem HasSuppCmData.subseq
 
 def HasSourceCmFin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -290,7 +290,7 @@ def HasSourceCmFin
 
 theorem HasSuppCmFin.toSource
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real} {n : Nat}
     {hcomplete : SeqMetricComplete (I := I) X}

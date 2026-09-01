@@ -28,9 +28,9 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 def HasAtomWeightLim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (U : Set E)
     (aInf : Fin (pb.A r) → E → Real) : Prop :=
@@ -53,9 +53,9 @@ def HasAtomWeightLim
 
 theorem HasAtomWeightLim.of_atoms
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
@@ -86,9 +86,9 @@ theorem HasAtomWeightLim.of_atoms
 
 theorem HasAtomWeightLim.subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
@@ -111,9 +111,9 @@ theorem HasAtomWeightLim.subseq
 
 theorem HasAtomWeightLim.weight_ne_tail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
@@ -139,9 +139,9 @@ theorem HasAtomWeightLim.weight_ne_tail
 
 theorem HasAtomWeightLim.weight_data_of_innerCover
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
@@ -245,9 +245,9 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
 
 theorem HasAtomWeightLim.weight_data
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
@@ -290,9 +290,9 @@ theorem HasAtomWeightLim.weight_data
 
 theorem HasAtomWeightLim.binter_of_weight
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
@@ -345,9 +345,9 @@ theorem HasAtomWeightLim.binter_of_weight
 theorem exists_atom_lim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBounds (I := I) X)
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
     (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (rho : Real) (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
@@ -412,9 +412,9 @@ theorem exists_atom_fin
     {ι : Type uι} (s : Finset ι)
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBounds (I := I) X)
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
     (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (rho : Real) (beta : ι → ∀ k : Nat, (X.obj (L.φ k)).M)
@@ -583,9 +583,9 @@ theorem exists_atom_fin
 def HasAtomWeightLimOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (chart : NormalChartFamily (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (U : Set E)
     (aInf : Fin (pb.A r) → E → Real) : Prop :=
@@ -609,9 +609,9 @@ def HasAtomWeightLimOn
 theorem HasAtomWeightLimOn.of_raw
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (chart : NormalChartFamily (I := I) X)
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
@@ -643,9 +643,9 @@ theorem HasAtomWeightLimOn.of_raw
 theorem HasAtomWeightLimOn.of_atoms
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (chart : NormalChartFamily (I := I) X)
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
+    (L : NetLimitData hd D P) (hre : hd.RealizesDistance)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
@@ -677,9 +677,9 @@ theorem HasAtomWeightLimOn.of_atoms
 theorem HasAtomWeightLimOn.subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {chart : NormalChartFamily (I := I) X}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
@@ -704,9 +704,9 @@ theorem HasAtomWeightLimOn.subseq
 theorem HasAtomWeightLimOn.weight_ne_tail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {chart : NormalChartFamily (I := I) X}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
@@ -734,9 +734,9 @@ theorem HasAtomWeightLimOn.weight_ne_tail
 theorem HasAtomWeightLimOn.weight_data_raw
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {chart : NormalChartFamily (I := I) X}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
@@ -839,9 +839,9 @@ theorem HasAtomWeightLimOn.weight_data_raw
 theorem HasAtomWeightLimOn.weight_data_of_innerCover
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {chart : NormalChartFamily (I := I) X}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
@@ -865,9 +865,9 @@ theorem HasAtomWeightLimOn.weight_data_of_innerCover
 theorem HasAtomWeightLimOn.weight_data
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {chart : NormalChartFamily (I := I) X}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
@@ -912,9 +912,9 @@ theorem HasAtomWeightLimOn.weight_data
 theorem HasAtomWeightLimOn.binter_of_weight
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {chart : NormalChartFamily (I := I) X}
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
-    {L : NetLimitData hd D P} {hre : hd.RealizesEdist}
+    {L : NetLimitData hd D P} {hre : hd.RealizesDistance}
     {pb : hd.PackingBound D} {r : Real} {hr : 0 ≤ r}
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}

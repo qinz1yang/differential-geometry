@@ -24,20 +24,20 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-namespace InjRadiusDecayInput
+namespace InjectivityRadiusDecay
 
 def normalChartRatio {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) (r₀ : Real) : Real :=
+    (hd : InjectivityRadiusDecay (I := I) X) (r₀ : Real) : Real :=
   min (1 / 2) (r₀ / (2 * hd.mu 0))
 
 def normalChartRadius {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) (r₀ : Real)
+    (hd : InjectivityRadiusDecay (I := I) X) (r₀ : Real)
     (k : Nat) (x : (X.obj k).M) : Real :=
   hd.normalChartRatio r₀ * hd.mu (hd.dist k x (X.obj k).basepoint)
 
 omit [CompleteSpace E] in
 theorem normal_chart_ratio_pos {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {r₀ : Real} (hr₀ : 0 < r₀) :
+    (hd : InjectivityRadiusDecay (I := I) X) {r₀ : Real} (hr₀ : 0 < r₀) :
     0 < hd.normalChartRatio r₀ := by
   rw [normalChartRatio]
   exact lt_min (by norm_num)
@@ -45,14 +45,14 @@ theorem normal_chart_ratio_pos {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 omit [CompleteSpace E] in
 theorem normal_chart_ratio_lt_one {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) (r₀ : Real) :
+    (hd : InjectivityRadiusDecay (I := I) X) (r₀ : Real) :
     hd.normalChartRatio r₀ < 1 :=
   lt_of_le_of_lt (min_le_left _ _) (by norm_num)
 
 omit [CompleteSpace E] in
 theorem normal_chart_ratio_mul_mu_zero_le_half
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {r₀ : Real} (hr₀ : r₀ ≤ 1) :
+    (hd : InjectivityRadiusDecay (I := I) X) {r₀ : Real} (hr₀ : r₀ ≤ 1) :
     hd.normalChartRatio r₀ * hd.mu 0 ≤ 1 / 2 := by
   have hmu₀ : 0 < hd.mu 0 := hd.mu_pos 0
   calc
@@ -64,7 +64,7 @@ theorem normal_chart_ratio_mul_mu_zero_le_half
 
 omit [CompleteSpace E] in
 theorem normal_chart_radius_pos {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {r₀ : Real} (hr₀ : 0 < r₀)
+    (hd : InjectivityRadiusDecay (I := I) X) {r₀ : Real} (hr₀ : 0 < r₀)
     (k : Nat) (x : (X.obj k).M) :
     0 < hd.normalChartRadius r₀ k x :=
   mul_pos (hd.normal_chart_ratio_pos hr₀)
@@ -72,7 +72,7 @@ theorem normal_chart_radius_pos {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 omit [CompleteSpace E] in
 theorem normal_chart_radius_lt {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) (hreal : hd.RealizesEdist)
+    (hd : InjectivityRadiusDecay (I := I) X) (hreal : hd.RealizesDistance)
     {r₀ : Real} (hr₀ : 0 < r₀) (k : Nat) (x : (X.obj k).M) :
     hd.normalChartRadius r₀ k x < r₀ := by
   have hmu₀ : 0 < hd.mu 0 := hd.mu_pos 0
@@ -90,7 +90,7 @@ theorem normal_chart_radius_lt {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 omit [CompleteSpace E] in
 theorem normal_chart_radius_lt_decay_scale {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) (r₀ : Real)
+    (hd : InjectivityRadiusDecay (I := I) X) (r₀ : Real)
     (k : Nat) (x : (X.obj k).M) :
     hd.normalChartRadius r₀ k x <
       hd.mu (hd.dist k x (X.obj k).basepoint) := by
@@ -99,13 +99,13 @@ theorem normal_chart_radius_lt_decay_scale {X : PointedRiemannianSeq.{u, uE, uH}
     mul_lt_mul_of_pos_right (hd.normal_chart_ratio_lt_one r₀)
       (hd.mu_pos (hd.dist k x (X.obj k).basepoint))
 
-end InjRadiusDecayInput
+end InjectivityRadiusDecay
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 structure IntrinsicBallChartData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
-    (hd : InjRadiusDecayInput (I := I) X)
+    (hd : InjectivityRadiusDecay (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -194,7 +194,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def IntrinsicBallChartData.normalChart
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -271,7 +271,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [CompleteSpace E] in
 @[simp] theorem IntrinsicBallChartData.normal_chart_radius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -312,7 +312,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 structure NormalChartData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
-    (hd : InjRadiusDecayInput (I := I) X) where
+    (hd : InjectivityRadiusDecay (I := I) X) where
   ratio : Real
   ratio_pos : 0 < ratio
   ratio_mu0_le : ratio * hd.mu 0 ≤ 1 / 2
@@ -374,8 +374,8 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [CompleteSpace E] in
 theorem radius_le_global
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
-    (d : NormalChartData (I := I) X hd) (hreal : hd.RealizesEdist)
+    {hd : InjectivityRadiusDecay (I := I) X}
+    (d : NormalChartData (I := I) X hd) (hreal : hd.RealizesDistance)
     (k : Nat) (x : (X.obj k).M) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -398,7 +398,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [CompleteSpace E] in
 theorem metric_eq_intr
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : NormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (x : (X.obj k).M) :
@@ -489,7 +489,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [CompleteSpace E] in
 theorem readout_mem
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : NormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -599,7 +599,7 @@ end NormalChartData
 
 structure BoundedGeometryNormalData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
-    (hd : InjRadiusDecayInput (I := I) X)
+    (hd : InjectivityRadiusDecay (I := I) X)
     extends NormalChartData (I := I) X hd where
   metricC : Nat → Real
   metricC_nonneg : ∀ p : Nat, 0 ≤ metricC p
@@ -624,18 +624,18 @@ namespace BoundedGeometryNormalData
 
 def subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (f : Nat → Nat) :
     BoundedGeometryNormalData (I := I) (X.subseq f) (hd.subseq f) where
   ratio := d.ratio
   ratio_pos := d.ratio_pos
   ratio_mu0_le := by
-    simpa only [InjRadiusDecayInput.mu, InjRadiusDecayInput.subseq,
+    simpa only [InjectivityRadiusDecay.mu, InjectivityRadiusDecay.subseq,
       BaseInjBound.subseq] using d.ratio_mu0_le
   chart := fun k x => d.chart (f k) x
   radius_eq := by
     intro k x
-    simpa only [InjRadiusDecayInput.mu, InjRadiusDecayInput.subseq,
+    simpa only [InjectivityRadiusDecay.mu, InjectivityRadiusDecay.subseq,
       BaseInjBound.subseq, PointedRiemannianSeq.subseq] using d.radius_eq (f k) x
   hom_eq := by
     intro k x hcomplete
@@ -654,7 +654,7 @@ def subseq
 
 def chartMetric
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat) (x : (X.obj k).M) :
     E → E →L[Real] E →L[Real] Real :=
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -666,7 +666,7 @@ def chartMetric
 
 def metricBounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat) (x : (X.obj k).M) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -689,7 +689,7 @@ def metricBounds
 
 def chartMap
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
     (x : (X.obj k).M) : E → (X.obj k).M :=
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -701,7 +701,7 @@ def chartMap
 
 def chartTransition
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
     (x y : (X.obj k).M) : E → E :=
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -713,7 +713,7 @@ def chartTransition
 
 def chartOverlapOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
     (x y : (X.obj k).M) (U : Set E) : Prop :=
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -729,7 +729,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def IntrinsicBallChartData.toChartData
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -783,7 +783,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [CompleteSpace E] in
 theorem IntrinsicBallChartData.normal_equiv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -862,8 +862,8 @@ theorem exists_intrinsic_ball_chart_data
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
     (hgeom : SeqBoundedGeometry (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X)
-    (hreal : hd.RealizesEdist) :
+    (hd : InjectivityRadiusDecay (I := I) X)
+    (hreal : hd.RealizesDistance) :
     Nonempty (IntrinsicBallChartData (I := I) X hd hcomplete hconn) := by
   obtain ⟨r₀, hr₀, hcontrol⟩ :=
     exists_intr_control (I := I) X hcomplete hconn hgeom
@@ -925,14 +925,14 @@ theorem exists_intrinsic_ball_chart_data
     have hdecay :
         HasInjRadiusAt (I := I) (X.obj k) x
           (hd.mu (hd.dist k x (X.obj k).basepoint)) := by
-      simpa only [InjRadiusDecayInput.mu] using hd.decay k x
+      simpa only [InjectivityRadiusDecay.mu] using hd.decay k x
     have hinj :
         InjOn (intrinsicFramedExp (I := I) (X.obj k).metric hEnorm x)
           (Metric.ball (0 : E) r) := by
       exact hdecay.injOn_ball (hcomplete.complete k)
         (hd.normal_chart_radius_lt_decay_scale r₁ k x)
     exact Classical.choice <| by
-      simpa only [r, InjRadiusDecayInput.normalChartRadius] using
+      simpa only [r, InjectivityRadiusDecay.normalChartRadius] using
         exists_intrinsic_ball_chart (I := I) (X.obj k).metric hEnorm x hloc hinj
   · intro k x
     let : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -990,8 +990,8 @@ theorem exists_normal_chart_data
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
     (hgeom : SeqBoundedGeometry (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X)
-    (hreal : hd.RealizesEdist) :
+    (hd : InjectivityRadiusDecay (I := I) X)
+    (hreal : hd.RealizesDistance) :
     Nonempty (NormalChartData (I := I) X hd) := by
   obtain ⟨d⟩ :=
     exists_intrinsic_ball_chart_data (I := I) X hcomplete hconn hgeom hd hreal
@@ -1006,8 +1006,8 @@ theorem exists_bounded_geometry_normal_data
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
     (hgeom : SeqBoundedGeometry (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X)
-    (hreal : hd.RealizesEdist) :
+    (hd : InjectivityRadiusDecay (I := I) X)
+    (hreal : hd.RealizesDistance) :
     Nonempty (BoundedGeometryNormalData (I := I) X hd) := by
   obtain ⟨d⟩ :=
     exists_intrinsic_ball_chart_data (I := I) X hcomplete hconn hgeom hd hreal

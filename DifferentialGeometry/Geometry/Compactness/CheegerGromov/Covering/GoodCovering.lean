@@ -1,6 +1,5 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.Inputs
-
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.InjectivityRadiusDecay.Defs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.BallMultiplicityBound
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
 
 set_option autoImplicit false
@@ -22,15 +21,15 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-namespace InjRadiusDecayInput
+namespace InjectivityRadiusDecay
 
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-noncomputable def lambda (hd : InjRadiusDecayInput (I := I) X) (D r : Real) : Real :=
+noncomputable def lambda (hd : InjectivityRadiusDecay (I := I) X) (D r : Real) : Real :=
   hd.mu r / D
 
 
-theorem mu_hasInj_of_le (hd : InjRadiusDecayInput (I := I) X)
+theorem mu_hasInj_of_le (hd : InjectivityRadiusDecay (I := I) X)
     {k : Nat} {x : (X.obj k).M} {R : Real}
     (hx : hd.dist k x (X.obj k).basepoint <= R) :
     HasInjRadiusAt (I := I) (X.obj k) x (hd.mu R) := by
@@ -40,29 +39,29 @@ theorem mu_hasInj_of_le (hd : InjRadiusDecayInput (I := I) X)
   exact HasInjRadiusAt.mono (I := I) hdecay (hd.mu_pos R) (hd.mu_antitone hx)
 
 
-theorem lambda_pos (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+theorem lambda_pos (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (r : Real) : 0 < hd.lambda D r :=
   div_pos (hd.mu_pos r) hD
 
 
-theorem lambda_antitone (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D) :
+theorem lambda_antitone (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D) :
     Antitone (hd.lambda D) := by
   intro r₁ r₂ h
   exact mul_le_mul_of_nonneg_right (hd.mu_antitone h) (inv_nonneg.mpr hD.le)
 
 
-theorem lambda_le_mu (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 1 ≤ D)
+theorem lambda_le_mu (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 1 ≤ D)
     (r : Real) : hd.lambda D r ≤ hd.mu r :=
   div_le_self (hd.mu_nonneg r) hD
 
 
-theorem lambda_continuous (hd : InjRadiusDecayInput (I := I) X) (D : Real) :
+theorem lambda_continuous (hd : InjectivityRadiusDecay (I := I) X) (D : Real) :
     Continuous (hd.lambda D) := by
-  unfold InjRadiusDecayInput.lambda InjRadiusDecayInput.mu
+  unfold InjectivityRadiusDecay.lambda InjectivityRadiusDecay.mu
   fun_prop
 
 
-theorem lambda_le_one_at_zero (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem lambda_le_one_at_zero (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : hd.a * (min hd.baseInj.ρ 1) ^ (Module.finrank Real E) ≤ D) :
     hd.lambda D 0 ≤ 1 := by
   have hpos : 0 < hd.a * (min hd.baseInj.ρ 1) ^ (Module.finrank Real E) :=
@@ -73,7 +72,7 @@ theorem lambda_le_one_at_zero (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   exact (div_le_one hDpos).mpr hD
 
 
-theorem lambda_hasInjRadiusAt (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem lambda_hasInjRadiusAt (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 1 ≤ D) (k : Nat) (x : (X.obj k).M) :
     HasInjRadiusAt (I := I) (X.obj k) x
       (hd.lambda D (hd.dist k x (X.obj k).basepoint)) := by
@@ -84,7 +83,7 @@ theorem lambda_hasInjRadiusAt (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   exact le_trans (ENNReal.ofReal_le_ofReal (hd.lambda_le_mu hD _))
     (hdecay.2 hcomplete)
 
-end InjRadiusDecayInput
+end InjectivityRadiusDecay
 
 section Packing
 
@@ -120,17 +119,17 @@ theorem exists_not_disjoint_of_maximal_pairwiseDisjoint (f : α → Set β) {S :
 
 end Packing
 
-namespace InjRadiusDecayInput
+namespace InjectivityRadiusDecay
 
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-def lambdaBall (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat)
+def lambdaBall (hd : InjectivityRadiusDecay (I := I) X) (D : Real) (k : Nat)
     (x : (X.obj k).M) : Set ((X.obj k).M) :=
   letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   Metric.eball x (ENNReal.ofReal (hd.lambda D (hd.dist k x (X.obj k).basepoint)))
 
 
-theorem exists_lambdaNet (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat) :
+theorem exists_lambdaNet (hd : InjectivityRadiusDecay (I := I) X) (D : Real) (k : Nat) :
     ∃ S : Set ((X.obj k).M),
       S.PairwiseDisjoint (hd.lambdaBall D k) ∧
       ∀ T : Set ((X.obj k).M),
@@ -138,7 +137,7 @@ theorem exists_lambdaNet (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : N
   exists_maximal_pairwiseDisjoint (hd.lambdaBall D k)
 
 
-theorem lambdaNet_cover (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat)
+theorem lambdaNet_cover (hd : InjectivityRadiusDecay (I := I) X) (D : Real) (k : Nat)
     (hD : 0 < D) {S : Set ((X.obj k).M)}
     (hS : S.PairwiseDisjoint (hd.lambdaBall D k))
     (hmax : ∀ T : Set ((X.obj k).M),
@@ -165,7 +164,7 @@ theorem lambdaNet_cover (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Na
       _ < _ := by rw [edist_comm z w]; exact ENNReal.add_lt_add e1 e2
 
 
-theorem lambdaNet_separated (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat)
+theorem lambdaNet_separated (hd : InjectivityRadiusDecay (I := I) X) (D : Real) (k : Nat)
     (hD : 0 < D) {S : Set ((X.obj k).M)}
     (hS : S.PairwiseDisjoint (hd.lambdaBall D k))
     {x y : (X.obj k).M} (hx : x ∈ S) (hy : y ∈ S) (hxy : x ≠ y) :
@@ -181,8 +180,8 @@ theorem lambdaNet_separated (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k 
     lt_of_eq_of_lt (edist_self y) (ENNReal.ofReal_pos.mpr (hd.lambda_pos hD _))
   exact hdisj hyx hyy
 
-theorem RealizesEdist.dist_comm {hd : InjRadiusDecayInput (I := I) X}
-    (hre : hd.RealizesEdist) (k : Nat) (x y : (X.obj k).M) :
+theorem RealizesDistance.dist_comm {hd : InjectivityRadiusDecay (I := I) X}
+    (hre : hd.RealizesDistance) (k : Nat) (x y : (X.obj k).M) :
     hd.dist k x y = hd.dist k y x := by
   let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   have : ENNReal.ofReal (hd.dist k x y) = ENNReal.ofReal (hd.dist k y x) := by
@@ -191,8 +190,8 @@ theorem RealizesEdist.dist_comm {hd : InjRadiusDecayInput (I := I) X}
     (hre.dist_nonneg k y x)).mp this
 
 
-theorem RealizesEdist.dist_triangle {hd : InjRadiusDecayInput (I := I) X}
-    (hre : hd.RealizesEdist) (k : Nat) (x y z : (X.obj k).M) :
+theorem RealizesDistance.dist_triangle {hd : InjectivityRadiusDecay (I := I) X}
+    (hre : hd.RealizesDistance) (k : Nat) (x y z : (X.obj k).M) :
     hd.dist k x z ≤ hd.dist k x y + hd.dist k y z := by
   let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   have h1 : ENNReal.ofReal (hd.dist k x z) ≤
@@ -204,22 +203,22 @@ theorem RealizesEdist.dist_triangle {hd : InjRadiusDecayInput (I := I) X}
     (add_nonneg (hre.dist_nonneg k x y) (hre.dist_nonneg k y z))).mp h1
 
 
-theorem RealizesEdist.distO_sub_le {hd : InjRadiusDecayInput (I := I) X}
-    (hre : hd.RealizesEdist) (k : Nat) (x y : (X.obj k).M) :
+theorem RealizesDistance.distO_sub_le {hd : InjectivityRadiusDecay (I := I) X}
+    (hre : hd.RealizesDistance) (k : Nat) (x y : (X.obj k).M) :
     hd.dist k y (X.obj k).basepoint - hd.dist k x (X.obj k).basepoint ≤ hd.dist k x y := by
   have h := hre.dist_triangle k y x (X.obj k).basepoint
   have hc := hre.dist_comm k y x
   linarith
 
 
-theorem lambda_eq (hd : InjRadiusDecayInput (I := I) X) (D r : Real) :
+theorem lambda_eq (hd : InjectivityRadiusDecay (I := I) X) (D r : Real) :
     hd.lambda D r =
       (hd.a * (min hd.baseInj.ρ 1) ^ (Module.finrank Real E) / D) * Real.exp (-hd.C * r) := by
-  unfold InjRadiusDecayInput.lambda InjRadiusDecayInput.mu
+  unfold InjectivityRadiusDecay.lambda InjectivityRadiusDecay.mu
   ring
 
 
-theorem lambda_exp_le (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+theorem lambda_exp_le (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     {s t d : Real} (h : s - t ≤ d) :
     hd.lambda D t ≤ Real.exp (hd.C * d) * hd.lambda D s := by
   rw [hd.lambda_eq D, hd.lambda_eq D]
@@ -236,7 +235,7 @@ theorem lambda_exp_le (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 <
   nlinarith [mul_le_mul_of_nonneg_left h hd.C_nonneg]
 
 
-theorem lambda_ratio_le (hd : InjRadiusDecayInput (I := I) X) (hre : hd.RealizesEdist)
+theorem lambda_ratio_le (hd : InjectivityRadiusDecay (I := I) X) (hre : hd.RealizesDistance)
     (D : Real) (k : Nat) (hD : 0 < D) (x y : (X.obj k).M) :
     hd.lambda D (hd.dist k x (X.obj k).basepoint) ≤
       Real.exp (hd.C * hd.dist k x y) *
@@ -255,8 +254,8 @@ theorem lambda_ratio_le (hd : InjRadiusDecayInput (I := I) X) (hre : hd.Realizes
   nlinarith [mul_le_mul_of_nonneg_left (hre.distO_sub_le k x y) hd.C_nonneg]
 
 
-theorem lambdaNet_dist_separated (hd : InjRadiusDecayInput (I := I) X) (D : Real)
-    (k : Nat) (hD : 0 < D) (hre : hd.RealizesEdist) {S : Set ((X.obj k).M)}
+theorem lambdaNet_dist_separated (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
+    (k : Nat) (hD : 0 < D) (hre : hd.RealizesDistance) {S : Set ((X.obj k).M)}
     (hS : S.PairwiseDisjoint (hd.lambdaBall D k))
     {x y : (X.obj k).M} (hx : x ∈ S) (hy : y ∈ S) (hxy : x ≠ y) :
     hd.lambda D (hd.dist k x (X.obj k).basepoint) ≤ hd.dist k x y := by
@@ -265,15 +264,15 @@ theorem lambdaNet_dist_separated (hd : InjRadiusDecayInput (I := I) X) (D : Real
   exact (ENNReal.ofReal_le_ofReal_iff (hre.dist_nonneg k x y)).mp
     (le_of_le_of_eq hsep (hre.edist_eq k x y))
 
-theorem net_multiplicity (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat)
-    (hD : 0 < D) (hre : hd.RealizesEdist)
-    (vc : VolumeComparisonInput (I := I) X) (hvc : vc.dist = hd.dist) (R : Real)
+theorem net_multiplicity (hd : InjectivityRadiusDecay (I := I) X) (D : Real) (k : Nat)
+    (hD : 0 < D) (hre : hd.RealizesDistance)
+    (vc : BallMultiplicityBound (I := I) X) (hvc : vc.dist = hd.dist) (R : Real)
     (hRcap : 4 * hd.lambda D R ≤ vc.r0)
     {S : Set ((X.obj k).M)} (hS : S.PairwiseDisjoint (hd.lambdaBall D k))
     (hSR : ∀ x ∈ S, hd.dist k x (X.obj k).basepoint ≤ R)
     (z : (X.obj k).M) (J : Finset ((X.obj k).M)) (hJS : ↑J ⊆ S)
     (hJz : ∀ x ∈ J, hd.dist k x z ≤ 4 * hd.lambda D R) :
-    J.card ≤ vc.Imult 4 := by
+    J.card ≤ vc.multiplicity 4 := by
   classical
   have hr : 0 < hd.lambda D R := hd.lambda_pos hD R
   have hsep : ∀ i ∈ J, ∀ j ∈ J, i ≠ j → hd.lambda D R ≤ hd.dist k i j := by
@@ -285,7 +284,7 @@ theorem net_multiplicity (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : N
           hd.lambda_antitone hD (hSR i hiS)
       _ ≤ hd.dist k i j :=
           hd.lambdaNet_dist_separated D k hD hre hS hiS hjS hij
-  have hmul := vc.ballMult 4 k
+  have hmul := vc.card_le 4 k
     (centers := fun i : {x // x ∈ J} => (i : (X.obj k).M)) (r := hd.lambda D R) hr hRcap
     (fun i j hij => by
       rw [hvc]; exact hsep i i.2 j j.2 (fun h => hij (Subtype.ext h)))
@@ -293,7 +292,7 @@ theorem net_multiplicity (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : N
     (fun j _ => by rw [hvc]; exact hJz j j.2)
   rwa [Finset.card_univ, Fintype.card_coe] at hmul
 
-structure PackingBound (hd : InjRadiusDecayInput (I := I) X) (D : Real) where
+structure PackingBound (hd : InjectivityRadiusDecay (I := I) X) (D : Real) where
   A : Real → Nat
   card_le : ∀ (k : Nat) (r : Real) (J : Finset ((X.obj k).M)),
     (∀ x ∈ J, hd.dist k x (X.obj k).basepoint ≤ r) →
@@ -302,7 +301,7 @@ structure PackingBound (hd : InjRadiusDecayInput (I := I) X) (D : Real) where
 
 namespace PackingBound
 
-def subseq {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+def subseq {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     (pb : hd.PackingBound D) (f : Nat -> Nat) :
     (hd.subseq f).PackingBound D where
   A := pb.A
@@ -310,15 +309,15 @@ def subseq {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     intro k r J hJr hsep
     refine pb.card_le (f k) r J ?_ ?_
     · intro x hx
-      simpa [InjRadiusDecayInput.subseq, PointedRiemannianSeq.subseq] using hJr x hx
+      simpa [InjectivityRadiusDecay.subseq, PointedRiemannianSeq.subseq] using hJr x hx
     · intro x hx y hy hxy
-      simpa only [InjRadiusDecayInput.lambda, InjRadiusDecayInput.mu,
-        InjRadiusDecayInput.subseq, BaseInjBound.subseq, PointedRiemannianSeq.subseq] using
+      simpa only [InjectivityRadiusDecay.lambda, InjectivityRadiusDecay.mu,
+        InjectivityRadiusDecay.subseq, BaseInjBound.subseq, PointedRiemannianSeq.subseq] using
         hsep x hx y hy hxy
 
 end PackingBound
 
-theorem net_count_le (hd : InjRadiusDecayInput (I := I) X) (hre : hd.RealizesEdist)
+theorem net_count_le (hd : InjectivityRadiusDecay (I := I) X) (hre : hd.RealizesDistance)
     (D : Real) (k : Nat) (hD : 0 < D) (pb : hd.PackingBound D)
     {S : Set ((X.obj k).M)} (hS : S.PairwiseDisjoint (hd.lambdaBall D k))
     (r : Real) (J : Finset ((X.obj k).M)) (hJS : ↑J ⊆ S)
@@ -332,7 +331,7 @@ theorem net_count_le (hd : InjRadiusDecayInput (I := I) X) (hre : hd.RealizesEdi
         hd.lambdaNet_dist_separated D k hD hre hS (hJS (Finset.mem_coe.mpr hx))
           (hJS (Finset.mem_coe.mpr hy)) hxy
 
-theorem net_finite_in_ball (hd : InjRadiusDecayInput (I := I) X) (hre : hd.RealizesEdist)
+theorem net_finite_in_ball (hd : InjectivityRadiusDecay (I := I) X) (hre : hd.RealizesDistance)
     (D : Real) (k : Nat) (hD : 0 < D) (pb : hd.PackingBound D)
     {S : Set ((X.obj k).M)} (hS : S.PairwiseDisjoint (hd.lambdaBall D k)) (r : Real) :
     (S ∩ {x | hd.dist k x (X.obj k).basepoint ≤ r}).Finite := by
@@ -344,7 +343,7 @@ theorem net_finite_in_ball (hd : InjRadiusDecayInput (I := I) X) (hre : hd.Reali
     (fun x hx => (hts (Finset.mem_coe.mpr hx)).2)
   omega
 
-theorem exists_finite_cover (hd : InjRadiusDecayInput (I := I) X) (hre : hd.RealizesEdist)
+theorem exists_finite_cover (hd : InjectivityRadiusDecay (I := I) X) (hre : hd.RealizesDistance)
     (D : Real) (k : Nat) (hD : 0 < D) (pb : hd.PackingBound D)
     {S : Set ((X.obj k).M)} (hSdisj : S.PairwiseDisjoint (hd.lambdaBall D k))
     (hSmax : ∀ T : Set ((X.obj k).M),
@@ -377,7 +376,7 @@ theorem exists_finite_cover (hd : InjRadiusDecayInput (I := I) X) (hre : hd.Real
   simp only [Set.mem_ofPred_eq]
   linarith
 
-structure GoodCovering (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat)
+structure GoodCovering (hd : InjectivityRadiusDecay (I := I) X) (D : Real) (k : Nat)
     (hD : 0 < D) where
   centers : Set ((X.obj k).M)
   disjoint : centers.PairwiseDisjoint (hd.lambdaBall D k)
@@ -392,7 +391,7 @@ structure GoodCovering (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat
      ENNReal.ofReal (hd.lambda D (hd.dist k x (X.obj k).basepoint)) ≤ edist x y)
 
 
-theorem exists_goodCovering (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat)
+theorem exists_goodCovering (hd : InjectivityRadiusDecay (I := I) X) (D : Real) (k : Nat)
     (hD : 0 < D) : Nonempty (hd.GoodCovering D k hD) := by
   obtain ⟨S, hSdisj, hSmax⟩ := hd.exists_lambdaNet D k
   exact ⟨{ centers := S
@@ -401,13 +400,13 @@ theorem exists_goodCovering (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k 
            cover := fun z => hd.lambdaNet_cover D k hD hSdisj hSmax z
            separated := fun hx hy hxy => hd.lambdaNet_separated D k hD hSdisj hx hy hxy }⟩
 
-def lambdaBallC (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat) (c : Real)
+def lambdaBallC (hd : InjectivityRadiusDecay (I := I) X) (D : Real) (k : Nat) (c : Real)
     (x : (X.obj k).M) : Set ((X.obj k).M) :=
   letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
   Metric.eball x (ENNReal.ofReal (c * hd.lambda D (hd.dist k x (X.obj k).basepoint)))
 
 
-theorem lambdaBallC_subset (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k : Nat)
+theorem lambdaBallC_subset (hd : InjectivityRadiusDecay (I := I) X) (D : Real) (k : Nat)
     (hD : 0 < D) {c : Real} (hc : c ≤ 1) (x : (X.obj k).M) :
     hd.lambdaBallC D k c x ⊆ hd.lambdaBall D k x := by
   let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace
@@ -416,14 +415,14 @@ theorem lambdaBallC_subset (hd : InjRadiusDecayInput (I := I) X) (D : Real) (k :
     nlinarith [hd.lambda_pos hD (hd.dist k x (X.obj k).basepoint)]))
 
 
-theorem lambdaBallC_pairwiseDisjoint (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+theorem lambdaBallC_pairwiseDisjoint (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (k : Nat) (hD : 0 < D) {c : Real} (hc : c ≤ 1) {S : Set ((X.obj k).M)}
     (hS : S.PairwiseDisjoint (hd.lambdaBall D k)) :
     S.PairwiseDisjoint (hd.lambdaBallC D k c) :=
   hS.mono (fun x => hd.lambdaBallC_subset D k hD hc x)
 
 
-theorem mem_lambdaBallC_dist (hd : InjRadiusDecayInput (I := I) X) (hre : hd.RealizesEdist)
+theorem mem_lambdaBallC_dist (hd : InjectivityRadiusDecay (I := I) X) (hre : hd.RealizesDistance)
     (D : Real) (k : Nat) (c : Real) (x z : (X.obj k).M) :
     z ∈ hd.lambdaBallC D k c x ↔
       hd.dist k z x < c * hd.lambda D (hd.dist k x (X.obj k).basepoint) := by
@@ -433,8 +432,8 @@ theorem mem_lambdaBallC_dist (hd : InjRadiusDecayInput (I := I) X) (hre : hd.Rea
   exact ENNReal.ofReal_lt_ofReal_iff_of_nonneg (hre.dist_nonneg k z x)
 
 
-theorem lambdaBallC_subset_of_inter (hd : InjRadiusDecayInput (I := I) X)
-    (hre : hd.RealizesEdist) (D : Real) (k : Nat) {c₁ c₂ : Real} (x y : (X.obj k).M)
+theorem lambdaBallC_subset_of_inter (hd : InjectivityRadiusDecay (I := I) X)
+    (hre : hd.RealizesDistance) (D : Real) (k : Nat) {c₁ c₂ : Real} (x y : (X.obj k).M)
     (hinter : (hd.lambdaBallC D k c₁ x ∩ hd.lambdaBallC D k c₁ y).Nonempty)
     (hc : 2 * (c₁ * hd.lambda D (hd.dist k x (X.obj k).basepoint)) +
           c₁ * hd.lambda D (hd.dist k y (X.obj k).basepoint)
@@ -453,7 +452,7 @@ theorem lambdaBallC_subset_of_inter (hd : InjRadiusDecayInput (I := I) X)
   have ht := hre.dist_triangle k z x y
   linarith
 
-end InjRadiusDecayInput
+end InjectivityRadiusDecay
 
 end HCGCompactness
 end DifferentialGeometry

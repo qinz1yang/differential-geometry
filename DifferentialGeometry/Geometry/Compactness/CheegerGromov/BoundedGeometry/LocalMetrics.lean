@@ -27,7 +27,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 omit [CompleteSpace E] in
 theorem exists_chart_metric_limit_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
     (c : ∀ k : Nat, (X.obj k).M)
     {U : Set E} (hU : IsOpen U)
@@ -86,7 +86,7 @@ omit [CompleteSpace E] in
 theorem exists_finite_chart_metric_limit_subsequence
     {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {hd : InjRadiusDecayInput (I := I) X}
+    {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
     (c : ι → ∀ k : Nat, (X.obj k).M)
     {U : Set E} (hU : IsOpen U)

@@ -105,7 +105,7 @@ noncomputable def gluingAtomChart
 noncomputable def seqAtomOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (chart : NormalChartFamily (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
@@ -121,7 +121,7 @@ noncomputable def seqAtomOn
 
 noncomputable def seqAtomChart
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
@@ -139,7 +139,7 @@ omit [CompleteSpace E] in
 @[simp] theorem seqAtomOn_subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (chart : NormalChartFamily (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
@@ -153,7 +153,7 @@ omit [CompleteSpace E] in
 
 @[simp] theorem seqAtomChart_subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
@@ -167,7 +167,7 @@ omit [CompleteSpace E] in
 theorem seqAtomOn_smooth
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (chart : NormalChartFamily (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
@@ -197,7 +197,7 @@ theorem seqAtomOn_smooth
 
 theorem seqAtomChart_smooth
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
@@ -228,7 +228,7 @@ theorem seqAtomChart_smooth
 
 theorem seqAtom_live_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
@@ -267,7 +267,7 @@ theorem seqAtom_live_conv
 
 theorem seqAtom_dead_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
@@ -285,7 +285,7 @@ theorem seqAtom_dead_conv
 
 theorem atom_disjoint_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (alpha gamma : Fin (pb.A r))
@@ -325,7 +325,7 @@ theorem atom_disjoint_conv
 
 theorem seqAtoms_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
@@ -472,7 +472,7 @@ theorem existsMetric0Univ {ι : Type*} [Fintype ι]
 theorem existsLiveMetric0
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (input : NormalCoordMetricBounds (I := I) X)
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) :
     exists (psi : Nat -> Nat)
@@ -495,7 +495,7 @@ theorem existsLiveMetric0
 theorem liveMetric0_equiv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (input : NormalCoordMetricBounds (I := I) X)
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     {psi : Nat → Nat}

@@ -29,7 +29,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 theorem exists_joint_normal_metric_transition_limit
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBounds (I := I) X)
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r rho : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)

@@ -1,6 +1,4 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius
-
-
 import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicBallVolume
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentBallEuclideanUpper
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentCount
@@ -141,16 +139,16 @@ private lemma decay_ratio_eq
       (lower * tau / (2 * shift * spheres * upper)) * b * e := by
   field_simp
 
-noncomputable def riemSeqDist
+noncomputable def riemannianSequenceDistance
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) :
-    PointedSeqDistance (I := I) X :=
+    PointedRiemannianSeq.Distance (I := I) X :=
   fun k x y =>
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
     (edist x y).toReal
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-def injDecayOfBg
+def injectivityRadiusDecayOfBoundedGeometry
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -158,7 +156,7 @@ def injDecayOfBg
       ConnectedSpace (X.obj k).M)
     (bg : SeqBoundedGeometry (I := I) X)
     (base : BaseInjBound (I := I) X) :
-    InjRadiusDecayInput (I := I) X := by
+    InjectivityRadiusDecay (I := I) X := by
   classical
   letI : MeasurableSpace E := borel E
   letI : BorelSpace E := ⟨rfl⟩
@@ -260,7 +258,7 @@ def injDecayOfBg
       (div_nonneg (Nat.cast_nonneg _) hs.le)
   refine
     { baseInj := base
-      dist := riemSeqDist (I := I) X
+      dist := riemannianSequenceDistance (I := I) X
       a := a
       C := C
       a_pos := ha
@@ -270,7 +268,7 @@ def injDecayOfBg
   let Y := X.obj k
   have hprofile :
       0 < a * b ^ n *
-        Real.exp (-C * riemSeqDist (I := I) X k x Y.basepoint) :=
+        Real.exp (-C * riemannianSequenceDistance (I := I) X k x Y.basepoint) :=
     mul_pos (mul_pos ha (pow_pos hb _)) (Real.exp_pos _)
   refine ⟨by simpa only [n, b] using hprofile, ?_⟩
   intro hcomplete'
@@ -434,7 +432,7 @@ def injDecayOfBg
         rw [modelHaar_ball (E := E) hs]
       _ ≤ V0 := hV0raw
   let D : Real :=
-    riemSeqDist (I := I) X k x Y.basepoint
+    riemannianSequenceDistance (I := I) X k x Y.basepoint
   have hD : 0 ≤ D := by
     exact ENNReal.toReal_nonneg
   have hedistTop :
@@ -445,7 +443,7 @@ def injDecayOfBg
       riemannianEDist I Y.basepoint x =
         ENNReal.ofReal D := by
     rw [← IsRiemannianManifold.out (I := I)]
-    dsimp only [D, riemSeqDist]
+    dsimp only [D, riemannianSequenceDistance]
     rw [edist_comm]
     exact (ENNReal.ofReal_toReal hedistTop).symm
   let Vx : ENNReal :=
@@ -757,7 +755,7 @@ def injDecayOfBg
   simpa only [n, b, C, D, PointedRiemannianManifold.intrInjRadius] using
     hfinal
 
-@[simp] theorem injDecay_dist
+@[simp] theorem injectivity_radius_decay_of_bounded_geometry_dist
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -765,13 +763,13 @@ def injDecayOfBg
       ConnectedSpace (X.obj k).M)
     (bg : SeqBoundedGeometry (I := I) X)
     (base : BaseInjBound (I := I) X) :
-    (injDecayOfBg (I := I) X hcomplete hconn bg base).dist =
-      riemSeqDist (I := I) X := by
+    (injectivityRadiusDecayOfBoundedGeometry (I := I) X hcomplete hconn bg base).dist =
+      riemannianSequenceDistance (I := I) X := by
   rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem injDecay_realizes
+theorem injectivity_radius_decay_realizes_distance
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -779,13 +777,13 @@ theorem injDecay_realizes
       ConnectedSpace (X.obj k).M)
     (bg : SeqBoundedGeometry (I := I) X)
     (base : BaseInjBound (I := I) X) :
-    (injDecayOfBg (I := I) X hcomplete hconn bg base).RealizesEdist := by
+    (injectivityRadiusDecayOfBoundedGeometry (I := I) X hcomplete hconn bg base).RealizesDistance := by
   refine ⟨?_, ?_⟩
   · intro k x y
-    rw [injDecay_dist]
+    rw [injectivity_radius_decay_of_bounded_geometry_dist]
     exact ENNReal.toReal_nonneg
   · intro k x y
-    rw [injDecay_dist]
+    rw [injectivity_radius_decay_of_bounded_geometry_dist]
     let : TopologicalSpace (X.obj k).M := (X.obj k).topology
     let : ChartedSpace H (X.obj k).M := (X.obj k).charted
     let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
@@ -807,13 +805,13 @@ theorem injDecay_realizes
     have : IsRiemannianManifold I (X.obj k).M :=
       ⟨fun _ _ => rfl⟩
     let : ConnectedSpace (X.obj k).M := hconn k
-    dsimp only [riemSeqDist]
+    dsimp only [riemannianSequenceDistance]
     exact
       (ENNReal.ofReal_toReal (by
         rw [IsRiemannianManifold.out (I := I)]
         exact riemannianEDist_ne_top (I := I) x y)).symm
 
-theorem exists_injDecay
+theorem exists_injectivity_radius_decay
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -821,9 +819,9 @@ theorem exists_injDecay
       ConnectedSpace (X.obj k).M)
     (bg : SeqBoundedGeometry (I := I) X)
     (base : BaseInjBound (I := I) X) :
-    ∃ hd : InjRadiusDecayInput (I := I) X, hd.RealizesEdist :=
-  ⟨injDecayOfBg (I := I) X hcomplete hconn bg base,
-    injDecay_realizes (I := I) X hcomplete hconn bg base⟩
+    ∃ hd : InjectivityRadiusDecay (I := I) X, hd.RealizesDistance :=
+  ⟨injectivityRadiusDecayOfBoundedGeometry (I := I) X hcomplete hconn bg base,
+    injectivity_radius_decay_realizes_distance (I := I) X hcomplete hconn bg base⟩
 
 end HCGCompactness
 end DifferentialGeometry

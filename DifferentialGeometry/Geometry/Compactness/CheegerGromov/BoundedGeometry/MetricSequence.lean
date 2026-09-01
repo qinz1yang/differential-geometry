@@ -235,7 +235,7 @@ theorem exists_stage_pair
           (Xphi.obj n).basepoint ≤ Ralpha := by
       intro n
       simpa only [Ralpha, index, Xphi, c, Lphi,
-        InjRadiusDecayInput.subseq, PointedRiemannianSeq.subseq] using
+        InjectivityRadiusDecay.subseq, PointedRiemannianSeq.subseq] using
         hcenter n alpha
     obtain ⟨_hC1, hgInf, hconv, hequiv⟩ := hmetric alpha
     rw [hV alpha] at hgInf hconv hequiv

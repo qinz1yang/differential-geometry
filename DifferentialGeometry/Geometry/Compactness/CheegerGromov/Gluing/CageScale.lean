@@ -29,7 +29,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 theorem aliveSlots_tail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) :
     ∀ᶠ k in Filter.atTop, ∀ gamma : Fin (pb.A r),
@@ -40,7 +40,7 @@ theorem aliveSlots_tail
 
 theorem hat_mem_live
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     {k : Nat} {gamma : Fin (pb.A r)} {x : (X.obj (L.φ k)).M}
@@ -55,7 +55,7 @@ theorem hat_mem_live
 
 theorem hat_dist_centerD
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     {k : Nat} {gamma : Fin (pb.A r)} {x : (X.obj (L.φ k)).M}
@@ -71,9 +71,9 @@ theorem hat_dist_centerD
 
 theorem seqCenterD_dist_le
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (gamma : Nat) (hgamma : L.alive gamma = true) :
     ∀ᶠ k in Filter.atTop,
       hd.dist (L.φ k) (seqCenterD (I := I) hd P L k gamma)
@@ -94,9 +94,9 @@ theorem seqCenterD_dist_le
 
 theorem seqCenterD_rInf_lt
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P) (gamma : Nat) :
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P) (gamma : Nat) :
     ∀ᶠ k in Filter.atTop,
       hd.dist (L.φ k) (seqCenterD (I := I) hd P L k gamma)
           (X.obj (L.φ k)).basepoint < L.rInf gamma + 1 := by
@@ -112,9 +112,9 @@ theorem seqCenterD_rInf_lt
 
 theorem liveCenters_rInf
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) :
     ∀ᶠ k in Filter.atTop, ∀ gamma : LiveSlot (I := I) L pb r,
       hd.dist (L.φ k) (seqCenterD (I := I) hd P L k (gamma.1 : Nat))
@@ -125,7 +125,7 @@ theorem liveCenters_rInf
 
 theorem lamInf_lt_halfMin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D aMin : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real} (hD : 0 < D)
     (hphys : 8 * Real.exp hd.C < aMin * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (gamma : Nat) :
@@ -137,7 +137,7 @@ theorem lamInf_lt_halfMin
       (s := L.rInf gamma + 1) (t := L.rInf gamma) (d := 1) (by linarith)
   have hhat : (8 * Real.exp hd.C) * hd.lambda D (L.rInf gamma + 1) <
       aMin * hd.mu (L.rInf gamma + 1) := by
-    rw [InjRadiusDecayInput.lambda]
+    rw [InjectivityRadiusDecay.lambda]
     calc
       (8 * Real.exp hd.C) * (hd.mu (L.rInf gamma + 1) / D) =
           ((8 * Real.exp hd.C) / D) * hd.mu (L.rInf gamma + 1) := by ring
@@ -155,7 +155,7 @@ theorem lamInf_lt_halfMin
 
 theorem exists_cage_rad
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D aMin : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real} (hD : 0 < D)
     (haMin : 0 < aMin)
     (hphys : 8 * Real.exp hd.C < aMin * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -186,7 +186,7 @@ theorem exists_cage_rad
 
 theorem exists_rad_cage
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D aMin : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real} (hD : 0 < D)
     (haMin : 0 < aMin) (hphys : 8 * Real.exp hd.C < aMin * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -225,9 +225,9 @@ theorem exists_rad_cage
 
 theorem liveCenters_dist_le
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) :
     ∀ᶠ k in Filter.atTop, ∀ gamma : LiveSlot (I := I) L pb r,
       hd.dist (L.φ k) (seqCenterD (I := I) hd P L k (gamma.1 : Nat))
@@ -238,9 +238,9 @@ theorem liveCenters_dist_le
 
 theorem liveCenters_cage
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
+    (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
+    (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) :
     ∀ᶠ k in Filter.atTop, ∀ gamma : LiveSlot (I := I) L pb r,
       hd.dist (L.φ k) (seqCenterD (I := I) hd P L k (gamma.1 : Nat))

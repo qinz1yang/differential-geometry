@@ -791,7 +791,7 @@ variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u', uE', uH'} (I := I)}
 
-noncomputable def orderedNet (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+noncomputable def orderedNet (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (k α : Nat) :
     List ((X.obj k).M) :=
   letI : MetricSpace (X.obj k).M := (P k).ms
@@ -799,8 +799,8 @@ noncomputable def orderedNet (hd : InjRadiusDecayInput (I := I) X) (D : Real)
   OrderedNet.netList (X.obj k).basepoint (hd.lambda D) (hd.lambda_continuous D) α
 
 omit [CompleteSpace E] in
-theorem ProperMetricOn.dist_eq (hd : InjRadiusDecayInput (I := I) X)
-    (hre : hd.RealizesEdist) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
+theorem ProperMetricOn.dist_eq (hd : InjectivityRadiusDecay (I := I) X)
+    (hre : hd.RealizesDistance) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (k : Nat) (x y : (X.obj k).M) :
     (letI : MetricSpace (X.obj k).M := (P k).ms
      dist x y) = hd.dist k x y := by
@@ -812,8 +812,8 @@ theorem ProperMetricOn.dist_eq (hd : InjRadiusDecayInput (I := I) X)
      dist_nonneg) (hre.dist_nonneg k x y)).mp h2
 
 omit [CompleteSpace E] in
-theorem packingBound_pack (hd : InjRadiusDecayInput (I := I) X)
-    (hre : hd.RealizesEdist) {D : Real} (pb : hd.PackingBound D)
+theorem packingBound_pack (hd : InjectivityRadiusDecay (I := I) X)
+    (hre : hd.RealizesDistance) {D : Real} (pb : hd.PackingBound D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (k : Nat) :
     letI : MetricSpace (X.obj k).M := (P k).ms
     ∀ (r : Real) (J : Finset ((X.obj k).M)),

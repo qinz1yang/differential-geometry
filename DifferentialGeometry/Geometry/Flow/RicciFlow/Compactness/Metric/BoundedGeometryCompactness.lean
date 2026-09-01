@@ -1,7 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.InjectivityRadiusDecay
-
-
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.InjectivityRadiusDecay.Existence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeOverlap
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.HigherRegularityEndpoint
@@ -30,9 +27,9 @@ def metricSeedOfBG
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
     MetricCompactSeed (I := I) X := by
-  let hd := injDecayOfBg (I := I) X hcomplete hconn hgeom hinj
-  let hreal : hd.RealizesEdist :=
-    injDecay_realizes (I := I) X hcomplete hconn hgeom hinj
+  let hd := injectivityRadiusDecayOfBoundedGeometry (I := I) X hcomplete hconn hgeom hinj
+  let hreal : hd.RealizesDistance :=
+    injectivity_radius_decay_realizes_distance (I := I) X hcomplete hconn hgeom hinj
   let out :=
     volInputOfBg (I := I) X hgeom hd hreal hcomplete hconn 1
       (by norm_num : (0 : Real) < 1)

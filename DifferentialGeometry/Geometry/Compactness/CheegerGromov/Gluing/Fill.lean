@@ -139,7 +139,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 noncomputable def stageTotal
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r)
@@ -151,7 +151,7 @@ noncomputable def stageTotal
 
 omit [CompleteSpace E] in
 theorem stageTotal_smooth
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r)
@@ -170,7 +170,7 @@ theorem stageTotal_smooth
 
 omit [CompleteSpace E] in
 theorem stageTotal_conv
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r)
@@ -190,7 +190,7 @@ theorem stageTotal_conv
 
 omit [CompleteSpace E] in
 theorem stageTotal_pi_conv
-    {hd : InjRadiusDecayInput (I := I) X} {D : Real}
+    {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r)
