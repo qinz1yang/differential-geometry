@@ -1,6 +1,7 @@
 import DifferentialGeometry.Bundle.SmoothSubbundle.Range
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.InvariantCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Endpoint
+import DifferentialGeometry.Geometry.Metric.TensorInner.MetricFiberData
 import DifferentialGeometry.Tensor.Alternating.Bundle
 import DifferentialGeometry.Tensor.Alternating.Contraction
 import DifferentialGeometry.Tensor.Alternating.ContractionSubbundle
@@ -407,6 +408,31 @@ theorem parallelTransportBetween_mem_iff [I.Boundaryless]
         (I := I) g γ hγ hab v ∈ S (γ b) ↔ v ∈ S (γ a) := by
   rw [← h γ hγ hab]
   simp
+
+theorem orthogonal [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M}
+    {S : ∀ x : M, Submodule ℝ (TangentSpace I x)}
+    (h : IsParallelSubmoduleFamily g S) :
+    IsParallelSubmoduleFamily g
+      (fun x =>
+        (Tensor0SBundle.tangentMetricData (I := I) g x).metric.orthogonal (S x)) := by
+  intro γ hγ a b hab
+  let e := Riemannian.Variation.parallelTransportLinearEquivBetween
+    (I := I) g γ hγ hab
+  calc
+    Submodule.map e.toLinearMap
+        ((Tensor0SBundle.tangentMetricData (I := I) g (γ a)).metric.orthogonal
+          (S (γ a))) =
+      (Tensor0SBundle.tangentMetricData (I := I) g (γ b)).metric.orthogonal
+        (Submodule.map e.toLinearMap (S (γ a))) := by
+          apply Tensor0SBundle.MetricFiberData.map_orthogonal_of_inner_eq
+          intro v w
+          rw [Tensor0SBundle.TangentMetricData.inner_eq,
+            Tensor0SBundle.TangentMetricData.inner_eq]
+          exact Riemannian.Variation.parallelTransportLinearEquivBetween_inner
+            (I := I) g γ hγ hab v w
+    _ = (Tensor0SBundle.tangentMetricData (I := I) g (γ b)).metric.orthogonal
+        (S (γ b)) := by rw [h γ hγ hab]
 
 end IsParallelSubmoduleFamily
 

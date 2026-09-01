@@ -88,7 +88,7 @@ private theorem sectionAlongCurve_chartRepAt_differentiableAt
     rfl
   exact hcomp.congr_of_eventuallyEq heq.symm
 
-private theorem exists_local_parallel_unit_section
+theorem ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (S : ContMDiffVectorSubbundle
@@ -224,7 +224,8 @@ theorem ContMDiffVectorSubbundle.isParallelSubmoduleFamily_of_rank_eq_one
         ∀ᶠ q in 𝓝 r, (P r ↔ P q) ∧ (P q ↔ P r) := by
       intro r
       obtain ⟨U, s, hU, hrU, hs_mem, hs_unit, hs_par⟩ :=
-        exists_local_parallel_unit_section (I := I) g S hSrank hS (δ r)
+        ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
+          (I := I) g S hSrank hS (δ r)
       have hpre : δ ⁻¹' U ∈ 𝓝 (r : ℝ) :=
         (hU.preimage hδ.continuous).mem_nhds hrU
       obtain ⟨l, u, hrlu, hlu⟩ := mem_nhds_iff_exists_Ioo_subset.mp hpre
