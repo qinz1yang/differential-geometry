@@ -1,3 +1,4 @@
+import DifferentialGeometry.Bundle.SmoothSubbundle.KernelMotion
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionAlgebra
 
 set_option autoImplicit false
@@ -239,5 +240,66 @@ theorem curvatureOperatorReaction3_kernel_annihilation_iff_rank_ne_two
     exact curvatureOperator_rank_two_reaction_annihilation_impossible hA htwo hnull
   · intro hrank v hv
     exact curvatureOperatorReaction3_mulVec_eq_zero_of_rank_ne_two hA hrank hv
+
+theorem curvatureOperatorReaction3_kernel_annihilation_at_right_endpoint
+    {A : Real → Matrix (Fin 3) (Fin 3) Real}
+    {K : Submodule Real (Fin 3 → Real)} {a b : Real} (hab : a < b)
+    (hA : ContinuousAt A b)
+    (hK : ∀ t ∈ Set.Ioo a b, (Matrix.mulVecLin (A t)).ker = K)
+    (hfin : Module.finrank Real K =
+      Module.finrank Real (Matrix.mulVecLin (A b)).ker)
+    (hzero : ∀ t ∈ Set.Ioo a b, ∀ v,
+      Matrix.mulVec (A t) v = 0 →
+        Matrix.mulVec (curvatureOperatorReaction3 (A t)) v = 0) :
+    ∀ v, Matrix.mulVec (A b) v = 0 →
+      Matrix.mulVec (curvatureOperatorReaction3 (A b)) v = 0 := by
+  let toCLM : Matrix (Fin 3) (Fin 3) Real →L[Real]
+      ((Fin 3 → Real) →L[Real] (Fin 3 → Real)) :=
+    (((Matrix.toLin' : Matrix (Fin 3) (Fin 3) Real ≃ₗ[Real]
+      ((Fin 3 → Real) →ₗ[Real] (Fin 3 → Real))).trans
+        LinearMap.toContinuousLinearMap).toLinearMap.toContinuousLinearMap)
+  let Aop : Real → (Fin 3 → Real) →L[Real] (Fin 3 → Real) :=
+    fun t => toCLM (A t)
+  let Bop : Real → (Fin 3 → Real) →L[Real] (Fin 3 → Real) :=
+    fun t => toCLM (curvatureOperatorReaction3 (A t))
+  have hAop : ContinuousAt Aop b := toCLM.continuous.continuousAt.comp hA
+  have hreaction : ContinuousAt (fun t => curvatureOperatorReaction3 (A t)) b := by
+    exact (hA.mul hA).add (continuous_id.matrix_adjugate.continuousAt.comp hA)
+  have hBop : ContinuousAt Bop b := toCLM.continuous.continuousAt.comp hreaction
+  have hKop : ∀ t ∈ Set.Ioo a b, (Aop t).ker = K := by
+    intro t ht
+    change (Matrix.toLin' (A t)).ker = K
+    rw [Matrix.toLin'_apply']
+    exact hK t ht
+  have hfinop : Module.finrank Real K = Module.finrank Real (Aop b).ker := by
+    change Module.finrank Real K = Module.finrank Real (Matrix.toLin' (A b)).ker
+    rw [Matrix.toLin'_apply']
+    exact hfin
+  have hzeroop : ∀ t ∈ Set.Ioo a b, ∀ v, v ∈ (Aop t).ker → Bop t v = 0 := by
+    intro t ht v hv
+    apply hzero t ht v
+    simpa [Aop, toCLM] using LinearMap.mem_ker.mp hv
+  intro v hv
+  have hvop : v ∈ (Aop b).ker := by
+    apply LinearMap.mem_ker.mpr
+    simpa [Aop, toCLM] using hv
+  have hout := continuousLinearMap_kernel_annihilation_of_constant_on_left
+    hab hAop hBop hKop hfinop hzeroop v hvop
+  simpa [Bop, toCLM] using hout
+
+theorem curvatureOperator_rank_trichotomy_at_right_endpoint
+    {A : Real → Matrix (Fin 3) (Fin 3) Real}
+    {K : Submodule Real (Fin 3 → Real)} {a b : Real} (hab : a < b)
+    (hA : ContinuousAt A b) (hAb : (A b).PosSemidef)
+    (hK : ∀ t ∈ Set.Ioo a b, (Matrix.mulVecLin (A t)).ker = K)
+    (hfin : Module.finrank Real K =
+      Module.finrank Real (Matrix.mulVecLin (A b)).ker)
+    (hzero : ∀ t ∈ Set.Ioo a b, ∀ v,
+      Matrix.mulVec (A t) v = 0 →
+        Matrix.mulVec (curvatureOperatorReaction3 (A t)) v = 0) :
+    (A b).rank = 0 ∨ (A b).rank = 1 ∨ (A b).rank = 3 := by
+  apply curvatureOperator_rank_trichotomy_of_reaction_annihilation hAb
+  exact curvatureOperatorReaction3_kernel_annihilation_at_right_endpoint
+    hab hA hK hfin hzero
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
