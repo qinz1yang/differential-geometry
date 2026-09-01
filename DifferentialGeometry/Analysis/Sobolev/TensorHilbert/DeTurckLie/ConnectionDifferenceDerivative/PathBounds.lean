@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieConnectionDifferenceDerivativeCoefficientTopOrderBounds
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ConnectionDifferenceDerivative.TopOrderBounds
 open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Spectral

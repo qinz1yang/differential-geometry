@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBoundPairTrace
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.PairTrace
 open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Sobolev

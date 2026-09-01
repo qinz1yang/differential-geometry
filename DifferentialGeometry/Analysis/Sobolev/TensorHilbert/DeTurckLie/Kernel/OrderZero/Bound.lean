@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBoundCoeffFieldOrderZeroPointwise
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.Pointwise
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 

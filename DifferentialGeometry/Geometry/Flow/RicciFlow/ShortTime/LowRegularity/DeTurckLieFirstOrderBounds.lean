@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.CoefficientJetBounds
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm1CoeffL2JetBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ArmOne.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.Bounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroLowOrderKappaBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.MixedTensorApplicationSecondOrderBounds

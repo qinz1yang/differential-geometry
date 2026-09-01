@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBoundRaisedKernelGrid
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.RaisedGrid
 open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Sobolev
