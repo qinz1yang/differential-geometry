@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorR
 import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.RicciPinching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.TimeShift
 
 set_option autoImplicit false
 
@@ -1254,4 +1255,45 @@ theorem metric_curvature_operator_nonnegative_preserved
       have hTv := hnonneg t ht x v
       rw [twoTensorSecToFamily_apply, ricci_upper_bound_sec_apply (I := I) S t x v v] at hTv
       linarith)
+
+theorem metric_curvature_operator_nonnegative_preserved_from
+    [I.Boundaryless] [T2Space M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    [CompleteSpace E] [CompactSpace M]
+    {S : SolutionOn (I := I) (M := M) D}
+    (hS : IsSmoothSolutionOn (I := I) (M := M) S)
+    {s T : Real}
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (hst : s ≤ T)
+    (hTsub : Set.Icc s T ⊆ D.carrier)
+    (hTreg : Set.Ioc s T ⊆ D.regular)
+    (hinit : ∀ x : M,
+      DifferentialGeometry.Geometry.Curvature.metricAlgebraicCurvatureTensorAt
+        (I := I) (M := M) (S.base.metric s) x ∈
+      DifferentialGeometry.Geometry.Curvature.algebraicCurvatureOperatorNonnegativeCone) :
+    ∀ t, t ∈ Set.Icc s T -> ∀ x : M,
+      DifferentialGeometry.Geometry.Curvature.metricAlgebraicCurvatureTensorAt
+        (I := I) (M := M) (S.base.metric t) x ∈
+      DifferentialGeometry.Geometry.Curvature.algebraicCurvatureOperatorNonnegativeCone := by
+  let S' : SolutionOn (I := I) (M := M) (D.timeShift s) := S.timeShift s
+  have hS' : IsSmoothSolutionOn (I := I) (M := M) S' := hS.timeShift s
+  have hnonneg := metric_curvature_operator_nonnegative_preserved
+    (I := I) (S := S') hS' (T := T - s) hdim (by linarith) (by
+      intro u hu
+      have hus : u + s ∈ Set.Icc s T := by
+        constructor <;> linarith [hu.1, hu.2]
+      simpa [RealTimeInterval.timeShift_carrier] using hTsub hus) (by
+      intro u hu
+      have hus : u + s ∈ Set.Ioc s T := by
+        constructor <;> linarith [hu.1, hu.2]
+      simpa [RealTimeInterval.timeShift_regular] using hTreg hus) (by
+      intro x
+      simpa [S', SolutionOn.timeShift_family_metric] using hinit x)
+  intro t ht x
+  have hts : t - s ∈ Set.Icc 0 (T - s) := by
+    constructor <;> linarith [ht.1, ht.2]
+  have h := hnonneg (t - s) hts x
+  simpa [S', SolutionOn.timeShift_family_metric] using h
 end DifferentialGeometry.PDE.RicciFlow
