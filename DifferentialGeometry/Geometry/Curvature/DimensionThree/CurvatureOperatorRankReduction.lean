@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRank
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciReaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RankTrichotomy
 import DifferentialGeometry.Geometry.Curvature.SectionalCone
@@ -210,5 +211,21 @@ theorem metricCurvatureOperatorRankAt_eq_zero_or_one_or_three_of_nonnegative_of_
     have hhalf : nu / 2 ≠ 0 := by positivity
     simp [curvatureOperatorDiagonal3, sec12Ric3, sec13Ric3, sec23Ric3,
       Matrix.rank_diagonal, lambda, mu, nu, h_lam_mu, h_mu_nu, hhalf]
+
+omit [SigmaCompactSpace M] in
+theorem metricCurvatureOperatorRankAt_eq_zero_or_one_or_three_of_leastCurvatureOperatorEigenvalueAt_nonneg_of_ricciReactionDefectAt_eq_zero
+    (g : SmoothRiemannianMetric I M)
+    (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (hleast : 0 ≤ leastCurvatureOperatorEigenvalueAt (I := I) g x
+      (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x))
+    (hzero : ricciReactionDefectAt (I := I) g x = 0) :
+    metricCurvatureOperatorRankAt (I := I) g x hdim = 0 ∨
+      metricCurvatureOperatorRankAt (I := I) g x hdim = 1 ∨
+      metricCurvatureOperatorRankAt (I := I) g x hdim = 3 := by
+  apply metricCurvatureOperatorRankAt_eq_zero_or_one_or_three_of_nonnegative_of_ricciReactionDefectAt_eq_zero
+    (I := I) (M := M) g x hdim
+      ((zero_le_leastCurvatureOperatorEigenvalueAt_iff_mem_curvatureOperatorNonnegativeCone
+        (I := I) (x := x) g hdim).mp hleast) hzero
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
