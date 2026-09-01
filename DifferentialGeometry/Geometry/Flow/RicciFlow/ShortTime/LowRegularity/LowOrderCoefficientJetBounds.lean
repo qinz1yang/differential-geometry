@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.MoserTameBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciConnectionDifferenceOrderOneKernelRadiusFreeBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.SelfLowCap
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroInsertionDifferenceWindow
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.InsertionDifferenceWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SelfActionBounds
 
 noncomputable section

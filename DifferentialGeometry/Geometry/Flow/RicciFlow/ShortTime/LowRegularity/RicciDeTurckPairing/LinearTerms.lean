@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Interpol
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.JetDifference
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.JetProduct
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ReindexedPureTraceCovariantJet
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.ReindexedPureTraceCovariantJet
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderCoefficientLipschitzBounds
 
 section
