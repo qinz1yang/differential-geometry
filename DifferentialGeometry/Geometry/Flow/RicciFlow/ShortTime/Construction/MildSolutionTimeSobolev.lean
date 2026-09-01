@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.ScaleLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackEvaluationChainRule
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTimeExistence
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocallyLipschitzExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
@@ -76,11 +76,14 @@ theorem exists_deturck_remainder_mild_solution_with_time_sobolev_one
           gforce =ᵐ[timeMeasure T]
             (fun t => N_cont
               (maxRegDuhamelSolFieldHa1 (I := I) (M := M) (a : ℝ) hT u₀ gforce t)) := by
+  let : Nontrivial E := Module.nontrivial_of_finrank_pos
+    (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
   obtain ⟨L_R, R, hR, hLip⟩ :=
     deturck_nemytskii_operator_hs_lipschitz_of_l2coeff_lipschitz (I := I) (M := M) g_bg a u₀ N_cont
       Nsec hN_coeff hNsec_lip
   obtain ⟨T₀, hT₀_pos, hsol⟩ :=
-    deTurckRemainder_strong_shortTime_exists (I := I) (M := M) g_bg
+    quasilinear_strong_existence_of_lipschitz_on_closed_ball
+      (I := I) (M := M) (g := g_bg) (r := 0) (s := 2)
       (a := (a : ℝ)) (N := N_cont) (L_R := L_R) (R := R) hR u₀ hLip
   refine ⟨min T₀ 1, lt_min hT₀_pos one_pos, ?_⟩
   obtain ⟨u, gforce, hduh, hforce, htrace, _hderiv⟩ :=
