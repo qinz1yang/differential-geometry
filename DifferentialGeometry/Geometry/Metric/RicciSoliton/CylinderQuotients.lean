@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderIsometry
 import DifferentialGeometry.Geometry.Metric.Pullback.Euclidean
 import DifferentialGeometry.Geometry.Metric.Pullback.Product
+import DifferentialGeometry.Geometry.Metric.Sphere.FreeOrthogonalAction
+import DifferentialGeometry.Geometry.Metric.Sphere.IsometryRepresentation
 import DifferentialGeometry.Geometry.Metric.Sphere.OrthogonalAction
 import DifferentialGeometry.Topology.ProperlyDiscontinuousAction
 import Mathlib.Geometry.Manifold.Instances.Quotient
@@ -786,5 +789,282 @@ theorem cylinderDiagonalQuotientPotential_continuous :
     Continuous cylinderDiagonalQuotientPotential := by
   exact roundThreeCylinderShrinkerPotential.contMDiff.continuous.quotient_lift
     (fun _ _ hxy => cylinderDiagonalPotential_respects hxy)
+
+def roundThreeCylinderSolitonAutomorphism
+    (psi : Equiv.Perm
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)) : Prop :=
+  ∃ Phi :
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)
+        ≃ₘ⟮(𝓡 2).prod 𝓘(Real, Real), (𝓡 2).prod 𝓘(Real, Real)⟯
+          Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real,
+    Phi.toEquiv = psi ∧
+      Diffeomorph.pullbackMetric roundThreeCylinderShrinkerMetric Phi =
+        roundThreeCylinderShrinkerMetric ∧
+      ∀ x, roundThreeCylinderShrinkerPotential (Phi x) =
+        roundThreeCylinderShrinkerPotential x
+
+private theorem roundThreeCylinderSolitonAutomorphism_mem_cases
+    (Gamma : Subgroup (Equiv.Perm
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)))
+    (hsoliton : ∀ gamma : Gamma,
+      roundThreeCylinderSolitonAutomorphism gamma.1)
+    (hfree : ∀ (gamma : Gamma)
+      (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real),
+      gamma.1 x = x → gamma = 1)
+    (gamma : Gamma) :
+    gamma.1 = 1 ∨
+      gamma.1 = cylinderAntipodalDiffeomorph.toEquiv ∨
+      gamma.1 = cylinderDiagonalDiffeomorph.toEquiv := by
+  classical
+  let : Fact
+      (Module.finrank Real (EuclideanSpace Real (Fin 3)) = 2 + 1) :=
+    ⟨by simp⟩
+  choose Phi hPhiEquiv hPhiMetric hPhiPotential using hsoliton
+  have hPhiApply (gamma : Gamma) (x : Metric.sphere
+      (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
+      Phi gamma x = gamma.1 x := by
+    change (Phi gamma).toEquiv x = gamma.1 x
+    exact congrArg (fun e : Equiv.Perm
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) => e x)
+      (hPhiEquiv gamma)
+  let phi (gamma : Gamma) :=
+    roundThreeCylinderCentralSliceDiffeomorph (Phi gamma) (hPhiPotential gamma)
+  have hphiMetric (gamma : Gamma) :
+      Diffeomorph.pullbackMetric roundTwoSphereShrinkerMetric (phi gamma) =
+        roundTwoSphereShrinkerMetric :=
+    roundThreeCylinderCentralSliceDiffeomorph_pullbackMetric
+      (Phi gamma) (hPhiPotential gamma) (hPhiMetric gamma)
+  have hphiOne (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1) :
+      phi 1 x = x := by
+    have h := roundThreeCylinderCentralSliceDiffeomorph_apply
+      (Phi 1) (hPhiPotential 1) x
+    rw [hPhiApply] at h
+    have h' := congrArg Prod.fst h
+    simpa using h'.symm
+  have hphiMul (gamma delta : Gamma)
+      (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1) :
+      phi (gamma * delta) x = phi gamma (phi delta x) := by
+    have hprod := roundThreeCylinderCentralSliceDiffeomorph_apply
+      (Phi (gamma * delta)) (hPhiPotential (gamma * delta)) x
+    have hdelta := roundThreeCylinderCentralSliceDiffeomorph_apply
+      (Phi delta) (hPhiPotential delta) x
+    have hgamma := roundThreeCylinderCentralSliceDiffeomorph_apply
+      (Phi gamma) (hPhiPotential gamma) (phi delta x)
+    rw [hPhiApply] at hprod hdelta hgamma
+    change gamma.1 (delta.1 (x, 0)) = _ at hprod
+    rw [hdelta, hgamma] at hprod
+    exact (congrArg Prod.fst hprod).symm
+  have hphiIso (gamma : Gamma)
+      (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1)
+      (v w : TangentSpace (𝓡 2) x) :
+      roundTwoSphereShrinkerMetric.inner x v w =
+        roundTwoSphereShrinkerMetric.inner (phi gamma x)
+          (mfderiv (𝓡 2) (𝓡 2) (phi gamma) x v)
+          (mfderiv (𝓡 2) (𝓡 2) (phi gamma) x w) := by
+    have h := Diffeomorph.pullbackMetric_inner
+      roundTwoSphereShrinkerMetric (phi gamma) x v w
+    rw [hphiMetric gamma] at h
+    exact h
+  have hphiFree : ∀ (gamma : Gamma)
+      (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1),
+      phi gamma x = x → gamma = 1 := by
+    intro gamma x hx
+    have h := roundThreeCylinderCentralSliceDiffeomorph_apply
+      (Phi gamma) (hPhiPotential gamma) x
+    rw [hPhiApply] at h
+    have hfix : gamma.1 (x, 0) = (x, 0) := by
+      rw [h]
+      exact Prod.ext hx rfl
+    exact hfree gamma (x, 0) hfix
+  obtain ⟨rho, hrho⟩ := orth_rep_of_iso
+    (E := EuclideanSpace Real (Fin 3)) (n := 2)
+    (Classical.choice (show Nonempty (Metric.sphere
+      (0 : EuclideanSpace Real (Fin 3)) 1) from ⟨⟨EuclideanSpace.single 0 1, by
+        simp [PiLp.norm_single]⟩⟩))
+    phi (by norm_num) hphiOne hphiMul (by
+      intro gamma x v w
+      have h := hphiIso gamma x v w
+      have hscaled := h
+      simp only [roundTwoSphereShrinkerMetric, roundSphereShrinkerMetric,
+        scaleMetric_inner] at hscaled
+      exact mul_left_cancel₀
+        (ne_of_gt (sq_pos_of_pos (roundSphereShrinkerRadius_pos (n := 2) (by decide))))
+        hscaled)
+  have hphiFree' : ∀ (gamma : Gamma)
+      (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1),
+      sphereDiffeo (n := 2) (rho gamma) x = x → gamma = 1 := by
+    intro gamma x hx
+    apply hphiFree gamma x
+    rw [← hrho gamma]
+    exact hx
+  have hcase (gamma : Gamma) :
+      rho gamma = 1 ∨ rho gamma = LinearIsometryEquiv.neg Real := by
+    exact orth_rep_apply_eq_one_or_neg_of_free_sphere_action rho hphiFree' gamma
+  have hphiRep (gamma : Gamma) :
+      sphereDiffeo (n := 2) (rho gamma) = phi gamma := hrho gamma
+  have hcases (gamma : Gamma) :
+      gamma.1 = 1 ∨ gamma.1 = cylinderAntipodalDiffeomorph.toEquiv ∨
+        gamma.1 = cylinderDiagonalDiffeomorph.toEquiv := by
+    by_cases hgamma : gamma = 1
+    · left
+      subst gamma
+      rfl
+    · have hnormal := roundThreeCylinderDiffeomorph_eq_prodCongr_refl_or_neg
+        (Phi gamma) (hPhiPotential gamma) (hPhiMetric gamma)
+      rcases hnormal with hnormal | hnormal
+      · rcases hcase gamma with hρ | hρ
+        · have hφ : ∀ x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1,
+              phi gamma x = x := by
+            intro x
+            rw [← hphiRep gamma, hρ]
+            apply Subtype.ext
+            rfl
+          have hmap : gamma.1 = 1 := by
+            apply Equiv.ext
+            intro x
+            rw [← hPhiEquiv gamma, hnormal]
+            change (phi gamma x.1, x.2) = x
+            exact Prod.ext (hφ x.1) (by rfl)
+          exact (hgamma (Subtype.ext hmap)).elim
+        · right; left
+          apply Equiv.ext
+          intro x
+          rw [← hPhiEquiv gamma, hnormal]
+          rw [Diffeomorph.coe_toEquiv, Diffeomorph.coe_prodCongr]
+          change (phi gamma x.1, x.2) = _
+          have hφ : phi gamma x.1 = -x.1 := by
+            rw [← hphiRep gamma, hρ]
+            apply Subtype.ext
+            rfl
+          change (phi gamma x.1, x.2) = cylinderAntipodalDiffeomorph x
+          rw [cylinderAntipodalDiffeomorph_apply]
+          exact Prod.ext hφ (by rfl)
+      · rcases hcase gamma with hρ | hρ
+        · have hφ : ∀ x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1,
+              phi gamma x = x := by
+            intro x
+            rw [← hphiRep gamma, hρ]
+            apply Subtype.ext
+            rfl
+          have hfix : gamma.1 (⟨EuclideanSpace.single 0 1, by
+              simp [PiLp.norm_single]⟩, 0) =
+              (⟨EuclideanSpace.single 0 1, by simp [PiLp.norm_single]⟩, 0) := by
+            rw [← hPhiEquiv gamma, hnormal]
+            rw [Diffeomorph.coe_toEquiv, Diffeomorph.coe_prodCongr]
+            change (phi gamma _, (ContinuousLinearEquiv.neg Real) 0) = _
+            exact Prod.ext (hφ _) (by simp only [map_zero])
+          exact (hgamma (hfree gamma _ hfix)).elim
+        · right; right
+          apply Equiv.ext
+          intro x
+          rw [← hPhiEquiv gamma, hnormal]
+          rw [Diffeomorph.coe_toEquiv, Diffeomorph.coe_prodCongr]
+          change (phi gamma x.1, (ContinuousLinearEquiv.neg Real) x.2) = _
+          have hφ : phi gamma x.1 = -x.1 := by
+            rw [← hphiRep gamma, hρ]
+            apply Subtype.ext
+            rfl
+          rw [Diffeomorph.coe_toEquiv]
+          change (phi gamma x.1, (ContinuousLinearEquiv.neg Real) x.2) =
+            cylinderDiagonalDiffeomorph x
+          rw [cylinderDiagonalDiffeomorph_apply]
+          exact Prod.ext hφ (by simp [cylinderDiagonal])
+  exact hcases gamma
+
+theorem roundThreeCylinderSolitonAutomorphism_subgroup_eq_trichotomy
+    (Gamma : Subgroup (Equiv.Perm
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)))
+    [ProperlyDiscontinuousSMul Gamma
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)]
+    (hsoliton : ∀ gamma : Gamma,
+      roundThreeCylinderSolitonAutomorphism gamma.1)
+    (hfree : ∀ (gamma : Gamma)
+      (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real),
+      gamma.1 x = x → gamma = 1) :
+    Gamma = ⊥ ∨ Gamma = cylinderAntipodalGroup ∨
+      Gamma = cylinderDiagonalGroup := by
+  classical
+  have hnotBoth : ∀ (ha : cylinderAntipodalDiffeomorph.toEquiv ∈ Gamma)
+      (hd : cylinderDiagonalDiffeomorph.toEquiv ∈ Gamma), False := by
+    intro ha hd
+    let ga : Gamma := ⟨cylinderAntipodalDiffeomorph.toEquiv, ha⟩
+    let gd : Gamma := ⟨cylinderDiagonalDiffeomorph.toEquiv, hd⟩
+    let y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 :=
+      ⟨EuclideanSpace.single 0 1, by simp [PiLp.norm_single]⟩
+    have hfix : (ga * gd).1 (y, 0) = (y, 0) := by
+      change ga.1 (gd.1 (y, 0)) = (y, 0)
+      change cylinderAntipodalDiffeomorph.toEquiv
+          (cylinderDiagonalDiffeomorph.toEquiv (y, 0)) = (y, 0)
+      rw [Diffeomorph.coe_toEquiv, Diffeomorph.coe_toEquiv,
+        cylinderDiagonalDiffeomorph_apply, cylinderAntipodalDiffeomorph_apply]
+      simp [cylinderAntipodal, cylinderDiagonal]
+    have hprod : ga * gd = 1 := hfree (ga * gd) (y, 0) hfix
+    have hact := congrArg (fun gamma : Gamma => gamma.1 (y, 1)) hprod
+    change ga.1 (gd.1 (y, 1)) = (y, 1) at hact
+    change cylinderAntipodalDiffeomorph.toEquiv
+        (cylinderDiagonalDiffeomorph.toEquiv (y, 1)) = (y, 1) at hact
+    rw [Diffeomorph.coe_toEquiv, Diffeomorph.coe_toEquiv,
+      cylinderDiagonalDiffeomorph_apply, cylinderAntipodalDiffeomorph_apply] at hact
+    have hsnd := congrArg Prod.snd hact
+    simp [cylinderAntipodal, cylinderDiagonal] at hsnd
+    norm_num at hsnd
+  by_cases ha : ∃ gamma : Gamma,
+      gamma.1 = cylinderAntipodalDiffeomorph.toEquiv
+  · obtain ⟨gammaA, hgammaA⟩ := ha
+    have ha_mem : cylinderAntipodalDiffeomorph.toEquiv ∈ Gamma := by
+      simpa [hgammaA] using gammaA.property
+    have hnotD : ∀ gamma : Gamma,
+        gamma.1 ≠ cylinderDiagonalDiffeomorph.toEquiv := by
+      intro gamma hgamma
+      apply hnotBoth ha_mem
+      simpa [hgamma] using gamma.property
+    right; left
+    apply le_antisymm
+    · intro gamma hgamma
+      change gamma ∈ Subgroup.zpowers cylinderAntipodalDiffeomorph.toEquiv
+      rcases roundThreeCylinderSolitonAutomorphism_mem_cases
+        Gamma hsoliton hfree ⟨gamma, hgamma⟩ with h1 | ha' | hd'
+      · change gamma = 1 at h1
+        rw [h1]
+        exact Subgroup.one_mem _
+      · change gamma = cylinderAntipodalDiffeomorph.toEquiv at ha'
+        rw [ha']
+        exact Subgroup.mem_zpowers _
+      · exact (hnotD ⟨gamma, hgamma⟩ hd').elim
+    · change Subgroup.zpowers cylinderAntipodalDiffeomorph.toEquiv ≤ Gamma
+      exact Subgroup.zpowers_le.mpr ha_mem
+  · by_cases hd : ∃ gamma : Gamma,
+        gamma.1 = cylinderDiagonalDiffeomorph.toEquiv
+    · obtain ⟨gammaD, hgammaD⟩ := hd
+      have hd_mem : cylinderDiagonalDiffeomorph.toEquiv ∈ Gamma := by
+        simpa [hgammaD] using gammaD.property
+      have hnotA : ∀ gamma : Gamma,
+          gamma.1 ≠ cylinderAntipodalDiffeomorph.toEquiv := by
+        intro gamma hgamma
+        exact ha ⟨gamma, hgamma⟩
+      right; right
+      apply le_antisymm
+      · intro gamma hgamma
+        change gamma ∈ Subgroup.zpowers cylinderDiagonalDiffeomorph.toEquiv
+        rcases roundThreeCylinderSolitonAutomorphism_mem_cases
+          Gamma hsoliton hfree ⟨gamma, hgamma⟩ with h1 | ha' | hd'
+        · change gamma = 1 at h1
+          rw [h1]
+          exact Subgroup.one_mem _
+        · exact (hnotA ⟨gamma, hgamma⟩ ha').elim
+        · change gamma = cylinderDiagonalDiffeomorph.toEquiv at hd'
+          rw [hd']
+          exact Subgroup.mem_zpowers _
+      · change Subgroup.zpowers cylinderDiagonalDiffeomorph.toEquiv ≤ Gamma
+        exact Subgroup.zpowers_le.mpr hd_mem
+    · left
+      apply (Subgroup.eq_bot_iff_forall Gamma).mpr
+      intro gamma hgamma
+      rcases roundThreeCylinderSolitonAutomorphism_mem_cases
+        Gamma hsoliton hfree ⟨gamma, hgamma⟩ with h1 | ha' | hd'
+      · change gamma = 1 at h1
+        exact h1
+      · exact (ha ⟨⟨gamma, hgamma⟩, ha'⟩).elim
+      · exact (hd ⟨⟨gamma, hgamma⟩, hd'⟩).elim
 
 end DifferentialGeometry.Geometry
