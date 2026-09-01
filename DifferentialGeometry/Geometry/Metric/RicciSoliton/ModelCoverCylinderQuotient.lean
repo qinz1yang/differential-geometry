@@ -10,6 +10,36 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Geometry
 
+theorem solitonModelCovering_cylinderAntipodalQuotient :
+    solitonModelCovering roundThreeCylinderShrinkerMetric
+      roundThreeCylinderShrinkerPotential cylinderAntipodalQuotientMetric
+      cylinderAntipodalQuotientPotential cylinderAntipodalQuotientMap := by
+  refine ⟨normalizedGradientRicciSoliton_roundThreeCylinder,
+    normalizedGradientRicciSoliton_cylinderAntipodalQuotient,
+    cylinderAntipodalQuotientMap_isLocalDiffeomorph,
+    cylinderAntipodalQuotientMap_surjective,
+    cylinderAntipodalQuotientMap_isCoveringMap, ?_, ?_⟩
+  · intro x v w
+    rw [← localPullMetric_cylinderAntipodalQuotientMetric,
+      localPullMetric_inner]
+  · intro x
+    exact (cylinderAntipodalQuotientPotential_apply x).symm
+
+theorem solitonModelCovering_cylinderDiagonalQuotient :
+    solitonModelCovering roundThreeCylinderShrinkerMetric
+      roundThreeCylinderShrinkerPotential cylinderDiagonalQuotientMetric
+      cylinderDiagonalQuotientPotential cylinderDiagonalQuotientMap := by
+  refine ⟨normalizedGradientRicciSoliton_roundThreeCylinder,
+    normalizedGradientRicciSoliton_cylinderDiagonalQuotient,
+    cylinderDiagonalQuotientMap_isLocalDiffeomorph,
+    cylinderDiagonalQuotientMap_surjective,
+    cylinderDiagonalQuotientMap_isCoveringMap, ?_, ?_⟩
+  · intro x v w
+    rw [← localPullMetric_cylinderDiagonalQuotientMetric,
+      localPullMetric_inner]
+  · intro x
+    exact (cylinderDiagonalQuotientPotential_apply x).symm
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
 variable {G : Type*} [TopologicalSpace G]
