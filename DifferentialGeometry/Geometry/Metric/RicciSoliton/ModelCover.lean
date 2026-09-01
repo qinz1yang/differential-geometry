@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
+import DifferentialGeometry.Geometry.Metric.LocalPullback
 import DifferentialGeometry.Geometry.Metric.PullbackCross
 import DifferentialGeometry.Topology.Covering.DeckGroup
 import Mathlib.Topology.Covering.Basic
@@ -33,7 +34,7 @@ def solitonModelCovering
     (cover : N → M) : Prop :=
   normalizedGradientRicciSoliton (I := J) h Fpot ∧
     normalizedGradientRicciSoliton (I := I) g f ∧
-    ContMDiff J I ∞ cover ∧
+    IsLocalDiffeomorph J I ∞ cover ∧
     Function.Surjective cover ∧
     IsCoveringMap cover ∧
     (∀ x v w,
@@ -60,6 +61,13 @@ theorem solitonModelCovering_contMDiff
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {cover : N → M}
     (hπ : solitonModelCovering h Fpot g f cover) :
     ContMDiff J I ∞ cover :=
+  hπ.2.2.1.contMDiff
+
+theorem solitonModelCovering_isLocalDiffeomorph
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) :
+    IsLocalDiffeomorph J I ∞ cover :=
   hπ.2.2.1
 
 theorem solitonModelCovering_surjective
@@ -91,6 +99,16 @@ theorem solitonModelCovering_potential
     (hπ : solitonModelCovering h Fpot g f cover) (x : N) :
     Fpot x = f (cover x) :=
   hπ.2.2.2.2.2.2 x
+
+theorem solitonModelCovering_metric_eq_localPull
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) :
+    h = localPullMetric g cover (solitonModelCovering_isLocalDiffeomorph hπ) := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [localPullMetric_inner]
+  exact solitonModelCovering_metric hπ x v w
 
 theorem solitonModelCovering_deck_preserves
     {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
@@ -255,7 +273,8 @@ theorem solitonModelCovering_refl
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f) :
     solitonModelCovering (I := I) g f g f (id : M → M) := by
-  refine ⟨h, h, contMDiff_id, Function.surjective_id, identity_isCoveringMap, ?_, ?_⟩
+  refine ⟨h, h, (Diffeomorph.refl I M ∞).isLocalDiffeomorph,
+    Function.surjective_id, identity_isCoveringMap, ?_, ?_⟩
   · intro x v w
     rw [mfderiv_id]
     simp

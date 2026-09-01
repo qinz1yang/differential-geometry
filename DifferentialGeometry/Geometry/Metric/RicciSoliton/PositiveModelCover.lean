@@ -110,7 +110,7 @@ theorem exists_roundTwoSphere_solitonModelCovering_of_compact_of_finrank_eq_two_
     ∃ cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 → M,
       solitonModelCovering roundTwoSphereShrinkerMetric
         roundTwoSphereShrinkerPotential g f cover := by
-  obtain ⟨cover, hcoverCont, hcoverSurj, hcovering, hcoverMetric⟩ :=
+  obtain ⟨cover, hcoverLocal, hcoverSurj, hcovering, hcoverMetric⟩ :=
     exists_round_two_sphere_cover_of_constant_positive_sectional_curvature
       (I := I) (M := M) inferInstance inferInstance inferInstance hdim g
         (1 / 2) (by norm_num) hsec
@@ -118,7 +118,7 @@ theorem exists_roundTwoSphere_solitonModelCovering_of_compact_of_finrank_eq_two_
     normalizedGradientRicciSoliton_potential_eq_one_of_compact_of_finrank_eq_two_of_constant_sectional_curvature
       (I := I) h hdim hsec
   refine ⟨cover, normalizedGradientRicciSoliton_roundTwoSphere, h,
-    hcoverCont, hcoverSurj, hcovering, ?_, ?_⟩
+    hcoverLocal, hcoverSurj, hcovering, ?_, ?_⟩
   · intro x v w
     have hmetric := hcoverMetric x v w
     rw [scaleMetric_inner] at hmetric
@@ -143,7 +143,7 @@ theorem exists_roundThreeSphere_solitonModelCovering_of_compact_of_finrank_eq_th
   have hround :=
     gradientRicciSoliton_constant_sectional_curvature_of_compact_of_finrank_eq_three_of_sectional_pos
       (I := I) (M := M) h.2.1 hdim hsec
-  obtain ⟨cover, hcoverCont, hcoverSurj, hcovering, hcoverMetric⟩ :=
+  obtain ⟨cover, hcoverLocal, hcoverSurj, hcovering, hcoverMetric⟩ :=
     exists_round_three_sphere_cover_of_constant_positive_sectional_curvature
       (I := I) (M := M) inferInstance inferInstance inferInstance hdim g
         (1 / 4) (by norm_num) (by simpa using hround)
@@ -151,7 +151,7 @@ theorem exists_roundThreeSphere_solitonModelCovering_of_compact_of_finrank_eq_th
     normalizedGradientRicciSoliton_potential_eq_three_div_two_of_compact_of_finrank_eq_three_of_sectional_pos
       (I := I) (M := M) h hdim hsec
   refine ⟨cover, normalizedGradientRicciSoliton_roundThreeSphere, h,
-    hcoverCont, hcoverSurj, hcovering, ?_, ?_⟩
+    hcoverLocal, hcoverSurj, hcovering, ?_, ?_⟩
   · intro x v w
     have hmetric := hcoverMetric x v w
     rw [scaleMetric_inner] at hmetric

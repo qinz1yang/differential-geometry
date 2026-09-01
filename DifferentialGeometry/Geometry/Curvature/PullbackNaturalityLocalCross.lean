@@ -16,9 +16,9 @@ open DifferentialGeometry.Geometry.Curvature
 open Set TopologicalSpace
 open scoped Manifold ContDiff Topology
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [CompleteSpace E] [NeZero (Module.finrank Real E)]
-variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace Real F]
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
   [FiniteDimensional Real F] [CompleteSpace F] [NeZero (Module.finrank Real F)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {G : Type*} [TopologicalSpace G] {J : ModelWithCorners Real F G}

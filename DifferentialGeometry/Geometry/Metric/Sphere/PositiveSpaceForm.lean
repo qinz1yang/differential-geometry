@@ -41,7 +41,7 @@ theorem exists_round_sphere_cover_of_constant_positive_sectional_curvature
           g.inner x X Y * g.inner x X Y)) :
     ∃ cover : sphere
         (0 : EuclideanSpace ℝ (Fin (n + 1))) 1 → M,
-      ContMDiff (𝓡 n) I ∞ cover ∧
+      IsLocalDiffeomorph (𝓡 n) I ∞ cover ∧
         Function.Surjective cover ∧
         IsCoveringMap cover ∧
         ∀ (x : sphere
@@ -133,7 +133,7 @@ theorem exists_round_sphere_cover_of_constant_positive_sectional_curvature
         (I := 𝓡 n) (M := S.Q)) d.isLocalDiffeomorph
   have hcoverLocal : IsLocalDiffeomorph (𝓡 n) I ∞ cover :=
     isLocalDiffeomorph_comp S.equiv.symm.isLocalDiffeomorph hprojLocal
-  refine ⟨cover, S.equiv.symm.contMDiff.comp hprojCont,
+  refine ⟨cover, hcoverLocal,
     S.equiv.symm.surjective.comp (hprojSurj.comp d.surjective),
     hcoverLocal.isLocalHomeomorph.covering_compact, ?_⟩
   intro x v w
@@ -179,7 +179,7 @@ theorem exists_round_two_sphere_cover_of_constant_positive_sectional_curvature
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y)) :
     ∃ cover : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → M,
-      ContMDiff (𝓡 2) I ∞ cover ∧
+      IsLocalDiffeomorph (𝓡 2) I ∞ cover ∧
         Function.Surjective cover ∧
         IsCoveringMap cover ∧
         ∀ (x : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
@@ -202,7 +202,7 @@ theorem exists_round_three_sphere_cover_of_constant_positive_sectional_curvature
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y)) :
     ∃ cover : sphere (0 : EuclideanSpace ℝ (Fin 4)) 1 → M,
-      ContMDiff (𝓡 3) I ∞ cover ∧
+      IsLocalDiffeomorph (𝓡 3) I ∞ cover ∧
         Function.Surjective cover ∧
         IsCoveringMap cover ∧
         ∀ (x : sphere (0 : EuclideanSpace ℝ (Fin 4)) 1)
