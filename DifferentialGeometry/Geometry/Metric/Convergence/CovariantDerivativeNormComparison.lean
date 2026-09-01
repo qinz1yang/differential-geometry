@@ -1,7 +1,5 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.IntrinsicMetricNormComparison
-
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.IntrinsicRecurrence
+import DifferentialGeometry.Geometry.Metric.Convergence.IntrinsicCovariantDerivativeNormComparison
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeRecurrenceNorm
 import DifferentialGeometry.Geometry.Metric.Convergence.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
 import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
@@ -140,7 +138,8 @@ theorem iterated_covariant_derivative_norm_comparison_bound
         eps * metricCovariantDerivativeComparisonConstant (E := E) q₂ p * ∑ k ∈ Finset.range s,
           Real.sqrt (normSq0S (I := I) g x (q₂ + k) (iterCov (I := I) gRef q₂ T k x)) := by
     intro s hs0 hsp
-    apply hF3_term hwopen g gRef T frame hframe hxw hinvON eps
+    apply sqrt_norm_sq_iter_cov_le_of_component_bound
+      hwopen g gRef T frame hframe hxw hinvON eps
       (metricCovariantDerivativeComparisonConstant (E := E) q₂ p) s
     simpa only [metricCovariantDerivativeComparisonConstant, C0, L] using hcompF3 x hxw s hs0 hsp
   exact covariant_derivative_norm_comparison_of_intrinsic_metric_equivalence g gRef T p (x := x) (C := 1 + eps)
@@ -235,7 +234,8 @@ noncomputable def metricReferenceChangeFactor (p : ℕ) : ℝ :=
       (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (r : ℝ))
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem metricReferenceChangeFactor_pos (p : ℕ) : 0 < metricReferenceChangeFactor (E := E) p := by
+theorem metric_reference_change_factor_pos (p : ℕ) :
+    0 < metricReferenceChangeFactor (E := E) p := by
   have hterm : ∀ r : ℕ, 0 ≤ Real.sqrt ((2 : ℝ) ^ (2 + r)) *
       (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (r : ℝ)) := by
     intro r
@@ -250,7 +250,8 @@ theorem metricReferenceChangeFactor_pos (p : ℕ) : 0 < metricReferenceChangeFac
   linarith
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem four_le_metricReferenceChangeFactor (p : ℕ) : 4 ≤ metricReferenceChangeFactor (E := E) p := by
+theorem four_le_metric_reference_change_factor (p : ℕ) :
+    4 ≤ metricReferenceChangeFactor (E := E) p := by
   have hterm : ∀ r : ℕ, 0 ≤ Real.sqrt ((2 : ℝ) ^ (2 + r)) *
       (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (r : ℝ)) := by
     intro r
@@ -293,7 +294,7 @@ theorem exists_metric_reference_change_delta (p : ℕ) {ε : ℝ} (hε : 0 < ε)
   let F : ℝ := metricReferenceChangeFactor (E := E) p
   have hn : 0 ≤ n := by dsimp only [n]; positivity
   have hn1 : 0 < n + 1 := by linarith
-  have hF : 0 < F := by exact metricReferenceChangeFactor_pos (E := E) p
+  have hF : 0 < F := by exact metric_reference_change_factor_pos (E := E) p
   let δ : ℝ := min (1 / (4 * (n + 1))) (ε / (2 * F))
   have hleft : 0 < 1 / (4 * (n + 1)) := by positivity
   have hright : 0 < ε / (2 * F) := by positivity
@@ -383,7 +384,7 @@ theorem metric_deriv_norm_reference_change_le
           2 * metricDerivNorm (I := I) 0 A gInf gBase x := hzero
       _ ≤ 4 * δ := by nlinarith [hbase 0 (Nat.zero_le p)]
       _ ≤ metricReferenceChangeFactor (E := E) p * δ :=
-        mul_le_mul_of_nonneg_right (four_le_metricReferenceChangeFactor (E := E) p) hδ0
+        mul_le_mul_of_nonneg_right (four_le_metric_reference_change_factor (E := E) p) hδ0
       _ ≤ ε := hδbudget
   · have hqpos : 0 < q := Nat.pos_of_ne_zero hq0
     have hInf1 : ∀ y ∈ u, ∀ j, 1 ≤ j → j ≤ p →

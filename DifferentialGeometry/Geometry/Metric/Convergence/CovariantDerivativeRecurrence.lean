@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.IteratedCovariantComponents
-
 import DifferentialGeometry.Analysis.Estimates.IteratedCovariantRecurrence
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.KoszulDifference
 open DifferentialGeometry.Geometry.Curvature
@@ -246,39 +245,39 @@ theorem exists_iterated_covariant_contraction_bound_of_unit_metric_derivative {u
     zero_le_one heps0 heps1 hGinv m ?_
   simpa only [one_mul] using hK
 
-def chrDiffField (chrG chrH : M → Idx → Idx → Idx → Real) :
+def christoffelDifferenceField (chrG chrH : M → Idx → Idx → Idx → Real) :
     M → (Fin (2 + 1) → Idx) → Real :=
   fun y v => chrG y (v 0) (v 1) (v 2) - chrH y (v 0) (v 1) (v 2)
 
-def chrCorrField (D : M → Idx → Idx → Idx → Real) {r : ℕ}
+def christoffelCorrectionField (D : M → Idx → Idx → Idx → Real) {r : ℕ}
     (X : M → (Fin r → Idx) → Real) (s : Fin r) :
     M → (Fin (r + 1) → Idx) → Real :=
   fun y n => ∑ p : Idx,
     D y (n 0) (Fin.tail n s) p * X y (Function.update (Fin.tail n) s p)
 
-def slotRotEquiv {r' : ℕ} (s : Fin (r' + 1)) : Fin (r' + 1) ≃ Fin (r' + 1) :=
+def slotRotationEquiv {r' : ℕ} (s : Fin (r' + 1)) : Fin (r' + 1) ≃ Fin (r' + 1) :=
   (finSuccEquiv' s).trans (finSuccEquiv' (Fin.last r')).symm
 
-theorem slotRotEquiv_self {r' : ℕ} (s : Fin (r' + 1)) :
-    slotRotEquiv s s = Fin.last r' := by
-  simp only [slotRotEquiv, Equiv.trans_apply, finSuccEquiv'_at, finSuccEquiv'_symm_none]
+theorem slot_rotation_equiv_self {r' : ℕ} (s : Fin (r' + 1)) :
+    slotRotationEquiv s s = Fin.last r' := by
+  simp only [slotRotationEquiv, Equiv.trans_apply, finSuccEquiv'_at, finSuccEquiv'_symm_none]
 
-theorem slotRotEquiv_succAbove {r' : ℕ} (s : Fin (r' + 1)) (i : Fin r') :
-    slotRotEquiv s (s.succAbove i) = i.castSucc := by
-  simp only [slotRotEquiv, Equiv.trans_apply, finSuccEquiv'_succAbove,
+theorem slot_rotation_equiv_succ_above {r' : ℕ} (s : Fin (r' + 1)) (i : Fin r') :
+    slotRotationEquiv s (s.succAbove i) = i.castSucc := by
+  simp only [slotRotationEquiv, Equiv.trans_apply, finSuccEquiv'_succAbove,
     finSuccEquiv'_symm_some, Fin.succAbove_last]
 
-def corrSlotMap {r' : ℕ} (s : Fin (r' + 1)) : Fin (2 + r') → Fin (r' + 1 + 1) :=
+def correctionSlotMap {r' : ℕ} (s : Fin (r' + 1)) : Fin (2 + r') → Fin (r' + 1 + 1) :=
   Fin.addCases (fun i : Fin 2 => if i = 0 then 0 else s.succ)
     (fun i : Fin r' => (s.succAbove i).succ)
 
-theorem corrSlotMap_injective {r' : ℕ} (s : Fin (r' + 1)) :
-    Function.Injective (corrSlotMap s) := by
+theorem correction_slot_map_injective {r' : ℕ} (s : Fin (r' + 1)) :
+    Function.Injective (correctionSlotMap s) := by
   intro a b
   refine Fin.addCases (fun ia => Fin.addCases (fun ib => ?_) (fun ib => ?_) b)
     (fun ia => Fin.addCases (fun ib => ?_) (fun ib => ?_) b) a <;>
     intro hab <;>
-    simp only [corrSlotMap, Fin.addCases_left, Fin.addCases_right] at hab
+    simp only [correctionSlotMap, Fin.addCases_left, Fin.addCases_right] at hab
   · congr 1
     by_cases h1 : ia = 0 <;> by_cases h2 : ib = 0
     · rw [h1, h2]
@@ -303,60 +302,60 @@ theorem corrSlotMap_injective {r' : ℕ} (s : Fin (r' + 1)) :
     have hi : ia = ib := Fin.succAbove_right_injective (p := s) hs
     rw [hi]
 
-theorem corrSlotMap_bijective {r' : ℕ} (s : Fin (r' + 1)) :
-    Function.Bijective (corrSlotMap s) := by
+theorem correction_slot_map_bijective {r' : ℕ} (s : Fin (r' + 1)) :
+    Function.Bijective (correctionSlotMap s) := by
   rw [Fintype.bijective_iff_injective_and_card]
-  exact ⟨corrSlotMap_injective s, by simp [Fintype.card_fin]; omega⟩
+  exact ⟨correction_slot_map_injective s, by simp [Fintype.card_fin]; omega⟩
 
-def corrSlotEquiv {r' : ℕ} (s : Fin (r' + 1)) : Fin (2 + r') ≃ Fin (r' + 1 + 1) :=
-  Equiv.ofBijective (corrSlotMap s) (corrSlotMap_bijective s)
+def correctionSlotEquiv {r' : ℕ} (s : Fin (r' + 1)) : Fin (2 + r') ≃ Fin (r' + 1 + 1) :=
+  Equiv.ofBijective (correctionSlotMap s) (correction_slot_map_bijective s)
 
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] in
 omit [DecidableEq Idx] in
-theorem chrCorrField_eq_contrTail {r' : ℕ}
+theorem christoffel_correction_field_eq_contract_tail {r' : ℕ}
     (D : M → Idx → Idx → Idx → Real) (X : M → (Fin (r' + 1) → Idx) → Real)
     (s : Fin (r' + 1)) :
-    chrCorrField D X s = fun y n =>
+    christoffelCorrectionField D X s = fun y n =>
       contrTail (fun v : Fin (2 + 1) → Idx => D y (v 0) (v 1) (v 2))
-        (fun w : Fin (r' + 1) → Idx => X y (fun j => w (slotRotEquiv s j)))
-        (fun j => n (corrSlotEquiv s j)) := by
+        (fun w : Fin (r' + 1) → Idx => X y (fun j => w (slotRotationEquiv s j)))
+        (fun j => n (correctionSlotEquiv s j)) := by
   funext y n
-  rw [chrCorrField, contrTail_apply]
+  rw [christoffelCorrectionField, contrTail_apply]
   refine Finset.sum_congr rfl fun c _ => ?_
-  have hcorr0 : corrSlotEquiv s (Fin.castAdd r' (0 : Fin 2)) = 0 := by
-    change corrSlotMap s (Fin.castAdd r' (0 : Fin 2)) = 0
-    rw [corrSlotMap, Fin.addCases_left, if_pos rfl]
-  have hcorr1 : corrSlotEquiv s (Fin.castAdd r' (1 : Fin 2)) = s.succ := by
-    change corrSlotMap s (Fin.castAdd r' (1 : Fin 2)) = s.succ
-    rw [corrSlotMap, Fin.addCases_left, if_neg (by decide)]
+  have hcorr0 : correctionSlotEquiv s (Fin.castAdd r' (0 : Fin 2)) = 0 := by
+    change correctionSlotMap s (Fin.castAdd r' (0 : Fin 2)) = 0
+    rw [correctionSlotMap, Fin.addCases_left, if_pos rfl]
+  have hcorr1 : correctionSlotEquiv s (Fin.castAdd r' (1 : Fin 2)) = s.succ := by
+    change correctionSlotMap s (Fin.castAdd r' (1 : Fin 2)) = s.succ
+    rw [correctionSlotMap, Fin.addCases_left, if_neg (by decide)]
   have hcorrR : ∀ i : Fin r',
-      corrSlotEquiv s (Fin.natAdd 2 i) = (s.succAbove i).succ := by
+      correctionSlotEquiv s (Fin.natAdd 2 i) = (s.succAbove i).succ := by
     intro i
-    change corrSlotMap s (Fin.natAdd 2 i) = (s.succAbove i).succ
-    rw [corrSlotMap, Fin.addCases_right]
-  have h0 : (Fin.snoc (fun i : Fin 2 => n (corrSlotEquiv s (Fin.castAdd r' i))) c
+    change correctionSlotMap s (Fin.natAdd 2 i) = (s.succAbove i).succ
+    rw [correctionSlotMap, Fin.addCases_right]
+  have h0 : (Fin.snoc (fun i : Fin 2 => n (correctionSlotEquiv s (Fin.castAdd r' i))) c
       : Fin (2 + 1) → Idx) 0 = n 0 := by
     rw [show (0 : Fin (2 + 1)) = Fin.castSucc 0 from rfl, Fin.snoc_castSucc, hcorr0]
-  have h1 : (Fin.snoc (fun i : Fin 2 => n (corrSlotEquiv s (Fin.castAdd r' i))) c
+  have h1 : (Fin.snoc (fun i : Fin 2 => n (correctionSlotEquiv s (Fin.castAdd r' i))) c
       : Fin (2 + 1) → Idx) 1 = Fin.tail n s := by
     rw [show (1 : Fin (2 + 1)) = Fin.castSucc 1 from rfl, Fin.snoc_castSucc, hcorr1]
     rfl
-  have h2 : (Fin.snoc (fun i : Fin 2 => n (corrSlotEquiv s (Fin.castAdd r' i))) c
+  have h2 : (Fin.snoc (fun i : Fin 2 => n (correctionSlotEquiv s (Fin.castAdd r' i))) c
       : Fin (2 + 1) → Idx) 2 = c := by
     rw [show (2 : Fin (2 + 1)) = Fin.last 2 from rfl, Fin.snoc_last]
   have hX : Function.update (Fin.tail n) s c = fun j =>
-      (Fin.snoc (fun j' : Fin r' => n (corrSlotEquiv s (Fin.natAdd 2 j'))) c
-        : Fin (r' + 1) → Idx) (slotRotEquiv s j) := by
+      (Fin.snoc (fun j' : Fin r' => n (correctionSlotEquiv s (Fin.natAdd 2 j'))) c
+        : Fin (r' + 1) → Idx) (slotRotationEquiv s j) := by
     funext j
     refine Fin.succAboveCases s ?_ (fun i => ?_) j
-    · rw [Function.update_self, slotRotEquiv_self, Fin.snoc_last]
-    · rw [Function.update_of_ne (Fin.succAbove_ne s i), slotRotEquiv_succAbove,
+    · rw [Function.update_self, slot_rotation_equiv_self, Fin.snoc_last]
+    · rw [Function.update_of_ne (Fin.succAbove_ne s i), slot_rotation_equiv_succ_above,
         Fin.snoc_castSucc, hcorrR i]
       rfl
   rw [h0, h1, h2, hX]
 
 omit [DecidableEq Idx] in
-theorem covDerivStepComp_chr_sub {r : ℕ}
+theorem cov_deriv_step_comp_christoffel_sub {r : ℕ}
     (ext : (Fin r → Idx) → Idx → Real) (chrG chrH : Idx → Idx → Idx → Real)
     (A : (Fin r → Idx) → Real) (n : Fin (r + 1) → Idx) :
     covDerivStepComp ext chrG A n =
@@ -371,21 +370,21 @@ theorem covDerivStepComp_chr_sub {r : ℕ}
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [DecidableEq Idx] in
-theorem iterCov_one_chr_change {r : ℕ}
+theorem iter_cov_one_christoffel_change {r : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x)
     (chrG chrH : M → Idx → Idx → Idx → Real)
     (X : M → (Fin r → Idx) → Real) (y : M) (n : Fin (r + 1) → Idx) :
     iterCovComp (I := I) frame chrG X 1 y n =
       iterCovComp (I := I) frame chrH X 1 y n -
         ∑ s : Fin r,
-          chrCorrField (fun z d b p => chrG z d b p - chrH z d b p) X s y n := by
+          christoffelCorrectionField (fun z d b p => chrG z d b p - chrH z d b p) X s y n := by
   change covDerivStepComp (frameExtData (I := I) frame X y) (chrG y) (X y) n = _
-  rw [covDerivStepComp_chr_sub (frameExtData (I := I) frame X y) (chrG y) (chrH y) (X y) n]
+  rw [cov_deriv_step_comp_christoffel_sub (frameExtData (I := I) frame X y) (chrG y) (chrH y) (X y) n]
   rfl
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-private theorem contMDiffOn_finsetSum' {ι : Type*} {u : Set M} (t : Finset ι)
+private theorem cont_mdiff_on_finset_sum' {ι : Type*} {u : Set M} (t : Finset ι)
     (f : ι → M → Real) (hf : ∀ i ∈ t, ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => f i y) u) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => ∑ i ∈ t, f i y) u := by
   classical
@@ -400,18 +399,18 @@ private theorem contMDiffOn_finsetSum' {ι : Type*} {u : Set M} (t : Finset ι)
 omit [DecidableEq Idx] in
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem contMDiffOn_chrCorrField {r : ℕ} {u : Set M}
+theorem cont_mdiff_on_christoffel_correction_field {r : ℕ} {u : Set M}
     (D : M → Idx → Idx → Idx → Real)
     (hD : ∀ d b p : Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => D y d b p) u)
     (X : M → (Fin r → Idx) → Real)
     (hX : ∀ k : Fin r → Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => X y k) u)
     (s : Fin r) (n : Fin (r + 1) → Idx) :
-    ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => chrCorrField D X s y n) u :=
-  contMDiffOn_finsetSum' Finset.univ _ (fun p _ => (hD _ _ p).mul (hX _))
+    ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => christoffelCorrectionField D X s y n) u :=
+  cont_mdiff_on_finset_sum' Finset.univ _ (fun p _ => (hD _ _ p).mul (hX _))
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem iterCovComp_zero_field {r : ℕ} {u : Set M} (hu : IsOpen u)
+theorem iter_cov_comp_zero_field {r : ℕ} {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -430,7 +429,7 @@ theorem iterCovComp_zero_field {r : ℕ} {u : Set M} (hu : IsOpen u)
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem iterCovComp_finsetSum {ι : Type*} {r : ℕ} {u : Set M} (hu : IsOpen u)
+theorem iter_cov_comp_finset_sum {ι : Type*} {r : ℕ} {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -446,7 +445,7 @@ theorem iterCovComp_finsetSum {ι : Type*} {r : ℕ} {u : Set M} (hu : IsOpen u)
   induction t using Finset.induction_on with
   | empty =>
     intro y hy n
-    simpa using iterCovComp_zero_field hu frame chr hframe hchr a y hy n
+    simpa using iter_cov_comp_zero_field hu frame chr hframe hchr a y hy n
   | insert b t hb ih =>
     intro y hy n
     have hrw : (fun z (k : Fin r → Idx) => ∑ i ∈ insert b t, f i z k) =
@@ -455,13 +454,13 @@ theorem iterCovComp_finsetSum {ι : Type*} {r : ℕ} {u : Set M} (hu : IsOpen u)
     rw [hrw,
       iterCovComp_add hu frame chr (f b) (fun z k => ∑ i ∈ t, f i z k) hframe hchr
         (hf b (Finset.mem_insert_self b t))
-        (fun m => contMDiffOn_finsetSum' t _
+        (fun m => cont_mdiff_on_finset_sum' t _
           (fun i hi => hf i (Finset.mem_insert_of_mem hi) m)) a y hy n,
       ih (fun i hi m => hf i (Finset.mem_insert_of_mem hi) m) y hy n,
       Finset.sum_insert hb]
 
 omit [DecidableEq Idx] in
-private theorem compL2_finsetSum_le {ι : Type*} {r : ℕ} (t : Finset ι)
+private theorem component_l2_finset_sum_le {ι : Type*} {r : ℕ} (t : Finset ι)
     (f : ι → (Fin r → Idx) → Real) :
     compL2 (fun n : Fin r → Idx => ∑ i ∈ t, f i n) ≤ ∑ i ∈ t, compL2 (f i) := by
   classical
@@ -480,7 +479,7 @@ private theorem compL2_finsetSum_le {ι : Type*} {r : ℕ} (t : Finset ι)
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem compL2_iterCov_chrCorr_le {r' : ℕ} {u : Set M} (hu : IsOpen u)
+theorem component_l2_iter_cov_christoffel_correction_le {r' : ℕ} {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chrH : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -491,32 +490,32 @@ theorem compL2_iterCov_chrCorr_le {r' : ℕ} {u : Set M} (hu : IsOpen u)
     (X : M → (Fin (r' + 1) → Idx) → Real)
     (hX : ∀ k : Fin (r' + 1) → Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => X y k) u)
     (s : Fin (r' + 1)) (k : ℕ) {x : M} (hx : x ∈ u) :
-    compL2 (iterCovComp (I := I) frame chrH (chrCorrField D X s) k x) ≤
+    compL2 (iterCovComp (I := I) frame chrH (christoffelCorrectionField D X s) k x) ≤
       ∑ c ∈ Finset.range (k + 1), (k.choose c : Real) *
         compL2 (iterCovCompU (I := I) frame chrH
           (fun y (v : Fin (2 + 1) → Idx) => D y (v 0) (v 1) (v 2)) c x) *
         compL2 (iterCovComp (I := I) frame chrH X (k - c) x) := by
-  have h1 : compL2 (iterCovComp (I := I) frame chrH (chrCorrField D X s) k x)
+  have h1 : compL2 (iterCovComp (I := I) frame chrH (christoffelCorrectionField D X s) k x)
       = compL2 (iterCovComp (I := I) frame chrH
           (fun z (w : Fin (2 + r') → Idx) => contrTail
             (fun v : Fin (2 + 1) → Idx => D z (v 0) (v 1) (v 2))
-            (fun w' : Fin (r' + 1) → Idx => X z (fun j => w' (slotRotEquiv s j))) w) k x) := by
-    rw [chrCorrField_eq_contrTail D X s]
-    exact compL2_iterCovComp_compReindex (corrSlotEquiv s) frame chrH _ k x
+            (fun w' : Fin (r' + 1) → Idx => X z (fun j => w' (slotRotationEquiv s j))) w) k x) := by
+    rw [christoffel_correction_field_eq_contract_tail D X s]
+    exact compL2_iterCovComp_compReindex (correctionSlotEquiv s) frame chrH _ k x
   have hA : ∀ v : Fin (2 + 1) → Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => D y (v 0) (v 1) (v 2)) u := fun v => hD _ _ _
   have hB : ∀ w : Fin (r' + 1) → Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-      (fun y => X y (fun j => w (slotRotEquiv s j))) u := fun w => hX _
+      (fun y => X y (fun j => w (slotRotationEquiv s j))) u := fun w => hX _
   have hP := compL2_iterCovComp_contrTail_le hu frame chrH hframe hchrH k
     (fun y (v : Fin (2 + 1) → Idx) => D y (v 0) (v 1) (v 2))
-    (fun y (w : Fin (r' + 1) → Idx) => X y (fun j => w (slotRotEquiv s j))) hA hB hx
+    (fun y (w : Fin (r' + 1) → Idx) => X y (fun j => w (slotRotationEquiv s j))) hA hB hx
   refine le_trans (le_of_eq h1) (le_trans hP (le_of_eq ?_))
   refine Finset.sum_congr rfl fun c _ => ?_
-  rw [compL2_iterCovComp_compReindex (slotRotEquiv s) frame chrH X (k - c) x]
+  rw [compL2_iterCovComp_compReindex (slotRotationEquiv s) frame chrH X (k - c) x]
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem iterCovComp_sub {r : ℕ} {u : Set M} (hu : IsOpen u)
+theorem iter_cov_comp_sub {r : ℕ} {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (f₁ f₂ : M → (Fin r → Idx) → Real)
@@ -541,7 +540,7 @@ theorem iterCovComp_sub {r : ℕ} {u : Set M} (hu : IsOpen u)
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem mixed_oneStep_le {r : ℕ} {u : Set M} (hu : IsOpen u)
+theorem mixed_one_step_le {r : ℕ} {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chrG chrH : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -553,7 +552,7 @@ theorem mixed_oneStep_le {r : ℕ} {u : Set M} (hu : IsOpen u)
     (B : ℕ → Real) (hB : ∀ i : ℕ, 0 ≤ B i) (eps : Real) (heps0 : 0 ≤ eps)
     (k : ℕ)
     (hDbound : ∀ c : ℕ, c ≤ k → ∀ z ∈ u,
-      compL2 (iterCovCompU (I := I) frame chrH (chrDiffField chrG chrH) c z) ≤ B c * eps)
+      compL2 (iterCovCompU (I := I) frame chrH (christoffelDifferenceField chrG chrH) c z) ≤ B c * eps)
     {x : M} (hx : x ∈ u) :
     compL2 (iterCovComp (I := I) frame chrH
         (fun y => iterCovComp (I := I) frame chrG X 1 y) k x) ≤
@@ -568,40 +567,40 @@ theorem mixed_oneStep_le {r : ℕ} {u : Set M} (hu : IsOpen u)
   have hsplit : (fun y => iterCovComp (I := I) frame chrG X 1 y) =
       fun z (n : Fin (r + 1) → Idx) =>
         iterCovComp (I := I) frame chrH X 1 z n -
-          ∑ s : Fin r, chrCorrField D X s z n := by
+          ∑ s : Fin r, christoffelCorrectionField D X s z n := by
     funext z n
-    exact iterCov_one_chr_change frame chrG chrH X z n
+    exact iter_cov_one_christoffel_change frame chrG chrH X z n
   have hHstep_sm : ∀ m : Fin (r + 1) → Idx,
       ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => iterCovComp (I := I) frame chrH X 1 y m) u :=
     fun m => iterCovComp_contMDiffOn hu frame chrH X hframe hchrH hX 1 m
   have hcorr_sm : ∀ s : Fin r, ∀ m : Fin (r + 1) → Idx,
-      ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => chrCorrField D X s y m) u :=
-    fun s m => contMDiffOn_chrCorrField D hDsm X hX s m
+      ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => christoffelCorrectionField D X s y m) u :=
+    fun s m => cont_mdiff_on_christoffel_correction_field D hDsm X hX s m
   have hcorrSum_sm : ∀ m : Fin (r + 1) → Idx,
-      ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => ∑ s : Fin r, chrCorrField D X s y m) u :=
-    fun m => contMDiffOn_finsetSum' Finset.univ _ (fun s _ => hcorr_sm s m)
+      ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => ∑ s : Fin r, christoffelCorrectionField D X s y m) u :=
+    fun m => cont_mdiff_on_finset_sum' Finset.univ _ (fun s _ => hcorr_sm s m)
   have harr : iterCovComp (I := I) frame chrH
       (fun y => iterCovComp (I := I) frame chrG X 1 y) k x =
       fun n => iterCovComp (I := I) frame chrH
           (fun z m => iterCovComp (I := I) frame chrH X 1 z m) k x n -
-        ∑ s : Fin r, iterCovComp (I := I) frame chrH (chrCorrField D X s) k x n := by
+        ∑ s : Fin r, iterCovComp (I := I) frame chrH (christoffelCorrectionField D X s) k x n := by
     funext n
     rw [hsplit,
-      iterCovComp_sub hu frame chrH
+      iter_cov_comp_sub hu frame chrH
         (fun z m => iterCovComp (I := I) frame chrH X 1 z m)
-        (fun z m => ∑ s : Fin r, chrCorrField D X s z m)
+        (fun z m => ∑ s : Fin r, christoffelCorrectionField D X s z m)
         hframe hchrH hHstep_sm hcorrSum_sm k x hx n,
-      iterCovComp_finsetSum hu frame chrH hframe hchrH Finset.univ
-        (fun s => chrCorrField D X s) (fun s _ m => hcorr_sm s m) k x hx n]
+      iter_cov_comp_finset_sum hu frame chrH hframe hchrH Finset.univ
+        (fun s => christoffelCorrectionField D X s) (fun s _ m => hcorr_sm s m) k x hx n]
   have htri : compL2 (iterCovComp (I := I) frame chrH
       (fun y => iterCovComp (I := I) frame chrG X 1 y) k x) ≤
       compL2 (iterCovComp (I := I) frame chrH
         (fun z m => iterCovComp (I := I) frame chrH X 1 z m) k x) +
-      ∑ s : Fin r, compL2 (iterCovComp (I := I) frame chrH (chrCorrField D X s) k x) := by
+      ∑ s : Fin r, compL2 (iterCovComp (I := I) frame chrH (christoffelCorrectionField D X s) k x) := by
     rw [harr]
     refine le_trans (compL2_sub_le _ _) ?_
-    have hsum := compL2_finsetSum_le (Finset.univ : Finset (Fin r))
-      (fun s => iterCovComp (I := I) frame chrH (chrCorrField D X s) k x)
+    have hsum := component_l2_finset_sum_le (Finset.univ : Finset (Fin r))
+      (fun s => iterCovComp (I := I) frame chrH (christoffelCorrectionField D X s) k x)
     linarith
   have hshift : compL2 (iterCovComp (I := I) frame chrH
       (fun z m => iterCovComp (I := I) frame chrH X 1 z m) k x) =
@@ -611,14 +610,14 @@ theorem mixed_oneStep_le {r : ℕ} {u : Set M} (hu : IsOpen u)
       compL2 (iterCovComp (I := I) frame chrH X j x) :=
     Finset.sum_nonneg fun j _ => compL2_nonneg _
   have hcorrBound : (∑ s : Fin r,
-      compL2 (iterCovComp (I := I) frame chrH (chrCorrField D X s) k x)) ≤
+      compL2 (iterCovComp (I := I) frame chrH (christoffelCorrectionField D X s) k x)) ≤
       eps * oneStepConst B k r *
         ∑ j ∈ Finset.range (k + 1),
           compL2 (iterCovComp (I := I) frame chrH X j x) := by
     cases r with
     | zero =>
       rw [show (∑ s : Fin 0,
-          compL2 (iterCovComp (I := I) frame chrH (chrCorrField D X s) k x)) = 0 from
+          compL2 (iterCovComp (I := I) frame chrH (christoffelCorrectionField D X s) k x)) = 0 from
         Finset.sum_of_isEmpty _]
       have h0 : oneStepConst B k 0 = 0 := by
         rw [oneStepConst]
@@ -626,12 +625,12 @@ theorem mixed_oneStep_le {r : ℕ} {u : Set M} (hu : IsOpen u)
       rw [h0, mul_zero, zero_mul]
     | succ r' =>
       have hslot : ∀ s : Fin (r' + 1),
-          compL2 (iterCovComp (I := I) frame chrH (chrCorrField D X s) k x) ≤
+          compL2 (iterCovComp (I := I) frame chrH (christoffelCorrectionField D X s) k x) ≤
             eps * (∑ c ∈ Finset.range (k + 1), (k.choose c : Real) * B c) *
               ∑ j ∈ Finset.range (k + 1),
                 compL2 (iterCovComp (I := I) frame chrH X j x) := by
         intro s
-        refine le_trans (compL2_iterCov_chrCorr_le hu frame chrH hframe hchrH D hDsm X hX
+        refine le_trans (component_l2_iter_cov_christoffel_correction_le hu frame chrH hframe hchrH D hDsm X hX
           s k hx) ?_
         have hterm : ∀ c ∈ Finset.range (k + 1),
             (k.choose c : Real) *
@@ -671,7 +670,7 @@ theorem mixed_oneStep_le {r : ℕ} {u : Set M} (hu : IsOpen u)
         rw [Finset.mul_sum]
         exact Finset.sum_congr rfl fun c _ => by ring
       calc (∑ s : Fin (r' + 1),
-            compL2 (iterCovComp (I := I) frame chrH (chrCorrField D X s) k x))
+            compL2 (iterCovComp (I := I) frame chrH (christoffelCorrectionField D X s) k x))
           ≤ ∑ _s : Fin (r' + 1),
               eps * (∑ c ∈ Finset.range (k + 1), (k.choose c : Real) * B c) *
                 ∑ j ∈ Finset.range (k + 1),
@@ -687,7 +686,7 @@ theorem mixed_oneStep_le {r : ℕ} {u : Set M} (hu : IsOpen u)
         (fun y => iterCovComp (I := I) frame chrG X 1 y) k x)
       ≤ compL2 (iterCovComp (I := I) frame chrH
           (fun z m => iterCovComp (I := I) frame chrH X 1 z m) k x) +
-        ∑ s : Fin r, compL2 (iterCovComp (I := I) frame chrH (chrCorrField D X s) k x) :=
+        ∑ s : Fin r, compL2 (iterCovComp (I := I) frame chrH (christoffelCorrectionField D X s) k x) :=
         htri
     _ ≤ compL2 (iterCovComp (I := I) frame chrH X (k + 1) x) +
         eps * oneStepConst B k r *
@@ -710,7 +709,7 @@ theorem connection_comparison_component_bound {r₀ : ℕ} {u : Set M} (hu : IsO
     (B : ℕ → Real) (hB : ∀ n : ℕ, 0 ≤ B n)
     (eps : Real) (heps0 : 0 ≤ eps) (heps1 : eps ≤ 1)
     (hDbound : ∀ c : ℕ, ∀ z ∈ u,
-      compL2 (iterCovCompU (I := I) frame chrH (chrDiffField chrG chrH) c z) ≤ B c * eps)
+      compL2 (iterCovCompU (I := I) frame chrH (christoffelDifferenceField chrG chrH) c z) ≤ B c * eps)
     {x : M} (hx : x ∈ u) :
     ∀ p i ρ : ℕ, 0 < ρ → ρ ≤ p →
       compL2 (iterCovComp (I := I) frame chrG T (i + ρ) x) ≤
@@ -733,7 +732,7 @@ theorem connection_comparison_component_bound {r₀ : ℕ} {u : Set M} (hu : IsO
             compL2 (iterCovComp (I := I) frame chrH
               (iterCovComp (I := I) frame chrG T i') j x) := by
     intro i' k
-    exact mixed_oneStep_le hu frame chrG chrH hframe hchrG hchrH
+    exact mixed_one_step_le hu frame chrG chrH hframe hchrG hchrH
       (iterCovComp (I := I) frame chrG T i') (hX_sm i') B hB eps heps0 k
       (fun c _ z hz => hDbound c z hz) hx
   exact two_parameter_iterated_recurrence_bound (eps := eps) (B := B) (s := r₀) heps0 heps1 hB
@@ -755,7 +754,7 @@ theorem connection_comparison_component_bound_at_zero {r₀ : ℕ} {u : Set M} (
     (B : ℕ → Real) (hB : ∀ n : ℕ, 0 ≤ B n)
     (eps : Real) (heps0 : 0 ≤ eps) (heps1 : eps ≤ 1)
     (hDbound : ∀ c : ℕ, ∀ z ∈ u,
-      compL2 (iterCovCompU (I := I) frame chrH (chrDiffField chrG chrH) c z) ≤ B c * eps)
+      compL2 (iterCovCompU (I := I) frame chrH (christoffelDifferenceField chrG chrH) c z) ≤ B c * eps)
     {x : M} (hx : x ∈ u) (p ρ : ℕ) (hρ0 : 0 < ρ) (hρp : ρ ≤ p) :
     compL2 (iterCovComp (I := I) frame chrG T ρ x) ≤
       compL2 (iterCovComp (I := I) frame chrH T ρ x) +
@@ -769,13 +768,13 @@ theorem connection_comparison_component_bound_at_zero {r₀ : ℕ} {u : Set M} (
 
 omit [I.Boundaryless] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
-theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
+theorem christoffel_difference_contraction_eq_of_levi_civita {u : Set M} (hu : IsOpen u)
     (g gRef : SmoothRiemannianMetric I M)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u)
     (y : M) (hy : y ∈ u) :
     contrTail
-      (chrDiffField
+      (christoffelDifferenceField
         (fun z => christoffelSymbolInFrame
           (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
           frame hframe z)
@@ -825,7 +824,7 @@ theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
           simp [IsLocalFrameOn.coeff, hy]
       _ = v := h
   have hLHS : contrTail
-      (chrDiffField
+      (christoffelDifferenceField
         (fun z => christoffelSymbolInFrame covG frame hframe z)
         (fun z => christoffelSymbolInFrame covH frame hframe z) y)
       (frameComp0S (I := I) (metricTensorField (I := I) g) frame y) idx =
@@ -840,7 +839,7 @@ theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
         (hcov := covG.isCovariantDerivativeOnUniv) (hcov' := covH.isCovariantDerivativeOnUniv)
         (σ := frame (idx 1)) (x := y) (hx := by trivial) hframe_b_md
     calc (∑ c : Idx,
-          chrDiffField
+          christoffelDifferenceField
             (fun z => christoffelSymbolInFrame covG frame hframe z)
             (fun z => christoffelSymbolInFrame covH frame hframe z) y
             (Fin.snoc (fun i : Fin 2 => idx (Fin.castAdd 1 i)) c) *
@@ -870,7 +869,7 @@ theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
           have hB1 : (Fin.snoc (fun j : Fin 1 => idx (Fin.natAdd 2 j)) c
               : Fin (1 + 1) → Idx) 1 = c := by
             rw [show (1 : Fin (1 + 1)) = Fin.last 1 from rfl, Fin.snoc_last]
-          rw [chrDiffField, hA0, hA1, hA2]
+          rw [christoffelDifferenceField, hA0, hA1, hA2]
           rw [show frameComp0S (I := I) (metricTensorField (I := I) g) frame y
               (Fin.snoc (fun j : Fin 1 => idx (Fin.natAdd 2 j)) c) =
               g.inner y (frame (idx 2) y) (frame c y) from by
@@ -1135,7 +1134,7 @@ theorem connection_comparison_component_bound_of_finite_horizon {r₀ : ℕ} {u 
     (eps : Real) (heps0 : 0 ≤ eps) (heps1 : eps ≤ 1)
     (P : ℕ)
     (hDbound : ∀ c : ℕ, c < P → ∀ z ∈ u,
-      compL2 (iterCovCompU (I := I) frame chrH (chrDiffField chrG chrH) c z) ≤ B c * eps)
+      compL2 (iterCovCompU (I := I) frame chrH (christoffelDifferenceField chrG chrH) c z) ≤ B c * eps)
     {x : M} (hx : x ∈ u) :
     ∀ p i ρ : ℕ, 0 < ρ → ρ ≤ p → i + p ≤ P →
       compL2 (iterCovComp (I := I) frame chrG T (i + ρ) x) ≤
@@ -1158,7 +1157,7 @@ theorem connection_comparison_component_bound_of_finite_horizon {r₀ : ℕ} {u 
             compL2 (iterCovComp (I := I) frame chrH
               (iterCovComp (I := I) frame chrG T i') j x) := by
     intro i' k hik
-    exact mixed_oneStep_le hu frame chrG chrH hframe hchrG hchrH
+    exact mixed_one_step_le hu frame chrG chrH hframe hchrG hchrH
       (iterCovComp (I := I) frame chrG T i') (hX_sm i') B hB eps heps0 k
       (fun c hck z hz => hDbound c (by omega) z hz) hx
   exact two_parameter_iterated_recurrence_bound_of_finite_horizon (eps := eps) (B := B) (s := r₀) heps0 heps1 hB P
@@ -1226,20 +1225,20 @@ theorem iterated_covariant_derivative_comparison_bound {r₀ : ℕ} {u : Set M} 
     (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
     frame hframe z with hchrHdef
   have hDsm : ∀ k : Fin (2 + 1) → Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-      (fun y => chrDiffField chrG chrH y k) u :=
+      (fun y => christoffelDifferenceField chrG chrH y k) u :=
     fun k => (hchrG _ _ _).sub (hchrH _ _ _)
   let B : ℕ → Real := fun c =>
     inverseContractionRecurrenceConstant C0 (|(1 / 2 : Real)| + |(1 / 2 : Real)| + |-(1 / 2 : Real)|) L c
   have hB0 : ∀ c, 0 ≤ B c := fun c => inverse_contraction_recurrence_constant_nonneg hL c
   have hBb : ∀ c, c < p → ∀ z ∈ u,
-      compL2 (iterCovCompU (I := I) frame chrH (chrDiffField chrG chrH) c z) ≤ B c * eps := by
+      compL2 (iterCovCompU (I := I) frame chrH (christoffelDifferenceField chrG chrH) c z) ≤ B c * eps := by
     intro c hc
     exact iterated_covariant_contraction_bound_of_koszul hu frame chrH hframeS hchrH
       (frameComp0S (I := I) (metricTensorField (I := I) g) frame) hgsm Ginv
-      (chrDiffField chrG chrH) hDsm hinv
+      (christoffelDifferenceField chrG chrH) hDsm hinv
       (1 / 2) (1 / 2) (-(1 / 2))
       (Equiv.refl (Fin 3)) (Equiv.swap (0 : Fin 3) 1) ((finRotate 3).symm)
-      (fun y hy => hkoszul_of_leviCivita hu g gRef frame hframe y hy)
+      (fun y hy => christoffel_difference_contraction_eq_of_levi_civita hu g gRef frame hframe y hy)
       C0 L eps hL heps0 heps1 hGinv c
       (fun z hz j h1 h2 => hgK z hz j h1 (by omega))
   intro x hx ρ hρ0 hρp

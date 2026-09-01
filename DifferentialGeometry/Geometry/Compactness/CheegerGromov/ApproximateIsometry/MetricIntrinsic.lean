@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricReverse
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricError
 import DifferentialGeometry.Geometry.Metric.Convergence.MetricTowerConvergence
+import DifferentialGeometry.Geometry.Metric.Convergence.IteratedCovariantComponents
 import DifferentialGeometry.Geometry.Metric.Convergence.PullbackCross
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormFlat
 open DifferentialGeometry.Geometry.Curvature

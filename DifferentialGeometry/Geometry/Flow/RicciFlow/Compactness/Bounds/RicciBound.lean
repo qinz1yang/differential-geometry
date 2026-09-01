@@ -123,7 +123,7 @@ theorem aN_intrinsic_point
       compL2 (iterCovCompU (I := I) frame
         (fun y' => christoffelSymbolInFrame
           (leviCivitaConnectionOfMetric (I := I) gRef) frame hframe y')
-        (chrDiffField
+        (christoffelDifferenceField
           (fun y' => christoffelSymbolInFrame
             (leviCivitaConnectionOfMetric (I := I) g) frame hframe y')
           (fun y' => christoffelSymbolInFrame
@@ -152,7 +152,7 @@ theorem aN_intrinsic_point
       compL2 (iterCovCompU (I := I) frame
         (fun y' => christoffelSymbolInFrame
           (leviCivitaConnectionOfMetric (I := I) gRef) frame hframe y')
-        (chrDiffField
+        (christoffelDifferenceField
           (fun y' => christoffelSymbolInFrame
             (leviCivitaConnectionOfMetric (I := I) g) frame hframe y')
           (fun y' => christoffelSymbolInFrame

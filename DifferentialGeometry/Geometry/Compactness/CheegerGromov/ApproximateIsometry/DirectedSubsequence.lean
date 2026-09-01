@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationIdentity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricBallImage
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequenceRadii
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAddition
 import DifferentialGeometry.Analysis.Calculus.DiagonalSubsequence
 import DifferentialGeometry.Analysis.Estimates.IteratedApproximationError
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
@@ -108,8 +109,8 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
   choose Ψ hΨsrc hΨbase hΨdata using hΨex
   refine ⟨Ψ, hΨbase, ?_⟩
   intro ε hε hε1 p
-  let C : ℝ := (comp_cov_le_unif.{u, uE, uH} (I := I) p).choose
-  have hC0 : 0 ≤ C := (comp_cov_le_unif.{u, uE, uH} (I := I) p).choose_spec.1
+  let C : ℝ := (exists_uniform_iterated_covariant_derivative_add_norm_bound.{u, uE, uH} (I := I) p).choose
+  have hC0 : 0 ≤ C := (exists_uniform_iterated_covariant_derivative_add_norm_bound.{u, uE, uH} (I := I) p).choose_spec.1
   let B : ℝ := max C 2
   have hBpos : 0 < B := lt_of_lt_of_le (by norm_num : (0 : ℝ) < 2) (le_max_right C 2)
   obtain ⟨jε, hjε⟩ := sepTailBudget B ε hε
@@ -420,7 +421,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             dsimp [c0Next, c0NF, sepNextC0]
             exact le_max_left _ _)
           hcovF_out
-          ((comp_cov_le_unif.{u, uE, uH} (I := I) p).choose_spec.2)
+          ((exists_uniform_iterated_covariant_derivative_add_norm_bound.{u, uE, uH} (I := I) p).choose_spec.2)
           (X.obj (σ s)).metric (X.obj (σ (s + l))).metric (X.obj (σ (s + l + 1))).metric
           D₁mid D₂openF
       obtain ⟨DstepR⟩ := hΨdata s
@@ -535,7 +536,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             dsimp [c0Next, c0NR, sepNextC0]
             exact le_max_right _ _)
           hcovR_out
-          ((comp_cov_le_unif.{u, uE, uH} (I := I) p).choose_spec.2)
+          ((exists_uniform_iterated_covariant_derivative_add_norm_bound.{u, uE, uH} (I := I) p).choose_spec.2)
           (X.obj (σ s)).metric (X.obj (σ (s + 1))).metric (X.obj (σ (s + (l + 1)))).metric
           DstepRopen DtailR_Ktail
       refine ⟨c0Next, covNext, hc0Next0, hcovNext0, hc0Nextε, hcovNextε,

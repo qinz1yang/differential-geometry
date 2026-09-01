@@ -1,6 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.HigherCovariantRecurrence
-
-
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeRecurrence
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -29,7 +27,7 @@ variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem compL2_tower_eq_gen
+theorem component_l2_iter_cov_eq_sqrt_norm_sq
     (g gC : SmoothRiemannianMetric I M) {r : ℕ}
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) r)
@@ -61,7 +59,8 @@ theorem compL2_tower_eq_gen
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem hF3_term {q₂ : ℕ} {u : Set M} (hu : IsOpen u)
+theorem sqrt_norm_sq_iter_cov_le_of_component_bound
+    {q₂ : ℕ} {u : Set M} (hu : IsOpen u)
     (g gRef : SmoothRiemannianMetric I M)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) q₂)
@@ -91,8 +90,8 @@ theorem hF3_term {q₂ : ℕ} {u : Set M} (hu : IsOpen u)
       eps * Cc * ∑ k ∈ Finset.range r,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x (q₂ + k)
           (iterCov (I := I) gRef q₂ T k x)) := by
-  rw [← compL2_tower_eq_gen (I := I) g g T frame hframe hu hx hinv r,
-    ← compL2_tower_eq_gen (I := I) g gRef T frame hframe hu hx hinv r,
+  rw [← component_l2_iter_cov_eq_sqrt_norm_sq (I := I) g g T frame hframe hu hx hinv r,
+    ← component_l2_iter_cov_eq_sqrt_norm_sq (I := I) g gRef T frame hframe hu hx hinv r,
     show (∑ k ∈ Finset.range r,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x (q₂ + k)
           (iterCov (I := I) gRef q₂ T k x))) =
@@ -102,7 +101,8 @@ theorem hF3_term {q₂ : ℕ} {u : Set M} (hu : IsOpen u)
             (leviCivitaConnectionOfMetric (I := I) gRef) frame hframe y')
           (frameComp0S (I := I) T frame) k x) from
       Finset.sum_congr rfl fun k _ =>
-        (compL2_tower_eq_gen (I := I) g gRef T frame hframe hu hx hinv k).symm]
+        (component_l2_iter_cov_eq_sqrt_norm_sq
+          (I := I) g gRef T frame hframe hu hx hinv k).symm]
   exact hineq
 
 end DifferentialGeometry.PDE.RicciFlow

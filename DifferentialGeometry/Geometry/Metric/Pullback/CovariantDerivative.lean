@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationDefs
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeRestriction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
@@ -31,7 +31,7 @@ section PartialCovNaturality
 open TopologicalSpace
 
 omit [SigmaCompactSpace M] in
-theorem tensor02_eq_covDOF
+theorem tensor02_cov_deriv_eq_cov_deriv_of_field
     (A : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
     (gRef : SmoothRiemannianMetric I M) :
@@ -56,7 +56,7 @@ private theorem srm_ext {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M']
   rfl
 
 omit [SigmaCompactSpace M] in
-theorem covNormWith_pd_zone
+theorem tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph
     [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 1 N] [IsManifold I 2 N] (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)) {V : Opens M}
     (hV : (V : Set M) ⊆ Φ.source)
@@ -222,7 +222,8 @@ theorem covNormWith_pd_zone
       = covDerivOfField (I := I) (g'.restrictOpen (I := I) W) δNW a (F xV) :=
     (ContinuousMultilinearMap.ext hres2).symm
   unfold tensor02CovDerivNormWith
-  rw [tensor02_eq_covDOF, tensor02_eq_covDOF]
+  rw [tensor02_cov_deriv_eq_cov_deriv_of_field,
+    tensor02_cov_deriv_eq_cov_deriv_of_field]
   obtain ⟨basis, hONb⟩ := DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I)
     (Diffeomorph.pullbackMetric (I := I) (g'.restrictOpen (I := I) W) F) xV
   have hnorm1 : Tensor0SBundle.normSq0S (I := I) G x (a + 2)

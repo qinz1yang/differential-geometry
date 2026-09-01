@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PullbackTowerBounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PullbackFieldConstruction
+import DifferentialGeometry.Geometry.Metric.Pullback.CompactExtension
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -167,10 +167,10 @@ theorem partialData_comp_forward
   have hKV : K ⊆ (V : Set M) := hKKG
   have hVKG : (V : Set M) ⊆ KG := interior_subset
   obtain ⟨P₁, G₁, hPG₁, hG₁inner, hP₁apply⟩ :=
-    exists_pullbackField (I := I) Φ hKGcpt
+    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ hKGcpt
       (fun y hy => hU₁ (hKGU hy)) h g
   obtain ⟨P'', G'', hPG'', hG''inner, hP''apply⟩ :=
-    exists_pullbackField (I := I) Ψ hKGcpt
+    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Ψ hKGcpt
       (fun y hy => hsrcU (hKGU hy)) h' g
   have hc0T : ∀ x ∈ KG, metricTensorErrorNorm (I := I) P₁ g x ≤ ε := by
     intro x hxKG
@@ -235,7 +235,7 @@ theorem partialData_comp_forward
       tensor02CovDerivNormWith (I := I) a δ₁ G₁ G₁ x
         = tensor02CovDerivNormWith (I := I) a δN₂ h h ((Φ : M → N) x) := by
     intro hNV a x hx
-    exact covNormWith_pd_zone (I := I) Φ (V := V)
+    exact tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph (I := I) Φ (V := V)
       (fun y hy => hU₁ (hKGU (hVKG hy))) h δN₂ δ₁ G₁ hδ₁pt hG₁V a x hx
   have hgpt : ∀ x ∈ (V : Set M), ∀ v : Fin 2 → TangentSpace I x,
       Tensor0SBundle.metricTensorField (I := I) g x v
@@ -279,7 +279,7 @@ theorem partialData_comp_forward
           (Tensor0SBundle.metricTensorField (I := I) g) G₁ G₁ x
         = tensor02CovDerivNormWith (I := I) a D₁.reverse.pullback h h ((Φ : M → N) x) := by
     intro hNV a x hx
-    exact covNormWith_pd_zone (I := I) Φ (V := V)
+    exact tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph (I := I) Φ (V := V)
       (fun y hy => hU₁ (hKGU (hVKG hy))) h D₁.reverse.pullback
       (Tensor0SBundle.metricTensorField (I := I) g) G₁ hgpt hG₁V a x hx
   have hε0 : 0 < ε := D₁.forward.eps_pos
@@ -352,7 +352,7 @@ theorem partialData_comp_forward
             obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
             have hfield : tensor02CovDeriv (I := I) δN₂ h (k' + 1)
                 = tensor02CovDeriv (I := I) D₂.forward.pullback h (k' + 1) := by
-              rw [hδN₂def, tensor02_eq_covDOF, tensor02_eq_covDOF, covDerivOfField_sub,
+              rw [hδN₂def, tensor02_cov_deriv_eq_cov_deriv_of_field, tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_sub,
                 covDerivOfField_eq_iterCov (I := I) h
                   (Tensor0SBundle.metricTensorField (I := I) h) (k' + 1),
                 iterCov_metric_zero]

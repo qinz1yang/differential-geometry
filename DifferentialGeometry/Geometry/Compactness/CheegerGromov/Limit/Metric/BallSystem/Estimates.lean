@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.CovariantDerivativeNormComparison
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeNormComparison
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationPullback
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Basic
 import DifferentialGeometry.Geometry.Metric.Convergence.LimitMetric

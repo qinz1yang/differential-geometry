@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PartialDiffeomorphMetricApproximationComposition
+import DifferentialGeometry.Geometry.Metric.Pullback.CompactExtension
+import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 
 
 open DifferentialGeometry.Geometry.Curvature
@@ -123,7 +125,7 @@ noncomputable def compSepFwd
   set V : Opens M := ⟨interior KG, isOpen_interior⟩ with hVdef
   have hKV : K ⊆ (V : Set M) := hKKG
   have hVKG : (V : Set M) ⊆ KG := interior_subset
-  let pull1 := exists_pullbackField (I := I) Φ hKGcpt
+  let pull1 := exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ hKGcpt
     (fun y hy => hU₁ (hKGU hy)) h g
   let P₁ := Classical.choose pull1
   let G₁ := Classical.choose (Classical.choose_spec pull1)
@@ -137,7 +139,7 @@ noncomputable def compSepFwd
       P₁ x v = h.inner ((Φ : M → N) x)
         (mfderiv I I (Φ : M → N) x (v 0)) (mfderiv I I (Φ : M → N) x (v 1)) :=
     hP₁spec.2.2
-  let pullComp := exists_pullbackField (I := I) Ψ hKGcpt
+  let pullComp := exists_metric_tensor_field_eq_pullback_on_compact (I := I) Ψ hKGcpt
     (fun y hy => hsrcU (hKGU hy)) h' g
   let P'' := Classical.choose pullComp
   let G'' := Classical.choose (Classical.choose_spec pullComp)
@@ -215,7 +217,7 @@ noncomputable def compSepFwd
       tensor02CovDerivNormWith (I := I) a δ₁ G₁ G₁ x
         = tensor02CovDerivNormWith (I := I) a δN₂ h h ((Φ : M → N) x) := by
     intro hNV a x hx
-    exact covNormWith_pd_zone (I := I) Φ (V := V)
+    exact tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph (I := I) Φ (V := V)
       (fun y hy => hU₁ (hKGU (hVKG hy))) h δN₂ δ₁ G₁ hδ₁pt hG₁V a x hx
   have hgpt : ∀ x ∈ (V : Set M), ∀ v : Fin 2 → TangentSpace I x,
       Tensor0SBundle.metricTensorField (I := I) g x v
@@ -259,7 +261,7 @@ noncomputable def compSepFwd
           (Tensor0SBundle.metricTensorField (I := I) g) G₁ G₁ x
         = tensor02CovDerivNormWith (I := I) a D₁.reverse.pullback h h ((Φ : M → N) x) := by
     intro hNV a x hx
-    exact covNormWith_pd_zone (I := I) Φ (V := V)
+    exact tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph (I := I) Φ (V := V)
       (fun y hy => hU₁ (hKGU (hVKG hy))) h D₁.reverse.pullback
       (Tensor0SBundle.metricTensorField (I := I) g) G₁ hgpt hG₁V a x hx
   have hc0_nonneg : 0 ≤ c0 := D₁.forward.c0_nonneg
@@ -327,7 +329,7 @@ noncomputable def compSepFwd
             obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
             have hfield : tensor02CovDeriv (I := I) δN₂ h (k' + 1)
                 = tensor02CovDeriv (I := I) D₂.forward.pullback h (k' + 1) := by
-              rw [hδN₂def, tensor02_eq_covDOF, tensor02_eq_covDOF, covDerivOfField_sub,
+              rw [hδN₂def, tensor02_cov_deriv_eq_cov_deriv_of_field, tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_sub,
                 covDerivOfField_eq_iterCov (I := I) h
                   (Tensor0SBundle.metricTensorField (I := I) h) (k' + 1),
                 iterCov_metric_zero]

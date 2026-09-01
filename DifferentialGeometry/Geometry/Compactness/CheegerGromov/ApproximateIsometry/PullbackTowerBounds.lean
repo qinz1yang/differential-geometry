@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PullbackCovariantNaturality
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationDefs
+import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 
@@ -48,7 +49,7 @@ theorem t02Norm_eq_iterCov {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       = Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + a)
           (iterCov (I := I) gRef 2 A a x)) := by
   unfold tensor02CovDerivNormWith
-  rw [tensor02_eq_covDOF, covDerivOfField_eq_iterCov]
+  rw [tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_eq_iterCov]
   change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (a + 2)
       ((iterCov (I := I) gRef 2 A a x).domDomCongr (acEquiv a)))
     = Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + a)

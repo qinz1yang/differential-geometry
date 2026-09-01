@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationDefs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PullbackTowerBounds
+import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 
 set_option autoImplicit false
@@ -30,7 +31,7 @@ theorem tensor02CovDeriv_metric_zero {M' : Type u} [TopologicalSpace M'] [Charte
     [IsManifold I 1 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (g : SmoothRiemannianMetric I M') (a : ℕ) :
     tensor02CovDeriv (I := I) (Tensor0SBundle.metricTensorField (I := I) g) g (a + 1) = 0 := by
-  rw [tensor02_eq_covDOF, covDerivOfField_eq_iterCov, iterCov_metric_zero,
+  rw [tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_eq_iterCov, iterCov_metric_zero,
     Tensor0SField.domDomCongr_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in

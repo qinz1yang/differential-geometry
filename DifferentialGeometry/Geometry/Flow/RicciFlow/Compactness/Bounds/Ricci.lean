@@ -348,7 +348,7 @@ private theorem perDomain_bound
           (leviCivitaConnectionOfMetric (I := I) gRef)
           (fun a y'' => e₀.localFrame basisE a y'')
           ((e₀.isLocalFrameOn_localFrame_baseSet I 1 basisE).mono hwsub) y')
-        (chrDiffField
+        (christoffelDifferenceField
           (fun y' => christoffelSymbolInFrame
             (leviCivitaConnectionOfMetric (I := I) g)
             (fun a y'' => e₀.localFrame basisE a y'')
@@ -380,7 +380,7 @@ private theorem perDomain_bound
           (leviCivitaConnectionOfMetric (I := I) gRef)
           (fun a y'' => e₀.localFrame basisE a y'')
           ((e₀.isLocalFrameOn_localFrame_baseSet I 1 basisE).mono hwsub) y')
-        (chrDiffField
+        (christoffelDifferenceField
           (fun y' => christoffelSymbolInFrame
             (leviCivitaConnectionOfMetric (I := I) g)
             (fun a y'' => e₀.localFrame basisE a y'')

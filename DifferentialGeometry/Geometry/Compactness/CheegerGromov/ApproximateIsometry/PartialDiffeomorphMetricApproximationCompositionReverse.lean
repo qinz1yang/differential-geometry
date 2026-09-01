@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PartialDiffeomorphMetricApproximationCompositionForward
+import DifferentialGeometry.Geometry.Metric.Pullback.CompactExtension
+import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 
 
 open DifferentialGeometry.Geometry.Curvature
@@ -104,7 +106,7 @@ theorem partialData_comp_reverse
     rintro _ ⟨y, hy, rfl⟩
     exact Ψ.map_source' (hsrcU (hKGU hy))
   obtain ⟨Pr, Gr, hPGr, hGrinner, hPrapply⟩ :=
-    exists_pullbackField (I := I) Ψ.symm hΨKG_cpt hΨKG_tgt g h'
+    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Ψ.symm hΨKG_cpt hΨKG_tgt g h'
   have hKimg : (Ψ : M → P) '' K ⊆ (Ψ : M → P) '' KG :=
     Set.image_mono (fun y hy => hVKG (hKV hy))
   have hVsrc : (V : Set M) ⊆ Ψ.source := fun y hy => hsrcU (hKGU (hVKG hy))
@@ -116,7 +118,7 @@ theorem partialData_comp_reverse
     have : (Φ : M → N) y ∈ (K₂ : Set N) := himg (Set.mem_image_of_mem _ (hKGU hy))
     exact Φ'.map_source' (hK₂ this)
   obtain ⟨P₂r, G₂r, hPG₂r, hG₂rinner, hP₂rapply⟩ :=
-    exists_pullbackField (I := I) Φ'.symm hΨKG_cpt hΨKG_tgt' h h'
+    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ'.symm hΨKG_cpt hΨKG_tgt' h h'
   have hε'0' : 0 < ε' := D₂.forward.eps_pos
   set ε₀' : ℝ := ε' / (1 - ε') with hε₀'def
   obtain ⟨h1ε', hε₀'0', hε₀'1', hε'ε₀'', hε₀'2ε''⟩ :=
@@ -237,7 +239,7 @@ theorem partialData_comp_reverse
       tensor02CovDerivNormWith (I := I) a δ₁r G₂r G₂r y
         = tensor02CovDerivNormWith (I := I) a δN₁r h h ((Φ'.symm : P → N) y) := by
     intro hNVP a y hy
-    exact covNormWith_pd_zone (I := I) Φ'.symm (V := VP)
+    exact tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph (I := I) Φ'.symm (V := VP)
       (fun z hz => (hVPimgK₂ z hz).2.2) h δN₁r δ₁r G₂r hδ₁rpt hG₂rV a y hy
   have hgptr : ∀ y ∈ (VP : Set P), ∀ v : Fin 2 → TangentSpace I y,
       Tensor0SBundle.metricTensorField (I := I) h' y v
@@ -280,7 +282,7 @@ theorem partialData_comp_reverse
         = tensor02CovDerivNormWith (I := I) a D₂.forward.pullback h h
             ((Φ'.symm : P → N) y) := by
     intro hNVP a y hy
-    exact covNormWith_pd_zone (I := I) Φ'.symm (V := VP)
+    exact tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph (I := I) Φ'.symm (V := VP)
       (fun z hz => (hVPimgK₂ z hz).2.2) h D₂.forward.pullback
       (Tensor0SBundle.metricTensorField (I := I) h') G₂r hgptr hG₂rV a y hy
   have hequivF5r : ∀ y ∈ (VP : Set P), ∀ v : TangentSpace I y,
@@ -352,7 +354,7 @@ theorem partialData_comp_reverse
             obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
             have hfield : tensor02CovDeriv (I := I) δN₁r h (k' + 1)
                 = tensor02CovDeriv (I := I) D₁.reverse.pullback h (k' + 1) := by
-              rw [hδN₁rdef, tensor02_eq_covDOF, tensor02_eq_covDOF, covDerivOfField_sub,
+              rw [hδN₁rdef, tensor02_cov_deriv_eq_cov_deriv_of_field, tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_sub,
                 covDerivOfField_eq_iterCov (I := I) h
                   (Tensor0SBundle.metricTensorField (I := I) h) (k' + 1),
                 iterCov_metric_zero]

@@ -1,6 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.CovariantDerivativeNormComparison
-
-
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeNormComparison
 import DifferentialGeometry.Geometry.Metric.Convergence.ProductDerivativeNorm
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 open DifferentialGeometry.Geometry.Curvature
@@ -28,7 +26,7 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem comp_cov_le
+theorem exists_iterated_covariant_derivative_add_norm_bound
     [FiniteDimensional Real E]
     {u : Set M} (hu : IsOpen u)
     (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -119,7 +117,7 @@ theorem comp_cov_le
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
-theorem comp_cov_le_unif
+theorem exists_uniform_iterated_covariant_derivative_add_norm_bound
     [FiniteDimensional Real E]
     (p : ℕ) :
     ∃ Cp : Real, 0 ≤ Cp ∧

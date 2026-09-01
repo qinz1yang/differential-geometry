@@ -51,32 +51,6 @@ noncomputable def metricTensorErrorNorm
     (Tensor0SBundle.normSq0S (I := I) g x 2
       (A x - Tensor0SBundle.metricTensorField (I := I) g x))
 
-noncomputable def tensor02CovDeriv
-    (A :
-      Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-        (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
-    (gRef : SmoothRiemannianMetric I M) :
-    (a : Nat) ->
-      Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-        (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (a + 2) :=
-  Nat.rec
-    (motive := fun a : Nat =>
-      Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-        (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (a + 2))
-    A
-    (fun a Aprev =>
-      metricCovDerivStep (I := I) gRef a Aprev)
-
-noncomputable def tensor02CovDerivNormWith
-    (a : Nat)
-    (A :
-      Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-        (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
-    (cov norm : SmoothRiemannianMetric I M) (x : M) : Real :=
-  Real.sqrt
-    (Tensor0SBundle.normSq0S (I := I) norm x (a + 2)
-      (tensor02CovDeriv (I := I) A cov a x))
-
 structure MapMetricApproximation
     (K : Set M) (eps : Real) (p : Nat)
     (Phi : M -> N)

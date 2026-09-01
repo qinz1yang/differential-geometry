@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximateIsometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricIntrinsic
+import DifferentialGeometry.Geometry.Metric.Pullback.CompactExtension
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -64,7 +65,7 @@ theorem preapprox_pair
     exact hK'U
   have hKsrc : K ⊆ Φ.source := hKK'.trans hK'src
   obtain ⟨Pf, Gf, hPf, hGfΦ, hTfΦ⟩ :=
-    exists_pullbackField (I := I) Φ hK'c hK'src h g
+    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ hK'c hK'src h g
   have hevF : ∀ x ∈ K', (Φ : M → N) =ᶠ[nhds x] F := by
     intro x hx
     exact Filter.eventuallyEq_of_mem (hU.mem_nhds (hK'U hx)) hEq
@@ -103,7 +104,7 @@ theorem preapprox_pair
       change F '' K' ⊆ Φ.target
     exact hFK'tgt
   obtain ⟨Pr, Gr, hPr, hGrΦ, hTrΦ⟩ :=
-    exists_pullbackField (I := I) Φ.symm hFK'c hFK'src g h
+    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ.symm hFK'c hFK'src g h
   have hsymmEq : Set.EqOn (Φ.symm : N → M)
       (Function.invFunOn F U) Φ.target := by
     intro z hz

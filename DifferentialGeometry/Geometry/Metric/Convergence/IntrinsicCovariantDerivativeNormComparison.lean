@@ -1,6 +1,4 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
-
-
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 
 set_option autoImplicit false

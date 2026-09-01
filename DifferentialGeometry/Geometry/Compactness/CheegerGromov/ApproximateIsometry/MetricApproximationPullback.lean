@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormFlat
 import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph
+import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 import DifferentialGeometry.Topology.SigmaCompactOpen
 
 open DifferentialGeometry.Geometry.Curvature
@@ -57,7 +58,7 @@ theorem pullback_metric_cov_deriv_norm_eq
     rw [metricCovDeriv_eq_covDerivOfField]
     exact ContinuousMultilinearMap.ext htower
   unfold metricCovDerivNorm tensor02CovDerivNormWith
-  rw [tensor02_eq_covDOF, hT]
+  rw [tensor02_cov_deriv_eq_cov_deriv_of_field, hT]
   congr 1
   exact normSq0S_restrictOpen_apply (I := I) gRef U (q + 2) x _
 

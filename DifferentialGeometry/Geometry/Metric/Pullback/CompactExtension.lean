@@ -1,12 +1,6 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationDefs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationHigherDerivatives
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.MetricExistence
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.OpensRestrict
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
-open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
@@ -28,20 +22,15 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
 omit [CompleteSpace E] in
-theorem exists_pullbackField
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+theorem exists_smooth_riemannian_metric_eq_pullback_on_compact
+    [IsManifold I 1 M]
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)) {K : Set M}
     (hK : IsCompact K) (hKs : K ⊆ Φ.source)
     (h : SmoothRiemannianMetric I N) (gM : SmoothRiemannianMetric I M) :
-    ∃ (P : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
-        (n := (∞ : WithTop ℕ∞)) 2) (G : SmoothRiemannianMetric I M),
-      P = Tensor0SBundle.metricTensorField (I := I) G ∧
-      (∀ x ∈ K, ∀ v w : TangentSpace I x,
+    ∃ G : SmoothRiemannianMetric I M,
+      ∀ x ∈ K, ∀ v w : TangentSpace I x,
         G.inner x v w = h.inner ((Φ : M → N) x)
-          (mfderiv I I (Φ : M → N) x v) (mfderiv I I (Φ : M → N) x w)) ∧
-      ∀ x ∈ K, ∀ v : Fin 2 → TangentSpace I x,
-        P x v = h.inner ((Φ : M → N) x)
-          (mfderiv I I (Φ : M → N) x (v 0)) (mfderiv I I (Φ : M → N) x (v 1)) := by
+          (mfderiv I I (Φ : M → N) x v) (mfderiv I I (Φ : M → N) x w) := by
   classical
   obtain ⟨χ, P₀, hP₀smooth, hχ, hχK, hχsupp, hχ01, hP₀def⟩ :=
     DifferentialGeometry.PartialDiffeomorph.exists_cutoff_pullback_inner Φ hK hKs h
@@ -93,10 +82,30 @@ theorem exists_pullbackField
     change G x v w = _
     rw [hGapply, hχK hx]
     simp
-  refine ⟨Tensor0SBundle.metricTensorField (I := I) Gmetric, Gmetric, rfl, hGinner, ?_⟩
+  exact ⟨Gmetric, hGinner⟩
+
+omit [CompleteSpace E] in
+theorem exists_metric_tensor_field_eq_pullback_on_compact
+    [IsManifold I 1 M]
+    (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)) {K : Set M}
+    (hK : IsCompact K) (hKs : K ⊆ Φ.source)
+    (h : SmoothRiemannianMetric I N) (gM : SmoothRiemannianMetric I M) :
+    ∃ (P : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) 2) (G : SmoothRiemannianMetric I M),
+      P = Tensor0SBundle.metricTensorField (I := I) G ∧
+      (∀ x ∈ K, ∀ v w : TangentSpace I x,
+        G.inner x v w = h.inner ((Φ : M → N) x)
+          (mfderiv I I (Φ : M → N) x v) (mfderiv I I (Φ : M → N) x w)) ∧
+      ∀ x ∈ K, ∀ v : Fin 2 → TangentSpace I x,
+        P x v = h.inner ((Φ : M → N) x)
+          (mfderiv I I (Φ : M → N) x (v 0)) (mfderiv I I (Φ : M → N) x (v 1)) := by
+  obtain ⟨G, hG⟩ :=
+    exists_smooth_riemannian_metric_eq_pullback_on_compact
+      (I := I) Φ hK hKs h gM
+  refine ⟨Tensor0SBundle.metricTensorField (I := I) G, G, rfl, hG, ?_⟩
   intro x hx v
   rw [Tensor0SBundle.metricTensorField_apply]
-  exact hGinner x hx (v 0) (v 1)
+  exact hG x hx (v 0) (v 1)
 
 end HCGCompactness
 end DifferentialGeometry
