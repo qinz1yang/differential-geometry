@@ -2209,6 +2209,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOn
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.MetricBall
 import DifferentialGeometry.Topology.Manifold.TangentPartialDiffeomorph
 import DifferentialGeometry.Geometry.Coordinates.Tensor
 import DifferentialGeometry.Geometry.Curvature.AlgebraicForm
@@ -3025,6 +3026,7 @@ import DifferentialGeometry.Geometry.Metric.DistanceScaling
 import DifferentialGeometry.Geometry.Metric.DistanceTent
 import DifferentialGeometry.Geometry.Metric.FiberExpansion
 import DifferentialGeometry.Geometry.Metric.InnerExpansion
+import DifferentialGeometry.Geometry.Metric.PathLengthComparison
 import DifferentialGeometry.Geometry.Metric.InverseMetricField
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Basic
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Cartan
