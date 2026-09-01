@@ -74,4 +74,76 @@ theorem solitonModelCovering_roundThreeCylinder_deckGroup_eq_trichotomy
     exact coveringDeckGroup_eq_one_of_apply_eq
       (solitonModelCovering_isCoveringMap hpi) gamma x hfix
 
+theorem solitonModelCovering_roundThreeCylinder_target_homeomorph_trichotomy_of_isQuotientCoveringMap
+    {g : SmoothRiemannianMetric J N} {f : C^∞⟮J, N; Real⟯}
+    {cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → N}
+    (hπ : solitonModelCovering roundThreeCylinderShrinkerMetric
+      roundThreeCylinderShrinkerPotential g f cover)
+    (hquotient : IsQuotientCoveringMap cover (coveringDeckGroup cover)) :
+    (coveringDeckGroup cover = ⊥ ∧
+      ∃ e : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real ≃ₜ N,
+        ∀ x, e x = cover x) ∨
+    (coveringDeckGroup cover = cylinderAntipodalGroup ∧
+      ∃ e : RealProjectivePlane × Real ≃ₜ N,
+        ∀ x, e (realProjectivePlaneQuotientMap x.1, x.2) = cover x) ∨
+    (coveringDeckGroup cover = cylinderDiagonalGroup ∧
+      ∃ e : PuncturedRealProjectiveThreeSpace ≃ₜ N,
+        ∀ x, e (cylinderDiagonalQuotientHomeomorph
+          (cylinderDiagonalQuotientMap x)) = cover x) := by
+  rcases solitonModelCovering_roundThreeCylinder_deckGroup_eq_trichotomy hπ with
+    htrivial | hantipodal | hdiagonal
+  · left
+    have hinjective : Function.Injective cover := by
+      intro x y hxy
+      obtain ⟨gamma, hgamma⟩ := hquotient.apply_eq_iff_mem_orbit.mp hxy
+      have hmem : gamma.1 ∈ (⊥ : Subgroup
+          (Equiv.Perm
+            (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real))) := by
+        rw [← htrivial.1]
+        exact gamma.property
+      have hone : gamma.1 = 1 := by
+        simpa only [Subgroup.mem_bot] using hmem
+      change gamma.1 y = x at hgamma
+      rw [hone] at hgamma
+      exact hgamma.symm
+    let e : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real ≃ₜ N :=
+      ((solitonModelCovering_isLocalDiffeomorph hπ).diffeomorphOfBijective
+        ⟨hinjective, solitonModelCovering_surjective hπ⟩).toHomeomorph
+    exact ⟨htrivial.1, e, fun _ => rfl⟩
+  · right
+    left
+    have hquotient' : IsQuotientCoveringMap cover cylinderAntipodalGroup :=
+      (IsQuotientCoveringMap.subgroup_congr
+        cover (Equiv.Perm
+          (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real))
+        (coveringDeckGroup cover) cylinderAntipodalGroup
+        hantipodal.1).mp hquotient
+    let e : RealProjectivePlane × Real ≃ₜ N :=
+      cylinderAntipodalQuotientHomeomorph.symm.trans
+        hquotient'.orbitRelQuotientHomeomorph
+    refine ⟨hantipodal.1, e, fun x => ?_⟩
+    change hquotient'.orbitRelQuotientHomeomorph
+      (cylinderAntipodalQuotientHomeomorph.symm
+        (realProjectivePlaneQuotientMap x.1, x.2)) = cover x
+    rw [cylinderAntipodalQuotientHomeomorph_symm_apply]
+    exact hquotient'.orbitRelQuotientHomeomorph_apply x
+  · right
+    right
+    have hquotient' : IsQuotientCoveringMap cover cylinderDiagonalGroup :=
+      (IsQuotientCoveringMap.subgroup_congr
+        cover (Equiv.Perm
+          (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real))
+        (coveringDeckGroup cover) cylinderDiagonalGroup
+        hdiagonal.1).mp hquotient
+    let e : PuncturedRealProjectiveThreeSpace ≃ₜ N :=
+      cylinderDiagonalQuotientHomeomorph.symm.trans
+        hquotient'.orbitRelQuotientHomeomorph
+    refine ⟨hdiagonal.1, e, fun x => ?_⟩
+    change hquotient'.orbitRelQuotientHomeomorph
+      (cylinderDiagonalQuotientHomeomorph.symm
+        (cylinderDiagonalQuotientHomeomorph
+          (cylinderDiagonalQuotientMap x))) = cover x
+    rw [Homeomorph.symm_apply_apply]
+    exact hquotient'.orbitRelQuotientHomeomorph_apply x
+
 end DifferentialGeometry.Geometry
