@@ -1,7 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates
-
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.HigherMetricJet
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricJetBounds
 
 set_option autoImplicit false
 
@@ -1016,7 +1014,7 @@ theorem exists_bounded_geometry_normal_data
   let U : Real := d.ratio * hd.mu 0
   let metricC : Nat → Real := fun n =>
     ContinuousMultilinearMap.polarConst n *
-      (2 * (2 ^ n * jetCap hgeom.C U 1 n ^ 2))
+      (2 * (2 ^ n * jacobiJetBound hgeom.C U 1 n ^ 2))
   refine ⟨{
     toNormalChartData := d.toChartData
     metricC := metricC
@@ -1094,7 +1092,7 @@ theorem exists_bounded_geometry_normal_data
         ContDiffAt Real ∞
           (intrFrameMetric (I := I) (X.obj k).metric hEnorm x) z :=
       hchartSmooth.congr_of_eventuallyEq heq.symm
-    exact intrMetric_deriv_le (I := I) (X.obj k)
+    exact intrinsic_frame_metric_iterated_fderiv_norm_le (I := I) (X.obj k)
       (hcomplete.complete k) (hconn k) hPk x z n U hzU hintrSmooth
 
 end HCGCompactness

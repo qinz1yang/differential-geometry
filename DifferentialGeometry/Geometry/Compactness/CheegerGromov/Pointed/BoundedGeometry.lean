@@ -92,7 +92,7 @@ variable [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless]
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
-theorem riemannOp_le
+theorem riemann_op_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     {C : Real} (hP : HasCurvDerivBound (I := I) P 0 C) :
     letI : TopologicalSpace P.M := P.topology
@@ -155,7 +155,7 @@ theorem riemannOp_le
   exact sqrt_le_of_sq_le_mul (Real.sqrt_nonneg _) hA hquad
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem nablaRiemannOp_le
+theorem nabla_riemann_op_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     {C : Real} (hP : HasCurvDerivBound (I := I) P 1 C) :
     letI : TopologicalSpace P.M := P.topology

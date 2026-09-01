@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
+import DifferentialGeometry.Geometry.Comparison.Variation.CurvatureDerivativeAlong
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CovariantDerivativeTower
 
 set_option autoImplicit false
@@ -44,7 +45,7 @@ private theorem inner_self_nonneg
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [CompleteSpace E] in
-theorem curvOpN_le
+theorem curv_op_n_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     {k : Nat} {C : Real} (hP : HasCurvDerivBound (I := I) P k C) :
     letI : TopologicalSpace P.M := P.topology
@@ -92,6 +93,83 @@ theorem curvOpN_le
     rw [show q ^ 2 = P.metric.inner x R R from Real.sq_sqrt hRR]
     simpa only [A, mul_assoc] using hbound
   exact sqrt_le_of_sq_le_mul (Real.sqrt_nonneg _) hA hquad
+
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
+theorem curvature_along_le
+    (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    {C : Real} (hP : HasCurvDerivBound (I := I) P 0 C) :
+    letI : TopologicalSpace P.M := P.topology
+    letI : ChartedSpace H P.M := P.charted
+    letI : IsManifold I ∞ P.M := P.smooth
+    letI : SigmaCompactSpace P.M := P.sigmaCompact
+    letI : T2Space P.M := P.t2
+    ∀ (γ : Real -> P.M)
+      (X Y Z : ∀ s, TangentSpace I (γ s)) (t : Real),
+      let R :=
+        Geometry.Riemannian.Variation.curvAlong (I := I)
+          P.metric γ X Y Z t
+      Real.sqrt (P.metric.inner (γ t) R R) <=
+        C * Real.sqrt (P.metric.inner (γ t) (X t) (X t)) *
+          Real.sqrt (P.metric.inner (γ t) (Y t) (Y t)) *
+          Real.sqrt (P.metric.inner (γ t) (Z t) (Z t)) := by
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : T2Space P.M := P.t2
+  intro γ X Y Z t
+  simpa only [Geometry.Riemannian.Variation.curvAlong] using
+    (HasCurvDerivBound.riemann_op_le (I := I) P hP
+      (γ t) (X t) (Y t) (Z t))
+
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
+theorem curvature_derivative_along_le
+    (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    {C : Real} (hP : HasCurvDerivBound (I := I) P 1 C) :
+    letI : TopologicalSpace P.M := P.topology
+    letI : ChartedSpace H P.M := P.charted
+    letI : IsManifold I ∞ P.M := P.smooth
+    letI : SigmaCompactSpace P.M := P.sigmaCompact
+    letI : T2Space P.M := P.t2
+    ∀ (γ : Real -> P.M)
+      (X Y Z : ∀ s, TangentSpace I (γ s)) (t : Real),
+      ContMDiff 𝓘(Real, Real) I ∞ γ ->
+      ContMDiff 𝓘(Real, Real) I.tangent ∞
+        (fun s : Real =>
+          (TotalSpace.mk' E (E := (TangentSpace I : P.M -> Type _))
+            (γ s) (X s) : TangentBundle I P.M)) ->
+      ContMDiff 𝓘(Real, Real) I.tangent ∞
+        (fun s : Real =>
+          (TotalSpace.mk' E (E := (TangentSpace I : P.M -> Type _))
+            (γ s) (Y s) : TangentBundle I P.M)) ->
+      ContMDiff 𝓘(Real, Real) I.tangent ∞
+        (fun s : Real =>
+          (TotalSpace.mk' E (E := (TangentSpace I : P.M -> Type _))
+            (γ s) (Z s) : TangentBundle I P.M)) ->
+      let R :=
+        Geometry.Riemannian.Variation.curvDerivAlong (I := I)
+          P.metric γ X Y Z t
+      let D :=
+        (mfderiv 𝓘(Real, Real) I γ t : Real →L[Real] TangentSpace I (γ t))
+          (1 : Real)
+      Real.sqrt (P.metric.inner (γ t) R R) <=
+        C * Real.sqrt (P.metric.inner (γ t) D D) *
+          Real.sqrt (P.metric.inner (γ t) (X t) (X t)) *
+          Real.sqrt (P.metric.inner (γ t) (Y t) (Y t)) *
+          Real.sqrt (P.metric.inner (γ t) (Z t) (Z t)) := by
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : T2Space P.M := P.t2
+  intro γ X Y Z t hγ hX hY hZ
+  rw [Geometry.Riemannian.Variation.curvDeriv_eq_nabla
+    (I := I) P.metric γ X Y Z t hγ hX hY hZ]
+  exact HasCurvDerivBound.nabla_riemann_op_le (I := I) P hP
+    (γ t)
+    ((mfderiv 𝓘(Real, Real) I γ t :
+      Real →L[Real] TangentSpace I (γ t)) (1 : Real))
+    (X t) (Y t) (Z t)
 
 end HasCurvDerivBound
 

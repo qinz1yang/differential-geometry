@@ -1,7 +1,5 @@
-import DifferentialGeometry.Geometry.Comparison.Variation.CurvatureDerivativeAlong
-
 import DifferentialGeometry.Geometry.Exponential.IntrinsicJacobiJets
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CurvatureOperatorBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
 import DifferentialGeometry.Geometry.Metric.InnerExpansion
 
@@ -22,83 +20,6 @@ variable {E : Type uE} [NormedAddCommGroup E]
   [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-theorem curvAlong_le
-    (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
-    {C : Real} (hP : HasCurvDerivBound (I := I) P 0 C) :
-    letI : TopologicalSpace P.M := P.topology
-    letI : ChartedSpace H P.M := P.charted
-    letI : IsManifold I ∞ P.M := P.smooth
-    letI : SigmaCompactSpace P.M := P.sigmaCompact
-    letI : T2Space P.M := P.t2
-    ∀ (γ : Real -> P.M)
-      (X Y Z : ∀ s, TangentSpace I (γ s)) (t : Real),
-      let R :=
-        Geometry.Riemannian.Variation.curvAlong (I := I)
-          P.metric γ X Y Z t
-      Real.sqrt (P.metric.inner (γ t) R R) <=
-        C * Real.sqrt (P.metric.inner (γ t) (X t) (X t)) *
-          Real.sqrt (P.metric.inner (γ t) (Y t) (Y t)) *
-          Real.sqrt (P.metric.inner (γ t) (Z t) (Z t)) := by
-  let : TopologicalSpace P.M := P.topology
-  let : ChartedSpace H P.M := P.charted
-  let : IsManifold I ∞ P.M := P.smooth
-  let : SigmaCompactSpace P.M := P.sigmaCompact
-  let : T2Space P.M := P.t2
-  intro γ X Y Z t
-  simpa only [Geometry.Riemannian.Variation.curvAlong] using
-    (HasCurvDerivBound.riemannOp_le (I := I) P hP
-      (γ t) (X t) (Y t) (Z t))
-
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-theorem curvDerivAlong_le
-    (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
-    {C : Real} (hP : HasCurvDerivBound (I := I) P 1 C) :
-    letI : TopologicalSpace P.M := P.topology
-    letI : ChartedSpace H P.M := P.charted
-    letI : IsManifold I ∞ P.M := P.smooth
-    letI : SigmaCompactSpace P.M := P.sigmaCompact
-    letI : T2Space P.M := P.t2
-    ∀ (γ : Real -> P.M)
-      (X Y Z : ∀ s, TangentSpace I (γ s)) (t : Real),
-      ContMDiff 𝓘(Real, Real) I ∞ γ ->
-      ContMDiff 𝓘(Real, Real) I.tangent ∞
-        (fun s : Real =>
-          (TotalSpace.mk' E (E := (TangentSpace I : P.M -> Type _))
-            (γ s) (X s) : TangentBundle I P.M)) ->
-      ContMDiff 𝓘(Real, Real) I.tangent ∞
-        (fun s : Real =>
-          (TotalSpace.mk' E (E := (TangentSpace I : P.M -> Type _))
-            (γ s) (Y s) : TangentBundle I P.M)) ->
-      ContMDiff 𝓘(Real, Real) I.tangent ∞
-        (fun s : Real =>
-          (TotalSpace.mk' E (E := (TangentSpace I : P.M -> Type _))
-            (γ s) (Z s) : TangentBundle I P.M)) ->
-      let R :=
-        Geometry.Riemannian.Variation.curvDerivAlong (I := I)
-          P.metric γ X Y Z t
-      let D :=
-        (mfderiv 𝓘(Real, Real) I γ t : Real →L[Real] TangentSpace I (γ t))
-          (1 : Real)
-      Real.sqrt (P.metric.inner (γ t) R R) <=
-        C * Real.sqrt (P.metric.inner (γ t) D D) *
-          Real.sqrt (P.metric.inner (γ t) (X t) (X t)) *
-          Real.sqrt (P.metric.inner (γ t) (Y t) (Y t)) *
-          Real.sqrt (P.metric.inner (γ t) (Z t) (Z t)) := by
-  let : TopologicalSpace P.M := P.topology
-  let : ChartedSpace H P.M := P.charted
-  let : IsManifold I ∞ P.M := P.smooth
-  let : SigmaCompactSpace P.M := P.sigmaCompact
-  let : T2Space P.M := P.t2
-  intro γ X Y Z t hγ hX hY hZ
-  rw [Geometry.Riemannian.Variation.curvDeriv_eq_nabla
-    (I := I) P.metric γ X Y Z t hγ hX hY hZ]
-  exact HasCurvDerivBound.nablaRiemannOp_le (I := I) P hP
-    (γ t)
-    ((mfderiv 𝓘(Real, Real) I γ t :
-      Real →L[Real] TangentSpace I (γ t)) (1 : Real))
-    (X t) (Y t) (Z t)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem sqrt_six_add_le
@@ -127,7 +48,7 @@ private theorem sqrt_six_add_le
   linarith
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-theorem jacVarForce_le
+theorem jacobi_variation_force_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     {C0 C1 : Real}
     (h0 : HasCurvDerivBound (I := I) P 0 C0)
@@ -245,14 +166,14 @@ theorem jacVarForce_le
   have hF1 : L F1 <= C1 * L T * L A * L T * L J := by
     simpa only [F1, L, T, A, J,
       Geometry.Riemannian.Variation.varSnd] using
-      (curvDerivAlong_le (I := I) P h1
+      (HasCurvDerivBound.curvature_derivative_along_le (I := I) P h1
         (fun v : Real => f 0 v)
         (fun v : Real => Geometry.Riemannian.Variation.varFst (I := I) f 0 v)
         (fun v : Real => Geometry.Riemannian.Variation.varSnd (I := I) f 0 v)
         (fun v : Real => V 0 v) t hγt hAt hTt hJt)
   have hF2 : L F2 <= C0 * L K * L T * L J := by
     simpa only [F2, L, K, T, J] using
-      (curvAlong_le (I := I) P h0 (fun v : Real => f 0 v)
+      (HasCurvDerivBound.curvature_along_le (I := I) P h0 (fun v : Real => f 0 v)
         (fun v : Real =>
           Geometry.Riemannian.Variation.covSnd (I := I) P.metric f
             (fun s w => Geometry.Riemannian.Variation.varFst (I := I) f s w)
@@ -262,7 +183,7 @@ theorem jacVarForce_le
   have hF3 : L F3 <= C0 * L A * L T * L DJ := by
     simpa only [F3, L, A, T, DJ,
       Geometry.Riemannian.Variation.varCurv] using
-      (curvAlong_le (I := I) P h0 (fun v : Real => f 0 v)
+      (HasCurvDerivBound.curvature_along_le (I := I) P h0 (fun v : Real => f 0 v)
         (fun v : Real => Geometry.Riemannian.Variation.varFst (I := I) f 0 v)
         (fun v : Real => Geometry.Riemannian.Variation.varSnd (I := I) f 0 v)
         (fun v : Real =>
@@ -270,14 +191,14 @@ theorem jacVarForce_le
   have hF4 : L F4 <= C1 * L A * L J * L T * L T := by
     simpa only [F4, L, A, J, T,
       Geometry.Riemannian.Variation.varFst] using
-      (curvDerivAlong_le (I := I) P h1
+      (HasCurvDerivBound.curvature_derivative_along_le (I := I) P h1
         (fun s : Real => f s t) (fun s : Real => V s t)
         (fun s : Real => Geometry.Riemannian.Variation.varSnd (I := I) f s t)
         (fun s : Real => Geometry.Riemannian.Variation.varSnd (I := I) f s t)
         0 hγs hJs hTs hTs)
   have hF5 : L F5 <= C0 * L J * L K * L T := by
     simpa only [F5, L, J, K, T] using
-      (curvAlong_le (I := I) P h0 (fun v : Real => f 0 v)
+      (HasCurvDerivBound.curvature_along_le (I := I) P h0 (fun v : Real => f 0 v)
         (fun v : Real => V 0 v)
         (fun v : Real =>
           Geometry.Riemannian.Variation.covSnd (I := I) P.metric f
@@ -287,7 +208,7 @@ theorem jacVarForce_le
         t)
   have hF6 : L F6 <= C0 * L J * L T * L K := by
     simpa only [F6, L, J, T, K] using
-      (curvAlong_le (I := I) P h0 (fun v : Real => f 0 v)
+      (HasCurvDerivBound.curvature_along_le (I := I) P h0 (fun v : Real => f 0 v)
         (fun v : Real => V 0 v)
         (fun v : Real => Geometry.Riemannian.Variation.varSnd (I := I) f 0 v)
         (fun v : Real =>
@@ -330,7 +251,7 @@ theorem jacVarForce_le
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem intrJacForce_le
+theorem intrinsic_jacobi_force_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     {C0 C1 : Real}
@@ -533,7 +454,7 @@ theorem intrJacForce_le
             (Geometry.Riemannian.Variation.varSnd
               (I := I) f s t) : TangentBundle I P.M)) :=
     hT.comp ht
-  exact jacVarForce_le (I := I) P h0 h1 f V t
+  exact jacobi_variation_force_le (I := I) P h0 h1 f V t
     hγt hAt hTt hJt hγs hJs hTs
 
 end HCGCompactness

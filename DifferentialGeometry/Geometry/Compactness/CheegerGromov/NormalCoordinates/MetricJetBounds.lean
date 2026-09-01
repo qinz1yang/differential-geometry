@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
-
 import DifferentialGeometry.Geometry.Exponential.IntrinsicMetricJets
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.HigherJacobiPair
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Jacobi.JetBounds
 
 set_option autoImplicit false
 
@@ -39,7 +38,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
-theorem intrMetricJet_abs_le
+theorem intrinsic_metric_jet_abs_le
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -113,7 +112,7 @@ theorem intrMetricJet_abs_le
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrMetricJet_tube
+theorem intrinsic_metric_jet_le_of_bounded_geometry
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
@@ -150,7 +149,7 @@ theorem intrMetricJet_tube
     Real.sqrt (P.metric.inner p a a) ≤ D →
     Real.sqrt (P.metric.inner p b b) ≤ D →
     |intrMetricJet (I := I) P.metric hEnorm p u a b n 0| ≤
-      2 ^ n * jetCap hP.C U D n ^ 2 := by
+      2 ^ n * jacobiJetBound hP.C U D n ^ 2 := by
   let _ : TopologicalSpace P.M := P.topology
   let _ : ChartedSpace H P.M := P.charted
   let _ : IsManifold I ∞ P.M := P.smooth
@@ -181,18 +180,18 @@ theorem intrMetricJet_tube
   dsimp only
   intro hu ha hb
   have hjets :=
-    intrJet_upto_le (I := I) P hcomplete hconn hP p u
+    intrinsic_jacobi_jets_le (I := I) P hcomplete hconn hP p u
       (R := 0) (U := U) (D := D) hD (by simpa using hu)
       n a b ha hb 0 (by simp)
-  apply intrMetricJet_abs_le (I := I) P.metric hEnorm p u a b n 0
-    (jetCap hP.C U D n) (jetCap_nonneg hP.C hD n)
+  apply intrinsic_metric_jet_abs_le (I := I) P.metric hEnorm p u a b n 0
+    (jacobiJetBound hP.C U D n) (jacobi_jet_bound_nonneg hP.C hD n)
   intro k hk
-  simpa only [IntrJetAtom.eval, intrLaunchJet] using
+  simpa only [IntrinsicJacobiJetAtom.eval, intrLaunchJet] using
     hjets.1 k hk 1 (by constructor <;> norm_num)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrMetric_deriv_le
+theorem intrinsic_frame_metric_iterated_fderiv_norm_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
@@ -231,7 +230,7 @@ theorem intrMetric_deriv_le
       ‖iteratedFDeriv Real n
           (intrFrameMetric (I := I) P.metric hEnorm p) z‖ ≤
         ContinuousMultilinearMap.polarConst n *
-          (2 * (2 ^ n * jetCap hP.C U 1 n ^ 2)) := by
+          (2 * (2 ^ n * jacobiJetBound hP.C U 1 n ^ 2)) := by
   let _ : TopologicalSpace P.M := P.topology
   let _ : ChartedSpace H P.M := P.charted
   let _ : IsManifold I ∞ P.M := P.smooth
@@ -264,7 +263,7 @@ theorem intrMetric_deriv_le
   let A :=
     iteratedFDeriv Real n
       (intrFrameMetric (I := I) P.metric hEnorm p) z
-  let S : Real := 2 ^ n * jetCap hP.C U 1 n ^ 2
+  let S : Real := 2 ^ n * jacobiJetBound hP.C U 1 n ^ 2
   have hS : 0 ≤ S := by
     exact mul_nonneg (by positivity) (sq_nonneg _)
   have htwoS : 0 ≤ 2 * S := mul_nonneg (by norm_num) hS
@@ -319,7 +318,7 @@ theorem intrMetric_deriv_le
                 (normalFrame (I := I) P.metric p b)) ≤ 1 := by
         simpa only [normalFrame_sqrt] using hb
       have hjet :=
-        intrMetricJet_tube (I := I) P hcomplete hconn hP p
+        intrinsic_metric_jet_le_of_bounded_geometry (I := I) P hcomplete hconn hP p
           (normalFrame (I := I) P.metric p z)
           (normalFrame (I := I) P.metric p a)
           (normalFrame (I := I) P.metric p b) n

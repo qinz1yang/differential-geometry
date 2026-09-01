@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicGronwall
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.HigherCurvatureJet
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.HigherJacobiForce
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Jacobi.CurvatureJet
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Jacobi.ForceBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CurvatureOperatorBounds
 
 set_option autoImplicit false
@@ -25,7 +25,7 @@ variable {E : Type uE} [NormedAddCommGroup E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-def jetLeafCap (U B : Real) : IntrJetAtom -> Real
+def jacobiJetAtomBound (U B : Real) : IntrinsicJacobiJetAtom -> Real
   | .pathT => U
   | .pathDt => 0
   | .aJet _ => B
@@ -33,61 +33,61 @@ def jetLeafCap (U B : Real) : IntrJetAtom -> Real
   | .bJet _ => B
   | .bTime _ => B
 
-def jetRate (C : Nat -> Real) (U : Real) : Real :=
+def jacobiJetGrowthRate (C : Nat -> Real) (U : Real) : Real :=
   max (C 0 * U ^ 2) 1
 
-def jetEps (C : Nat -> Real) (U B : Real) (n : Nat) : Real :=
-  (intrResidualTerm (n + 1)).majorant C (jetLeafCap U B)
+def jacobiJetForcingBound (C : Nat -> Real) (U B : Real) (n : Nat) : Real :=
+  (intrinsicJacobiResidualTerm (n + 1)).majorant C (jacobiJetAtomBound U B)
 
-def jetCap (C : Nat -> Real) (U D : Real) : Nat -> Real
-  | 0 => gronwallBound D (jetRate C U) 0 1
+def jacobiJetBound (C : Nat -> Real) (U D : Real) : Nat -> Real
+  | 0 => gronwallBound D (jacobiJetGrowthRate C U) 0 1
   | n + 1 =>
-      max (jetCap C U D n)
-        (gronwallBound 0 (jetRate C U)
-          (jetEps C U (jetCap C U D n) n) 1)
+      max (jacobiJetBound C U D n)
+        (gronwallBound 0 (jacobiJetGrowthRate C U)
+          (jacobiJetForcingBound C U (jacobiJetBound C U D n) n) 1)
 
-theorem jetLeafCap_nonneg
+theorem jacobi_jet_atom_bound_nonneg
     {U B : Real} (hU : 0 <= U) (hB : 0 <= B) :
-    forall atom, 0 <= jetLeafCap U B atom := by
+    forall atom, 0 <= jacobiJetAtomBound U B atom := by
   intro atom
-  cases atom <;> simp only [jetLeafCap, hU, hB, le_refl]
+  cases atom <;> simp only [jacobiJetAtomBound, hU, hB, le_refl]
 
-theorem jetRate_pos (C : Nat -> Real) (U : Real) :
-    0 < jetRate C U := by
+theorem jacobi_jet_growth_rate_pos (C : Nat -> Real) (U : Real) :
+    0 < jacobiJetGrowthRate C U := by
   exact lt_of_lt_of_le (by norm_num) (le_max_right _ _)
 
-theorem jetEps_nonneg
+theorem jacobi_jet_forcing_bound_nonneg
     (C : Nat -> Real) {U B : Real}
     (hC : forall k, 0 <= C k) (hU : 0 <= U) (hB : 0 <= B)
     (n : Nat) :
-    0 <= jetEps C U B n := by
-  exact CurvJetTerm.majorant_nonneg C (jetLeafCap U B) hC
-    (jetLeafCap_nonneg hU hB) (intrResidualTerm (n + 1))
+    0 <= jacobiJetForcingBound C U B n := by
+  exact CurvatureJetTerm.majorant_nonneg C (jacobiJetAtomBound U B) hC
+    (jacobi_jet_atom_bound_nonneg hU hB) (intrinsicJacobiResidualTerm (n + 1))
 
-theorem jetCap_nonneg
+theorem jacobi_jet_bound_nonneg
     (C : Nat -> Real) {U D : Real} (hD : 0 <= D) :
-    forall n, 0 <= jetCap C U D n := by
+    forall n, 0 <= jacobiJetBound C U D n := by
   intro n
   induction n with
   | zero =>
-      rw [jetCap, gronwallBound_ε0]
+      rw [jacobiJetBound, gronwallBound_ε0]
       exact mul_nonneg hD (Real.exp_pos _).le
   | succ n ih =>
-      rw [jetCap]
+      rw [jacobiJetBound]
       exact ih.trans (le_max_left _ _)
 
-theorem jetCap_le_succ
+theorem jacobi_jet_bound_le_succ
     (C : Nat -> Real) (U D : Real) (n : Nat) :
-    jetCap C U D n <= jetCap C U D (n + 1) := by
-  rw [jetCap]
+    jacobiJetBound C U D n <= jacobiJetBound C U D (n + 1) := by
+  rw [jacobiJetBound]
   exact le_max_left _ _
 
-theorem jetCap_step_le
+theorem jacobi_jet_bound_step_le
     (C : Nat -> Real) (U D : Real) (n : Nat) :
-    gronwallBound 0 (jetRate C U)
-        (jetEps C U (jetCap C U D n) n) 1 <=
-      jetCap C U D (n + 1) := by
-  rw [jetCap]
+    gronwallBound 0 (jacobiJetGrowthRate C U)
+        (jacobiJetForcingBound C U (jacobiJetBound C U D n) n) 1 <=
+      jacobiJetBound C U D (n + 1) := by
+  rw [jacobiJetBound]
   exact le_max_right _ _
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -123,7 +123,7 @@ private theorem launch_speed_le
       gcongr
     _ <= U := hu
 
-private theorem jac_force_cap
+private theorem jacobi_force_bound
     {C0 C1 U BA BB LA LT LJ LK LDJ LF : Real}
     (hC0 : 0 <= C0) (hC1 : 0 <= C1) (hU : 0 <= U)
     (hBA : 0 <= BA) (hBB : 0 <= BB)
@@ -161,7 +161,7 @@ private theorem jac_force_cap
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrJacobi_pair_le
+theorem intrinsic_jacobi_pair_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
@@ -270,7 +270,7 @@ theorem intrJacobi_pair_le
         (I := I) P.metric γ J T T t
     have hD2 := (isJacobiAlong_iff (I := I) P.metric γ J).mp hJac t
     have hR :=
-      curvAlong_le (I := I) P h0 γ J T T t
+      HasCurvDerivBound.curvature_along_le (I := I) P h0 γ J T T t
     have hspeedSq :
         P.metric.inner (γ t) (T t) (T t) =
           P.metric.inner p u u := by
@@ -302,7 +302,7 @@ theorem intrJacobi_pair_le
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrMix_force_le
+theorem intrinsic_mixed_jacobi_force_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
@@ -408,10 +408,10 @@ theorem intrMix_force_le
     rw [gronwallBound_ε0]
     exact mul_nonneg (Real.sqrt_nonneg _) (Real.exp_pos _).le
   have hpairA :=
-    intrJacobi_pair_le (I := I) P hcomplete hconn hC0 h0 p u a
+    intrinsic_jacobi_pair_le (I := I) P hcomplete hconn hC0 h0 p u a
       (b := 1) (by norm_num)
   have hpairB :=
-    intrJacobi_pair_le (I := I) P hcomplete hconn hC0 h0 p u b
+    intrinsic_jacobi_pair_le (I := I) P hcomplete hconn hC0 h0 p u b
       (b := 1) (by norm_num)
   have hmonoA :
       gronwallBound (Real.sqrt (P.metric.inner p a a))
@@ -484,15 +484,15 @@ theorem intrMix_force_le
           C0 * L J * L KA * L T +
           C0 * L J * L T * L KA := by
     simpa only [f, V, F, L, A, T, J, KA, DJ] using
-      intrJacForce_le (I := I) P hcomplete h0 h1 p u a b t
-  exact jac_force_cap hC0 hC1 (Real.sqrt_nonneg _) hBA hBB
+      intrinsic_jacobi_force_le (I := I) P hcomplete h0 h1 p u a b t
+  exact jacobi_force_bound hC0 hC1 (Real.sqrt_nonneg _) hBA hBB
     (Real.sqrt_nonneg _) (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
     (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
     hLA hLT.le hLJ hLKA hLDJ hforce
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrMix_pair_le
+theorem intrinsic_mixed_jacobi_pair_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
@@ -622,7 +622,7 @@ theorem intrMix_pair_le
       Real.sqrt (P.metric.inner (f 0 t) z z)
     have hforce : L F <= eps := by
       simpa only [f, V, F, L, U, K, BA, BB, eps] using
-        intrMix_force_le (I := I) P hcomplete hconn hC0 hC1 h0 h1
+        intrinsic_mixed_jacobi_force_le (I := I) P hcomplete hconn hC0 hC1 h0 h1
           p u a b htc
     have hspeedSq :
         P.metric.inner (f 0 t) T T = P.metric.inner p u u := by
@@ -642,7 +642,7 @@ theorem intrMix_pair_le
       dsimp only [L, U]
       rw [hspeedSq]
     have hRraw :=
-      curvAlong_le (I := I) P h0
+      HasCurvDerivBound.curvature_along_le (I := I) P h0
         (fun r : Real => f r t) (fun r : Real => W r t)
         (fun r : Real =>
           Geometry.Riemannian.Variation.varSnd (I := I) f r t)
@@ -815,7 +815,7 @@ theorem intrMix_pair_le
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem intrJet_pair_of
+theorem intrinsic_jacobi_jet_pair_le_of
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
@@ -983,7 +983,7 @@ theorem intrJet_pair_of
       rw [hspeedSq]
       simpa only [u0, zero_smul, add_zero] using hspeed
     have hRraw :=
-      curvAlong_le (I := I) P h0
+      HasCurvDerivBound.curvature_along_le (I := I) P h0
         (fun v : Real => f r v) (fun v : Real => W r v)
         (fun v : Real =>
           Geometry.Riemannian.Variation.varSnd (I := I) f r v)
@@ -1076,7 +1076,7 @@ theorem intrJet_pair_of
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrJet_upto_le
+theorem intrinsic_jacobi_jets_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
@@ -1108,7 +1108,7 @@ theorem intrJet_upto_le
         exact
           Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
             (I := I) P.metric x v
-    let leafNorm : E -> E -> IntrJetAtom -> Real -> Real -> Real :=
+    let leafNorm : E -> E -> IntrinsicJacobiJetAtom -> Real -> Real -> Real :=
       fun a b atom r t =>
         Real.sqrt
           (P.metric.inner
@@ -1122,10 +1122,10 @@ theorem intrJet_upto_le
       forall r, |r| <= R ->
         (forall k, k <= n ->
           forall t, t ∈ Icc (0 : Real) 1 ->
-            leafNorm a b (.bJet k) r t <= jetCap hP.C U D n) ∧
+            leafNorm a b (.bJet k) r t <= jacobiJetBound hP.C U D n) ∧
         (forall k, k <= n ->
           forall t, t ∈ Icc (0 : Real) 1 ->
-            leafNorm a b (.bTime k) r t <= jetCap hP.C U D n) := by
+            leafNorm a b (.bTime k) r t <= jacobiJetBound hP.C U D n) := by
   let _ : TopologicalSpace P.M := P.topology
   let _ : ChartedSpace H P.M := P.charted
   let _ : IsManifold I ∞ P.M := P.smooth
@@ -1166,7 +1166,7 @@ theorem intrJet_upto_le
               (P.metric.inner p (u + r • a) (u + r • a)) <= U :=
         launch_speed_le (I := I) P p u a ha hr hD hu
       have hpair :=
-        intrJet_pair_of (I := I) P hcomplete hconn
+        intrinsic_jacobi_jet_pair_le_of (I := I) P hcomplete hconn
           (C0 := hP.C 0) (U := U) (eps := 0) (delta := D)
           (hP.nonneg 0) (hP.bound 0) p u a b 0 r
           hU hspeed (by norm_num)
@@ -1186,21 +1186,21 @@ theorem intrJet_upto_le
             change Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
-                ((IntrJetAtom.bJet 0).eval
+                ((IntrinsicJacobiJetAtom.bJet 0).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))
-                ((IntrJetAtom.bJet 0).eval
+                ((IntrinsicJacobiJetAtom.bJet 0).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))) <= D
-            rw [IntrJetAtom.bJet_time0]
+            rw [IntrinsicJacobiJetAtom.b_jet_time_zero]
             simpa only [map_zero, Real.sqrt_zero] using hD)
           (by
             change Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
-                ((IntrJetAtom.bTime 0).eval
+                ((IntrinsicJacobiJetAtom.bTime 0).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))
-                ((IntrJetAtom.bTime 0).eval
+                ((IntrinsicJacobiJetAtom.bTime 0).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))) <= D
-            rw [IntrJetAtom.bTime_zero]
+            rw [IntrinsicJacobiJetAtom.b_time_zero]
             let u0 : TangentSpace I p :=
               show TangentSpace I p from u + r • a + (0 : Real) • b
             change Real.sqrt
@@ -1209,7 +1209,7 @@ theorem intrJet_upto_le
             rw [intrinsicGeodesic_zero
               (I := I) P.metric hEnorm p u0]
             exact hb)
-      have hrate : 0 <= jetRate hP.C U := (jetRate_pos hP.C U).le
+      have hrate : 0 <= jacobiJetGrowthRate hP.C U := (jacobi_jet_growth_rate_pos hP.C U).le
       constructor
       · intro k hk
         have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
@@ -1219,11 +1219,11 @@ theorem intrJet_upto_le
           Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                ((IntrJetAtom.bJet 0).eval
+                ((IntrinsicJacobiJetAtom.bJet 0).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
-                ((IntrJetAtom.bJet 0).eval
+                ((IntrinsicJacobiJetAtom.bJet 0).eval
                   (I := I) P.metric hEnorm p u a b (r, t))) <=
-              gronwallBound D (jetRate hP.C U) 0 t := by
+              gronwallBound D (jacobiJetGrowthRate hP.C U) 0 t := by
             change Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
@@ -1231,11 +1231,11 @@ theorem intrJet_upto_le
                   (I := I) P.metric hEnorm p u a b 0 (r, t))
                 (intrLaunchJet
                   (I := I) P.metric hEnorm p u a b 0 (r, t))) <=
-                gronwallBound D (jetRate hP.C U) 0 t
-            simpa only [jetRate] using hpair.1 t ht
-          _ <= gronwallBound D (jetRate hP.C U) 0 1 :=
+                gronwallBound D (jacobiJetGrowthRate hP.C U) 0 t
+            simpa only [jacobiJetGrowthRate] using hpair.1 t ht
+          _ <= gronwallBound D (jacobiJetGrowthRate hP.C U) 0 1 :=
             gronwallBound_mono hD (by norm_num) hrate ht.2
-          _ = jetCap hP.C U D 0 := rfl
+          _ = jacobiJetBound hP.C U D 0 := rfl
       · intro k hk
         have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
         subst k
@@ -1244,11 +1244,11 @@ theorem intrJet_upto_le
           Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                ((IntrJetAtom.bTime 0).eval
+                ((IntrinsicJacobiJetAtom.bTime 0).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
-                ((IntrJetAtom.bTime 0).eval
+                ((IntrinsicJacobiJetAtom.bTime 0).eval
                   (I := I) P.metric hEnorm p u a b (r, t))) <=
-              gronwallBound D (jetRate hP.C U) 0 t := by
+              gronwallBound D (jacobiJetGrowthRate hP.C U) 0 t := by
             change Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
@@ -1264,11 +1264,11 @@ theorem intrJet_upto_le
                     (I := I) P.metric hEnorm p u a b ((s, 0), t))
                   (fun s t => intrLaunchJet
                     (I := I) P.metric hEnorm p u a b 0 (s, t)) r t)) <=
-                gronwallBound D (jetRate hP.C U) 0 t
-            simpa only [jetRate] using hpair.2 t ht
-          _ <= gronwallBound D (jetRate hP.C U) 0 1 :=
+                gronwallBound D (jacobiJetGrowthRate hP.C U) 0 t
+            simpa only [jacobiJetGrowthRate] using hpair.2 t ht
+          _ <= gronwallBound D (jacobiJetGrowthRate hP.C U) 0 1 :=
             gronwallBound_mono hD (by norm_num) hrate ht.2
-          _ = jetCap hP.C U D 0 := rfl
+          _ = jacobiJetBound hP.C U D 0 := rfl
   | succ n ih =>
       intro a b ha hb r hr
       have hU : 0 <= U := by
@@ -1281,10 +1281,10 @@ theorem intrJet_upto_le
         launch_speed_le (I := I) P p u a ha hr hD hu
       have hprev := ih a b ha hb r hr
       have hself := ih a a ha ha r hr
-      have hcap : 0 <= jetCap hP.C U D n :=
-        jetCap_nonneg hP.C hD n
-      have heps : 0 <= jetEps hP.C U (jetCap hP.C U D n) n :=
-        jetEps_nonneg hP.C hP.nonneg hU hcap n
+      have hcap : 0 <= jacobiJetBound hP.C U D n :=
+        jacobi_jet_bound_nonneg hP.C hD n
+      have heps : 0 <= jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n :=
+        jacobi_jet_forcing_bound_nonneg hP.C hP.nonneg hU hcap n
       have hres : forall t, t ∈ Ico (0 : Real) 1 ->
           Real.sqrt
               (P.metric.inner
@@ -1293,22 +1293,22 @@ theorem intrJet_upto_le
                   (I := I) P.metric hEnorm p u a b (n + 1) (r, t))
                 (intrJetResidual
                   (I := I) P.metric hEnorm p u a b (n + 1) (r, t))) <=
-            jetEps hP.C U (jetCap hP.C U D n) n := by
+            jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n := by
         intro t ht
         rw [show intrJetResidual
               (I := I) P.metric hEnorm p u a b (n + 1) (r, t) =
-            (intrResidualTerm (n + 1)).eval
+            (intrinsicJacobiResidualTerm (n + 1)).eval
               (I := I) P.metric hEnorm p u a b (r, t) by
           exact congrFun
             (congrFun
-              (intrResidualTerm_eval
+              (intrinsic_jacobi_residual_term_eval
                 (I := I) P.metric hEnorm p u a b (n + 1)) r) t]
-        apply CurvJetTerm.eval_le_at
+        apply CurvatureJetTerm.eval_le_at
           (I := I) P.metric hEnorm p u a b hP.C hP.nonneg
-          (jetLeafCap U (jetCap hP.C U D n))
-          (fun atom => atom.AtMost n)
+          (jacobiJetAtomBound U (jacobiJetBound hP.C U D n))
+          (fun atom => atom.atMost n)
           (fun k x v =>
-            HasCurvDerivBound.curvOpN_le
+            HasCurvDerivBound.curv_op_n_le
               (I := I) P (hP.bound k) x v)
           (r, t)
         · intro atom hatom
@@ -1328,19 +1328,19 @@ theorem intrJet_upto_le
                   (P.metric.inner
                     (intrLaunch3
                       (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                    ((IntrJetAtom.pathT).eval
+                    ((IntrinsicJacobiJetAtom.pathT).eval
                       (I := I) P.metric hEnorm p u a b (r, t))
-                    ((IntrJetAtom.pathT).eval
+                    ((IntrinsicJacobiJetAtom.pathT).eval
                       (I := I) P.metric hEnorm p u a b (r, t))) <= U
               rw [show P.metric.inner
                     (intrLaunch3
                       (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                    ((IntrJetAtom.pathT).eval
+                    ((IntrinsicJacobiJetAtom.pathT).eval
                       (I := I) P.metric hEnorm p u a b (r, t))
-                    ((IntrJetAtom.pathT).eval
+                    ((IntrinsicJacobiJetAtom.pathT).eval
                       (I := I) P.metric hEnorm p u a b (r, t)) =
                   P.metric.inner p (u + r • a) (u + r • a) by
-                simp only [IntrJetAtom.eval, intrLaunch3, varSnd]
+                simp only [IntrinsicJacobiJetAtom.eval, intrLaunch3, varSnd]
                 change P.metric.inner
                     (intrinsicGeodesic (I := I) P.metric hEnorm p u0 t)
                     (mfderiv 𝓘(Real, Real) I
@@ -1358,71 +1358,71 @@ theorem intrJet_upto_le
                 simp only [u0, zero_smul, add_zero]]
               exact hspeed
           | pathDt =>
-              rw [IntrJetAtom.pathDt_zero]
-              simpa only [jetLeafCap, map_zero, Real.sqrt_zero] using
+              rw [IntrinsicJacobiJetAtom.path_dt_zero]
+              simpa only [jacobiJetAtomBound, map_zero, Real.sqrt_zero] using
                 (le_refl (0 : Real))
           | aJet k =>
-              rw [IntrJetAtom.aJet_eq_self]
+              rw [IntrinsicJacobiJetAtom.a_jet_eq_self]
               rw [hbaseSelf]
-              simpa only [jetLeafCap] using hself.1 k hatom t ⟨ht.1, ht.2.le⟩
+              simpa only [jacobiJetAtomBound] using hself.1 k hatom t ⟨ht.1, ht.2.le⟩
           | aTime k =>
-              rw [IntrJetAtom.aTime_eq_self]
+              rw [IntrinsicJacobiJetAtom.a_time_eq_self]
               rw [hbaseSelf]
-              simpa only [jetLeafCap] using hself.2 k hatom t ⟨ht.1, ht.2.le⟩
+              simpa only [jacobiJetAtomBound] using hself.2 k hatom t ⟨ht.1, ht.2.le⟩
           | bJet k =>
-              simpa only [jetLeafCap] using hprev.1 k hatom t ⟨ht.1, ht.2.le⟩
+              simpa only [jacobiJetAtomBound] using hprev.1 k hatom t ⟨ht.1, ht.2.le⟩
           | bTime k =>
-              simpa only [jetLeafCap] using hprev.2 k hatom t ⟨ht.1, ht.2.le⟩
-        · exact intrResidual_atoms n
+              simpa only [jacobiJetAtomBound] using hprev.2 k hatom t ⟨ht.1, ht.2.le⟩
+        · exact intrinsic_jacobi_residual_term_all_atoms n
       have hpair :=
-        intrJet_pair_of (I := I) P hcomplete hconn
+        intrinsic_jacobi_jet_pair_le_of (I := I) P hcomplete hconn
           (C0 := hP.C 0) (U := U)
-          (eps := jetEps hP.C U (jetCap hP.C U D n) n) (delta := 0)
+          (eps := jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) (delta := 0)
           (hP.nonneg 0) (hP.bound 0) p u a b (n + 1) r
           hU hspeed heps hres
           (by
             change Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
-                ((IntrJetAtom.bJet (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))
-                ((IntrJetAtom.bJet (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))) <= 0
-            rw [IntrJetAtom.bJet_time0]
+            rw [IntrinsicJacobiJetAtom.b_jet_time_zero]
             simpa only [map_zero, Real.sqrt_zero] using
               (le_refl (0 : Real)))
           (by
             change Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
-                ((IntrJetAtom.bTime (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))
-                ((IntrJetAtom.bTime (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))) <= 0
-            rw [IntrJetAtom.bTime_succ_time0]
+            rw [IntrinsicJacobiJetAtom.b_time_succ_time_zero]
             simpa only [map_zero, Real.sqrt_zero] using
               (le_refl (0 : Real)))
-      have hrate : 0 <= jetRate hP.C U := (jetRate_pos hP.C U).le
+      have hrate : 0 <= jacobiJetGrowthRate hP.C U := (jacobi_jet_growth_rate_pos hP.C U).le
       have hnewPos : forall t, t ∈ Icc (0 : Real) 1 ->
           Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                ((IntrJetAtom.bJet (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
-                ((IntrJetAtom.bJet (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))) <=
-            jetCap hP.C U D (n + 1) := by
+            jacobiJetBound hP.C U D (n + 1) := by
         intro t ht
         calc
           Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                ((IntrJetAtom.bJet (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
-                ((IntrJetAtom.bJet (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))) <=
-              gronwallBound 0 (jetRate hP.C U)
-                (jetEps hP.C U (jetCap hP.C U D n) n) t := by
+              gronwallBound 0 (jacobiJetGrowthRate hP.C U)
+                (jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) t := by
             change Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
@@ -1430,34 +1430,34 @@ theorem intrJet_upto_le
                   (I := I) P.metric hEnorm p u a b (n + 1) (r, t))
                 (intrLaunchJet
                   (I := I) P.metric hEnorm p u a b (n + 1) (r, t))) <=
-                gronwallBound 0 (jetRate hP.C U)
-                  (jetEps hP.C U (jetCap hP.C U D n) n) t
-            simpa only [jetRate] using hpair.1 t ht
-          _ <= gronwallBound 0 (jetRate hP.C U)
-              (jetEps hP.C U (jetCap hP.C U D n) n) 1 :=
+                gronwallBound 0 (jacobiJetGrowthRate hP.C U)
+                  (jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) t
+            simpa only [jacobiJetGrowthRate] using hpair.1 t ht
+          _ <= gronwallBound 0 (jacobiJetGrowthRate hP.C U)
+              (jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) 1 :=
             gronwallBound_mono (by norm_num) heps hrate ht.2
-          _ <= jetCap hP.C U D (n + 1) :=
-            jetCap_step_le hP.C U D n
+          _ <= jacobiJetBound hP.C U D (n + 1) :=
+            jacobi_jet_bound_step_le hP.C U D n
       have hnewTime : forall t, t ∈ Icc (0 : Real) 1 ->
           Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                ((IntrJetAtom.bTime (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
-                ((IntrJetAtom.bTime (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))) <=
-            jetCap hP.C U D (n + 1) := by
+            jacobiJetBound hP.C U D (n + 1) := by
         intro t ht
         calc
           Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                ((IntrJetAtom.bTime (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
-                ((IntrJetAtom.bTime (n + 1)).eval
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))) <=
-              gronwallBound 0 (jetRate hP.C U)
-                (jetEps hP.C U (jetCap hP.C U D n) n) t := by
+              gronwallBound 0 (jacobiJetGrowthRate hP.C U)
+                (jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) t := by
             change Real.sqrt
               (P.metric.inner
                 (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
@@ -1473,24 +1473,24 @@ theorem intrJet_upto_le
                     (I := I) P.metric hEnorm p u a b ((s, 0), t))
                   (fun s t => intrLaunchJet
                     (I := I) P.metric hEnorm p u a b (n + 1) (s, t)) r t)) <=
-                gronwallBound 0 (jetRate hP.C U)
-                  (jetEps hP.C U (jetCap hP.C U D n) n) t
-            simpa only [jetRate] using hpair.2 t ht
-          _ <= gronwallBound 0 (jetRate hP.C U)
-              (jetEps hP.C U (jetCap hP.C U D n) n) 1 :=
+                gronwallBound 0 (jacobiJetGrowthRate hP.C U)
+                  (jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) t
+            simpa only [jacobiJetGrowthRate] using hpair.2 t ht
+          _ <= gronwallBound 0 (jacobiJetGrowthRate hP.C U)
+              (jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) 1 :=
             gronwallBound_mono (by norm_num) heps hrate ht.2
-          _ <= jetCap hP.C U D (n + 1) :=
-            jetCap_step_le hP.C U D n
+          _ <= jacobiJetBound hP.C U D (n + 1) :=
+            jacobi_jet_bound_step_le hP.C U D n
       constructor
       · intro k hk t ht
         rcases Nat.lt_or_eq_of_le hk with hklt | rfl
         · exact (hprev.1 k (Nat.lt_succ_iff.mp hklt) t ht).trans
-            (jetCap_le_succ hP.C U D n)
+            (jacobi_jet_bound_le_succ hP.C U D n)
         · exact hnewPos t ht
       · intro k hk t ht
         rcases Nat.lt_or_eq_of_le hk with hklt | rfl
         · exact (hprev.2 k (Nat.lt_succ_iff.mp hklt) t ht).trans
-            (jetCap_le_succ hP.C U D n)
+            (jacobi_jet_bound_le_succ hP.C U D n)
         · exact hnewTime t ht
 
 end HCGCompactness

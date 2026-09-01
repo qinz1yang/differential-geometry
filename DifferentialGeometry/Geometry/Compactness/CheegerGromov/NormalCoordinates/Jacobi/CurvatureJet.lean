@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Exponential.IntrinsicJacobiJets
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CurvatureOperatorBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
 
@@ -17,7 +16,7 @@ open scoped Bundle Manifold ContDiff ENNReal Topology
 namespace DifferentialGeometry
 namespace HCGCompactness
 
-inductive IntrJetAtom
+inductive IntrinsicJacobiJetAtom
   | pathT
   | pathDt
   | aJet (n : Nat)
@@ -25,44 +24,44 @@ inductive IntrJetAtom
   | bJet (n : Nat)
   | bTime (n : Nat)
 
-inductive CurvJetTerm
+inductive CurvatureJetTerm
   | zero
-  | atom (a : IntrJetAtom)
-  | add (x y : CurvJetTerm)
-  | scale (c : Real) (x : CurvJetTerm)
-  | curv (k : Nat) (slots : Fin (k + 3) -> CurvJetTerm)
+  | atom (a : IntrinsicJacobiJetAtom)
+  | add (x y : CurvatureJetTerm)
+  | scale (c : Real) (x : CurvatureJetTerm)
+  | curv (k : Nat) (slots : Fin (k + 3) -> CurvatureJetTerm)
 
-instance : Zero CurvJetTerm := ⟨CurvJetTerm.zero⟩
-instance : Add CurvJetTerm := ⟨CurvJetTerm.add⟩
-instance : SMul Real CurvJetTerm := ⟨CurvJetTerm.scale⟩
+instance : Zero CurvatureJetTerm := ⟨CurvatureJetTerm.zero⟩
+instance : Add CurvatureJetTerm := ⟨CurvatureJetTerm.add⟩
+instance : SMul Real CurvatureJetTerm := ⟨CurvatureJetTerm.scale⟩
 
-private def slots3 (x y z : CurvJetTerm) : Fin 3 -> CurvJetTerm :=
+private def slots3 (x y z : CurvatureJetTerm) : Fin 3 -> CurvatureJetTerm :=
   Fin.cons x (Fin.cons y (fun _ => z))
 
-private def slots4 (w x y z : CurvJetTerm) : Fin 4 -> CurvJetTerm :=
+private def slots4 (w x y z : CurvatureJetTerm) : Fin 4 -> CurvatureJetTerm :=
   Fin.cons w (slots3 x y z)
 
-def intrCorrTerm (n : Nat) : CurvJetTerm :=
-  let T := CurvJetTerm.atom IntrJetAtom.pathT
-  let dT := CurvJetTerm.atom IntrJetAtom.pathDt
-  let A := CurvJetTerm.atom (IntrJetAtom.aJet 0)
-  let dA := CurvJetTerm.atom (IntrJetAtom.aTime 0)
-  let B := CurvJetTerm.atom (IntrJetAtom.bJet n)
-  let dB := CurvJetTerm.atom (IntrJetAtom.bTime n)
-  CurvJetTerm.curv 1 (slots4 T A T B) +
-    CurvJetTerm.curv 0 (slots3 dA T B) +
-    CurvJetTerm.curv 0 (slots3 A dT B) +
-    (2 : Real) • CurvJetTerm.curv 0 (slots3 A T dB) +
-    CurvJetTerm.curv 1 (slots4 A B T T) +
-    CurvJetTerm.curv 0 (slots3 B dA T) +
-    CurvJetTerm.curv 0 (slots3 B T dA)
+def intrinsicJacobiCorrectionTerm (n : Nat) : CurvatureJetTerm :=
+  let T := CurvatureJetTerm.atom IntrinsicJacobiJetAtom.pathT
+  let dT := CurvatureJetTerm.atom IntrinsicJacobiJetAtom.pathDt
+  let A := CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.aJet 0)
+  let dA := CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.aTime 0)
+  let B := CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.bJet n)
+  let dB := CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.bTime n)
+  CurvatureJetTerm.curv 1 (slots4 T A T B) +
+    CurvatureJetTerm.curv 0 (slots3 dA T B) +
+    CurvatureJetTerm.curv 0 (slots3 A dT B) +
+    (2 : Real) • CurvatureJetTerm.curv 0 (slots3 A T dB) +
+    CurvatureJetTerm.curv 1 (slots4 A B T T) +
+    CurvatureJetTerm.curv 0 (slots3 B dA T) +
+    CurvatureJetTerm.curv 0 (slots3 B T dA)
 
-def CurvJetTerm.finSum : {n : Nat} -> (Fin n -> CurvJetTerm) -> CurvJetTerm
+def CurvatureJetTerm.finSum : {n : Nat} -> (Fin n -> CurvatureJetTerm) -> CurvatureJetTerm
   | 0, _ => 0
   | _ + 1, terms =>
-      terms 0 + CurvJetTerm.finSum (fun i => terms i.succ)
+      terms 0 + CurvatureJetTerm.finSum (fun i => terms i.succ)
 
-def CurvJetTerm.launchDeriv : CurvJetTerm -> CurvJetTerm
+def CurvatureJetTerm.launchDeriv : CurvatureJetTerm -> CurvatureJetTerm
   | .zero => 0
   | .atom .pathT => .atom (.aTime 0)
   | .atom .pathDt => 0
@@ -80,31 +79,31 @@ def CurvJetTerm.launchDeriv : CurvJetTerm -> CurvJetTerm
   | .scale c x => c • x.launchDeriv
   | .curv k slots =>
       .curv (k + 1) (Fin.cons (.atom (.aJet 0)) slots) +
-        CurvJetTerm.finSum (fun i =>
+        CurvatureJetTerm.finSum (fun i =>
           .curv k (Function.update slots i (slots i).launchDeriv))
 
-def CurvJetTerm.launchIter : Nat -> CurvJetTerm -> CurvJetTerm
+def CurvatureJetTerm.launchIter : Nat -> CurvatureJetTerm -> CurvatureJetTerm
   | 0, term => term
   | n + 1, term => (term.launchIter n).launchDeriv
 
-def intrResidualTerm : Nat -> CurvJetTerm
+def intrinsicJacobiResidualTerm : Nat -> CurvatureJetTerm
   | 0 => 0
   | n + 1 =>
-      (intrResidualTerm n).launchDeriv +
-        (-1 : Real) • intrCorrTerm n
+      (intrinsicJacobiResidualTerm n).launchDeriv +
+        (-1 : Real) • intrinsicJacobiCorrectionTerm n
 
-def CurvJetTerm.majorant
-    (C : Nat -> Real) (B : IntrJetAtom -> Real) : CurvJetTerm -> Real
+def CurvatureJetTerm.majorant
+    (C : Nat -> Real) (B : IntrinsicJacobiJetAtom -> Real) : CurvatureJetTerm -> Real
   | .zero => 0
   | .atom leaf => B leaf
   | .add x y => x.majorant C B + y.majorant C B
   | .scale c x => |c| * x.majorant C B
   | .curv k slots => C k * ∏ i, (slots i).majorant C B
 
-theorem CurvJetTerm.majorant_nonneg
-    (C : Nat -> Real) (B : IntrJetAtom -> Real)
+theorem CurvatureJetTerm.majorant_nonneg
+    (C : Nat -> Real) (B : IntrinsicJacobiJetAtom -> Real)
     (hC : forall k, 0 <= C k) (hB : forall atom, 0 <= B atom) :
-    forall term : CurvJetTerm, 0 <= term.majorant C B := by
+    forall term : CurvatureJetTerm, 0 <= term.majorant C B := by
   intro term
   induction term with
   | zero =>
@@ -118,14 +117,14 @@ theorem CurvJetTerm.majorant_nonneg
   | curv k slots ih =>
       exact mul_nonneg (hC k) (Finset.prod_nonneg fun i _ => ih i)
 
-def CurvJetTerm.AllAtoms : CurvJetTerm -> (IntrJetAtom -> Prop) -> Prop
-  | CurvJetTerm.zero, _ => True
-  | CurvJetTerm.atom leaf, P => P leaf
-  | CurvJetTerm.add x y, P => x.AllAtoms P ∧ y.AllAtoms P
-  | CurvJetTerm.scale _ x, P => x.AllAtoms P
-  | CurvJetTerm.curv _ slots, P => forall i, (slots i).AllAtoms P
+def CurvatureJetTerm.allAtoms : CurvatureJetTerm -> (IntrinsicJacobiJetAtom -> Prop) -> Prop
+  | CurvatureJetTerm.zero, _ => True
+  | CurvatureJetTerm.atom leaf, P => P leaf
+  | CurvatureJetTerm.add x y, P => x.allAtoms P ∧ y.allAtoms P
+  | CurvatureJetTerm.scale _ x, P => x.allAtoms P
+  | CurvatureJetTerm.curv _ slots, P => forall i, (slots i).allAtoms P
 
-def IntrJetAtom.AtMost : IntrJetAtom -> Nat -> Prop
+def IntrinsicJacobiJetAtom.atMost : IntrinsicJacobiJetAtom -> Nat -> Prop
   | .pathT, _ => True
   | .pathDt, _ => True
   | .aJet k, n => k <= n
@@ -133,9 +132,9 @@ def IntrJetAtom.AtMost : IntrJetAtom -> Nat -> Prop
   | .bJet k, n => k <= n
   | .bTime k, n => k <= n
 
-theorem IntrJetAtom.atMost_mono
-    {atom : IntrJetAtom} {m n : Nat} (hmn : m <= n) :
-    atom.AtMost m -> atom.AtMost n := by
+theorem IntrinsicJacobiJetAtom.at_most_mono
+    {atom : IntrinsicJacobiJetAtom} {m n : Nat} (hmn : m <= n) :
+    atom.atMost m -> atom.atMost n := by
   cases atom with
   | pathT =>
       intro h
@@ -156,10 +155,10 @@ theorem IntrJetAtom.atMost_mono
       intro hk
       exact hk.trans hmn
 
-theorem CurvJetTerm.allAtoms_mono
-    {P Q : IntrJetAtom -> Prop}
+theorem CurvatureJetTerm.all_atoms_mono
+    {P Q : IntrinsicJacobiJetAtom -> Prop}
     (hPQ : forall atom, P atom -> Q atom) :
-    forall term : CurvJetTerm, term.AllAtoms P -> term.AllAtoms Q := by
+    forall term : CurvatureJetTerm, term.allAtoms P -> term.allAtoms Q := by
   intro term
   induction term with
   | zero =>
@@ -178,11 +177,11 @@ theorem CurvJetTerm.allAtoms_mono
       intro hterm i
       exact ih i (hterm i)
 
-theorem CurvJetTerm.finSum_atoms
-    {P : IntrJetAtom -> Prop} :
-    forall {n : Nat} (terms : Fin n -> CurvJetTerm),
-      (forall i, (terms i).AllAtoms P) ->
-        (CurvJetTerm.finSum terms).AllAtoms P := by
+theorem CurvatureJetTerm.fin_sum_atoms
+    {P : IntrinsicJacobiJetAtom -> Prop} :
+    forall {n : Nat} (terms : Fin n -> CurvatureJetTerm),
+      (forall i, (terms i).allAtoms P) ->
+        (CurvatureJetTerm.finSum terms).allAtoms P := by
   intro n
   induction n with
   | zero =>
@@ -192,10 +191,10 @@ theorem CurvJetTerm.finSum_atoms
       intro terms hterms
       exact ⟨hterms 0, ih (fun i => terms i.succ) (fun i => hterms i.succ)⟩
 
-theorem CurvJetTerm.launch_atoms :
-    forall (term : CurvJetTerm) (n : Nat),
-      term.AllAtoms (fun atom => atom.AtMost n) ->
-        term.launchDeriv.AllAtoms (fun atom => atom.AtMost (n + 1)) := by
+theorem CurvatureJetTerm.launch_deriv_all_atoms :
+    forall (term : CurvatureJetTerm) (n : Nat),
+      term.allAtoms (fun atom => atom.atMost n) ->
+        term.launchDeriv.allAtoms (fun atom => atom.atMost (n + 1)) := by
   intro term
   induction term with
   | zero =>
@@ -240,26 +239,26 @@ theorem CurvJetTerm.launch_atoms :
       · intro i
         refine Fin.cases ?_ (fun j => ?_) i
         · exact Nat.zero_le _
-        · exact CurvJetTerm.allAtoms_mono
+        · exact CurvatureJetTerm.all_atoms_mono
             (fun atom hatom =>
-              IntrJetAtom.atMost_mono (Nat.le_succ n) hatom)
+              IntrinsicJacobiJetAtom.at_most_mono (Nat.le_succ n) hatom)
             (slots j) (hterm j)
-      · apply CurvJetTerm.finSum_atoms
+      · apply CurvatureJetTerm.fin_sum_atoms
         intro i j
         by_cases hji : j = i
         · subst j
           rw [Function.update_self]
           exact ih i n (hterm i)
         · rw [Function.update_of_ne hji]
-          exact CurvJetTerm.allAtoms_mono
+          exact CurvatureJetTerm.all_atoms_mono
             (fun atom hatom =>
-              IntrJetAtom.atMost_mono (Nat.le_succ n) hatom)
+              IntrinsicJacobiJetAtom.at_most_mono (Nat.le_succ n) hatom)
             (slots j) (hterm j)
 
 private theorem slots3_atoms
-    {P : IntrJetAtom -> Prop} {x y z : CurvJetTerm}
-    (hx : x.AllAtoms P) (hy : y.AllAtoms P) (hz : z.AllAtoms P) :
-    forall i, (slots3 x y z i).AllAtoms P := by
+    {P : IntrinsicJacobiJetAtom -> Prop} {x y z : CurvatureJetTerm}
+    (hx : x.allAtoms P) (hy : y.allAtoms P) (hz : z.allAtoms P) :
+    forall i, (slots3 x y z i).allAtoms P := by
   intro i
   fin_cases i
   · exact hx
@@ -267,10 +266,10 @@ private theorem slots3_atoms
   · exact hz
 
 private theorem slots4_atoms
-    {P : IntrJetAtom -> Prop} {w x y z : CurvJetTerm}
-    (hw : w.AllAtoms P) (hx : x.AllAtoms P)
-    (hy : y.AllAtoms P) (hz : z.AllAtoms P) :
-    forall i, (slots4 w x y z i).AllAtoms P := by
+    {P : IntrinsicJacobiJetAtom -> Prop} {w x y z : CurvatureJetTerm}
+    (hw : w.allAtoms P) (hx : x.allAtoms P)
+    (hy : y.allAtoms P) (hz : z.allAtoms P) :
+    forall i, (slots4 w x y z i).allAtoms P := by
   intro i
   fin_cases i
   · exact hw
@@ -278,21 +277,21 @@ private theorem slots4_atoms
   · exact hy
   · exact hz
 
-theorem intrCorrTerm_atoms (n : Nat) :
-    (intrCorrTerm n).AllAtoms (fun atom => atom.AtMost n) := by
-  let P : IntrJetAtom -> Prop := fun atom => atom.AtMost n
-  let T := CurvJetTerm.atom IntrJetAtom.pathT
-  let dT := CurvJetTerm.atom IntrJetAtom.pathDt
-  let A := CurvJetTerm.atom (IntrJetAtom.aJet 0)
-  let dA := CurvJetTerm.atom (IntrJetAtom.aTime 0)
-  let B := CurvJetTerm.atom (IntrJetAtom.bJet n)
-  let dB := CurvJetTerm.atom (IntrJetAtom.bTime n)
-  have hT : T.AllAtoms P := trivial
-  have hdT : dT.AllAtoms P := trivial
-  have hA : A.AllAtoms P := Nat.zero_le n
-  have hdA : dA.AllAtoms P := Nat.zero_le n
-  have hB : B.AllAtoms P := le_rfl
-  have hdB : dB.AllAtoms P := le_rfl
+theorem intrinsic_jacobi_correction_term_all_atoms (n : Nat) :
+    (intrinsicJacobiCorrectionTerm n).allAtoms (fun atom => atom.atMost n) := by
+  let P : IntrinsicJacobiJetAtom -> Prop := fun atom => atom.atMost n
+  let T := CurvatureJetTerm.atom IntrinsicJacobiJetAtom.pathT
+  let dT := CurvatureJetTerm.atom IntrinsicJacobiJetAtom.pathDt
+  let A := CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.aJet 0)
+  let dA := CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.aTime 0)
+  let B := CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.bJet n)
+  let dB := CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.bTime n)
+  have hT : T.allAtoms P := trivial
+  have hdT : dT.allAtoms P := trivial
+  have hA : A.allAtoms P := Nat.zero_le n
+  have hdA : dA.allAtoms P := Nat.zero_le n
+  have hB : B.allAtoms P := le_rfl
+  have hdB : dB.allAtoms P := le_rfl
   have h1 := slots4_atoms hT hA hT hB
   have h2 := slots3_atoms hdA hT hB
   have h3 := slots3_atoms hA hdT hB
@@ -302,29 +301,29 @@ theorem intrCorrTerm_atoms (n : Nat) :
   have h7 := slots3_atoms hB hT hdA
   exact ⟨⟨⟨⟨⟨⟨h1, h2⟩, h3⟩, h4⟩, h5⟩, h6⟩, h7⟩
 
-theorem intrResidual_atoms :
+theorem intrinsic_jacobi_residual_term_all_atoms :
     forall n : Nat,
-      (intrResidualTerm (n + 1)).AllAtoms
-        (fun atom => atom.AtMost n) := by
+      (intrinsicJacobiResidualTerm (n + 1)).allAtoms
+        (fun atom => atom.atMost n) := by
   intro n
   induction n with
   | zero =>
       change
-        ((intrResidualTerm 0).launchDeriv +
-          (-1 : Real) • intrCorrTerm 0).AllAtoms
-            (fun atom => atom.AtMost 0)
-      exact ⟨trivial, intrCorrTerm_atoms 0⟩
+        ((intrinsicJacobiResidualTerm 0).launchDeriv +
+          (-1 : Real) • intrinsicJacobiCorrectionTerm 0).allAtoms
+            (fun atom => atom.atMost 0)
+      exact ⟨trivial, intrinsic_jacobi_correction_term_all_atoms 0⟩
   | succ n ih =>
       change
-        ((intrResidualTerm (n + 1)).launchDeriv +
-          (-1 : Real) • intrCorrTerm (n + 1)).AllAtoms
-            (fun atom => atom.AtMost (n + 1))
+        ((intrinsicJacobiResidualTerm (n + 1)).launchDeriv +
+          (-1 : Real) • intrinsicJacobiCorrectionTerm (n + 1)).allAtoms
+            (fun atom => atom.atMost (n + 1))
       exact
-        ⟨CurvJetTerm.launch_atoms (intrResidualTerm (n + 1)) n ih,
-          intrCorrTerm_atoms (n + 1)⟩
+        ⟨CurvatureJetTerm.launch_deriv_all_atoms (intrinsicJacobiResidualTerm (n + 1)) n ih,
+          intrinsic_jacobi_correction_term_all_atoms (n + 1)⟩
 
-theorem CurvJetTerm.allAtoms_true :
-    forall term : CurvJetTerm, term.AllAtoms (fun _ => True) := by
+theorem CurvatureJetTerm.all_atoms_true :
+    forall term : CurvatureJetTerm, term.allAtoms (fun _ => True) := by
   intro term
   induction term with
   | zero => trivial
@@ -346,13 +345,13 @@ variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def IntrJetAtom.eval
+noncomputable def IntrinsicJacobiJetAtom.eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (u a b : E) (atom : IntrJetAtom) (q : Real × Real) :
+    (p : M) (u a b : E) (atom : IntrinsicJacobiJetAtom) (q : Real × Real) :
     TangentSpace I
       (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
   let f : Real -> Real -> M := fun r t =>
@@ -377,14 +376,14 @@ noncomputable def IntrJetAtom.eval
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem IntrJetAtom.pathDt_zero
+theorem IntrinsicJacobiJetAtom.path_dt_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r t : Real) :
-    IntrJetAtom.pathDt.eval (I := I) g hEnorm p u a b (r, t) = 0 := by
+    IntrinsicJacobiJetAtom.pathDt.eval (I := I) g hEnorm p u a b (r, t) = 0 := by
   let f : Real -> Real -> M := fun s v =>
     intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   let gamma : Real -> M := fun v => f r v
@@ -409,20 +408,20 @@ theorem IntrJetAtom.pathDt_zero
   have hz :=
     (covDerivAlong_velocity_eq_zero_iff_hasGeodesicEquationAt
       (I := I) g gamma t hgamma).2 (hgeo.hasGeodesicEquationAt t)
-  simpa only [IntrJetAtom.eval, f, gamma, covSnd, varSnd] using hz
+  simpa only [IntrinsicJacobiJetAtom.eval, f, gamma, covSnd, varSnd] using hz
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem IntrJetAtom.aJet_eq_self
+theorem IntrinsicJacobiJetAtom.a_jet_eq_self
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r t : Real) :
-    (IntrJetAtom.aJet n).eval (I := I) g hEnorm p u a b (r, t) =
-      (IntrJetAtom.bJet n).eval (I := I) g hEnorm p u a a (r, t) := by
+    (IntrinsicJacobiJetAtom.aJet n).eval (I := I) g hEnorm p u a b (r, t) =
+      (IntrinsicJacobiJetAtom.bJet n).eval (I := I) g hEnorm p u a a (r, t) := by
   let fb : Real -> Real -> M := fun s v =>
     intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   let fa : Real -> Real -> M := fun s v =>
@@ -440,15 +439,15 @@ theorem IntrJetAtom.aJet_eq_self
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem IntrJetAtom.aTime_eq_self
+theorem IntrinsicJacobiJetAtom.a_time_eq_self
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r t : Real) :
-    (IntrJetAtom.aTime n).eval (I := I) g hEnorm p u a b (r, t) =
-      (IntrJetAtom.bTime n).eval (I := I) g hEnorm p u a a (r, t) := by
+    (IntrinsicJacobiJetAtom.aTime n).eval (I := I) g hEnorm p u a b (r, t) =
+      (IntrinsicJacobiJetAtom.bTime n).eval (I := I) g hEnorm p u a a (r, t) := by
   let fb : Real -> Real -> M := fun s v =>
     intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   let fa : Real -> Real -> M := fun s v =>
@@ -472,14 +471,14 @@ theorem IntrJetAtom.aTime_eq_self
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem IntrJetAtom.aJet_time0
+theorem IntrinsicJacobiJetAtom.a_jet_time_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r : Real) :
-    (IntrJetAtom.aJet n).eval (I := I) g hEnorm p u a b (r, 0) = 0 := by
+    (IntrinsicJacobiJetAtom.aJet n).eval (I := I) g hEnorm p u a b (r, 0) = 0 := by
   let f : Real -> Real -> M := fun s t =>
     intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
   let A : forall s t : Real, TangentSpace I (f s t) := fun s t =>
@@ -499,27 +498,27 @@ theorem IntrJetAtom.aJet_time0
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem IntrJetAtom.bJet_time0
+theorem IntrinsicJacobiJetAtom.b_jet_time_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r : Real) :
-    (IntrJetAtom.bJet n).eval (I := I) g hEnorm p u a b (r, 0) = 0 := by
+    (IntrinsicJacobiJetAtom.bJet n).eval (I := I) g hEnorm p u a b (r, 0) = 0 := by
   change intrLaunchJet (I := I) g hEnorm p u a b n (r, 0) = 0
   exact intrLaunchJet_time0 (I := I) g hEnorm p u a b n r
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def CurvJetTerm.eval
+noncomputable def CurvatureJetTerm.eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) :
-    CurvJetTerm -> forall q : Real × Real,
+    CurvatureJetTerm -> forall q : Real × Real,
       TangentSpace I
         (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
   | .zero, _ => 0
@@ -536,7 +535,7 @@ noncomputable def CurvJetTerm.eval
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem CurvJetTerm.eval_le_at
+theorem CurvatureJetTerm.eval_le_at
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -544,7 +543,7 @@ theorem CurvJetTerm.eval_le_at
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E)
     (C : Nat -> Real) (hC : forall k, 0 <= C k)
-    (B : IntrJetAtom -> Real) (P : IntrJetAtom -> Prop)
+    (B : IntrinsicJacobiJetAtom -> Real) (P : IntrinsicJacobiJetAtom -> Prop)
     (hcurv : forall (k : Nat) (x : M)
       (v : Fin (k + 3) -> TangentSpace I x),
       Real.sqrt
@@ -552,14 +551,14 @@ theorem CurvJetTerm.eval_le_at
             (curvOpN (I := I) g k x v)) <=
         C k * ∏ i, Real.sqrt (g.inner x (v i) (v i)))
     (q : Real × Real)
-    (hatom : forall (atom : IntrJetAtom), P atom ->
+    (hatom : forall (atom : IntrinsicJacobiJetAtom), P atom ->
         Real.sqrt
             (g.inner
               (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
               (atom.eval (I := I) g hEnorm p u a b q)
               (atom.eval (I := I) g hEnorm p u a b q)) <=
           B atom) :
-    forall term : CurvJetTerm, term.AllAtoms P ->
+    forall term : CurvatureJetTerm, term.allAtoms P ->
         Real.sqrt
             (g.inner
               (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
@@ -570,7 +569,7 @@ theorem CurvJetTerm.eval_le_at
   induction term with
   | zero =>
       intro hterm
-      simp only [CurvJetTerm.eval, CurvJetTerm.majorant, map_zero,
+      simp only [CurvatureJetTerm.eval, CurvatureJetTerm.majorant, map_zero,
         Real.sqrt_zero]
       exact le_rfl
   | atom atom =>
@@ -593,7 +592,7 @@ theorem CurvJetTerm.eval_le_at
                 (g.inner x
                   (z.eval (I := I) g hEnorm p u a b q)
                   (z.eval (I := I) g hEnorm p u a b q)) := by
-          simpa only [CurvJetTerm.eval] using
+          simpa only [CurvatureJetTerm.eval] using
             Geometry.Riemannian.sqrt_inner_add_le (I := I) g x
               (y.eval (I := I) g hEnorm p u a b q)
               (z.eval (I := I) g hEnorm p u a b q)
@@ -613,7 +612,7 @@ theorem CurvJetTerm.eval_le_at
               (g.inner x
                 (y.eval (I := I) g hEnorm p u a b q)
                 (y.eval (I := I) g hEnorm p u a b q)) := by
-          rw [CurvJetTerm.eval.eq_def]
+          rw [CurvatureJetTerm.eval.eq_def]
           exact Geometry.Riemannian.sqrt_inner_smul (I := I) g x c
             (y.eval (I := I) g hEnorm p u a b q)
         _ <= |c| * y.majorant C B :=
@@ -638,26 +637,26 @@ theorem CurvJetTerm.eval_le_at
       calc
         Real.sqrt
             (g.inner x
-              ((CurvJetTerm.curv k slots).eval
+              ((CurvatureJetTerm.curv k slots).eval
                 (I := I) g hEnorm p u a b q)
-              ((CurvJetTerm.curv k slots).eval
+              ((CurvatureJetTerm.curv k slots).eval
                 (I := I) g hEnorm p u a b q)) <=
             C k * ∏ i : Fin (k + 3),
               Real.sqrt
                 (g.inner x
                   ((slots i).eval (I := I) g hEnorm p u a b q)
                   ((slots i).eval (I := I) g hEnorm p u a b q)) := by
-          simpa only [CurvJetTerm.eval] using
+          simpa only [CurvatureJetTerm.eval] using
             hcurv k x
               (fun i => (slots i).eval (I := I) g hEnorm p u a b q)
         _ <= C k * ∏ i : Fin (k + 3), (slots i).majorant C B :=
           mul_le_mul_of_nonneg_left hprod (hC k)
-        _ = (CurvJetTerm.curv k slots).majorant C B := rfl
+        _ = (CurvatureJetTerm.curv k slots).majorant C B := rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem CurvJetTerm.eval_le_atoms
+theorem CurvatureJetTerm.eval_le_atoms
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -665,14 +664,14 @@ theorem CurvJetTerm.eval_le_atoms
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E)
     (C : Nat -> Real) (hC : forall k, 0 <= C k)
-    (B : IntrJetAtom -> Real) (P : IntrJetAtom -> Prop)
+    (B : IntrinsicJacobiJetAtom -> Real) (P : IntrinsicJacobiJetAtom -> Prop)
     (hcurv : forall (k : Nat) (x : M)
       (v : Fin (k + 3) -> TangentSpace I x),
       Real.sqrt
           (g.inner x (curvOpN (I := I) g k x v)
             (curvOpN (I := I) g k x v)) <=
         C k * ∏ i, Real.sqrt (g.inner x (v i) (v i)))
-    (hatom : forall (atom : IntrJetAtom), P atom ->
+    (hatom : forall (atom : IntrinsicJacobiJetAtom), P atom ->
       forall q : Real × Real,
         Real.sqrt
             (g.inner
@@ -680,7 +679,7 @@ theorem CurvJetTerm.eval_le_atoms
               (atom.eval (I := I) g hEnorm p u a b q)
               (atom.eval (I := I) g hEnorm p u a b q)) <=
           B atom) :
-    forall term : CurvJetTerm, term.AllAtoms P ->
+    forall term : CurvatureJetTerm, term.allAtoms P ->
       forall q : Real × Real,
         Real.sqrt
             (g.inner
@@ -689,14 +688,14 @@ theorem CurvJetTerm.eval_le_atoms
               (term.eval (I := I) g hEnorm p u a b q)) <=
           term.majorant C B := by
   intro term hterm q
-  exact CurvJetTerm.eval_le_at
+  exact CurvatureJetTerm.eval_le_at
     (I := I) g hEnorm p u a b C hC B P hcurv q
     (fun atom hatomP => hatom atom hatomP q) term hterm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem CurvJetTerm.eval_le_of
+theorem CurvatureJetTerm.eval_le_of
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -704,21 +703,21 @@ theorem CurvJetTerm.eval_le_of
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E)
     (C : Nat -> Real) (hC : forall k, 0 <= C k)
-    (B : IntrJetAtom -> Real)
+    (B : IntrinsicJacobiJetAtom -> Real)
     (hcurv : forall (k : Nat) (x : M)
       (v : Fin (k + 3) -> TangentSpace I x),
       Real.sqrt
           (g.inner x (curvOpN (I := I) g k x v)
             (curvOpN (I := I) g k x v)) <=
         C k * ∏ i, Real.sqrt (g.inner x (v i) (v i)))
-    (hatom : forall (atom : IntrJetAtom) (q : Real × Real),
+    (hatom : forall (atom : IntrinsicJacobiJetAtom) (q : Real × Real),
       Real.sqrt
           (g.inner
             (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
             (atom.eval (I := I) g hEnorm p u a b q)
             (atom.eval (I := I) g hEnorm p u a b q)) <=
         B atom) :
-    forall (term : CurvJetTerm) (q : Real × Real),
+    forall (term : CurvatureJetTerm) (q : Real × Real),
       Real.sqrt
           (g.inner
             (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
@@ -726,19 +725,19 @@ theorem CurvJetTerm.eval_le_of
             (term.eval (I := I) g hEnorm p u a b q)) <=
         term.majorant C B := by
   intro term q
-  exact CurvJetTerm.eval_le_atoms
+  exact CurvatureJetTerm.eval_le_atoms
     (I := I) g hEnorm p u a b C hC B (fun _ => True)
     hcurv (fun atom _ q => hatom atom q)
-    term (CurvJetTerm.allAtoms_true term) q
+    term (CurvatureJetTerm.all_atoms_true term) q
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem CurvJetTerm.eval_le_geom
+theorem CurvatureJetTerm.eval_le_geom
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
     (hP : BoundedGeometry (I := I) P)
-    (p : P.M) (u a b : E) (B : IntrJetAtom -> Real) :
+    (p : P.M) (u a b : E) (B : IntrinsicJacobiJetAtom -> Real) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : IsManifold I ∞ P.M := P.smooth
@@ -759,7 +758,7 @@ theorem CurvJetTerm.eval_le_geom
         exact
           Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
             (I := I) P.metric x v
-    (forall (atom : IntrJetAtom) (q : Real × Real),
+    (forall (atom : IntrinsicJacobiJetAtom) (q : Real × Real),
       Real.sqrt
           (P.metric.inner
             (intrLaunch3 (I := I) P.metric hEnorm p u a b
@@ -767,7 +766,7 @@ theorem CurvJetTerm.eval_le_geom
             (atom.eval (I := I) P.metric hEnorm p u a b q)
             (atom.eval (I := I) P.metric hEnorm p u a b q)) <=
         B atom) ->
-      forall (term : CurvJetTerm) (q : Real × Real),
+      forall (term : CurvatureJetTerm) (q : Real × Real),
         Real.sqrt
             (P.metric.inner
               (intrLaunch3 (I := I) P.metric hEnorm p u a b
@@ -797,22 +796,22 @@ theorem CurvJetTerm.eval_le_geom
           (I := I) P.metric x v
   dsimp only
   intro hatom term q
-  apply CurvJetTerm.eval_le_of
+  apply CurvatureJetTerm.eval_le_of
     (I := I) P.metric hEnorm p u a b hP.C hP.nonneg B
   · intro k x v
-    exact HasCurvDerivBound.curvOpN_le (I := I) P (hP.bound k) x v
+    exact HasCurvDerivBound.curv_op_n_le (I := I) P (hP.bound k) x v
   · exact hatom
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-private theorem IntrJetAtom.eval_smooth
+private theorem IntrinsicJacobiJetAtom.eval_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (u a b : E) (atom : IntrJetAtom) :
+    (p : M) (u a b : E) (atom : IntrinsicJacobiJetAtom) :
     ContMDiff
       ((modelWithCornersSelf Real Real).prod
         (modelWithCornersSelf Real Real))
@@ -865,56 +864,56 @@ private theorem IntrJetAtom.eval_smooth
       intrLaunchJ_smooth (I := I) g hEnorm p u a b
   cases atom with
   | pathT =>
-      simpa only [IntrJetAtom.eval, f] using hT
+      simpa only [IntrinsicJacobiJetAtom.eval, f] using hT
   | pathDt =>
       have hdt :=
         cov_snd_smooth (I := I) g f
           (fun r t => varSnd (I := I) f r t) hT
-      simpa only [IntrJetAtom.eval, f, covSnd] using hdt
+      simpa only [IntrinsicJacobiJetAtom.eval, f, covSnd] using hdt
   | aJet n =>
       have hn := covFstIter_smooth (I := I) g f A hA n
-      simpa only [IntrJetAtom.eval, f, A] using hn
+      simpa only [IntrinsicJacobiJetAtom.eval, f, A] using hn
   | aTime n =>
       have hn := covFstIter_smooth (I := I) g f A hA n
       have hdn :=
         cov_snd_smooth (I := I) g f
           (fun r t => covFstIter (I := I) g f n A r t) hn
-      simpa only [IntrJetAtom.eval, f, A, covSnd] using hdn
+      simpa only [IntrinsicJacobiJetAtom.eval, f, A, covSnd] using hdn
   | bJet n =>
       have hn := covFstIter_smooth (I := I) g f B hB n
-      simpa only [IntrJetAtom.eval, f, B] using hn
+      simpa only [IntrinsicJacobiJetAtom.eval, f, B] using hn
   | bTime n =>
       have hn := covFstIter_smooth (I := I) g f B hB n
       have hdn :=
         cov_snd_smooth (I := I) g f
           (fun r t => covFstIter (I := I) g f n B r t) hn
-      simpa only [IntrJetAtom.eval, f, B, covSnd] using hdn
+      simpa only [IntrinsicJacobiJetAtom.eval, f, B, covSnd] using hdn
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-private theorem CurvJetTerm.finSum_eval
+private theorem CurvatureJetTerm.fin_sum_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) {n : Nat}
-    (terms : Fin n -> CurvJetTerm) (q : Real × Real) :
-    (CurvJetTerm.finSum terms).eval (I := I) g hEnorm p u a b q =
+    (terms : Fin n -> CurvatureJetTerm) (q : Real × Real) :
+    (CurvatureJetTerm.finSum terms).eval (I := I) g hEnorm p u a b q =
       ∑ i, (terms i).eval g hEnorm p u a b q := by
   induction n with
   | zero =>
-      rw [CurvJetTerm.finSum]
+      rw [CurvatureJetTerm.finSum]
       change (0 : TangentSpace I
         (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))) =
           ∑ i : Fin 0, (terms i).eval g hEnorm p u a b q
       simp only [Finset.univ_eq_empty, Finset.sum_empty]
   | succ n ih =>
-      rw [CurvJetTerm.finSum]
+      rw [CurvatureJetTerm.finSum]
       change
         (terms 0).eval g hEnorm p u a b q +
-            (CurvJetTerm.finSum (fun i => terms i.succ)).eval
+            (CurvatureJetTerm.finSum (fun i => terms i.succ)).eval
               g hEnorm p u a b q =
           ∑ i, (terms i).eval g hEnorm p u a b q
       rw [Fin.sum_univ_succ, ih]
@@ -922,13 +921,13 @@ private theorem CurvJetTerm.finSum_eval
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-private theorem CurvJetTerm.eval_launch_smooth
+private theorem CurvatureJetTerm.eval_launch_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (u a b : E) (term : CurvJetTerm) (t : Real) :
+    (p : M) (u a b : E) (term : CurvatureJetTerm) (t : Real) :
     ContMDiff (modelWithCornersSelf Real Real) I.tangent ∞
       (fun r : Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
@@ -952,7 +951,7 @@ private theorem CurvJetTerm.eval_launch_smooth
       let Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
           (TangentSpace I : M -> Type _) := 0
       have hzero := Z.contMDiff.comp hgamma
-      simpa only [CurvJetTerm.eval, gamma, Z, Function.comp_def,
+      simpa only [CurvatureJetTerm.eval, gamma, Z, Function.comp_def,
         ContMDiffSection.coe_zero, Pi.zero_apply] using hzero
   | atom atom =>
       have hincl :
@@ -963,8 +962,8 @@ private theorem CurvJetTerm.eval_launch_smooth
             ∞ (fun r : Real => (r, t)) :=
         contMDiff_id.prodMk contMDiff_const
       have hatom :=
-        (IntrJetAtom.eval_smooth (I := I) g hEnorm p u a b atom).comp hincl
-      simpa only [CurvJetTerm.eval, Function.comp_def] using hatom
+        (IntrinsicJacobiJetAtom.eval_smooth (I := I) g hEnorm p u a b atom).comp hincl
+      simpa only [CurvatureJetTerm.eval, Function.comp_def] using hatom
   | add x y ihx ihy =>
       let fields : Fin 2 -> forall r : Real, TangentSpace I (gamma r) :=
         Fin.cons
@@ -987,7 +986,7 @@ private theorem CurvJetTerm.eval_launch_smooth
           (fun r : Real =>
             (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
               (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t))
-              ((CurvJetTerm.add x y).eval
+              ((CurvatureJetTerm.add x y).eval
                 (I := I) g hEnorm p u a b (r, t)) :
                 TangentBundle I M)) =
             fun r : Real =>
@@ -995,7 +994,7 @@ private theorem CurvJetTerm.eval_launch_smooth
                 (gamma r) (∑ i, fields i r) : TangentBundle I M) := by
         funext r
         congr 1
-        rw [CurvJetTerm.eval.eq_def]
+        rw [CurvatureJetTerm.eval.eq_def]
         simp only [Fin.sum_univ_two, fields, Fin.cons_zero, Fin.cons_one]
       rw [hfun]
       exact hsum
@@ -1006,26 +1005,26 @@ private theorem CurvJetTerm.eval_launch_smooth
       convert
         contMDiff_smul_bundleField_perp (I := I) hgamma hc ih using 1; rfl
   | curv k slots ih =>
-      simpa only [CurvJetTerm.eval, gamma] using
+      simpa only [CurvatureJetTerm.eval, gamma] using
         curvOpN_smoothAlong (I := I) g k gamma
           (fun i r => (slots i).eval g hEnorm p u a b (r, t))
           hgamma ih
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem IntrJetAtom.launchDeriv_eval
+private theorem IntrinsicJacobiJetAtom.launch_deriv_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (u a b : E) (atom : IntrJetAtom) (r t : Real) :
+    (p : M) (u a b : E) (atom : IntrinsicJacobiJetAtom) (r t : Real) :
     covFst (I := I) g
         (fun s v : Real =>
           intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
         (fun s v : Real =>
           atom.eval (I := I) g hEnorm p u a b (s, v)) r t =
-      (CurvJetTerm.atom atom).launchDeriv.eval
+      (CurvatureJetTerm.atom atom).launchDeriv.eval
         (I := I) g hEnorm p u a b (r, t) := by
   let f : Real -> Real -> M := fun s v =>
     intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
@@ -1058,8 +1057,8 @@ private theorem IntrJetAtom.launchDeriv_eval
         (fun q : Real × Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.1 q.2) (A q.1 q.2) : TangentBundle I M)) := by
-    simpa only [f, A, IntrJetAtom.eval, covFstIter_zero] using
-      IntrJetAtom.eval_smooth (I := I) g hEnorm p u a b (.aJet 0)
+    simpa only [f, A, IntrinsicJacobiJetAtom.eval, covFstIter_zero] using
+      IntrinsicJacobiJetAtom.eval_smooth (I := I) g hEnorm p u a b (.aJet 0)
   have hB :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -1068,9 +1067,9 @@ private theorem IntrJetAtom.launchDeriv_eval
         (fun q : Real × Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.1 q.2) (B q.1 q.2) : TangentBundle I M)) := by
-    simpa only [f, B, IntrJetAtom.eval, covFstIter_zero] using
-      IntrJetAtom.eval_smooth (I := I) g hEnorm p u a b (.bJet 0)
-  have hslots3 (x y z : CurvJetTerm) :
+    simpa only [f, B, IntrinsicJacobiJetAtom.eval, covFstIter_zero] using
+      IntrinsicJacobiJetAtom.eval_smooth (I := I) g hEnorm p u a b (.bJet 0)
+  have hslots3 (x y z : CurvatureJetTerm) :
       (fun i =>
           (slots3 x y z i).eval (I := I) g hEnorm p u a b (r, t)) =
         DifferentialGeometry.Geometry.Curvature.vec3 (I := I)
@@ -1083,13 +1082,13 @@ private theorem IntrJetAtom.launchDeriv_eval
   | pathT =>
       have hcomm :=
         commute_ds_dt_intrinsic_shifted (I := I) g f hf t
-      simpa only [CurvJetTerm.launchDeriv, CurvJetTerm.eval,
-        IntrJetAtom.eval, covFstIter_zero, f, A, covFst, covSnd,
+      simpa only [CurvatureJetTerm.launchDeriv, CurvatureJetTerm.eval,
+        IntrinsicJacobiJetAtom.eval, covFstIter_zero, f, A, covFst, covSnd,
         varFst, varSnd] using congrFun hcomm r
   | pathDt =>
       have hzero :
           (fun s : Real =>
-            IntrJetAtom.pathDt.eval (I := I) g hEnorm p u a b (s, t)) =
+            IntrinsicJacobiJetAtom.pathDt.eval (I := I) g hEnorm p u a b (s, t)) =
             fun s : Real => (0 : TangentSpace I (f s t)) := by
         funext s
         let gamma : Real -> M := fun v => f s v
@@ -1113,11 +1112,11 @@ private theorem IntrJetAtom.launchDeriv_eval
           (covDerivAlong_velocity_eq_zero_iff_hasGeodesicEquationAt
             (I := I) g gamma t hgamma).2
             (hgeo.hasGeodesicEquationAt t)
-        simpa only [IntrJetAtom.eval, f, gamma, covSnd, varSnd] using hz
+        simpa only [IntrinsicJacobiJetAtom.eval, f, gamma, covSnd, varSnd] using hz
       change
         covDerivAlong (I := I) g (fun s : Real => f s t)
             (fun s : Real =>
-              IntrJetAtom.pathDt.eval (I := I) g hEnorm p u a b (s, t)) r =
+              IntrinsicJacobiJetAtom.pathDt.eval (I := I) g hEnorm p u a b (s, t)) r =
           0
       rw [hzero]
       exact covDerivAlong_zero (I := I) g (fun s : Real => f s t) r
@@ -1158,17 +1157,17 @@ private theorem IntrJetAtom.launchDeriv_eval
             abel
       refine hsum.trans ?_
       symm
-      rw [CurvJetTerm.launchDeriv]
+      rw [CurvatureJetTerm.launchDeriv]
       change
-        (CurvJetTerm.add
-          (CurvJetTerm.atom (IntrJetAtom.aTime (n + 1)))
-          (CurvJetTerm.curv 0
-            (slots3 (CurvJetTerm.atom (IntrJetAtom.aJet 0))
-              (CurvJetTerm.atom IntrJetAtom.pathT)
-              (CurvJetTerm.atom (IntrJetAtom.aJet n))))).eval
+        (CurvatureJetTerm.add
+          (CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.aTime (n + 1)))
+          (CurvatureJetTerm.curv 0
+            (slots3 (CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.aJet 0))
+              (CurvatureJetTerm.atom IntrinsicJacobiJetAtom.pathT)
+              (CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.aJet n))))).eval
             (I := I) g hEnorm p u a b (r, t) = _
-      rw [CurvJetTerm.eval.eq_def]
-      simp only [CurvJetTerm.eval, IntrJetAtom.eval, f, A,
+      rw [CurvatureJetTerm.eval.eq_def]
+      simp only [CurvatureJetTerm.eval, IntrinsicJacobiJetAtom.eval, f, A,
         covFstIter_zero, covFstIter_succ, varCurv, curvAlong_eq_op0,
         hslots3]
   | bJet n =>
@@ -1208,30 +1207,30 @@ private theorem IntrJetAtom.launchDeriv_eval
             abel
       refine hsum.trans ?_
       symm
-      rw [CurvJetTerm.launchDeriv]
+      rw [CurvatureJetTerm.launchDeriv]
       change
-        (CurvJetTerm.add
-          (CurvJetTerm.atom (IntrJetAtom.bTime (n + 1)))
-          (CurvJetTerm.curv 0
-            (slots3 (CurvJetTerm.atom (IntrJetAtom.aJet 0))
-              (CurvJetTerm.atom IntrJetAtom.pathT)
-              (CurvJetTerm.atom (IntrJetAtom.bJet n))))).eval
+        (CurvatureJetTerm.add
+          (CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.bTime (n + 1)))
+          (CurvatureJetTerm.curv 0
+            (slots3 (CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.aJet 0))
+              (CurvatureJetTerm.atom IntrinsicJacobiJetAtom.pathT)
+              (CurvatureJetTerm.atom (IntrinsicJacobiJetAtom.bJet n))))).eval
             (I := I) g hEnorm p u a b (r, t) = _
-      rw [CurvJetTerm.eval.eq_def]
-      simp only [CurvJetTerm.eval, IntrJetAtom.eval, f, B,
+      rw [CurvatureJetTerm.eval.eq_def]
+      simp only [CurvatureJetTerm.eval, IntrinsicJacobiJetAtom.eval, f, B,
         covFstIter_zero, covFstIter_succ, varCurv, curvAlong_eq_op0,
         hslots3]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-private theorem IntrJetAtom.covFst_time0_of_const
+private theorem IntrinsicJacobiJetAtom.cov_fst_time_zero_of_const
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (u a b c : E) (atom : IntrJetAtom)
+    (p : M) (u a b c : E) (atom : IntrinsicJacobiJetAtom)
     (hconst : forall s,
       atom.eval (I := I) g hEnorm p u a b (s, 0) = c)
     (r : Real) :
@@ -1267,14 +1266,14 @@ private theorem IntrJetAtom.covFst_time0_of_const
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem IntrJetAtom.aTime_zero
+theorem IntrinsicJacobiJetAtom.a_time_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r : Real) :
-    (IntrJetAtom.aTime 0).eval (I := I) g hEnorm p u a b (r, 0) = a := by
+    (IntrinsicJacobiJetAtom.aTime 0).eval (I := I) g hEnorm p u a b (r, 0) = a := by
   let f : Real -> Real -> M := fun s t =>
     intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
   let fA : Real -> Real -> M := fun s t =>
@@ -1300,79 +1299,79 @@ theorem IntrJetAtom.aTime_zero
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem IntrJetAtom.bTime_zero
+theorem IntrinsicJacobiJetAtom.b_time_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r : Real) :
-    (IntrJetAtom.bTime 0).eval (I := I) g hEnorm p u a b (r, 0) = b := by
-  simpa only [IntrJetAtom.eval, covFstIter_zero] using
+    (IntrinsicJacobiJetAtom.bTime 0).eval (I := I) g hEnorm p u a b (r, 0) = b := by
+  simpa only [IntrinsicJacobiJetAtom.eval, covFstIter_zero] using
     intrLaunchDJ_time0 (I := I) g hEnorm p u a b r
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-private theorem IntrJetAtom.timeCurv_time0
+private theorem IntrinsicJacobiJetAtom.time_curvature_time_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (u a b : E) (jet : IntrJetAtom) (r : Real) :
-    (CurvJetTerm.curv 0
-        (slots3 (CurvJetTerm.atom (.aJet 0))
-          (CurvJetTerm.atom .pathT) (CurvJetTerm.atom jet))).eval
+    (p : M) (u a b : E) (jet : IntrinsicJacobiJetAtom) (r : Real) :
+    (CurvatureJetTerm.curv 0
+        (slots3 (CurvatureJetTerm.atom (.aJet 0))
+          (CurvatureJetTerm.atom .pathT) (CurvatureJetTerm.atom jet))).eval
         (I := I) g hEnorm p u a b (r, 0) = 0 := by
   change curvOpN (I := I) g 0
       (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), 0))
       (fun i =>
-        (slots3 (CurvJetTerm.atom (.aJet 0))
-          (CurvJetTerm.atom .pathT) (CurvJetTerm.atom jet) i).eval
+        (slots3 (CurvatureJetTerm.atom (.aJet 0))
+          (CurvatureJetTerm.atom .pathT) (CurvatureJetTerm.atom jet) i).eval
             (I := I) g hEnorm p u a b (r, 0)) = 0
   apply curvOpN_zero_at (I := I) g 0 _ _ (0 : Fin 3)
-  change (IntrJetAtom.aJet 0).eval
+  change (IntrinsicJacobiJetAtom.aJet 0).eval
     (I := I) g hEnorm p u a b (r, 0) = 0
-  exact IntrJetAtom.aJet_time0 (I := I) g hEnorm p u a b 0 r
+  exact IntrinsicJacobiJetAtom.a_jet_time_zero (I := I) g hEnorm p u a b 0 r
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem IntrJetAtom.time_succ_zero
+private theorem IntrinsicJacobiJetAtom.time_succ_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (u a b c : E) (time jet next : IntrJetAtom)
+    (p : M) (u a b c : E) (time jet next : IntrinsicJacobiJetAtom)
     (hlaunch :
-      (CurvJetTerm.atom time).launchDeriv =
-        CurvJetTerm.atom next +
-          CurvJetTerm.curv 0
-            (slots3 (CurvJetTerm.atom (.aJet 0))
-              (CurvJetTerm.atom .pathT) (CurvJetTerm.atom jet)))
+      (CurvatureJetTerm.atom time).launchDeriv =
+        CurvatureJetTerm.atom next +
+          CurvatureJetTerm.curv 0
+            (slots3 (CurvatureJetTerm.atom (.aJet 0))
+              (CurvatureJetTerm.atom .pathT) (CurvatureJetTerm.atom jet)))
     (hconst : forall s,
       time.eval (I := I) g hEnorm p u a b (s, 0) = c)
     (r : Real) :
     next.eval (I := I) g hEnorm p u a b (r, 0) = 0 := by
   have hstep :=
-    IntrJetAtom.launchDeriv_eval
+    IntrinsicJacobiJetAtom.launch_deriv_eval
       (I := I) g hEnorm p u a b time r 0
   have hleft :=
-    IntrJetAtom.covFst_time0_of_const
+    IntrinsicJacobiJetAtom.cov_fst_time_zero_of_const
       (I := I) g hEnorm p u a b c time hconst r
   rw [hleft, hlaunch] at hstep
-  simp only [CurvJetTerm.eval] at hstep
+  simp only [CurvatureJetTerm.eval] at hstep
   have hcurv :=
-    IntrJetAtom.timeCurv_time0
+    IntrinsicJacobiJetAtom.time_curvature_time_zero
       (I := I) g hEnorm p u a b jet r
-  simp only [CurvJetTerm.eval] at hcurv
+  simp only [CurvatureJetTerm.eval] at hcurv
   rw [hcurv, add_zero] at hstep
   exact hstep.symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem IntrJetAtom.aTime_succ_time0
+theorem IntrinsicJacobiJetAtom.a_time_succ_time_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1380,25 +1379,25 @@ theorem IntrJetAtom.aTime_succ_time0
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) :
     forall n r,
-      (IntrJetAtom.aTime (n + 1)).eval
+      (IntrinsicJacobiJetAtom.aTime (n + 1)).eval
         (I := I) g hEnorm p u a b (r, 0) = 0 := by
   intro n
   induction n with
   | zero =>
       intro r
-      exact IntrJetAtom.time_succ_zero
+      exact IntrinsicJacobiJetAtom.time_succ_zero
         (I := I) g hEnorm p u a b a
         (.aTime 0) (.aJet 0) (.aTime 1) rfl
-        (IntrJetAtom.aTime_zero (I := I) g hEnorm p u a b) r
+        (IntrinsicJacobiJetAtom.a_time_zero (I := I) g hEnorm p u a b) r
   | succ n ih =>
       intro r
-      exact IntrJetAtom.time_succ_zero
+      exact IntrinsicJacobiJetAtom.time_succ_zero
         (I := I) g hEnorm p u a b 0
         (.aTime (n + 1)) (.aJet (n + 1)) (.aTime (n + 1 + 1)) rfl ih r
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem IntrJetAtom.bTime_succ_time0
+theorem IntrinsicJacobiJetAtom.b_time_succ_time_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1406,31 +1405,31 @@ theorem IntrJetAtom.bTime_succ_time0
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) :
     forall n r,
-      (IntrJetAtom.bTime (n + 1)).eval
+      (IntrinsicJacobiJetAtom.bTime (n + 1)).eval
         (I := I) g hEnorm p u a b (r, 0) = 0 := by
   intro n
   induction n with
   | zero =>
       intro r
-      exact IntrJetAtom.time_succ_zero
+      exact IntrinsicJacobiJetAtom.time_succ_zero
         (I := I) g hEnorm p u a b b
         (.bTime 0) (.bJet 0) (.bTime 1) rfl
-        (IntrJetAtom.bTime_zero (I := I) g hEnorm p u a b) r
+        (IntrinsicJacobiJetAtom.b_time_zero (I := I) g hEnorm p u a b) r
   | succ n ih =>
       intro r
-      exact IntrJetAtom.time_succ_zero
+      exact IntrinsicJacobiJetAtom.time_succ_zero
         (I := I) g hEnorm p u a b 0
         (.bTime (n + 1)) (.bJet (n + 1)) (.bTime (n + 1 + 1)) rfl ih r
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem CurvJetTerm.launchDeriv_eval
+theorem CurvatureJetTerm.launch_deriv_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (u a b : E) (term : CurvJetTerm) (r t : Real) :
+    (p : M) (u a b : E) (term : CurvatureJetTerm) (r t : Real) :
     covFst (I := I) g
         (fun s v : Real =>
           intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
@@ -1447,7 +1446,7 @@ theorem CurvJetTerm.launchDeriv_eval
             (fun s : Real => (0 : TangentSpace I (f s t))) r = 0
       exact covDerivAlong_zero (I := I) g (fun s : Real => f s t) r
   | atom atom =>
-      exact IntrJetAtom.launchDeriv_eval
+      exact IntrinsicJacobiJetAtom.launch_deriv_eval
         (I := I) g hEnorm p u a b atom r t
   | add x y ihx ihy =>
       let gamma : Real -> M := fun s => f s t
@@ -1455,9 +1454,9 @@ theorem CurvJetTerm.launchDeriv_eval
         x.eval (I := I) g hEnorm p u a b (s, t)
       let Y : forall s : Real, TangentSpace I (gamma s) := fun s =>
         y.eval (I := I) g hEnorm p u a b (s, t)
-      have hX := CurvJetTerm.eval_launch_smooth
+      have hX := CurvatureJetTerm.eval_launch_smooth
         (I := I) g hEnorm p u a b x t
-      have hY := CurvJetTerm.eval_launch_smooth
+      have hY := CurvatureJetTerm.eval_launch_smooth
         (I := I) g hEnorm p u a b y t
       have hadd :=
         covDerivAlong_add (I := I) g gamma X Y r
@@ -1471,7 +1470,7 @@ theorem CurvJetTerm.launchDeriv_eval
                 (fun s v => x.eval (I := I) g hEnorm p u a b (s, v)) r t +
               covFst (I := I) g f
                 (fun s v => y.eval (I := I) g hEnorm p u a b (s, v)) r t := by
-          simpa only [CurvJetTerm.eval, covFst, f, gamma, X, Y] using hadd
+          simpa only [CurvatureJetTerm.eval, covFst, f, gamma, X, Y] using hadd
         _ = (x.launchDeriv + y.launchDeriv).eval
               (I := I) g hEnorm p u a b (r, t) := by
           rw [ihx, ihy]
@@ -1513,14 +1512,14 @@ theorem CurvJetTerm.launchDeriv_eval
               (gamma s) (Y i s) : TangentBundle I M)) := by
         intro i
         simpa only [gamma, Y, f] using
-          CurvJetTerm.eval_launch_smooth
+          CurvatureJetTerm.eval_launch_smooth
             (I := I) g hEnorm p u a b (slots i) t
       have hcurv :=
         curvOpN_covAlong (I := I) g k gamma Y r hgamma hY
       have hvel :
           ((mfderiv (modelWithCornersSelf Real Real) I gamma r :
               Real →L[Real] TangentSpace I (gamma r)) (1 : Real)) =
-            (CurvJetTerm.atom (.aJet 0)).eval
+            (CurvatureJetTerm.atom (.aJet 0)).eval
               (I := I) g hEnorm p u a b (r, t) := by
         rfl
       have hslot (i : Fin (k + 3)) :
@@ -1575,8 +1574,8 @@ theorem CurvJetTerm.launchDeriv_eval
                 ((mfderiv (modelWithCornersSelf Real Real) I gamma r :
                   Real →L[Real] TangentSpace I (gamma r)) (1 : Real))
                 (fun i => Y i r)) =
-            (CurvJetTerm.curv (k + 1)
-              (Fin.cons (CurvJetTerm.atom (.aJet 0)) slots)).eval
+            (CurvatureJetTerm.curv (k + 1)
+              (Fin.cons (CurvatureJetTerm.atom (.aJet 0)) slots)).eval
                 (I := I) g hEnorm p u a b (r, t) := by
         change curvOpN (I := I) g (k + 1) (gamma r) _ =
           curvOpN (I := I) g (k + 1) (gamma r) _
@@ -1589,7 +1588,7 @@ theorem CurvJetTerm.launchDeriv_eval
           curvOpN (I := I) g k (gamma r)
               (Function.update (fun j => Y j r) i
                 (covDerivAlong (I := I) g gamma (Y i) r)) =
-            (CurvJetTerm.curv k
+            (CurvatureJetTerm.curv k
               (Function.update slots i (slots i).launchDeriv)).eval
                 (I := I) g hEnorm p u a b (r, t) := by
         change curvOpN (I := I) g k (gamma r) _ =
@@ -1605,11 +1604,11 @@ theorem CurvJetTerm.launchDeriv_eval
               curvOpN (I := I) g k (gamma r)
                 (Function.update (fun j => Y j r) i
                   (covDerivAlong (I := I) g gamma (Y i) r))) =
-            (CurvJetTerm.finSum (fun i =>
-              CurvJetTerm.curv k
+            (CurvatureJetTerm.finSum (fun i =>
+              CurvatureJetTerm.curv k
                 (Function.update slots i (slots i).launchDeriv))).eval
                   (I := I) g hEnorm p u a b (r, t) := by
-        rw [CurvJetTerm.finSum_eval]
+        rw [CurvatureJetTerm.fin_sum_eval]
         apply Finset.sum_congr rfl
         intro i hi
         exact hupdate i
@@ -1617,24 +1616,24 @@ theorem CurvJetTerm.launchDeriv_eval
         covDerivAlong (I := I) g gamma
             (fun s : Real =>
               curvOpN (I := I) g k (gamma s) (fun i => Y i s)) r =
-          (CurvJetTerm.curv (k + 1)
-                (Fin.cons (CurvJetTerm.atom (.aJet 0)) slots)).eval
+          (CurvatureJetTerm.curv (k + 1)
+                (Fin.cons (CurvatureJetTerm.atom (.aJet 0)) slots)).eval
               (I := I) g hEnorm p u a b (r, t) +
-            (CurvJetTerm.finSum (fun i =>
-              CurvJetTerm.curv k
+            (CurvatureJetTerm.finSum (fun i =>
+              CurvatureJetTerm.curv k
                 (Function.update slots i (slots i).launchDeriv))).eval
                   (I := I) g hEnorm p u a b (r, t)
       rw [hlead, hnext, hsum]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem CurvJetTerm.launchIter_eval
+theorem CurvatureJetTerm.launch_iter_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (u a b : E) (m : Nat) (term : CurvJetTerm) :
+    (p : M) (u a b : E) (m : Nat) (term : CurvatureJetTerm) :
     covFstIter (I := I) g
         (fun s v : Real =>
           intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
@@ -1648,12 +1647,12 @@ theorem CurvJetTerm.launchIter_eval
   | succ m ih =>
       funext r t
       rw [covFstIter_succ, ih]
-      exact CurvJetTerm.launchDeriv_eval
+      exact CurvatureJetTerm.launch_deriv_eval
         (I := I) g hEnorm p u a b (term.launchIter m) r t
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrCorrTerm_eval
+theorem intrinsic_jacobi_correction_term_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1661,7 +1660,7 @@ theorem intrCorrTerm_eval
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r t : Real) :
     intrJetCorr (I := I) g hEnorm p u a b n (r, t) =
-      (intrCorrTerm n).eval (I := I) g hEnorm p u a b (r, t) := by
+      (intrinsicJacobiCorrectionTerm n).eval (I := I) g hEnorm p u a b (r, t) := by
   let f : Real -> Real -> M := fun s v =>
     intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   let A : forall s v : Real, TangentSpace I (f s v) := fun s v =>
@@ -1795,7 +1794,7 @@ theorem intrCorrTerm_eval
       curvDeriv_eq_op1 (I := I) g (fun s : Real => f s t)
         (fun s => W s t) (fun s => varSnd (I := I) f s t)
         (fun s => varSnd (I := I) f s t) r hgammaA hWA hTA hTA
-  have hslots3 (x y z : CurvJetTerm) :
+  have hslots3 (x y z : CurvatureJetTerm) :
       (fun i =>
           (slots3 x y z i).eval (I := I) g hEnorm p u a b (r, t)) =
         DifferentialGeometry.Geometry.Curvature.vec3 (I := I)
@@ -1804,7 +1803,7 @@ theorem intrCorrTerm_eval
           (z.eval g hEnorm p u a b (r, t)) := by
     funext i
     fin_cases i <;> rfl
-  have hslots4 (w x y z : CurvJetTerm) :
+  have hslots4 (w x y z : CurvatureJetTerm) :
       (fun i =>
           (slots4 w x y z i).eval (I := I) g hEnorm p u a b (r, t)) =
         DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
@@ -1825,24 +1824,24 @@ theorem intrCorrTerm_eval
       commute_ds_dt_intrinsic_shifted (I := I) g f hfvar t
     simpa only [covFst, covSnd, varFst, varSnd] using
       congrFun hcomm r
-  have hevalScale (c : Real) (term : CurvJetTerm) :
+  have hevalScale (c : Real) (term : CurvatureJetTerm) :
       (c • term).eval (I := I) g hEnorm p u a b (r, t) =
         c • term.eval (I := I) g hEnorm p u a b (r, t) := by
     change c • term.eval (I := I) g hEnorm p u a b (r, t) = _
     rfl
   change jacStepCorr (I := I) g f W r t =
-    (intrCorrTerm n).eval (I := I) g hEnorm p u a b (r, t)
+    (intrinsicJacobiCorrectionTerm n).eval (I := I) g hEnorm p u a b (r, t)
   unfold jacStepCorr
   rw [hderivT, hderivA]
   simp only [curvAlong_eq_op0]
   rw [hmix]
-  simp only [intrCorrTerm, CurvJetTerm.eval, hevalScale, hslots3,
-    hslots4, IntrJetAtom.eval, covFstIter_zero, varCurv,
+  simp only [intrinsicJacobiCorrectionTerm, CurvatureJetTerm.eval, hevalScale, hslots3,
+    hslots4, IntrinsicJacobiJetAtom.eval, covFstIter_zero, varCurv,
     curvAlong_eq_op0, f, A, B, W]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrResidualTerm_eval
+theorem intrinsic_jacobi_residual_term_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1852,9 +1851,9 @@ theorem intrResidualTerm_eval
     (fun r t : Real =>
       intrJetResidual (I := I) g hEnorm p u a b n (r, t)) =
         fun r t : Real =>
-          (intrResidualTerm n).eval
+          (intrinsicJacobiResidualTerm n).eval
             (I := I) g hEnorm p u a b (r, t) := by
-  have hevalScale (c : Real) (term : CurvJetTerm) (q : Real × Real) :
+  have hevalScale (c : Real) (term : CurvatureJetTerm) (q : Real × Real) :
       (c • term).eval (I := I) g hEnorm p u a b q =
         c • term.eval (I := I) g hEnorm p u a b q := by
     change c • term.eval (I := I) g hEnorm p u a b q = _
@@ -1868,15 +1867,15 @@ theorem intrResidualTerm_eval
       funext r t
       rw [intrJetResidual_succ]
       rw [ih]
-      rw [CurvJetTerm.launchDeriv_eval
-        (I := I) g hEnorm p u a b (intrResidualTerm n) r t]
-      rw [intrCorrTerm_eval (I := I) g hEnorm p u a b n r t]
-      simp only [intrResidualTerm, CurvJetTerm.eval, hevalScale,
+      rw [CurvatureJetTerm.launch_deriv_eval
+        (I := I) g hEnorm p u a b (intrinsicJacobiResidualTerm n) r t]
+      rw [intrinsic_jacobi_correction_term_eval (I := I) g hEnorm p u a b n r t]
+      simp only [intrinsicJacobiResidualTerm, CurvatureJetTerm.eval, hevalScale,
         sub_eq_add_neg, neg_one_smul]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrCorrIter_eval
+theorem intrinsic_jacobi_correction_iter_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1889,18 +1888,18 @@ theorem intrCorrIter_eval
         m (fun s v : Real =>
           intrJetCorr (I := I) g hEnorm p u a b n (s, v)) =
       fun s v : Real =>
-        ((intrCorrTerm n).launchIter m).eval
+        ((intrinsicJacobiCorrectionTerm n).launchIter m).eval
           (I := I) g hEnorm p u a b (s, v) := by
   have hcorr :
       (fun s v : Real =>
         intrJetCorr (I := I) g hEnorm p u a b n (s, v)) =
         fun s v : Real =>
-          (intrCorrTerm n).eval (I := I) g hEnorm p u a b (s, v) := by
+          (intrinsicJacobiCorrectionTerm n).eval (I := I) g hEnorm p u a b (s, v) := by
     funext s v
-    exact intrCorrTerm_eval (I := I) g hEnorm p u a b n s v
+    exact intrinsic_jacobi_correction_term_eval (I := I) g hEnorm p u a b n s v
   rw [hcorr]
-  exact CurvJetTerm.launchIter_eval
-    (I := I) g hEnorm p u a b m (intrCorrTerm n)
+  exact CurvatureJetTerm.launch_iter_eval
+    (I := I) g hEnorm p u a b m (intrinsicJacobiCorrectionTerm n)
 
 end HCGCompactness
 end DifferentialGeometry
