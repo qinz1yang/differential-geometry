@@ -190,7 +190,7 @@ private theorem cross_point_le
         Real.sqrt (normSq0S (I := I) q x 2 HessQ) +
           Real.sqrt (normSq0S (I := I) q x 2 B) := by
     rw [hHess]
-    exact DifferentialGeometry.HCGCompactness.sqrtNormSq0S_add_le
+    exact Tensor0SBundle.sqrt_normSq0S_add_le
       (I := I) q x 2 HessQ B
   have htriSq : normSq0S (I := I) q x 2 HessK <=
       2 * normSq0S (I := I) q x 2 HessQ +

@@ -168,7 +168,7 @@ theorem covNorm_le_add
     metricCovDerivNorm (I := I) a g gRef x <=
       metricCovDerivNorm (I := I) a h gRef x + metricDerivNorm (I := I) a g h gRef x := by
   simp only [metricCovDerivNorm, metricDerivNorm, metricDiffCovDerivAt]
-  have htri := sqrtNormSq0S_add_le (I := I) gRef x (a + 2)
+  have htri := Tensor0SBundle.sqrt_normSq0S_add_le (I := I) gRef x (a + 2)
     (metricCovDeriv (I := I) g gRef a x - metricCovDeriv (I := I) h gRef a x)
     (metricCovDeriv (I := I) h gRef a x)
   have hcancel : metricCovDeriv (I := I) g gRef a x - metricCovDeriv (I := I) h gRef a x

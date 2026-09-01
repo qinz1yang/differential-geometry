@@ -157,7 +157,7 @@ theorem uniformCurvJet1Conn
       -(diffStep (I := I) gBase g₀ 4 (metricRm04 (I := I) (M := M) g₀) x) := by
     simp only [diffStep, ContMDiffSection.coe_sub, Pi.sub_apply]
     abel
-  rw [hneg, normSq0S_neg]
+  rw [hneg, Tensor0SBundle.normSq0S_neg]
   refine le_trans
     (diffStep_jet_one_le (I := I) (M := M) gBase g₀ 4
       (metricRm04 (I := I) (M := M) g₀) hEq hjet1 (Set.mem_univ x)) ?_

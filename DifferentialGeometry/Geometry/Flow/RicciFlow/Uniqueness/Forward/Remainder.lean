@@ -368,7 +368,7 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
     have heq : Hdiff x = -metricDiffAt (I := I) g₁ g₂ x := by
       dsimp [Hdiff, metricDiffAt]
       abel
-    rw [heq, normSq0S_neg]
+    rw [heq, Tensor0SBundle.normSq0S_neg]
   rw [htrace]
   have htr := traceNormSq_le (I := I) (s := s + 1) g₁ x V
   rw [hcongr, hprod, hH] at htr
@@ -390,7 +390,7 @@ theorem metricDiffSwap_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
       metricDiffAt (I := I) g₂ g₁ x = -metricDiffAt (I := I) g₁ g₂ x := by
     dsimp only [metricDiffAt]
     abel
-  rw [metricDiffSq_def, metricDiffSq_def, hswap, normSq0S_neg]
+  rw [metricDiffSq_def, metricDiffSq_def, hswap, Tensor0SBundle.normSq0S_neg]
   exact normSq0S_upper_le_of_equiv (I := I) g₁ g₂ x 2 hC hequiv _
 
 variable [NeZero (Module.finrank Real E)]
@@ -571,7 +571,7 @@ theorem lowerTriSwapSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
           (normSq0S (I := I) g₂ x 4
               (lowerTri (I := I) (metricTensorField (I := I) g₂ x) A) *
             metricDiffSq (I := I) g₂ g₁ x) := by
-    rw [hlow, normSq0S_neg]
+    rw [hlow, Tensor0SBundle.normSq0S_neg]
     exact hraw
   calc
     normSq0S (I := I) g₁ x 4

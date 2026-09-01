@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.ComponentSubsequence
 
 import DifferentialGeometry.Geometry.Metric.Convergence.TimeLipschitz
+import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -27,6 +28,220 @@ variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I 1 M] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+theorem metric_ext_inner
+    (g₁ g₂ : SmoothRiemannianMetric I M)
+    (h : forall x : M, g₁.inner x = g₂.inner x) :
+    g₁ = g₂ := by
+  cases g₁; cases g₂
+  simp only [Bundle.ContMDiffRiemannianMetric.mk.injEq]
+  funext x; exact h x
+
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+omit [SigmaCompactSpace M] in
+theorem metricInnerApply_diff_le
+    (A B gRef : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
+    |A.inner x v w - B.inner x v w|
+      <= (Module.finrank Real (TangentSpace I x) : Real)
+          * metricDerivNorm (I := I) 0 A B gRef x
+          * (gRef.inner x (v + w) (v + w) + gRef.inner x v v + gRef.inner x w w) := by
+  classical
+  set n : Real := (Module.finrank Real (TangentSpace I x) : Real) with hn
+  set D := metricDiffCovDerivAt (I := I) 0 A B gRef x with hD
+  have hsymmA : A.inner x v w = A.inner x w v := A.symm x v w
+  have hsymmB : B.inner x v w = B.inner x w v := B.symm x v w
+  have hpol : A.inner x v w - B.inner x v w
+      = ((A.inner x (v + w) (v + w) - B.inner x (v + w) (v + w))
+         - (A.inner x v v - B.inner x v v)
+         - (A.inner x w w - B.inner x w w)) / 2 := by
+    rw [metric_add_self A x v w, metric_add_self B x v w]; rw [hsymmA, hsymmB]; ring
+  have hqf : forall u : TangentSpace I x,
+      |A.inner x u u - B.inner x u u|
+        <= n * metricDerivNorm (I := I) 0 A B gRef x * gRef.inner x u u := fun u =>
+    metricQuadFormDiff_le_metricDerivNorm (I := I) A B gRef x u
+  have hvw := hqf (v + w)
+  have hv := hqf v
+  have hw := hqf w
+  have hmn : 0 <= n := by rw [hn]; positivity
+  have hmd : 0 <= metricDerivNorm (I := I) 0 A B gRef x := Real.sqrt_nonneg _
+  have hgnn : forall u : TangentSpace I x, 0 <= gRef.inner x u u := by
+    intro u
+    by_cases hu : u = 0
+    · subst hu; simp
+    · exact (gRef.pos x u hu).le
+  rw [hpol, abs_div, abs_of_pos (by norm_num : (0:Real) < 2)]
+  rw [div_le_iff₀ (by norm_num : (0:Real) < 2)]
+  set p1 := A.inner x (v + w) (v + w) - B.inner x (v + w) (v + w) with hp1
+  set p2 := A.inner x v v - B.inner x v v with hp2
+  set p3 := A.inner x w w - B.inner x w w with hp3
+  have htri : |p1 - p2 - p3| <= |p1| + |p2| + |p3| := by
+    have h1 := abs_add_le (p1 - p2) (-p3)
+    have h2 := abs_add_le p1 (-p2)
+    simp only [abs_neg, sub_eq_add_neg] at h1 h2 ⊢
+    linarith [h1, h2]
+  nlinarith [htri, hvw, hv, hw, hmn, hmd, hgnn (v + w), hgnn v, hgnn w,
+    mul_nonneg (mul_nonneg hmn hmd) (hgnn v),
+    mul_nonneg (mul_nonneg hmn hmd) (hgnn w),
+    mul_nonneg (mul_nonneg hmn hmd) (hgnn (v + w))]
+
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+omit [SigmaCompactSpace M] in
+theorem metricCInf_inner
+    (gSeq : ℕ → SmoothRiemannianMetric I M) (gInf gRef : SmoothRiemannianMetric I M)
+    (hconv : MetricCInfConvOnCompacts (I := I) gSeq gInf gRef)
+    (x : M) (v w : TangentSpace I x) :
+    Tendsto (fun k => (gSeq k).inner x v w) atTop (nhds (gInf.inner x v w)) := by
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  let n : ℝ := Module.finrank ℝ (TangentSpace I x)
+  let S : ℝ := gRef.inner x (v + w) (v + w) + gRef.inner x v v + gRef.inner x w w
+  have hn : 0 ≤ n := by dsimp only [n]; positivity
+  have hS : 0 ≤ S := by
+    have hnonneg : ∀ z : TangentSpace I x, 0 ≤ gRef.inner x z z := by
+      intro z
+      by_cases hz : z = 0
+      · subst hz
+        simp
+      · exact (gRef.pos x z hz).le
+    dsimp only [S]
+    linarith [hnonneg (v + w), hnonneg v, hnonneg w]
+  have hden : 0 < n * S + 1 := by positivity
+  obtain ⟨k₀, hk₀⟩ := hconv {x} isCompact_singleton 0 (ε / (n * S + 1)) (by positivity)
+  refine ⟨k₀, fun k hk => ?_⟩
+  have hpoint : metricDerivNorm (I := I) 0 (gSeq k) gInf gRef x <
+      ε / (n * S + 1) := lt_of_le_of_lt
+    (derivNorm_le_sup (I := I) isCompact_singleton le_rfl
+      (gSeq k) gInf gRef (Set.mem_singleton x))
+    (hk₀ k hk)
+  have hbound := metricInnerApply_diff_le (I := I) (gSeq k) gInf gRef x v w
+  change |(gSeq k).inner x v w - gInf.inner x v w| ≤
+    n * metricDerivNorm (I := I) 0 (gSeq k) gInf gRef x * S at hbound
+  rw [Real.dist_eq]
+  have hprod : n * metricDerivNorm (I := I) 0 (gSeq k) gInf gRef x * S ≤
+      (n * S) * (ε / (n * S + 1)) := by
+    have hnorm : 0 ≤ metricDerivNorm (I := I) 0 (gSeq k) gInf gRef x :=
+      Real.sqrt_nonneg _
+    nlinarith [hpoint.le, mul_nonneg hn hS]
+  have hfrac : (n * S) * (ε / (n * S + 1)) < ε := by
+    have hid : (n * S) * (ε / (n * S + 1)) = (n * S) * ε / (n * S + 1) := by
+      rw [mul_div_assoc]
+    rw [hid, div_lt_iff₀ hden]
+    nlinarith [hε, mul_nonneg hn hS]
+  exact lt_of_le_of_lt (le_trans hbound hprod) hfrac
+
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+omit [SigmaCompactSpace M] in
+theorem metricCInf_unique
+    (gSeq : ℕ → SmoothRiemannianMetric I M)
+    (A B gRefA gRefB : SmoothRiemannianMetric I M)
+    (hA : MetricCInfConvOnCompacts (I := I) gSeq A gRefA)
+    (hB : MetricCInfConvOnCompacts (I := I) gSeq B gRefB) : A = B := by
+  refine metric_ext_inner A B fun x => ?_
+  refine ContinuousLinearMap.ext fun v => ContinuousLinearMap.ext fun w => ?_
+  exact tendsto_nhds_unique
+    (metricCInf_inner (I := I) gSeq A gRefA hA x v w)
+    (metricCInf_inner (I := I) gSeq B gRefB hB x v w)
+
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+omit [SigmaCompactSpace M] in
+theorem metricInner_cauchy
+    (gk : Nat -> SmoothRiemannianMetric I M) (gRef : SmoothRiemannianMetric I M)
+    (x : M) (v w : TangentSpace I x)
+    (hcauchy : forall eps : Real, 0 < eps -> exists k0 : Nat,
+      forall m : Nat, k0 <= m -> forall l : Nat, k0 <= l ->
+        metricDerivNorm (I := I) 0 (gk m) (gk l) gRef x < eps) :
+    CauchySeq (fun k => (gk k).inner x v w) := by
+  set n : Real := (Module.finrank Real (TangentSpace I x) : Real) with hn
+  set S : Real := gRef.inner x (v + w) (v + w) + gRef.inner x v v + gRef.inner x w w with hS
+  have hSnn : 0 <= S := by
+    rw [hS]
+    have hgnn : forall u : TangentSpace I x, 0 <= gRef.inner x u u := by
+      intro u
+      by_cases hu : u = 0
+      · subst hu; simp
+      · exact (gRef.pos x u hu).le
+    have := hgnn (v + w); have := hgnn v; have := hgnn w; linarith
+  have hnnn : 0 <= n := by rw [hn]; positivity
+  rw [Metric.cauchySeq_iff]
+  intro eps heps
+  obtain ⟨k0, hk0⟩ := hcauchy (eps / (n * S + 1)) (by positivity)
+  refine ⟨k0, fun m hm l hl => ?_⟩
+  rw [Real.dist_eq]
+  have hbound : |(gk m).inner x v w - (gk l).inner x v w|
+      <= n * metricDerivNorm (I := I) 0 (gk m) (gk l) gRef x * S := by
+    have h := metricInnerApply_diff_le (I := I) (gk m) (gk l) gRef x v w
+    rw [← hn, ← hS] at h
+    exact h
+  have hmd : metricDerivNorm (I := I) 0 (gk m) (gk l) gRef x < eps / (n * S + 1) :=
+    hk0 m hm l hl
+  have hmdnn : 0 <= metricDerivNorm (I := I) 0 (gk m) (gk l) gRef x := Real.sqrt_nonneg _
+  have hdenpos : 0 < n * S + 1 := by positivity
+  have hkey : n * metricDerivNorm (I := I) 0 (gk m) (gk l) gRef x * S <
+      eps := by
+    have hprod : n * metricDerivNorm (I := I) 0 (gk m) (gk l) gRef x * S
+        <= (n * S) * (eps / (n * S + 1)) := by
+      have h1 : metricDerivNorm (I := I) 0 (gk m) (gk l) gRef x
+          <= eps / (n * S + 1) := hmd.le
+      nlinarith [h1, hnnn, hmdnn, hSnn, mul_nonneg hnnn hSnn]
+    have hfrac : (n * S) * (eps / (n * S + 1)) < eps := by
+      have hid : (n * S) * (eps / (n * S + 1)) = (n * S) * eps / (n * S + 1) := by
+        rw [mul_div_assoc]
+      rw [hid, div_lt_iff₀ hdenpos]
+      nlinarith [heps, mul_nonneg hnnn hSnn]
+    linarith
+  calc |(gk m).inner x v w - (gk l).inner x v w|
+      <= n * metricDerivNorm (I := I) 0 (gk m) (gk l) gRef x * S := hbound
+    _ < eps := hkey
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I 1 M] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+theorem metricLimit_uniq
+    (gk : Nat -> SmoothRiemannianMetric I M) (A B : SmoothRiemannianMetric I M)
+    (hcauchy : forall x : M, forall v w : TangentSpace I x,
+      CauchySeq (fun k => (gk k).inner x v w))
+    (psiA : Nat -> Nat) (hpsiA : StrictMono psiA)
+    (psiB : Nat -> Nat) (hpsiB : StrictMono psiB)
+    (hA : forall x : M, Filter.Tendsto (fun m => (gk (psiA m)).inner x) Filter.atTop
+      (nhds (A.inner x)))
+    (hB : forall x : M, Filter.Tendsto (fun m => (gk (psiB m)).inner x) Filter.atTop
+      (nhds (B.inner x))) :
+    A = B := by
+  refine metric_ext_inner A B fun x => ?_
+  refine ContinuousLinearMap.ext fun v => ContinuousLinearMap.ext fun w => ?_
+  have hAvw : Filter.Tendsto (fun m => (gk (psiA m)).inner x v w) Filter.atTop
+      (nhds (A.inner x v w)) := by
+    have hc : Continuous fun T : TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real =>
+        T v w :=
+      (ContinuousLinearMap.apply Real Real w).continuous.comp
+        (ContinuousLinearMap.apply Real (TangentSpace I x →L[Real] Real) v).continuous
+    exact (hc.tendsto _).comp (hA x)
+  have hBvw : Filter.Tendsto (fun m => (gk (psiB m)).inner x v w) Filter.atTop
+      (nhds (B.inner x v w)) := by
+    have hc : Continuous fun T : TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real =>
+        T v w :=
+      (ContinuousLinearMap.apply Real Real w).continuous.comp
+        (ContinuousLinearMap.apply Real (TangentSpace I x →L[Real] Real) v).continuous
+    exact (hc.tendsto _).comp (hB x)
+  have hfullA : Filter.Tendsto (fun k => (gk k).inner x v w) Filter.atTop
+      (nhds (A.inner x v w)) :=
+    tendsto_nhds_of_cauchySeq_of_subseq (hcauchy x v w) hpsiA.tendsto_atTop hAvw
+  have hfullB : Filter.Tendsto (fun k => (gk k).inner x v w) Filter.atTop
+      (nhds (B.inner x v w)) :=
+    tendsto_nhds_of_cauchySeq_of_subseq (hcauchy x v w) hpsiB.tendsto_atTop hBvw
+  exact tendsto_nhds_unique hfullA hfullB
+
 
 omit [Module.Finite ℝ E] in
 theorem metricPreconvFull
@@ -287,48 +502,38 @@ theorem netFullDiag
   choose gNet hgNet using hPphi
   exact ⟨phi, hphi, gNet, fun n => (hgNet n).1, fun n => (hgNet n).2⟩
 
-omit [Module.Finite ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-theorem normSq0S_neg
-    [Module.Finite ℝ E]
-    (gRef : SmoothRiemannianMetric I M) (x : M) (s : Nat)
-    (T : Tensor0SBundle.Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
-      (I := I) (M := M) s x) :
-    Tensor0SBundle.normSq0S (I := I) gRef x s (-T) =
-      Tensor0SBundle.normSq0S (I := I) gRef x s T := by
-  classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
-      (Tensor0SBundle.identityInvMetric
-        (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
-    intro i' j'
-    simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h' i' j'
-  rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gRef x s basis hinv (-T),
-    Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gRef x s basis hinv T]
-  refine Finset.sum_congr rfl fun slots _ => ?_
-  simp [Tensor0SBundle.component0S_apply]
 
-omit [Module.Finite ℝ E] [IsManifold I 1 M] in
-omit [I.Boundaryless] [IsManifold I 2 M] in
-omit [SigmaCompactSpace M] in
-theorem metricDerivNorm_symm
+omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M]
+    [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+theorem MetricCInfConvOnCompacts.metric_deriv_norm_le
     [Module.Finite ℝ E]
-    (a : Nat) (A B gRef : SmoothRiemannianMetric I M) (x : M) :
-    metricDerivNorm (I := I) a A B gRef x =
-      metricDerivNorm (I := I) a B A gRef x := by
-  have hneg :
-      metricDiffCovDerivAt (I := I) a B A gRef x =
-        -metricDiffCovDerivAt (I := I) a A B gRef x := by
-    simp only [metricDiffCovDerivAt]
-    abel
-  rw [metricDerivNorm, metricDerivNorm, hneg, normSq0S_neg]
+    (gSeq : ℕ → SmoothRiemannianMetric I M)
+    (gInf g₀ gRef : SmoothRiemannianMetric I M)
+    (hconv : MetricCInfConvOnCompacts (I := I) gSeq gInf gRef)
+    {a : ℕ} {x : M} {δ : ℝ}
+    (hbound : ∀ k, metricDerivNorm (I := I) a (gSeq k) g₀ gRef x ≤ δ) :
+    metricDerivNorm (I := I) a gInf g₀ gRef x ≤ δ := by
+  refine le_of_forall_pos_le_add fun η hη => ?_
+  obtain ⟨k₀, hk₀⟩ := hconv {x} isCompact_singleton a η hη
+  have hpoint : metricDerivNorm (I := I) a (gSeq k₀) gInf gRef x < η :=
+    lt_of_le_of_lt
+      (derivNorm_le_sup (I := I) isCompact_singleton le_rfl
+        (gSeq k₀) gInf gRef (Set.mem_singleton x))
+      (hk₀ k₀ le_rfl)
+  have hsymm := metricDerivNorm_symm (I := I) a gInf (gSeq k₀) gRef x
+  calc
+    metricDerivNorm (I := I) a gInf g₀ gRef x ≤
+        metricDerivNorm (I := I) a gInf (gSeq k₀) gRef x +
+          metricDerivNorm (I := I) a (gSeq k₀) g₀ gRef x :=
+      metricDerivNorm_triangle (I := I) a gInf (gSeq k₀) g₀ gRef x
+    _ ≤ δ + η := by rw [hsymm]; linarith [hbound k₀]
 
 omit [Module.Finite ℝ E] in
 omit [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem netCauchyAt
     [Module.Finite ℝ E]
@@ -394,7 +599,8 @@ theorem netCauchyAt
   nlinarith [htri, h1, h2, h3, h4, hdbound, hsmall]
 
 omit [Module.Finite ℝ E] in
-omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
 theorem fullOfSubseq
@@ -429,7 +635,7 @@ theorem fullOfSubseq
 omit [Module.Finite ℝ E] in
 omit [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-omit [I.Boundaryless] [IsManifold I 2 M] in
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem infLipOfConv
     [Module.Finite ℝ E]
@@ -475,7 +681,8 @@ theorem infLipOfConv
   linarith
 
 omit [Module.Finite ℝ E] in
-omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
 theorem windowOfNet

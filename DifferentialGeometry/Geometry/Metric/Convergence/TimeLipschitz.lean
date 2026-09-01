@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
-import DifferentialGeometry.Geometry.Metric.Convergence.Defs
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
-import Mathlib.Analysis.MeanInequalities
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Topology.Order.Compact
@@ -21,32 +20,6 @@ open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Integral.Connection
 
-theorem sqrt_sum_sq_add_le {ι : Type*} [Fintype ι] (a b : ι → Real) :
-    Real.sqrt (∑ i, (a i + b i) ^ 2) ≤
-      Real.sqrt (∑ i, (a i) ^ 2) + Real.sqrt (∑ i, (b i) ^ 2) := by
-  have hA : 0 ≤ ∑ i, (a i) ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
-  have hB : 0 ≤ ∑ i, (b i) ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
-  have hcs : ∑ i, a i * b i ≤ Real.sqrt (∑ i, (a i) ^ 2) * Real.sqrt (∑ i, (b i) ^ 2) := by
-    have h := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ a b
-    have h2 : Real.sqrt ((∑ i, a i * b i) ^ 2)
-        ≤ Real.sqrt ((∑ i, (a i) ^ 2) * (∑ i, (b i) ^ 2)) := Real.sqrt_le_sqrt h
-    rw [Real.sqrt_sq_eq_abs, Real.sqrt_mul hA] at h2
-    exact le_trans (le_abs_self _) h2
-  have hexpand : ∑ i, (a i + b i) ^ 2
-      = (∑ i, (a i) ^ 2) + 2 * (∑ i, a i * b i) + ∑ i, (b i) ^ 2 := by
-    have hpt : ∀ i, (a i + b i) ^ 2 = (a i) ^ 2 + 2 * (a i * b i) + (b i) ^ 2 :=
-      fun i => by ring
-    simp_rw [hpt]
-    rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
-  have hle : ∑ i, (a i + b i) ^ 2
-      ≤ (Real.sqrt (∑ i, (a i) ^ 2) + Real.sqrt (∑ i, (b i) ^ 2)) ^ 2 := by
-    rw [hexpand, add_sq, Real.sq_sqrt hA, Real.sq_sqrt hB]
-    nlinarith [hcs]
-  calc Real.sqrt (∑ i, (a i + b i) ^ 2)
-      ≤ Real.sqrt ((Real.sqrt (∑ i, (a i) ^ 2) + Real.sqrt (∑ i, (b i) ^ 2)) ^ 2) :=
-        Real.sqrt_le_sqrt hle
-    _ = Real.sqrt (∑ i, (a i) ^ 2) + Real.sqrt (∑ i, (b i) ^ 2) :=
-        Real.sqrt_sq (by positivity)
 
 theorem sqrt_sum_sq_sub_le_of_hasDerivAt {ι : Type*} [Fintype ι] {β ψ L : Real}
     (c c' : ι → Real → Real)
@@ -100,49 +73,6 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [IsManifold I 2 M]
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-theorem sqrtNormSq0S_add_le
-    (gRef : SmoothRiemannianMetric I M) (x : M) (s : Nat)
-    (u w : Tensor0SBundle.Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
-      (I := I) (M := M) s x) :
-    Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x s (u + w)) ≤
-      Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x s u) +
-        Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x s w) := by
-  classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
-      (Tensor0SBundle.identityInvMetric
-        (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
-    intro i' j'
-    simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h' i' j'
-  rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gRef x s basis hinv u,
-    Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gRef x s basis hinv w,
-    Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gRef x s basis hinv (u + w)]
-  have hcomp : ∀ slots : Fin s → Fin (Module.finrank Real (TangentSpace I x)),
-      Tensor0SBundle.component0S (I := I) basis (u + w) slots
-        = Tensor0SBundle.component0S (I := I) basis u slots
-          + Tensor0SBundle.component0S (I := I) basis w slots :=
-    fun slots => rfl
-  simp_rw [hcomp]
-  exact sqrt_sum_sq_add_le _ _
-
-omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-omit [SigmaCompactSpace M] in
-theorem metricDerivNorm_triangle
-    (a : Nat) (A B C gRef : SmoothRiemannianMetric I M) (x : M) :
-    metricDerivNorm (I := I) a A C gRef x ≤
-      metricDerivNorm (I := I) a A B gRef x + metricDerivNorm (I := I) a B C gRef x := by
-  simp only [metricDerivNorm, metricDiffCovDerivAt]
-  have htel : metricCovDeriv (I := I) A gRef a x - metricCovDeriv (I := I) C gRef a x
-      = (metricCovDeriv (I := I) A gRef a x - metricCovDeriv (I := I) B gRef a x)
-        + (metricCovDeriv (I := I) B gRef a x - metricCovDeriv (I := I) C gRef a x) :=
-    (sub_add_sub_cancel _ _ _).symm
-  rw [htel]
-  exact sqrtNormSq0S_add_le (I := I) gRef x (a + 2) _ _
 
 omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -209,7 +139,8 @@ theorem timeLipschitz_of_hasDerivAt
   rw [hmd]
   exact hkey
 
-omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
 theorem windowPreconv

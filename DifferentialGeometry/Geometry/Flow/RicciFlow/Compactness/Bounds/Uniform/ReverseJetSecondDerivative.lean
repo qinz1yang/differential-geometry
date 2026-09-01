@@ -36,50 +36,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem covStep_zero
-    (g : SmoothRiemannianMetric I M) (s : ℕ) :
-    covStep (I := I) g s 0 = 0 := by
-  have h := covStep_add (I := I) g s 0 0
-  rw [add_zero] at h
-  have h' : covStep (I := I) g s 0 + covStep (I := I) g s 0 =
-      covStep (I := I) g s 0 + 0 := by
-    rw [add_zero]
-    exact h.symm
-  exact add_left_cancel h'
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem iterCov_metric_zero
-    (g : SmoothRiemannianMetric I M) (a : ℕ) :
-    iterCov (I := I) g 2 (metricTensorField (I := I) g) (a + 1) = 0 := by
-  induction a with
-  | zero =>
-      refine DFunLike.ext _ _ (fun x => ?_)
-      refine Tensor0SBundle.tensor0SSpace_ext (I := I) 3 x (fun slots => ?_)
-      change Tensor0SSpace.eval
-          (iterCov (I := I) g 2 (metricTensorField (I := I) g) 1 x) slots =
-        Tensor0SSpace.eval
-          ((0 : Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
-            (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 3) x) slots
-      obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
-        (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (slots 0)
-      have hslots : slots = Fin.cons (X x) (Fin.tail slots) := by
-        rw [hX]
-        exact (Fin.cons_self_tail slots).symm
-      rw [show iterCov (I := I) g 2 (metricTensorField (I := I) g) 1 =
-          covStep (I := I) g 2 (metricTensorField (I := I) g) from rfl]
-      rw [covStep_apply, hslots,
-        totalNabla0SFun_eval_section (𝕜 := ℝ) (E := E) (H := H)
-          (I := I) (M := M) 2 _ X (metricTensorField (I := I) g) x _,
-        nabla_metric_zero (I := I) _ g
-          (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g) X x]
-      simp
-  | succ a ih =>
-      rw [show iterCov (I := I) g 2 (metricTensorField (I := I) g) (a + 1 + 1) =
-          covStep (I := I) g (2 + (a + 1))
-            (iterCov (I := I) g 2 (metricTensorField (I := I) g) (a + 1)) from rfl]
-      rw [ih, covStep_zero]
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem iterCov_one_eq
     (g₁ g₂ : SmoothRiemannianMetric I M) (r : ℕ)
     (T : Tensor0SField (𝕜 := ℝ) (E := E) (H := H)

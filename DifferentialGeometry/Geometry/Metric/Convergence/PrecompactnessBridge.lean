@@ -77,7 +77,8 @@ theorem exists_subseq_hconv
     exact hval
 
 omit [Module.Finite ℝ E] in
-omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
 theorem windowPreconv_of_perTime

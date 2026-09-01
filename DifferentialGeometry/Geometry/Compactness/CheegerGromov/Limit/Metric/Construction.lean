@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Images
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Estimates
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 
 open DifferentialGeometry.Geometry.Curvature
@@ -754,7 +755,8 @@ theorem exists_limits_close
   dsimp only
   refine ⟨D₀, hU, hmap, φ, hφ, gInf, hconv, ?_, ?_⟩
   · intro ε hε p
-    obtain ⟨δ, hδ0, hδ1, hδdim, hδbudget⟩ := exists_refDelta (E := E) p hε
+    obtain ⟨δ, hδ0, hδ1, hδdim, hδbudget⟩ :=
+      exists_metric_reference_change_delta (E := E) p hε
     obtain ⟨jδ, hjδ⟩ := hdata δ hδ0 hδ1 p
     refine ⟨jδ, fun n hn => ?_⟩
     let _ : SigmaCompactSpace (U n) := isSigmaCompact_iff_sigmaCompactSpace.mp
@@ -786,13 +788,13 @@ theorem exists_limits_close
           ((g (j₀ + n)).restrictOpen (I := I) (U n))
           ((g (j₀ + n)).restrictOpen (I := I) (U n)) y ≤ δ := by
       intro y _ a hap
-      exact limitDiff_le (I := I)
+      exact MetricCInfConvOnCompacts.metric_deriv_norm_le (I := I)
         (fun k => chainPullbackSeq (I := I) Ψ g (U n) (hU n)
           (φ k - (j₀ + n)))
         (gInf n) ((g (j₀ + n)).restrictOpen (I := I) (U n))
         ((g (j₀ + n)).restrictOpen (I := I) (U n)) (hconv n)
         (fun k => htail (φ k - (j₀ + n)) a hap y)
-    exact diffNorm_limit_le (I := I) isOpen_univ
+    exact metric_deriv_norm_reference_change_le (I := I) isOpen_univ
       (chainPullbackSeq (I := I) Ψ g (U n) (hU n) l) (gInf n)
       ((g (j₀ + n)).restrictOpen (I := I) (U n)) p hδ0.le hδ1.le hδdim hδbudget
       (fun y _ a hap => htail l a hap y) hInfBase x (Set.mem_univ x) q hqp

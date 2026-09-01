@@ -27,65 +27,6 @@ variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ 
 section TowerZero
 
 omit [SigmaCompactSpace M] in
-theorem covStep_zero (gRef : SmoothRiemannianMetric I M) (s : Nat)
-    :
-    covStep (I := I) gRef s
-        (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-          (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
-      = 0 := by
-  have h := (covStep_add (I := I) gRef s 0 0).symm
-  rw [add_zero] at h
-  have h2 : covStep (I := I) gRef s 0 + covStep (I := I) gRef s 0
-      = covStep (I := I) gRef s 0 + 0 := by rw [add_zero]; exact h
-  exact add_left_cancel h2
-
-
-omit [SigmaCompactSpace M] in
-theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
-    iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) (a + 1) = 0 := by
-  induction a with
-  | zero =>
-      refine DFunLike.ext _ _ (fun x => ?_)
-      refine Tensor0SBundle.tensor0SSpace_ext (I := I) 3 x (fun slots => ?_)
-      change Tensor0SBundle.Tensor0SSpace.eval
-          (iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) 1 x) slots =
-        Tensor0SBundle.Tensor0SSpace.eval
-          ((0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-            (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 3) x) slots
-      obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
-        (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (slots 0)
-      have hslots : slots = Fin.cons (X x) (Fin.tail slots) := by
-        rw [hX]
-        exact (Fin.cons_self_tail slots).symm
-      rw [show iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) 1
-          = covStep (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) from rfl]
-      rw [covStep_apply, hslots,
-        Tensor0SBundle.totalNabla0SFun_eval_section (𝕜 := Real) (E := E) (H := H)
-          (I := I) (M := M) 2 _ X (Tensor0SBundle.metricTensorField (I := I) g) x _,
-        Tensor0SBundle.nabla_metric_zero (I := I) _ g
-          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
-            (I := I) g) X x]
-      simp
-  | succ a ih =>
-      rw [show iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) (a + 1 + 1)
-          = covStep (I := I) g (2 + (a + 1))
-              (iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) (a + 1))
-          from rfl]
-      rw [ih, covStep_zero]
-
-omit [SigmaCompactSpace M] in
-theorem iterCov_sub (gRef : SmoothRiemannianMetric I M) (r : Nat)
-    (A0 B0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) r)
-    (a : Nat) :
-    iterCov (I := I) gRef r (A0 - B0) a
-      = iterCov (I := I) gRef r A0 a - iterCov (I := I) gRef r B0 a := by
-  have h := iterCov_add (I := I) gRef r (A0 - B0) B0 a
-  rw [sub_add_cancel] at h
-  rw [h]
-  abel
-
-omit [SigmaCompactSpace M] in
 theorem covDOF_zero (gRef : SmoothRiemannianMetric I M) (a : Nat) :
     covDerivOfField (I := I) gRef
         (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
