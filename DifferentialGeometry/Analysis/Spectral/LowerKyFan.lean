@@ -127,6 +127,96 @@ universe u
 variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable [FiniteDimensional ℝ E]
 
+omit [FiniteDimensional ℝ E] in
+theorem LinearMap.IsPositive.inner_apply_self_eq_zero_iff
+    {T : E →ₗ[ℝ] E} (hT : T.IsPositive) (x : E) :
+    ⟪T x, x⟫_ℝ = 0 ↔ T x = 0 := by
+  constructor
+  · intro hx
+    let p : ℝ := ⟪T x, T x⟫_ℝ
+    let q : ℝ := ⟪T (T x), T x⟫_ℝ
+    have hp : 0 ≤ p := by
+      dsimp [p]
+      exact real_inner_self_nonneg
+    have hq : 0 ≤ q := hT.inner_nonneg_left (T x)
+    have hqone : 0 < q + 1 := by linarith
+    have hpoly (t : ℝ) : 0 ≤ 2 * t * p + t ^ 2 * q := by
+      have h := hT.inner_nonneg_left (x + t • T x)
+      dsimp [p, q]
+      simp only [map_add, map_smul, inner_add_left, inner_add_right,
+        inner_smul_left, inner_smul_right, starRingEnd_apply, star_trivial] at h
+      rw [hT.isSymmetric (T x) x, hx] at h
+      nlinarith
+    have hspecial := hpoly (-p / (q + 1))
+    have hpzero : p = 0 := by
+      field_simp at hspecial
+      nlinarith
+    have hnorm : ‖T x‖ = 0 := by
+      have hsq : ‖T x‖ ^ 2 = 0 := by
+        simpa [p, real_inner_self_eq_norm_sq] using hpzero
+      nlinarith [norm_nonneg (T x)]
+    exact norm_eq_zero.mp hnorm
+  · intro hx
+    rw [hx, inner_zero_left]
+
+omit [FiniteDimensional ℝ E] in
+theorem LinearMap.IsPositive.ker_le_ker_of_inner_apply_self_eq_zero
+    {S T : E →ₗ[ℝ] E} (hT : T.IsPositive)
+    (hzero : ∀ x ∈ S.ker, ⟪T x, x⟫_ℝ = 0) : S.ker ≤ T.ker := by
+  intro x hx
+  exact LinearMap.mem_ker.mpr
+    ((hT.inner_apply_self_eq_zero_iff x).mp (hzero x hx))
+
+omit [FiniteDimensional ℝ E] in
+theorem LinearMap.IsSymmetric.ker_le_ker_of_commute_of_inner_apply_self_eq_zero
+    {S T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (hcomm : Commute S T)
+    (hzero : ∀ x ∈ S.ker, ⟪T x, x⟫_ℝ = 0) : S.ker ≤ T.ker := by
+  intro x hx
+  rw [LinearMap.mem_ker] at hx ⊢
+  have hTx : S (T x) = 0 := by
+    have h := LinearMap.congr_fun hcomm.eq x
+    simpa [Module.End.mul_apply, hx] using h
+  have hsum : S (x + T x) = 0 := by simp [hx, hTx]
+  have h := hzero (x + T x) (LinearMap.mem_ker.mpr hsum)
+  simp only [map_add, inner_add_left, inner_add_right] at h
+  rw [hzero x (LinearMap.mem_ker.mpr hx),
+    hzero (T x) (LinearMap.mem_ker.mpr hTx), hT (T x) x] at h
+  exact inner_self_eq_zero.mp (by nlinarith : ⟪T x, T x⟫_ℝ = 0)
+
+omit [FiniteDimensional ℝ E] in
+theorem LinearMap.IsPositive.sub_smul_rankOne_of_eigenvector
+    {T : E →ₗ[ℝ] E} (hT : T.IsPositive)
+    {e : E} (he : ‖e‖ = 1) {eigenvalue : ℝ}
+    (hTe : T e = eigenvalue • e) :
+    (T - eigenvalue • (InnerProductSpace.rankOne ℝ e e).toLinearMap).IsPositive := by
+  rw [LinearMap.isPositive_iff]
+  constructor
+  · have hrank :
+        (InnerProductSpace.rankOne ℝ e e).toLinearMap.IsSymmetric :=
+      InnerProductSpace.isSymmetric_rankOne_self e
+    exact hT.isSymmetric.sub (hrank.smul (by simp))
+  · intro x
+    let c : ℝ := ⟪e, x⟫_ℝ
+    let y : E := x - c • e
+    have hxy : x = y + c • e := by simp [y]
+    have hey : ⟪e, y⟫_ℝ = 0 := by
+      simp [y, c, inner_sub_right, inner_smul_right, he]
+    have hye : ⟪y, e⟫_ℝ = 0 := by simpa [real_inner_comm] using hey
+    have hTye : ⟪T y, e⟫_ℝ = 0 := by
+      rw [hT.isSymmetric y e, hTe, inner_smul_right, hye, mul_zero]
+    have hquad : ⟪T x, x⟫_ℝ = ⟪T y, y⟫_ℝ + eigenvalue * c ^ 2 := by
+      rw [hxy, map_add, map_smul, hTe]
+      simp only [inner_add_left, inner_add_right, inner_smul_left, inner_smul_right]
+      simp [hTye, hey, he]
+      ring
+    change 0 ≤
+      ⟪T x - eigenvalue • (InnerProductSpace.rankOne ℝ e e) x, x⟫_ℝ
+    simp only [InnerProductSpace.rankOne_apply, inner_sub_left, inner_smul_left]
+    simp only [starRingEnd_apply, star_trivial]
+    dsimp only [c] at hquad ⊢
+    rw [hquad]
+    nlinarith [hT.inner_nonneg_left y]
+
 namespace LinearMap.IsSymmetric
 
 noncomputable def lowerKyFanSum {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (k : ℕ) : ℝ :=
@@ -176,21 +266,36 @@ theorem lowerKyFanSum_le_frame {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric)
   rw [inner_smul_left, real_inner_comm]
   simp [pow_two, mul_comm, mul_left_comm]
 
+theorem exists_eigenframe_lowerKyFanSum_eq {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric)
+    {k : ℕ} (hk : k ≤ Module.finrank ℝ E) :
+    ∃ e : Fin k → E, ∃ eigenvalue : Fin k → ℝ,
+      Orthonormal ℝ e ∧
+      (∀ i, T (e i) = eigenvalue i • e i) ∧
+      ∑ i, eigenvalue i = hT.lowerKyFanSum k := by
+  let b := hT.eigenvectorBasis (n := Module.finrank ℝ E) rfl
+  let e : Fin k → E := fun i => b (finTailEmbedding hk i)
+  let eigenvalue : Fin k → ℝ :=
+    fun i => hT.eigenvalues rfl (finTailEmbedding hk i)
+  refine ⟨e, eigenvalue, b.orthonormal.comp (finTailEmbedding hk)
+    (finTailEmbedding hk).injective, ?_, ?_⟩
+  · intro i
+    exact hT.apply_eigenvectorBasis rfl (finTailEmbedding hk i)
+  exact (sum_fin_tail hk (hT.eigenvalues rfl)).trans (by rfl)
+
 theorem exists_frame_lowerKyFanSum_eq {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric)
     {k : ℕ} (hk : k ≤ Module.finrank ℝ E) :
     ∃ e : Fin k → E, Orthonormal ℝ e ∧
       ∑ i, ⟪T (e i), e i⟫_ℝ = hT.lowerKyFanSum k := by
-  let b := hT.eigenvectorBasis (n := Module.finrank ℝ E) rfl
-  let e : Fin k → E := fun i => b (finTailEmbedding hk i)
-  refine ⟨e, b.orthonormal.comp (finTailEmbedding hk) (finTailEmbedding hk).injective, ?_⟩
-  have henergy (i : Fin k) :
-      ⟪T (e i), e i⟫_ℝ = hT.eigenvalues rfl (finTailEmbedding hk i) := by
-    rw [show T (e i) = hT.eigenvalues rfl (finTailEmbedding hk i) • e i by
-      exact hT.apply_eigenvectorBasis rfl (finTailEmbedding hk i)]
-    rw [inner_smul_left]
-    simp [e]
-  simp_rw [henergy]
-  exact (sum_fin_tail hk (hT.eigenvalues rfl)).trans (by rfl)
+  obtain ⟨e, eigenvalue, he, heigen, hsum⟩ :=
+    hT.exists_eigenframe_lowerKyFanSum_eq hk
+  refine ⟨e, he, ?_⟩
+  calc
+    ∑ i, ⟪T (e i), e i⟫_ℝ = ∑ i, eigenvalue i := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [heigen i, inner_smul_left]
+      simp [he.norm_eq_one]
+    _ = hT.lowerKyFanSum k := hsum
 
 private theorem trace_starProjection_comp_eq_sum {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric)
     {U : Submodule ℝ E} [U.HasOrthogonalProjection] {ι : Type*} [Fintype ι]
@@ -404,3 +509,70 @@ theorem lowerKyFanSum_pos_iff_rank_ge {T : E →ₗ[ℝ] E} (hT : T.IsPositive)
   omega
 
 end LinearMap.IsSymmetric
+
+namespace LinearMap.IsPositive
+
+theorem finrank_range_le_of_lowerKyFanSum_pos
+    {A B : E →ₗ[ℝ] E} (hA : A.IsPositive) (hB : B.IsPositive)
+    (hpos : ∀ k, 1 ≤ k → k ≤ Module.finrank ℝ E →
+      0 < hA.isSymmetric.lowerKyFanSum k →
+      0 < hB.isSymmetric.lowerKyFanSum k) :
+    Module.finrank ℝ A.range ≤ Module.finrank ℝ B.range := by
+  let r := Module.finrank ℝ E
+  let rankA := Module.finrank ℝ A.range
+  by_cases hzero : rankA = 0
+  · omega
+  · let k := r - rankA + 1
+    have hrankA : rankA ≤ r := A.range.finrank_le
+    have hkpos : 1 ≤ k := by omega
+    have hkle : k ≤ r := by omega
+    have hsource : 0 < hA.isSymmetric.lowerKyFanSum k :=
+      (LinearMap.IsSymmetric.lowerKyFanSum_pos_iff_rank_ge hA hkle).2 (by omega)
+    have htarget :=
+      (LinearMap.IsSymmetric.lowerKyFanSum_pos_iff_rank_ge hB hkle).1
+        (hpos k hkpos hkle hsource)
+    omega
+
+end LinearMap.IsPositive
+
+namespace ContinuousLinearMap.IsPositive
+
+open Filter Set in
+theorem eventually_finrank_range_ge_of_tendsto
+    {X : Type*} {l : Filter X}
+    {A : X → {T : E →L[ℝ] E // T.IsPositive}}
+    {A₀ : {T : E →L[ℝ] E // T.IsPositive}}
+    (hA : Tendsto A l (nhds A₀)) :
+    ∀ᶠ x in l,
+      Module.finrank ℝ A₀.1.range ≤ Module.finrank ℝ (A x).1.range := by
+  let rank₀ := Module.finrank ℝ A₀.1.range
+  by_cases hzero : rank₀ = 0
+  · filter_upwards with x
+    omega
+  · let r := Module.finrank ℝ E
+    let k := r - rank₀ + 1
+    have hrank₀ : rank₀ ≤ r := A₀.1.range.finrank_le
+    have hkle : k ≤ r := by omega
+    have hsource : 0 < A₀.2.toLinearMap.isSymmetric.lowerKyFanSum k :=
+      (LinearMap.IsSymmetric.lowerKyFanSum_pos_iff_rank_ge
+        A₀.2.toLinearMap hkle).2 (by omega)
+    let toSymmetric : {T : E →L[ℝ] E // T.IsPositive} →
+        {T : E →L[ℝ] E // T.IsSymmetric} :=
+      fun T => ⟨T.1, T.2.isSymmetric⟩
+    have htoSymmetric : Continuous toSymmetric := by
+      exact continuous_subtype_val.subtype_mk _
+    have hphi : Tendsto
+        (fun x => (toSymmetric (A x)).2.lowerKyFanSum k) l
+        (nhds ((toSymmetric A₀).2.lowerKyFanSum k)) := by
+      exact ((LinearMap.IsSymmetric.continuous_lowerKyFanSum k hkle).comp
+        htoSymmetric).continuousAt.tendsto.comp hA
+    have heventually : ∀ᶠ x in l,
+        0 < (toSymmetric (A x)).2.lowerKyFanSum k :=
+      hphi.eventually (Ioi_mem_nhds hsource)
+    filter_upwards [heventually] with x hx
+    have htarget :=
+      (LinearMap.IsSymmetric.lowerKyFanSum_pos_iff_rank_ge
+        (A x).2.toLinearMap hkle).1 hx
+    omega
+
+end ContinuousLinearMap.IsPositive

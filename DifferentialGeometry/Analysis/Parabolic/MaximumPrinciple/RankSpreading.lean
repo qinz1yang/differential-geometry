@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Spectral.LowerKyFan
 import Mathlib.Order.Lattice.Nat
 import Mathlib.Tactic.Linarith
 import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
@@ -102,3 +103,72 @@ theorem exists_rank_eq_on_initial_interval_of_spreading
     rw [← hxstar]
     exact hspread ht.1.le httstar htstar.2 x xstar
   exact le_antisymm hle hqle
+
+theorem rank_spatially_constant_and_locally_constant_from_left_of_spreading
+    [Nonempty X] {rank : Real → X → Nat} {T : Real}
+    (hT : 0 < T)
+    (hlower : ∀ t ∈ Ioc 0 T, ∀ x,
+      ∀ᶠ s in 𝓝[Icc 0 T] t, rank t x ≤ rank s x)
+    (hspread : ∀ {s t : Real}, 0 ≤ s → s < t → t ≤ T →
+      ∀ x y, rank s x ≤ rank t y) :
+    (∀ t ∈ Ioc 0 T, ∀ x y, rank t x = rank t y) ∧
+      (∀ x, MonotoneOn (fun t => rank t x) (Ioc 0 T)) ∧
+      (∀ t ∈ Ioc 0 T, ∀ x,
+        ∃ ε ∈ Ioc 0 t, ∀ s ∈ Ioc (t - ε) t, rank s x = rank t x) ∧
+      ∃ δ ∈ Ioc 0 T, ∃ q : Nat,
+        ∀ t ∈ Ioc 0 δ, ∀ x, rank t x = q := by
+  refine ⟨?_, ?_, ?_, exists_rank_eq_on_initial_interval_of_spreading hT hspread⟩
+  · intro t ht x y
+    exact rank_eq_at_positive_time_of_spreading hlower hspread ht x y
+  · intro x
+    exact rank_monotoneOn_of_spreading hspread x
+  · intro t ht x
+    exact rank_eq_on_left_interval_of_spreading hlower hspread ht x
+
+universe v
+
+variable {E : Type v} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable [FiniteDimensional ℝ E]
+
+theorem finrank_range_eq_at_positive_time_of_spreading
+    {A : ℝ → X → {B : E →L[ℝ] E // B.IsPositive}} {T : ℝ}
+    (hcontinuous : ∀ x, ContinuousOn (fun t => A t x) (Icc 0 T))
+    (hspread : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T → ∀ x y,
+      Module.finrank ℝ (A s x).1.range ≤
+        Module.finrank ℝ (A t y).1.range)
+    {t : ℝ} (ht : t ∈ Ioc 0 T) (x y : X) :
+    Module.finrank ℝ (A t x).1.range =
+      Module.finrank ℝ (A t y).1.range := by
+  apply rank_eq_at_positive_time_of_spreading
+    (rank := fun s z => Module.finrank ℝ (A s z).1.range)
+    (T := T) (t := t)
+  · intro s hs z
+    exact ContinuousLinearMap.IsPositive.eventually_finrank_range_ge_of_tendsto
+      (hcontinuous z s ⟨hs.1.le, hs.2⟩)
+  · exact hspread
+  · exact ht
+
+theorem finrank_range_spatially_constant_and_locally_constant_from_left_of_spreading
+    [Nonempty X]
+    {A : ℝ → X → {B : E →L[ℝ] E // B.IsPositive}} {T : ℝ}
+    (hT : 0 < T)
+    (hcontinuous : ∀ x, ContinuousOn (fun t => A t x) (Icc 0 T))
+    (hspread : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T → ∀ x y,
+      Module.finrank ℝ (A s x).1.range ≤
+        Module.finrank ℝ (A t y).1.range) :
+    (∀ t ∈ Ioc 0 T, ∀ x y,
+      Module.finrank ℝ (A t x).1.range =
+        Module.finrank ℝ (A t y).1.range) ∧
+      (∀ x, MonotoneOn
+        (fun t => Module.finrank ℝ (A t x).1.range) (Ioc 0 T)) ∧
+      (∀ t ∈ Ioc 0 T, ∀ x,
+        ∃ ε ∈ Ioc 0 t, ∀ s ∈ Ioc (t - ε) t,
+          Module.finrank ℝ (A s x).1.range =
+            Module.finrank ℝ (A t x).1.range) ∧
+      ∃ δ ∈ Ioc 0 T, ∃ q : Nat, ∀ t ∈ Ioc 0 δ, ∀ x,
+        Module.finrank ℝ (A t x).1.range = q := by
+  apply rank_spatially_constant_and_locally_constant_from_left_of_spreading
+    hT _ hspread
+  intro t ht x
+  exact ContinuousLinearMap.IsPositive.eventually_finrank_range_ge_of_tendsto
+    (hcontinuous x t ⟨ht.1.le, ht.2⟩)
