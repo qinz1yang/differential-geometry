@@ -182,6 +182,12 @@ noncomputable def flowUpgradeOfOpen
   have hLm : ∀ t : Real, t ∈ X.D.carrier →
       L.S.family.metric t = co.gInf t :=
     fun t ht => eq_of_heq (hLmetric t ht)
+  have hmetricRaw : MetricInnerPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.hφ) co.gInf :=
+    OpenConvOut.metric_conv (I := I) Φ ht₀ hD co
+  have hmetric : MetricPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) :=
+    MetricInnerPullbackTendsto.congr_metric (I := I)
+      (fun t ht => (hLm t ht).symm) hmetricRaw
   have hscalar : ScalarPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) := scalar
   have hricci : RicciPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) :=
     MetricRicciPullbackTendsto.congr_metric (I := I)
@@ -198,6 +204,7 @@ noncomputable def flowUpgradeOfOpen
     { L := L
       hL0 := by simpa [mc'] using hL0
       maps := Φ'
+      metric := hmetric
       scalar := hscalar
       ricci := hricci
       ricciNorm := hricciNorm

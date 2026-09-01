@@ -45,6 +45,111 @@ variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private theorem srcMetric_inner_pullback
+    (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (k : Nat) (t : Real) (x : P.M)
+    (hx : letI : TopologicalSpace P.M := P.topology; x ∈ Φ.source k)
+    (v w : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      TangentSpace I x) :
+    letI : TopologicalSpace P.M := P.topology
+    letI : ChartedSpace H P.M := P.charted
+    letI : T2Space P.M := P.t2
+    letI : IsManifold I ∞ P.M := P.smooth
+    letI : SigmaCompactSpace P.M := P.sigmaCompact
+    letI : TopologicalSpace (X.term (subseq k)).M :=
+      (X.term (subseq k)).topology
+    letI : ChartedSpace H (X.term (subseq k)).M :=
+      (X.term (subseq k)).charted
+    letI : T2Space (X.term (subseq k)).M :=
+      (X.term (subseq k)).t2
+    letI : IsManifold I ∞ (X.term (subseq k)).M :=
+      (X.term (subseq k)).smooth
+    letI : SigmaCompactSpace (X.term (subseq k)).M :=
+      (X.term (subseq k)).sigmaCompact
+    letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+      sourceDomTop (I := I) Φ k
+    letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+      sourceDomCharted (I := I) Φ k
+    letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+      sourceDomSmooth (I := I) Φ k
+    (srcMetric (I := I) Φ hsrc htgt k t).inner ⟨x, hx⟩ v w =
+      ((X.term (subseq k)).S.family.metric t).inner (Φ.map k x)
+        (mfderiv I I (Φ.map k) x v)
+        (mfderiv I I (Φ.map k) x w) := by
+  classical
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace (X.term (subseq k)).M :=
+    (X.term (subseq k)).topology
+  let : ChartedSpace H (X.term (subseq k)).M :=
+    (X.term (subseq k)).charted
+  let : T2Space (X.term (subseq k)).M := (X.term (subseq k)).t2
+  let : IsManifold I ∞ (X.term (subseq k)).M :=
+    (X.term (subseq k)).smooth
+  let : SigmaCompactSpace (X.term (subseq k)).M :=
+    (X.term (subseq k)).sigmaCompact
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+    sourceDomTop (I := I) Φ k
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+    sourceDomCharted (I := I) Φ k
+  let : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+    sourceDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+    sourceDomSigmaOf (I := I) Φ k (hsrc k)
+  let xsrc : SourceDomain (I := I) Φ k := ⟨x, hx⟩
+  let D := SourceDomainMetricData.ofRestrictPullback (I := I)
+    (Φ := Φ) (k := k) (hsrc k)
+    (fun _ => refRes (I := I) Φ P.metric k) (fun _ => P.metric)
+  have hmetric : (srcMetric (I := I) Φ hsrc htgt k t) = D.pullbackMetric t := by
+    exact sourceFlow_metric_eq (I := I) Φ k (hsrc k) (htgt k)
+      (fun _ => refRes (I := I) Φ P.metric k) (fun _ => P.metric) t
+  have hpull := D.pullback_inner t xsrc
+    (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w)
+  have hmap : MDifferentiableAt I I (Φ.map k) x :=
+    (Φ.partialDiffeomorph k).contMDiffOn_toFun.mdifferentiableOn (by simp)
+      x hx |>.mdifferentiableAt
+      ((Φ.partialDiffeomorph k).open_source.mem_nhds hx)
+  have hsourceVal : MDifferentiableAt I I
+      (fun y : SourceDomain (I := I) Φ k => (y : P.M)) xsrc :=
+    ContMDiffAt.mdifferentiableAt
+      ((contMDiff_subtype_val (I := I) (n := (∞ : WithTop ℕ∞))
+        (U := sourceOpen (I := I) Φ k)).contMDiffAt) (by simp)
+  have hderiv : ∀ z : TangentSpace I xsrc,
+      (show E from mfderiv I I
+        (fun y : SourceDomain (I := I) Φ k => Φ.map k (y : P.M)) xsrc z) =
+        (show E from mfderiv I I (Φ.map k) x
+          (show TangentSpace I x from z)) := by
+    intro z
+    have hchain := mfderiv_comp (I := I) (I' := I) (I'' := I)
+      xsrc hmap hsourceVal
+    have heval := congrArg (fun A => A z) hchain
+    rw [ContinuousLinearMap.comp_apply] at heval
+    have hz : mfderiv I I
+        (fun y : SourceDomain (I := I) Φ k => (y : P.M)) xsrc z =
+        (show TangentSpace I (xsrc : P.M) from z) := by
+      rw [mfderiv_subtype_val_apply]
+    rw [hz] at heval
+    have hevalE := congrArg
+      (fun q : TangentSpace I (Φ.map k (xsrc : P.M)) => (show E from q)) heval
+    simpa [Function.comp_def, xsrc] using hevalE
+  rw [hmetric]
+  apply hpull.trans
+  change ((X.term (subseq k)).S.family.metric t).inner (Φ.map k x)
+      (show E from mfderiv I I
+        (fun y : SourceDomain (I := I) Φ k => Φ.map k (y : P.M)) xsrc
+          (show TangentSpace I xsrc from v))
+      (show E from mfderiv I I
+        (fun y : SourceDomain (I := I) Φ k => Φ.map k (y : P.M)) xsrc
+          (show TangentSpace I xsrc from w)) = _
+  rw [hderiv (show TangentSpace I xsrc from v),
+    hderiv (show TangentSpace I xsrc from w)]
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem ricNorm_restrict
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [T2Space M]
@@ -1012,6 +1117,95 @@ theorem ConvOut.gInf_pde
   simpa only [gTail] using
     gSeqExt_pde (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) β ψ u hwin hu x
       (hxgrow k) v w
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem ConvOut.metric_conv_at
+    (R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (β ψ : Real)
+    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    {t : Real} (ht : t ∈ Set.Icc β ψ) (x : P.M)
+    (v w : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      TangentSpace I x) :
+    letI : TopologicalSpace P.M := P.topology
+    letI : ChartedSpace H P.M := P.charted
+    letI : T2Space P.M := P.t2
+    letI : IsManifold I ∞ P.M := P.smooth
+    letI : SigmaCompactSpace P.M := P.sigmaCompact
+    letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+    Filter.Tendsto
+      (fun k ↦
+        letI : TopologicalSpace (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).topology
+        letI : ChartedSpace H (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).charted
+        letI : IsManifold I ∞ (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).smooth
+        letI : T2Space (TangentBundle I (X.term (subseq (co.φ k))).M) :=
+          (X.term (subseq (co.φ k))).t2TangentBundle
+        ((X.term (subseq (co.φ k))).S.family.metric t).inner
+          (Φ.map (co.φ k) x)
+          (mfderiv I I (Φ.map (co.φ k)) x v)
+          (mfderiv I I (Φ.map (co.φ k)) x w))
+      Filter.atTop (nhds ((co.gInf t).inner x v w)) := by
+  classical
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+  obtain ⟨kgrow, hkgrow⟩ := bf.grow_cover {x} isCompact_singleton
+  let gTail : Nat → SmoothRiemannianMetric I P.M := fun k ↦
+    gSeqExt (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) t
+  have hxgrow : ∀ k : Nat, x ∈ bf.grow (co.φ (k + kgrow)) := by
+    intro k
+    have hkgrow_add : kgrow ≤ k + kgrow := by omega
+    have hadd_phi : k + kgrow ≤ co.φ (k + kgrow) := by
+      simpa only [id_eq] using co.hφ.id_le (k + kgrow)
+    exact hkgrow (co.φ (k + kgrow)) (hkgrow_add.trans hadd_phi)
+      (Set.mem_singleton x)
+  have hinner : Filter.Tendsto (fun k ↦ (gTail k).inner x v w) Filter.atTop
+      (nhds ((co.gInf t).inner x v w)) := by
+    refine metricInner_tendsto (I := I) gTail (co.gInf t) R x ?_ v w
+    intro ε hε
+    obtain ⟨k0, hk0⟩ := co.convPt {x} isCompact_singleton 0 ε hε
+    refine ⟨k0, fun k hk ↦ ?_⟩
+    simpa only [gTail] using
+      hk0 (k + kgrow) (by omega) t ht 0 le_rfl x (Set.mem_singleton x)
+  rw [← Filter.tendsto_add_atTop_iff_nat kgrow]
+  refine hinner.congr' ?_
+  filter_upwards with k
+  let : TopologicalSpace (X.term (subseq (co.φ (k + kgrow)))).M :=
+    (X.term (subseq (co.φ (k + kgrow)))).topology
+  let : ChartedSpace H (X.term (subseq (co.φ (k + kgrow)))).M :=
+    (X.term (subseq (co.φ (k + kgrow)))).charted
+  let : IsManifold I ∞ (X.term (subseq (co.φ (k + kgrow)))).M :=
+    (X.term (subseq (co.φ (k + kgrow)))).smooth
+  let : T2Space (TangentBundle I (X.term (subseq (co.φ (k + kgrow)))).M) :=
+    (X.term (subseq (co.φ (k + kgrow)))).t2TangentBundle
+  have hxsrc : x ∈ Φ.source (co.φ (k + kgrow)) :=
+    bf.grow_subset (co.φ (k + kgrow)) (hxgrow k)
+  obtain ⟨W, _hWopen, hgrowW, hW1⟩ := bf.chi_one (co.φ (k + kgrow))
+  have hχ : bf.chi (co.φ (k + kgrow)) x = 1 :=
+    hW1 x (hgrowW (hxgrow k))
+  calc
+    (gTail k).inner x v w =
+        (srcMetric (I := I) Φ hsrc htgt (co.φ (k + kgrow)) t).inner
+          ⟨x, hxsrc⟩ v w := by
+      rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt
+        (co.φ (k + kgrow)) t x hxsrc v w, hχ]
+      simp
+    _ = ((X.term (subseq (co.φ (k + kgrow)))).S.family.metric t).inner
+        (Φ.map (co.φ (k + kgrow)) x)
+        (mfderiv I I (Φ.map (co.φ (k + kgrow))) x v)
+        (mfderiv I I (Φ.map (co.φ (k + kgrow))) x w) :=
+      srcMetric_inner_pullback (I := I) Φ hsrc htgt
+        (co.φ (k + kgrow)) t x hxsrc v w
 
 theorem ConvOut.scalar_conv_at
     (R : letI : TopologicalSpace P.M := P.topology

@@ -25,6 +25,28 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem ConvOut.metric_conv
+    {X : PointedFlowSeq (I := I)}
+    {P : PointedRiemannianManifold (I := I)}
+    {subseq : Nat → Nat}
+    (Φ : PointedCGHMaps (I := I) X P subseq)
+    (R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (β ψ : Real)
+    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (hcarrier : X.D.carrier ⊆ Set.Icc β ψ) :
+    MetricInnerPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) co.gInf := by
+  intro t ht x v w
+  simp only [Function.comp_apply, PointedCGHMaps.compSubseq_map]
+  convert ConvOut.metric_conv_at (I := I) Φ R bf hsrc htgt β ψ co
+    (hcarrier ht) x v w using 1
+  funext k
+  rfl
+
 theorem ConvOut.scalar_conv
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
@@ -278,6 +300,12 @@ noncomputable def flowUpgradeOfMaps
   letI : SigmaCompactSpace (L.atTime 0).M := L.sigmaCompact
   have hLm : forall t : Real, t ∈ Set.Icc β ψ -> L.S.family.metric t = co.gInf t :=
     fun t ht => eq_of_heq (hLmetric t ht)
+  have hmetricRaw : MetricInnerPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.hφ) co.gInf :=
+    ConvOut.metric_conv (I := I) Φ R bf hsrc htgt β ψ co hcarrier
+  have hmetric : MetricPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) :=
+    MetricInnerPullbackTendsto.congr_metric (I := I)
+      (fun t ht => (hLm t (hcarrier ht)).symm) hmetricRaw
   have hscalar : ScalarPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) := scalar
   have hricci : RicciPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) :=
     MetricRicciPullbackTendsto.congr_metric (I := I)
@@ -291,6 +319,7 @@ noncomputable def flowUpgradeOfMaps
     { L := L
       hL0 := by simpa [mc'] using hL0
       maps := Φ'
+      metric := hmetric
       scalar := hscalar
       ricci := hricci
       ricciNorm := hricciNorm

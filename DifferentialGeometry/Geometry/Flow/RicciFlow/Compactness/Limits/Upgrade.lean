@@ -59,6 +59,7 @@ structure FlowLimitData
   L : PointedFlowData.{u, uE, uH} (I := I) X.D
   hL0 : L.atTime (I := I) 0 = mc.limit
   maps : PointedCGHMaps (I := I) X (L.atTime 0) mc.subseq
+  metric : MetricPullbackTendsto (I := I) maps
   scalar : ScalarPullbackTendsto (I := I) maps
   ricci : RicciPullbackTendsto (I := I) maps
   ricciNorm : RicNormPullback (I := I) maps
@@ -96,7 +97,7 @@ theorem flowLimit_upgrade
     CompactnessConclusion (I := I) X :=
   ⟨d.L, mc.subseq, mc.strictMono,
     ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-      d.maps d.scalar d.ricci d.ricciNorm d.hσsrc d.refMetric (letI : TopologicalSpace d.L.M := d.L.topology; letI : ChartedSpace H d.L.M := d.L.charted; letI : IsManifold I ∞ d.L.M := d.L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.L.M := (by change IsManifold I ∞ d.L.M; infer_instance); letI : SigmaCompactSpace d.L.M := d.L.sigmaCompact; letI : T2Space d.L.M := d.L.t2; d.L.S.family.metric) d.conv⟩⟩
+      d.maps d.metric d.scalar d.ricci d.ricciNorm d.hσsrc d.refMetric (letI : TopologicalSpace d.L.M := d.L.topology; letI : ChartedSpace H d.L.M := d.L.charted; letI : IsManifold I ∞ d.L.M := d.L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.L.M := (by change IsManifold I ∞ d.L.M; infer_instance); letI : SigmaCompactSpace d.L.M := d.L.sigmaCompact; letI : T2Space d.L.M := d.L.t2; d.L.S.family.metric) d.conv⟩⟩
 
 structure FlowUpgradeData
     (X : PointedFlowSeq.{u, uE, uH} (I := I))

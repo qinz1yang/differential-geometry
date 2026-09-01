@@ -26,6 +26,32 @@ variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
 namespace OpenConvOut
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem metric_conv
+    {R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
+    (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
+    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀) :
+    MetricInnerPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) co.gInf := by
+  intro t ht x v w
+  have htOpen : t ∈ Set.Ioo a b := by
+    simpa only [hD, RealTimeInterval.openInterval] using ht
+  obtain ⟨n, hn⟩ := RealTimeInterval.exists_window_nhds ht₀ htOpen
+  have htWin : t ∈ RealTimeInterval.openWindow a b t₀ n :=
+    mem_of_mem_nhds hn
+  simp only [Function.comp_apply, PointedCGHMaps.compSubseq_map]
+  convert ConvOut.metric_conv_at (I := I) Φ R bf hsrc htgt
+    (RealTimeInterval.openWindowLeft a t₀ n)
+    (RealTimeInterval.openWindowRight b t₀ n)
+    (OpenConvOut.atWindow Φ co n) htWin x v w using 1
+  · funext k
+    rfl
+  · rfl
+
 theorem scalar_conv
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted

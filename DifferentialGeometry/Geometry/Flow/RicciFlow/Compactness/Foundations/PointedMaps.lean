@@ -1247,6 +1247,65 @@ def ScalarPullbackTendsto
       letI : T2Space L.M := L.t2
       L.S.scalar t x)
 
+def MetricInnerPullbackTendsto
+    {X : PointedFlowSeq (I := I)}
+    {P : PointedRiemannianManifold (I := I)}
+    {subseq : Nat -> Nat}
+    (Phi : PointedCGHMaps (I := I) X P subseq)
+    (gInf : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      Real -> SmoothRiemannianMetric I P.M) : Prop :=
+  letI : TopologicalSpace P.M := P.topology
+  letI : ChartedSpace H P.M := P.charted
+  letI : T2Space P.M := P.t2
+  letI : IsManifold I ∞ P.M := P.smooth
+  letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+  ∀ t ∈ X.D.carrier, ∀ x : P.M, ∀ v w : TangentSpace I x,
+    Filter.Tendsto
+      (fun k =>
+        letI : TopologicalSpace (X.term (subseq k)).M :=
+          (X.term (subseq k)).topology
+        letI : ChartedSpace H (X.term (subseq k)).M :=
+          (X.term (subseq k)).charted
+        letI : IsManifold I ∞ (X.term (subseq k)).M :=
+          (X.term (subseq k)).smooth
+        letI : T2Space (TangentBundle I (X.term (subseq k)).M) :=
+          (X.term (subseq k)).t2TangentBundle
+        ((X.term (subseq k)).S.family.metric t).inner (Phi.map k x)
+          (mfderiv I I (Phi.map k) x v)
+          (mfderiv I I (Phi.map k) x w))
+      Filter.atTop (nhds ((gInf t).inner x v w))
+
+def MetricPullbackTendsto
+    {X : PointedFlowSeq (I := I)}
+    {L : PointedFlowData (I := I) X.D}
+    {subseq : Nat -> Nat}
+    (Phi : PointedCGHMaps (I := I) X (L.atTime 0) subseq) : Prop :=
+  letI : TopologicalSpace L.M := L.topology
+  letI : ChartedSpace H L.M := L.charted
+  letI : IsManifold I ∞ L.M := L.smooth
+  letI : TopologicalSpace (L.atTime 0).M := L.topology
+  letI : ChartedSpace H (L.atTime 0).M := L.charted
+  letI : IsManifold I ∞ (L.atTime 0).M := L.smooth
+  MetricInnerPullbackTendsto (I := I) Phi L.S.family.metric
+
+theorem MetricInnerPullbackTendsto.congr_metric
+    {X : PointedFlowSeq (I := I)}
+    {P : PointedRiemannianManifold (I := I)}
+    {subseq : Nat -> Nat}
+    {Phi : PointedCGHMaps (I := I) X P subseq}
+    {g₁ g₂ : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      Real -> SmoothRiemannianMetric I P.M}
+    (hmetric : ∀ t, t ∈ X.D.carrier → g₁ t = g₂ t)
+    (h₁ : MetricInnerPullbackTendsto (I := I) Phi g₁) :
+    MetricInnerPullbackTendsto (I := I) Phi g₂ := by
+  intro t ht x v w
+  rw [← hmetric t ht]
+  exact h₁ t ht x v w
+
 def MetricRicciPullbackTendsto
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
@@ -1354,6 +1413,7 @@ structure SmoothCGHConverges
     (L : PointedFlowData (I := I) X.D)
     (subseq : Nat -> Nat) where
   spatial : PointedCGConverges (I := I) X L subseq
+  metric_converges : MetricPullbackTendsto (I := I) spatial.maps
   scalar_converges : ScalarPullbackTendsto (I := I) spatial.maps
   ricci_converges : RicciPullbackTendsto (I := I) spatial.maps
   ricciNorm_converges : RicNormPullback (I := I) spatial.maps
@@ -1369,6 +1429,7 @@ noncomputable def ofSpacetime
     {subseq : Nat -> Nat}
     (Φ : PointedCGHMaps (I := I) X (L.atTime 0) subseq)
     {D : forall k : Nat, SourceDomainMetricData (I := I) Φ k}
+    (hmetric : MetricPullbackTendsto (I := I) Φ)
     (hscalar : ScalarPullbackTendsto (I := I) Φ)
     (hricci : RicciPullbackTendsto (I := I) Φ)
     (hric : RicNormPullback (I := I) Φ)
@@ -1377,6 +1438,7 @@ noncomputable def ofSpacetime
   spatial := {
     maps := Φ
     metrics := Hst.toSpatial (I := I) }
+  metric_converges := hmetric
   scalar_converges := hscalar
   ricci_converges := hricci
   ricciNorm_converges := hric
@@ -1387,6 +1449,7 @@ noncomputable def ofRestrictPullback
     {L : PointedFlowData (I := I) X.D}
     {subseq : Nat -> Nat}
     (Φ : PointedCGHMaps (I := I) X (L.atTime 0) subseq)
+    (hmetric : MetricPullbackTendsto (I := I) Φ)
     (hscalar : ScalarPullbackTendsto (I := I) Φ)
     (hricci : RicciPullbackTendsto (I := I) Φ)
     (hric : RicNormPullback (I := I) Φ)
@@ -1414,7 +1477,7 @@ noncomputable def ofRestrictPullback
                 (Φ := Φ) (k := k) (hσsrc k)
                 (referenceMetric k) limitMetricFamily).derivNormSupOn (I := I) K p t) < ε) :
     SmoothCGHConverges (I := I) X L subseq :=
-  SmoothCGHConverges.ofSpacetime (I := I) Φ hscalar hricci hric
+  SmoothCGHConverges.ofSpacetime (I := I) Φ hmetric hscalar hricci hric
     (SourceSpacetimeConvergenceData.ofRestrictPullback (I := I)
       hσsrc referenceMetric limitMetricFamily hconv)
 
