@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Metric
+import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Scaling
 import DifferentialGeometry.Geometry.Operator.Scaling
@@ -49,6 +50,78 @@ theorem metricRmStd_scale
       Rm (vec4 (I := I) X Y Z W))
     (metricRm_scale (I := I) c hc g x)
   simpa [metricRm04_apply, metricRm04StdAt_apply, smul_eq_mul] using h
+
+omit [SigmaCompactSpace M] in
+theorem metricAlgebraicCurvatureTensorAt_scaleMetric
+    [IsManifold I 2 M] [IsManifold I 3 M]
+    (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M) :
+    metricAlgebraicCurvatureTensorAt (I := I) (M := M)
+        (scaleMetric (I := I) c hc g) x =
+      c • metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x := by
+  apply Subtype.ext
+  change metricRm04At (I := I) (M := M) (scaleMetric (I := I) c hc g) x =
+    ((c • metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x :
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+        Tensor04At (I := I) (M := M) x)
+  rw [Submodule.coe_smul_of_tower, metricAlgebraicCurvatureTensorAt_coe]
+  simpa only [metricRm04_apply] using metricRm_scale (I := I) c hc g x
+
+omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M]
+    [SigmaCompactSpace M] [T2Space M] in
+theorem algebraicCurvatureIdentityQuadraticEval_scaleMetric
+    (a : Real) (ha : 0 < a) (g : SmoothRiemannianMetric I M)
+    {x : M} {n : Nat} (c : Fin n → Real)
+    (v w : Fin n → TangentSpace I x) :
+    algebraicCurvatureIdentityQuadraticEval (I := I)
+        (scaleMetric (I := I) a ha g) c v w =
+      a ^ 2 * algebraicCurvatureIdentityQuadraticEval (I := I) g c v w := by
+  unfold algebraicCurvatureIdentityQuadraticEval
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro j _
+  simp only [scaleMetric_inner]
+  ring
+
+omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M]
+    [SigmaCompactSpace M] [T2Space M] in
+theorem algebraicCurvatureOperatorQuadraticEval_smul
+    (a : Real) {x : M} {n : Nat}
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (c : Fin n → Real) (v w : Fin n → TangentSpace I x) :
+    algebraicCurvatureOperatorQuadraticEval (I := I) (M := M) (a • A) c v w =
+      a * algebraicCurvatureOperatorQuadraticEval (I := I) (M := M) A c v w := by
+  unfold algebraicCurvatureOperatorQuadraticEval
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro j _
+  simp only [Submodule.coe_smul_of_tower, tensor04StdAt, Tensor0SSpace.smul_apply,
+    smul_eq_mul]
+  ring
+
+omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M]
+    [SigmaCompactSpace M] [T2Space M] in
+theorem curvatureOperatorLowerBoundAt_scaleMetric
+    {a : Real} (ha : 0 < a) {g : SmoothRiemannianMetric I M} {x : M}
+    {A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x} {K : Real} :
+    curvatureOperatorLowerBoundAt (I := I) (scaleMetric (I := I) a ha g) x (a • A) K ↔
+      curvatureOperatorLowerBoundAt (I := I) g x A (a * K) := by
+  constructor
+  · intro h n c v w
+    have hbound := h n c v w
+    rw [algebraicCurvatureOperatorQuadraticEval_smul,
+      algebraicCurvatureIdentityQuadraticEval_scaleMetric] at hbound
+    nlinarith
+  · intro h n c v w
+    have hbound := h n c v w
+    rw [algebraicCurvatureOperatorQuadraticEval_smul,
+      algebraicCurvatureIdentityQuadraticEval_scaleMetric]
+    nlinarith
 
 end DifferentialGeometry.Geometry.Curvature
 

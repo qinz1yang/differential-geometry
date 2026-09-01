@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
+import DifferentialGeometry.Geometry.Curvature.Scaling
 import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.LinearAlgebra.Matrix.Trace
 
@@ -1123,10 +1124,10 @@ theorem curvatureOperatorMatrixAt_quad_eq_inner
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in
 theorem curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le
-    (g : SmoothRiemannianMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth : OrthonormalBasisAt (I := I) g x basis)
-    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) (K : Real) :
+    {A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x} {K : Real} :
     curvatureOperatorLowerBoundAt (I := I) g x A K ↔
       -orderedSectionalCurvaturesAt (I := I) x basis A 2 ≤ K := by
   constructor
@@ -1211,9 +1212,189 @@ theorem leastCurvatureOperatorEigenvalueAt_eq_sectionalMin
       Set.Ici (-orderedSectionalCurvaturesAt (I := I) x basis A 2) := by
     ext K
     rw [Set.mem_ofPred, Set.mem_Ici]
-    exact curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I) g x basis horth A K
+    exact curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I) g basis horth
   rw [hext, csInf_Ici]
   ring
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le
+    {g : SmoothRiemannianMetric I M} {x : M}
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    {A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x} {K : Real} :
+    curvatureOperatorLowerBoundAt (I := I) g x A K ↔
+      -leastCurvatureOperatorEigenvalueAt (I := I) g x A ≤ K := by
+  rw [leastCurvatureOperatorEigenvalueAt_eq_sectionalMin (I := I) g x basis horth A]
+  exact curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le
+    (I := I) g basis horth
+
+omit [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem leastCurvatureOperatorEigenvalueAt_scaleMetric_smul
+    (a : Real) (ha : 0 < a) (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    leastCurvatureOperatorEigenvalueAt (I := I) (scaleMetric (I := I) a ha g) x (a • A) =
+      a⁻¹ * leastCurvatureOperatorEigenvalueAt (I := I) g x A := by
+  obtain ⟨basis, horth⟩ :=
+    DifferentialGeometry.Geometry.Curvature.exists_orthonormalBasisAt (I := I) g x hdim
+  obtain ⟨basisScaled, horthScaled⟩ :=
+    DifferentialGeometry.Geometry.Curvature.exists_orthonormalBasisAt
+      (I := I) (scaleMetric (I := I) a ha g) x hdim
+  have hbase : curvatureOperatorLowerBoundAt (I := I) g x A
+      (-leastCurvatureOperatorEigenvalueAt (I := I) g x A) :=
+    (curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le
+      (I := I) basis horth).2 le_rfl
+  have hscaleFactor :
+      a * (-(a⁻¹ * leastCurvatureOperatorEigenvalueAt (I := I) g x A)) =
+        -leastCurvatureOperatorEigenvalueAt (I := I) g x A := by
+    field_simp [ne_of_gt ha]
+  have hscaled : curvatureOperatorLowerBoundAt (I := I)
+      (scaleMetric (I := I) a ha g) x (a • A)
+      (-(a⁻¹ * leastCurvatureOperatorEigenvalueAt (I := I) g x A)) := by
+    rw [curvatureOperatorLowerBoundAt_scaleMetric]
+    rw [hscaleFactor]
+    exact hbase
+  have hlower :
+      -leastCurvatureOperatorEigenvalueAt (I := I)
+          (scaleMetric (I := I) a ha g) x (a • A) ≤
+        -(a⁻¹ * leastCurvatureOperatorEigenvalueAt (I := I) g x A) :=
+    (curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le
+      (I := I) basisScaled horthScaled).1 hscaled
+  have hscaledBase : curvatureOperatorLowerBoundAt (I := I)
+      (scaleMetric (I := I) a ha g) x (a • A)
+      (-leastCurvatureOperatorEigenvalueAt (I := I)
+        (scaleMetric (I := I) a ha g) x (a • A)) :=
+    (curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le
+      (I := I) basisScaled horthScaled).2 le_rfl
+  have horiginal : curvatureOperatorLowerBoundAt (I := I) g x A
+      (a * (-leastCurvatureOperatorEigenvalueAt (I := I)
+        (scaleMetric (I := I) a ha g) x (a • A))) :=
+    (curvatureOperatorLowerBoundAt_scaleMetric (I := I) ha).1 hscaledBase
+  have hupper : -leastCurvatureOperatorEigenvalueAt (I := I) g x A ≤
+      a * (-leastCurvatureOperatorEigenvalueAt (I := I)
+        (scaleMetric (I := I) a ha g) x (a • A)) :=
+    (curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le
+      (I := I) basis horth).1 horiginal
+  apply le_antisymm
+  · have hmul : a * leastCurvatureOperatorEigenvalueAt (I := I)
+        (scaleMetric (I := I) a ha g) x (a • A) ≤
+      leastCurvatureOperatorEigenvalueAt (I := I) g x A := by
+      linarith
+    have hmulInv := mul_le_mul_of_nonneg_left hmul (le_of_lt (inv_pos.mpr ha))
+    calc
+      leastCurvatureOperatorEigenvalueAt (I := I)
+          (scaleMetric (I := I) a ha g) x (a • A) =
+          a⁻¹ * (a * leastCurvatureOperatorEigenvalueAt (I := I)
+            (scaleMetric (I := I) a ha g) x (a • A)) := by
+            field_simp [ne_of_gt ha]
+      _ ≤ a⁻¹ * leastCurvatureOperatorEigenvalueAt (I := I) g x A := hmulInv
+  · linarith
+
+omit [SigmaCompactSpace M] in
+theorem leastCurvatureOperatorEigenvalueAt_scaleMetric
+    [IsManifold I 3 M]
+    (a : Real) (ha : 0 < a) (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3) :
+    leastCurvatureOperatorEigenvalueAt (I := I) (scaleMetric (I := I) a ha g) x
+        (metricAlgebraicCurvatureTensorAt (I := I) (M := M)
+          (scaleMetric (I := I) a ha g) x) =
+      a⁻¹ * leastCurvatureOperatorEigenvalueAt (I := I) g x
+        (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x) := by
+  rw [metricAlgebraicCurvatureTensorAt_scaleMetric]
+  exact leastCurvatureOperatorEigenvalueAt_scaleMetric_smul
+    (I := I) a ha g x hdim (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x)
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem leastCurvatureOperatorEigenvalueAt_mul_identity_le
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    {n : Nat} (c : Fin n → Real) (v w : Fin n → TangentSpace I x) :
+    leastCurvatureOperatorEigenvalueAt (I := I) g x A *
+        algebraicCurvatureIdentityQuadraticEval (I := I) g c v w ≤
+      algebraicCurvatureOperatorQuadraticEval (I := I) (M := M) A c v w := by
+  rw [leastCurvatureOperatorEigenvalueAt_eq_sectionalMin (I := I) g x basis horth A]
+  exact algebraicCurvatureOperatorQuadraticEval_rayleighLower
+    (I := I) g x basis horth A c v w
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem exists_leastCurvatureOperatorEigenvalueAt_rayleigh_minimizer
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    ∃ c : Fin 3 → Real,
+      algebraicCurvatureIdentityQuadraticEval (I := I) g c
+          (fun i => basis (bivectorIndex3 i).1)
+          (fun i => basis (bivectorIndex3 i).2) = 1 ∧
+        algebraicCurvatureOperatorQuadraticEval (I := I) (M := M) A c
+          (fun i => basis (bivectorIndex3 i).1)
+          (fun i => basis (bivectorIndex3 i).2) =
+            leastCurvatureOperatorEigenvalueAt (I := I) g x A := by
+  let N : Matrix (Fin 3) (Fin 3) Real := curvatureOperatorMatrixAt (I := I) x basis A
+  let hN : N.IsHermitian := curvatureOperatorMatrixAt_isHermitian (I := I) x basis A
+  let T : EuclideanSpace Real (Fin 3) →ₗ[Real] EuclideanSpace Real (Fin 3) := N.toEuclideanLin
+  let hT : T.IsSymmetric := Matrix.isSymmetric_toEuclideanLin_iff.mpr hN
+  let hn : Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3 := finrank_euclideanSpace
+  let b : OrthonormalBasis (Fin 3) Real (EuclideanSpace Real (Fin 3)) :=
+    hT.eigenvectorBasis hn
+  let bvec : EuclideanSpace Real (Fin 3) := b 2
+  let c : Fin 3 → Real := fun i => (bvec : EuclideanSpace Real (Fin 3)).ofLp i
+  let v : Fin 3 → TangentSpace I x := fun i => basis (bivectorIndex3 i).1
+  let w : Fin 3 → TangentSpace I x := fun i => basis (bivectorIndex3 i).2
+  have hquad : algebraicCurvatureOperatorQuadraticEval (I := I) A c v w =
+      hT.eigenvalues hn 2 := by
+    rw [algebraicCurvatureOperatorQuadraticEval_eq_matrixQuad (I := I) x basis A c]
+    rw [curvatureOperatorMatrixAt_quad_eq_inner (I := I) x basis A c]
+    have hx : (EuclideanSpace.equiv (Fin 3) Real).symm c = bvec := by
+      have hc : c = (EuclideanSpace.equiv (Fin 3) Real) bvec := by
+        funext i
+        rfl
+      rw [hc]
+      exact (EuclideanSpace.equiv (Fin 3) Real).symm_apply_apply bvec
+    rw [hx]
+    rw [real_inner_comm]
+    have heig := hT.apply_eigenvectorBasis hn 2
+    have hnorm : ‖bvec‖ = 1 := by
+      dsimp [bvec]
+      exact b.orthonormal.1 2
+    simpa [hnorm] using (inner_product_apply_eigenvector (T := T) (v := bvec) heig)
+  have hid : algebraicCurvatureIdentityQuadraticEval (I := I) g c v w = 1 := by
+    unfold algebraicCurvatureIdentityQuadraticEval
+    have hdelta : ∀ i j : Fin 3,
+        (g.inner x (v i) (v j)) * (g.inner x (w i) (w j)) -
+            (g.inner x (v i) (w j)) * (g.inner x (w i) (v j)) =
+          if i = j then (1 : Real) else 0 := by
+      intro i j
+      dsimp [v, w]
+      exact bivectorBasisPairing_eq_delta (I := I) g x basis horth i j
+    simp_rw [hdelta]
+    rw [Fin.sum_univ_three, Fin.sum_univ_three]
+    simp only [Fin.isValue, ↓reduceIte, mul_one, zero_ne_one, mul_zero, add_zero, Fin.reduceEq,
+      mul_ite, Finset.sum_ite_eq, Finset.mem_univ]
+    have hnormsum : ∑ i : Fin 3, c i ^ 2 = 1 := by
+      have hb : ‖(b 2 : EuclideanSpace Real (Fin 3))‖ = 1 := b.orthonormal.1 2
+      have hsq : ‖(b 2 : EuclideanSpace Real (Fin 3))‖ ^ 2 = 1 ^ 2 :=
+        congrArg (fun t : Real => t ^ 2) hb
+      rw [EuclideanSpace.real_norm_sq_eq (b 2)] at hsq
+      simpa [c, bvec] using hsq
+    convert hnormsum using 1
+    rw [Fin.sum_univ_three]
+    ring
+  refine ⟨c, hid, ?_⟩
+  calc
+    algebraicCurvatureOperatorQuadraticEval (I := I) A c v w =
+        hT.eigenvalues hn 2 := hquad
+    _ = orderedSectionalCurvaturesAt (I := I) x basis A 2 := by
+      rfl
+    _ = leastCurvatureOperatorEigenvalueAt (I := I) g x A :=
+      (leastCurvatureOperatorEigenvalueAt_eq_sectionalMin
+        (I := I) g x basis horth A).symm
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in

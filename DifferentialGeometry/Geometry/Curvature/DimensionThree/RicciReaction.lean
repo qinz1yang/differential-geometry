@@ -79,6 +79,28 @@ theorem metricRiemannFromRicci3DTraceDataAt
       (metricRicciAt (I := I) (M := M) g x)
   exact traceDataOfFirst (I := I) horth hcurv hRicFirst hScalarTrace
 
+omit [I.Boundaryless] in
+theorem metricRm04StdAt_eq_ricci3
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (X Y Z W : TangentSpace I x) :
+    metricRm04StdAt (I := I) (M := M) g x X Y Z W =
+      -(metricRicciAt (I := I) (M := M) g x (vec2 X Z)) * g.inner x Y W +
+        metricRicciAt (I := I) (M := M) g x (vec2 Y Z) * g.inner x X W +
+        metricRicciAt (I := I) (M := M) g x (vec2 X W) * g.inner x Y Z -
+        metricRicciAt (I := I) (M := M) g x (vec2 Y W) * g.inner x X Z +
+        metricScalarAt (I := I) (M := M) g x / 2 *
+          (g.inner x X Z * g.inner x Y W - g.inner x Y Z * g.inner x X W) := by
+  obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (I := I) g x hdim
+  have htrace := metricRiemannFromRicci3DTraceDataAt
+    (I := I) (M := M) g x basis horth
+  have hformula := rm04_kn_gform (I := I) htrace X Y Z W
+  rw [metricRm04StdAt_apply]
+  change metricRm04At (I := I) (M := M) g x (vec4 X Y Z W) = _
+  rw [hformula]
+  simp
+  ring
+
 private noncomputable def ricciReaction3 (l1 l2 l3 : Real) : Real :=
   l1 * l2 * (l1 + l2 - l3) +
     l1 * l3 * (l1 + l3 - l2) +
