@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricBallImage
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationMonotonicity
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Defs
 import DifferentialGeometry.Geometry.Metric.Convergence.ComponentSubsequence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormFlat
@@ -535,7 +535,7 @@ noncomputable def chainAmbientMaps
     change PartialDiffeomorph I I S.toSeqSystem.Lim (M (j₀ + n))
       (∞ : WithTop ℕ∞)
     exact PartialDiffeomorph.liftTargetOpen (S.inclPartialDiffeo n) rfl
-  source_exhausts := rangeExhausts S
+  source_exhausts := range_exhausts S
   base_mem n := by
     change S.toSeqSystem.incl 0 O₀ ∈ Set.range (S.toSeqSystem.incl n)
     exact

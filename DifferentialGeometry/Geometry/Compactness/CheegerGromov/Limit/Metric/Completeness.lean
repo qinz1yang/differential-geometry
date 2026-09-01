@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Completeness
 import DifferentialGeometry.Topology.FirstExit
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 
@@ -287,7 +288,7 @@ theorem path_escape_core
       _ ≤ _ := hamb
   have hvalLe := pathELength_val_le b j₀ n gAmb (gTail n) hAmbNorm hlow hδ
   have hpull : Manifold.pathELength I δ 0 t = Manifold.pathELength I γ 0 t := by
-    simpa only [δ] using pathELength_invIncl S gTail hgTail n hγpre hrange
+    simpa only [δ] using S.pathELength_invIncl gTail hgTail n hγpre hrange
   have hprefix : Manifold.pathELength I γ 0 t ≤ Manifold.pathELength I γ 0 1 :=
     Manifold.pathELength_mono le_rfl ht.2
   have hRle : ENNReal.ofReal (coreRadius n) ≤
@@ -634,9 +635,9 @@ theorem tailLimitComplete
       Set.range (S.toSeqSystem.F (Nat.le_succ n)) ⊆ K := by
     simpa only [S] using
       tailSystem_compact (I := I) b Ψ hbase g hnorm j₀ hj₀ D₀
-  have hcover : HasCompactBallCover S gTail hgTail :=
-    compactCover_of_step S gTail hgTail hexh hcompact
-  exact limitComplete_cover S (tailCenter b j₀ 0) gTail hgTail hcover
+  have hcover : S.hasCompactBallCover gTail hgTail :=
+    S.hasCompactBallCover_of_step gTail hgTail hexh hcompact
+  exact limit_complete_of_compact_ball_cover S (tailCenter b j₀ 0) gTail hgTail hcover
 
 end ApproxData
 

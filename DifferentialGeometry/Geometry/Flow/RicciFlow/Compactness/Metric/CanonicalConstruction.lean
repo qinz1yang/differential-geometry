@@ -335,7 +335,7 @@ noncomputable def tailMemberMaps
       base_mem := fun n => ?_
       basepoint_map := fun n => ?_ }
   · change ExhaustsByOpen (fun k => Set.range (S.toSeqSystem.incl k))
-    exact rangeExhausts S
+    exact range_exhausts S
   · change S.toSeqSystem.incl 0 (tailCenter b j₀ 0) ∈
       Set.range (S.toSeqSystem.incl n)
     exact ⟨S.toSeqSystem.F (Nat.zero_le n) (tailCenter b j₀ 0),

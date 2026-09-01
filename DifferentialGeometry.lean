@@ -2769,7 +2769,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalCompatibility
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequenceRadii
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Completeness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Convergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Construction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Completeness
@@ -3010,7 +3012,9 @@ import DifferentialGeometry.Geometry.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Uniqueness
 import DifferentialGeometry.Geometry.Hodge.Codifferential
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Geometry.Metric.DirectLimit
+import DifferentialGeometry.Geometry.Metric.DirectLimit.Defs
+import DifferentialGeometry.Geometry.Metric.DirectLimit.Distance
+import DifferentialGeometry.Geometry.Metric.DirectLimit.Properness
 import DifferentialGeometry.Geometry.Metric.BumpExtend
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Metric.CompactMetricLowerBound
