@@ -616,6 +616,11 @@ theorem uhlenbeckIota_isometry
     ∃ iota : MatrixComp M Idx,
       (∀ x : M, ∀ a k : Idx, iota 0 x a k = A₀ a k) ∧
       (∀ x : M, ContinuousOn (fun t : ℝ => iota t x) (Set.Icc 0 T)) ∧
+      (∀ t : ℝ, t ∈ Set.Ico 0 T → ∀ x : M, ∀ a k : Idx,
+        HasDerivWithinAt (fun s : ℝ => iota s x a k)
+          (∑ l : Idx,
+            uhlenbeckRupOfSolution (I := I) S gInv frame t x l k * iota t x a l)
+          (Set.Ici 0) t) ∧
       FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le) iota
         (uhlenbeckRupOfSolution (I := I) S gInv frame) ∧
       ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Idx,
@@ -630,7 +635,7 @@ theorem uhlenbeckIota_isometry
     exact (hiota_deriv (t : ℝ) ⟨le_of_lt t.2.1, t.2.2⟩ x a k).mono (by
       intro s hs
       exact hs.1)
-  refine ⟨iota, hiota0, hiota_cont, hframeODE, ?_⟩
+  refine ⟨iota, hiota0, hiota_cont, hiota_deriv, hframeODE, ?_⟩
   intro t ht x a b
   have hcompat := ricciOneUpCompatible_of_inverseMetric (I := I) (M := M) S gInv frame
     hgInv hginv_symm
@@ -769,7 +774,7 @@ private theorem uhlenbeckRup_sum_smul_basis_eq_ricciSharp
   rfl
 
 omit [SigmaCompactSpace M] in
-theorem uhlenbeckEndomorphism_hasDerivWithinAt
+private theorem uhlenbeckEndomorphism_hasDerivWithinAt_of_components
     [I.Boundaryless]
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -782,23 +787,27 @@ theorem uhlenbeckEndomorphism_hasDerivWithinAt
         metricCompInFrame (I := I) S (fun a x => basisAt x a) t x k j =
           if i = j then 1 else 0)
     (hginv_symm : ∀ t x i j, gInv t x i j = gInv t x j i)
-    (hframe : FrameRicciODEInFrameOn (D := D) iota
-      (uhlenbeckRupOfSolution (I := I) S gInv (fun a x => basisAt x a)))
-    (t : RealTimeInterval.RegularTime D) (x : M) (v : TangentSpace I x) :
+    {K : Set Real} (t : Real) (x : M) (v : TangentSpace I x)
+    (hframe : ∀ a k : Idx,
+      HasDerivWithinAt (fun s : Real => iota s x a k)
+        (∑ l : Idx,
+          uhlenbeckRupOfSolution (I := I) S gInv
+              (fun a x => basisAt x a) t x l k * iota t x a l)
+        K t) :
     HasDerivWithinAt
       (fun s : Real => uhlenbeckEndomorphismAt (basisAt x) iota s v)
       (ricciSharp (I := I) (S.family.metric t) x
         (uhlenbeckEndomorphismAt (basisAt x) iota t v))
-      D.carrier t := by
+      K t := by
   have hbasis (a : Idx) :
       HasDerivWithinAt
         (fun s : Real => uhlenbeckEndomorphismAt (basisAt x) iota s (basisAt x a))
         (ricciSharp (I := I) (S.family.metric t) x
           (uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x a)))
-        D.carrier t := by
+        K t := by
     have hsum := HasDerivWithinAt.fun_sum
       (u := (Finset.univ : Finset Idx))
-      (fun k _ => (hframe t x a k).smul_const (basisAt x k))
+      (fun k _ => (hframe a k).smul_const (basisAt x k))
     have hsum' : HasDerivWithinAt
         (fun s : Real =>
           uhlenbeckEndomorphismAt (basisAt x) iota s (basisAt x a))
@@ -806,7 +815,7 @@ theorem uhlenbeckEndomorphism_hasDerivWithinAt
           (∑ l : Idx,
             uhlenbeckRupOfSolution (I := I) S gInv
               (fun a x => basisAt x a) t x l k * iota t x a l) • basisAt x k)
-        D.carrier t := by
+        K t := by
       simpa only [uhlenbeckEndomorphism_apply_basis] using hsum
     refine hsum'.congr_deriv ?_
     rw [uhlenbeckEndomorphism_apply_basis, map_sum]
@@ -858,6 +867,60 @@ theorem uhlenbeckEndomorphism_hasDerivWithinAt
     simp only [map_smul]
   rw [hderiv]
   exact hsum.congr (fun s _ => hfun s) (hfun t)
+
+omit [SigmaCompactSpace M] in
+theorem uhlenbeckEndomorphism_hasDerivWithinAt
+    [I.Boundaryless]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (gInv : Real → InverseMetricComponents M Idx)
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx)
+    (hgInv : ∀ t x i j,
+      ∑ k : Idx, gInv t x i k *
+        metricCompInFrame (I := I) S (fun a x => basisAt x a) t x k j =
+          if i = j then 1 else 0)
+    (hginv_symm : ∀ t x i j, gInv t x i j = gInv t x j i)
+    (hframe : FrameRicciODEInFrameOn (D := D) iota
+      (uhlenbeckRupOfSolution (I := I) S gInv (fun a x => basisAt x a)))
+    (t : RealTimeInterval.RegularTime D) (x : M) (v : TangentSpace I x) :
+    HasDerivWithinAt
+      (fun s : Real => uhlenbeckEndomorphismAt (basisAt x) iota s v)
+      (ricciSharp (I := I) (S.family.metric t) x
+        (uhlenbeckEndomorphismAt (basisAt x) iota t v))
+      D.carrier t :=
+  uhlenbeckEndomorphism_hasDerivWithinAt_of_components
+    S gInv basisAt iota hgInv hginv_symm t x v (hframe t x)
+
+omit [SigmaCompactSpace M] in
+theorem uhlenbeckEndomorphism_hasDerivWithinAt_right
+    [I.Boundaryless]
+    {T : Real} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (gInv : Real → InverseMetricComponents M Idx)
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx)
+    (hgInv : ∀ t x i j,
+      ∑ k : Idx, gInv t x i k *
+        metricCompInFrame (I := I) S (fun a x => basisAt x a) t x k j =
+          if i = j then 1 else 0)
+    (hginv_symm : ∀ t x i j, gInv t x i j = gInv t x j i)
+    (hframe : ∀ t : Real, t ∈ Set.Ico 0 T → ∀ x : M, ∀ a k : Idx,
+      HasDerivWithinAt (fun s : Real => iota s x a k)
+        (∑ l : Idx,
+          uhlenbeckRupOfSolution (I := I) S gInv
+              (fun a x => basisAt x a) t x l k * iota t x a l)
+        (Set.Ici 0) t)
+    {t : Real} (ht : t ∈ Set.Ico 0 T) (x : M) (v : TangentSpace I x) :
+    HasDerivWithinAt
+      (fun s : Real => uhlenbeckEndomorphismAt (basisAt x) iota s v)
+      (ricciSharp (I := I) (S.family.metric t) x
+        (uhlenbeckEndomorphismAt (basisAt x) iota t v))
+      (Set.Ici 0) t :=
+  uhlenbeckEndomorphism_hasDerivWithinAt_of_components
+    S gInv basisAt iota hgInv hginv_symm t x v (hframe t ht x)
 
 omit [SigmaCompactSpace M] [T2Space M] in
 lemma uhlenbeckEndomorphism_gram_pair

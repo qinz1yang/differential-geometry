@@ -86,6 +86,14 @@ theorem solutionUhlenbeckIota_spec
       solutionUhlenbeckIota hT S hS basisAt 0 x a k = if a = k then 1 else 0) ∧
     (∀ x : M, ContinuousOn
       (fun t : ℝ => solutionUhlenbeckIota hT S hS basisAt t x) (Set.Icc 0 T)) ∧
+    (∀ t : ℝ, t ∈ Set.Ico 0 T → ∀ x : M, ∀ a k : Idx,
+      HasDerivWithinAt
+        (fun s : ℝ => solutionUhlenbeckIota hT S hS basisAt s x a k)
+        (∑ l : Idx,
+          uhlenbeckRupOfSolution (I := I) S (solutionInverseMetricComponents S basisAt)
+              (fun a x => basisAt x a) t x l k *
+            solutionUhlenbeckIota hT S hS basisAt t x a l)
+        (Set.Ici 0) t) ∧
     FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le)
       (solutionUhlenbeckIota hT S hS basisAt)
       (uhlenbeckRupOfSolution (I := I) S (solutionInverseMetricComponents S basisAt)
@@ -120,7 +128,7 @@ theorem solutionUhlenbeckIota_identity_initial_gram
       (solutionUhlenbeckIota hT S hS basisAt) t x a b = if a = b then 1 else 0 := by
   classical
   have hspec := solutionUhlenbeckIota_spec (I := I) (M := M) hT S hS basisAt
-  have hgram := hspec.2.2.2 t ht x a b
+  have hgram := hspec.2.2.2.2 t ht x a b
   rw [hgram]
   have hiota0 := hspec.1 x
   have horth : ∀ i j : Fin 3,
@@ -158,7 +166,7 @@ theorem exists_uhlenbeckFrame_of_finrank
     dsimp [iota]
     exact hspec.1 x a k
   · dsimp [iota]
-    exact hspec.2.2.1
+    exact hspec.2.2.2.1
   · intro t ht x a b
     dsimp [iota]
     exact solutionUhlenbeckIota_identity_initial_gram
