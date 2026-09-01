@@ -1744,6 +1744,9 @@ theorem hamilton_flow_upgrade_of_metric_compactness
   have hscalarRaw := ConvOut.scalar_conv (I := I) (Φ := Phi)
     mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 cLow hcLow
     hbound hcovTail co hcarrier
+  have hricciRaw := ConvOut.ricci_conv (I := I) (Φ := Phi)
+    mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 cLow hcLow
+    hbound hcovTail co hcarrier
   have hricRaw := ConvOut.ricNorm_conv (I := I) (Φ := Phi)
     mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 cLow hcLow
     hbound hcovTail co hcarrier
@@ -1834,7 +1837,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       (hmap k x).symm
   let d := flowUpgradeOfMaps (I := I) (X := X) mc L mc.limit rfl hL0
     Phi mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 hcarrier co
-    (fun _ _ => HEq.rfl) scalar ricciNorm
+    (fun _ _ => HEq.rfl) scalar hricciRaw ricciNorm
   refine ⟨d, ?_⟩
   intro t ht
   have htWindow : t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 := hcarrier ht
@@ -1852,7 +1855,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
   have hdL : d.data.L = L :=
     flowUpgrade_maps_L (I := I) (X := X) mc L mc.limit rfl hL0
       Phi mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 hcarrier co
-      (fun _ _ => HEq.rfl) scalar ricciNorm
+      (fun _ _ => HEq.rfl) scalar hricciRaw ricciNorm
   rw [hdL]
   change MetricComplete (I := I)
     ({ mc.limit with metric := co.gInf t } :

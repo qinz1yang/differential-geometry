@@ -237,6 +237,175 @@ theorem gSeqExt_ricci
   exact hricAmbient.symm.trans hricSource.symm
 
 omit [NeZero (Module.finrank ℝ E)] in
+theorem gSeqExt_ricci_pullback
+    (R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (k : Nat) (t : Real) (x : P.M)
+    (hx : letI : TopologicalSpace P.M := P.topology; x ∈ bf.grow k)
+    (v w : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      TangentSpace I x) :
+    letI : TopologicalSpace P.M := P.topology
+    letI : ChartedSpace H P.M := P.charted
+    letI : T2Space P.M := P.t2
+    letI : IsManifold I ∞ P.M := P.smooth
+    letI : SigmaCompactSpace P.M := P.sigmaCompact
+    letI : TopologicalSpace (X.term (subseq k)).M := (X.term (subseq k)).topology
+    letI : ChartedSpace H (X.term (subseq k)).M := (X.term (subseq k)).charted
+    letI : T2Space (X.term (subseq k)).M := (X.term (subseq k)).t2
+    letI : IsManifold I ∞ (X.term (subseq k)).M := (X.term (subseq k)).smooth
+    letI : SigmaCompactSpace (X.term (subseq k)).M :=
+      (X.term (subseq k)).sigmaCompact
+    ricciTensor (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x v w =
+      ricciTensor (I := I) ((X.term (subseq k)).S.family.metric t) (Φ.map k x)
+        (mfderiv I I (Φ.map k) x v) (mfderiv I I (Φ.map k) x w) := by
+  classical
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace (X.term (subseq k)).M := (X.term (subseq k)).topology
+  let : ChartedSpace H (X.term (subseq k)).M := (X.term (subseq k)).charted
+  let : T2Space (X.term (subseq k)).M := (X.term (subseq k)).t2
+  let : IsManifold I ∞ (X.term (subseq k)).M := (X.term (subseq k)).smooth
+  let : SigmaCompactSpace (X.term (subseq k)).M :=
+    (X.term (subseq k)).sigmaCompact
+  let : IsManifold I 1 (X.term (subseq k)).M :=
+    IsManifold.of_le (I := I) (M := (X.term (subseq k)).M)
+      (n := (∞ : WithTop ℕ∞)) (by decide)
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
+  let : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+    sourceDomSigmaOf (I := I) Φ k (hsrc k)
+  let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+    IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
+      (n := (∞ : WithTop ℕ∞)) (by decide)
+  let : SigmaCompactSpace (TargetDomain (I := I) Φ k) :=
+    targetDomSigmaOf (I := I) Φ k (htgt k)
+  let : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
+  let : ChartedSpace H (TargetDomain (I := I) Φ k) := targetDomCharted (I := I) Φ k
+  let : T2Space (TargetDomain (I := I) Φ k) := targetDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (TargetDomain (I := I) Φ k) := targetDomSmooth (I := I) Φ k
+  let : IsManifold I 1 (TargetDomain (I := I) Φ k) :=
+    IsManifold.of_le (I := I) (M := TargetDomain (I := I) Φ k)
+      (n := (∞ : WithTop ℕ∞)) (by decide)
+  let xsrc : SourceDomain (I := I) Φ k := ⟨x, bf.grow_subset k hx⟩
+  have hmap : MDifferentiableAt I I (Φ.map k) x :=
+    (Φ.partialDiffeomorph k).contMDiffOn_toFun.mdifferentiableOn (by simp)
+      x (bf.grow_subset k hx) |>.mdifferentiableAt
+      ((Φ.partialDiffeomorph k).open_source.mem_nhds (bf.grow_subset k hx))
+  have hsourceVal : MDifferentiableAt I I
+      (fun y : SourceDomain (I := I) Φ k => (y : P.M)) xsrc :=
+    ContMDiffAt.mdifferentiableAt
+      ((contMDiff_subtype_val (I := I) (n := (∞ : WithTop ℕ∞))
+        (U := sourceOpen (I := I) Φ k)).contMDiffAt) (by simp)
+  have htargetVal : MDifferentiableAt I I
+      (fun y : TargetDomain (I := I) Φ k => (y : (X.term (subseq k)).M))
+      (sourceTargetDiff (I := I) Φ k xsrc) :=
+    ContMDiffAt.mdifferentiableAt
+      ((contMDiff_subtype_val (I := I) (n := (∞ : WithTop ℕ∞))
+        (U := targetOpen (I := I) Φ k)).contMDiffAt) (by simp)
+  have hdiff : MDifferentiableAt I I (sourceTargetDiff (I := I) Φ k) xsrc :=
+    (sourceTargetDiff (I := I) Φ k).contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hleft : ∀ z : TangentSpace I xsrc,
+      (show E from mfderiv I I
+        (fun y : SourceDomain (I := I) Φ k => Φ.map k (y : P.M)) xsrc z) =
+        (show E from mfderiv I I (Φ.map k) x
+          (show TangentSpace I x from z)) := by
+    intro z
+    have hchain := mfderiv_comp (I := I) (I' := I) (I'' := I)
+      xsrc hmap hsourceVal
+    have heval := congrArg (fun A => A z) hchain
+    rw [ContinuousLinearMap.comp_apply] at heval
+    have hz : mfderiv I I
+        (fun y : SourceDomain (I := I) Φ k => (y : P.M)) xsrc z =
+        (show TangentSpace I (xsrc : P.M) from z) := by
+      rw [mfderiv_subtype_val_apply]
+    rw [hz] at heval
+    have hevalE := congrArg
+      (fun q : TangentSpace I (Φ.map k (xsrc : P.M)) => (show E from q)) heval
+    simpa [Function.comp_def, xsrc] using hevalE
+  have hright : ∀ z : TangentSpace I xsrc,
+      (show E from mfderiv I I
+        (fun y : TargetDomain (I := I) Φ k => (y : (X.term (subseq k)).M))
+        (sourceTargetDiff (I := I) Φ k xsrc)
+        (mfderiv I I (sourceTargetDiff (I := I) Φ k) xsrc z)) =
+        (show E from mfderiv I I
+          (fun y : SourceDomain (I := I) Φ k =>
+            ((sourceTargetDiff (I := I) Φ k y : TargetDomain (I := I) Φ k) :
+              (X.term (subseq k)).M)) xsrc z) := by
+    intro z
+    have hchain := mfderiv_comp (I := I) (I' := I) (I'' := I)
+      xsrc htargetVal hdiff
+    have heval := congrArg (fun A => A z) hchain.symm
+    rw [ContinuousLinearMap.comp_apply] at heval
+    have hevalE := congrArg
+      (fun q : TangentSpace I
+        ((sourceTargetDiff (I := I) Φ k xsrc : TargetDomain (I := I) Φ k) :
+          (X.term (subseq k)).M) => (show E from q)) heval
+    simpa [Function.comp_def] using hevalE
+  have hfun :
+      (fun y : SourceDomain (I := I) Φ k => Φ.map k (y : P.M)) =
+        fun y : SourceDomain (I := I) Φ k =>
+          ((sourceTargetDiff (I := I) Φ k y : TargetDomain (I := I) Φ k) :
+            (X.term (subseq k)).M) := by
+    funext y
+    exact (sourceTargetDiff_apply (I := I) Φ k y).symm
+  have hderiv : ∀ z : TangentSpace I xsrc,
+      (show E from mfderiv I I
+        (fun y : TargetDomain (I := I) Φ k => (y : (X.term (subseq k)).M))
+        (sourceTargetDiff (I := I) Φ k xsrc)
+        (mfderiv I I (sourceTargetDiff (I := I) Φ k) xsrc z)) =
+        (show E from mfderiv I I (Φ.map k) x
+          (show TangentSpace I x from z)) := by
+    intro z
+    calc
+      _ = (show E from mfderiv I I
+          (fun y : SourceDomain (I := I) Φ k =>
+            ((sourceTargetDiff (I := I) Φ k y : TargetDomain (I := I) Φ k) :
+              (X.term (subseq k)).M)) xsrc z) := hright z
+      _ = (show E from mfderiv I I
+          (fun y : SourceDomain (I := I) Φ k => Φ.map k (y : P.M)) xsrc z) := by
+        exact (congrArg
+          (fun f => (show E from mfderiv I I f xsrc z)) hfun).symm
+      _ = _ := hleft z
+  rw [gSeqExt_ricci (I := I) Φ R bf hsrc htgt k t x hx v w]
+  change ricciTensor (I := I)
+      (Diffeomorph.pullbackMetric (I := I)
+        (((X.term (subseq k)).S.family.metric t).restrictOpen (I := I)
+          (targetOpen (I := I) Φ k))
+        (sourceTargetDiff (I := I) Φ k)) xsrc
+          (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w) = _
+  rw [DifferentialGeometry.HCGCompactness.ricciTensor_pullback (I := I)]
+  rw [ricciTensor_restrictOpen]
+  change ricciTensor (I := I) ((X.term (subseq k)).S.family.metric t)
+      ((sourceTargetDiff (I := I) Φ k xsrc : TargetDomain (I := I) Φ k) :
+        (X.term (subseq k)).M)
+      (show E from mfderiv I I
+        (fun y : TargetDomain (I := I) Φ k => (y : (X.term (subseq k)).M))
+        (sourceTargetDiff (I := I) Φ k xsrc)
+        (mfderiv I I (sourceTargetDiff (I := I) Φ k) xsrc
+          (show TangentSpace I xsrc from v)))
+      (show E from mfderiv I I
+        (fun y : TargetDomain (I := I) Φ k => (y : (X.term (subseq k)).M))
+        (sourceTargetDiff (I := I) Φ k xsrc)
+        (mfderiv I I (sourceTargetDiff (I := I) Φ k) xsrc
+          (show TangentSpace I xsrc from w))) =
+    ricciTensor (I := I) ((X.term (subseq k)).S.family.metric t) (Φ.map k x)
+      (show E from mfderiv I I (Φ.map k) x v)
+      (show E from mfderiv I I (Φ.map k) x w)
+  rw [hderiv (show TangentSpace I xsrc from v),
+    hderiv (show TangentSpace I xsrc from w)]
+  rw [sourceTargetDiff_apply]
+
+
+omit [NeZero (Module.finrank ℝ E)] in
 theorem gSeqExt_scalar
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -997,6 +1166,191 @@ theorem ConvOut.scalar_conv_at
   filter_upwards with k
   simpa only [gTail, Function.comp_apply] using
     gSeqExt_scalar (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) t x (hxgrow k)
+
+theorem ConvOut.ricci_conv_at
+    (R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (β ψ : Real) (cLow : Real) (hcLow : 0 < cLow)
+    (hbound : letI : TopologicalSpace P.M := P.topology
+        letI : ChartedSpace H P.M := P.charted
+        letI : IsManifold I ∞ P.M := P.smooth
+      ∀ (k : Nat) (t : Real), t ∈ Set.Icc β ψ →
+        ∀ (y : SourceDomain (I := I) Φ k)
+          (v : letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+              sourceDomTop (I := I) Φ k
+            letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+              sourceDomCharted (I := I) Φ k
+            TangentSpace I y),
+          cLow * R.inner (y : P.M) v v ≤
+            letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+              sourceDomTop (I := I) Φ k
+            letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+              sourceDomCharted (I := I) Φ k
+            letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+              sourceDomSmooth (I := I) Φ k
+            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+    (hcovTail : letI : TopologicalSpace P.M := P.topology
+        letI : ChartedSpace H P.M := P.charted
+        letI : T2Space P.M := P.t2
+        letI : IsManifold I ∞ P.M := P.smooth
+        letI : SigmaCompactSpace P.M := P.sigmaCompact
+      ∀ q : Nat, ∃ C : Real, ∀ (k : Nat) (t : Real), t ∈ Set.Icc β ψ →
+        ∀ z : P.M, z ∈ bf.grow k →
+          metricCovDerivNorm (I := I) q
+            (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C)
+    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    {t : Real} (ht : t ∈ Set.Icc β ψ) (x : P.M)
+    (v w : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      TangentSpace I x) :
+    letI : TopologicalSpace P.M := P.topology
+    letI : ChartedSpace H P.M := P.charted
+    letI : T2Space P.M := P.t2
+    letI : IsManifold I ∞ P.M := P.smooth
+    letI : SigmaCompactSpace P.M := P.sigmaCompact
+    Filter.Tendsto
+      (fun k ↦
+        letI : TopologicalSpace (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).topology
+        letI : ChartedSpace H (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).charted
+        letI : IsManifold I ∞ (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).smooth
+        letI : T2Space (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).t2
+        metricRicciAt (I := I)
+          ((X.term (subseq (co.φ k))).S.family.metric t)
+          (Φ.map (co.φ k) x)
+          (vec2
+            (mfderiv I I (Φ.map (co.φ k)) x v)
+            (mfderiv I I (Φ.map (co.φ k)) x w)))
+      Filter.atTop
+      (nhds (metricRicciAt (I := I) (co.gInf t) x (vec2 v w))) := by
+  classical
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  obtain ⟨kgrow, hkgrow⟩ := bf.grow_cover {x} isCompact_singleton
+  let gTail : Nat → Real → SmoothRiemannianMetric I P.M := fun k s ↦
+    gSeqExt (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) s
+  have hxgrow : ∀ k : Nat, x ∈ bf.grow (co.φ (k + kgrow)) := by
+    intro k
+    have hkgrow_add : kgrow ≤ k + kgrow := by omega
+    have hadd_phi : k + kgrow ≤ co.φ (k + kgrow) := by
+      simpa only [id_eq] using co.hφ.id_le (k + kgrow)
+    exact hkgrow (co.φ (k + kgrow)) (hkgrow_add.trans hadd_phi) (Set.mem_singleton x)
+  have hconvTail : ∀ p : Nat, ∀ ε : Real, 0 < ε →
+      ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k → ∀ u ∈ Set.Icc β ψ,
+        ∀ a : Nat, a ≤ p →
+          metricDerivNorm (I := I) a (gTail k u) (co.gInf u) R x < ε := by
+    intro p ε hε
+    obtain ⟨k0, hk0⟩ := co.convPt {x} isCompact_singleton p ε hε
+    refine ⟨k0, fun k hk u hu a ha ↦ ?_⟩
+    simpa only [gTail] using
+      hk0 (k + kgrow) (by omega) u hu a ha x (Set.mem_singleton x)
+  have hinner : ∀ u ∈ Set.Icc β ψ, ∀ ξ η : TangentSpace I x,
+      Filter.Tendsto (fun k ↦ (gTail k u).inner x ξ η) Filter.atTop
+        (nhds ((co.gInf u).inner x ξ η)) := by
+    intro u hu ξ η
+    refine metricInner_tendsto (I := I) (fun k ↦ gTail k u) (co.gInf u) R x ?_ ξ η
+    intro ε hε
+    obtain ⟨k0, hk0⟩ := hconvTail 0 ε hε
+    exact ⟨k0, fun k hk ↦ hk0 k hk u hu 0 le_rfl⟩
+  let lam : Real := min cLow 1
+  have hlam : 0 < lam := by
+    simpa only [lam] using lt_min hcLow one_pos
+  have hlowSeq : ∀ k : Nat, ∀ u ∈ Set.Icc β ψ, ∀ ξ : TangentSpace I x,
+      lam * R.inner x ξ ξ ≤ (gTail k u).inner x ξ ξ := by
+    intro k u hu ξ
+    simpa only [lam, gTail] using
+      gSeqExt_lower (I := I) Φ R bf hsrc htgt cLow β ψ hcLow hbound
+        (co.φ (k + kgrow)) u hu x ξ
+  have hlowInf : ∀ u ∈ Set.Icc β ψ, ∀ ξ : TangentSpace I x,
+      lam * R.inner x ξ ξ ≤ (co.gInf u).inner x ξ ξ := by
+    intro u hu ξ
+    exact ge_of_tendsto (hinner u hu ξ ξ)
+      (Filter.Eventually.of_forall fun k ↦ hlowSeq k u hu ξ)
+  choose C hC using hcovTail
+  let Cmax : Real := max (C 0) (max (C 1) (C 2))
+  let B0 : Real := max 0 (Cmax + 1)
+  have hB0 : 0 ≤ B0 := le_max_left _ _
+  have hCmax : ∀ a : Nat, a ≤ 2 → C a ≤ Cmax := by
+    intro a ha
+    exact function_le_max_zero_one_two C ha
+  have hbddSeqC : ∀ k : Nat, ∀ u ∈ Set.Icc β ψ, ∀ a : Nat, a ≤ 2 →
+      metricCovDerivNorm (I := I) a (gTail k u) R x ≤ C a := by
+    intro k u hu a _ha
+    simpa only [gTail] using
+      hC a (co.φ (k + kgrow)) u hu x (hxgrow k)
+  have hbddSeq : ∀ k : Nat, ∀ u ∈ Set.Icc β ψ, ∀ a : Nat, a ≤ 2 →
+      metricCovDerivNorm (I := I) a (gTail k u) R x ≤ B0 := by
+    intro k u hu a ha
+    exact le_trans (hbddSeqC k u hu a ha)
+      (le_trans (hCmax a ha)
+        (le_trans (le_add_of_nonneg_right zero_le_one) (le_max_right _ _)))
+  have hbddInf : ∀ u ∈ Set.Icc β ψ, ∀ a : Nat, a ≤ 2 →
+      metricCovDerivNorm (I := I) a (co.gInf u) R x ≤ B0 := by
+    intro u hu a ha
+    obtain ⟨k0, hk0⟩ := hconvTail 2 1 one_pos
+    have hd := hk0 k0 le_rfl u hu a ha
+    have htri := covNorm_le_add (I := I) a (co.gInf u) (gTail k0 u) R x
+    rw [metricDerivNorm_symm (I := I) a (co.gInf u) (gTail k0 u) R x] at htri
+    have hseq := hbddSeqC k0 u hu a ha
+    have hCa := hCmax a ha
+    exact le_max_zero_add_one_of_le_add htri hd (le_trans hseq hCa)
+  have hRicConv : ∀ ε : Real, 0 < ε →
+      ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k → ∀ u ∈ Set.Icc β ψ,
+        |ricciTensor (I := I) (gTail k u) x v w -
+          ricciTensor (I := I) (co.gInf u) x v w| < ε :=
+    ricciConv_of_dnConv (I := I) R x gTail co.gInf β ψ lam B0 hlam hB0
+      hlowSeq hlowInf hbddSeq hbddInf (hconvTail 2) v w
+  have hricciTail : Filter.Tendsto
+      (fun k ↦ ricciTensor (I := I) (gTail k t) x v w)
+      Filter.atTop (nhds (ricciTensor (I := I) (co.gInf t) x v w)) := by
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨k0, hk0⟩ := hRicConv ε hε
+    refine ⟨k0, fun k hk ↦ ?_⟩
+    rw [Real.dist_eq]
+    exact hk0 k hk t ht
+  have hpullback : Filter.Tendsto
+      (fun k ↦
+        letI : TopologicalSpace (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).topology
+        letI : ChartedSpace H (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).charted
+        letI : IsManifold I ∞ (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).smooth
+        letI : T2Space (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).t2
+        ricciTensor (I := I) ((X.term (subseq (co.φ k))).S.family.metric t)
+          (Φ.map (co.φ k) x)
+          (mfderiv I I (Φ.map (co.φ k)) x v)
+          (mfderiv I I (Φ.map (co.φ k)) x w))
+      Filter.atTop (nhds (ricciTensor (I := I) (co.gInf t) x v w)) := by
+    rw [← Filter.tendsto_add_atTop_iff_nat kgrow]
+    refine hricciTail.congr' ?_
+    filter_upwards with k
+    simpa only [gTail, Function.comp_apply] using
+      gSeqExt_ricci_pullback (I := I) Φ R bf hsrc htgt
+        (co.φ (k + kgrow)) t x (hxgrow k) v w
+  rw [metricRicciAt_apply_eq_ricciTensor]
+  refine hpullback.congr' ?_
+  filter_upwards with k
+  let : TopologicalSpace (X.term (subseq (co.φ k))).M :=
+    (X.term (subseq (co.φ k))).topology
+  let : ChartedSpace H (X.term (subseq (co.φ k))).M :=
+    (X.term (subseq (co.φ k))).charted
+  let : IsManifold I ∞ (X.term (subseq (co.φ k))).M :=
+    (X.term (subseq (co.φ k))).smooth
+  let : T2Space (X.term (subseq (co.φ k))).M :=
+    (X.term (subseq (co.φ k))).t2
+  rw [metricRicciAt_apply_eq_ricciTensor]
 
 theorem ConvOut.ricNorm_conv_at
     (R : letI : TopologicalSpace P.M := P.topology

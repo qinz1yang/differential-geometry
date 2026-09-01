@@ -97,6 +97,52 @@ theorem ConvOut.scalar_conv
     ConvOut.scalar_conv_at (I := I) Φ R bf hsrc htgt β ψ cLow hcLow hbound
       hcovTail co (hcarrier ht) x
 
+theorem ConvOut.ricci_conv
+    {X : PointedFlowSeq (I := I)}
+    {P : PointedRiemannianManifold (I := I)}
+    {subseq : Nat → Nat}
+    (Φ : PointedCGHMaps (I := I) X P subseq)
+    (R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (β ψ : Real) (cLow : Real) (hcLow : 0 < cLow)
+    (hbound : letI : TopologicalSpace P.M := P.topology
+        letI : ChartedSpace H P.M := P.charted
+        letI : IsManifold I ∞ P.M := P.smooth
+      ∀ (k : Nat) (t : Real), t ∈ Set.Icc β ψ →
+        ∀ (y : SourceDomain (I := I) Φ k)
+          (v : letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+              sourceDomTop (I := I) Φ k
+            letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+              sourceDomCharted (I := I) Φ k
+            TangentSpace I y),
+          cLow * R.inner (y : P.M) v v ≤
+            letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+              sourceDomTop (I := I) Φ k
+            letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+              sourceDomCharted (I := I) Φ k
+            letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+              sourceDomSmooth (I := I) Φ k
+            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+    (hcovTail : letI : TopologicalSpace P.M := P.topology
+        letI : ChartedSpace H P.M := P.charted
+        letI : T2Space P.M := P.t2
+        letI : IsManifold I ∞ P.M := P.smooth
+        letI : SigmaCompactSpace P.M := P.sigmaCompact
+      ∀ q : Nat, ∃ C : Real, ∀ (k : Nat) (t : Real), t ∈ Set.Icc β ψ →
+        ∀ z : P.M, z ∈ bf.grow k →
+          metricCovDerivNorm (I := I) q
+            (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C)
+    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (hcarrier : X.D.carrier ⊆ Set.Icc β ψ) :
+    MetricRicciPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) co.gInf := by
+  intro t ht x v w
+  simp only [Function.comp_apply, PointedCGHMaps.compSubseq_map]
+  exact ConvOut.ricci_conv_at (I := I) Φ R bf hsrc htgt β ψ cLow hcLow hbound
+    hcovTail co (hcarrier ht) x v w
+
 theorem ConvOut.ricNorm_conv
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
@@ -212,6 +258,8 @@ noncomputable def flowUpgradeOfMaps
     (scalar : ScalarPullbackTendsto (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.hφ) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
@@ -231,6 +279,9 @@ noncomputable def flowUpgradeOfMaps
   have hLm : forall t : Real, t ∈ Set.Icc β ψ -> L.S.family.metric t = co.gInf t :=
     fun t ht => eq_of_heq (hLmetric t ht)
   have hscalar : ScalarPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) := scalar
+  have hricci : RicciPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) :=
+    MetricRicciPullbackTendsto.congr_metric (I := I)
+      (fun t ht => (hLm t (hcarrier ht)).symm) ricci
   have hricciNorm : RicNormPullback (I := I) (Φ.compSubseq co.φ co.hφ) := ricciNorm
   set mc' := mc.compSubseq co.φ co.hφ with hmc'
   set Φ' := (Φ).compSubseq co.φ co.hφ with hΦ'
@@ -241,6 +292,7 @@ noncomputable def flowUpgradeOfMaps
       hL0 := by simpa [mc'] using hL0
       maps := Φ'
       scalar := hscalar
+      ricci := hricci
       ricciNorm := hricciNorm
       hσsrc := ?_
       hσtgt := ?_
@@ -295,11 +347,13 @@ theorem flowUpgrade_maps_L
     (scalar : ScalarPullbackTendsto (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.hφ) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
     (flowUpgradeOfMaps (I := I) mc L P hPlim hPL Φ R bf hsrc htgt
-      β ψ hcarrier co hLmetric scalar ricciNorm).data.L = L := by
+      β ψ hcarrier co hLmetric scalar ricci ricciNorm).data.L = L := by
   cases hPL
   rfl
 
@@ -333,12 +387,14 @@ theorem flowLimit_of_maps
     (scalar : ScalarPullbackTendsto (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.hφ) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
     CompactnessConclusion (I := I) X :=
   (flowUpgradeOfMaps (I := I) (X := X) mc L P hPlim hPL Φ R bf hsrc htgt
-    β ψ hcarrier co hLmetric scalar ricciNorm).toConclusion
+    β ψ hcarrier co hLmetric scalar ricci ricciNorm).toConclusion
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem flowLimit_of_co
@@ -365,12 +421,14 @@ theorem flowLimit_of_co
       forall t : Real, t ∈ Set.Icc β ψ -> L.S.family.metric t = co.gInf t)
     (scalar : ScalarPullbackTendsto (I := I)
       ((endgamePhi (I := I) mc L hL0).compSubseq co.φ co.hφ))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      ((endgamePhi (I := I) mc L hL0).compSubseq co.φ co.hφ) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       ((endgamePhi (I := I) mc L hL0).compSubseq co.φ co.hφ)) :
     CompactnessConclusion (I := I) X :=
   flowLimit_of_maps (I := I) mc L (L.atTime 0) hL0 rfl (endgamePhi
     (I := I) mc L hL0) R bf hsrc htgt β ψ
-    hcarrier co (fun t ht => heq_of_eq (hLmetric t ht)) scalar ricciNorm
+    hcarrier co (fun t ht => heq_of_eq (hLmetric t ht)) scalar ricci ricciNorm
 
 noncomputable def flowUpgradeOfMc
     (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
@@ -412,6 +470,8 @@ noncomputable def flowUpgradeOfMc
         PointedCGHMaps (I := I) X
           ((flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime 0)
           (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ₀.compSubseq co.φ co.hφ) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       ((flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero).symm ▸
         (Φ₀.compSubseq co.φ co.hφ) :
@@ -424,7 +484,7 @@ noncomputable def flowUpgradeOfMc
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
   exact flowUpgradeOfMaps (I := I) mc
     (flowOfMetric (I := I) X.D mc.limit co.gInf hsol) mc.limit rfl hL0 Φ₀
-    R bf hsrc htgt β ψ hcarrier co (fun t _ => HEq.rfl) scalar ricciNorm
+    R bf hsrc htgt β ψ hcarrier co (fun t _ => HEq.rfl) scalar ricci ricciNorm
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem flowLimit_of_mc
@@ -467,6 +527,8 @@ theorem flowLimit_of_mc
         PointedCGHMaps (I := I) X
           ((flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime 0)
           (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ₀.compSubseq co.φ co.hφ) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       ((flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero).symm ▸
         (Φ₀.compSubseq co.φ co.hφ) :
@@ -475,7 +537,7 @@ theorem flowLimit_of_mc
           (mc.subseq ∘ co.φ))) :
     CompactnessConclusion (I := I) X :=
   (flowUpgradeOfMc (I := I) (X := X) mc Φ₀ R bf hsrc htgt β ψ
-    hcarrier co hzero hsol scalar ricciNorm).toConclusion
+    hcarrier co hzero hsol scalar ricci ricciNorm).toConclusion
 
 noncomputable def endgameCo
     {P : PointedRiemannianManifold (I := I)} {subseq : Nat -> Nat}
@@ -811,6 +873,14 @@ theorem flowLimit_endgame
   have hL0 :
       (flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime 0 = mc.limit :=
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
+  have hricciRaw := ConvOut.ricci_conv (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ
+    ((Crel * Bmax)⁻¹)
+    (inv_pos.2 (mul_pos (lt_of_lt_of_le one_pos hCrel1)
+      (lt_of_lt_of_le one_pos hBmax1)))
+    (hbound_of_equiv (I := I) (Φ := Φ₀) R hsrc htgt β ψ gRefT B Crel Bmax
+      hBmax hCrel1 hequivT hrel)
+    (covTail_of_bounds (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ hcovSrc)
+    co hcarrier
   have hricRaw := ConvOut.ricNorm_conv (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ
     ((Crel * Bmax)⁻¹)
     (inv_pos.2 (mul_pos (lt_of_lt_of_le one_pos hCrel1)
@@ -869,7 +939,7 @@ theorem flowLimit_endgame
       (fun y => DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
         (X.term ((mc.subseq ∘ co.φ) k)).S t y) (hmap k x).symm
   exact flowLimit_of_mc (I := I) mc Φ₀ R bf hsrc htgt β ψ hcarrier co hzero
-    hsol scalar ricciNorm
+    hsol scalar hricciRaw ricciNorm
 
 theorem flowLimit_of_reg
     (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))

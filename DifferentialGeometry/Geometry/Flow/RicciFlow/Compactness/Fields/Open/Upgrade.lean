@@ -152,6 +152,8 @@ theorem open_upgrade_of_raw
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
   have hscalarRaw := OpenConvOut.scalar_conv (I := I) (Φ := Phi)
     hzero_mem hD co cLow hcLow hbound hcovTail
+  have hricciRaw := OpenConvOut.ricci_conv (I := I) (Φ := Phi)
+    hzero_mem hD co cLow hcLow hbound hcovTail
   have hricRaw := OpenConvOut.ricNorm_conv (I := I) (Φ := Phi)
     hzero_mem hD co cLow hcLow hbound hcovTail
   have map_cast {P Q : PointedRiemannianManifold (I := I)}
@@ -232,7 +234,7 @@ theorem open_upgrade_of_raw
         (X.term ((mc.subseq ∘ co.φ) k)).S t y) (hmap k x).symm
   let d := flowUpgradeOfOpen (I := I) mc L mc.limit rfl hL0 Phi
     mc.limit.metric bf hsrc htgt hzero_mem hD co (fun _ _ => HEq.rfl) scalar
-    ricciNorm
+    hricciRaw ricciNorm
   refine ⟨d, ?_⟩
   intro t ht
   have htOpen : t ∈ Set.Ioo a b := by
@@ -254,7 +256,7 @@ theorem open_upgrade_of_raw
   have hdL : d.data.L = L := by
     exact flowUpgrade_open_L (I := I) mc L mc.limit rfl hL0 Phi
       mc.limit.metric bf hsrc htgt hzero_mem hD co (fun _ _ => HEq.rfl) scalar
-      ricciNorm
+      hricciRaw ricciNorm
   rw [hdL]
   change MetricComplete (I := I)
     ({ mc.limit with metric := co.gInf t } : PointedRiemannianManifold (I := I))
