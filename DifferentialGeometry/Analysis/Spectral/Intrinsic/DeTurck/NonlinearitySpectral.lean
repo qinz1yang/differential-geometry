@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
 import DifferentialGeometry.Analysis.Spectral.Tensor.Rellich.Tensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.CompactInclusion
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPartMatch
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSStrictParabolic
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -115,7 +115,7 @@ theorem deTurckNonlinearitySpectral_principalPart_cancels
         (fun x : M => TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
         (DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff (I := I) g₀) x ξ t
       = - DifferentialGeometry.PDE.DeTurck.deTurckSymbol (I := I) g₀ x ξ t :=
-  deturck_ricci_principal_symbol_matches_rough_laplacian_of_symm
+  DifferentialGeometry.Analysis.Parabolic.deTurckRicciRHS_principal_symbol_equals_deTurckSymbol
     (I := I) g₀ x ξ t ht
 
 end DifferentialGeometry.Analysis.Spectral

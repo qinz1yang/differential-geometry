@@ -1348,7 +1348,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.StrongSpectralSo
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrectionBackgroundDifferences
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrectionOperatorDecompositions
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrectionTraceDiagonalGrid
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Linearization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPathDecomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.CovariantSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
@@ -1361,7 +1360,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Nonlinearity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.NonlinearitySpectral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefectSymmetry
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCometricCoefficientBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPartMatch
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSAbstractJet2Bound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSChartCoverJet2
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSFirstDerivativeUniform
