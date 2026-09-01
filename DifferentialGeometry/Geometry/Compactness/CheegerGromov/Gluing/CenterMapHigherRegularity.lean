@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.LocalTransitions
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.TransitionLimits
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction

@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.Defs
 
-
 import DifferentialGeometry.Analysis.Calculus.BilinearFormCompactness
 import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 

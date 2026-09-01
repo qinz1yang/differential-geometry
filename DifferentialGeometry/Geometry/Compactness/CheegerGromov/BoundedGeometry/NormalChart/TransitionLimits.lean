@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.Defs
 
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalTransitionBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.TransitionBounds
 import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 set_option autoImplicit false

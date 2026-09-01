@@ -1,5 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalPhase
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.Phase
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Convergence
 

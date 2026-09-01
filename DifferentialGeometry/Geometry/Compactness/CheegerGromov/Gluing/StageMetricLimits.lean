@@ -1,7 +1,6 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.LocalMetrics
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.MetricLimits
 
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinateConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
 
 set_option autoImplicit false

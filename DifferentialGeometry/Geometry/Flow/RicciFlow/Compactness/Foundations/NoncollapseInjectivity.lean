@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Inje
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentPolar
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentBallEuclideanUpper
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.IntrinsicGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeOverlap
 
 open DifferentialGeometry.Geometry.Curvature

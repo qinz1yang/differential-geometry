@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalRadiusProfile
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.RadiusProfile
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeComparison
 
 open DifferentialGeometry.Geometry.Curvature

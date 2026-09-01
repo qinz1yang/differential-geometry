@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Exponential.DiagInvReadout
 import DifferentialGeometry.Geometry.Exponential.NormalBallHome
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalPhase
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.Phase
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Existence
 import Mathlib.Topology.OpenPartialHomeomorph.Composition
