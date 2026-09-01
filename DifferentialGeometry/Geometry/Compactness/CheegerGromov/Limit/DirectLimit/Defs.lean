@@ -13,7 +13,7 @@ namespace HCGCompactness
 
 open scoped Manifold ContDiff
 
-abbrev limitPointed
+abbrev pointedDirectLimit
     {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {A : ℕ → Type u} [∀ k, TopologicalSpace (A k)] [∀ k, ChartedSpace H (A k)]
@@ -26,7 +26,7 @@ abbrev limitPointed
   basepoint := S.toSeqSystem.incl 0 O₀
   metric := ginf
 
-abbrev limitPointedCoc
+abbrev pointedDirectLimitOfMetricCocycle
     {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E]
     {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -36,7 +36,7 @@ abbrev limitPointedCoc
     (S : SmoothSeqSystem I A) (O₀ : A 0)
     (g : ∀ k, SmoothRiemannianMetric I (A k)) (hg : S.MetricCocycle g) :
     PointedRiemannianManifold.{u, uE, uH} (I := I) :=
-  limitPointed S O₀ (S.limitMetric g hg)
+  pointedDirectLimit S O₀ (S.limitMetric g hg)
 
 section
 
@@ -75,7 +75,7 @@ noncomputable def limitConvergenceMapsOf (S : SmoothSeqSystem I A) (O₀ : A 0)
     (gSeq gLim : ∀ k, SmoothRiemannianMetric I (A k)) (hgLim : S.MetricCocycle gLim) :
     PointedRiemannianConvergenceMaps.{u, uE, uH} (I := I)
       (X := factorSeq S O₀ gSeq)
-      (L := (limitPointedCoc S O₀ gLim hgLim :
+      (L := (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim :
         PointedRiemannianManifold.{u, uE, uH} (I := I)))
       (subseq := id) where
   partialDiffeomorph k := S.inclPartialDiffeo k
@@ -87,7 +87,7 @@ noncomputable def limitConvergenceMaps (S : SmoothSeqSystem I A) (O₀ : A 0)
     (g : ∀ k, SmoothRiemannianMetric I (A k)) (hg : S.MetricCocycle g) :
     PointedRiemannianConvergenceMaps.{u, uE, uH} (I := I)
       (X := factorSeq S O₀ g)
-      (L := (limitPointedCoc S O₀ g hg : PointedRiemannianManifold.{u, uE, uH} (I := I)))
+      (L := (pointedDirectLimitOfMetricCocycle S O₀ g hg : PointedRiemannianManifold.{u, uE, uH} (I := I)))
       (subseq := id) :=
   limitConvergenceMapsOf S O₀ g g hg
 

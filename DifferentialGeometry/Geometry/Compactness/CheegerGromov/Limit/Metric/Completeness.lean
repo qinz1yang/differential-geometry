@@ -612,7 +612,7 @@ theorem tail_limit_complete
     let hgTail : S.MetricCocycle gTail :=
       tail_ball_system_metric_cocycle (I := I) b Ψ hbase g hnorm j₀ D₀ hU hmap gInf hstep
     MetricComplete (I := I)
-      (limitPointedCoc S (tailCenter b j₀ 0) gTail hgTail) := by
+      (pointedDirectLimitOfMetricCocycle S (tailCenter b j₀ 0) gTail hgTail) := by
   let _ : ∀ n, PreconnectedSpace (tailBallOpen b j₀ n) := fun n =>
     tail_ball_preconnected (I := I) b j₀ n
   let _ : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tail_ball_nonempty b j₀ n

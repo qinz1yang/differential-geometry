@@ -293,7 +293,7 @@ noncomputable def tailMemberMaps
       ∀ (gTail : ∀ n, SmoothRiemannianMetric I (tailBallOpen b j₀ n))
         (hgTail : S.MetricCocycle gTail),
         PointedRiemannianConvergenceMaps (I := I) X
-          (limitPointedCoc S (tailCenter b j₀ 0) gTail hgTail)
+          (pointedDirectLimitOfMetricCocycle S (tailCenter b j₀ 0) gTail hgTail)
           (fun n => σ (j₀ + n)) := by
   letI : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
   letI : ∀ j, ChartedSpace H (X.obj (σ j)).M := fun j => (X.obj (σ j)).charted
@@ -404,11 +404,11 @@ noncomputable def tailMemberConv
         PointedRiemannianConverges (I := I)
             (chainAmbientSeq (I := I) j₀ (tailBallOpen b j₀) S
               (tailCenter b j₀ 0) g)
-            (limitPointedCoc S (tailCenter b j₀ 0) gTail hgTail) id
+            (pointedDirectLimitOfMetricCocycle S (tailCenter b j₀ 0) gTail hgTail) id
             (chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S
               (tailCenter b j₀ 0) g gTail hgTail) →
           PointedRiemannianConverges (I := I) X
-            (limitPointedCoc S (tailCenter b j₀ 0) gTail hgTail)
+            (pointedDirectLimitOfMetricCocycle S (tailCenter b j₀ 0) gTail hgTail)
             (fun n => σ (j₀ + n))
             (tailMemberMaps (I := I) P σ Ψ hbase j₀ D₀ gTail hgTail) := by
   letI : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
@@ -447,7 +447,7 @@ noncomputable def tailMemberConv
   let bTail : ∀ n, (XTail.obj n).M := fun n =>
     (S.toSeqSystem.F (Nat.zero_le n) (tailCenter b j₀ 0) :
       (X.obj (σ (j₀ + n))).M)
-  let L := limitPointedCoc S (tailCenter b j₀ 0) gTail hgTail
+  let L := pointedDirectLimitOfMetricCocycle S (tailCenter b j₀ 0) gTail hgTail
   let Φr : PointedRiemannianConvergenceMaps (I := I) (XTail.repoint bTail) L id := by
     change PointedRiemannianConvergenceMaps (I := I)
       (chainAmbientSeq (I := I) j₀ (tailBallOpen b j₀) S
@@ -580,10 +580,10 @@ private theorem chain_limit_metric_eq_pullback
       (metricSourceTargetDiffeomorph (I := I) Φ k) := by
   let Φ := chainAmbientMaps (I := I) j₀ U S O₀ g gInf hgInf
   let D := CanonicalMetricCompactness.canonicalSourceData (I := I) Φ k
-  let : TopologicalSpace (limitPointedCoc S O₀ gInf hgInf).M :=
-    (limitPointedCoc S O₀ gInf hgInf).topology
-  let : ChartedSpace H (limitPointedCoc S O₀ gInf hgInf).M :=
-    (limitPointedCoc S O₀ gInf hgInf).charted
+  let : TopologicalSpace (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M :=
+    (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).topology
+  let : ChartedSpace H (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M :=
+    (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).charted
   let : TopologicalSpace
       ((chainAmbientSeq (I := I) j₀ U S O₀ g).obj (id k)).M :=
     ((chainAmbientSeq (I := I) j₀ U S O₀ g).obj (id k)).topology
@@ -619,7 +619,7 @@ private theorem chain_limit_metric_eq_pullback
     rfl
   apply metric_ext
   intro x v w
-  let z : (limitPointedCoc S O₀ gInf hgInf).M := x
+  let z : (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M := x
   with_unfolding_all
     change (S.limitMetric gInf hgInf).inner
       z v w =
@@ -654,20 +654,20 @@ private theorem chain_limit_metric_eq_pullback
     exact (metric_source_target_diffeomorph_apply (I := I) Φ k x).trans hmapPoint
   have hmapv : mfderiv I I (Φ.map k) z v =
       mfderiv I I
-        (S.inclPartialDiffeo k : (limitPointedCoc S O₀ gInf hgInf).M → U k)
+        (S.inclPartialDiffeo k : (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M → U k)
         z v := by
     change mfderiv I I
       (PartialDiffeomorph.liftTargetOpen (S.inclPartialDiffeo k) rfl :
-        (limitPointedCoc S O₀ gInf hgInf).M → M (j₀ + k)) z v = _
+        (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M → M (j₀ + k)) z v = _
     exact PartialDiffeomorph.mfderiv_liftTargetOpen
       (S.inclPartialDiffeo k) rfl hxSource v
   have hmapw : mfderiv I I (Φ.map k) z w =
       mfderiv I I
-        (S.inclPartialDiffeo k : (limitPointedCoc S O₀ gInf hgInf).M → U k)
+        (S.inclPartialDiffeo k : (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M → U k)
         z w := by
     change mfderiv I I
       (PartialDiffeomorph.liftTargetOpen (S.inclPartialDiffeo k) rfl :
-        (limitPointedCoc S O₀ gInf hgInf).M → M (j₀ + k)) z w = _
+        (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M → M (j₀ + k)) z w = _
     exact PartialDiffeomorph.mfderiv_liftTargetOpen
       (S.inclPartialDiffeo k) rfl hxSource w
   rw [hFx, hmapv, hmapw]
@@ -1026,7 +1026,7 @@ private opaque connectedCanonicalMetricCompactness
       with_unfolding_all exact
         (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) (g j) x v)) j₀ D₀ hU hmap gInf hstep
-  let L := limitPointedCoc S (tailCenter b j₀ 0) gTail hgTail
+  let L := pointedDirectLimitOfMetricCocycle S (tailCenter b j₀ 0) gTail hgTail
   let maps := tailMemberMaps (I := I) P σ Ψ hbase j₀ D₀ gTail hgTail
   have hcomplete : MetricComplete (I := I) L := by
     exact tail_limit_complete (I := I) b Ψ hbase g (by
@@ -1049,7 +1049,7 @@ private opaque connectedCanonicalMetricCompactness
       MetricConvergenceData.ofRestrictPullback,
       MetricConvergenceData.ofDerivNormSupOn,
       MetricSourceData.ofRestrictPullback, MetricSourceData.ofCanonical,
-      limitPointedCoc, limitPointed]
+      pointedDirectLimitOfMetricCocycle, pointedDirectLimit]
     with_unfolding_all rfl
   have hchain_domain : forall k : Nat,
       hchain.metrics.domain k =
@@ -1063,7 +1063,7 @@ private opaque connectedCanonicalMetricCompactness
       MetricConvergenceData.ofRestrictPullback,
       MetricConvergenceData.ofDerivNormSupOn,
       CanonicalMetricCompactness.canonicalSourceData, CanonicalMetricCompactness.canonicalReferenceMetric,
-      limitPointedCoc, limitPointed]
+      pointedDirectLimitOfMetricCocycle, pointedDirectLimit]
     rfl
   have hstage : HasUniformMetricChainBounds (I := I) b Ψ g D :=
     D.uniform_metric_bounds (I := I) b Ψ g
@@ -1076,7 +1076,7 @@ private opaque connectedCanonicalMetricCompactness
         PointedRiemannianConverges.ofRestrictPullback,
         MetricConvergenceData.ofRestrictPullback,
         MetricConvergenceData.ofDerivNormSupOn,
-        limitPointedCoc, limitPointed]
+        pointedDirectLimitOfMetricCocycle, pointedDirectLimit]
       let Φc := chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S
         (tailCenter b j₀ 0) g gTail hgTail
       let Dc := CanonicalMetricCompactness.canonicalSourceData (I := I) Φc k
@@ -1117,7 +1117,7 @@ private opaque connectedCanonicalMetricCompactness
         PointedRiemannianConverges.ofRestrictPullback,
         MetricConvergenceData.ofRestrictPullback,
         MetricConvergenceData.ofDerivNormSupOn,
-        limitPointedCoc, limitPointed]
+        pointedDirectLimitOfMetricCocycle, pointedDirectLimit]
       let Φc := chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S
         (tailCenter b j₀ 0) g gTail hgTail
       let Dc := CanonicalMetricCompactness.canonicalSourceData (I := I) Φc k

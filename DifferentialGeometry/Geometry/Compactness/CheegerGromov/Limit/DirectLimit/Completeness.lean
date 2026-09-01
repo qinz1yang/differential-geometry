@@ -30,7 +30,7 @@ theorem limit_complete_of_compact_ball_cover
     (g : ∀ k, SmoothRiemannianMetric I (A k)) (hg : S.MetricCocycle g)
     [∀ k, PreconnectedSpace (A k)]
     (hcover : S.hasCompactBallCover g hg) :
-    MetricComplete (I := I) (limitPointedCoc S O₀ g hg) := by
+    MetricComplete (I := I) (pointedDirectLimitOfMetricCocycle S O₀ g hg) := by
   unfold MetricComplete
   let : RiemannianBundle (fun z : S.toSeqSystem.Lim => TangentSpace I z) :=
     ⟨(S.limitMetric g hg).toRiemannianMetric⟩
@@ -77,7 +77,7 @@ theorem limit_complete_of_compact_stage_balls
       letI : RiemannianBundle (fun x : A k => TangentSpace I x) :=
         ⟨(g k).toRiemannianMetric⟩
       IsCompact {b : A k | Manifold.riemannianEDist I a b ≤ r}) :
-    MetricComplete (I := I) (limitPointedCoc S O₀ g hg) := by
+    MetricComplete (I := I) (pointedDirectLimitOfMetricCocycle S O₀ g hg) := by
   unfold MetricComplete
   let : RiemannianBundle (fun z : S.toSeqSystem.Lim => TangentSpace I z) :=
     ⟨(S.limitMetric g hg).toRiemannianMetric⟩

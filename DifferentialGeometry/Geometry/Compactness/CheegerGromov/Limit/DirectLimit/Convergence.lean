@@ -35,20 +35,20 @@ def limitPointedRiemannianConvergence
       ∀ K : Set (A k), IsCompact K →
         metricDerivNormSupOn (I := I) K p (gSeq k) (gLim k) (gLim k) < ε) :
     PointedRiemannianConverges (I := I)
-      (factorSeq S O₀ gSeq) (limitPointedCoc S O₀ gLim hgLim) id
+      (factorSeq S O₀ gSeq) (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim) id
       (limitConvergenceMapsOf S O₀ gSeq gLim hgLim) := by
   let Φ := limitConvergenceMapsOf S O₀ gSeq gLim hgLim
   have hσsrc : ∀ k : ℕ,
-      letI : TopologicalSpace (limitPointedCoc S O₀ gLim hgLim).M :=
-        (limitPointedCoc S O₀ gLim hgLim).topology
+      letI : TopologicalSpace (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M :=
+        (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).topology
       IsSigmaCompact (Φ.source k) := by
     intro k
-    let : TopologicalSpace (limitPointedCoc S O₀ gLim hgLim).M :=
-      (limitPointedCoc S O₀ gLim hgLim).topology
-    let : ChartedSpace H (limitPointedCoc S O₀ gLim hgLim).M :=
-      (limitPointedCoc S O₀ gLim hgLim).charted
-    let : SigmaCompactSpace (limitPointedCoc S O₀ gLim hgLim).M :=
-      (limitPointedCoc S O₀ gLim hgLim).sigmaCompact
+    let : TopologicalSpace (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M :=
+      (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).topology
+    let : ChartedSpace H (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M :=
+      (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).charted
+    let : SigmaCompactSpace (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M :=
+      (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).sigmaCompact
     exact Geometry.isSigmaCompact_of_isOpen I (Φ.source_open k)
   have hσtgt : ∀ k : ℕ,
       letI : TopologicalSpace ((factorSeq S O₀ gSeq).obj (id k)).M :=
@@ -89,10 +89,10 @@ def limitPointedRiemannianConvergence
   refine ⟨max kSrc kConv, fun k hk => ?_⟩
   have hkS : kSrc ≤ k := le_trans (Nat.le_max_left kSrc kConv) hk
   have hkC : kConv ≤ k := le_trans (Nat.le_max_right kSrc kConv) hk
-  let : TopologicalSpace (limitPointedCoc S O₀ gLim hgLim).M :=
-    (limitPointedCoc S O₀ gLim hgLim).topology
-  let : ChartedSpace H (limitPointedCoc S O₀ gLim hgLim).M :=
-    (limitPointedCoc S O₀ gLim hgLim).charted
+  let : TopologicalSpace (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M :=
+    (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).topology
+  let : ChartedSpace H (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M :=
+    (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).charted
   let : TopologicalSpace ((factorSeq S O₀ gSeq).obj (id k)).M :=
     ((factorSeq S O₀ gSeq).obj (id k)).topology
   let : ChartedSpace H ((factorSeq S O₀ gSeq).obj (id k)).M :=
@@ -145,9 +145,9 @@ def limitPointedRiemannianConvergence
     apply metric_ext
     intro x v w
     let inclS : MetricSourceDomain (I := I) Φ k →
-        (limitPointedCoc S O₀ gLim hgLim).M := Subtype.val
+        (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M := Subtype.val
     have hsrc : sourceMetric.inner x v w =
-        (S.limitMetric gLim hgLim).inner (x : (limitPointedCoc S O₀ gLim hgLim).M)
+        (S.limitMetric gLim hgLim).inner (x : (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M)
           (mfderiv I I inclS x v) (mfderiv I I inclS x w) := by
       rw [SmoothRiemannianMetric.restrictOpen_inner,
         mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
@@ -165,7 +165,7 @@ def limitPointedRiemannianConvergence
     rw [metric_source_target_diffeomorph_mfderiv (I := I) Φ k x v,
       metric_source_target_diffeomorph_mfderiv (I := I) Φ k x w]
     simp only [inclS, mfderiv_subtype_val_apply]
-    let z : (limitPointedCoc S O₀ gLim hgLim).M := x
+    let z : (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M := x
     have hFx : (F x).1 =
         Function.invFun (S.toSeqSystem.incl k) z := by
       calc

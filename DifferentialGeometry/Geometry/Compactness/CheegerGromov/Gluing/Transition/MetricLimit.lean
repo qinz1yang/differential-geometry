@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Convergence
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionLimit
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionOverlap
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Transition.Limit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Transition.Overlap
 
 open DifferentialGeometry.Geometry.Curvature
 

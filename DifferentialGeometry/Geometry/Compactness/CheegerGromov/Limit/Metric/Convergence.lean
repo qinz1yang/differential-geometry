@@ -50,20 +50,20 @@ def ambientPointedRiemannianConvergence
           (gInf k) (gInf k) < ε) :
     PointedRiemannianConverges (I := I)
       (chainAmbientSeq (I := I) j₀ U S O₀ g)
-      (limitPointedCoc S O₀ gInf hgInf) id
+      (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf) id
       (chainAmbientMaps (I := I) j₀ U S O₀ g gInf hgInf) := by
   let Φ := chainAmbientMaps (I := I) j₀ U S O₀ g gInf hgInf
   have hσsrc : ∀ k : ℕ,
-      letI : TopologicalSpace (limitPointedCoc S O₀ gInf hgInf).M :=
-        (limitPointedCoc S O₀ gInf hgInf).topology
+      letI : TopologicalSpace (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M :=
+        (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).topology
       IsSigmaCompact (Φ.source k) := by
     intro k
-    let _ : TopologicalSpace (limitPointedCoc S O₀ gInf hgInf).M :=
-      (limitPointedCoc S O₀ gInf hgInf).topology
-    let _ : ChartedSpace H (limitPointedCoc S O₀ gInf hgInf).M :=
-      (limitPointedCoc S O₀ gInf hgInf).charted
-    let _ : SigmaCompactSpace (limitPointedCoc S O₀ gInf hgInf).M :=
-      (limitPointedCoc S O₀ gInf hgInf).sigmaCompact
+    let _ : TopologicalSpace (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M :=
+      (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).topology
+    let _ : ChartedSpace H (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M :=
+      (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).charted
+    let _ : SigmaCompactSpace (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M :=
+      (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).sigmaCompact
     exact Geometry.isSigmaCompact_of_isOpen I (Φ.source_open k)
   have hσtgt : ∀ k : ℕ,
       letI : TopologicalSpace
@@ -108,10 +108,10 @@ def ambientPointedRiemannianConvergence
   refine ⟨max kSrc kConv, fun k hk => ?_⟩
   have hkS : kSrc ≤ k := le_trans (Nat.le_max_left kSrc kConv) hk
   have hkC : kConv ≤ k := le_trans (Nat.le_max_right kSrc kConv) hk
-  let _ : TopologicalSpace (limitPointedCoc S O₀ gInf hgInf).M :=
-    (limitPointedCoc S O₀ gInf hgInf).topology
-  let _ : ChartedSpace H (limitPointedCoc S O₀ gInf hgInf).M :=
-    (limitPointedCoc S O₀ gInf hgInf).charted
+  let _ : TopologicalSpace (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M :=
+    (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).topology
+  let _ : ChartedSpace H (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M :=
+    (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).charted
   let _ : TopologicalSpace
       ((chainAmbientSeq (I := I) j₀ U S O₀ g).obj (id k)).M :=
     ((chainAmbientSeq (I := I) j₀ U S O₀ g).obj (id k)).topology
@@ -162,10 +162,10 @@ def ambientPointedRiemannianConvergence
     apply metric_ext
     intro x v w
     let inclS : MetricSourceDomain (I := I) Φ k →
-        (limitPointedCoc S O₀ gInf hgInf).M := Subtype.val
+        (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M := Subtype.val
     have hsrc : sourceMetric.inner x v w =
         (S.limitMetric gInf hgInf).inner
-          (x : (limitPointedCoc S O₀ gInf hgInf).M)
+          (x : (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M)
           (mfderiv I I inclS x v) (mfderiv I I inclS x w) := by
       rw [SmoothRiemannianMetric.restrictOpen_inner,
         mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
@@ -181,7 +181,7 @@ def ambientPointedRiemannianConvergence
     rw [metric_source_target_diffeomorph_mfderiv (I := I) Φ k x v,
       metric_source_target_diffeomorph_mfderiv (I := I) Φ k x w]
     simp only [inclS, mfderiv_subtype_val_apply]
-    let z : (limitPointedCoc S O₀ gInf hgInf).M := x
+    let z : (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M := x
     have hxSource : z ∈ (S.inclPartialDiffeo k).source := by
       change z ∈ Set.range (S.toSeqSystem.incl k)
       exact x.2
@@ -192,20 +192,20 @@ def ambientPointedRiemannianConvergence
       exact (metric_source_target_diffeomorph_apply (I := I) Φ k x).trans hmapPoint
     have hmapv : mfderiv I I (Φ.map k) z v =
         mfderiv I I
-          (S.inclPartialDiffeo k : (limitPointedCoc S O₀ gInf hgInf).M → U k)
+          (S.inclPartialDiffeo k : (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M → U k)
           z v := by
       change mfderiv I I
         (PartialDiffeomorph.liftTargetOpen (S.inclPartialDiffeo k) rfl :
-          (limitPointedCoc S O₀ gInf hgInf).M → M (j₀ + k)) z v = _
+          (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M → M (j₀ + k)) z v = _
       exact PartialDiffeomorph.mfderiv_liftTargetOpen
         (S.inclPartialDiffeo k) rfl hxSource v
     have hmapw : mfderiv I I (Φ.map k) z w =
         mfderiv I I
-          (S.inclPartialDiffeo k : (limitPointedCoc S O₀ gInf hgInf).M → U k)
+          (S.inclPartialDiffeo k : (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M → U k)
           z w := by
       change mfderiv I I
         (PartialDiffeomorph.liftTargetOpen (S.inclPartialDiffeo k) rfl :
-          (limitPointedCoc S O₀ gInf hgInf).M → M (j₀ + k)) z w = _
+          (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf).M → M (j₀ + k)) z w = _
       exact PartialDiffeomorph.mfderiv_liftTargetOpen
         (S.inclPartialDiffeo k) rfl hxSource w
     rw [hFx, hmapv, hmapw]
@@ -258,7 +258,7 @@ def chainPointedRiemannianConvergence
     let hgInf : S.MetricCocycle gInf :=
       chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
     PointedRiemannianConverges (I := I)
-      (factorSeq S O₀ gSeq) (limitPointedCoc S O₀ gInf hgInf) id
+      (factorSeq S O₀ gSeq) (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf) id
       (limitConvergenceMapsOf S O₀ gSeq gInf hgInf) := by
   let S := chainBallSystem (I := I) j₀ U Ψ hU hmap
   let gSeq : ∀ n, SmoothRiemannianMetric I (U n) := fun n =>
@@ -307,7 +307,7 @@ def chainAmbientPointedRiemannianConvergence
       chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
     PointedRiemannianConverges (I := I)
       (chainAmbientSeq (I := I) j₀ U S O₀ g)
-      (limitPointedCoc S O₀ gInf hgInf) id
+      (pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf) id
       (chainAmbientMaps (I := I) j₀ U S O₀ g gInf hgInf) := by
   let S := chainBallSystem (I := I) j₀ U Ψ hU hmap
   let hgInf : S.MetricCocycle gInf :=
@@ -378,7 +378,7 @@ def tailAmbientPointedRiemannianConvergence
       tail_ball_system_metric_cocycle (I := I) b Ψ hbase g hnorm j₀ D₀ hU hmap gInf hstep
     PointedRiemannianConverges (I := I)
       (chainAmbientSeq (I := I) j₀ (tailBallOpen b j₀) S (tailCenter b j₀ 0) g)
-      (limitPointedCoc S (tailCenter b j₀ 0) gTail hgTail) id
+      (pointedDirectLimitOfMetricCocycle S (tailCenter b j₀ 0) gTail hgTail) id
       (chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S
         (tailCenter b j₀ 0) g gTail hgTail) := by
   letI : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tail_ball_nonempty b j₀ n

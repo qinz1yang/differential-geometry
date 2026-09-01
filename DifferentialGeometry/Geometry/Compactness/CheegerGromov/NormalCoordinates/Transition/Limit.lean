@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionOverlap
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Transition.Overlap
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.TransitionBounds
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionOverlap
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Transition.Overlap
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Transition.PairGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Transition.Refinement
