@@ -535,6 +535,70 @@ theorem gradientRicciSoliton_prod_real_line_potential_splitting
     exact hcomponent
 
 set_option backward.isDefEq.respectTransparency false in
+theorem normalizedGradientRicciSoliton_prod_real_line_potential_splitting
+    [CompleteSpace E] [ConnectedSpace M] [SigmaCompactSpace M]
+    {g : SmoothRiemannianMetric I M}
+    {u : C^∞⟮I.prod (modelWithCornersSelf Real Real), M × Real; Real⟯}
+    (h : normalizedGradientRicciSoliton
+      (I := I.prod (modelWithCornersSelf Real Real))
+      (g.prod (euclideanMetric (E := Real))) u) :
+    ∃ s0 : Real, ∃ psi : C^∞⟮I, M; Real⟯,
+      (∀ p : M × Real,
+        u p = psi p.1 + (1 / 4 : Real) * (p.2 - s0) ^ 2) ∧
+      normalizedGradientRicciSoliton (I := I) g psi := by
+  obtain ⟨s0, psi, hsplit, hpsiSol⟩ :=
+    gradientRicciSoliton_prod_real_line_potential_splitting
+      (I := I) (g := g) (u := u) h.2.1 (by norm_num)
+  let phi : C^∞⟮modelWithCornersSelf Real Real, Real; Real⟯ :=
+    ⟨fun s : Real => (1 / 4 : Real) * (s - s0) ^ 2, by
+      rw [contMDiff_iff_contDiff]
+      fun_prop⟩
+  have hufun : (u : M × Real → Real) =
+      fun p : M × Real => psi p.1 + phi p.2 := by
+    funext p
+    exact hsplit p
+  have hphi_min : IsLocalMin (fun s : Real => phi s) s0 := by
+    exact Filter.Eventually.of_forall (fun s => by
+      dsimp [phi]
+      nlinarith [sq_nonneg (s - s0)])
+  have hgrad_phi :
+      Operator.gradFun (I := modelWithCornersSelf Real Real)
+        (euclideanMetric (E := Real)) (phi : Real → Real) s0 = 0 :=
+    by
+      have hgrad_phi' :=
+        Operator.gradientFun_eq_zero_of_isLocalMin
+          (I := modelWithCornersSelf Real Real)
+          (euclideanMetric (E := Real)) hphi_min
+          ((phi.contMDiff s0).mdifferentiableAt (by simp))
+      simpa only [Connection.gradient_eq_gradFun] using hgrad_phi'
+  have hnorm_phi :
+      Operator.normGradSqFun (I := modelWithCornersSelf Real Real)
+        (euclideanMetric (E := Real)) (phi : Real → Real) s0 = 0 := by
+    rw [Operator.normGradSqFun_def, hgrad_phi]
+    simp
+  have hphi_zero : phi s0 = 0 := by
+    dsimp [phi]
+    ring
+  have hnorm_psi : ∀ y : M,
+      metricScalarAt (I := I) g y +
+          normGradSqFun (I := I) g psi y = psi y := by
+    intro y
+    have hnormal := h.2.2 (y, s0)
+    rw [hufun] at hnormal
+    change metricScalarAt (I := I.prod (modelWithCornersSelf Real Real))
+        (g.prod (euclideanMetric (E := Real))) (y, s0) +
+      normGradSqFun (I := I.prod (modelWithCornersSelf Real Real))
+        (g.prod (euclideanMetric (E := Real)))
+        (fun p : M × Real => psi p.1 + phi p.2) (y, s0) =
+      psi y + phi s0 at hnormal
+    rw [Curvature.metricScalarAt_prod, euclideanMetric_scalarCurvature,
+      Operator.normGradSqFun_prod, hnorm_phi, hphi_zero] at hnormal
+    simpa using hnormal
+  have hcomplete : RiemannianMetricComplete (I := I) g :=
+    RiemannianMetricComplete.fst_of_prod h.1 0
+  refine ⟨s0, psi, hsplit, hcomplete, hpsiSol, hnorm_psi⟩
+
+set_option backward.isDefEq.respectTransparency false in
 theorem roundThreeCylinderShrinkerPotential_hessian
     (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)
     (u v : TangentSpace ((𝓡 2).prod 𝓘(Real, Real)) x) :
