@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateHessian
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Hessian
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.Defs
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -35,7 +35,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 namespace HasNormalBrFull
 
-theorem strict_dist
+theorem strict_dist_input
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))

@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.ScaleSelection
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.ScaleSelection
 
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictConvexity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.ChartCenterSolution
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformData
 

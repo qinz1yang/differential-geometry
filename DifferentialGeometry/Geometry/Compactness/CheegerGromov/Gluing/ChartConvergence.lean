@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Averaging
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.TwoParameterConvergence
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition

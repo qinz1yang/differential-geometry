@@ -15,7 +15,7 @@ open Analysis (norm_fderiv_implicit_le exists_hasFDerivAt_graph_block_comp
   norm_iteratedFDeriv_implicit_two_le)
 open scoped Topology
 
-section CmBounds
+section NormalCoordinateDerivativeBounds
 
 open Set Bundle Manifold
 open scoped Manifold ContDiff ENNReal
@@ -271,7 +271,7 @@ theorem cmChartDerivLe2
     exact hmain.trans hC2
   · omega
 
-end CmBounds
+end NormalCoordinateDerivativeBounds
 
 end HCGCompactness
 end DifferentialGeometry

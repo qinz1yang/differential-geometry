@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.BoundedGeometry
 
 
 

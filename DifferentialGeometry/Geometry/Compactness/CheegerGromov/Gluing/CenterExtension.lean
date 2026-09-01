@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Analysis.Calculus.MovingImplicit
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Averaging
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.TwoParameterConvergence
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.InverseDistance
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.InverseDistance
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Branch
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.BranchScale
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateHessian
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Hessian
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CageScale
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.ChartCenterSolution
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterExtension

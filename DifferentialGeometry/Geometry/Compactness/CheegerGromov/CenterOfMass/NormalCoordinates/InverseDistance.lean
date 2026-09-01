@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Branch
-
 import DifferentialGeometry.Geometry.Comparison.CenterOfMass
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Gradient
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian

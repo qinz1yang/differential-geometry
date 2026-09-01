@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Basic
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Basic
 
 
 open DifferentialGeometry.Geometry.Curvature

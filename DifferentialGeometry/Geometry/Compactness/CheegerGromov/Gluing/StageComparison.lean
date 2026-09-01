@@ -3,13 +3,13 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageCompa
 import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Fill
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterRootConvergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateStrictConvexity
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BranchConstruction
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateHessian
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.NormalCoordinates
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.Branch
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Hessian
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterEquationSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Support
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.ChartSolution
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.ChartSolution
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -808,7 +808,7 @@ theorem HasSuppConvData.actual_cm_tail
   rcases hqdata alpha with ⟨_hq, _hδ, hρ, hρq⟩
   have hstrict : StrictDistInput (I := I) Yl.metric pts join p rad := by
     simpa only [Yl, x0, rho, pts, join, Lphi, NetLimitData.subseq] using
-      HasNormalBrFull.strict_dist (I := I) inp.normalBounds (Lphi.φ l)
+      HasNormalBrFull.strict_dist_input (I := I) inp.normalBounds (Lphi.φ l)
         (hcomplete.complete (Lphi.φ l)) (hconn (Lphi.φ l)) x0 hfull
         (hqAcc alpha) pts p rad (4 * L.lamInf (alpha.1 : Nat))
         hquarter hρ hρq hρmetric hρexp hrad hpq hptsFilled hcage

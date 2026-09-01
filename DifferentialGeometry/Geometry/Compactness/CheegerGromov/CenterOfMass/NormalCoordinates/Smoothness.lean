@@ -18,7 +18,7 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-section CmInfty
+section NormalCoordinateSmoothness
 
 open Set Manifold
 open DifferentialGeometry.Geometry.Riemannian
@@ -105,7 +105,7 @@ theorem chartCm_contDiffOn
     (hinv' params₀ hp) (hz₀' params₀ hp) (hc_solves params₀ hp) (hc_cont params₀ hp)
   exact (hcd.of_le (by exact_mod_cast le_max_right 1 n)).contDiffWithinAt
 
-end CmInfty
+end NormalCoordinateSmoothness
 
 end HCGCompactness
 end DifferentialGeometry

@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Existence
 
-
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

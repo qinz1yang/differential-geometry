@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Convergence
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Convergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BranchConstruction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.Branch
 
 set_option autoImplicit false
 

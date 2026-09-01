@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceAlgebra
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Weights
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Weights.Basic
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.NormalBump
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Weights
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Weights.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.ExponentialBallCovering
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformData
 open DifferentialGeometry.Geometry.Curvature

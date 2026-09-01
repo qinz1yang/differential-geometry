@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BoundedGeometry
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.Defs
 
 set_option autoImplicit false
 

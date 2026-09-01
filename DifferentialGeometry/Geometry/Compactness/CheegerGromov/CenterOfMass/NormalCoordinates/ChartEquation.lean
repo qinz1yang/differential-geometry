@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Branch
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
 
 set_option autoImplicit false

@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BumpWeights
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Weights.Bump
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.NormalBump
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Weights
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Weights.Basic
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

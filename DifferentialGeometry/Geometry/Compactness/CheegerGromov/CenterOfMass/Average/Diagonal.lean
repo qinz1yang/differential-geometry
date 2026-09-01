@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Averaging
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BumpWeights
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.TwoParameterConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Weights.Bump
 
 set_option autoImplicit false
 

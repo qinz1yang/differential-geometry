@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Gradient
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.Defs
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

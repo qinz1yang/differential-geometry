@@ -1,7 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.CenterOfMass
 
-
-
 set_option autoImplicit false
 
 noncomputable section

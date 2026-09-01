@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BranchConstruction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.Branch
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateStrictConvexity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformData
 open DifferentialGeometry.Geometry.Curvature
 
@@ -1026,7 +1026,7 @@ theorem exists_hat_cm_min
       have hstrict : StrictDistInput (I := I) (X.obj (L.φ n)).metric
           pts join x (radSeq a b x) := by
         simpa only [pts, join, x0, rho0] using
-          HasNormalBrFull.strict_dist (I := I) hb (L.φ n)
+          HasNormalBrFull.strict_dist_input (I := I) hb (L.φ n)
             (hcomplete.complete (L.φ n)) (hconn (L.φ n)) x0 hfull
             (hqAcc alpha) pts x (radSeq a b x)
             (4 * L.lamInf (alpha.1 : Nat)) (hquarterN alpha)
