@@ -73,19 +73,70 @@ theorem continuousLinearMap_kernel_annihilation_of_constant_on_left
     isClosed_singleton.mem_of_tendsto hlim hev
   simpa using hmem
 
-theorem hasDerivAt_apply_eq_zero_of_continuousLinearMap
+theorem hasDerivAt_apply_eq_zero_of_eventually_eq_zero
     {A : Real → E →L[Real] F} {w : Real → E}
     {A' : E →L[Real] F} {w' : E} {t : Real}
     (hA : HasDerivAt A A' t) (hw : HasDerivAt w w' t)
-    (hzero : ∀ s, A s (w s) = 0) :
+    (hzero : ∀ᶠ s in nhds t, A s (w s) = 0) :
     A' (w t) + A t w' = 0 := by
   have hprod : HasDerivAt (fun s => A s (w s))
       (A' (w t) + A t w') t := hA.clm_apply hw
   have hconst : HasDerivAt (fun _ : Real => (0 : F)) 0 t :=
     hasDerivAt_const t 0
   have hzero' : HasDerivAt (fun s => A s (w s)) 0 t := by
-    simpa only [hzero] using hconst
+    exact hconst.congr_of_eventuallyEq hzero
   exact hprod.unique hzero'
+
+theorem hasDerivAt_apply_eq_zero_of_continuousLinearMap
+    {A : Real → E →L[Real] F} {w : Real → E}
+    {A' : E →L[Real] F} {w' : E} {t : Real}
+    (hA : HasDerivAt A A' t) (hw : HasDerivAt w w' t)
+    (hzero : ∀ s, A s (w s) = 0) :
+    A' (w t) + A t w' = 0 :=
+  hasDerivAt_apply_eq_zero_of_eventually_eq_zero hA hw
+    (Filter.Eventually.of_forall hzero)
+
+theorem hasDerivAt_apply_eq_of_kernel_motion
+    {A : Real → E →L[Real] F} {w : Real → E}
+    {A' B : E →L[Real] F} {w' : E} {t : Real}
+    (hA : HasDerivAt A A' t) (hw : HasDerivAt w w' t)
+    (hzero : ∀ᶠ s in nhds t, A s (w s) = 0)
+    (hmotion : A t w' = -B (w t)) :
+    A' (w t) = B (w t) := by
+  have h := hasDerivAt_apply_eq_zero_of_eventually_eq_zero hA hw hzero
+  rw [hmotion] at h
+  apply sub_eq_zero.mp
+  rw [sub_eq_add_neg]
+  exact h
+
+theorem hasDerivAt_kernel_motion_of_apply_eq
+    {A : Real → E →L[Real] F} {w : Real → E}
+    {A' B : E →L[Real] F} {w' : E} {t : Real}
+    (hA : HasDerivAt A A' t) (hw : HasDerivAt w w' t)
+    (hzero : ∀ᶠ s in nhds t, A s (w s) = 0)
+    (happly : A' (w t) = B (w t)) :
+    A t w' = -B (w t) := by
+  have h := hasDerivAt_apply_eq_zero_of_eventually_eq_zero hA hw hzero
+  rw [happly] at h
+  exact eq_neg_of_add_eq_zero_right h
+
+theorem inner_deriv_apply_eq_zero_of_eventually_mem_ker
+    {E : Type u} [NormedAddCommGroup E] [InnerProductSpace Real E]
+    {A : Real → E →L[Real] E} {w : Real → E} {t : Real}
+    (hA : DifferentiableAt Real A t) (hw : DifferentiableAt Real w t)
+    (hzero : ∀ᶠ s in nhds t, A s (w s) = 0)
+    (hsymm : (A t : E →ₗ[Real] E).IsSymmetric) :
+    ⟪deriv A t (w t), w t⟫_Real = 0 := by
+  have happly := hasDerivAt_apply_eq_zero_of_eventually_eq_zero
+    hA.hasDerivAt hw.hasDerivAt hzero
+  have hderiv : deriv A t (w t) = -A t (deriv w t) := by
+    exact eq_neg_of_add_eq_zero_left happly
+  rw [hderiv, inner_neg_left]
+  have hswap : ⟪A t (deriv w t), w t⟫_Real =
+      ⟪deriv w t, A t (w t)⟫_Real := hsymm _ _
+  rw [hswap]
+  have hAt : A t (w t) = 0 := hzero.self_of_nhds
+  rw [hAt, inner_zero_right, neg_zero]
 
 theorem continuousLinearMap_eq_zero_of_isPositive_inner_eq_zero
     {E : Type u} [NormedAddCommGroup E] [InnerProductSpace Real E]
