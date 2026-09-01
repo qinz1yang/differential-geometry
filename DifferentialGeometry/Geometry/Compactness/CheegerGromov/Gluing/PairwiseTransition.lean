@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionOverlap
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.PairGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.TransitionRefine
 open DifferentialGeometry.Geometry.Curvature

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Convergence
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

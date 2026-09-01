@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeightLimit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Limit
 
 
 open DifferentialGeometry.Geometry.Curvature

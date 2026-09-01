@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricComp
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.StageJet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.BoundedGeometry
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparisonHigherRegularity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.HigherRegularity
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

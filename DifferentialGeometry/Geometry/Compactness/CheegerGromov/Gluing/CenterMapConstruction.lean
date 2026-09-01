@@ -1,13 +1,13 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformData
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Data
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.ExponentialBallCovering
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.TransitionRefine
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeightSubsequence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Convergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Subsequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.PairwiseTransition
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceCover
 open DifferentialGeometry.Geometry.Curvature

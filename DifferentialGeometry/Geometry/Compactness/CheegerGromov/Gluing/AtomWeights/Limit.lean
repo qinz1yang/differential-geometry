@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricTransitionLimit
 
-
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

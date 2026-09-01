@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.N
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Basic
 
 set_option autoImplicit false
 

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceBuff
 
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Basic
 import DifferentialGeometry.Topology.FirstExit
 
 set_option autoImplicit false

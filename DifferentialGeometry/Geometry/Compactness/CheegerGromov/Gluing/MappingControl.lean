@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Basic
 
 open DifferentialGeometry.Geometry.Curvature
 

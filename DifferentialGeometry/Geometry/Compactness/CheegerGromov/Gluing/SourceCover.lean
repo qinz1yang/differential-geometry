@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformData
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Data
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.PairwiseTransition

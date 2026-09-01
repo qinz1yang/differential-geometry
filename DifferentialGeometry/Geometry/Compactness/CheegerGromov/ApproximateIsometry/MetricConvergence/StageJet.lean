@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
 import DifferentialGeometry.Analysis.Estimates.BilinearMapPerturbation
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

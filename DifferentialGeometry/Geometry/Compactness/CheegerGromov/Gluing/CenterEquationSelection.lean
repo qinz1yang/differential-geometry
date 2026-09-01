@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.Branch
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.NormalCoordinates
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformData
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Data
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
