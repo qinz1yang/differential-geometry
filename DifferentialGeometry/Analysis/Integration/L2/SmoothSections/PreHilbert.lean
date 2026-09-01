@@ -80,6 +80,28 @@ noncomputable instance instInnerProductSpace :
 theorem SmoothCcTensor.norm_def (S : SmoothCcTensor g r s) :
     ‖S‖ = tensorL2Norm (I := I) (M := M) g r s S.toFun := rfl
 
+theorem tensorL2Inner_sub_left_smoothCc
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (S₁ S₂ T : SmoothCcTensor g r s) :
+    tensorL2Inner (I := I) (M := M) g r s
+        (S₁.toFun - S₂.toFun) T.toFun =
+      tensorL2Inner (I := I) (M := M) g r s S₁.toFun T.toFun -
+        tensorL2Inner (I := I) (M := M) g r s S₂.toFun T.toFun := by
+  rw [← SmoothCcTensor.toFun_sub]
+  change ⟪S₁ - S₂, T⟫_ℝ = ⟪S₁, T⟫_ℝ - ⟪S₂, T⟫_ℝ
+  exact inner_sub_left S₁ S₂ T
+
+theorem tensorL2Inner_sub_right_smoothCc
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (S T₁ T₂ : SmoothCcTensor g r s) :
+    tensorL2Inner (I := I) (M := M) g r s
+        S.toFun (T₁.toFun - T₂.toFun) =
+      tensorL2Inner (I := I) (M := M) g r s S.toFun T₁.toFun -
+        tensorL2Inner (I := I) (M := M) g r s S.toFun T₂.toFun := by
+  rw [← SmoothCcTensor.toFun_sub]
+  change ⟪S, T₁ - T₂⟫_ℝ = ⟪S, T₁⟫_ℝ - ⟪S, T₂⟫_ℝ
+  exact inner_sub_right S T₁ T₂
+
 end PreHilbert
 
 section InstanceTests
