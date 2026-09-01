@@ -24,11 +24,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-lemma chartFrameVec_eq_chartBasisVecFiber
-    (α : M) (i : Fin (Module.finrank ℝ E)) (b : M) :
-    chartFrameVec (I := I) α i b = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b := rfl
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartFrame
@@ -38,8 +33,8 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartFrame
     ∀ x ∈ chartLeviCivitaGoodSet (I := I) α,
       chartLieDerivMetricMatrix (I := I) g W α i j x =
         lieDerivMetric (I := I) g W x
-          (chartFrameVec (I := I) α i x)
-          (chartFrameVec (I := I) α j x) :=
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) :=
   DifferentialGeometry.PDE.DeTurck.chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
     (I := I) g W α i j
 
@@ -81,7 +76,7 @@ theorem lieDerivMetric_pairing_contMDiff
         ContMDiffOn I 𝓘(ℝ, ℝ) ∞
           (fun b : M =>
             lieDerivMetric (I := I) g W b
-              (chartFrameVec (I := I) b₀ i b) (chartFrameVec (I := I) b₀ j b))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ i b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ j b))
           (chartAt H b₀).source := fun i j =>
     liederivmetric_chart_component_smooth_in_g_w_input (I := I) g W b₀ i j
   have h_decomp : ∀ b ∈ (chartAt H b₀).source,
@@ -91,8 +86,8 @@ theorem lieDerivMetric_pairing_contMDiff
             chartCoeff (I := I) b₀ Y i b *
               chartCoeff (I := I) b₀ Z j b *
               lieDerivMetric (I := I) g W b
-                (chartFrameVec (I := I) b₀ i b)
-                (chartFrameVec (I := I) b₀ j b) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ i b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ j b) := by
     intro b hb_chart
     have hb_baseSet : b ∈ e.baseSet := by
       rw [he_def, h_baseSet_eq]; exact hb_chart
@@ -123,8 +118,6 @@ theorem lieDerivMetric_pairing_contMDiff
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl ?_
     intro j _
-    rw [show chartFrameVec (I := I) b₀ i b = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ i b from rfl,
-        show chartFrameVec (I := I) b₀ j b = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ j b from rfl]
     ring
   have h_summand_smooth :
       ∀ i j : Fin (Module.finrank ℝ E),
@@ -133,8 +126,8 @@ theorem lieDerivMetric_pairing_contMDiff
             chartCoeff (I := I) b₀ Y i b *
               chartCoeff (I := I) b₀ Z j b *
               lieDerivMetric (I := I) g W b
-                (chartFrameVec (I := I) b₀ i b)
-                (chartFrameVec (I := I) b₀ j b))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ i b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ j b))
           (chartAt H b₀).source := by
     intro i j
     exact ((h_coeffY i).mul (h_coeffZ j)).mul (h_pair i j)
@@ -146,8 +139,8 @@ theorem lieDerivMetric_pairing_contMDiff
               chartCoeff (I := I) b₀ Y i b *
                 chartCoeff (I := I) b₀ Z j b *
                 lieDerivMetric (I := I) g W b
-                  (chartFrameVec (I := I) b₀ i b)
-                  (chartFrameVec (I := I) b₀ j b))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ i b)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ j b))
         (chartAt H b₀).source := by
     refine contMDiffOn_finsetSum (fun i _ => ?_)
     exact contMDiffOn_finsetSum (fun j _ => h_summand_smooth i j)

@@ -396,9 +396,9 @@ private lemma corrField_riemannBiContrFib_toModel_chartα
   let Dt : ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I x) ℝ :=
     tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D
   have hDt (p q : TangentSpace I x) :
-      (bilinFormToModel (TangentSpace I x)).symm Dt p q =
+      (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)).symm Dt p q =
         Tensor0SSpace.eval D ![p, q] := by
-    rw [bilinFormToModel_symm_apply]
+    rw [DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply]
     rfl
   have hsummand : ∀ a b : Fin (Module.finrank ℝ E),
       g.inner x (riemannOp (LeviCivita (I := I) g) x
@@ -409,7 +409,7 @@ private lemma corrField_riemannBiContrFib_toModel_chartα
         frameRiemannKernel (I := I) g x
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) (Bf a) (Bf b) *
-          (bilinFormToModel (TangentSpace I x)).symm Dt (Bf a) (Bf b) :=
+          (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)).symm Dt (Bf a) (Bf b) :=
     fun a b => by
       rw [frameRiemannKernel_apply, hDt]
   rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hsummand a b))]
@@ -417,7 +417,7 @@ private lemma corrField_riemannBiContrFib_toModel_chartα
     (frameRiemannKernel (I := I) g x
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
-    ((bilinFormToModel (TangentSpace I x)).symm Dt) Bf hBf_on]
+    ((DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)).symm Dt) Bf hBf_on]
   refine Finset.sum_congr rfl (fun m _ => Finset.sum_congr rfl (fun n _ => ?_))
   refine congrArg (fun t => chartInvGramMatrix (I := I) g α x m n * t) ?_
   refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun l _ => ?_))

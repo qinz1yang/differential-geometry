@@ -133,7 +133,7 @@ def ricciFoldSummandFib (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor 
     { toFun := fun D =>
         (Tensor0SSpace.toModel D ![(p : E), (q : E)]) •
           Tensor0SSpace.ofModel (I := I) (x := x)
-            (bilinFormToModel E (ricciFoldKernelBilin (I := I) g₀ S x p q))
+            (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel E (ricciFoldKernelBilin (I := I) g₀ S x p q))
       map_add' := fun D D' => by
         rw [Tensor0SSpace.toModel_add, add_apply, add_smul]
       map_smul' := fun c D => by
@@ -370,7 +370,7 @@ theorem ricciFoldBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemannianM
   let vt : Fin 2 → TangentSpace I y := fun i =>
     (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v i)
   let Dmodel : E →L[ℝ] E →L[ℝ] ℝ :=
-    (bilinFormToModel E).symm (Tensor0SSpace.toModel D)
+    (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel E).symm (Tensor0SSpace.toModel D)
   let Dd : TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ :=
     (((Dmodel.comp e).flip.comp e).flip)
   with_unfolding_all
@@ -408,7 +408,7 @@ theorem ricciFoldBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemannianM
     dsimp only [Dd, Dmodel, e]
     rw [ContinuousLinearMap.flip_apply, ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.flip_apply, ContinuousLinearMap.comp_apply,
-      bilinFormToModel_symm_apply]
+      DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply]
     rw [mul_comm]
     rfl
   rw [hrewrite (fun a => smoothOrthoFrame (I := I) g₁ y a y),

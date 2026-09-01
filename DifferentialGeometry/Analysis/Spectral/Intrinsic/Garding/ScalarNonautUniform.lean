@@ -392,7 +392,7 @@ theorem lapCoeff_slab
                   (g_fam ((T : ℝ) - s)))).toSection x) ≤ B₁ i := by
   classical
   obtain ⟨tau, htau, htau_one, J, hJ_nn, hdata⟩ :=
-    metricDiff_slab (I := I) (M := M) g_fam hG T
+    metricDifference_slab (I := I) (M := M) g_fam hG T
   let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
   let A : Set ℝ := Set.Icc (0 : ℝ) tau
   let gm : ℝ → SmoothRiemannianMetric I M := fun s => g_fam ((T : ℝ) - s)
@@ -406,7 +406,7 @@ theorem lapCoeff_slab
         ccTensorBilinSymm (I := I) q (P s) y v w := by
     intro s hs y v w
     simp only [P]
-    rw [metricDiff_bilin (I := I) (M := M)]
+    rw [metricDifference_bilin (I := I) (M := M)]
     ring
   have hsmall : ∀ s, s ∈ A →
       metricCauchySchwarzBound (I := I) q
@@ -547,7 +547,7 @@ theorem cc_lap_unif
   obtain ⟨tauc, htauc, _, _, hc⟩ :=
     cc_conn_unif (I := I) (M := M) g_fam hG T
   obtain ⟨taum, htaum, _, _, _, hm⟩ :=
-    metricDiff_slab (I := I) (M := M) g_fam hG T
+    metricDifference_slab (I := I) (M := M) g_fam hG T
   let tau : ℝ := min taup (min tauc taum)
   have htau : 0 < tau := by
     exact lt_min htaup (lt_min htauc htaum)
@@ -578,7 +578,7 @@ theorem cc_lap_unif
   have htie : ∀ y v w, h.inner y v w = q.inner y v w + k y v w := by
     intro y v w
     simp only [k, K]
-    rw [metricDiff_bilin (I := I) (M := M)]
+    rw [metricDifference_bilin (I := I) (M := M)]
     ring
   have hsmall : metricCauchySchwarzBound (I := I) q k (1 / 4 : ℝ) := by
     simpa only [q, h, K, k] using (hm s hsm).2.1

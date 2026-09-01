@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderDifferenceEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.StrongSpectralSolution
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffSmallC0
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDifferenceFields
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.SmallC0
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.Fields
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRemainderPolynomial
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
 import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
@@ -52,7 +52,7 @@ def tensor02Bilin {x : M} (A : Tensor0SSpace 2 I x) :
     letI : IsManifold I 1 M :=
       IsManifold.of_le (I := I) (M := M) (n := ∞)
         (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-    exact (bilinFormToModel (TangentSpace I x)).symm
+    exact (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)).symm
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x A)
 
 omit [FiniteDimensional ℝ E]
@@ -66,7 +66,7 @@ omit [FiniteDimensional ℝ E]
     (v w : TangentSpace I x) :
     tensor02Bilin (I := I) (M := M) A v w =
       eval02 (I := I) (M := M) A v w := by
-  rw [tensor02Bilin, bilinFormToModel_symm_apply]
+  rw [tensor02Bilin, DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply]
   rw [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
   unfold eval02
   congr 1
@@ -78,11 +78,11 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-private theorem metricDiff02Field_eval_local
+private theorem metricDifference02Field_eval_local
     (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     (v : Fin 2 → TangentSpace I x) :
-    Tensor0SSpace.eval (metricDiff02Field (I := I) g₁ g₂ x) v =
-      metricDiff02 (I := I) g₁ g₂ x (v 0) (v 1) := by
+    Tensor0SSpace.eval (metricDifference02Field (I := I) g₁ g₂ x) v =
+      metricDifference02 (I := I) g₁ g₂ x (v 0) (v 1) := by
   with_unfolding_all rfl
 
 def negativeHalfDeTurckRHSField (g_bg : SmoothRiemannianMetric I M)
@@ -215,7 +215,7 @@ theorem exists_uniform_negativeHalfDeTurckRHS_bound
     (Set.Icc 0 T) hcompact habs
   refine ⟨B, hB, ?_⟩
   intro t ht
-  apply gOpBound_unitQuad (g t)
+  apply metricCauchySchwarzBound_of_unit_self_bound (g t)
     (negativeHalfDeTurckRHS (I := I) (M := M) g_bg g t)
     (negativeHalfDeTurckRHS_symm (I := I) (M := M) g_bg g t)
   intro x u hu
@@ -374,7 +374,7 @@ theorem normSq0S_family_continuousOn
 def movingMetricDifferenceNormSq
     (g₀ g₁ : Real → SmoothRiemannianMetric I M) (t : Real) (x : M) : Real :=
   normSq0S (I := I) (g₀ t) x 2
-    (metricDiff02Field (I := I) (g₁ t) (g₀ t) x)
+    (metricDifference02Field (I := I) (g₁ t) (g₀ t) x)
 
 def ricciReactionContractInBasis {Idx : Type*} [Fintype Idx]
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -1010,7 +1010,7 @@ theorem movingMetricDifferenceEnergy_continuousOn
   have hdiffRaw := hmetric₁.add
     (tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M) (-1) hmetric₀)
   have hdiff : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
-      (fun t x ↦ metricDiff02Field (I := I) (g₁ t) (g₀ t) x) := by
+      (fun t x ↦ metricDifference02Field (I := I) (g₁ t) (g₀ t) x) := by
     refine tensor0SFamilyContinuousOnSet.congr (I := I) (M := M) hdiffRaw ?_
     intro t ht x
     apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).injective
@@ -1021,16 +1021,16 @@ theorem movingMetricDifferenceEnergy_continuousOn
       ((metricTensorField (I := I) (g₁ t)) x +
         (-1 : Real) • (metricTensorField (I := I) (g₀ t)) x) v =
       Tensor0SSpace.eval
-        (metricDiff02Field (I := I) (g₁ t) (g₀ t) x) v
+        (metricDifference02Field (I := I) (g₁ t) (g₀ t) x) v
     rw [Tensor0SSpace.eval_add, Tensor0SSpace.eval_smul,
-      metricDiff02Field_eval_local, metricTensorField_eval,
-      metricTensorField_eval, metricDiff02_apply]
+      metricDifference02Field_eval_local, metricTensorField_eval,
+      metricTensorField_eval, metricDifference02_apply]
     rw [sub_eq_add_neg, neg_smul, one_smul]
   have hnormSub := normSq0S_family_continuousOn (I := I) (M := M) g₀
-    (fun t x ↦ metricDiff02Field (I := I) (g₁ t) (g₀ t) x) h₀' hdiff
+    (fun t x ↦ metricDifference02Field (I := I) (g₁ t) (g₀ t) x) h₀' hdiff
   have hnorm : ContinuousOn
       (fun p : Real × M ↦ normSq0S (I := I) (g₀ p.1) p.2 2
-        (metricDiff02Field (I := I) (g₁ p.1) (g₀ p.1) p.2))
+        (metricDifference02Field (I := I) (g₁ p.1) (g₀ p.1) p.2))
       (K ×ˢ (Set.univ : Set M)) := by
     rw [continuousOn_iff_continuous_domRestrict]
     let pull : {p : Real × M // p ∈ K ×ˢ (Set.univ : Set M)} →
@@ -1042,7 +1042,7 @@ theorem movingMetricDifferenceEnergy_continuousOn
   change ContinuousOn
     (fun t : Real ↦
       ∫ x, normSq0S (I := I) (g₀ t) x 2
-        (metricDiff02Field (I := I) (g₁ t) (g₀ t) x)
+        (metricDifference02Field (I := I) (g₁ t) (g₀ t) x)
         ∂(riemannianMeasureFamily (I := I) (M := M) g₀ t)) K
   exact integral_family_cont (I := I) (M := M) hK h₀ hnorm
 
@@ -1167,18 +1167,18 @@ theorem movingMetricDifferenceNormSq_smooth
       normSq0S_eq_coord (I := I) (g₀ q.1) q.2 2
         (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) p.2 hq.2)
         (fun i j ↦ (G₀ q)⁻¹ i j) hinv
-        (metricDiff02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)]
+        (metricDifference02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)]
     unfold coordInner0S rhs
     refine Finset.sum_congr rfl fun I₀ _ ↦ Finset.sum_congr rfl fun J₀ _ ↦ ?_
     have hcomp (K₀ : Fin 2 → Fin (Module.finrank Real E)) :
         tensor0SComponent (I := I)
-            (metricDiff02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)
+            (metricDifference02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)
             (fun i ↦ DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) p.2 hq.2 i) K₀ = W q K₀ := by
       rw [tensor0SComponent_apply]
       change Tensor0SSpace.eval
-          (metricDiff02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)
+          (metricDifference02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)
           (fun a ↦ DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) p.2 hq.2 (K₀ a)) = _
-      rw [metricDiff02Field_eval_local, metricDiff02_apply]
+      rw [metricDifference02Field_eval_local, metricDifference02_apply]
       simp only [G₀, G₁, W]
       have hslot (a : Fin 2) :
           DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) p.2 hq.2 (K₀ a) =
@@ -1202,15 +1202,15 @@ theorem movingMetricDifferenceNormSq_time_deriv {x : M} {t : Real}
         ((-2 : Real) * Q (fun a : Fin 2 => if a = 0 then X else Y)) t)
     (hW : ∀ X Y : TangentSpace I x,
       HasDerivAt
-        (fun r : Real ↦ metricDiff02 (I := I) (g₁ r) (g₀ r) x X Y)
+        (fun r : Real ↦ metricDifference02 (I := I) (g₁ r) (g₀ r) x X Y)
         (Tensor0SSpace.toModel Wdot
           (fun a : Fin 2 => if a = 0 then X else Y)) t) :
     HasDerivAt
       (fun r : Real ↦ movingMetricDifferenceNormSq (I := I) (M := M) g₀ g₁ r x)
       (movingMetricReaction (I := I) (M := M) (g₀ t) x Q
-          (metricDiff02Field (I := I) (g₁ t) (g₀ t) x) +
+          (metricDifference02Field (I := I) (g₁ t) (g₀ t) x) +
         2 * inner0S (I := I) (g₀ t) x 2 Wdot
-          (metricDiff02Field (I := I) (g₁ t) (g₀ t) x)) t := by
+          (metricDifference02Field (I := I) (g₁ t) (g₀ t) x)) t := by
   classical
   let basis : Module.Basis
       (Fin (Module.finrank Real (TangentSpace I x))) Real (TangentSpace I x) :=
@@ -1228,7 +1228,7 @@ theorem movingMetricDifferenceNormSq_time_deriv {x : M} {t : Real}
       Fin (Module.finrank Real (TangentSpace I x)) → Real := fun i j ↦
     -(∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j)
   let T : Real → Tensor0SSpace 2 I x := fun r ↦
-    metricDiff02Field (I := I) (g₁ r) (g₀ r) x
+    metricDifference02Field (I := I) (g₁ r) (g₀ r) x
   let Tdt :
       (Fin 2 → Fin (Module.finrank Real (TangentSpace I x))) → Real := fun I₀ ↦
     tensor0SComponent (I := I) Wdot (fun i ↦ basis i) I₀
@@ -1253,7 +1253,7 @@ theorem movingMetricDifferenceNormSq_time_deriv {x : M} {t : Real}
       fin_cases a <;> simp
     change HasDerivWithinAt
       (fun r : Real ↦
-        metricDiff02 (I := I) (g₁ r) (g₀ r) x (basis (I₀ 0)) (basis (I₀ 1)))
+        metricDifference02 (I := I) (g₁ r) (g₀ r) x (basis (I₀ 0)) (basis (I₀ 1)))
       (Tensor0SSpace.toModel Wdot (fun a : Fin 2 ↦ basis (I₀ a))) Set.univ t
     rw [hslots]
     exact (hW (basis (I₀ 0)) (basis (I₀ 1))).hasDerivWithinAt
@@ -1309,11 +1309,11 @@ theorem movingMetricDifferenceNormSq_ricciDeTurck_deriv {x : M} {t : Real}
       (fun r : Real ↦ movingMetricDifferenceNormSq (I := I) (M := M) g₀ g₁ r x)
       (movingMetricReaction (I := I) (M := M) (g₀ t) x
           ((-1 / 2 : Real) • deTurckRHSField (I := I) g_bg (g₀ t) x)
-          (metricDiff02Field (I := I) (g₁ t) (g₀ t) x) +
+          (metricDifference02Field (I := I) (g₁ t) (g₀ t) x) +
         2 * inner0S (I := I) (g₀ t) x 2
           (deTurckRHSField (I := I) g_bg (g₁ t) x -
             deTurckRHSField (I := I) g_bg (g₀ t) x)
-          (metricDiff02Field (I := I) (g₁ t) (g₀ t) x)) t := by
+          (metricDifference02Field (I := I) (g₁ t) (g₀ t) x)) t := by
   apply movingMetricDifferenceNormSq_time_deriv (I := I) (M := M) g₀ g₁
   · intro X Y
     convert hPDE₀ X Y using 1
@@ -1389,11 +1389,11 @@ theorem movingMetricDifferenceEnergy_ricciDeTurck_deriv
       (∫ x,
         movingMetricReaction (I := I) (M := M) (g₀ t) x
             ((-1 / 2 : Real) • deTurckRHSField (I := I) g_bg (g₀ t) x)
-            (metricDiff02Field (I := I) (g₁ t) (g₀ t) x) +
+            (metricDifference02Field (I := I) (g₁ t) (g₀ t) x) +
           2 * inner0S (I := I) (g₀ t) x 2
             (deTurckRHSField (I := I) g_bg (g₁ t) x -
               deTurckRHSField (I := I) g_bg (g₀ t) x)
-            (metricDiff02Field (I := I) (g₁ t) (g₀ t) x) +
+            (metricDifference02Field (I := I) (g₁ t) (g₀ t) x) +
           (1 / 2 : Real) * traceTimeDerivMetric (I := I) g₀ t x *
             movingMetricDifferenceNormSq (I := I) (M := M) g₀ g₁ t x
         ∂(riemannianMeasureFamily (I := I) (M := M) g₀ t)) t := by
@@ -1411,11 +1411,11 @@ def movingMetricDifferenceEnergyRate
   ∫ x,
     movingMetricReaction (I := I) (M := M) (g₀ t) x
         ((-1 / 2 : Real) • deTurckRHSField (I := I) g_bg (g₀ t) x)
-        (metricDiff02Field (I := I) (g₁ t) (g₀ t) x) +
+        (metricDifference02Field (I := I) (g₁ t) (g₀ t) x) +
       2 * inner0S (I := I) (g₀ t) x 2
         (deTurckRHSField (I := I) g_bg (g₁ t) x -
           deTurckRHSField (I := I) g_bg (g₀ t) x)
-        (metricDiff02Field (I := I) (g₁ t) (g₀ t) x) +
+        (metricDifference02Field (I := I) (g₁ t) (g₀ t) x) +
       (1 / 2 : Real) * traceTimeDerivMetric (I := I) g₀ t x *
         movingMetricDifferenceNormSq (I := I) (M := M) g₀ g₁ t x
     ∂(riemannianMeasureFamily (I := I) (M := M) g₀ t)
@@ -1500,7 +1500,7 @@ theorem movingMetricDifferenceEnergy_eq_zero
     movingMetricDifferenceEnergy_continuousOn (I := I) (M := M) g₀ g₁ isCompact_Icc h₀c h₁c
   have hzero : movingMetricDifferenceEnergy (I := I) (M := M) g₀ g₁ 0 = 0 := by
     have hfield : ∀ x : M,
-        metricDiff02Field (I := I) (g₁ 0) (g₀ 0) x = 0 := by
+        metricDifference02Field (I := I) (g₁ 0) (g₀ 0) x = 0 := by
       intro x
       rw [hinit]
       apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).injective
@@ -1508,9 +1508,9 @@ theorem movingMetricDifferenceEnergy_eq_zero
       rw [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply,
         tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
       change Tensor0SSpace.eval
-          (metricDiff02Field (I := I) (g₀ 0) (g₀ 0) x) v =
+          (metricDifference02Field (I := I) (g₀ 0) (g₀ 0) x) v =
         Tensor0SSpace.eval (0 : Tensor0SSpace 2 I x) v
-      rw [metricDiff02Field_eval_local, metricDiff02_apply,
+      rw [metricDifference02Field_eval_local, metricDifference02_apply,
         Tensor0SSpace.eval_zero]
       simp
     unfold movingMetricDifferenceEnergy movingMetricDifferenceNormSq
@@ -1520,7 +1520,7 @@ theorem movingMetricDifferenceEnergy_eq_zero
     intro t _
     exact integral_nonneg fun x ↦
       normSq0S_nonneg (I := I) (g₀ t) x 2
-        (metricDiff02Field (I := I) (g₁ t) (g₀ t) x)
+        (metricDifference02Field (I := I) (g₁ t) (g₀ t) x)
   have hderiv : ∀ t ∈ Ioo (0 : Real) T,
       HasDerivAt
         (movingMetricDifferenceEnergy (I := I) (M := M) g₀ g₁)

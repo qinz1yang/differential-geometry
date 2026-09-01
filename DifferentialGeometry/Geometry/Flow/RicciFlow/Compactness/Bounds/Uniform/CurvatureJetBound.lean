@@ -193,7 +193,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   in
-theorem metricDiff_ccBilin (gBase g₀ : SmoothRiemannianMetric I M)
+theorem metricDifference_ccBilin (gBase g₀ : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) gBase
         (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) x v w =
@@ -207,26 +207,26 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   in
-theorem metricDiff_ccBilinSymm (gBase g₀ : SmoothRiemannianMetric I M)
+theorem metricDifference_ccBilinSymm (gBase g₀ : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     ccTensorBilinSymm (I := I) gBase
         (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) x v w =
       g₀.inner x v w - gBase.inner x v w := by
-  rw [ccTensorBilinSymm_apply, metricDiff_ccBilin gBase g₀ x v w,
-    metricDiff_ccBilin gBase g₀ x w v, gBase.symm x w v, g₀.symm x w v]
+  rw [ccTensorBilinSymm_apply, metricDifference_ccBilin gBase g₀ x v w,
+    metricDifference_ccBilin gBase g₀ x w v, gBase.symm x w v, g₀.symm x w v]
   ring
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   in
-theorem metricDiff_tie (gBase g₀ : SmoothRiemannianMetric I M)
+theorem metricDifference_tie (gBase g₀ : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     g₀.inner x v w =
       gBase.inner x v w +
         ccTensorBilinSymm (I := I) gBase
           (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) x v w := by
-  rw [metricDiff_ccBilinSymm]; ring
+  rw [metricDifference_ccBilinSymm]; ring
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] in
@@ -296,7 +296,7 @@ private lemma clm_offdiag_le_of_diag {x : M} (gBase : SmoothRiemannianMetric I M
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] in
-private lemma metricDiff_diag_le (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
+private lemma metricDifference_diag_le (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -316,7 +316,7 @@ private lemma metricDiff_diag_le (gBase g₀ : SmoothRiemannianMetric I M) {Λ :
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
   in
-theorem metricDiff_gFibreOpBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
+theorem metricDifference_gFibreOpBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -336,8 +336,8 @@ theorem metricDiff_gFibreOpBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ :
           (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) x u u| ≤
         (Λ - 1) * gBase.inner x u u := by
     intro u
-    rw [metricDiff_ccBilinSymm]
-    exact metricDiff_diag_le (I := I) (M := M) gBase g₀ hΛ hcomp x u
+    rw [metricDifference_ccBilinSymm]
+    exact metricDifference_diag_le (I := I) (M := M) gBase g₀ hΛ hcomp x u
   exact clm_offdiag_le_of_diag (I := I) (M := M) gBase
     (ccTensorBilinSymm (I := I) gBase
       (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) x)
@@ -345,7 +345,7 @@ theorem metricDiff_gFibreOpBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ :
 
 omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
-theorem metricDiff_iterCovGrad_sub (gBase g₀ : SmoothRiemannianMetric I M) (j : ℕ) :
+theorem metricDifference_iterCovGrad_sub (gBase g₀ : SmoothRiemannianMetric I M) (j : ℕ) :
     iteratedCovGrad gBase 0 2 j
         (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) =
       iteratedCovGrad gBase 0 2 j (metricCcTensor (I := I) (M := M) gBase g₀) -
@@ -439,7 +439,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
   in
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
+theorem metricDifference_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -472,9 +472,9 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
         ccTensorBilinSymm (I := I) gBase
           (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) x
           (basis (slots 0)) (basis (slots 1)) := by
-      rw [metricDiff_ccBilin, metricDiff_ccBilinSymm]
+      rw [metricDifference_ccBilin, metricDifference_ccBilinSymm]
     rw [heq]
-    have hbound := metricDiff_gFibreOpBound (I := I) (M := M) gBase g₀ hΛ hcomp
+    have hbound := metricDifference_gFibreOpBound (I := I) (M := M) gBase g₀ hΛ hcomp
       x (basis (slots 0)) (basis (slots 1))
     have h00 : gBase.inner x (basis (slots 0)) (basis (slots 0)) = 1 := by
       rw [hON (slots 0) (slots 0)]; simp
@@ -506,7 +506,7 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
 omit [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-theorem metricDiff_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
+theorem metricDifference_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (a : ℕ) (hjet : MetricCovDerivOrderBoundOn Set.univ (a + 1) g₀ gBase Λ) (x : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + (a + 1)) I b) :=
       Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 (2 + (a + 1))
@@ -527,7 +527,7 @@ theorem metricDiff_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ 
         (metricDifferenceCcTensor (I := I) (M := M) gBase g₀)).toSection x =
       (iteratedCovGrad gBase 0 2 (a + 1)
         (metricCcTensor (I := I) (M := M) gBase g₀)).toSection x := by
-    rw [metricDiff_iterCovGrad_sub]
+    rw [metricDifference_iterCovGrad_sub]
     simp only [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply, hBsec,
       sub_zero]
   rw [hsplit, normBridge g₀ gBase (a + 1) x]
@@ -536,7 +536,7 @@ theorem metricDiff_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ 
 omit [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-theorem metricDiff_jetEnvelope (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
+theorem metricDifference_jetEnvelope (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -557,13 +557,13 @@ theorem metricDiff_jetEnvelope (gBase g₀ : SmoothRiemannianMetric I M) {Λ : �
     fin_cases hj
     · simp only []
       with_unfolding_all exact
-        (metricDiff_order0_bound (I := I) (M := M) gBase g₀ hΛ hcomp x)
+        (metricDifference_order0_bound (I := I) (M := M) gBase g₀ hΛ hcomp x)
     · simp only [if_neg (by norm_num : ¬(1 : ℕ) = 0)]
       with_unfolding_all exact
-        (metricDiff_orderPos_bound (I := I) (M := M) gBase g₀ 0 hjet1 x)
+        (metricDifference_orderPos_bound (I := I) (M := M) gBase g₀ 0 hjet1 x)
     · simp only [if_neg (by norm_num : ¬(2 : ℕ) = 0)]
       with_unfolding_all exact
-        (metricDiff_orderPos_bound (I := I) (M := M) gBase g₀ 1 hjet2 x)
+        (metricDifference_orderPos_bound (I := I) (M := M) gBase g₀ 1 hjet2 x)
   · rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
       Finset.sum_range_zero, zero_add, if_pos (rfl : (0 : ℕ) = 0),
       if_neg (by norm_num : ¬(1 : ℕ) = 0), if_neg (by norm_num : ¬(2 : ℕ) = 0)]
@@ -600,9 +600,9 @@ theorem uniformCurvatureSup_singleLink
     intro x v w u
     exact hCd g₀ (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) (δ := Λ - 1)
       (le_of_eq (max_eq_left hΛ1).symm)
-      (metricDiff_gFibreOpBound (I := I) (M := M) gBase g₀ hΛ hcomp)
-      (fun x v w => metricDiff_tie (I := I) (M := M) gBase g₀ x v w) x
-      (metricDiff_jetEnvelope (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2 x) v w u
+      (metricDifference_gFibreOpBound (I := I) (M := M) gBase g₀ hΛ hcomp)
+      (fun x v w => metricDifference_tie (I := I) (M := M) gBase g₀ x v w) x
+      (metricDifference_jetEnvelope (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2 x) v w u
   exact uniformCurvatureSup_singleLink_of_diff (I := I) (M := M) gBase g₀ hΛ hcomp hCd0 hdiff
 
 noncomputable def convexCombPath (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)

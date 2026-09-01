@@ -38,20 +38,20 @@ theorem abstractRHSFrameComponent_eq_ricci_add_lie
     (g_bg g : SmoothRiemannianMetric I M) (α x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     deTurckRicciRHS (I := I) g_bg g x
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       (-2 : ℝ) * ricciTensor (I := I)
           (smoothRiemannianMetricToInfty (I := I) g) x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
         + lieDerivMetric (I := I) (smoothRiemannianMetricToInfty (I := I) g)
             (deTurckVF (I := I) (smoothRiemannianMetricToInfty (I := I) g)
               (smoothRiemannianMetricToInfty (I := I) g_bg)) x
-            (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) := by
   change ((-2 : ℝ) • ricciTensor (I := I)
           (smoothRiemannianMetricToInfty (I := I) g) x +
         lieDerivMetricClm (I := I) g
           (deTurckVF (I := I) (smoothRiemannianMetricToInfty (I := I) g)
             (smoothRiemannianMetricToInfty (I := I) g_bg)) x)
-      (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) = _
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) = _
   rw [add_apply, add_apply,
     smul_apply, smul_apply, smul_eq_mul]
   rfl
@@ -63,21 +63,21 @@ theorem abstractRHSFrameComponent_diff_eq
     (g_bg g₁ g₂ : SmoothRiemannianMetric I M) (α x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     (deTurckRicciRHS (I := I) g_bg g₁ x - deTurckRicciRHS (I := I) g_bg g₂ x)
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       (-2 : ℝ) * (ricciTensor (I := I)
             (smoothRiemannianMetricToInfty (I := I) g₁) x
-            (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
           - ricciTensor (I := I)
             (smoothRiemannianMetricToInfty (I := I) g₂) x
-            (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
         + (lieDerivMetric (I := I) (smoothRiemannianMetricToInfty (I := I) g₁)
               (deTurckVF (I := I) (smoothRiemannianMetricToInfty (I := I) g₁)
                 (smoothRiemannianMetricToInfty (I := I) g_bg)) x
-              (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
             - lieDerivMetric (I := I) (smoothRiemannianMetricToInfty (I := I) g₂)
               (deTurckVF (I := I) (smoothRiemannianMetricToInfty (I := I) g₂)
                 (smoothRiemannianMetricToInfty (I := I) g_bg)) x
-              (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) := by
   rw [deTurckRHS_diff_frame_component_apply (I := I) g_bg g₁ g₂ α x i j,
     abstractRHSFrameComponent_eq_ricci_add_lie (I := I) g_bg g₁ α x i j,
     abstractRHSFrameComponent_eq_ricci_add_lie (I := I) g_bg g₂ α x i j]
@@ -93,7 +93,7 @@ theorem abstractLieFrameComponent_eq_chartMatrix
       lieDerivMetric (I := I) (smoothRiemannianMetricToInfty (I := I) g)
           (deTurckVF (I := I) (smoothRiemannianMetricToInfty (I := I) g)
             (smoothRiemannianMetricToInfty (I := I) g_bg)) x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
         chartLieDerivMetricMatrix (I := I)
           (smoothRiemannianMetricToInfty (I := I) g)
           (deTurckVF (I := I) (smoothRiemannianMetricToInfty (I := I) g)
@@ -112,17 +112,17 @@ theorem abstractRicciFrameComponent_eq_chartRicciSwap_of_basisIdentity
     (i j : Fin (Module.finrank ℝ E))
     (h : chartRiemannBasisIdentity (I := I) (smoothRiemannianMetricToInfty (I := I) g) x) :
     ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
         ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
-            (chartFrameVec (I := I) α i x)) q *
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)) q *
           ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
-            (chartFrameVec (I := I) α j x)) p *
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) p *
           chartRicciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x p q
             (extChartAt I x x) :=
   ricciTensor_eq_chartRicciSwap_of_basis_identity (I := I)
     (smoothRiemannianMetricToInfty (I := I) g) x h
-    (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -185,12 +185,12 @@ theorem abstractRicciFrameComponent_eq_chartRicciSwap
     (g : SmoothRiemannianMetric I M) (α x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
         ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
-            (chartFrameVec (I := I) α i x)) q *
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)) q *
           ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
-            (chartFrameVec (I := I) α j x)) p *
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) p *
           chartRicciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x p q
             (extChartAt I x x) :=
   abstractRicciFrameComponent_eq_chartRicciSwap_of_basisIdentity (I := I) g α x i j
@@ -205,10 +205,9 @@ theorem abstractRicciFrameComponent_eq_chartRicciAlpha
     (p q : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
     ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x
-        (chartFrameVec (I := I) α p x) (chartFrameVec (I := I) α q x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α q x) =
       chartRicciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) α p q
         (extChartAt I α x) := by
-  rw [chartFrameVec_eq_chartBasisVecFiber, chartFrameVec_eq_chartBasisVecFiber]
   exact ricciTensor_chartBasisVec_alpha_eq (I := I)
     (smoothRiemannianMetricToInfty (I := I) g) α p q hx
 
@@ -232,7 +231,7 @@ theorem abstractRHSFrameComponent_eq_chartCarrier
     (i j : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
     deTurckRicciRHS (I := I) g_bg g x
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       chartDeTurckRHSComp (I := I) g_bg g α i j (extChartAt I α x) := by
   rw [abstractRHSFrameComponent_eq_ricci_add_lie (I := I) g_bg g α x i j]
   rw [abstractRicciFrameComponent_eq_chartRicciAlpha (I := I) g α i j hx]
@@ -251,7 +250,7 @@ theorem abstractRHSFrameComponent_diff_eq_chartCarrier_diff
     (i j : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
     (deTurckRicciRHS (I := I) g_bg g₁ x - deTurckRicciRHS (I := I) g_bg g₂ x)
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       chartDeTurckRHSComp (I := I) g_bg g₁ α i j (extChartAt I α x) -
         chartDeTurckRHSComp (I := I) g_bg g₂ α i j (extChartAt I α x) := by
   rw [sub_apply, sub_apply,
@@ -283,8 +282,8 @@ theorem abstractRHSFrameComponent_diff_abs_le_jet2
     ∃ C : ℝ, 0 < C ∧ ∀ y ∈ K, ∀ i j : Fin (Module.finrank ℝ E),
       |(deTurckRicciRHS (I := I) g_bg g₁ ((extChartAt I α).symm y) -
             deTurckRicciRHS (I := I) g_bg g₂ ((extChartAt I α).symm y))
-          (chartFrameVec (I := I) α i ((extChartAt I α).symm y))
-          (chartFrameVec (I := I) α j ((extChartAt I α).symm y))| ≤
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y))| ≤
         C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y := by
   obtain ⟨C, hC_pos, hC⟩ :=
     chartCarrierRHSComp_diff_abs_le_jet2 (I := I) g_bg g₁ g₂ α hK hKsub

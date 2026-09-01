@@ -1,8 +1,8 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDifferenceFields
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.Fields
+import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.TensorRSContRiemannianBundle
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
-
 
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -15,8 +15,6 @@ open DifferentialGeometry.Integral.Measure
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor
-open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
-open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -26,56 +24,56 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 attribute [local instance]
-  rhsPointwiseModelDualNormedAddCommGroup
-  rhsPointwiseModelDualNormedSpace
-  rhsPointwiseModelBilinearNormedAddCommGroup
-  rhsPointwiseModelBilinearNormedSpace
-  rhsPointwiseModelTrilinearNormedAddCommGroup
-  rhsPointwiseModelTrilinearNormedSpace
-  rhsPointwiseModelQuadrilinearNormedAddCommGroup
-  rhsPointwiseModelQuadrilinearNormedSpace
-  rhsPointwiseTangentDualNormedAddCommGroup
-  rhsPointwiseTangentDualNormedSpace
-  rhsPointwiseTangentBilinearNormedAddCommGroup
-  rhsPointwiseTangentBilinearNormedSpace
-  rhsPointwiseTangentTrilinearNormedAddCommGroup
-  rhsPointwiseTangentTrilinearNormedSpace
-  rhsPointwiseTangentTrilinearAddCommGroup
-  rhsPointwiseTangentTrilinearModule
-  rhsPointwiseTangentTrilinearSMul
-  rhsPointwiseTangentTrilinearTopology
-  rhsPointwiseSectionAddCommGroup
-  rhsPointwiseSectionModule
-  rhsPointwiseTangentQuadrilinearNormedAddCommGroup
-  rhsPointwiseTangentQuadrilinearNormedSpace
-  rhsPointwiseTangentQuadrilinearAddCommGroup
-  rhsPointwiseTangentQuadrilinearModule
-  rhsPointwiseTangentBilinearAddCommGroup
-  rhsPointwiseTangentBilinearModule
-  rhsPointwiseBilinearSectionAddCommGroup
-  rhsPointwiseBilinearSectionModule
-  rhsPointwiseTensor0SModelNormedAddCommGroup
-  rhsPointwiseTensor0SModelNormedSpace
-  rhsPointwiseTensorRSModelNormedAddCommGroup
-  rhsPointwiseTensorRSModelNormedSpace
-  rhsPointwiseTensor01TotalSpaceTopology
-  rhsPointwiseTensor01FiberBundle
-  rhsPointwiseTensor01VectorBundle
-  rhsPointwiseTensor01ContMDiffVectorBundle
-  rhsPointwiseTensor02TotalSpaceTopology
-  rhsPointwiseIteratedTensor02FiberBundle
-  rhsPointwiseIteratedTensor02VectorBundle
-  rhsPointwiseIteratedTensor02ContMDiffVectorBundle
-  rhsPointwiseTensor03TotalSpaceTopology
-  rhsPointwiseTensor03FiberBundle
-  rhsPointwiseTensor03VectorBundle
-  rhsPointwiseTensor03ContMDiffVectorBundle
-  rhsPointwiseTensor04TotalSpaceTopology
-  rhsPointwiseTensor04FiberBundle
-  rhsPointwiseTensor04VectorBundle
-  rhsPointwiseTensor04ContMDiffVectorBundle
-  rhsPointwiseTensorRSTotalSpaceTopology
-  rhsPointwiseTensorRSFiberBundle
+  pointwiseModelDualNormedAddCommGroup
+  pointwiseModelDualNormedSpace
+  pointwiseModelBilinearNormedAddCommGroup
+  pointwiseModelBilinearNormedSpace
+  pointwiseModelTrilinearNormedAddCommGroup
+  pointwiseModelTrilinearNormedSpace
+  pointwiseModelQuadrilinearNormedAddCommGroup
+  pointwiseModelQuadrilinearNormedSpace
+  pointwiseTangentDualNormedAddCommGroup
+  pointwiseTangentDualNormedSpace
+  pointwiseTangentBilinearNormedAddCommGroup
+  pointwiseTangentBilinearNormedSpace
+  pointwiseTangentTrilinearNormedAddCommGroup
+  pointwiseTangentTrilinearNormedSpace
+  pointwiseTangentTrilinearAddCommGroup
+  pointwiseTangentTrilinearModule
+  pointwiseTangentTrilinearSMul
+  pointwiseTangentTrilinearTopology
+  pointwiseSectionAddCommGroup
+  pointwiseSectionModule
+  pointwiseTangentQuadrilinearNormedAddCommGroup
+  pointwiseTangentQuadrilinearNormedSpace
+  pointwiseTangentQuadrilinearAddCommGroup
+  pointwiseTangentQuadrilinearModule
+  pointwiseTangentBilinearAddCommGroup
+  pointwiseTangentBilinearModule
+  pointwiseBilinearSectionAddCommGroup
+  pointwiseBilinearSectionModule
+  pointwiseTensor0SModelNormedAddCommGroup
+  pointwiseTensor0SModelNormedSpace
+  pointwiseTensorRSModelNormedAddCommGroup
+  pointwiseTensorRSModelNormedSpace
+  pointwiseTensor01TotalSpaceTopology
+  pointwiseTensor01FiberBundle
+  pointwiseTensor01VectorBundle
+  pointwiseTensor01ContMDiffVectorBundle
+  pointwiseTensor02TotalSpaceTopology
+  pointwiseIteratedTensor02FiberBundle
+  pointwiseIteratedTensor02VectorBundle
+  pointwiseIteratedTensor02ContMDiffVectorBundle
+  pointwiseTensor03TotalSpaceTopology
+  pointwiseTensor03FiberBundle
+  pointwiseTensor03VectorBundle
+  pointwiseTensor03ContMDiffVectorBundle
+  pointwiseTensor04TotalSpaceTopology
+  pointwiseTensor04FiberBundle
+  pointwiseTensor04VectorBundle
+  pointwiseTensor04ContMDiffVectorBundle
+  pointwiseTensorRSTotalSpaceTopology
+  pointwiseTensorRSFiberBundle
 
 private local instance metricDifferenceJetNormTensorRSNormedAddCommGroup
     (r s : ℕ) [Bundle.RiemannianBundle (fun y : M => TensorRSSpace r s I y)] (x : M) :
@@ -106,16 +104,16 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.mixedInstNormedSpace
   Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-def metricDiff2JetNorm (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) : ℝ :=
+def metricDifference2JetNorm (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) : ℝ :=
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 2
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 3 I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 4 I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
-  ‖metricDiff02MixedSection (I := I) g₁ g₂ x‖
-    + ‖metricDiff02CovMixedSection (I := I) g₀ g₁ g₂ x‖
-    + ‖metricDiff02CovIterateMixedSection (I := I) g₀ g₁ g₂ x‖
+  ‖metricDifference02MixedSection (I := I) g₁ g₂ x‖
+    + ‖metricDifference02CovMixedSection (I := I) g₀ g₁ g₂ x‖
+    + ‖metricDifference02CovIterateMixedSection (I := I) g₀ g₁ g₂ x‖
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
@@ -126,7 +124,7 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem metricDiff2JetNorm_eq_riemannianNorm_sum
+theorem metricDifference2JetNorm_eq_riemannianNorm_sum
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
       Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 2
@@ -134,10 +132,10 @@ theorem metricDiff2JetNorm_eq_riemannianNorm_sum
       Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 4 I b) :=
       Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
-    metricDiff2JetNorm (I := I) g₀ g₁ g₂ x =
-      ‖metricDiff02MixedSection (I := I) g₁ g₂ x‖
-        + ‖metricDiff02CovMixedSection (I := I) g₀ g₁ g₂ x‖
-        + ‖metricDiff02CovIterateMixedSection (I := I) g₀ g₁ g₂ x‖ :=
+    metricDifference2JetNorm (I := I) g₀ g₁ g₂ x =
+      ‖metricDifference02MixedSection (I := I) g₁ g₂ x‖
+        + ‖metricDifference02CovMixedSection (I := I) g₀ g₁ g₂ x‖
+        + ‖metricDifference02CovIterateMixedSection (I := I) g₀ g₁ g₂ x‖ :=
   rfl
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
@@ -149,21 +147,21 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem metricDiff2JetNorm_nonneg
+theorem metricDifference2JetNorm_nonneg
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
-    0 ≤ metricDiff2JetNorm (I := I) g₀ g₁ g₂ x := by
+    0 ≤ metricDifference2JetNorm (I := I) g₀ g₁ g₂ x := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 2
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 3 I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 4 I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
-  rw [metricDiff2JetNorm_eq_riemannianNorm_sum (I := I) g₀ g₁ g₂ x]
+  rw [metricDifference2JetNorm_eq_riemannianNorm_sum (I := I) g₀ g₁ g₂ x]
   exact add_nonneg
     (add_nonneg
-      (norm_nonneg (metricDiff02MixedSection (I := I) g₁ g₂ x))
-      (norm_nonneg (metricDiff02CovMixedSection (I := I) g₀ g₁ g₂ x)))
-    (norm_nonneg (metricDiff02CovIterateMixedSection (I := I) g₀ g₁ g₂ x))
+      (norm_nonneg (metricDifference02MixedSection (I := I) g₁ g₂ x))
+      (norm_nonneg (metricDifference02CovMixedSection (I := I) g₀ g₁ g₂ x)))
+    (norm_nonneg (metricDifference02CovIterateMixedSection (I := I) g₀ g₁ g₂ x))
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
@@ -174,9 +172,9 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem metricDiff2JetNorm_continuous
+theorem metricDifference2JetNorm_continuous
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
-    Continuous (fun x : M => metricDiff2JetNorm (I := I) g₀ g₁ g₂ x) := by
+    Continuous (fun x : M => metricDifference2JetNorm (I := I) g₀ g₁ g₂ x) := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 2
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 3 I b) :=
@@ -185,19 +183,19 @@ theorem metricDiff2JetNorm_continuous
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   let : TopologicalSpace
       (TotalSpace (TensorRSModel 0 2 ℝ E) (fun b : M => TensorRSSpace 0 2 I b)) :=
-    rhsPointwiseTensorRSTotalSpaceTopology 0 2
+    pointwiseTensorRSTotalSpaceTopology 0 2
   let : FiberBundle (TensorRSModel 0 2 ℝ E) (fun b : M => TensorRSSpace 0 2 I b) :=
-    rhsPointwiseTensorRSFiberBundle 0 2
+    pointwiseTensorRSFiberBundle 0 2
   let : TopologicalSpace
       (TotalSpace (TensorRSModel 0 3 ℝ E) (fun b : M => TensorRSSpace 0 3 I b)) :=
-    rhsPointwiseTensorRSTotalSpaceTopology 0 3
+    pointwiseTensorRSTotalSpaceTopology 0 3
   let : FiberBundle (TensorRSModel 0 3 ℝ E) (fun b : M => TensorRSSpace 0 3 I b) :=
-    rhsPointwiseTensorRSFiberBundle 0 3
+    pointwiseTensorRSFiberBundle 0 3
   let : TopologicalSpace
       (TotalSpace (TensorRSModel 0 4 ℝ E) (fun b : M => TensorRSSpace 0 4 I b)) :=
-    rhsPointwiseTensorRSTotalSpaceTopology 0 4
+    pointwiseTensorRSTotalSpaceTopology 0 4
   let : FiberBundle (TensorRSModel 0 4 ℝ E) (fun b : M => TensorRSSpace 0 4 I b) :=
-    rhsPointwiseTensorRSFiberBundle 0 4
+    pointwiseTensorRSFiberBundle 0 4
   have hC2 : IsContinuousRiemannianBundle (TensorRSModel 0 2 ℝ E)
       (fun b : M => TensorRSSpace 0 2 I b) :=
     TensorRSRiemannianBundleContinuous.tensorRS_isContinuousRiemannianBundle
@@ -210,24 +208,24 @@ theorem metricDiff2JetNorm_continuous
       (fun b : M => TensorRSSpace 0 4 I b) :=
     TensorRSRiemannianBundleContinuous.tensorRS_isContinuousRiemannianBundle
       (I := I) (M := M) g₀ 0 4
-  have h0 : Continuous (fun x : M => ‖metricDiff02MixedSection (I := I) g₁ g₂ x‖) :=
+  have h0 : Continuous (fun x : M => ‖metricDifference02MixedSection (I := I) g₁ g₂ x‖) :=
     continuous_riemannian_fiber_norm_of_continuous_section
       (F₀ := TensorRSModel 0 2 ℝ E) (V₀ := fun b : M => TensorRSSpace 0 2 I b)
-      (σ := fun x => metricDiff02MixedSection (I := I) g₁ g₂ x)
-      (metricDiff02MixedSection (I := I) g₁ g₂).contMDiff.continuous
-  have h1 : Continuous (fun x : M => ‖metricDiff02CovMixedSection (I := I) g₀ g₁ g₂ x‖) :=
+      (σ := fun x => metricDifference02MixedSection (I := I) g₁ g₂ x)
+      (metricDifference02MixedSection (I := I) g₁ g₂).contMDiff.continuous
+  have h1 : Continuous (fun x : M => ‖metricDifference02CovMixedSection (I := I) g₀ g₁ g₂ x‖) :=
     continuous_riemannian_fiber_norm_of_continuous_section
       (F₀ := TensorRSModel 0 3 ℝ E) (V₀ := fun b : M => TensorRSSpace 0 3 I b)
-      (σ := fun x => metricDiff02CovMixedSection (I := I) g₀ g₁ g₂ x)
-      (metricDiff02CovMixedSection (I := I) g₀ g₁ g₂).contMDiff.continuous
-  have h2 : Continuous (fun x : M => ‖metricDiff02CovIterateMixedSection (I := I) g₀ g₁ g₂ x‖) :=
+      (σ := fun x => metricDifference02CovMixedSection (I := I) g₀ g₁ g₂ x)
+      (metricDifference02CovMixedSection (I := I) g₀ g₁ g₂).contMDiff.continuous
+  have h2 : Continuous (fun x : M => ‖metricDifference02CovIterateMixedSection (I := I) g₀ g₁ g₂ x‖) :=
     continuous_riemannian_fiber_norm_of_continuous_section
       (F₀ := TensorRSModel 0 4 ℝ E) (V₀ := fun b : M => TensorRSSpace 0 4 I b)
-      (σ := fun x => metricDiff02CovIterateMixedSection (I := I) g₀ g₁ g₂ x)
-      (metricDiff02CovIterateMixedSection (I := I) g₀ g₁ g₂).contMDiff.continuous
+      (σ := fun x => metricDifference02CovIterateMixedSection (I := I) g₀ g₁ g₂ x)
+      (metricDifference02CovIterateMixedSection (I := I) g₀ g₁ g₂).contMDiff.continuous
   have hsum := (h0.add h1).add h2
   refine hsum.congr (fun x => ?_)
-  rw [metricDiff2JetNorm_eq_riemannianNorm_sum (I := I) g₀ g₁ g₂ x]
+  rw [metricDifference2JetNorm_eq_riemannianNorm_sum (I := I) g₀ g₁ g₂ x]
   simp only [Pi.add_apply]
 
 end Spectral

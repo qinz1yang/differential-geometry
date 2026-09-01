@@ -30,10 +30,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-noncomputable def chartFrameVec (α : M) (i : Fin (Module.finrank ℝ E))
-    (x : M) : TangentSpace I x :=
-  (trivializationAt E (TangentSpace I) α).symmL ℝ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem deturckvf_chart_smooth_in_g_jet
@@ -84,19 +80,19 @@ theorem liederivmetric_chart_component_smooth_in_g_w_input
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M =>
         lieDerivMetric (I := I) g W x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source := by
   classical
   intro x₀ hx₀
   have h_frame_on : ∀ k : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-        (fun b : M => TotalSpace.mk' E b (chartFrameVec (I := I) α k b))
+        (fun b : M => TotalSpace.mk' E b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
         (chartAt H α).source := fun k => by
     have h := DifferentialGeometry.Tensor.Coordinates.chartAlphaFrame_section_contMDiffOn (I := I) α k
     exact h
   obtain ⟨S, hS_eq⟩ :=
     exists_contMDiffSection_eqOn_nhd
-      (s := fun k : Fin (Module.finrank ℝ E) => fun b : M => chartFrameVec (I := I) α k b)
+      (s := fun k : Fin (Module.finrank ℝ E) => fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
       (u := (chartAt H α).source) (p := x₀)
       h_frame_on ((chartAt H α).open_source) hx₀
   have hSk_smooth : ∀ k : Fin (Module.finrank ℝ E),
@@ -192,7 +188,7 @@ theorem liederivmetric_chart_component_smooth_in_g_w_input
       (fun b : M => lieDerivMetric (I := I) g W b (S i b) (S j b)) x₀ := h_pair_S_smooth x₀
   have h_chart_at : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun x : M => lieDerivMetric (I := I) g W x
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)) x₀ := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) x₀ := by
     refine h_pair_S_at.congr_of_eventuallyEq ?_
     filter_upwards [hS_eq] with b hb
     rw [hb i, hb j]
@@ -206,19 +202,19 @@ theorem ricciTensor_chartFrameComponent_contMDiffOn
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M =>
         ricciTensor (I := I) g x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source := by
   classical
   intro x₀ hx₀
   have h_frame_on : ∀ k : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-        (fun b : M => TotalSpace.mk' E b (chartFrameVec (I := I) α k b))
+        (fun b : M => TotalSpace.mk' E b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
         (chartAt H α).source := fun k => by
     have h := DifferentialGeometry.Tensor.Coordinates.chartAlphaFrame_section_contMDiffOn (I := I) α k
     exact h
   obtain ⟨S, hS_eq⟩ :=
     exists_contMDiffSection_eqOn_nhd
-      (s := fun k : Fin (Module.finrank ℝ E) => fun b : M => chartFrameVec (I := I) α k b)
+      (s := fun k : Fin (Module.finrank ℝ E) => fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
       (u := (chartAt H α).source) (p := x₀)
       h_frame_on ((chartAt H α).open_source) hx₀
   have hSk_smooth : ∀ k : Fin (Module.finrank ℝ E),
@@ -232,7 +228,7 @@ theorem ricciTensor_chartFrameComponent_contMDiffOn
       (fun b : M => ricciTensor (I := I) g b ((S i) b) ((S j) b)) x₀ := h_scalar x₀
   have h_chart_at : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun x : M => ricciTensor (I := I) g x
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)) x₀ := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) x₀ := by
     refine h_scalar_at.congr_of_eventuallyEq ?_
     filter_upwards [hS_eq] with b hb
     rw [hb i, hb j]
@@ -246,7 +242,7 @@ theorem combine_smoothness_of_summands
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M =>
         deTurckRicciRHS (I := I) g_bg g x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source := by
   set W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     DifferentialGeometry.PDE.DeTurck.deTurckVF (I := I)
@@ -254,30 +250,30 @@ theorem combine_smoothness_of_summands
       (smoothRiemannianMetricToInfty (I := I) g_bg) with hW_def
   have hRic : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M => ricciTensor (I := I) g x
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source :=
     ricciTensor_chartFrameComponent_contMDiffOn (I := I) g α i j
   have hLie : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M => lieDerivMetric (I := I) g W x
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source :=
     liederivmetric_chart_component_smooth_in_g_w_input (I := I) g W α i j
   have h_unfold : ∀ x : M,
       deTurckRicciRHS (I := I) g_bg g x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
         (-2 : ℝ) * (ricciTensor (I := I) g x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
           + lieDerivMetric (I := I) g W x
-              (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) := by
     intro x
     change ((-2 : ℝ) • ricciTensor (I := I)
             (smoothRiemannianMetricToInfty (I := I) g) x +
           lieDerivMetricClm (I := I) g W x)
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       (-2 : ℝ) * (ricciTensor (I := I) g x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
         + lieDerivMetric (I := I) g W x
-            (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
     rw [add_apply, add_apply,
       smul_apply, smul_apply,
       smul_eq_mul]
@@ -293,7 +289,7 @@ theorem linearity_in_second_derivatives
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M =>
         deTurckRicciRHS (I := I) g_bg g x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source :=
   combine_smoothness_of_summands (I := I) g_bg g α i j
 

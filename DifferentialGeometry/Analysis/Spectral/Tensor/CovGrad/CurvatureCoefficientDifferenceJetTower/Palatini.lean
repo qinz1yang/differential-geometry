@@ -1991,7 +1991,7 @@ def riemannMixedSummandFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
           ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
             tangentSpaceModelContinuousLinearEquiv (I := I) x q]) •
           Tensor0SSpace.ofModel (I := I) (x := x)
-            (bilinFormToModel E
+            (biForm₂ToModel E
               (tangentBilinearFormToModel (I := I) x
                 (riemannMixedKernelBilin (I := I) g₀ g₁ x p q)))
       map_add' := fun D D' => by
@@ -2012,7 +2012,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCom
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
   rw [riemannMixedSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
     AddHom.coe_mk, Tensor0SSpace.toModel_smul, smul_apply,
-    Tensor0SSpace.toModel_ofModel, bilinFormToModel_apply,
+    Tensor0SSpace.toModel_ofModel, biForm₂ToModel_apply,
     tangentBilinearFormToModel_apply, smul_eq_mul, riemannMixedKernelBilin_apply]
 
 def riemannMixedBiContrFibFixedFrame (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -2138,7 +2138,7 @@ theorem riemannMixedBiContrFibFixedFrame_apply_section_contMDiff
     have hsmul := ContMDiff.smul_section (f := fun x => Tensor0SSpace.toModel (Y x)
         ![(B a x : E), (B b x : E)])
       (s := fun x => Tensor0SSpace.ofModel (I := I) (x := x)
-        (bilinFormToModel (TangentSpace I x)
+        (biForm₂ToModel (TangentSpace I x)
           (riemannMixedKernelBilin (I := I) g₀ g₁ x (B a x) (B b x))))
       hscalar hbilin
     refine hsmul.congr ?_
@@ -2254,7 +2254,7 @@ theorem riemannMixedBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemanni
   let vt : Fin 2 → TangentSpace I y :=
     fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v i)
   let Dd : TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ :=
-    (bilinFormToModel (TangentSpace I y)).symm
+    (biForm₂ToModel (TangentSpace I y)).symm
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 y D)
   have hrewrite : ∀ (Bf : Fin (Module.finrank ℝ E) → TangentSpace I y),
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -2270,7 +2270,7 @@ theorem riemannMixedBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemanni
     refine Finset.sum_congr rfl (fun b _ => ?_)
     rw [frameRiemannMixedKernel_apply (I := I) g₀ g₁ y (vt 0) (vt 1) (Bf a) (Bf b)]
     dsimp only [Dd]
-    rw [bilinFormToModel_symm_apply]
+    rw [biForm₂ToModel_symm_apply]
     rfl
   rw [hrewrite (fun a => smoothOrthoFrame (I := I) g₀ y a y),
     hrewrite (fun a => smoothOrthoFrame (I := I) g₀ x₀ a y)]

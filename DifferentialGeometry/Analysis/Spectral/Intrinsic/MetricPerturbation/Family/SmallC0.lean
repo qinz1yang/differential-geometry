@@ -1,4 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffJoint
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.UnitSelfBound
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
@@ -14,7 +15,6 @@ open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -26,145 +26,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-theorem jointSmall_compact
-    {P X : Type*} [TopologicalSpace P] [TopologicalSpace X] [CompactSpace X]
-    (f : P → X → Real) (p₀ : P)
-    (hf : Continuous (fun p : P × X => f p.1 p.2))
-    (hzero : ∀ x : X, f p₀ x = 0)
-    {ε : Real} (hε : 0 < ε) :
-    ∀ᶠ p in 𝓝 p₀, ∀ x : X, f p x < ε := by
-  classical
-  have hpatch (x : X) :
-      ∃ V : Set P, V ∈ 𝓝 p₀ ∧
-        ∃ W : Set X, IsOpen W ∧ x ∈ W ∧
-          ∀ p ∈ V, ∀ y ∈ W, f p y < ε := by
-    have hsmall : {q : P × X | f q.1 q.2 < ε} ∈ 𝓝 (p₀, x) := by
-      exact hf.continuousAt.eventually_lt_const (by simpa [hzero x] using hε)
-    obtain ⟨V, W, hVopen, hp₀V, hWopen, hxW, hVW⟩ :=
-      mem_nhds_prod_iff'.mp hsmall
-    refine ⟨V, hVopen.mem_nhds hp₀V, W, hWopen, hxW, ?_⟩
-    intro p hp y hy
-    exact hVW (show (p, y) ∈ V ×ˢ W from ⟨hp, hy⟩)
-  choose V hV W hWopen hxW hloc using hpatch
-  obtain ⟨F, _, hF⟩ :=
-    (isCompact_univ : IsCompact (Set.univ : Set X)).elim_nhds_subcover W
-      (fun x _ => (hWopen x).mem_nhds (hxW x))
-  have htime : ∀ᶠ p in 𝓝 p₀, ∀ x ∈ F, p ∈ V x :=
-    (Finset.eventually_all
-      (I := F) (l := 𝓝 p₀) (p := fun x p => p ∈ V x)).2
-      (fun x _ => hV x)
-  filter_upwards [htime] with p hp
-  intro y
-  obtain ⟨x, hxF, hyW⟩ := Set.mem_iUnion₂.mp (hF (Set.mem_univ y))
-  exact hloc x p (hp x hxF) y hyW
-
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M] in
-theorem gOpBound_unitQuad
-    (q : SmoothRiemannianMetric I M)
-    (A : ∀ x : M, TangentSpace I x →L[Real]
-      TangentSpace I x →L[Real] Real)
-    (hsymm : ∀ (x : M) (v w : TangentSpace I x),
-      A x v w = A x w v)
-    {δ : Real}
-    (hunit : ∀ (x : M) (u : TangentSpace I x),
-      q.inner x u u = 1 → |A x u u| ≤ δ) :
-    metricCauchySchwarzBound (I := I) (M := M) q A δ := by
-  intro x v w
-  let Q : Tensor02At (I := I) (M := M) x :=
-    Tensor0SSpace.ofModel (I := I) (x := x)
-      (bilinFormToModel E (A x))
-  have hQeval (z₁ z₂ : TangentSpace I x) :
-      Q (vec2 (I := I) z₁ z₂) = A x z₁ z₂ := by
-    change Tensor0SSpace.toModel Q (vec2 (I := I) z₁ z₂) = A x z₁ z₂
-    with_unfolding_all
-      rw [Tensor0SSpace.toModel_ofModel]
-      rfl
-  have hdiag (z : TangentSpace I x) :
-      |A x z z| ≤ δ * q.inner x z z := by
-    rw [← hQeval z z]
-    apply tensor02_quadForm_abs_le_of_unit_bound q Q
-    intro u hu
-    rw [hQeval u u]
-    exact hunit x u hu
-  have hpair (u z : TangentSpace I x)
-      (hu : q.inner x u u = 1) (hz : q.inner x z z = 1) :
-      |A x u z| ≤ δ := by
-    have hpolar :
-        (4 : Real) * A x u z =
-          A x (u + z) (u + z) - A x (u - z) (u - z) := by
-      simp only [map_add, map_sub, add_apply,
-        sub_apply]
-      rw [hsymm x z u]
-      ring
-    have habs :
-        |(4 : Real) * A x u z| ≤
-          |A x (u + z) (u + z)| + |A x (u - z) (u - z)| := by
-      rw [hpolar]
-      exact abs_sub _ _
-    have hsum := add_le_add (hdiag (u + z)) (hdiag (u - z))
-    have hmetric :
-        q.inner x (u + z) (u + z) + q.inner x (u - z) (u - z) = 4 := by
-      simp only [map_add, map_sub, add_apply,
-        sub_apply]
-      rw [q.symm x z u, hu, hz]
-      ring
-    calc
-      |A x u z| = (1 / 4 : Real) * |(4 : Real) * A x u z| := by
-        rw [abs_mul]
-        norm_num
-        ring
-      _ ≤ (1 / 4 : Real) *
-          (|A x (u + z) (u + z)| + |A x (u - z) (u - z)|) :=
-        mul_le_mul_of_nonneg_left habs (by norm_num)
-      _ ≤ (1 / 4 : Real) *
-          (δ * q.inner x (u + z) (u + z) +
-            δ * q.inner x (u - z) (u - z)) :=
-        mul_le_mul_of_nonneg_left hsum (by norm_num)
-      _ = δ := by rw [← mul_add, hmetric]; ring
-  rcases eq_or_ne v 0 with rfl | hv
-  · simp
-  rcases eq_or_ne w 0 with rfl | hw
-  · simp
-  have hvpos : 0 < q.inner x v v := q.pos x v hv
-  have hwpos : 0 < q.inner x w w := q.pos x w hw
-  let rv : Real := Real.sqrt (q.inner x v v)
-  let sw : Real := Real.sqrt (q.inner x w w)
-  have hrvpos : 0 < rv := by simpa [rv] using Real.sqrt_pos.mpr hvpos
-  have hswpos : 0 < sw := by simpa [sw] using Real.sqrt_pos.mpr hwpos
-  have hrv_sq : rv * rv = q.inner x v v := by
-    simpa [rv, pow_two] using Real.sq_sqrt hvpos.le
-  have hsw_sq : sw * sw = q.inner x w w := by
-    simpa [sw, pow_two] using Real.sq_sqrt hwpos.le
-  let u : TangentSpace I x := rv⁻¹ • v
-  let z : TangentSpace I x := sw⁻¹ • w
-  have hu : q.inner x u u = 1 := by
-    rw [show u = rv⁻¹ • v from rfl, metric_smul2, ← hrv_sq]
-    field_simp [hrvpos.ne']
-  have hz : q.inner x z z = 1 := by
-    rw [show z = sw⁻¹ • w from rfl, metric_smul2, ← hsw_sq]
-    field_simp [hswpos.ne']
-  have hvscale : rv • u = v := by simp [u, hrvpos.ne']
-  have hwscale : sw • z = w := by simp [z, hswpos.ne']
-  have hval : A x v w = rv * sw * A x u z := by
-    rw [← hvscale, ← hwscale]
-    simp [smul_eq_mul]
-    ring
-  have habsval : |A x v w| = rv * sw * |A x u z| := by
-    rw [hval, abs_mul, abs_mul, abs_of_pos hrvpos, abs_of_pos hswpos]
-  rw [habsval]
-  calc
-    rv * sw * |A x u z| ≤ rv * sw * δ :=
-      mul_le_mul_of_nonneg_left (hpair u z hu hz)
-        (mul_nonneg hrvpos.le hswpos.le)
-    _ = δ * Real.sqrt (q.inner x v v) * Real.sqrt (q.inner x w w) := by
-      simp only [rv, sw]
-      ring
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem metricDiff_smallC0
+theorem metricDifference_smallC0
     (g : Real → SmoothRiemannianMetric I M)
     (q : SmoothRiemannianMetric I M) {a b δ : Real}
     (hab : a < b)
@@ -248,8 +112,12 @@ theorem metricDiff_smallC0
   have hfzero : ∀ p : X, f ta p = 0 := by
     intro p
     simp [f, ta, hga]
-  have hsmall : ∀ᶠ t in 𝓝 ta, ∀ p : X, f t p < δ :=
-    jointSmall_compact f ta hf hfzero hδ
+  have hsmall : ∀ᶠ t in 𝓝 ta, ∀ p : X, f t p < δ := by
+    have hsmall' : ∀ᶠ t in 𝓝 ta, ∀ p ∈ (Set.univ : Set X), f t p < δ := by
+      apply (isCompact_univ : IsCompact (Set.univ : Set X)).eventually_forall_of_forall_eventually
+      intro p _
+      exact hf.continuousAt.eventually_lt_const (by simpa only [hfzero p] using hδ)
+    simpa only [Set.mem_univ, forall_const] using hsmall'
   obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp hsmall
   let T : Real := min (b - a) r / 2
   have hmin : 0 < min (b - a) r := lt_min (sub_pos.mpr hab) hr
@@ -278,10 +146,10 @@ theorem metricDiff_smallC0
     intro x u hu
     let p : X := ⟨(⟨x, u⟩ : TangentBundle I M), hu⟩
     have hs := (hball htsBall) p
-    rw [metricDiff_symVal]
+    rw [metricDifference_symVal]
     dsimp only [f, ts, p, MetricUnitTangent.base, MetricUnitTangent.vec] at hs
     exact @le_of_lt ℝ Real.partialOrder.toPreorder _ _ hs
-  apply gOpBound_unitQuad q
+  apply metricCauchySchwarzBound_of_unit_self_bound q
     (ccTensorBilinSymm (I := I) q
       (metricDifferenceCcTensor (I := I) (M := M) q (g t)))
     (ccTensorBilinSymm_symm (I := I) q
@@ -290,7 +158,7 @@ theorem metricDiff_smallC0
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem pairOpBound
+theorem metricCauchySchwarzBound_between_of_reference_bounds
     (q g₀ g₁ : SmoothRiemannianMetric I M) {ε : Real}
     (hε₀ : 0 ≤ ε) (hε₁ : ε < 1)
     (h₀ : metricCauchySchwarzBound (I := I) (M := M) q
@@ -304,7 +172,7 @@ theorem pairOpBound
         (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))
       (2 * ε / (1 - ε)) := by
   have hden : 0 < 1 - ε := sub_pos.mpr hε₁
-  apply gOpBound_unitQuad g₀
+  apply metricCauchySchwarzBound_of_unit_self_bound g₀
     (ccTensorBilinSymm (I := I) g₀
       (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))
     (ccTensorBilinSymm_symm (I := I) g₀
@@ -319,7 +187,7 @@ theorem pairOpBound
     rw [← Real.sqrt_mul hqu, Real.sqrt_mul_self hqu]
   have h₀u := h₀ x u u
   have h₁u := h₁ x u u
-  rw [metricDiff_symVal (I := I) (M := M)] at h₀u h₁u
+  rw [metricDifference_symVal (I := I) (M := M)] at h₀u h₁u
   have h₀u' : |g₀.inner x u u - q.inner x u u| ≤ ε * qu := by
     calc
       |g₀.inner x u u - q.inner x u u| ≤
@@ -345,7 +213,7 @@ theorem pairOpBound
       (g₁.inner x u u - q.inner x u u) -
         (g₀.inner x u u - q.inner x u u) by ring]
     exact abs_sub _ _
-  rw [metricDiff_symVal (I := I) (M := M)]
+  rw [metricDifference_symVal (I := I) (M := M)]
   calc
     |g₁.inner x u u - g₀.inner x u u| ≤ 2 * ε * qu := by
       calc
@@ -358,7 +226,7 @@ theorem pairOpBound
     _ = 2 * ε / (1 - ε) := by ring
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem metricPair_smallC0
+theorem metricDifference_pair_smallC0
     (g₀ g₁ : Real → SmoothRiemannianMetric I M)
     (q : SmoothRiemannianMetric I M) {a b δ : Real}
     (hab : a < b)
@@ -387,9 +255,9 @@ theorem metricPair_smallC0
     dsimp only [ε]
     exact (div_lt_one hden).2 (by linarith)
   obtain ⟨T₀, hT₀, hT₀b, hsmall₀⟩ :=
-    metricDiff_smallC0 (I := I) (M := M) g₀ q hab hcont₀ hg₀ hε
+    metricDifference_smallC0 (I := I) (M := M) g₀ q hab hcont₀ hg₀ hε
   obtain ⟨T₁, hT₁, hT₁b, hsmall₁⟩ :=
-    metricDiff_smallC0 (I := I) (M := M) g₁ q hab hcont₁ hg₁ hε
+    metricDifference_smallC0 (I := I) (M := M) g₁ q hab hcont₁ hg₁ hε
   let T : Real := min T₀ T₁
   have hT : 0 < T := by
     dsimp only [T]
@@ -407,7 +275,7 @@ theorem metricPair_smallC0
     ⟨ht.1, by
       have hTle : T ≤ T₁ := by exact min_le_right T₀ T₁
       linarith [ht.2, hTle]⟩
-  have hp := pairOpBound (I := I) (M := M) q (g₀ t) (g₁ t)
+  have hp := metricCauchySchwarzBound_between_of_reference_bounds (I := I) (M := M) q (g₀ t) (g₁ t)
     hε.le hεlt (hsmall₀ t ht₀) (hsmall₁ t ht₁)
   have hratio : 2 * ε / (1 - ε) = δ := by
     dsimp only [ε]

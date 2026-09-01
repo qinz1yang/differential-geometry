@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautTame
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffTime
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffJoint
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricFamilyCometricRegularity
@@ -61,12 +61,12 @@ private local instance scalarFluxTensorRSFiberBundle (r s : ℕ) :
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem metricDiff_bilin (q h : SmoothRiemannianMetric I M)
+theorem metricDifference_bilin (q h : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     ccTensorBilinSymm (I := I) q
         (metricDifferenceCcTensor (I := I) (M := M) q h) x v w =
       h.inner x v w - q.inner x v w :=
-  metricDiff_symVal (I := I) (M := M) q h x v w
+  metricDifference_symVal (I := I) (M := M) q h x v w
 
 private lemma grid_mono {a b : ℕ → ℝ}
     (ha : ∀ j, 0 ≤ a j) (hab : ∀ j, a j ≤ b j) (i : ℕ) :
@@ -128,7 +128,7 @@ private theorem joint0S_sub {d : ℕ} {S : Set ℝ}
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem metricDiff_small
+theorem metricDifference_small
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -149,7 +149,7 @@ theorem metricDiff_small
         (E := fun y : M => TensorRSSpace 0 2 I y) z.1
         ((P z.2).toSection z.1))
       ((Set.univ : Set M) ×ˢ D.regular) := by
-    simpa only [P, q] using metricDiff_joint (I := I) (M := M) g_fam hG q
+    simpa only [P, q] using metricDifference_joint (I := I) (M := M) g_fam hG q
   simpa only [P, q] using
     joint_jet_small (I := I) (M := M) q 0 2 p P
       (D.regular_isOpen.mem_nhds T.2) hPzero hPjoint hε
@@ -443,7 +443,7 @@ theorem scalarFlux_jet_grid
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem metricDiff_slab
+theorem metricDifference_slab
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -483,7 +483,7 @@ theorem metricDiff_slab
         (E := fun z : M => TensorRSSpace 0 2 I z) p.1
         ((P p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ D.regular) := by
-    simpa only [P, q] using metricDiff_joint (I := I) (M := M) g_fam hG q
+    simpa only [P, q] using metricDifference_joint (I := I) (M := M) g_fam hG q
   obtain ⟨B, hB, hjet⟩ := joint_jet_bdd (I := I) (M := M) q 0 2 P
     hK hKreg hPjoint
   refine ⟨tau, htau, htau_one, B, hB, ?_⟩
@@ -494,7 +494,7 @@ theorem metricDiff_slab
   have hbound : metricCauchySchwarzBound (I := I) q
       (ccTensorBilinSymm (I := I) q (P ((T : ℝ) - s))) (1 / 4 : ℝ) := by
     intro y v w
-    rw [metricDiff_bilin (I := I) (M := M)]
+    rw [metricDifference_bilin (I := I) (M := M)]
     simpa only [q, sub_apply] using
       (hshort s hs).2 y v w
   refine ⟨(hshort s hs).1, ?_, ?_⟩
@@ -519,7 +519,7 @@ theorem scalarFlux_slab
             B i := by
   classical
   obtain ⟨tau, htau, htau_one, J, hJ, hdata⟩ :=
-    metricDiff_slab (I := I) (M := M) g_fam hG T
+    metricDifference_slab (I := I) (M := M) g_fam hG T
   let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
   let P : ℝ → SmoothCcTensor q 0 2 := fun t =>
     metricDifferenceCcTensor (I := I) (M := M) q (g_fam t)
@@ -535,7 +535,7 @@ theorem scalarFlux_slab
       (g_fam ((T : ℝ) - s)).inner y v w =
         q.inner y v w + ccTensorBilinSymm (I := I) q (P ((T : ℝ) - s)) y v w := by
     intro y v w
-    rw [metricDiff_bilin (I := I) (M := M)]
+    rw [metricDifference_bilin (I := I) (M := M)]
     ring
   have hbound : metricCauchySchwarzBound (I := I) q
       (ccTensorBilinSymm (I := I) q (P ((T : ℝ) - s))) (1 / 4 : ℝ) := by

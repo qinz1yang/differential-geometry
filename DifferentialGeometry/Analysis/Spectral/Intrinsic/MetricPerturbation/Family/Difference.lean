@@ -11,6 +11,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
+
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff RealInnerProductSpace InnerProductSpace
 namespace DifferentialGeometry.Analysis.Spectral
@@ -30,7 +31,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private lemma metricDiff_apply (q h : SmoothRiemannianMetric I M)
+private lemma metricDifference_apply (q h : SmoothRiemannianMetric I M)
     (x : M) (c : Tensor0SSpace 0 I x) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
       (metricDifferenceCcTensor (I := I) (M := M) q h).toSection x) c =
@@ -53,7 +54,7 @@ private lemma metricDiff_apply (q h : SmoothRiemannianMetric I M)
   rw [heval, ← smul_sub]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem metricDiff_raw (q h : SmoothRiemannianMetric I M)
+theorem metricDifference_raw (q h : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) q
         (metricDifferenceCcTensor (I := I) (M := M) q h) x v w =
@@ -62,7 +63,7 @@ theorem metricDiff_raw (q h : SmoothRiemannianMetric I M)
   rw [ccTensorBilin_sub, metricCcTensor_apply, metricCcTensor_apply]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem metricDiff_unit (q h : SmoothRiemannianMetric I M)
+theorem metricDifference_unit (q h : SmoothRiemannianMetric I M)
     (x : M) (slots : Fin 2 → E) :
     unitModel (I := I) (M := M) q 2
         (metricDifferenceCcTensor (I := I) (M := M) q h) x slots =
@@ -84,27 +85,27 @@ theorem metricDiff_unit (q h : SmoothRiemannianMetric I M)
           (show TangentSpace I x from slots 0)
           (show TangentSpace I x from slots 1) using 1
     _ = h.inner x (slots 0) (slots 1) - q.inner x (slots 0) (slots 1) := by
-      convert metricDiff_raw (I := I) (M := M) q h x
+      convert metricDifference_raw (I := I) (M := M) q h x
         (show TangentSpace I x from slots 0)
         (show TangentSpace I x from slots 1) using 1
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem metricDiff_symm (q h : SmoothRiemannianMetric I M)
+theorem metricDifference_symm (q h : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) q
         (metricDifferenceCcTensor (I := I) (M := M) q h) x v w =
       smoothCcTensorBilinForm (I := I) q
         (metricDifferenceCcTensor (I := I) (M := M) q h) x w v := by
-  rw [metricDiff_raw, metricDiff_raw, h.symm x v w, q.symm x v w]
+  rw [metricDifference_raw, metricDifference_raw, h.symm x v w, q.symm x v w]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem metricDiff_symVal (q h : SmoothRiemannianMetric I M)
+theorem metricDifference_symVal (q h : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     ccTensorBilinSymm (I := I) q
         (metricDifferenceCcTensor (I := I) (M := M) q h) x v w =
       h.inner x v w - q.inner x v w := by
-  rw [ccTensorBilinSymm_apply, metricDiff_raw, metricDiff_raw,
+  rw [ccTensorBilinSymm_apply, metricDifference_raw, metricDifference_raw,
     h.symm x v w, q.symm x v w]
   ring
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
@@ -129,7 +130,7 @@ theorem metric_ext_inner
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem realize_metricDiff (q h : SmoothRiemannianMetric I M)
+theorem realize_metricDifference (q h : SmoothRiemannianMetric I M)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q
       (ccTensorBilinSymm (I := I) q
@@ -138,12 +139,12 @@ theorem realize_metricDiff (q h : SmoothRiemannianMetric I M)
         (metricDifferenceCcTensor (I := I) (M := M) q h) hδ_lt hδ = h := by
   apply metric_ext_inner
   intro x v w
-  rw [tensorSectionRealizeMetric_inner, metricDiff_symVal]
+  rw [tensorSectionRealizeMetric_inner, metricDifference_symVal]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem metricDiff_eval
+private theorem metricDifference_eval
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -179,7 +180,7 @@ private theorem metricDiff_eval
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem metricDiff_joint
+theorem metricDifference_joint
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -233,7 +234,7 @@ theorem metricDiff_joint
     refine ⟨contMDiffWithinAt_fst, ?_⟩
     have hprod :=
       (hscalar' p hp).mul
-        (metricDiff_eval (I := I) (M := M) (D := D) g_fam hG q Z W p hp)
+        (metricDifference_eval (I := I) (M := M) (D := D) g_fam hG q Z W p hp)
     simpa only [Bundle.Trivial.fiberBundle_trivializationAt',
       Bundle.Trivial.trivialization_apply, smul_apply, sub_apply, smul_eq_mul] using
         hprod.congr_of_eventuallyEq
@@ -259,14 +260,14 @@ theorem metricDiff_joint
   refine congrArg (fun z : Tensor0SSpace 2 I p.1 =>
     TotalSpace.mk' (Tensor0SModel 2 ℝ E)
       (E := fun x : M => Tensor0SSpace 2 I x) p.1 z) ?_
-  rw [metricDiff_apply (I := I) (M := M)]
+  rw [metricDifference_apply (I := I) (M := M)]
   congr 1
   rw [Tensor0SNabla.scalarFn_eq_apply_zero, Tensor0SSpace.evalScalar_apply]
   exact congrArg (Y p.1) (Subsingleton.elim _ _)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem metricDiff_shift
+theorem metricDifference_shift
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -282,7 +283,7 @@ theorem metricDiff_shift
   have hshift : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) ∞
       (fun p : M × ℝ => (p.1, c + p.2)) ((Set.univ : Set M) ×ˢ S) :=
     (contMDiff_fst.prodMk (contMDiff_const.add contMDiff_snd)).contMDiffOn
-  exact (metricDiff_joint (I := I) (M := M) g_fam hG q).comp hshift
+  exact (metricDifference_joint (I := I) (M := M) g_fam hG q).comp hshift
     (fun p hp => ⟨Set.mem_univ p.1, hmap p.2 hp.2⟩)
 
 end DifferentialGeometry.Analysis.Spectral

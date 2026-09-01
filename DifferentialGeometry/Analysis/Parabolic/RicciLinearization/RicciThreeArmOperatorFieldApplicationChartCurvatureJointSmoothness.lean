@@ -634,25 +634,25 @@ private lemma riemannBiContrFib_toModel_chartα
             ![tangentModel (I := I) x (Bf a), tangentModel (I := I) x (Bf b)] =
         frameRiemannKernel (I := I) g x (modelTangent (I := I) x (v 0))
             (modelTangent (I := I) x (v 1)) (Bf a) (Bf b) *
-          (bilinFormToModel (TangentSpace I x)).symm
+          (biForm₂ToModel (TangentSpace I x)).symm
             (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D) (Bf a) (Bf b) :=
     fun a b => by
       rw [frameRiemannKernel_apply (I := I) g x (modelTangent (I := I) x (v 0))
           (modelTangent (I := I) x (v 1)) (Bf a) (Bf b),
-        bilinFormToModel_symm_apply (TangentSpace I x)
+        biForm₂ToModel_symm_apply (TangentSpace I x)
           (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D) (Bf a) (Bf b)]
       rfl
   rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hsummand a b))]
   rw [double_frame_bilin_trace_chartα (I := I) g α hxbase
     (frameRiemannKernel (I := I) g x (modelTangent (I := I) x (v 0))
       (modelTangent (I := I) x (v 1)))
-    ((bilinFormToModel (TangentSpace I x)).symm
+    ((biForm₂ToModel (TangentSpace I x)).symm
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D)) Bf hBf_on]
   refine Finset.sum_congr rfl (fun m _ => Finset.sum_congr rfl (fun n _ => ?_))
   refine congrArg (fun t => chartInvGramMatrix (I := I) g α x m n * t) ?_
   refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun l _ => ?_))
   rw [frameRiemannKernel_apply,
-    bilinFormToModel_symm_apply (TangentSpace I x)
+    biForm₂ToModel_symm_apply (TangentSpace I x)
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D)
       (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x)]
   rfl

@@ -69,7 +69,7 @@ def ccTensorModel (g : SmoothRiemannianMetric I M)
 def smoothCcTensorBilinForm (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
-  (bilinFormToModel E).symm (ccTensorModel (I := I) g T x)
+  (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel E).symm (ccTensorModel (I := I) g T x)
 
 abbrev ccTensorBilin (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) (x : M) :
@@ -82,7 +82,7 @@ theorem ccTensorBilin_apply (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) g T x v w =
       ccTensorModel (I := I) g T x ![v, w] :=
-  bilinFormToModel_symm_apply E (ccTensorModel (I := I) g T x) v w
+  DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply E (ccTensorModel (I := I) g T x) v w
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in

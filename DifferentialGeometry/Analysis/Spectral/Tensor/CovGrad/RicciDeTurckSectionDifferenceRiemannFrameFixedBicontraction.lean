@@ -80,7 +80,7 @@ def riemannSummandFib (g₁ : SmoothRiemannianMetric I M) (x : M) (p q : Tangent
           ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
             tangentSpaceModelContinuousLinearEquiv (I := I) x q]) •
           Tensor0SSpace.ofModel (I := I) (x := x)
-            (bilinFormToModel E
+            (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel E
               (tangentBilinearFormToModel (I := I) x
                 (riemannKernelBilin (I := I) g₁ x p q)))
       map_add' := fun D D' => by
@@ -103,7 +103,7 @@ omit [SigmaCompactSpace M] in
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
   rw [riemannSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     Tensor0SSpace.toModel_smul, smul_apply, Tensor0SSpace.toModel_ofModel,
-    bilinFormToModel_apply, tangentBilinearFormToModel_apply, smul_eq_mul,
+    DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_apply, tangentBilinearFormToModel_apply, smul_eq_mul,
     riemannKernelBilin_apply]
 
 def riemannBiContrFibFixedFrame (g₁ : SmoothRiemannianMetric I M)
@@ -300,21 +300,21 @@ theorem contMDiff_bilinSection_of_chartScalar
     (Hb : (x : M) → TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (hscalar : ∀ (x₀ : M) (σ : Fin 2 → Fin (Module.finrank ℝ E)),
       ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-        (fun x : M => Hb x (chartFrameVec (I := I) x₀ (σ 0) x) (chartFrameVec (I := I) x₀ (σ 1) x))
+        (fun x : M => Hb x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x))
         (chartAt H x₀).source) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x
         (Tensor0SSpace.ofModel (I := I) (x := x)
-          (bilinFormToModel (TangentSpace I x) (Hb x)))) := by
+          (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x) (Hb x)))) := by
   classical
   let d := Module.finrank ℝ E
   let b : Module.Basis (Fin d) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   refine (contMDiff_multilinearSection_iff_coord (TangentSpace I) ∞ b
     (fun x => Tensor0SSpace.ofModel (I := I) (x := x)
-      (bilinFormToModel (TangentSpace I x) (Hb x)))).mpr fun σ x₀ => ?_
+      (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x) (Hb x)))).mpr fun σ x₀ => ?_
   have hcomp : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => Hb x (chartFrameVec (I := I) x₀ (σ 0) x) (chartFrameVec (I := I) x₀ (σ 1) x))
+      (fun x : M => Hb x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x))
       (chartAt H x₀).source := hscalar x₀ σ
   have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
   have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
@@ -328,9 +328,9 @@ theorem contMDiff_bilinSection_of_chartScalar
   rw [continuousMultilinearMap_basis_repr]
   change Tensor0SSpace.eval
       ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm
-        (bilinFormToModel (TangentSpace I x) (Hb x)))
+        (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x) (Hb x)))
       (fun j => (trivializationAt E (TangentSpace I) x₀).symmL ℝ x (b (σ j))) = _
-  rw [Tensor0SSpace.eval_fiber_equiv_symm, bilinFormToModel_apply]
+  rw [Tensor0SSpace.eval_fiber_equiv_symm, DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_apply]
   rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -399,15 +399,15 @@ theorem contMDiff_bilinSection_of_homSection
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x
         (Tensor0SSpace.ofModel (I := I) (x := x)
-          (bilinFormToModel (TangentSpace I x) (Hb x)))) := by
+          (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x) (Hb x)))) := by
   classical
   refine contMDiff_bilinSection_of_chartScalar (I := I) Hb (fun x₀ σ => ?_)
   have hcf_0 : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun b => chartFrameVec (I := I) x₀ (σ 0) b))
+      (T% (fun b => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) b))
       (trivializationAt E (TangentSpace I) x₀).baseSet := fun x hx =>
     DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) x₀ (σ 0) x hx
   have hcf_1 : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun b => chartFrameVec (I := I) x₀ (σ 1) b))
+      (T% (fun b => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) b))
       (trivializationAt E (TangentSpace I) x₀).baseSet := fun x hx =>
     DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) x₀ (σ 1) x hx
   have happ1 := ContMDiffOn.clm_bundle_apply (F₁ := E) (F₂ := E →L[ℝ] ℝ)
@@ -459,7 +459,7 @@ theorem riemannBiContrFibFixedFrame_apply_section_contMDiff (g₁ : SmoothRieman
     have hsmul := ContMDiff.smul_section (f := fun x => Tensor0SSpace.toModel (Y x)
         ![(B a x : E), (B b x : E)])
       (s := fun x => Tensor0SSpace.ofModel (I := I) (x := x)
-        (bilinFormToModel (TangentSpace I x) (riemannKernelBilin (I := I) g₁ x (B a x) (B b x))))
+        (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x) (riemannKernelBilin (I := I) g₁ x (B a x) (B b x))))
       hscalar hbilin
     refine hsmul.congr ?_
     intro x
@@ -575,7 +575,7 @@ private theorem riemannBiContrFibFixedFrame_eq_of_orthonormal
   rw [riemannBiContrFibFixedFrame_eval, riemannBiContrFibFixedFrame_eval]
   apply congrArg (fun z : ℝ => 2 * z)
   let Dd : TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ :=
-    (bilinFormToModel (TangentSpace I y)).symm
+    (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I y)).symm
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 y D)
   have hrewrite : ∀ (Bf : Fin (Module.finrank ℝ E) → TangentSpace I y),
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -589,7 +589,7 @@ private theorem riemannBiContrFibFixedFrame_eq_of_orthonormal
     refine Finset.sum_congr rfl (fun b _ => ?_)
     rw [frameRiemannKernel_apply (I := I) g₁ y (v 0) (v 1) (Bf a) (Bf b)]
     dsimp only [Dd]
-    rw [bilinFormToModel_symm_apply]
+    rw [DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply]
     rfl
   rw [hrewrite (fun a => B a y), hrewrite (fun a => C a y)]
   exact double_frame_bilin_trace_indep (I := I) g₁ y

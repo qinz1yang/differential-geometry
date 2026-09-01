@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Sl
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ComparisonEndomorphismCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.CompactInclusion
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffSmallC0
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.SmallC0
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Geometry.Connection.Laplacian.Musical
@@ -1592,7 +1592,7 @@ theorem hmfEdge_inputs
           metricCauchySchwarzBound (I := I) (M := M) q
             (ccTensorBilinSymm (I := I) q
               (metricDifferenceCcTensor (I := I) (M := M) q (g t))) (1 / 4) := by
-  obtain ⟨T, hT, hTb, hop⟩ := metricDiff_smallC0
+  obtain ⟨T, hT, hTb, hop⟩ := metricDifference_smallC0
     (I := I) (M := M) (g := g) (q := q) (a := a) (b := b)
       (δ := (1 / 4 : ℝ)) hab hcont hga (by norm_num)
   obtain ⟨C, hC0, hCtop, hvol⟩ := hmfVolumeEquiv
@@ -1618,7 +1618,7 @@ theorem hmfEdge_coercive
       (metricDifferenceCcTensor (I := I) (M := M) q (g t))
     let htie : ∀ (y : M) (v w : TangentSpace I y),
         (g t).inner y v w = q.inner y v w + k y v w := fun y v w => by
-      rw [metricDiff_symVal]
+      rw [metricDifference_symVal]
       ring
     (1 - (1 / 4 : ℝ) / (1 - (1 / 4 : ℝ))) * ‖u‖ ^ 2 ≤
       C.toReal *
@@ -1631,7 +1631,7 @@ theorem hmfEdge_coercive
     q (g t) C hC0 hCtop (hvol t ht)
     (ccTensorBilinSymm (I := I) q
       (metricDifferenceCcTensor (I := I) (M := M) q (g t)))
-    (fun y v w => by rw [metricDiff_symVal]; ring)
+    (fun y v w => by rw [metricDifference_symVal]; ring)
     (δ := (1 / 4 : ℝ)) (by norm_num) (by norm_num) (hop t ht) u
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in

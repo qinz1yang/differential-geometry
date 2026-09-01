@@ -108,7 +108,7 @@ theorem lapDiff_fibreSmall
       (HCGCompactness.derivNorm_le_sup (I := I) (K := Set.univ)
         isCompact_univ (a := 0) (p := 1) (by omega)
         (g_fam ((T : Real) - s)) q q (Set.mem_univ x))
-  have heval := HCGCompactness.metricDiff_abs_le (I := I)
+  have heval := HCGCompactness.metricDifference_abs_le (I := I)
     (g_fam ((T : Real) - s)) q q x v w
   have hfinal :
       |(g_fam ((T : Real) - s)).inner x v w - q.inner x v w| ≤

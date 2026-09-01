@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffJoint
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSZeroDecomposition
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsBackgroundDifferenceDecomposition
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.Identities
@@ -78,7 +78,7 @@ private theorem perturb_eq_diff
         ccTensorBilin (I := I) g S x (vt 0) (vt 1)
       exact unitModel_eq_ccTensorBilin_local (I := I) (M := M) g S x (vt 0) (vt 1)
   rw [hslots, hmodel, hunit P,
-    hunit (metricDifferenceCcTensor (I := I) (M := M) g g1), metricDiff_raw]
+    hunit (metricDifferenceCcTensor (I := I) (M := M) g g1), metricDifference_raw]
   rw [htie x (vt 0) (vt 1), ccTensorBilinSymm_apply,
     hPsymm x (vt 0) (vt 1)]
   ring

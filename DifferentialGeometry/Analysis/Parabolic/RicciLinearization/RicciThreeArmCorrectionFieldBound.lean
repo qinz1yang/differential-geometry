@@ -377,7 +377,7 @@ def backgroundRiemannKernelBilin (g₀ : SmoothRiemannianMetric I M) (x : M)
     (p : TangentSpace I x) (D : Tensor0SSpace 2 I x) :
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
   (ContinuousLinearMap.compL ℝ (TangentSpace I x) (TangentSpace I x) ℝ
-      (((bilinFormToModel (TangentSpace I x)).symm
+      (((DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)).symm
         (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D)).flip p)).comp
     (riemannOp (LeviCivita (I := I) g₀) x p)
 
@@ -391,7 +391,7 @@ omit [SigmaCompactSpace M] in
         ![riemannOp (LeviCivita (I := I) g₀) x p v0 v1, p] := by
   rw [backgroundRiemannKernelBilin, ContinuousLinearMap.comp_apply, ContinuousLinearMap.compL_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply]
-  exact bilinFormToModel_symm_apply (TangentSpace I x)
+  exact DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply (TangentSpace I x)
     (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D)
     (riemannOp (LeviCivita (I := I) g₀) x p v0 v1) p
 
@@ -429,7 +429,7 @@ def backgroundRiemannSummandFib (g₀ : SmoothRiemannianMetric I M) (x : M) (p :
   haveI : FiniteDimensional ℝ (Tensor0SSpace 2 I x) := inferInstance
   LinearMap.toContinuousLinearMap
     { toFun := fun D => (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm
-        (bilinFormToModel (TangentSpace I x)
+        (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)
           (backgroundRiemannKernelBilin (I := I) g₀ x p D))
       map_add' := fun D D' => by
         rw [backgroundRiemannKernelBilin_add_right, map_add, map_add]
@@ -448,9 +448,9 @@ omit [SigmaCompactSpace M] in
         ![riemannOp (LeviCivita (I := I) g₀) x p (v 0) (v 1), p] := by
   rw [backgroundRiemannSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
     AddHom.coe_mk]
-  change (bilinFormToModel (TangentSpace I x)
+  change (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)
     (backgroundRiemannKernelBilin (I := I) g₀ x p D)) v = _
-  rw [bilinFormToModel_apply, backgroundRiemannKernelBilin_apply]
+  rw [DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_apply, backgroundRiemannKernelBilin_apply]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -636,7 +636,7 @@ def backgroundRiemannTraceKernel (g₀ : SmoothRiemannianMetric I M) (x : M)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
     { toFun := fun p =>
-        ((bilinFormToModel (TangentSpace I x)).symm
+        ((DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)).symm
           (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D))
           (riemannOp (LeviCivita (I := I) g₀) x p v0 v1)
       map_add' := fun p p' => by
@@ -663,7 +663,7 @@ theorem backgroundRiemannTraceKernel_apply (g₀ : SmoothRiemannianMetric I M) (
         ![riemannOp (LeviCivita (I := I) g₀) x p v0 v1, q] := by
   rw [backgroundRiemannTraceKernel, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
     AddHom.coe_mk]
-  exact bilinFormToModel_symm_apply (TangentSpace I x)
+  exact DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply (TangentSpace I x)
     (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D)
     (riemannOp (LeviCivita (I := I) g₀) x p v0 v1) q
 

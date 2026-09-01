@@ -70,9 +70,9 @@ theorem uniformRicSup
   intro x v
   have hbase := hC g₀ (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) (δ := Λ - 1)
     (le_of_eq (max_eq_left hΛ1).symm)
-    (metricDiff_gFibreOpBound (I := I) (M := M) gBase g₀ hΛ hcomp)
-    (fun y a b => metricDiff_tie (I := I) (M := M) gBase g₀ y a b) x
-    (metricDiff_jetEnvelope (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2 x) v
+    (metricDifference_gFibreOpBound (I := I) (M := M) gBase g₀ hΛ hcomp)
+    (fun y a b => metricDifference_tie (I := I) (M := M) gBase g₀ y a b) x
+    (metricDifference_jetEnvelope (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2 x) v
   set R : TangentSpace I x := ricEndoRaisedFib (I := I) g₀ x v with hR
   have hout : g₀.inner x R R ≤ Λ * gBase.inner x R R := (hcomp x R).2
   have hin : gBase.inner x v v ≤ Λ * g₀.inner x v v :=

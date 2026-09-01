@@ -124,7 +124,7 @@ def connectionDifferenceBiSummandFib (gj g₀ g₁ g₁' : SmoothRiemannianMetri
     { toFun := fun D =>
         (Tensor0SSpace.eval D ![p, q]) •
           Tensor0SSpace.ofModel (I := I) (x := x)
-            (bilinFormToModel E (tangentBilinearFormToModel (I := I) x
+            (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel E (tangentBilinearFormToModel (I := I) x
               (connectionDifferenceBiKernelBilin (I := I) gj g₀ g₁ g₁' x p q)))
       map_add' := fun D D' => by
         rw [Tensor0SSpace.eval_add, add_smul]
@@ -145,7 +145,7 @@ omit [T2Space M] [SigmaCompactSpace M] in
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) := by
   rw [connectionDifferenceBiSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     Tensor0SSpace.toModel_smul, smul_apply, Tensor0SSpace.toModel_ofModel,
-    bilinFormToModel_apply, tangentBilinearFormToModel_apply]
+    DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_apply, tangentBilinearFormToModel_apply]
   have hkernel := connectionDifferenceBiKernelBilin_apply (I := I) gj g₀ g₁ g₁' x p q
     ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
     ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
@@ -282,7 +282,7 @@ theorem connectionDifferenceBiContrFibFixedFrame_apply_section_contMDiff
     have hsmul := ContMDiff.smul_section (f := fun x => Tensor0SSpace.toModel (Y x)
         ![(B a x : E), (B b x : E)])
       (s := fun x => Tensor0SSpace.ofModel (I := I) (x := x)
-        (bilinFormToModel (TangentSpace I x)
+        (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)
           (connectionDifferenceBiKernelBilin (I := I) gj g₀ g₁ g₁' x (B a x) (B b x))))
       hscalar hbilin
     refine hsmul.congr ?_
@@ -396,7 +396,7 @@ private local instance frameTangentSpaceNormedSpace (x : M) :
 private def frameBilinFormToModel (x : M) :
     (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) ≃ₗ[ℝ]
       ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I x) ℝ :=
-  bilinFormToModel (TangentSpace I x)
+  DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
     [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -405,7 +405,7 @@ private theorem frameBilinFormToModel_symm_apply (x : M)
     (T : ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I x) ℝ)
     (v w : TangentSpace I x) :
     (frameBilinFormToModel (I := I) x).symm T v w = T ![v, w] := by
-  exact bilinFormToModel_symm_apply (TangentSpace I x) T v w
+  exact DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply (TangentSpace I x) T v w
 
 end
 

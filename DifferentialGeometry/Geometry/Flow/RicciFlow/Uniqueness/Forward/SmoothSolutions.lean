@@ -764,7 +764,7 @@ private theorem fuMetricSqD (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a
   have hbase := normSq0S_moving_deriv (I := I) g₁ (metricRicciAt (I := I) (g₁ t) x)
     (fun r => metricDiffAt (I := I) (g₁ r) (g₂ r) x) (metricDiffDot (I := I) g₁ g₂ t x)
     (pde_hasDerivAt (I := I) g₁ hpde₁ ht x)
-    (metricDiff_hasDerivAt (I := I) g₁ g₂ (pde_hasDerivAt (I := I) g₁ hpde₁ ht x)
+    (metricDifference_hasDerivAt (I := I) g₁ g₂ (pde_hasDerivAt (I := I) g₁ hpde₁ ht x)
       (pde_hasDerivAt (I := I) g₂ hpde₂ ht x))
   simpa only [metricDiffSq_def] using hbase.deriv
 

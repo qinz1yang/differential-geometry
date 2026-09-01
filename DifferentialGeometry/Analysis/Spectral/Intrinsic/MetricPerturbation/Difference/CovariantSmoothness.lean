@@ -1,10 +1,9 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDifferenceJets
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.Jets
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
 
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -17,8 +16,6 @@ open DifferentialGeometry.Integral.Measure
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor
-open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
-open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -28,56 +25,56 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 attribute [local instance]
-  rhsPointwiseModelDualNormedAddCommGroup
-  rhsPointwiseModelDualNormedSpace
-  rhsPointwiseModelBilinearNormedAddCommGroup
-  rhsPointwiseModelBilinearNormedSpace
-  rhsPointwiseModelTrilinearNormedAddCommGroup
-  rhsPointwiseModelTrilinearNormedSpace
-  rhsPointwiseModelQuadrilinearNormedAddCommGroup
-  rhsPointwiseModelQuadrilinearNormedSpace
-  rhsPointwiseTangentDualNormedAddCommGroup
-  rhsPointwiseTangentDualNormedSpace
-  rhsPointwiseTangentBilinearNormedAddCommGroup
-  rhsPointwiseTangentBilinearNormedSpace
-  rhsPointwiseTangentTrilinearNormedAddCommGroup
-  rhsPointwiseTangentTrilinearNormedSpace
-  rhsPointwiseTangentTrilinearAddCommGroup
-  rhsPointwiseTangentTrilinearModule
-  rhsPointwiseTangentTrilinearSMul
-  rhsPointwiseTangentTrilinearTopology
-  rhsPointwiseSectionAddCommGroup
-  rhsPointwiseSectionModule
-  rhsPointwiseTangentQuadrilinearNormedAddCommGroup
-  rhsPointwiseTangentQuadrilinearNormedSpace
-  rhsPointwiseTangentQuadrilinearAddCommGroup
-  rhsPointwiseTangentQuadrilinearModule
-  rhsPointwiseTangentBilinearAddCommGroup
-  rhsPointwiseTangentBilinearModule
-  rhsPointwiseBilinearSectionAddCommGroup
-  rhsPointwiseBilinearSectionModule
-  rhsPointwiseTensor0SModelNormedAddCommGroup
-  rhsPointwiseTensor0SModelNormedSpace
-  rhsPointwiseTensorRSModelNormedAddCommGroup
-  rhsPointwiseTensorRSModelNormedSpace
-  rhsPointwiseTensor01TotalSpaceTopology
-  rhsPointwiseTensor01FiberBundle
-  rhsPointwiseTensor01VectorBundle
-  rhsPointwiseTensor01ContMDiffVectorBundle
-  rhsPointwiseTensor02TotalSpaceTopology
-  rhsPointwiseIteratedTensor02FiberBundle
-  rhsPointwiseIteratedTensor02VectorBundle
-  rhsPointwiseIteratedTensor02ContMDiffVectorBundle
-  rhsPointwiseTensor03TotalSpaceTopology
-  rhsPointwiseTensor03FiberBundle
-  rhsPointwiseTensor03VectorBundle
-  rhsPointwiseTensor03ContMDiffVectorBundle
-  rhsPointwiseTensor04TotalSpaceTopology
-  rhsPointwiseTensor04FiberBundle
-  rhsPointwiseTensor04VectorBundle
-  rhsPointwiseTensor04ContMDiffVectorBundle
-  rhsPointwiseTensorRSTotalSpaceTopology
-  rhsPointwiseTensorRSFiberBundle
+  pointwiseModelDualNormedAddCommGroup
+  pointwiseModelDualNormedSpace
+  pointwiseModelBilinearNormedAddCommGroup
+  pointwiseModelBilinearNormedSpace
+  pointwiseModelTrilinearNormedAddCommGroup
+  pointwiseModelTrilinearNormedSpace
+  pointwiseModelQuadrilinearNormedAddCommGroup
+  pointwiseModelQuadrilinearNormedSpace
+  pointwiseTangentDualNormedAddCommGroup
+  pointwiseTangentDualNormedSpace
+  pointwiseTangentBilinearNormedAddCommGroup
+  pointwiseTangentBilinearNormedSpace
+  pointwiseTangentTrilinearNormedAddCommGroup
+  pointwiseTangentTrilinearNormedSpace
+  pointwiseTangentTrilinearAddCommGroup
+  pointwiseTangentTrilinearModule
+  pointwiseTangentTrilinearSMul
+  pointwiseTangentTrilinearTopology
+  pointwiseSectionAddCommGroup
+  pointwiseSectionModule
+  pointwiseTangentQuadrilinearNormedAddCommGroup
+  pointwiseTangentQuadrilinearNormedSpace
+  pointwiseTangentQuadrilinearAddCommGroup
+  pointwiseTangentQuadrilinearModule
+  pointwiseTangentBilinearAddCommGroup
+  pointwiseTangentBilinearModule
+  pointwiseBilinearSectionAddCommGroup
+  pointwiseBilinearSectionModule
+  pointwiseTensor0SModelNormedAddCommGroup
+  pointwiseTensor0SModelNormedSpace
+  pointwiseTensorRSModelNormedAddCommGroup
+  pointwiseTensorRSModelNormedSpace
+  pointwiseTensor01TotalSpaceTopology
+  pointwiseTensor01FiberBundle
+  pointwiseTensor01VectorBundle
+  pointwiseTensor01ContMDiffVectorBundle
+  pointwiseTensor02TotalSpaceTopology
+  pointwiseIteratedTensor02FiberBundle
+  pointwiseIteratedTensor02VectorBundle
+  pointwiseIteratedTensor02ContMDiffVectorBundle
+  pointwiseTensor03TotalSpaceTopology
+  pointwiseTensor03FiberBundle
+  pointwiseTensor03VectorBundle
+  pointwiseTensor03ContMDiffVectorBundle
+  pointwiseTensor04TotalSpaceTopology
+  pointwiseTensor04FiberBundle
+  pointwiseTensor04VectorBundle
+  pointwiseTensor04ContMDiffVectorBundle
+  pointwiseTensorRSTotalSpaceTopology
+  pointwiseTensorRSFiberBundle
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in

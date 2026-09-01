@@ -1,4 +1,9 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDifferenceJetNorm
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.JetNorm
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSSmoothQuasilinear
+import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.FiberNormRiemannianBridge
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieSummandLipschitz
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RicciDiffAffine
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -28,58 +33,58 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 attribute [local instance]
-  rhsPointwiseModelDualNormedAddCommGroup
-  rhsPointwiseModelDualNormedSpace
-  rhsPointwiseModelBilinearNormedAddCommGroup
-  rhsPointwiseModelBilinearNormedSpace
-  rhsPointwiseModelTrilinearNormedAddCommGroup
-  rhsPointwiseModelTrilinearNormedSpace
-  rhsPointwiseModelQuadrilinearNormedAddCommGroup
-  rhsPointwiseModelQuadrilinearNormedSpace
-  rhsPointwiseTangentDualNormedAddCommGroup
-  rhsPointwiseTangentDualNormedSpace
-  rhsPointwiseTangentBilinearNormedAddCommGroup
-  rhsPointwiseTangentBilinearNormedSpace
-  rhsPointwiseTangentTrilinearNormedAddCommGroup
-  rhsPointwiseTangentTrilinearNormedSpace
-  rhsPointwiseTangentTrilinearAddCommGroup
-  rhsPointwiseTangentTrilinearModule
-  rhsPointwiseTangentTrilinearSMul
-  rhsPointwiseTangentTrilinearTopology
-  rhsPointwiseSectionAddCommGroup
-  rhsPointwiseSectionModule
-  rhsPointwiseTangentQuadrilinearNormedAddCommGroup
-  rhsPointwiseTangentQuadrilinearNormedSpace
-  rhsPointwiseTangentQuadrilinearAddCommGroup
-  rhsPointwiseTangentQuadrilinearModule
-  rhsPointwiseTangentBilinearAddCommGroup
-  rhsPointwiseTangentBilinearModule
-  rhsPointwiseBilinearSectionAddCommGroup
-  rhsPointwiseBilinearSectionModule
-  rhsPointwiseTensor0SModelNormedAddCommGroup
-  rhsPointwiseTensor0SModelNormedSpace
-  rhsPointwiseTensorRSModelNormedAddCommGroup
-  rhsPointwiseTensorRSModelNormedSpace
-  rhsPointwiseTensor01TotalSpaceTopology
-  rhsPointwiseTensor01FiberBundle
-  rhsPointwiseTensor01VectorBundle
-  rhsPointwiseTensor01ContMDiffVectorBundle
-  rhsPointwiseTensor02TotalSpaceTopology
-  rhsPointwiseIteratedTensor02FiberBundle
-  rhsPointwiseIteratedTensor02VectorBundle
-  rhsPointwiseIteratedTensor02ContMDiffVectorBundle
-  rhsPointwiseTensor03TotalSpaceTopology
-  rhsPointwiseTensor03FiberBundle
-  rhsPointwiseTensor03VectorBundle
-  rhsPointwiseTensor03ContMDiffVectorBundle
-  rhsPointwiseTensor04TotalSpaceTopology
-  rhsPointwiseTensor04FiberBundle
-  rhsPointwiseTensor04VectorBundle
-  rhsPointwiseTensor04ContMDiffVectorBundle
-  rhsPointwiseTensorRSTotalSpaceTopology
-  rhsPointwiseTensorRSFiberBundle
+  pointwiseModelDualNormedAddCommGroup
+  pointwiseModelDualNormedSpace
+  pointwiseModelBilinearNormedAddCommGroup
+  pointwiseModelBilinearNormedSpace
+  pointwiseModelTrilinearNormedAddCommGroup
+  pointwiseModelTrilinearNormedSpace
+  pointwiseModelQuadrilinearNormedAddCommGroup
+  pointwiseModelQuadrilinearNormedSpace
+  pointwiseTangentDualNormedAddCommGroup
+  pointwiseTangentDualNormedSpace
+  pointwiseTangentBilinearNormedAddCommGroup
+  pointwiseTangentBilinearNormedSpace
+  pointwiseTangentTrilinearNormedAddCommGroup
+  pointwiseTangentTrilinearNormedSpace
+  pointwiseTangentTrilinearAddCommGroup
+  pointwiseTangentTrilinearModule
+  pointwiseTangentTrilinearSMul
+  pointwiseTangentTrilinearTopology
+  pointwiseSectionAddCommGroup
+  pointwiseSectionModule
+  pointwiseTangentQuadrilinearNormedAddCommGroup
+  pointwiseTangentQuadrilinearNormedSpace
+  pointwiseTangentQuadrilinearAddCommGroup
+  pointwiseTangentQuadrilinearModule
+  pointwiseTangentBilinearAddCommGroup
+  pointwiseTangentBilinearModule
+  pointwiseBilinearSectionAddCommGroup
+  pointwiseBilinearSectionModule
+  pointwiseTensor0SModelNormedAddCommGroup
+  pointwiseTensor0SModelNormedSpace
+  pointwiseTensorRSModelNormedAddCommGroup
+  pointwiseTensorRSModelNormedSpace
+  pointwiseTensor01TotalSpaceTopology
+  pointwiseTensor01FiberBundle
+  pointwiseTensor01VectorBundle
+  pointwiseTensor01ContMDiffVectorBundle
+  pointwiseTensor02TotalSpaceTopology
+  pointwiseIteratedTensor02FiberBundle
+  pointwiseIteratedTensor02VectorBundle
+  pointwiseIteratedTensor02ContMDiffVectorBundle
+  pointwiseTensor03TotalSpaceTopology
+  pointwiseTensor03FiberBundle
+  pointwiseTensor03VectorBundle
+  pointwiseTensor03ContMDiffVectorBundle
+  pointwiseTensor04TotalSpaceTopology
+  pointwiseTensor04FiberBundle
+  pointwiseTensor04VectorBundle
+  pointwiseTensor04ContMDiffVectorBundle
+  pointwiseTensorRSTotalSpaceTopology
+  pointwiseTensorRSFiberBundle
 
-private local instance rhsPointwiseTensorRSNormedAddCommGroup
+private local instance pointwiseTensorRSNormedAddCommGroup
     (r s : ℕ) [Bundle.RiemannianBundle (fun y : M => TensorRSSpace r s I y)] (x : M) :
     NormedAddCommGroup (TensorRSSpace r s I x) :=
   Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
@@ -92,11 +97,11 @@ theorem deTurckRHS_diff_frame_component_apply
     (g_bg g₁ g₂ : SmoothRiemannianMetric I M) (α x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     (deTurckRicciRHS (I := I) g_bg g₁ x - deTurckRicciRHS (I := I) g_bg g₂ x)
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       deTurckRicciRHS (I := I) g_bg g₁ x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
       - deTurckRicciRHS (I := I) g_bg g₂ x
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) := by
   rw [sub_apply, sub_apply]
 
 omit [CompactSpace M] in
@@ -108,16 +113,16 @@ theorem deTurckRHS_diff_frame_component_contMDiffOn
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M =>
         (deTurckRicciRHS (I := I) g_bg g₁ x - deTurckRicciRHS (I := I) g_bg g₂ x)
-          (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source := by
   have h₁ : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M => deTurckRicciRHS (I := I) g_bg g₁ x
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source :=
     combine_smoothness_of_summands (I := I) g_bg g₁ α i j
   have h₂ : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M => deTurckRicciRHS (I := I) g_bg g₂ x
-        (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source :=
     combine_smoothness_of_summands (I := I) g_bg g₂ α i j
   refine (h₁.sub h₂).congr (fun x _ => ?_)

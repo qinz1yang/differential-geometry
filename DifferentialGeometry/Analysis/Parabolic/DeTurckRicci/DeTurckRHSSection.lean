@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.LieDerivativePairing
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
 import DifferentialGeometry.Tensor.Mixed.Field
+import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 open DifferentialGeometry.Tensor.Multilinear
 
@@ -28,70 +29,10 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-def bilinFormToModel (F : Type*) [NormedAddCommGroup F] [NormedSpace ℝ F] :
-    (F →L[ℝ] F →L[ℝ] ℝ) ≃ₗ[ℝ]
-      ContinuousMultilinearMap ℝ (fun _ : Fin 2 => F) ℝ :=
-  ((ContinuousLinearEquiv.refl ℝ F).arrowCongr
-      (continuousMultilinearCurryFin1 ℝ F ℝ).symm.toContinuousLinearEquiv).toLinearEquiv.trans
-    (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin 2 => F) ℝ).symm.toLinearEquiv
-
-theorem bilinFormToModel_apply (F : Type*)
-    [NormedAddCommGroup F] [NormedSpace ℝ F]
-    (B : F →L[ℝ] F →L[ℝ] ℝ) (v : Fin 2 → F) :
-    bilinFormToModel F B v = B (v 0) (v 1) := by
-  classical
-  change (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin 2 => F) ℝ).symm
-      (((ContinuousLinearEquiv.refl ℝ F).arrowCongr
-          (continuousMultilinearCurryFin1 ℝ F ℝ).symm.toContinuousLinearEquiv) B) v =
-    B (v 0) (v 1)
-  rw [continuousMultilinearCurryLeftEquiv_symm_apply,
-    ContinuousLinearEquiv.arrowCongr_apply]
-  simp only [ContinuousLinearEquiv.refl_symm, ContinuousLinearEquiv.refl_apply,
-    LinearIsometryEquiv.coe_toContinuousLinearEquiv]
-  rw [continuousMultilinearCurryFin1_symm_apply]
-  rfl
-
-theorem bilinFormToModel_symm_apply (F : Type*)
-    [NormedAddCommGroup F] [NormedSpace ℝ F]
-    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 2 => F) ℝ) (v w : F) :
-    (bilinFormToModel F).symm T v w = T ![v, w] := by
-  classical
-  have h := bilinFormToModel_apply F ((bilinFormToModel F).symm T) ![v, w]
-  rw [(bilinFormToModel F).apply_symm_apply T] at h
-  simpa using h.symm
-
-theorem bilinFormToModel_norm_map (F : Type*)
-    [NormedAddCommGroup F] [NormedSpace ℝ F]
-    (B : F →L[ℝ] F →L[ℝ] ℝ) :
-    ‖bilinFormToModel F B‖ = ‖B‖ := by
-  classical
-  refine le_antisymm ?_ ?_
-  · refine ContinuousMultilinearMap.opNorm_le_bound (norm_nonneg B) (fun m => ?_)
-    rw [bilinFormToModel_apply]
-    rw [Fin.prod_univ_two]
-    calc ‖B (m 0) (m 1)‖
-        ≤ ‖B‖ * ‖m 0‖ * ‖m 1‖ := B.le_opNorm₂ (m 0) (m 1)
-      _ = ‖B‖ * (‖m 0‖ * ‖m 1‖) := by ring
-  · refine ContinuousLinearMap.opNorm_le_bound₂ B (norm_nonneg _) (fun v w => ?_)
-    have hsymm : B v w = bilinFormToModel F B ![v, w] := by
-      conv_lhs => rw [← (bilinFormToModel F).symm_apply_apply B]
-      rw [bilinFormToModel_symm_apply]
-    rw [hsymm]
-    calc ‖bilinFormToModel F B ![v, w]‖
-        ≤ ‖bilinFormToModel F B‖ * ∏ i : Fin 2, ‖(![v, w] : Fin 2 → F) i‖ :=
-          (bilinFormToModel F B).le_opNorm _
-      _ = ‖bilinFormToModel F B‖ * ‖v‖ * ‖w‖ := by
-          rw [Fin.prod_univ_two]; simp [Matrix.cons_val_zero, Matrix.cons_val_one]; ring
-
-def bilinFormToModelₗᵢ (F : Type*) [NormedAddCommGroup F] [NormedSpace ℝ F] :
-    (F →L[ℝ] F →L[ℝ] ℝ) ≃ₗᵢ[ℝ]
-      ContinuousMultilinearMap ℝ (fun _ : Fin 2 => F) ℝ :=
-  { bilinFormToModel F with norm_map' := bilinFormToModel_norm_map F }
-
 private def deTurckRHSModelFun (g_bg g : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x :=
   (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm
-    (bilinFormToModel (TangentSpace I x) (deTurckRicciRHS (I := I) g_bg g x))
+    (biForm₂ToModel (TangentSpace I x) (deTurckRicciRHS (I := I) g_bg g x))
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -102,7 +43,7 @@ private theorem deTurckRHSModelFun_eval
       deTurckRicciRHS (I := I) g_bg g x (v 0) (v 1) := by
   unfold deTurckRHSModelFun
   rw [Tensor0SSpace.eval_fiber_equiv_symm]
-  exact bilinFormToModel_apply (TangentSpace I x) (deTurckRicciRHS (I := I) g_bg g x) v
+  exact biForm₂ToModel_apply (TangentSpace I x) (deTurckRicciRHS (I := I) g_bg g x) v
 
 def deTurckRHSField (g_bg g : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 2 :=
@@ -116,8 +57,8 @@ def deTurckRHSField (g_bg g : SmoothRiemannianMetric I M) :
     have hcomp : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
         (fun x : M =>
           deTurckRicciRHS (I := I) g_bg g x
-            (chartFrameVec (I := I) x₀ (σ 0) x)
-            (chartFrameVec (I := I) x₀ (σ 1) x))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x))
         (chartAt H x₀).source :=
       combine_smoothness_of_summands (I := I) g_bg g x₀ (σ 0) (σ 1)
     have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀

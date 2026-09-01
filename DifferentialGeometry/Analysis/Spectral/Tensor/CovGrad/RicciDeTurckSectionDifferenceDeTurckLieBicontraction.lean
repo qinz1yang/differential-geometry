@@ -431,7 +431,7 @@ def deTurckLieConnectionDifferenceDerivativeSummandFib (g₁ g_bg : SmoothRieman
     { toFun := fun D =>
         (Tensor0SSpace.toModel D ![(p : E), (q : E)]) •
           Tensor0SSpace.ofModel (I := I) (x := x)
-            (bilinFormToModel E (connectionDifferenceCovDerivKernelBilinSym (I := I) g₁ g_bg x p q))
+            (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel E (connectionDifferenceCovDerivKernelBilinSym (I := I) g₁ g_bg x p q))
       map_add' := fun D D' => by
         rw [Tensor0SSpace.toModel_add, add_apply, add_smul]
       map_smul' := fun c D => by
@@ -645,7 +645,7 @@ theorem deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_apply_secti
     have hsmul := ContMDiff.smul_section (f := fun x => Tensor0SSpace.toModel (Y x)
         ![(B a x : E), (B b x : E)])
       (s := fun x => Tensor0SSpace.ofModel (I := I) (x := x)
-        (bilinFormToModel (TangentSpace I x)
+        (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)
           (connectionDifferenceCovDerivKernelBilinSym (I := I) g₁ g_bg x (B a x) (B b x))))
       hscalar hbilin
     refine hsmul.congr ?_
@@ -768,7 +768,7 @@ private local instance frameTangentSpaceNormedSpace (x : M) :
 private def frameBilinFormToModel (x : M) :
     (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) ≃ₗ[ℝ]
       ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I x) ℝ :=
-  bilinFormToModel (TangentSpace I x)
+  DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
     [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -777,7 +777,7 @@ private theorem frameBilinFormToModel_symm_apply (x : M)
     (T : ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I x) ℝ)
     (v w : TangentSpace I x) :
     (frameBilinFormToModel (I := I) x).symm T v w = T ![v, w] := by
-  exact bilinFormToModel_symm_apply (TangentSpace I x) T v w
+  exact DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply (TangentSpace I x) T v w
 
 end
 

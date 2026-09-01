@@ -1,8 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
 import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
+import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
-
 
 set_option autoImplicit false
 
@@ -11,21 +10,21 @@ noncomputable section
 open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+namespace DifferentialGeometry.Analysis.Spectral.MetricRealization
 
-open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Tensor.RSTensor
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
 omit [FiniteDimensional ℝ E] in
-theorem gOpBound_unitQuad
+theorem metricCauchySchwarzBound_of_unit_self_bound
     (q : SmoothRiemannianMetric I M)
     (A : ∀ x : M, TangentSpace I x →L[ℝ]
       TangentSpace I x →L[ℝ] ℝ)
@@ -34,15 +33,15 @@ theorem gOpBound_unitQuad
     {δ : ℝ}
     (hunit : ∀ (x : M) (u : TangentSpace I x),
       q.inner x u u = 1 → |A x u u| ≤ δ) :
-    gFibreOpBound (I := I) (M := M) q A δ := by
+    metricCauchySchwarzBound (I := I) (M := M) q A δ := by
   intro x v w
   let Q : Tensor02At (I := I) (M := M) x :=
     (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm
-      (bilinFormToModel (TangentSpace I x) (A x))
+      (biForm₂ToModel (TangentSpace I x) (A x))
   have hQeval (z₁ z₂ : TangentSpace I x) :
       Q (vec2 (I := I) z₁ z₂) = A x z₁ z₂ := by
     change Tensor0SSpace.eval Q (vec2 (I := I) z₁ z₂) = A x z₁ z₂
-    rw [Tensor0SSpace.eval_fiber_equiv_symm, bilinFormToModel_apply]
+    rw [Tensor0SSpace.eval_fiber_equiv_symm, biForm₂ToModel_apply]
     rfl
   have hdiag (z : TangentSpace I x) :
       |A x z z| ≤ δ * q.inner x z z := by
@@ -127,4 +126,4 @@ theorem gOpBound_unitQuad
       simp only [rv, sw]
       ring
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+end DifferentialGeometry.Analysis.Spectral.MetricRealization

@@ -1,12 +1,12 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricCovariantSmoothness
-
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.CovariantSmoothness
+import DifferentialGeometry.Geometry.Coordinates.ChartFrame
+import DifferentialGeometry.Tensor.Mixed.Field
 
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
 
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -19,68 +19,66 @@ open DifferentialGeometry.Integral.Measure
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor
-open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
-    DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [hIBoundaryless : I.Boundaryless] [hT2Space : T2Space M]
+  [SigmaCompactSpace M]
 
 attribute [local instance]
-  rhsPointwiseModelDualNormedAddCommGroup
-  rhsPointwiseModelDualNormedSpace
-  rhsPointwiseModelBilinearNormedAddCommGroup
-  rhsPointwiseModelBilinearNormedSpace
-  rhsPointwiseModelTrilinearNormedAddCommGroup
-  rhsPointwiseModelTrilinearNormedSpace
-  rhsPointwiseModelQuadrilinearNormedAddCommGroup
-  rhsPointwiseModelQuadrilinearNormedSpace
-  rhsPointwiseTangentDualNormedAddCommGroup
-  rhsPointwiseTangentDualNormedSpace
-  rhsPointwiseTangentBilinearNormedAddCommGroup
-  rhsPointwiseTangentBilinearNormedSpace
-  rhsPointwiseTangentTrilinearNormedAddCommGroup
-  rhsPointwiseTangentTrilinearNormedSpace
-  rhsPointwiseTangentTrilinearAddCommGroup
-  rhsPointwiseTangentTrilinearModule
-  rhsPointwiseTangentTrilinearSMul
-  rhsPointwiseTangentTrilinearTopology
-  rhsPointwiseSectionAddCommGroup
-  rhsPointwiseSectionModule
-  rhsPointwiseTangentQuadrilinearNormedAddCommGroup
-  rhsPointwiseTangentQuadrilinearNormedSpace
-  rhsPointwiseTangentQuadrilinearAddCommGroup
-  rhsPointwiseTangentQuadrilinearModule
-  rhsPointwiseTangentBilinearAddCommGroup
-  rhsPointwiseTangentBilinearModule
-  rhsPointwiseBilinearSectionAddCommGroup
-  rhsPointwiseBilinearSectionModule
-  rhsPointwiseTensor0SModelNormedAddCommGroup
-  rhsPointwiseTensor0SModelNormedSpace
-  rhsPointwiseTensorRSModelNormedAddCommGroup
-  rhsPointwiseTensorRSModelNormedSpace
-  rhsPointwiseTensor01TotalSpaceTopology
-  rhsPointwiseTensor01FiberBundle
-  rhsPointwiseTensor01VectorBundle
-  rhsPointwiseTensor01ContMDiffVectorBundle
-  rhsPointwiseTensor02TotalSpaceTopology
-  rhsPointwiseIteratedTensor02FiberBundle
-  rhsPointwiseIteratedTensor02VectorBundle
-  rhsPointwiseIteratedTensor02ContMDiffVectorBundle
-  rhsPointwiseTensor03TotalSpaceTopology
-  rhsPointwiseTensor03FiberBundle
-  rhsPointwiseTensor03VectorBundle
-  rhsPointwiseTensor03ContMDiffVectorBundle
-  rhsPointwiseTensor04TotalSpaceTopology
-  rhsPointwiseTensor04FiberBundle
-  rhsPointwiseTensor04VectorBundle
-  rhsPointwiseTensor04ContMDiffVectorBundle
-  rhsPointwiseTensorRSTotalSpaceTopology
-  rhsPointwiseTensorRSFiberBundle
+  pointwiseModelDualNormedAddCommGroup
+  pointwiseModelDualNormedSpace
+  pointwiseModelBilinearNormedAddCommGroup
+  pointwiseModelBilinearNormedSpace
+  pointwiseModelTrilinearNormedAddCommGroup
+  pointwiseModelTrilinearNormedSpace
+  pointwiseModelQuadrilinearNormedAddCommGroup
+  pointwiseModelQuadrilinearNormedSpace
+  pointwiseTangentDualNormedAddCommGroup
+  pointwiseTangentDualNormedSpace
+  pointwiseTangentBilinearNormedAddCommGroup
+  pointwiseTangentBilinearNormedSpace
+  pointwiseTangentTrilinearNormedAddCommGroup
+  pointwiseTangentTrilinearNormedSpace
+  pointwiseTangentTrilinearAddCommGroup
+  pointwiseTangentTrilinearModule
+  pointwiseTangentTrilinearSMul
+  pointwiseTangentTrilinearTopology
+  pointwiseSectionAddCommGroup
+  pointwiseSectionModule
+  pointwiseTangentQuadrilinearNormedAddCommGroup
+  pointwiseTangentQuadrilinearNormedSpace
+  pointwiseTangentQuadrilinearAddCommGroup
+  pointwiseTangentQuadrilinearModule
+  pointwiseTangentBilinearAddCommGroup
+  pointwiseTangentBilinearModule
+  pointwiseBilinearSectionAddCommGroup
+  pointwiseBilinearSectionModule
+  pointwiseTensor0SModelNormedAddCommGroup
+  pointwiseTensor0SModelNormedSpace
+  pointwiseTensorRSModelNormedAddCommGroup
+  pointwiseTensorRSModelNormedSpace
+  pointwiseTensor01TotalSpaceTopology
+  pointwiseTensor01FiberBundle
+  pointwiseTensor01VectorBundle
+  pointwiseTensor01ContMDiffVectorBundle
+  pointwiseTensor02TotalSpaceTopology
+  pointwiseIteratedTensor02FiberBundle
+  pointwiseIteratedTensor02VectorBundle
+  pointwiseIteratedTensor02ContMDiffVectorBundle
+  pointwiseTensor03TotalSpaceTopology
+  pointwiseTensor03FiberBundle
+  pointwiseTensor03VectorBundle
+  pointwiseTensor03ContMDiffVectorBundle
+  pointwiseTensor04TotalSpaceTopology
+  pointwiseTensor04FiberBundle
+  pointwiseTensor04VectorBundle
+  pointwiseTensor04ContMDiffVectorBundle
+  pointwiseTensorRSTotalSpaceTopology
+  pointwiseTensorRSFiberBundle
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
@@ -149,17 +147,17 @@ private theorem chartFrame_component_contMDiffOn_aux
         (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) b (S b)))
     (α : M) (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => S x (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
+      (fun x : M => S x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source := by
   classical
   intro x₀ hx₀
   have h_frame_on : ∀ k : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-        (fun b : M => TotalSpace.mk' E b (chartFrameVec (I := I) α k b))
+        (fun b : M => TotalSpace.mk' E b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
         (chartAt H α).source := fun k => DifferentialGeometry.Tensor.Coordinates.chartAlphaFrame_section_contMDiffOn (I := I) α k
   obtain ⟨Sf, hSf_eq⟩ :=
     exists_contMDiffSection_eqOn_nhd
-      (s := fun k : Fin (Module.finrank ℝ E) => fun b : M => chartFrameVec (I := I) α k b)
+      (s := fun k : Fin (Module.finrank ℝ E) => fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
       (u := (chartAt H α).source) (p := x₀)
       h_frame_on ((chartAt H α).open_source) hx₀
   have hSf_smooth : ∀ k : Fin (Module.finrank ℝ E),
@@ -170,7 +168,7 @@ private theorem chartFrame_component_contMDiffOn_aux
       (fun b : M => S b ((Sf i) b) ((Sf j) b)) :=
     tensor02_pairing_contMDiff hS (hSf_smooth i) (hSf_smooth j)
   have h_chart_at : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => S x (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)) x₀ := by
+      (fun x : M => S x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) x₀ := by
     refine (h_scalar x₀).congr_of_eventuallyEq ?_
     filter_upwards [hSf_eq] with b hb
     rw [hb i, hb j]
@@ -178,15 +176,15 @@ private theorem chartFrame_component_contMDiffOn_aux
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-private theorem metricDiff02_contMDiff (g₁ g₂ : SmoothRiemannianMetric I M) :
+private theorem metricDifference02_contMDiff (g₁ g₂ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
         (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) b
-        (metricDiff02 (I := I) g₁ g₂ b)) := by
+        (metricDifference02 (I := I) g₁ g₂ b)) := by
   have hsub :
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
         (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) b
-        (metricDiff02 (I := I) g₁ g₂ b)) =
+        (metricDifference02 (I := I) g₁ g₂ b)) =
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
         (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) b
         (g₁.inner b - g₂.inner b)) := by
@@ -194,27 +192,27 @@ private theorem metricDiff02_contMDiff (g₁ g₂ : SmoothRiemannianMetric I M) 
   rw [hsub]
   exact g₁.contMDiff.sub_section g₂.contMDiff
 
-private def metricDiff02ModelFun (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
+private def metricDifference02ModelFun (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x :=
   Tensor0SSpace.ofModel (I := I)
-    (biForm₂ToModel (TangentSpace I x) (metricDiff02 (I := I) g₁ g₂ x))
+    (biForm₂ToModel (TangentSpace I x) (metricDifference02 (I := I) g₁ g₂ x))
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-private theorem metricDiff02ModelFun_toModel_apply
+private theorem metricDifference02ModelFun_toModel_apply
     (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 2 → TangentSpace I x) :
-    Tensor0SSpace.toModel (metricDiff02ModelFun (I := I) g₁ g₂ x) v =
-      metricDiff02 (I := I) g₁ g₂ x (v 0) (v 1) := by
-  unfold metricDiff02ModelFun
+    Tensor0SSpace.toModel (metricDifference02ModelFun (I := I) g₁ g₂ x) v =
+      metricDifference02 (I := I) g₁ g₂ x (v 0) (v 1) := by
+  unfold metricDifference02ModelFun
   change (biForm₂ToModel (TangentSpace I x)
-    (metricDiff02 (I := I) g₁ g₂ x)) v = _
-  exact biForm₂ToModel_apply (TangentSpace I x) (metricDiff02 (I := I) g₁ g₂ x) v
+    (metricDifference02 (I := I) g₁ g₂ x)) v = _
+  exact biForm₂ToModel_apply (TangentSpace I x) (metricDifference02 (I := I) g₁ g₂ x) v
 
-def metricDiff02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
+def metricDifference02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 2 :=
   letI := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
-  ⟨fun x => metricDiff02ModelFun (I := I) g₁ g₂ x, by
+  ⟨fun x => metricDifference02ModelFun (I := I) g₁ g₂ x, by
     let d := Module.finrank ℝ E
     let b : Module.Basis (Fin d) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
     refine (contMDiff_multilinearSection_iff_coord
@@ -222,11 +220,11 @@ def metricDiff02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
       (n := (∞ : WithTop ℕ∞)) b _).mpr
       fun σ x₀ => ?_
     have hcomp : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-        (fun x : M => metricDiff02 (I := I) g₁ g₂ x
-          (chartFrameVec (I := I) x₀ (σ 0) x) (chartFrameVec (I := I) x₀ (σ 1) x))
+        (fun x : M => metricDifference02 (I := I) g₁ g₂ x
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x))
         (chartAt H x₀).source :=
       chartFrame_component_contMDiffOn_aux (I := I)
-        (metricDiff02_contMDiff (I := I) g₁ g₂) x₀ (σ 0) (σ 1)
+        (metricDifference02_contMDiff (I := I) g₁ g₂) x₀ (σ 0) (σ 1)
     have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) x₀
@@ -238,39 +236,40 @@ def metricDiff02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
       (trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hx₀_base
     filter_upwards [h_base_nhd] with x hx
     rw [continuousMultilinearMap_basis_repr]
-    change Tensor0SSpace.toModel (metricDiff02ModelFun (I := I) g₁ g₂ x)
+    change Tensor0SSpace.toModel (metricDifference02ModelFun (I := I) g₁ g₂ x)
         (fun j => (trivializationAt E (TangentSpace I) x₀).symmL ℝ x (b (σ j))) = _
-    rw [metricDiff02ModelFun_toModel_apply]
+    rw [metricDifference02ModelFun_toModel_apply]
     rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-@[simp] theorem metricDiff02Field_toModel_apply
+include hT2Space in
+@[simp] theorem metricDifference02Field_toModel_apply
     (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 2 → TangentSpace I x) :
-    metricDiff02Field (I := I) g₁ g₂ x v =
-      metricDiff02 (I := I) g₁ g₂ x (v 0) (v 1) :=
-  metricDiff02ModelFun_toModel_apply (I := I) g₁ g₂ x v
+    metricDifference02Field (I := I) g₁ g₂ x v =
+      metricDifference02 (I := I) g₁ g₂ x (v 0) (v 1) :=
+  rfl
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem metricDiff02Cov_contMDiff (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
+private theorem metricDifference02Cov_contMDiff (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
         (E := fun x : M =>
           TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) x
-        (metricDiff02Cov (I := I) g₀ g₁ g₂ x)) := by
+        (metricDifference02Cov (I := I) g₀ g₁ g₂ x)) := by
   have hsub :
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
         (E := fun x : M =>
           TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) x
-        (metricDiff02Cov (I := I) g₀ g₁ g₂ x)) =
+        (metricDifference02Cov (I := I) g₀ g₁ g₂ x)) =
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
         (E := fun x : M =>
           TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) x
         ((tensor02Cov (LeviCivita (I := I) g₀)).toFun (metricTensor02 (I := I) g₁) x
           - (tensor02Cov (LeviCivita (I := I) g₀)).toFun (metricTensor02 (I := I) g₂) x)) := by
     funext c
-    exact congrArg _ (metricDiff02Cov_eq_sub (I := I) g₀ g₁ g₂ c)
+    exact congrArg _ (metricDifference02Cov_eq_sub (I := I) g₀ g₁ g₂ c)
   rw [hsub]
   exact (tensor02Cov_metric_contMDiff (I := I) g₀ g₁).sub_section
     (tensor02Cov_metric_contMDiff (I := I) g₀ g₂)
@@ -284,18 +283,18 @@ private theorem chartFrame_component3_contMDiffOn_aux
           TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) b (S b)))
     (α : M) (i j k : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => S x (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
-        (chartFrameVec (I := I) α k x))
+      (fun x : M => S x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x))
       (chartAt H α).source := by
   classical
   intro x₁ hx₁
   have h_frame_on : ∀ m : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-        (fun c : M => TotalSpace.mk' E c (chartFrameVec (I := I) α m c))
+        (fun c : M => TotalSpace.mk' E c (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m c))
         (chartAt H α).source := fun m => DifferentialGeometry.Tensor.Coordinates.chartAlphaFrame_section_contMDiffOn (I := I) α m
   obtain ⟨Sf, hSf_eq⟩ :=
     exists_contMDiffSection_eqOn_nhd
-      (s := fun m : Fin (Module.finrank ℝ E) => fun c : M => chartFrameVec (I := I) α m c)
+      (s := fun m : Fin (Module.finrank ℝ E) => fun c : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m c)
       (u := (chartAt H α).source) (p := x₁)
       h_frame_on ((chartAt H α).open_source) hx₁
   have hSf_smooth : ∀ m : Fin (Module.finrank ℝ E),
@@ -306,34 +305,34 @@ private theorem chartFrame_component3_contMDiffOn_aux
       (fun c : M => S c ((Sf i) c) ((Sf j) c) ((Sf k) c)) :=
     tensor03_pairing_contMDiff hS (hSf_smooth i) (hSf_smooth j) (hSf_smooth k)
   have h_chart_at : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => S x (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
-        (chartFrameVec (I := I) α k x)) x₁ := by
+      (fun x : M => S x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)) x₁ := by
     refine (h_scalar x₁).congr_of_eventuallyEq ?_
     filter_upwards [hSf_eq] with c hc
     rw [hc i, hc j, hc k]
   exact h_chart_at.contMDiffWithinAt
 
-private def metricDiff02CovModelFun (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
+private def metricDifference02CovModelFun (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 3 I x :=
   Tensor0SSpace.ofModel (I := I)
-    (triFormToModel (TangentSpace I x) (metricDiff02Cov (I := I) g₀ g₁ g₂ x))
+    (triFormToModel (TangentSpace I x) (metricDifference02Cov (I := I) g₀ g₁ g₂ x))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [T2Space M] [SigmaCompactSpace M] in
-private theorem metricDiff02CovModelFun_toModel_apply
+private theorem metricDifference02CovModelFun_toModel_apply
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 3 → TangentSpace I x) :
-    Tensor0SSpace.toModel (metricDiff02CovModelFun (I := I) g₀ g₁ g₂ x) v =
-      metricDiff02Cov (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) := by
-  unfold metricDiff02CovModelFun
+    Tensor0SSpace.toModel (metricDifference02CovModelFun (I := I) g₀ g₁ g₂ x) v =
+      metricDifference02Cov (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) := by
+  unfold metricDifference02CovModelFun
   change (triFormToModel (TangentSpace I x)
-    (metricDiff02Cov (I := I) g₀ g₁ g₂ x)) v = _
-  exact triFormToModel_apply (TangentSpace I x) (metricDiff02Cov (I := I) g₀ g₁ g₂ x) v
+    (metricDifference02Cov (I := I) g₀ g₁ g₂ x)) v = _
+  exact triFormToModel_apply (TangentSpace I x) (metricDifference02Cov (I := I) g₀ g₁ g₂ x) v
 
-def metricDiff02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
+def metricDifference02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 3 :=
   letI := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
-  ⟨fun x => metricDiff02CovModelFun (I := I) g₀ g₁ g₂ x, by
+  ⟨fun x => metricDifference02CovModelFun (I := I) g₀ g₁ g₂ x, by
     let d := Module.finrank ℝ E
     let b : Module.Basis (Fin d) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
     refine (contMDiff_multilinearSection_iff_coord
@@ -341,12 +340,12 @@ def metricDiff02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
       (n := (∞ : WithTop ℕ∞)) b _).mpr
       fun σ x₀ => ?_
     have hcomp : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-        (fun x : M => metricDiff02Cov (I := I) g₀ g₁ g₂ x
-          (chartFrameVec (I := I) x₀ (σ 0) x) (chartFrameVec (I := I) x₀ (σ 1) x)
-          (chartFrameVec (I := I) x₀ (σ 2) x))
+        (fun x : M => metricDifference02Cov (I := I) g₀ g₁ g₂ x
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 2) x))
         (chartAt H x₀).source :=
       chartFrame_component3_contMDiffOn_aux (I := I)
-        (metricDiff02Cov_contMDiff (I := I) g₀ g₁ g₂) x₀ (σ 0) (σ 1) (σ 2)
+        (metricDifference02Cov_contMDiff (I := I) g₀ g₁ g₂) x₀ (σ 0) (σ 1) (σ 2)
     have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) x₀
@@ -358,43 +357,44 @@ def metricDiff02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
       (trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hx₀_base
     filter_upwards [h_base_nhd] with x hx
     rw [continuousMultilinearMap_basis_repr]
-    change Tensor0SSpace.toModel (metricDiff02CovModelFun (I := I) g₀ g₁ g₂ x)
+    change Tensor0SSpace.toModel (metricDifference02CovModelFun (I := I) g₀ g₁ g₂ x)
         (fun j => (trivializationAt E (TangentSpace I) x₀).symmL ℝ x (b (σ j))) = _
-    rw [metricDiff02CovModelFun_toModel_apply]
+    rw [metricDifference02CovModelFun_toModel_apply]
     rfl⟩
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem metricDiff02CovField_toModel_apply
+include hIBoundaryless hT2Space in
+@[simp] theorem metricDifference02CovField_toModel_apply
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 3 → TangentSpace I x) :
-    metricDiff02CovField (I := I) g₀ g₁ g₂ x v =
-      metricDiff02Cov (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) :=
-  metricDiff02CovModelFun_toModel_apply (I := I) g₀ g₁ g₂ x v
+    metricDifference02CovField (I := I) g₀ g₁ g₂ x v =
+      metricDifference02Cov (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) :=
+  rfl
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem metricDiff02CovIterate_contMDiff (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
+private theorem metricDifference02CovIterate_contMDiff (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] (E →L[ℝ] (E →L[ℝ] (E →L[ℝ] ℝ))))) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] (E →L[ℝ] (E →L[ℝ] (E →L[ℝ] ℝ))))
         (E := fun x : M => TangentSpace I x →L[ℝ]
           (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)))) x
-        (metricDiff02CovIterate (I := I) g₀ g₁ g₂ x)) := by
+        (metricDifference02CovIterate (I := I) g₀ g₁ g₂ x)) := by
   have hS₁ := tensor02CovIterate_metric_contMDiff (I := I) g₀ g₁
   have hS₂ := tensor02CovIterate_metric_contMDiff (I := I) g₀ g₂
   have hsub :
       (fun x : M => TotalSpace.mk' (E →L[ℝ] (E →L[ℝ] (E →L[ℝ] (E →L[ℝ] ℝ))))
         (E := fun x : M => TangentSpace I x →L[ℝ]
           (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)))) x
-        (metricDiff02CovIterate (I := I) g₀ g₁ g₂ x)) =
+        (metricDifference02CovIterate (I := I) g₀ g₁ g₂ x)) =
       (fun x : M => TotalSpace.mk' (E →L[ℝ] (E →L[ℝ] (E →L[ℝ] (E →L[ℝ] ℝ))))
         (E := fun x : M => TangentSpace I x →L[ℝ]
           (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)))) x
         (tensor02CovIterate (LeviCivita (I := I) g₀) (metricTensor02 (I := I) g₁) x
           - tensor02CovIterate (LeviCivita (I := I) g₀) (metricTensor02 (I := I) g₂) x)) := by
     funext c
-    exact congrArg _ (metricDiff02CovIterate_eq_sub (I := I) g₀ g₁ g₂ c)
+    exact congrArg _ (metricDifference02CovIterate_eq_sub (I := I) g₀ g₁ g₂ c)
   rw [hsub]
   exact hS₁.sub_section hS₂
 
@@ -408,18 +408,18 @@ private theorem chartFrame_component4_contMDiffOn_aux
           (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)))) b (S b)))
     (α : M) (i j k l : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => S x (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
-        (chartFrameVec (I := I) α k x) (chartFrameVec (I := I) α l x))
+      (fun x : M => S x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x))
       (chartAt H α).source := by
   classical
   intro x₁ hx₁
   have h_frame_on : ∀ m : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-        (fun c : M => TotalSpace.mk' E c (chartFrameVec (I := I) α m c))
+        (fun c : M => TotalSpace.mk' E c (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m c))
         (chartAt H α).source := fun m => DifferentialGeometry.Tensor.Coordinates.chartAlphaFrame_section_contMDiffOn (I := I) α m
   obtain ⟨Sf, hSf_eq⟩ :=
     exists_contMDiffSection_eqOn_nhd
-      (s := fun m : Fin (Module.finrank ℝ E) => fun c : M => chartFrameVec (I := I) α m c)
+      (s := fun m : Fin (Module.finrank ℝ E) => fun c : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m c)
       (u := (chartAt H α).source) (p := x₁)
       h_frame_on ((chartAt H α).open_source) hx₁
   have hSf_smooth : ∀ m : Fin (Module.finrank ℝ E),
@@ -430,34 +430,34 @@ private theorem chartFrame_component4_contMDiffOn_aux
       (fun c : M => S c ((Sf i) c) ((Sf j) c) ((Sf k) c) ((Sf l) c)) :=
     tensor04_pairing_contMDiff hS (hSf_smooth i) (hSf_smooth j) (hSf_smooth k) (hSf_smooth l)
   have h_chart_at : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => S x (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
-        (chartFrameVec (I := I) α k x) (chartFrameVec (I := I) α l x)) x₁ := by
+      (fun x : M => S x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x)) x₁ := by
     refine (h_scalar x₁).congr_of_eventuallyEq ?_
     filter_upwards [hSf_eq] with c hc
     rw [hc i, hc j, hc k, hc l]
   exact h_chart_at.contMDiffWithinAt
 
-private def metricDiff02CovIterateModelFun (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
+private def metricDifference02CovIterateModelFun (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 4 I x :=
   Tensor0SSpace.ofModel (I := I)
-    (quadFormToModel (TangentSpace I x) (metricDiff02CovIterate (I := I) g₀ g₁ g₂ x))
+    (quadFormToModel (TangentSpace I x) (metricDifference02CovIterate (I := I) g₀ g₁ g₂ x))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [T2Space M] [SigmaCompactSpace M] in
-private theorem metricDiff02CovIterateModelFun_toModel_apply
+private theorem metricDifference02CovIterateModelFun_toModel_apply
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 4 → TangentSpace I x) :
-    Tensor0SSpace.toModel (metricDiff02CovIterateModelFun (I := I) g₀ g₁ g₂ x) v =
-      metricDiff02CovIterate (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) (v 3) := by
-  unfold metricDiff02CovIterateModelFun
+    Tensor0SSpace.toModel (metricDifference02CovIterateModelFun (I := I) g₀ g₁ g₂ x) v =
+      metricDifference02CovIterate (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) (v 3) := by
+  unfold metricDifference02CovIterateModelFun
   change (quadFormToModel (TangentSpace I x)
-    (metricDiff02CovIterate (I := I) g₀ g₁ g₂ x)) v = _
-  exact quadFormToModel_apply (TangentSpace I x) (metricDiff02CovIterate (I := I) g₀ g₁ g₂ x) v
+    (metricDifference02CovIterate (I := I) g₀ g₁ g₂ x)) v = _
+  exact quadFormToModel_apply (TangentSpace I x) (metricDifference02CovIterate (I := I) g₀ g₁ g₂ x) v
 
-def metricDiff02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
+def metricDifference02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 4 :=
   letI := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
-  ⟨fun x => metricDiff02CovIterateModelFun (I := I) g₀ g₁ g₂ x, by
+  ⟨fun x => metricDifference02CovIterateModelFun (I := I) g₀ g₁ g₂ x, by
     let d := Module.finrank ℝ E
     let b : Module.Basis (Fin d) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
     refine (contMDiff_multilinearSection_iff_coord
@@ -465,12 +465,12 @@ def metricDiff02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
       (n := (∞ : WithTop ℕ∞)) b _).mpr
       fun σ x₀ => ?_
     have hcomp : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-        (fun x : M => metricDiff02CovIterate (I := I) g₀ g₁ g₂ x
-          (chartFrameVec (I := I) x₀ (σ 0) x) (chartFrameVec (I := I) x₀ (σ 1) x)
-          (chartFrameVec (I := I) x₀ (σ 2) x) (chartFrameVec (I := I) x₀ (σ 3) x))
+        (fun x : M => metricDifference02CovIterate (I := I) g₀ g₁ g₂ x
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 2) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 3) x))
         (chartAt H x₀).source :=
       chartFrame_component4_contMDiffOn_aux (I := I)
-        (metricDiff02CovIterate_contMDiff (I := I) g₀ g₁ g₂) x₀ (σ 0) (σ 1) (σ 2) (σ 3)
+        (metricDifference02CovIterate_contMDiff (I := I) g₀ g₁ g₂) x₀ (σ 0) (σ 1) (σ 2) (σ 3)
     have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) x₀
@@ -482,34 +482,35 @@ def metricDiff02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
       (trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hx₀_base
     filter_upwards [h_base_nhd] with x hx
     rw [continuousMultilinearMap_basis_repr]
-    change Tensor0SSpace.toModel (metricDiff02CovIterateModelFun (I := I) g₀ g₁ g₂ x)
+    change Tensor0SSpace.toModel (metricDifference02CovIterateModelFun (I := I) g₀ g₁ g₂ x)
         (fun j => (trivializationAt E (TangentSpace I) x₀).symmL ℝ x (b (σ j))) = _
-    rw [metricDiff02CovIterateModelFun_toModel_apply]
+    rw [metricDifference02CovIterateModelFun_toModel_apply]
     rfl⟩
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem metricDiff02CovIterateField_toModel_apply
+include hIBoundaryless hT2Space in
+@[simp] theorem metricDifference02CovIterateField_toModel_apply
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 4 → TangentSpace I x) :
-    metricDiff02CovIterateField (I := I) g₀ g₁ g₂ x v =
-      metricDiff02CovIterate (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) (v 3) :=
-  metricDiff02CovIterateModelFun_toModel_apply (I := I) g₀ g₁ g₂ x v
+    metricDifference02CovIterateField (I := I) g₀ g₁ g₂ x v =
+      metricDifference02CovIterate (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) (v 3) :=
+  rfl
 
-def metricDiff02MixedSection (g₁ g₂ : SmoothRiemannianMetric I M) :
+def metricDifference02MixedSection (g₁ g₂ : SmoothRiemannianMetric I M) :
     Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯ :=
   MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
-    (E := (TangentSpace I : M → Type _)) ∞ (metricDiff02Field (I := I) g₁ g₂)
+    (E := (TangentSpace I : M → Type _)) ∞ (metricDifference02Field (I := I) g₁ g₂)
 
-def metricDiff02CovMixedSection (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
+def metricDifference02CovMixedSection (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Cₛ^∞⟮I; TensorRSModel 0 3 ℝ E, (fun x : M => TensorRSSpace 0 3 I x)⟯ :=
   MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
-    (E := (TangentSpace I : M → Type _)) ∞ (metricDiff02CovField (I := I) g₀ g₁ g₂)
+    (E := (TangentSpace I : M → Type _)) ∞ (metricDifference02CovField (I := I) g₀ g₁ g₂)
 
-def metricDiff02CovIterateMixedSection (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
+def metricDifference02CovIterateMixedSection (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Cₛ^∞⟮I; TensorRSModel 0 4 ℝ E, (fun x : M => TensorRSSpace 0 4 I x)⟯ :=
   MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
-    (E := (TangentSpace I : M → Type _)) ∞ (metricDiff02CovIterateField (I := I) g₀ g₁ g₂)
+    (E := (TangentSpace I : M → Type _)) ∞ (metricDifference02CovIterateField (I := I) g₀ g₁ g₂)
 
 end Spectral
 end Analysis

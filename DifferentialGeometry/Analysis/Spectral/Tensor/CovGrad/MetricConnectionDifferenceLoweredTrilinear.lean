@@ -156,7 +156,7 @@ private noncomputable def trilinFormToModel (F : Type*) [NormedAddCommGroup F]
     ContinuousLinearMap.toNormedSpace
   exact (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin 3 => F) ℝ).symm
     (((ContinuousLinearEquiv.refl ℝ F).arrowCongr
-      (bilinFormToModelₗᵢ F).toContinuousLinearEquiv) B)
+      (biForm₂ToModelₗᵢ F).toContinuousLinearEquiv) B)
 
 private theorem trilinFormToModel_apply (F : Type*) [NormedAddCommGroup F] [NormedSpace ℝ F]
     (B : F →L[ℝ] F →L[ℝ] F →L[ℝ] ℝ) (v : Fin 3 → F) :
@@ -173,16 +173,16 @@ private theorem trilinFormToModel_apply (F : Type*) [NormedAddCommGroup F] [Norm
     ContinuousLinearMap.toNormedSpace
   change (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin 3 => F) ℝ).symm
       (((ContinuousLinearEquiv.refl ℝ F).arrowCongr
-          (bilinFormToModelₗᵢ F).toContinuousLinearEquiv) B) v =
+          (biForm₂ToModelₗᵢ F).toContinuousLinearEquiv) B) v =
     B (v 0) (v 1) (v 2)
   rw [continuousMultilinearCurryLeftEquiv_symm_apply,
     ContinuousLinearEquiv.arrowCongr_apply]
   simp only [ContinuousLinearEquiv.refl_symm, ContinuousLinearEquiv.refl_apply,
     LinearIsometryEquiv.coe_toContinuousLinearEquiv]
-  rw [show ((bilinFormToModelₗᵢ F) (B (v 0)) :
+  rw [show ((biForm₂ToModelₗᵢ F) (B (v 0)) :
         ContinuousMultilinearMap ℝ (fun _ : Fin 2 => F) ℝ)
-      = bilinFormToModel F (B (v 0)) from rfl]
-  rw [bilinFormToModel_apply]
+      = biForm₂ToModel F (B (v 0)) from rfl]
+  rw [biForm₂ToModel_apply]
   rfl
 
 noncomputable def metricConnectionDifferenceLoweredTrilin (gm gA gB : SmoothRiemannianMetric I M) (x : M) :

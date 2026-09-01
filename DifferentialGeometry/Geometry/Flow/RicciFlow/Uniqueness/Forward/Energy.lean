@@ -121,7 +121,7 @@ def metricDiffDot (g₁ g₂ : Real → SmoothRiemannianMetric I M) (t : Real) (
     (metricRicciAt (I := I) (g₁ t) x - metricRicciAt (I := I) (g₂ t) x)
 
 omit [T2Space M] in
-theorem metricDiff_hasDerivAt
+theorem metricDifference_hasDerivAt
     (g₁ g₂ : Real → SmoothRiemannianMetric I M) {x : M} {t : Real}
     (hPDE₁ : ∀ X Y : TangentSpace I x,
       HasDerivAt (fun r : Real => (g₁ r).inner x X Y)
@@ -248,7 +248,7 @@ theorem density_hasDerivAt
     normSq0S_moving_deriv (I := I) g₁ (metricRicciAt (I := I) (g₁ t) x)
       (fun r => metricDiffAt (I := I) (g₁ r) (g₂ r) x)
       (metricDiffDot (I := I) g₁ g₂ t x) hPDE₁
-      (metricDiff_hasDerivAt (I := I) g₁ g₂ hPDE₁ hPDE₂)
+      (metricDifference_hasDerivAt (I := I) g₁ g₂ hPDE₁ hPDE₂)
   have hA' :
       HasDerivAt (fun r : Real => connectionDifferenceSq (I := I) (g₁ r) (g₂ r) x)
         (movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)

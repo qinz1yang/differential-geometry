@@ -43,8 +43,8 @@ theorem abstractRHSFrameComponent_diff_abs_le_jet2_chartCenter
     ∃ C : ℝ, 0 < C ∧ ∀ i j : Fin (Module.finrank ℝ E),
       |(deTurckRicciRHS (I := I) g_bg g₁ ((extChartAt I α).symm (extChartAt I α α)) -
             deTurckRicciRHS (I := I) g_bg g₂ ((extChartAt I α).symm (extChartAt I α α)))
-          (chartFrameVec (I := I) α i ((extChartAt I α).symm (extChartAt I α α)))
-          (chartFrameVec (I := I) α j ((extChartAt I α).symm (extChartAt I α α)))| ≤
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm (extChartAt I α α)))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j ((extChartAt I α).symm (extChartAt I α α)))| ≤
         C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α (extChartAt I α α) := by
   obtain ⟨C, hC_pos, hC⟩ :=
     abstractRHSFrameComponent_diff_abs_le_jet2 (I := I) g_bg g₁ g₂ α
@@ -77,8 +77,8 @@ theorem exists_uniform_const_RHSFrameComponent_diff_jet2_on_finset
     ∃ C : ℝ, 0 < C ∧ ∀ c ∈ t, ∀ y ∈ K c, ∀ i j : Fin (Module.finrank ℝ E),
       |(deTurckRicciRHS (I := I) g_bg g₁ ((extChartAt I (α c)).symm y) -
             deTurckRicciRHS (I := I) g_bg g₂ ((extChartAt I (α c)).symm y))
-          (chartFrameVec (I := I) (α c) i ((extChartAt I (α c)).symm y))
-          (chartFrameVec (I := I) (α c) j ((extChartAt I (α c)).symm y))| ≤
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (α c) i ((extChartAt I (α c)).symm y))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (α c) j ((extChartAt I (α c)).symm y))| ≤
         C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ (α c) y := by
   classical
   choose C hC_pos hC using fun (c : ι) (hc : c ∈ t) =>
@@ -101,8 +101,8 @@ theorem exists_uniform_const_RHSFrameComponent_diff_jet2_on_finset
   calc
     |(deTurckRicciRHS (I := I) g_bg g₁ ((extChartAt I (α c)).symm y) -
           deTurckRicciRHS (I := I) g_bg g₂ ((extChartAt I (α c)).symm y))
-        (chartFrameVec (I := I) (α c) i ((extChartAt I (α c)).symm y))
-        (chartFrameVec (I := I) (α c) j ((extChartAt I (α c)).symm y))|
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (α c) i ((extChartAt I (α c)).symm y))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (α c) j ((extChartAt I (α c)).symm y))|
       ≤ C c hc * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ (α c) y := hbound
     _ ≤ (1 + ∑ d ∈ t.attach, C d.1 d.2) *
           chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ (α c) y :=

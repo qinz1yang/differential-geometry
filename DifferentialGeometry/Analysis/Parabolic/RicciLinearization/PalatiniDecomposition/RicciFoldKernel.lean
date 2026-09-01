@@ -1287,18 +1287,18 @@ private lemma bdAACommBiContrFib_toModel_chartα (g₀ g : SmoothRiemannianMetri
           v0 v1 =
       frameConnectionDifferenceAACommKernel (I := I) g₀ g x v0 v1
           (smoothOrthoFrame (I := I) g x a x) (smoothOrthoFrame (I := I) g x b x) *
-        (bilinFormToModel (TangentSpace I x)).symm
+        (biForm₂ToModel (TangentSpace I x)).symm
           (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D)
           (smoothOrthoFrame (I := I) g x a x) (smoothOrthoFrame (I := I) g x b x) := by
     intro a b
     rw [frameConnectionDifferenceAACommKernel_apply,
-      bilinFormToModel_symm_apply (TangentSpace I x)
+      biForm₂ToModel_symm_apply (TangentSpace I x)
         (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D) _ _, mul_comm]
     rfl
   rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hsummand a b))]
   rw [double_frame_bilin_trace_chartα (I := I) g α hxbase
     (frameConnectionDifferenceAACommKernel (I := I) g₀ g x v0 v1)
-    ((bilinFormToModel (TangentSpace I x)).symm
+    ((biForm₂ToModel (TangentSpace I x)).symm
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D))
     (fun a => smoothOrthoFrame (I := I) g x a x) hBf_on]
   refine Finset.sum_congr rfl (fun m _ => ?_)
@@ -1308,7 +1308,7 @@ private lemma bdAACommBiContrFib_toModel_chartα (g₀ g : SmoothRiemannianMetri
   refine Finset.sum_congr rfl (fun l _ => ?_)
   refine congrArg (fun t => chartInvGramMatrix (I := I) g α x k l * t) ?_
   rw [frameConnectionDifferenceAACommKernel_apply,
-    bilinFormToModel_symm_apply (TangentSpace I x)
+    biForm₂ToModel_symm_apply (TangentSpace I x)
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D) _ _]
   rfl
 

@@ -33,7 +33,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem metricDiff_span
+theorem metricDifference_span
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -83,7 +83,7 @@ theorem metricDiff_span
         (E := fun z : M ↦ TensorRSSpace 0 2 I z) p.1
         ((P p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ D.regular) := by
-    simpa only [P, q] using metricDiff_joint (I := I) (M := M) g_fam hG q
+    simpa only [P, q] using metricDifference_joint (I := I) (M := M) g_fam hG q
   obtain ⟨B, hB, hjet⟩ := joint_jet_bdd (I := I) (M := M) q 0 2 P
     hK hKreg hPjoint
   refine ⟨B, hB, ?_⟩
@@ -101,7 +101,7 @@ theorem metricDiff_span
   have hbound : metricCauchySchwarzBound (I := I) q
       (ccTensorBilinSymm (I := I) q (P ((T : ℝ) - s))) (1 / 4 : ℝ) := by
     intro y v w
-    rw [metricDiff_bilin (I := I) (M := M)]
+    rw [metricDifference_bilin (I := I) (M := M)]
     have hnorm :
         DifferentialGeometry.HCGCompactness.metricDerivNorm (I := I) 0
           (g_fam ((T : ℝ) - s)) q q y ≤ 1 / 4 := by
@@ -109,7 +109,7 @@ theorem metricDiff_span
         (I := I) (K := Set.univ) isCompact_univ (a := 0) (p := 1)
         (by omega) (g_fam ((T : ℝ) - s)) q q (Set.mem_univ y)).trans
         (by simpa only [q] using hsup)
-    have heval := DifferentialGeometry.HCGCompactness.metricDiff_abs_le
+    have heval := DifferentialGeometry.HCGCompactness.metricDifference_abs_le
       (I := I) (g_fam ((T : ℝ) - s)) q q y v w
     have hfinal :
         |(g_fam ((T : ℝ) - s)).inner y v w - q.inner y v w| ≤
@@ -141,7 +141,7 @@ theorem scalarFlux_span
                     (scalarFluxCoeff (I := I) (g_fam (T : ℝ))
                       (g_fam ((T : ℝ) - s)))).toSection x) ≤ B i := by
   classical
-  obtain ⟨ρ, hρ, hρone, hspan⟩ := metricDiff_span (I := I) (M := M) g_fam hG hab
+  obtain ⟨ρ, hρ, hρone, hspan⟩ := metricDifference_span (I := I) (M := M) g_fam hG hab
   refine ⟨ρ, hρ, hρone, ?_⟩
   intro T hT h hh hhρ hleft
   obtain ⟨J, hJ, hdata⟩ := hspan T hT h hh hhρ hleft
@@ -160,7 +160,7 @@ theorem scalarFlux_span
       (g_fam ((T : ℝ) - s)).inner y v w =
         q.inner y v w + ccTensorBilinSymm (I := I) q (P ((T : ℝ) - s)) y v w := by
     intro y v w
-    rw [metricDiff_bilin (I := I) (M := M)]
+    rw [metricDifference_bilin (I := I) (M := M)]
     ring
   have hbound : metricCauchySchwarzBound (I := I) q
       (ccTensorBilinSymm (I := I) q (P ((T : ℝ) - s))) (1 / 4 : ℝ) := by
@@ -392,7 +392,7 @@ theorem cc_lap_span
   classical
   obtain ⟨ρp, hρp, hρp_one, hp⟩ := cc_comm_span (I := I) (M := M) g_fam hG hab
   obtain ⟨ρc, hρc, _, hc⟩ := cc_conn_span (I := I) (M := M) g_fam hG hab
-  obtain ⟨ρm, hρm, _, hm⟩ := metricDiff_span (I := I) (M := M) g_fam hG hab
+  obtain ⟨ρm, hρm, _, hm⟩ := metricDifference_span (I := I) (M := M) g_fam hG hab
   let ρ : ℝ := min ρp (min ρc ρm)
   have hρ : 0 < ρ := lt_min hρp (lt_min hρc hρm)
   have hρ_one : ρ ≤ 1 := (min_le_left ρp (min ρc ρm)).trans hρp_one
@@ -420,7 +420,7 @@ theorem cc_lap_span
   have htie : ∀ y v w, g.inner y v w = q.inner y v w + k y v w := by
     intro y v w
     simp only [k, K]
-    rw [metricDiff_bilin (I := I) (M := M)]
+    rw [metricDifference_bilin (I := I) (M := M)]
     ring
   have hsmall : metricCauchySchwarzBound (I := I) q k (1 / 4 : ℝ) := by
     simpa only [q, g, K, k] using (hm' s hs).2.1

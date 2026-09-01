@@ -215,7 +215,7 @@ theorem metricDiffCovDerivAt_zero_apply
     _ = gk.inner x a b - gInf.inner x a b := by rw [hk, hI]
 
 omit [SigmaCompactSpace M] in
-theorem metricDiff_abs_le
+theorem metricDifference_abs_le
     (gk gInf gRef : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     |gk.inner x v w - gInf.inner x v w| ≤
@@ -235,7 +235,7 @@ theorem metricDiff_abs_le
   simp [DifferentialGeometry.Geometry.Curvature.vec2, mul_assoc]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
-theorem metricDiff_comp_le
+theorem metricDifference_comp_le
     (gk gInf : SmoothRiemannianMetric I M) {C : Real} (hCge : (1 : Real) ≤ C)
     (y : M) {n : ℕ} (basis : Module.Basis (Fin n) Real (TangentSpace I y))
     (hON : ∀ i j : Fin n, gInf.inner y (basis i) (basis j) = if i = j then (1 : Real) else 0)
@@ -310,7 +310,7 @@ theorem metricDerivNorm_le_of_equiv
       mul_nonneg (le_of_lt (inv_pos.mpr hCpos)) hgnn
     rw [abs_le]
     constructor <;> nlinarith [hlow, hhigh, hgnn, hCC, hinvnn, hCge, mul_nonneg hgnn hgnn]
-  have hcomp := metricDiff_comp_le gk gInf hCge y basis hON hq
+  have hcomp := metricDifference_comp_le gk gInf hCge y basis hON hq
   have hnsq : Tensor0SBundle.normSq0S (I := I) gInf y 2
         (metricDiffCovDerivAt (I := I) 0 gk gInf gInf y)
       ≤ (nE : Real) ^ 2 * (4 * (C - 1)) ^ 2 := by

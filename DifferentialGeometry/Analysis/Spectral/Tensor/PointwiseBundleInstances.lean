@@ -1,30 +1,14 @@
-import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.FiberNormRiemannianBridge
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSSmoothQuasilinear
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorExtension
-import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor03CovariantDerivativeCalculus
 import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RicciDiffAffine
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieSummandLipschitz
-
 
 noncomputable section
 
-
-open Bundle Set IsManifold ContinuousLinearMap Filter
-open scoped Manifold Topology Bundle ContDiff BigOperators
+open Bundle DifferentialGeometry.Tensor0SBundle
+open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
-
-open DifferentialGeometry.Integral.Measure
-
-open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Tensor
-open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -32,219 +16,219 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-noncomputable local instance rhsPointwiseModelDualNormedAddCommGroup :
+noncomputable local instance pointwiseModelDualNormedAddCommGroup :
     NormedAddCommGroup (E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance rhsPointwiseModelDualNormedSpace :
+noncomputable local instance pointwiseModelDualNormedSpace :
     NormedSpace ℝ (E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance rhsPointwiseModelBilinearNormedAddCommGroup :
+noncomputable local instance pointwiseModelBilinearNormedAddCommGroup :
     NormedAddCommGroup (E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance rhsPointwiseModelBilinearNormedSpace :
+noncomputable local instance pointwiseModelBilinearNormedSpace :
     NormedSpace ℝ (E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance rhsPointwiseModelTrilinearNormedAddCommGroup :
+noncomputable local instance pointwiseModelTrilinearNormedAddCommGroup :
     NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance rhsPointwiseModelTrilinearNormedSpace :
+noncomputable local instance pointwiseModelTrilinearNormedSpace :
     NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance rhsPointwiseModelQuadrilinearNormedAddCommGroup :
+noncomputable local instance pointwiseModelQuadrilinearNormedAddCommGroup :
     NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance rhsPointwiseModelQuadrilinearNormedSpace :
+noncomputable local instance pointwiseModelQuadrilinearNormedSpace :
     NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance rhsPointwiseTangentDualNormedAddCommGroup (x : M) :
+noncomputable local instance pointwiseTangentDualNormedAddCommGroup (x : M) :
     NormedAddCommGroup (TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance rhsPointwiseTangentDualNormedSpace (x : M) :
+noncomputable local instance pointwiseTangentDualNormedSpace (x : M) :
     NormedSpace ℝ (TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance rhsPointwiseTangentBilinearNormedAddCommGroup (x : M) :
+noncomputable local instance pointwiseTangentBilinearNormedAddCommGroup (x : M) :
     NormedAddCommGroup (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance rhsPointwiseTangentBilinearNormedSpace (x : M) :
+noncomputable local instance pointwiseTangentBilinearNormedSpace (x : M) :
     NormedSpace ℝ (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance rhsPointwiseTangentTrilinearNormedAddCommGroup (x : M) :
+noncomputable local instance pointwiseTangentTrilinearNormedAddCommGroup (x : M) :
     NormedAddCommGroup
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance rhsPointwiseTangentTrilinearNormedSpace (x : M) :
+noncomputable local instance pointwiseTangentTrilinearNormedSpace (x : M) :
     NormedSpace ℝ
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-local instance rhsPointwiseTangentTrilinearAddCommGroup (x : M) :
+local instance pointwiseTangentTrilinearAddCommGroup (x : M) :
     AddCommGroup
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-  (rhsPointwiseTangentTrilinearNormedAddCommGroup x).toAddCommGroup
+  (pointwiseTangentTrilinearNormedAddCommGroup x).toAddCommGroup
 
-local instance rhsPointwiseTangentTrilinearModule (x : M) :
+local instance pointwiseTangentTrilinearModule (x : M) :
     Module ℝ
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) := by
   letI : NormedAddCommGroup
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-    rhsPointwiseTangentTrilinearNormedAddCommGroup x
+    pointwiseTangentTrilinearNormedAddCommGroup x
   letI : NormedSpace ℝ
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-    rhsPointwiseTangentTrilinearNormedSpace x
+    pointwiseTangentTrilinearNormedSpace x
   exact NormedSpace.toModule
 
-local instance rhsPointwiseTangentTrilinearSMul (x : M) :
+local instance pointwiseTangentTrilinearSMul (x : M) :
     SMul ℝ
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-  (rhsPointwiseTangentTrilinearModule x).toDistribMulAction.toMulAction.toSemigroupAction.toSMul
+  (pointwiseTangentTrilinearModule x).toDistribMulAction.toMulAction.toSemigroupAction.toSMul
 
-local instance rhsPointwiseTangentTrilinearTopology (x : M) :
+local instance pointwiseTangentTrilinearTopology (x : M) :
     TopologicalSpace
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) := by
   letI : NormedAddCommGroup
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-    rhsPointwiseTangentTrilinearNormedAddCommGroup x
+    pointwiseTangentTrilinearNormedAddCommGroup x
   infer_instance
 
-local instance rhsPointwiseSectionAddCommGroup :
+local instance pointwiseSectionAddCommGroup :
     AddCommGroup
       (Π x : M,
         TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   Pi.addCommGroup
 
-local instance rhsPointwiseSectionModule :
+local instance pointwiseSectionModule :
     Module ℝ
       (Π x : M,
         TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   Pi.module M _ ℝ
 
-noncomputable local instance rhsPointwiseTangentQuadrilinearNormedAddCommGroup (x : M) :
+noncomputable local instance pointwiseTangentQuadrilinearNormedAddCommGroup (x : M) :
     NormedAddCommGroup
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance rhsPointwiseTangentQuadrilinearNormedSpace (x : M) :
+noncomputable local instance pointwiseTangentQuadrilinearNormedSpace (x : M) :
     NormedSpace ℝ
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-local instance rhsPointwiseTangentQuadrilinearAddCommGroup (x : M) :
+local instance pointwiseTangentQuadrilinearAddCommGroup (x : M) :
     AddCommGroup
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] ℝ) :=
-  (rhsPointwiseTangentQuadrilinearNormedAddCommGroup x).toAddCommGroup
+  (pointwiseTangentQuadrilinearNormedAddCommGroup x).toAddCommGroup
 
-local instance rhsPointwiseTangentQuadrilinearModule (x : M) :
+local instance pointwiseTangentQuadrilinearModule (x : M) :
     Module ℝ
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] ℝ) := by
   letI : NormedAddCommGroup
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] ℝ) :=
-    rhsPointwiseTangentQuadrilinearNormedAddCommGroup x
+    pointwiseTangentQuadrilinearNormedAddCommGroup x
   letI : NormedSpace ℝ
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] ℝ) :=
-    rhsPointwiseTangentQuadrilinearNormedSpace x
+    pointwiseTangentQuadrilinearNormedSpace x
   exact NormedSpace.toModule
 
-local instance rhsPointwiseTangentBilinearAddCommGroup (x : M) :
+local instance pointwiseTangentBilinearAddCommGroup (x : M) :
     AddCommGroup (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-  (rhsPointwiseTangentBilinearNormedAddCommGroup x).toAddCommGroup
+  (pointwiseTangentBilinearNormedAddCommGroup x).toAddCommGroup
 
-local instance rhsPointwiseTangentBilinearModule (x : M) :
+local instance pointwiseTangentBilinearModule (x : M) :
     Module ℝ (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) := by
   letI : NormedAddCommGroup (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-    rhsPointwiseTangentBilinearNormedAddCommGroup x
+    pointwiseTangentBilinearNormedAddCommGroup x
   letI : NormedSpace ℝ (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-    rhsPointwiseTangentBilinearNormedSpace x
+    pointwiseTangentBilinearNormedSpace x
   exact NormedSpace.toModule
 
-local instance rhsPointwiseBilinearSectionAddCommGroup :
+local instance pointwiseBilinearSectionAddCommGroup :
     AddCommGroup (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   Pi.addCommGroup
 
-local instance rhsPointwiseBilinearSectionModule :
+local instance pointwiseBilinearSectionModule :
     Module ℝ (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   Pi.module M _ ℝ
 
-local instance rhsPointwiseTensor0SModelNormedAddCommGroup {s : ℕ} :
+local instance pointwiseTensor0SModelNormedAddCommGroup {s : ℕ} :
     NormedAddCommGroup (Tensor0SModel s ℝ E) :=
   Tensor0SBundle.instNormedAddCommGroupTensor0SModel s
 
-local instance rhsPointwiseTensor0SModelNormedSpace {s : ℕ} :
+local instance pointwiseTensor0SModelNormedSpace {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
   Tensor0SBundle.tensor0SModelNormedSpace s
 
-local instance rhsPointwiseTensorRSModelNormedAddCommGroup {r s : ℕ} :
+local instance pointwiseTensorRSModelNormedAddCommGroup {r s : ℕ} :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
   Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
-local instance rhsPointwiseTensorRSModelNormedSpace {r s : ℕ} :
+local instance pointwiseTensorRSModelNormedSpace {r s : ℕ} :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
   Tensor0SBundle.tensorRSModelNormedSpace r s
 
-local instance rhsPointwiseTensor01TotalSpaceTopology :
+local instance pointwiseTensor01TotalSpaceTopology :
     TopologicalSpace
       (TotalSpace (E →L[ℝ] ℝ) (fun x : M => TangentSpace I x →L[ℝ] ℝ)) :=
   Bundle.ContinuousLinearMap.topologicalSpaceTotalSpace (RingHom.id ℝ)
     E (TangentSpace I) ℝ (fun _ : M => ℝ)
 
-local instance rhsPointwiseTensor01FiberBundle :
+local instance pointwiseTensor01FiberBundle :
     FiberBundle (E →L[ℝ] ℝ) (fun x : M => TangentSpace I x →L[ℝ] ℝ) :=
   Bundle.ContinuousLinearMap.fiberBundle (RingHom.id ℝ)
     E (TangentSpace I) ℝ (fun _ : M => ℝ)
 
-local instance rhsPointwiseTensor01VectorBundle :
+local instance pointwiseTensor01VectorBundle :
     VectorBundle ℝ (E →L[ℝ] ℝ) (fun x : M => TangentSpace I x →L[ℝ] ℝ) :=
   Bundle.ContinuousLinearMap.vectorBundle (RingHom.id ℝ)
     E (TangentSpace I) ℝ (fun _ : M => ℝ)
 
-local instance rhsPointwiseTensor01ContMDiffVectorBundle :
+local instance pointwiseTensor01ContMDiffVectorBundle :
     ContMDiffVectorBundle ∞ (E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] ℝ) I :=
   ContMDiffVectorBundle.continuousLinearMap
 
-local instance rhsPointwiseTensor02TotalSpaceTopology :
+local instance pointwiseTensor02TotalSpaceTopology :
     TopologicalSpace
       (TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
         (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)) :=
   Bundle.ContinuousLinearMap.topologicalSpaceTotalSpace (RingHom.id ℝ)
     E (TangentSpace I) (E →L[ℝ] ℝ) (fun x : M => TangentSpace I x →L[ℝ] ℝ)
 
-local instance rhsPointwiseIteratedTensor02FiberBundle :
+local instance pointwiseIteratedTensor02FiberBundle :
     FiberBundle (E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   Bundle.ContinuousLinearMap.fiberBundle (RingHom.id ℝ)
     E (TangentSpace I) (E →L[ℝ] ℝ) (fun x : M => TangentSpace I x →L[ℝ] ℝ)
 
-local instance rhsPointwiseIteratedTensor02VectorBundle :
+local instance pointwiseIteratedTensor02VectorBundle :
     VectorBundle ℝ (E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   Bundle.ContinuousLinearMap.vectorBundle (RingHom.id ℝ)
     E (TangentSpace I) (E →L[ℝ] ℝ) (fun x : M => TangentSpace I x →L[ℝ] ℝ)
 
-local instance rhsPointwiseIteratedTensor02ContMDiffVectorBundle :
+local instance pointwiseIteratedTensor02ContMDiffVectorBundle :
     ContMDiffVectorBundle ∞ (E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) I :=
   ContMDiffVectorBundle.continuousLinearMap
 
-local instance rhsPointwiseTensor03TotalSpaceTopology :
+local instance pointwiseTensor03TotalSpaceTopology :
     TopologicalSpace
       (TotalSpace (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
         (fun x : M =>
@@ -253,26 +237,26 @@ local instance rhsPointwiseTensor03TotalSpaceTopology :
     E (TangentSpace I) (E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
 
-local instance rhsPointwiseTensor03FiberBundle :
+local instance pointwiseTensor03FiberBundle :
     FiberBundle (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   Bundle.ContinuousLinearMap.fiberBundle (RingHom.id ℝ)
     E (TangentSpace I) (E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
 
-local instance rhsPointwiseTensor03VectorBundle :
+local instance pointwiseTensor03VectorBundle :
     VectorBundle ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   Bundle.ContinuousLinearMap.vectorBundle (RingHom.id ℝ)
     E (TangentSpace I) (E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
 
-local instance rhsPointwiseTensor03ContMDiffVectorBundle :
+local instance pointwiseTensor03ContMDiffVectorBundle :
     ContMDiffVectorBundle ∞ (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) I :=
   ContMDiffVectorBundle.continuousLinearMap
 
-local instance rhsPointwiseTensor04TotalSpaceTopology :
+local instance pointwiseTensor04TotalSpaceTopology :
     TopologicalSpace
       (TotalSpace (E →L[ℝ] E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
         (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
@@ -282,7 +266,7 @@ local instance rhsPointwiseTensor04TotalSpaceTopology :
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] ℝ)
 
-local instance rhsPointwiseTensor04FiberBundle :
+local instance pointwiseTensor04FiberBundle :
     FiberBundle (E →L[ℝ] E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
@@ -291,7 +275,7 @@ local instance rhsPointwiseTensor04FiberBundle :
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] ℝ)
 
-local instance rhsPointwiseTensor04VectorBundle :
+local instance pointwiseTensor04VectorBundle :
     VectorBundle ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
@@ -300,18 +284,18 @@ local instance rhsPointwiseTensor04VectorBundle :
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] ℝ)
 
-local instance rhsPointwiseTensor04ContMDiffVectorBundle :
+local instance pointwiseTensor04ContMDiffVectorBundle :
     ContMDiffVectorBundle ∞ (E →L[ℝ] E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
         TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) I :=
   ContMDiffVectorBundle.continuousLinearMap
 
-local instance rhsPointwiseTensorRSTotalSpaceTopology (r s : ℕ) :
+local instance pointwiseTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
   Tensor0SBundle.tensorRSBundleTopology r s
 
-local instance rhsPointwiseTensorRSFiberBundle (r s : ℕ) :
+local instance pointwiseTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
   Tensor0SBundle.tensorRSBundleFiber r s
 

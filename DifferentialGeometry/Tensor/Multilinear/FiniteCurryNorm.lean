@@ -62,6 +62,14 @@ theorem biForm₂ToModel_apply (B : F →L[ℝ] F →L[ℝ] ℝ) (v : Fin 2 → 
   rw [continuousMultilinearCurryFin1_symm_apply]
   rfl
 
+theorem biForm₂ToModel_symm_apply
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 2 => F) ℝ) (v w : F) :
+    (biForm₂ToModel F).symm T v w = T ![v, w] := by
+  classical
+  have h := biForm₂ToModel_apply F ((biForm₂ToModel F).symm T) ![v, w]
+  rw [(biForm₂ToModel F).apply_symm_apply T] at h
+  simpa using h.symm
+
 theorem biForm₂ToModel_norm_map (B : F →L[ℝ] F →L[ℝ] ℝ) :
     ‖biForm₂ToModel F B‖ = ‖B‖ := by
   classical
@@ -187,4 +195,3 @@ end Tensor
 end DifferentialGeometry
 
 end
-

@@ -48,7 +48,7 @@ private lemma secComp_to_smooth
       tensorChartComp (I := I) (M := M) g r s S α Idx Jdx := rfl
 
 omit [BoundarylessManifold I M] in
-theorem metricDiff_comp_jet
+theorem metricDifference_comp_jet
     {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -63,7 +63,7 @@ theorem metricDiff_comp_jet
           (tensorChartComp (I := I) (M := M) gBase 0 2
             (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k))
             α (![] : Fin 0 → Fin (Module.finrank ℝ E)) Jdx) y‖ ≤ C := by
-  exact metricDiff_fam_jet (I := I) (M := M) gBase gSeq B hbdd
+  exact metricDifference_fam_jet (I := I) (M := M) gBase gSeq B hbdd
 omit [BoundarylessManifold I M] in
 theorem metric_difference_weak_sobolev_three_uniform_bound
     {ι : Type*}
@@ -92,7 +92,7 @@ theorem metric_difference_weak_sobolev_three_uniform_bound
             (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq w.1))
             α (![] : Fin 0 → Fin (Module.finrank ℝ E)) w.2)
           (chartTargetEuclid (I := I) (M := M) α) ≤ A := by
-    exact metricDiff_wkp_terms (I := I) (M := M) gBase gSeq B hbdd hp
+    exact metricDifference_wkp_terms (I := I) (M := M) gBase gSeq B hbdd hp
   choose A hA_top hA using hper
   let R : ℝ≥0∞ :=
     ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SmoothPathHs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.StrongSolutionUniqueness
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffJoint
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRHSSectionRealizeUnitModel
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothEmbedInj
@@ -224,7 +224,7 @@ def deTurckRHSBase (g₀ g_bg : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem metricDiff_pde
+theorem metricDifference_pde
     (q g_bg : SmoothRiemannianMetric I M)
     (G : ℝ → SmoothRiemannianMetric I M) {T δ : ℝ} (hδ_lt : δ < 1)
     (hsmall : ∀ t ∈ Icc (0 : ℝ) T,
@@ -259,11 +259,11 @@ theorem metricDiff_pde
       (deTurckRHSBase (I := I) (M := M) q g_bg
         (metricDifferenceCcTensor (I := I) (M := M) q (G t)) hδ_lt
         (hsmall t ht)) rfl x slots
-    rw [realize_metricDiff (I := I) (M := M) q (G t) hδ_lt
+    rw [realize_metricDifference (I := I) (M := M) q (G t) hδ_lt
       (hsmall t ht)] at hunit
     exact hunit
   rw [hrhs]
-  simpa only [metricDiff_unit] using hder
+  simpa only [metricDifference_unit] using hder
 
 omit [SigmaCompactSpace M] in
 theorem rhsBase_eq_lap_rem (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -775,8 +775,8 @@ theorem metricRD_unique
     metricDifferenceCcTensor (I := I) (M := M) q (G₁ (c + t))
   let Phi₂ : ℝ → SmoothCcTensor q 0 2 := fun t =>
     metricDifferenceCcTensor (I := I) (M := M) q (G₂ (c + t))
-  have hPhi₁ := metricDiff_shift (I := I) (M := M) G₁ hG₁ q c hmap₁
-  have hPhi₂ := metricDiff_shift (I := I) (M := M) G₂ hG₂ q c hmap₂
+  have hPhi₁ := metricDifference_shift (I := I) (M := M) G₁ hG₁ q c hmap₁
+  have hPhi₂ := metricDifference_shift (I := I) (M := M) G₂ hG₂ q c hmap₂
   have hPhi₁0 : Phi₁ 0 = 0 := by
     simp only [Phi₁, add_zero, hG₁0, metricDifferenceCcTensor_self]
   have hPhi₂0 : Phi₂ 0 = 0 := by
@@ -786,16 +786,16 @@ theorem metricRD_unique
         smoothCcTensorBilinForm (I := I) q (Phi₁ t) x v w =
           smoothCcTensorBilinForm (I := I) q (Phi₁ t) x w v := by
     intro t _ x v w
-    exact metricDiff_symm (I := I) (M := M) q (G₁ (c + t)) x v w
+    exact metricDifference_symm (I := I) (M := M) q (G₁ (c + t)) x v w
   have hsymm₂ : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
       ∀ v w : TangentSpace I x,
         smoothCcTensorBilinForm (I := I) q (Phi₂ t) x v w =
           smoothCcTensorBilinForm (I := I) q (Phi₂ t) x w v := by
     intro t _ x v w
-    exact metricDiff_symm (I := I) (M := M) q (G₂ (c + t)) x v w
-  have hunit₁ := metricDiff_pde (I := I) (M := M) q g_bg
+    exact metricDifference_symm (I := I) (M := M) q (G₂ (c + t)) x v w
+  have hunit₁ := metricDifference_pde (I := I) (M := M) q g_bg
     (fun t => G₁ (c + t)) hδ_lt hsmall₁ hPDE₁
-  have hunit₂ := metricDiff_pde (I := I) (M := M) q g_bg
+  have hunit₂ := metricDifference_pde (I := I) (M := M) q g_bg
     (fun t => G₂ (c + t)) hδ_lt hsmall₂ hPDE₂
   have hPhiEq := smoothGeom_unique (I := I) (M := M) q g_bg a ha_super
     hLip hsingle hT hT1 hρ hB hforceBudget hcontract Phi₁ Phi₂ hS hIcc
@@ -809,7 +809,7 @@ theorem metricRD_unique
       smoothCcTensorBilinForm (I := I) q T x v w)
     (hPhiEq t ht)
   dsimp only [Phi₁, Phi₂] at h
-  rw [metricDiff_raw, metricDiff_raw] at h
+  rw [metricDifference_raw, metricDifference_raw] at h
   linarith
 theorem metricRD_local
     {D : RealTimeInterval}
@@ -835,8 +835,8 @@ theorem metricRD_local
     metricDifferenceCcTensor (I := I) (M := M) q (G₁ (c + t))
   let Phi₂ : ℝ → SmoothCcTensor q 0 2 := fun t =>
     metricDifferenceCcTensor (I := I) (M := M) q (G₂ (c + t))
-  have hPhi₁ := metricDiff_shift (I := I) (M := M) G₁ hG₁ q c hmap
-  have hPhi₂ := metricDiff_shift (I := I) (M := M) G₂ hG₂ q c hmap
+  have hPhi₁ := metricDifference_shift (I := I) (M := M) G₁ hG₁ q c hmap
+  have hPhi₂ := metricDifference_shift (I := I) (M := M) G₂ hG₂ q c hmap
   have hPhi₁0 : Phi₁ 0 = 0 := by
     simp only [Phi₁, add_zero, hG₁0, metricDifferenceCcTensor_self]
   have hPhi₂0 : Phi₂ 0 = 0 := by

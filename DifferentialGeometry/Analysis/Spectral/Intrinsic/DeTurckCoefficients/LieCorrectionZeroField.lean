@@ -1547,14 +1547,14 @@ private lemma lieCorrectionZero_committed_value (hδ_lt : δ < 1)
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W₀.toSection x)
         (unitTensor (I := I) (M := M) x) with hD
     set Dd : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
-      (bilinFormToModel (TangentSpace I x)).symm
+      (DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel (TangentSpace I x)).symm
         (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D) with hDd
     have hDdev : ∀ (u w : TangentSpace I x), Dd u w =
         unitModel (I := I) (M := M) g₀ 2 W₀ x
           (fun j' => tangentSpaceModelContinuousLinearEquiv (I := I) x
             (if j' = 0 then u else w)) := by
       intro u w
-      rw [hDd, bilinFormToModel_symm_apply,
+      rw [hDd, DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply,
         tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
       change Tensor0SSpace.eval D ![u, w] = _
       rw [← Tensor0SSpace.toModel_apply_tangent, hD, unitModel]

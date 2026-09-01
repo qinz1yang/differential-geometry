@@ -41,7 +41,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [BoundarylessManifold I M] in
-theorem metricDiff_fam_jet
+theorem metricDifference_fam_jet
     {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -331,7 +331,7 @@ theorem metricDiff_fam_jet
     simpa using hC_nn
 
 omit [BoundarylessManifold I M] in
-theorem metricDiff_wkp_terms
+theorem metricDifference_wkp_terms
     {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -351,7 +351,7 @@ theorem metricDiff_wkp_terms
             (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq w.1))
             α (![] : Fin 0 → Fin (Module.finrank ℝ E)) w.2)
           (chartTargetEuclid (I := I) (M := M) α) ≤ A := by
-  obtain ⟨C, hC, hjet⟩ := metricDiff_fam_jet
+  obtain ⟨C, hC, hjet⟩ := metricDifference_fam_jet
     (I := I) (M := M) gBase gSeq B hbdd
   intro α
   exact wkp_bdd_of_jet

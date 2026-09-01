@@ -61,7 +61,7 @@ private theorem iterFDeriv_lip
     exact hnext x
 
 omit [BoundarylessManifold I M] in
-theorem metricDiff_c2half
+theorem metricDifference_c2half
     {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -83,7 +83,7 @@ theorem metricDiff_c2half
                 α (![] : Fin 0 → Fin (Module.finrank ℝ E)) Jdx)) := by
   classical
   obtain ⟨Cjet, hCjet, hjet⟩ :=
-    metricDiff_comp_jet (I := I) (M := M) gBase gSeq B hbdd
+    metricDifference_comp_jet (I := I) (M := M) gBase gSeq B hbdd
   let Cα : ℝ≥0 := 2 * ⟨Cjet, hCjet⟩
   refine ⟨Cjet, hCjet, Cα, ?_⟩
   intro α _hα k Jdx
