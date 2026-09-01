@@ -1,7 +1,8 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Transition
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.FramedMetric
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -26,6 +27,52 @@ variable [NormedSpace Real E] [FiniteDimensional Real E]
 variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
+
+def NormalOverlapOn
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    (x y : Y.M) (U : Set E) : Prop :=
+  letI : TopologicalSpace Y.M := Y.topology
+  letI : ChartedSpace H Y.M := Y.charted
+  letI : IsManifold I ∞ Y.M := Y.smooth
+  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  ∀ z : E, z ∈ U →
+    z ∈ (expMapDiffeo (I := I) Y.metric x).source ∧
+      expMapDiffeo (I := I) Y.metric x z ∈
+        (normalChartAt (I := I) Y.metric y).source
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem normalTransition_contDiffOn
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M) {U : Set E}
+    (hUx :
+      letI : TopologicalSpace Y.M := Y.topology
+      letI : ChartedSpace H Y.M := Y.charted
+      letI : IsManifold I ∞ Y.M := Y.smooth
+      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+      U ⊆ Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric x))
+    (hmaps :
+      letI : TopologicalSpace Y.M := Y.topology
+      letI : ChartedSpace H Y.M := Y.charted
+      letI : IsManifold I ∞ Y.M := Y.smooth
+      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+      Set.MapsTo (fun z => expMapDiffeo (I := I) Y.metric x z) U
+        ((fun v : E =>
+          (expMap (I := I) Y.metric y (show TangentSpace I y from v) : Y.M)) ''
+            Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric y))) :
+    ContDiffOn ℝ (⊤ : ℕ∞) (normalTransition (I := I) Y x y) U := by
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  rw [← contMDiffOn_iff_contDiffOn]
+  have hexp : ContMDiffOn 𝓘(ℝ, E) I ∞
+      (fun z => expMapDiffeo (I := I) Y.metric x z) U :=
+    (exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) Y x).mono hUx
+  have hchart : ContMDiffOn I 𝓘(ℝ, E) ∞ (normalChartAt (I := I) Y.metric y)
+      ((fun v : E =>
+        (expMap (I := I) Y.metric y (show TangentSpace I y from v) : Y.M)) ''
+          Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric y)) :=
+    normal_chart_at_cont_mdiff_on_infty (I := I) Y.metric y
+  exact hchart.comp hexp hmaps
 
 omit [NeZero (Module.finrank Real E)] in
 theorem normalOverlap_of_map
@@ -72,7 +119,7 @@ theorem normalOverlap_of_map
   exact (expMapDiffeo (I := I) Y.metric y).map_source hvy
 
 omit [NeZero (Module.finrank Real E)] in
-theorem normalTrans_mapsTo
+theorem normalTransition_mapsTo
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M)
     {U V : Set E}
     (hVy :
@@ -253,7 +300,7 @@ theorem framedOverlap_of_map
   rw [← heq]
   exact (framedExpDiffeo (I := I) Y.metric y).map_source hvy
 
-theorem framedTrans_mapsTo
+theorem framedTransition_mapsTo
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x y : Y.M) {U V : Set E}
     (hVy :

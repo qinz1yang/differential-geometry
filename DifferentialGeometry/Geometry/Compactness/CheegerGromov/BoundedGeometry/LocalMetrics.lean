@@ -1,7 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.Defs
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalMetrics
+import DifferentialGeometry.Analysis.Calculus.BilinearFormCompactness
+import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 set_option autoImplicit false
 
@@ -43,7 +44,7 @@ theorem exists_chart_metric_limit_subsequence
       ∀ z ∈ U, ∀ v : E,
         (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z v v ∧
           gInf z v v ≤ 2 * ‖v‖ ^ 2 := by
-  apply exists_metricLimit_on hU (fun k => d.chartMetric k (c k))
+  apply exists_smooth_bilinear_form_limit_subsequence_on hU (fun k => d.chartMetric k (c k))
   · intro k
     let : TopologicalSpace (X.obj k).M := (X.obj k).topology
     let : ChartedSpace H (X.obj k).M := (X.obj k).charted

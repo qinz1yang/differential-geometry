@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.BilinearFormCompactness
 import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 
@@ -12,30 +13,6 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open Filter Topology
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-
-theorem exists_metricLimit_on
-    {U : Set E} (hU : IsOpen U)
-    (gLoc : ℕ → E → (E →L[ℝ] E →L[ℝ] ℝ))
-    (hg : ∀ k, ContDiffOn ℝ (⊤ : ℕ∞) (gLoc k) U)
-    (hbdd : ∀ r : ℕ, ∀ K : Set E, IsCompact K → K ⊆ U →
-        ∃ M : ℝ, ∀ k : ℕ, ∀ x ∈ K, ‖iteratedFDeriv ℝ r (gLoc k) x‖ ≤ M)
-    (hequiv : ∀ k : ℕ, ∀ z ∈ U, ∀ v : E,
-        (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ gLoc k z v v ∧ gLoc k z v v ≤ 2 * ‖v‖ ^ 2) :
-    ∃ (φ : ℕ → ℕ) (gInf : E → (E →L[ℝ] E →L[ℝ] ℝ)),
-      StrictMono φ ∧ ContDiffOn ℝ (⊤ : ℕ∞) gInf U ∧
-        MapCInfConvOnCompacts U (fun k => gLoc (φ k)) gInf ∧
-        ∀ z ∈ U, ∀ v : E,
-          (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ gInf z v v ∧ gInf z v v ≤ 2 * ‖v‖ ^ 2 := by
-  obtain ⟨φ, gInf, hφ, hsmooth, hconv⟩ := exists_cInf_subseq_on hU gLoc hg hbdd
-  refine ⟨φ, gInf, hφ, hsmooth, hconv, fun z hz v => ?_⟩
-  have htend : Tendsto (fun k => gLoc (φ k) z) atTop (𝓝 (gInf z)) := tendsto_of_cInf hconv hz
-  have hcont : Continuous (fun c : E →L[ℝ] E →L[ℝ] ℝ => c v v) := by fun_prop
-  have htendv : Tendsto (fun k => gLoc (φ k) z v v) atTop (𝓝 (gInf z v v)) :=
-    (hcont.tendsto (gInf z)).comp htend
-  exact ⟨ge_of_tendsto htendv (Filter.Eventually.of_forall fun k => (hequiv (φ k) z hz v).1),
-    le_of_tendsto htendv (Filter.Eventually.of_forall fun k => (hequiv (φ k) z hz v).2)⟩
 
 section HCGNormalCoord
 
@@ -52,7 +29,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_metricLimit_normalCoord
+theorem exists_normal_coord_metric_limit_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (input : NormalCoordMetricBounds (I := I) X)
     (c : ∀ k : ℕ, (X.obj k).M)
@@ -70,14 +47,16 @@ theorem exists_metricLimit_normalCoord
           (fun k => normalCoordMetric (I := I) (X.obj (φ k)) (c (φ k))) gInf ∧
         ∀ z ∈ U, ∀ v : E,
           (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ gInf z v v ∧ gInf z v v ≤ 2 * ‖v‖ ^ 2 :=
-  exists_metricLimit_on hU (fun k => normalCoordMetric (I := I) (X.obj k) (c k))
+  exists_smooth_bilinear_form_limit_subsequence_on hU
+    (fun k => normalCoordMetric (I := I) (X.obj k) (c k))
     (normal_coord_metric_cont_diff_on_of_subset_exp_ball (I := I) c hsub)
     (fun r _K _hKcpt hKU =>
       ⟨input.metricC r, fun k z hz => input.metric_deriv k r (c k) z (hdom k (hKU hz))⟩)
+    (1 / 2) 2
     (fun k z hz v => input.metric_equiv k (c k) z (hdom k hz) v)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_metric_lim_pi
+theorem exists_finite_normal_coord_metric_limit_subsequence
     {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (input : NormalCoordMetricBounds (I := I) X)

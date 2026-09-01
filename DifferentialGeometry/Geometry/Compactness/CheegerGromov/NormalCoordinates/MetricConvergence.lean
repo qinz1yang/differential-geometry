@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BranchConstruction
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalMetrics
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricLimit
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -106,7 +106,7 @@ theorem exists_live_metric
       nlinarith [Geometry.Riemannian.expMapC2Radius_pos
         (I := I) (X'.obj k).metric (c alpha k)]))
   obtain ⟨phi, gInf, hphi, hgInf, hconv, hequiv⟩ :=
-    exists_metric_lim_pi (I := I) input' c Metric.isOpen_ball hdom hsub
+    exists_finite_normal_coord_metric_limit_subsequence (I := I) input' c Metric.isOpen_ball hdom hsub
   let psi : Nat → Nat := fun k ↦ shift (phi k)
   have hpsi : StrictMono psi := hshift.comp hphi
   refine ⟨psi, gInf, hpsi, ?_, hgInf, ?_, ?_, hequiv⟩
@@ -214,7 +214,7 @@ theorem exists_slot_metric
         nlinarith [Geometry.Riemannian.expMapC2Radius_pos
           (I := I) (X'.obj n).metric (c n)]))
     obtain ⟨σ, g, hσ, hg, hconv, hequiv⟩ :=
-      exists_metricLimit_normalCoord (I := I) input' c Metric.isOpen_ball hdom hsub
+      exists_normal_coord_metric_limit_subsequence (I := I) input' c Metric.isOpen_ball hdom hsub
     refine ⟨σ, g, hσ, ?_, ?_, hequiv⟩
     · simpa only [Φ, X', input', index, c, PointedRiemannianSeq.subseq] using hconv
     · simpa only [Q] using hg

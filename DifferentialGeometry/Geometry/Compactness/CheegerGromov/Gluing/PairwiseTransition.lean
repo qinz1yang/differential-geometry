@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.TransitionOverlap
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionOverlap
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.PairGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.TransitionRefine
@@ -167,7 +167,7 @@ theorem MetricCompactnessInputs.atom_trans_small
         rw [Set.mem_singleton_iff] at hw
         subst w
         exact htarget (Metric.ball_subset_closedBall hqBall)
-      exact normalTrans_mapsTo (I := I) (X.obj (L.φ k)) x y hVy hmaps
+      exact normalTransition_mapsTo (I := I) (X.obj (L.φ k)) x y hVy hmaps
         (Set.mem_singleton z)
 
 theorem MetricCompactnessInputs.weight_trans_small
@@ -381,7 +381,7 @@ theorem MetricCompactnessInputs.pair_overlap_tail
     rw [Metric.mem_ball] at hz ⊢
     exact hz.trans_le
       (hradk β.1 (seqCenterD inp.decay P L k (β.1 : Nat)) hy).2
-  have hsmooth := cont_diff_on_normal_transition (I := I) (X.obj (L.φ k))
+  have hsmooth := normalTransition_contDiffOn (I := I) (X.obj (L.φ k))
     (seqCenterD inp.decay P L k (α.1 : Nat))
     (seqCenterD inp.decay P L k (β.1 : Nat)) hUx
     (hmapsk.mono_right (Set.image_mono hVy))
@@ -389,7 +389,7 @@ theorem MetricCompactnessInputs.pair_overlap_tail
     normalOverlap_of_map (I := I) (X.obj (L.φ k))
       (seqCenterD inp.decay P L k (α.1 : Nat))
       (seqCenterD inp.decay P L k (β.1 : Nat)) hUx hVy hmapsk,
-    normalTrans_mapsTo (I := I) (X.obj (L.φ k))
+    normalTransition_mapsTo (I := I) (X.obj (L.φ k))
       (seqCenterD inp.decay P L k (α.1 : Nat))
       (seqCenterD inp.decay P L k (β.1 : Nat)) hVy hmapsk⟩
 

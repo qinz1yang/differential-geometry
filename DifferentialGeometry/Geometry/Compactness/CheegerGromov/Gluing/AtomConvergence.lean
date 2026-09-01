@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Construction
 import DifferentialGeometry.Analysis.Calculus.QuadraticEvaluationConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.WeightConvergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalMetrics
+import DifferentialGeometry.Analysis.Calculus.BilinearFormCompactness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterIndexing
 
@@ -429,7 +429,8 @@ theorem existsOriginMetric
     intro k _z _hz v
     exact input.metric_equiv k (c k) 0 (hzero k) v
   simpa only [g0, Set.mem_univ, forall_const] using
-    (exists_metricLimit_on (E := E) isOpen_univ g0 hsmooth hbdd hequiv)
+    (exists_smooth_bilinear_form_limit_subsequence_on (E := E) isOpen_univ g0
+      hsmooth hbdd (1 / 2) 2 hequiv)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem existsMetric0Univ {ι : Type*} [Fintype ι]

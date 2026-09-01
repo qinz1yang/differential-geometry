@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Transition
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.TransitionOverlap
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionLimit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionOverlap
 
 open DifferentialGeometry.Geometry.Curvature
 
@@ -183,7 +183,7 @@ theorem exists_joint_normal_metric_transition_limit
   have hsmooth : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (J k) U := by
     intro k
     refine contDiffOn_pi.mpr fun gamma => ?_
-    exact cont_diff_on_normal_transition (I := I) (X.obj (L.φ (psi1 (tau k))))
+    exact normalTransition_contDiffOn (I := I) (X.obj (L.φ (psi1 (tau k))))
       (beta (psi1 (tau k)))
       (seqCenterD hd P L (psi1 (tau k)) (gamma.1 : Nat))
       (hUExp k gamma)
@@ -193,7 +193,7 @@ theorem exists_joint_normal_metric_transition_limit
         (beta (psi1 (tau k)))
         (seqCenterD hd P L (psi1 (tau k)) (gamma.1 : Nat)))
       U (Metric.ball (0 : E) rho) := by
-    exact normalTrans_mapsTo (I := I) (X.obj (L.φ (psi1 (tau k))))
+    exact normalTransition_mapsTo (I := I) (X.obj (L.φ (psi1 (tau k))))
       (beta (psi1 (tau k)))
       (seqCenterD hd P L (psi1 (tau k)) (gamma.1 : Nat))
       (hVExp k gamma) (hMaps k gamma)

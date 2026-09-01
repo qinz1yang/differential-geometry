@@ -2,34 +2,16 @@ import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
-import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionOverlap
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalTransitionBounds
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry
 namespace HCGCompactness
 
 open Filter Topology
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-
-theorem exists_transition_limit_on
-    {U V : Set E} (hU : IsOpen U) (hV : IsOpen V)
-    (J : ℕ → E → E) (Jbar : ℕ → E → E)
-    (hJ : ∀ k, ContDiffOn ℝ (⊤ : ℕ∞) (J k) U)
-    (hJbar : ∀ k, ContDiffOn ℝ (⊤ : ℕ∞) (Jbar k) V)
-    (hbJ : iteratedFDerivBoundsOnCompactsWithin U J) (hbJbar : iteratedFDerivBoundsOnCompactsWithin V Jbar)
-    (hLeft : ∀ k, ∀ x ∈ U, Jbar k (J k x) = x) (hRight : ∀ k, ∀ y ∈ V, J k (Jbar k y) = y) :
-    ∃ (φ : ℕ → ℕ) (Jinf : E → E) (Jbarinf : E → E),
-      StrictMono φ ∧ ContDiffOn ℝ (⊤ : ℕ∞) Jinf U ∧ ContDiffOn ℝ (⊤ : ℕ∞) Jbarinf V ∧
-        MapCInfConvOnCompacts U (fun k => J (φ k)) Jinf ∧
-        MapCInfConvOnCompacts V (fun k => Jbar (φ k)) Jbarinf ∧
-        (∀ x ∈ U, Jinf x ∈ V → Jbarinf (Jinf x) = x) ∧
-        (∀ y ∈ V, Jbarinf y ∈ U → Jinf (Jbarinf y) = y) :=
-  exists_smooth_inverse_limit_subsequence_on hU hV J Jbar hJ hJbar hbJ hbJbar hLeft hRight
 
 section HCGNormalTransition
 
@@ -40,61 +22,6 @@ open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
 universe u uE uH
-
-section Raw
-
-variable {E : Type uE} [NormedAddCommGroup E]
-variable [NormedSpace Real E] [FiniteDimensional Real E]
-variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
-variable {H : Type uH} [TopologicalSpace H]
-variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-
-def NormalOverlapOn
-    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M) (U : Set E) : Prop :=
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  forall z : E, z ∈ U ->
-    z ∈ (expMapDiffeo (I := I) Y.metric x).source ∧
-      expMapDiffeo (I := I) Y.metric x z ∈
-        (normalChartAt (I := I) Y.metric y).source
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem cont_diff_on_normal_transition
-    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M) {U : Set E}
-    (hUx :
-      letI : TopologicalSpace Y.M := Y.topology
-      letI : ChartedSpace H Y.M := Y.charted
-      letI : IsManifold I ∞ Y.M := Y.smooth
-      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      U ⊆ Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric x))
-    (hmaps :
-      letI : TopologicalSpace Y.M := Y.topology
-      letI : ChartedSpace H Y.M := Y.charted
-      letI : IsManifold I ∞ Y.M := Y.smooth
-      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      Set.MapsTo (fun z => expMapDiffeo (I := I) Y.metric x z) U
-        ((fun v : E =>
-          (expMap (I := I) Y.metric y (show TangentSpace I y from v) : Y.M)) ''
-            Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric y))) :
-    ContDiffOn ℝ (⊤ : ℕ∞) (normalTransition (I := I) Y x y) U := by
-  let : TopologicalSpace Y.M := Y.topology
-  let : ChartedSpace H Y.M := Y.charted
-  let : IsManifold I ∞ Y.M := Y.smooth
-  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  rw [← contMDiffOn_iff_contDiffOn]
-  have hexp : ContMDiffOn 𝓘(ℝ, E) I ∞
-      (fun z => expMapDiffeo (I := I) Y.metric x z) U :=
-    (exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) Y x).mono hUx
-  have hchart : ContMDiffOn I 𝓘(ℝ, E) ∞ (normalChartAt (I := I) Y.metric y)
-      ((fun v : E =>
-        (expMap (I := I) Y.metric y (show TangentSpace I y from v) : Y.M)) ''
-          Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric y)) :=
-    normal_chart_at_cont_mdiff_on_infty (I := I) Y.metric y
-  exact hchart.comp hexp hmaps
-
-end Raw
 
 section NormalTransitionCompactness
 
@@ -176,7 +103,7 @@ theorem exists_normal_transition_subsequence
             (y (φ k)) (x (φ k))) Jbarinf ∧
         (∀ z ∈ U, Jinf z ∈ V → Jbarinf (Jinf z) = z) ∧
         (∀ w ∈ V, Jbarinf w ∈ U → Jinf (Jbarinf w) = w) := by
-  apply exists_transition_limit_on hU hV
+  apply exists_smooth_inverse_limit_subsequence_on hU hV
     (fun k => normalTransition (I := I) (X.obj k) (x k) (y k))
     (fun k => normalTransition (I := I) (X.obj k) (y k) (x k))
     hJ hJbar

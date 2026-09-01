@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Transition
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionLimit
 
 
 open DifferentialGeometry.Geometry.Curvature

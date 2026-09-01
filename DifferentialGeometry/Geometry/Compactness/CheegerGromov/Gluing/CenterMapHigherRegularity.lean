@@ -766,7 +766,7 @@ private theorem trans_fin
       let d0 := d.subseq phi0
       obtain ⟨phi1, Jinf, Jbarinf, hphi1, hJinf, hJbarinf,
           hJ, hJbar, hleft, hright⟩ :=
-        d0.exists_trans_lim
+        d0.exists_transition_limit_subsequence
           (fun k => x a (phi0 k)) (fun k => y a (phi0 k))
           (hU a (Finset.mem_insert_self a s))
           (hV a (Finset.mem_insert_self a s))

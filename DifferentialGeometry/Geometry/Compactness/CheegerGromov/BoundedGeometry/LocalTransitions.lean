@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.N
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalTransitionBounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Transition
+import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 set_option autoImplicit false
 
@@ -157,7 +157,7 @@ theorem trans_bounds_on
       d.metric_deriv k p (y k) z (hVrad' hz)
 
 
-theorem exists_trans_lim
+theorem exists_transition_limit_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalChartData (I := I) X hd)
@@ -217,7 +217,7 @@ theorem exists_trans_lim
       simpa only [BoundedGeometryNormalChartData.chartOverlapOn] using hovlJbar k
     simpa only [BoundedGeometryNormalChartData.chartTransition] using
       (d.chart k (y k)).transition_smooth (d.chart k (x k)) hovl'
-  apply exists_transition_limit_on hU hV
+  apply exists_smooth_inverse_limit_subsequence_on hU hV
     (fun k => d.chartTransition k (x k) (y k))
     (fun k => d.chartTransition k (y k) (x k))
     hJ hJbar
