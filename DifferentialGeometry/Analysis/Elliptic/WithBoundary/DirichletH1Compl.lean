@@ -66,12 +66,86 @@ noncomputable def H1ComplDirichletToLp (g : SmoothRiemannianMetric (I_half n) M)
       Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
   H1ComplInteriorToLp g
 
+noncomputable def H1ComplDirichlet.representative
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : H1ComplDirichlet g) : M → ℝ :=
+  H1ComplDirichletToLp g u
+
+theorem H1ComplDirichlet.representative_memLp
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : H1ComplDirichlet g) :
+    MemLp (u.representative g) 2
+      (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
+  Lp.memLp _
+
+theorem H1ComplDirichlet.representative_aestronglyMeasurable
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : H1ComplDirichlet g) :
+    @AEStronglyMeasurable M ℝ _ (borel M) (borel M) (u.representative g)
+      (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
+  Lp.aestronglyMeasurable _
+
+theorem H1ComplDirichlet.norm_toLp_eq_eLpNorm_representative
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : H1ComplDirichlet g) :
+    ‖H1ComplDirichletToLp g u‖ =
+      (eLpNorm (u.representative g) 2
+        (riemannianVolumeMeasure (I := I_half n) (M := M) g)).toReal :=
+  Lp.norm_def _
+
+@[simp] theorem H1ComplDirichlet.representative_zero_ae
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    (0 : H1ComplDirichlet g).representative g =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) g] 0 := by
+  unfold representative
+  rw [(H1ComplDirichletToLp g).map_zero]
+  exact Lp.coeFn_zero ℝ 2 _
+
+theorem H1ComplDirichlet.representative_add_ae
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u v : H1ComplDirichlet g) :
+    (u + v).representative g =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) g]
+      u.representative g + v.representative g := by
+  unfold representative
+  rw [(H1ComplDirichletToLp g).map_add]
+  exact Lp.coeFn_add _ _
+
+theorem H1ComplDirichlet.representative_sub_ae
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u v : H1ComplDirichlet g) :
+    (u - v).representative g =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) g]
+      u.representative g - v.representative g := by
+  unfold representative
+  rw [(H1ComplDirichletToLp g).map_sub]
+  exact Lp.coeFn_sub _ _
+
+theorem H1ComplDirichlet.representative_smul_ae
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (c : ℝ) (u : H1ComplDirichlet g) :
+    (c • u).representative g =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) g]
+      c • u.representative g := by
+  unfold representative
+  rw [(H1ComplDirichletToLp g).map_smul]
+  exact Lp.coeFn_smul _ _
+
 @[simp] lemma H1ComplDirichletToLp_smoothToH1ComplDirichlet
     (g : SmoothRiemannianMetric (I_half n) M)
     (f : SmoothScalarDirichlet g) :
     H1ComplDirichletToLp g (smoothToH1ComplDirichlet g f) =
       smoothToLpDirichlet g f :=
   H1ComplInteriorToLp_smoothToH1ComplInterior g f
+
+theorem H1ComplDirichlet.representative_smoothToH1ComplDirichlet_ae
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (f : SmoothScalarDirichlet g) :
+    (smoothToH1ComplDirichlet g f).representative g =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) g] f.toFun := by
+  unfold representative
+  rw [H1ComplDirichletToLp_smoothToH1ComplDirichlet]
+  exact MemLp.coeFn_toLp f.memLp_two
 
 noncomputable def resolventDirichlet
     (g : SmoothRiemannianMetric (I_half n) M) :
