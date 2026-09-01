@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
+import DifferentialGeometry.Analysis.ODE.ClosedEdgeGronwall
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderDifferenceEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.StrongSpectralSolution
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.SmallC0
@@ -1528,7 +1529,7 @@ theorem movingMetricDifferenceEnergy_eq_zero
     intro t ht
     exact movingMetricDifferenceEnergy_hasDerivAt (I := I) (M := M) g_bg g₀ g₁
       isOpen_Ioo ht h₀s h₁s (hPDE₀ t ht) (hPDE₁ t ht)
-  exact eq_zero_of_nonnegative_gronwall_derivative_bound hT
+  exact DifferentialGeometry.Analysis.ODE.gronwall_zero_on hT
     (movingMetricDifferenceEnergy (I := I) (M := M) g₀ g₁)
     (movingMetricDifferenceEnergyRate (I := I) (M := M) g_bg g₀ g₁)
     hcont hzero hnonneg hderiv hbound

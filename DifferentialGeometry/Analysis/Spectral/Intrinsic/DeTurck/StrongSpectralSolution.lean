@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SmoothStrongPair
-import Mathlib.Analysis.ODE.Gronwall
+import DifferentialGeometry.Analysis.ODE.ClosedEdgeGronwall
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -32,60 +32,6 @@ private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
-
-theorem eq_zero_of_nonnegative_gronwall_derivative_bound {T K : ℝ} (hT : 0 < T)
-    (energy energy' : ℝ → ℝ)
-    (hcont : ContinuousOn energy (Icc (0 : ℝ) T))
-    (hzero : energy 0 = 0)
-    (hnonneg : ∀ t ∈ Icc (0 : ℝ) T, 0 ≤ energy t)
-    (hderiv : ∀ t ∈ Ioo (0 : ℝ) T, HasDerivAt energy (energy' t) t)
-    (hbound : ∀ t ∈ Ioo (0 : ℝ) T, energy' t ≤ K * energy t) :
-    ∀ t ∈ Icc (0 : ℝ) T, energy t = 0 := by
-  intro t ht
-  rcases eq_or_lt_of_le ht.1 with rfl | htpos
-  · exact hzero
-  have hlimT : Tendsto energy (nhdsWithin (0 : ℝ) (Ioo 0 T)) (𝓝 0) := by
-    have hlim := (hcont 0 ⟨le_rfl, hT.le⟩).tendsto.mono_left
-      (nhdsWithin_mono 0 Ioo_subset_Icc_self)
-    simpa only [hzero] using hlim
-  have hsub : Ioo (0 : ℝ) t ⊆ Ioo (0 : ℝ) T := fun s hs =>
-    ⟨hs.1, lt_of_lt_of_le hs.2 ht.2⟩
-  have hlim : Tendsto energy (nhdsWithin (0 : ℝ) (Ioo 0 t)) (𝓝 0) :=
-    hlimT.mono_left (nhdsWithin_mono 0 hsub)
-  have : (nhdsWithin (0 : ℝ) (Ioo 0 t)).NeBot := by
-    rw [nhdsWithin_Ioo_eq_nhdsGT htpos]
-    infer_instance
-  have heps : Tendsto (fun ε : ℝ => ε) (nhdsWithin (0 : ℝ) (Ioo 0 t)) (𝓝 0) :=
-    (continuous_id.tendsto 0).mono_left nhdsWithin_le_nhds
-  have harg : Tendsto (fun ε : ℝ => K * (t - ε))
-      (nhdsWithin (0 : ℝ) (Ioo 0 t)) (𝓝 (K * (t - 0))) :=
-    tendsto_const_nhds.mul (tendsto_const_nhds.sub heps)
-  have hexp : Tendsto (fun ε : ℝ => Real.exp (K * (t - ε)))
-      (nhdsWithin (0 : ℝ) (Ioo 0 t)) (𝓝 (Real.exp (K * (t - 0)))) :=
-    Real.continuous_exp.continuousAt.tendsto.comp harg
-  have hrhs : Tendsto (fun ε : ℝ => energy ε * Real.exp (K * (t - ε)))
-      (nhdsWithin (0 : ℝ) (Ioo 0 t)) (𝓝 0) := by
-    simpa only [zero_mul] using hlim.mul hexp
-  have hev : ∀ᶠ ε in nhdsWithin (0 : ℝ) (Ioo 0 t),
-      energy t ≤ energy ε * Real.exp (K * (t - ε)) := by
-    filter_upwards [self_mem_nhdsWithin] with ε hε
-    have hcontε : ContinuousOn energy (Icc ε t) :=
-      hcont.mono (Icc_subset_Icc hε.1.le ht.2)
-    have hslope : ∀ x ∈ Ico ε t, ∀ r, energy' x < r →
-        ∃ᶠ z in 𝓝[>] x, (z - x)⁻¹ * (energy z - energy x) < r := by
-      intro x hx r hr
-      have hxT : x ∈ Ioo (0 : ℝ) T :=
-        ⟨lt_of_lt_of_le hε.1 hx.1, lt_of_lt_of_le hx.2 ht.2⟩
-      exact (hderiv x hxT).hasDerivWithinAt.liminf_right_slope_le hr
-    have hgr := le_gronwallBound_of_liminf_deriv_right_le
-      (δ := energy ε) (K := K) (ε := 0) (a := ε) (b := t)
-      hcontε hslope le_rfl
-      (fun x hx => by
-        simpa only [add_zero] using hbound x
-          ⟨lt_of_lt_of_le hε.1 hx.1, lt_of_lt_of_le hx.2 ht.2⟩) t
-      ⟨hε.2.le, le_rfl⟩
-    simpa only [gronwallBound_ε0] using hgr
-  exact le_antisymm (ge_of_tendsto hrhs hev) (hnonneg t ht)
 
 structure StrongSpectralSolution
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
