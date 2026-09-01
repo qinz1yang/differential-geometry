@@ -498,6 +498,56 @@ private theorem cylinderDiagonalDiffeomorph_toEquiv_ne_one :
   rw [h, orderOf_one] at horder
   omega
 
+theorem cylinderAntipodalGroup_ne_bot :
+    cylinderAntipodalGroup ≠ (⊥ : Subgroup (Equiv.Perm
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real))) := by
+  intro h
+  have hmem : cylinderAntipodalDiffeomorph.toEquiv ∈
+      (⊥ : Subgroup (Equiv.Perm
+        (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real))) := by
+    rw [← h]
+    exact Subgroup.mem_zpowers _
+  have hone : cylinderAntipodalDiffeomorph.toEquiv = 1 := by
+    simpa using hmem
+  exact cylinderAntipodalDiffeomorph_toEquiv_ne_one hone
+
+theorem cylinderDiagonalGroup_ne_bot :
+    cylinderDiagonalGroup ≠ (⊥ : Subgroup (Equiv.Perm
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real))) := by
+  intro h
+  have hmem : cylinderDiagonalDiffeomorph.toEquiv ∈
+      (⊥ : Subgroup (Equiv.Perm
+        (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real))) := by
+    rw [← h]
+    exact Subgroup.mem_zpowers _
+  have hone : cylinderDiagonalDiffeomorph.toEquiv = 1 := by
+    simpa using hmem
+  exact cylinderDiagonalDiffeomorph_toEquiv_ne_one hone
+
+theorem cylinderAntipodalGroup_ne_cylinderDiagonalGroup :
+    cylinderAntipodalGroup ≠ cylinderDiagonalGroup := by
+  intro h
+  have hmem : cylinderAntipodalDiffeomorph.toEquiv ∈ cylinderDiagonalGroup := by
+    rw [← h]
+    exact Subgroup.mem_zpowers _
+  let psi : cylinderDiagonalGroup :=
+    ⟨cylinderAntipodalDiffeomorph.toEquiv, hmem⟩
+  rcases cylinderDiagonalGroup_eq_one_or_generator psi with hone | heq
+  · change cylinderAntipodalDiffeomorph.toEquiv = 1 at hone
+    exact cylinderAntipodalDiffeomorph_toEquiv_ne_one hone
+  · let y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 :=
+      ⟨EuclideanSpace.single 0 1, by simp [PiLp.norm_single]⟩
+    have hact := congrArg
+      (fun e : Equiv.Perm
+        (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) => e (y, 1)) heq
+    change cylinderAntipodalDiffeomorph (y, 1) =
+      cylinderDiagonalDiffeomorph (y, 1) at hact
+    rw [cylinderAntipodalDiffeomorph_apply,
+      cylinderDiagonalDiffeomorph_apply] at hact
+    have hsnd := congrArg Prod.snd hact
+    simp [cylinderAntipodal, cylinderDiagonal] at hsnd
+    norm_num at hsnd
+
 noncomputable def cylinderAntipodalGroupDiffeomorph
     (psi : cylinderAntipodalGroup) :
     (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)
@@ -1019,7 +1069,7 @@ private theorem roundThreeCylinderSolitonAutomorphism_mem_cases
           exact Prod.ext hφ (by simp [cylinderDiagonal])
   exact hcases gamma
 
-theorem roundThreeCylinderSolitonAutomorphism_subgroup_eq_trichotomy
+theorem roundThreeCylinderSolitonAutomorphism_subgroup_eq_bot_or_antipodal_or_diagonal
     (Gamma : Subgroup (Equiv.Perm
       (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)))
     (hsoliton : ∀ gamma : Gamma,
@@ -1112,5 +1162,32 @@ theorem roundThreeCylinderSolitonAutomorphism_subgroup_eq_trichotomy
         exact h1
       · exact (ha ⟨⟨gamma, hgamma⟩, ha'⟩).elim
       · exact (hd ⟨⟨gamma, hgamma⟩, hd'⟩).elim
+
+theorem roundThreeCylinderSolitonAutomorphism_subgroup_eq_trichotomy
+    (Gamma : Subgroup (Equiv.Perm
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)))
+    (hsoliton : ∀ gamma : Gamma,
+      roundThreeCylinderSolitonAutomorphism gamma.1)
+    (hfree : ∀ (gamma : Gamma)
+      (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real),
+      gamma.1 x = x → gamma = 1) :
+    (Gamma = ⊥ ∧ Gamma ≠ cylinderAntipodalGroup ∧
+      Gamma ≠ cylinderDiagonalGroup) ∨
+    (Gamma = cylinderAntipodalGroup ∧ Gamma ≠ ⊥ ∧
+      Gamma ≠ cylinderDiagonalGroup) ∨
+    (Gamma = cylinderDiagonalGroup ∧ Gamma ≠ ⊥ ∧
+      Gamma ≠ cylinderAntipodalGroup) := by
+  rcases
+      roundThreeCylinderSolitonAutomorphism_subgroup_eq_bot_or_antipodal_or_diagonal
+        Gamma hsoliton hfree with hGamma | hGamma | hGamma
+  · subst Gamma
+    exact Or.inl ⟨rfl, cylinderAntipodalGroup_ne_bot.symm,
+      cylinderDiagonalGroup_ne_bot.symm⟩
+  · subst Gamma
+    exact Or.inr (Or.inl ⟨rfl, cylinderAntipodalGroup_ne_bot,
+      cylinderAntipodalGroup_ne_cylinderDiagonalGroup⟩)
+  · subst Gamma
+    exact Or.inr (Or.inr ⟨rfl, cylinderDiagonalGroup_ne_bot,
+      cylinderAntipodalGroup_ne_cylinderDiagonalGroup.symm⟩)
 
 end DifferentialGeometry.Geometry
