@@ -102,7 +102,7 @@ omit [I.Boundaryless] [∀ j, IsRiemannianManifold I (M j)]
   [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [NeZero (Module.finrank ℝ E)] in
 omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem tailBall_source
+theorem tail_ball_source
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
@@ -122,7 +122,7 @@ theorem tailBall_source
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-theorem tailBall_image
+theorem tail_ball_image
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (hbase : ∀ j, (Ψ j : M j → M (j + 1)) (b j) = b (j + 1))
@@ -167,7 +167,7 @@ theorem tailBall_image
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-theorem tailClosed_image
+theorem tail_closed_ball_image
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (hbase : ∀ j, (Ψ j : M j → M (j + 1)) (b j) = b (j + 1))

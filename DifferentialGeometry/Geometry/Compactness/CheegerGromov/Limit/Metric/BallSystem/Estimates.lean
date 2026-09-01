@@ -36,7 +36,7 @@ variable [NeZero (Module.finrank ℝ E)]
 omit [NeZero (Module.finrank ℝ E)] in
 omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] [I.Boundaryless] in
-theorem chainPrefix_cov_le
+theorem chain_prefix_metric_cov_deriv_norm_le
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     {j a b : ℕ} {K : Set (M (j + a))} (U : Opens (M j))
     (hpre : (U : Set (M j)) ⊆ (chainComp (I := I) (Mf := M) Ψ j a).source)
@@ -73,7 +73,7 @@ omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
-theorem chainLimit_base_le
+theorem chain_limit_metric_deriv_norm_le
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
@@ -117,7 +117,7 @@ theorem chainLimit_base_le
 omit [NeZero (Module.finrank ℝ E)] in
 omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] [I.Boundaryless] in
-theorem chainPrefix_zero_le
+theorem chain_prefix_metric_zero_cov_deriv_norm_le
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     {j a b : ℕ} {K : Set (M (j + a))} (U : Opens (M j))
     (hpre : (U : Set (M j)) ⊆ (chainComp (I := I) (Mf := M) Ψ j a).source)
@@ -243,9 +243,9 @@ theorem tail_metric_deriv_norm_sup_lt
       (tailMetric (I := I) b j₀ gInf n)
       (tailMetric (I := I) b j₀ gInf n) (ε / 2) (by linarith) ?_) (by linarith)
   intro q hqp x _hxK
-  let inc : V → U := Opens.inclusion (tailBall_le_large b j₀ n)
+  let inc : V → U := Opens.inclusion (tail_ball_le_large b j₀ n)
   have hbig := hn₀ n hn 0 q hqp (inc x)
-  rw [chainPullback_zero (I := I) Ψ g U (hU n)] at hbig
+  rw [chain_pullback_zero (I := I) Ψ g U (hU n)] at hbig
   calc
     metricDerivNorm (I := I) q
         ((g (j₀ + n)).restrictOpen (I := I) V)
@@ -256,7 +256,7 @@ theorem tail_metric_deriv_norm_sup_lt
         (gInf n) (gInf n) (inc x) := by
           simpa only [U, V, inc, tailMetric,
             SmoothRiemannianMetric.restrictOpen_flat] using
-            metricDerivNorm_flat (I := I) (tailBall_le_large b j₀ n)
+            metricDerivNorm_flat (I := I) (tail_ball_le_large b j₀ n)
               ((g (j₀ + n)).restrictOpen (I := I) U) (gInf n) (gInf n) q x
     _ ≤ ε / 2 := hbig
 

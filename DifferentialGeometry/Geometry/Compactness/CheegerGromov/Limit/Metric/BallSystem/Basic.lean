@@ -31,18 +31,18 @@ def tailBallOpen (b : ∀ j, M j) (j₀ n : ℕ) : Opens (M (j₀ + n)) :=
   ⟨Metric.ball (b (j₀ + n)) ((2 : ℝ) ^ n), Metric.isOpen_ball⟩
 
 omit [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)] in
-theorem ballOpen_nonempty (b : ∀ j, M j) (r : ℕ → ℝ) (j : ℕ) (hr : 0 < r j) :
+theorem ball_open_nonempty (b : ∀ j, M j) (r : ℕ → ℝ) (j : ℕ) (hr : 0 < r j) :
     Nonempty (ballOpen b r j) := by
   refine ⟨⟨b j, ?_⟩⟩
   exact Metric.mem_ball_self hr
 
 omit [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)] in
-theorem tailBall_nonempty (b : ∀ j, M j) (j₀ n : ℕ) :
+theorem tail_ball_nonempty (b : ∀ j, M j) (j₀ n : ℕ) :
     Nonempty (tailBallOpen b j₀ n) :=
   ⟨⟨b (j₀ + n), Metric.mem_ball_self (by positivity)⟩⟩
 
 omit [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)] in
-theorem tailBall_le_large (b : ∀ j, M j) (j₀ n : ℕ) :
+theorem tail_ball_le_large (b : ∀ j, M j) (j₀ n : ℕ) :
     tailBallOpen b j₀ n ≤ ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n) := by
   intro x hx
   change x ∈ Metric.ball (b (j₀ + n)) ((2 : ℝ) ^ n) at hx
@@ -58,7 +58,7 @@ noncomputable def tailMetric
   letI : SigmaCompactSpace (tailBallOpen b j₀ n) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I (tailBallOpen b j₀ n).isOpen)
-  exact (gInf n).restrictOpenOfSubset (I := I) (tailBall_le_large b j₀ n)
+  exact (gInf n).restrictOpenOfSubset (I := I) (tail_ball_le_large b j₀ n)
 
 def coreRadius (n : ℕ) : ℝ := (2 : ℝ) ^ n / 2
 
@@ -87,7 +87,7 @@ theorem core_subset_tail (b : ∀ j, M j) (j₀ n : ℕ) :
   nlinarith
 
 omit [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)] in
-theorem tailCore_compact (b : ∀ j, M j) (j₀ n : ℕ)
+theorem tail_core_compact (b : ∀ j, M j) (j₀ n : ℕ)
     [ProperSpace (M (j₀ + n))] : IsCompact (tailCore b j₀ n) := by
   rw [Subtype.isCompact_iff]
   have hval : Subtype.val '' tailCore b j₀ n =
@@ -104,17 +104,17 @@ theorem tailCore_compact (b : ∀ j, M j) (j₀ n : ℕ)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E]
   [∀ j, SigmaCompactSpace (M j)] in
-theorem limitCore_closed (b : ∀ j, M j) (j₀ n : ℕ)
+theorem limit_core_closed (b : ∀ j, M j) (j₀ n : ℕ)
     [ProperSpace (M (j₀ + n))]
     [∀ m, Nonempty (tailBallOpen b j₀ m)]
     (S : SmoothSeqSystem I (fun m => tailBallOpen b j₀ m)) :
     IsClosed (limitCore b j₀ S n) := by
-  exact ((tailCore_compact b j₀ n).image
+  exact ((tail_core_compact b j₀ n).image
     (S.toSeqSystem.continuous_incl n)).isClosed
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E]
   [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)] in
-theorem incl_mem_coreInt (b : ∀ j, M j) (j₀ n : ℕ)
+theorem incl_mem_core_interior (b : ∀ j, M j) (j₀ n : ℕ)
     [∀ m, Nonempty (tailBallOpen b j₀ m)]
     (S : SmoothSeqSystem I (fun m => tailBallOpen b j₀ m))
     {x : tailBallOpen b j₀ n}
@@ -139,11 +139,11 @@ theorem incl_mem_coreInt (b : ∀ j, M j) (j₀ n : ℕ)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E]
   [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)] in
-theorem center_mem_coreInt (b : ∀ j, M j) (j₀ n : ℕ)
+theorem center_mem_core_interior (b : ∀ j, M j) (j₀ n : ℕ)
     [∀ m, Nonempty (tailBallOpen b j₀ m)]
     (S : SmoothSeqSystem I (fun m => tailBallOpen b j₀ m)) :
     S.toSeqSystem.incl n (tailCenter b j₀ n) ∈ interior (limitCore b j₀ S n) := by
-  apply incl_mem_coreInt b j₀ n S
+  apply incl_mem_core_interior b j₀ n S
   simp only [tailCenter, dist_self, coreRadius]
   positivity
 
@@ -157,7 +157,7 @@ theorem frontier_core_radius (b : ∀ j, M j) (j₀ n : ℕ)
     ∃ x : tailBallOpen b j₀ n,
       S.toSeqSystem.incl n x = q ∧
         dist (b (j₀ + n)) (x : M (j₀ + n)) = coreRadius n := by
-  have hclosed := limitCore_closed b j₀ n S
+  have hclosed := limit_core_closed b j₀ n S
   have hqK : q ∈ limitCore b j₀ S n := by
     rw [← hclosed.closure_eq]
     exact frontier_subset_closure hq
@@ -168,7 +168,7 @@ theorem frontier_core_radius (b : ∀ j, M j) (j₀ n : ℕ)
   by_contra hnot
   have hlt : dist (b (j₀ + n)) (x : M (j₀ + n)) < coreRadius n :=
     lt_of_not_ge hnot
-  have hint := incl_mem_coreInt b j₀ n S hlt
+  have hint := incl_mem_core_interior b j₀ n S hlt
   exact hnotInt (hxeq ▸ hint)
 
 def ballStep
@@ -188,9 +188,9 @@ def ballSystem
     (hsrc : ∀ j, (ballOpen b r j : Set (M j)) ⊆ (Ψ j).source)
     (hmap : ∀ j, (Ψ j : M j → M (j + 1)) '' (ballOpen b r j : Set (M j)) ⊆
       (ballOpen b r (j + 1) : Set (M (j + 1)))) :
-    letI : ∀ j, Nonempty (ballOpen b r j) := fun j => ballOpen_nonempty b r j (hr j)
+    letI : ∀ j, Nonempty (ballOpen b r j) := fun j => ball_open_nonempty b r j (hr j)
     SmoothSeqSystem I (fun j => ballOpen b r j) := by
-  letI : ∀ j, Nonempty (ballOpen b r j) := fun j => ballOpen_nonempty b r j (hr j)
+  letI : ∀ j, Nonempty (ballOpen b r j) := fun j => ball_open_nonempty b r j (hr j)
   exact SmoothSeqSystem.ofSucc (fun j => ballStep b r Ψ hmap j)
     (fun j => PartialDiffeomorph.opensMap_isOpenEmb (I := I) (M := M j) (N := M (j + 1))
       (Ψ j) (hsrc j) (hmap j))
@@ -202,7 +202,7 @@ def ballSystem
 
 omit [CompleteSpace E] [I.Boundaryless] in
 omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-private theorem pullbackMetricOn_cast {j l m : ℕ} (h : l = m)
+private theorem pullback_metric_on_cast {j l m : ℕ} (h : l = m)
     (Φ : PartialDiffeomorph I I (M j) (M l) (∞ : WithTop ℕ∞))
     (g : ∀ n, SmoothRiemannianMetric I (M n))
     (U : Opens (M j)) (hU : (U : Set (M j)) ⊆ Φ.source)
@@ -213,7 +213,7 @@ private theorem pullbackMetricOn_cast {j l m : ℕ} (h : l = m)
 
 omit [CompleteSpace E] [I.Boundaryless] in
 omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem chainPullback_assoc
+theorem chain_pullback_assoc
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
     {j a b : ℕ} (U : Opens (M j))
@@ -224,7 +224,7 @@ theorem chainPullback_assoc
       PartialDiffeomorph.pullbackMetricOn (chainComp (I := I) (Mf := M) Ψ j (a + b)) U hU
         (g (j + (a + b))) := by
   simpa only [chainCompAssoc] using
-    pullbackMetricOn_cast (I := I) (M := M) (Nat.add_assoc j a b).symm
+    pullback_metric_on_cast (I := I) (M := M) (Nat.add_assoc j a b).symm
       (chainComp (I := I) (Mf := M) Ψ j (a + b)) g U hU hA
 
 noncomputable def chainPullbackSeq
@@ -237,7 +237,7 @@ noncomputable def chainPullbackSeq
 
 omit [CompleteSpace E] [I.Boundaryless] in
 omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem chainPullback_zero
+theorem chain_pullback_zero
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
     {j : ℕ} (U : Opens (M j))
@@ -273,7 +273,7 @@ theorem chainPullback_zero
 
 omit [CompleteSpace E] [I.Boundaryless] in
 omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem chainPullback_step
+theorem chain_pullback_step
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
     {j : ℕ} (U : Opens (M j)) (V : Opens (M (j + 1)))
@@ -303,7 +303,7 @@ theorem chainPullback_step
   have htrans : (U : Set (M j)) ⊆
       (_root_.PartialDiffeomorph.trans (I := I) Φ Θ).source :=
     PartialDiffeomorph.subset_trans_source Φ Θ U (hU 1) hnext
-  have hassoc := chainPullback_assoc (I := I) Ψ g U hA (hU (1 + b))
+  have hassoc := chain_pullback_assoc (I := I) Ψ g U hA (hU (1 + b))
   have hcongr := PartialDiffeomorph.pullbackMetricOn_congr (I := I)
     (chainCompAssoc (I := I) (Mf := M) Ψ j 1 b)
     (_root_.PartialDiffeomorph.trans (I := I) Φ Θ) U hA htrans (g ((j + 1) + b))
@@ -355,7 +355,7 @@ noncomputable def chainBallSystem
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [∀ (j : ℕ), SigmaCompactSpace (M j)]
     [∀ (j : ℕ), T2Space (M j)] [I.Boundaryless] in
-theorem chainMetricCocycle
+theorem chain_metric_cocycle
     (j₀ : ℕ) (U : ∀ n, Opens (M (j₀ + n))) [∀ n, Nonempty (U n)]
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (hU : ∀ n k, (U n : Set (M (j₀ + n))) ⊆
@@ -430,7 +430,7 @@ include I in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [∀ (j : ℕ), IsManifold I ∞ (M j)]
     [∀ (j : ℕ), SigmaCompactSpace (M j)] [∀ (j : ℕ), T2Space (M j)] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)] in
-theorem tailBall_preconn (b : ∀ j, M j) (j₀ n : ℕ) :
+theorem tail_ball_preconnected (b : ∀ j, M j) (j₀ n : ℕ) :
     PreconnectedSpace (tailBallOpen b j₀ n) := by
   have hR : 0 < (2 : ℝ) ^ n := by positivity
   have hpath : IsPathConnected

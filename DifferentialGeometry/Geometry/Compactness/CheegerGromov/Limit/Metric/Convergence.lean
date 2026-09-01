@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Completeness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Estimates
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Tail
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 
 open DifferentialGeometry.Geometry.Curvature
@@ -255,7 +256,7 @@ def chainCGConverges
     let gSeq : ∀ n, SmoothRiemannianMetric I (U n) := fun n =>
       chainPullbackSeq (I := I) Ψ g (U n) (hU n) 0
     let hgInf : S.MetricCocycle gInf :=
-      chainMetricCocycle (I := I) j₀ U Ψ hU hmap gInf hstep
+      chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
     PointedRiemannianCGConverges (I := I)
       (factorSeq S O₀ gSeq) (limitPointedCoc S O₀ gInf hgInf) id
       (limitCGMapsOf S O₀ gSeq gInf hgInf) := by
@@ -263,7 +264,7 @@ def chainCGConverges
   let gSeq : ∀ n, SmoothRiemannianMetric I (U n) := fun n =>
     chainPullbackSeq (I := I) Ψ g (U n) (hU n) 0
   let hgInf : S.MetricCocycle gInf :=
-    chainMetricCocycle (I := I) j₀ U Ψ hU hmap gInf hstep
+    chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
   apply limitCGConverges (I := I) S O₀ gSeq gInf hgInf
   intro ε hε p
   obtain ⟨n₀, hn₀⟩ := chain_pullback_metric_deriv_norm_sup_lt
@@ -303,20 +304,20 @@ def chainAmbientConv
     (O₀ : U 0) :
     let S := chainBallSystem (I := I) j₀ U Ψ hU hmap
     let hgInf : S.MetricCocycle gInf :=
-      chainMetricCocycle (I := I) j₀ U Ψ hU hmap gInf hstep
+      chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
     PointedRiemannianCGConverges (I := I)
       (chainAmbientSeq (I := I) j₀ U S O₀ g)
       (limitPointedCoc S O₀ gInf hgInf) id
       (chainAmbientMaps (I := I) j₀ U S O₀ g gInf hgInf) := by
   let S := chainBallSystem (I := I) j₀ U Ψ hU hmap
   let hgInf : S.MetricCocycle gInf :=
-    chainMetricCocycle (I := I) j₀ U Ψ hU hmap gInf hstep
+    chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
   apply ambientCGConverges (I := I) j₀ U S O₀ g gInf hgInf
   intro ε hε p
   obtain ⟨n₀, hn₀⟩ := chain_pullback_metric_deriv_norm_sup_lt
     (I := I) j₀ U Ψ g hU gInf hclose ε hε p
   refine ⟨n₀, fun n hn K hK => ?_⟩
-  rw [← chainPullback_zero (I := I) Ψ g (U n) (hU n)]
+  rw [← chain_pullback_zero (I := I) Ψ g (U n) (hU n)]
   exact hn₀ n hn 0 K hK
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -367,27 +368,27 @@ def tailAmbientConv
               (chainPullbackSeq (I := I) Ψ g
                 (ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)) (hU n) l)
               (gInf n) (gInf n) x ≤ ε) :
-    letI : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tailBall_nonempty b j₀ n
+    letI : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tail_ball_nonempty b j₀ n
     letI : ∀ n, SigmaCompactSpace (tailBallOpen b j₀ n) := fun n =>
       isSigmaCompact_iff_sigmaCompactSpace.mp
         (Geometry.isSigmaCompact_of_isOpen I (tailBallOpen b j₀ n).isOpen)
     let S := tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀
     let gTail := tailMetric (I := I) b j₀ gInf
     let hgTail : S.MetricCocycle gTail :=
-      tailMetricCocycle (I := I) b Ψ hbase g hnorm j₀ D₀ hU hmap gInf hstep
+      tail_ball_system_metric_cocycle (I := I) b Ψ hbase g hnorm j₀ D₀ hU hmap gInf hstep
     PointedRiemannianCGConverges (I := I)
       (chainAmbientSeq (I := I) j₀ (tailBallOpen b j₀) S (tailCenter b j₀ 0) g)
       (limitPointedCoc S (tailCenter b j₀ 0) gTail hgTail) id
       (chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S
         (tailCenter b j₀ 0) g gTail hgTail) := by
-  letI : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tailBall_nonempty b j₀ n
+  letI : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tail_ball_nonempty b j₀ n
   letI : ∀ n, SigmaCompactSpace (tailBallOpen b j₀ n) := fun n =>
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I (tailBallOpen b j₀ n).isOpen)
   let S := tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀
   let gTail := tailMetric (I := I) b j₀ gInf
   let hgTail : S.MetricCocycle gTail :=
-    tailMetricCocycle (I := I) b Ψ hbase g hnorm j₀ D₀ hU hmap gInf hstep
+    tail_ball_system_metric_cocycle (I := I) b Ψ hbase g hnorm j₀ D₀ hU hmap gInf hstep
   apply ambientCGConverges (I := I) j₀ (tailBallOpen b j₀) S
     (tailCenter b j₀ 0) g gTail hgTail
   exact tail_metric_deriv_norm_sup_lt (I := I) b j₀ Ψ g hU gInf hclose

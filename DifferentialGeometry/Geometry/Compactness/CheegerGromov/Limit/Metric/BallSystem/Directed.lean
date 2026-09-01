@@ -45,9 +45,9 @@ def metricApproximationBallSystem
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (hgrow : ∀ j, Real.sqrt (1 + ε j) * r j < r (j + 1)) :
-    letI : ∀ j, Nonempty (ballOpen b r j) := fun j => ballOpen_nonempty b r j (hr j)
+    letI : ∀ j, Nonempty (ballOpen b r j) := fun j => ball_open_nonempty b r j (hr j)
     SmoothSeqSystem I (fun j => ballOpen b r j) := by
-  letI : ∀ j, Nonempty (ballOpen b r j) := fun j => ballOpen_nonempty b r j (hr j)
+  letI : ∀ j, Nonempty (ballOpen b r j) := fun j => ball_open_nonempty b r j (hr j)
   have hsrc : ∀ j, (ballOpen b r j : Set (M j)) ⊆ (Ψ j).source := by
     intro j x hx
     apply (D j).source_sub
@@ -85,7 +85,7 @@ noncomputable def directedBallSystem
       let b' : ∀ n, M (j₀ + n) := fun n => b (j₀ + n)
       let r' : ℕ → ℝ := fun n => (2 : ℝ) ^ (j₀ + n)
       letI : ∀ n, Nonempty (ballOpen b' r' n) :=
-        fun n => ballOpen_nonempty b' r' n (by positivity)
+        fun n => ball_open_nonempty b' r' n (by positivity)
       SmoothSeqSystem I (fun n => ballOpen b' r' n) := by
   classical
   let hex := hdata (1 / 2) (by norm_num) (by norm_num) 0
@@ -99,7 +99,7 @@ noncomputable def directedBallSystem
     chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1
   let g' : ∀ n, SmoothRiemannianMetric I (M (j₀ + n)) := fun n => g (j₀ + n)
   letI : ∀ n, Nonempty (ballOpen b' r' n) :=
-    fun n => ballOpen_nonempty b' r' n (by dsimp [r']; positivity)
+    fun n => ball_open_nonempty b' r' n (by dsimp [r']; positivity)
   have hD : ∀ n, Nonempty (PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b' n) (r' n)) (1 / 2) 0 (Ψ' n) (g' n) (g' (n + 1))) := by
     intro n
