@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringSeq
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Sequence
 
 set_option autoImplicit false
 

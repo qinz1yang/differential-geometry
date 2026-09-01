@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.BoundedGeometryPairwiseApproximation
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximation.BoundedGeometry
 
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalConstruction

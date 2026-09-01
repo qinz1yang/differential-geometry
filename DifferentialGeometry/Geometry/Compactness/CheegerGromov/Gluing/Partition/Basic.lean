@@ -1,6 +1,6 @@
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringSeq
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Sequence
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

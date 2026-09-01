@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringOrdered
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Ordered
 
 
 import DifferentialGeometry.Analysis.Calculus.DiagonalSubsequence

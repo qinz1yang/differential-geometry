@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorp
 
 import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringSeq
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Sequence
 
 open DifferentialGeometry.Geometry.Curvature
 

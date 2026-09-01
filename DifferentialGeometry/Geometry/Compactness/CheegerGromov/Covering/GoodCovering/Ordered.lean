@@ -2,7 +2,7 @@ import Mathlib.Topology.MetricSpace.HausdorffDistance
 
 
 import Mathlib.Topology.MetricSpace.ProperSpace
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ProperMetric
 
 set_option autoImplicit false
