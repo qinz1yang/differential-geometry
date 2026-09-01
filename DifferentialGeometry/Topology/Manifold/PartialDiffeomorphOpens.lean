@@ -57,6 +57,24 @@ theorem image_opens_isOpen
 
 namespace PartialDiffeomorph
 
+omit [IsManifold I ∞ M] [IsManifold J ∞ N] in
+theorem symm_eventuallyEq_on_image_of_eq
+    (Φ Ψ : PartialDiffeomorph I J M N n)
+    {U : Opens M} (hUΦ : (U : Set M) ⊆ Φ.source) (hUΨ : (U : Set M) ⊆ Ψ.source)
+    (hEq : (Ψ : M → N) = (Φ : M → N)) :
+    ∀ y ∈ (Φ : M → N) '' (U : Set M),
+      (Ψ.symm : N → M) =ᶠ[nhds y] (Φ.symm : N → M) := by
+  intro y hy
+  refine Filter.eventuallyEq_of_mem ((image_opens_isOpen Φ hUΦ).mem_nhds hy) ?_
+  intro z hz
+  rcases hz with ⟨x, hx, rfl⟩
+  have hΨx : (Ψ : M → N) x = (Φ : M → N) x := by rw [hEq]
+  calc
+    (Ψ.symm : N → M) ((Φ : M → N) x)
+        = (Ψ.symm : N → M) ((Ψ : M → N) x) := by rw [hΨx]
+    _ = x := Ψ.left_inv' (hUΨ hx)
+    _ = (Φ.symm : N → M) ((Φ : M → N) x) := (Φ.left_inv' (hUΦ hx)).symm
+
 noncomputable def toOpensDiffeo
     (Φ : PartialDiffeomorph I J M N (∞ : WithTop ℕ∞))
     {U : Opens M} (hU : (U : Set M) ⊆ Φ.source) :

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Monotonicity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.NormBounds
 
 import DifferentialGeometry.Geometry.Metric.TensorInner.CoerciveBilinInverse
 open DifferentialGeometry.Geometry.Curvature

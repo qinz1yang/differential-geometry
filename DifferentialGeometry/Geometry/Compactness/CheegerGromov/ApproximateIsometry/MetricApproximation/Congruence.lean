@@ -1,6 +1,4 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Monotonicity
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximateIsometry
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 
 set_option autoImplicit false
 
@@ -27,6 +25,22 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsMan
   [SigmaCompactSpace M] [MetricSpace M] [Nonempty M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [T2Space N] [IsManifold I ∞ N]
   [SigmaCompactSpace N]
+
+noncomputable def MapMetricApproximationOn.congr {K : Set M} {ε : Real} {p : Nat} {F F' : M → N}
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
+    (hdata : MapMetricApproximationOn (I := I) K ε p F g h)
+    (hev : ∀ x ∈ K, F' =ᶠ[nhds x] F) :
+    MapMetricApproximationOn (I := I) K ε p F' g h where
+  eps_pos := hdata.eps_pos
+  eps_lt_one := hdata.eps_lt_one
+  smoothOn := hdata.smoothOn.congr (fun x hx => (hev x hx).self_of_nhds)
+  pullback := hdata.pullback
+  pullback_apply := by
+    intro x hx v
+    rw [(hev x hx).self_of_nhds, (hev x hx).mfderiv_eq]
+    exact hdata.pullback_apply x hx v
+  c0_small := hdata.c0_small
+  cov_deriv_small := hdata.cov_deriv_small
 
 noncomputable def MapMetricApproximationOn.congrEq {K : Set M} {ε : ℝ} {p : ℕ} {F F' : M → N}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
@@ -92,33 +106,6 @@ noncomputable def PartialDiffeomorphMetricApproximationBounds.congrSet {K K' : S
     PartialDiffeomorphMetricApproximationBounds (I := I) K' c0 cov p Φ g h := by
   subst hK
   exact D
-
-theorem image_eq_of_fun_eq {α β : Type*} {s : Set α} {f g : α → β} (h : f = g) :
-    f '' s = g '' s := by
-  subst h
-  rfl
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [MetricSpace M] [Nonempty M] [T2Space N]
-    [SigmaCompactSpace N] in
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
-    [IsManifold I ∞ N] in
-theorem symm_eventuallyEq_on_image
-    {Φ Ψ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
-    {U : TopologicalSpace.Opens M}
-    (hUΦ : (U : Set M) ⊆ Φ.source) (hUΨ : (U : Set M) ⊆ Ψ.source)
-    (hEq : (Ψ : M → N) = (Φ : M → N)) :
-    ∀ y ∈ (Φ : M → N) '' (U : Set M),
-      (Ψ.symm : N → M) =ᶠ[nhds y] (Φ.symm : N → M) := by
-  intro y hy
-  refine Filter.eventuallyEq_of_mem ((image_opens_isOpen (I := I) Φ hUΦ).mem_nhds hy) ?_
-  intro z hz
-  rcases hz with ⟨x, hx, rfl⟩
-  have hΨx : (Ψ : M → N) x = (Φ : M → N) x := by rw [hEq]
-  calc
-    (Ψ.symm : N → M) ((Φ : M → N) x)
-        = (Ψ.symm : N → M) ((Ψ : M → N) x) := by rw [hΨx]
-    _ = x := Ψ.left_inv' (hUΨ hx)
-    _ = (Φ.symm : N → M) ((Φ : M → N) x) := (Φ.left_inv' (hUΦ hx)).symm
 
 end DataTransport
 

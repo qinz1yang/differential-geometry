@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Defs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Congruence
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringOrdered
@@ -31,22 +31,6 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsMan
   [SigmaCompactSpace M] [MetricSpace M] [Nonempty M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [T2Space N] [IsManifold I ∞ N]
   [SigmaCompactSpace N]
-
-noncomputable def MapMetricApproximationOn.congr {K : Set M} {ε : Real} {p : Nat} {F F' : M → N}
-    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
-    (hdata : MapMetricApproximationOn (I := I) K ε p F g h)
-    (hev : ∀ x ∈ K, F' =ᶠ[nhds x] F) :
-    MapMetricApproximationOn (I := I) K ε p F' g h where
-  eps_pos := hdata.eps_pos
-  eps_lt_one := hdata.eps_lt_one
-  smoothOn := hdata.smoothOn.congr (fun x hx => (hev x hx).self_of_nhds)
-  pullback := hdata.pullback
-  pullback_apply := by
-    intro x hx v
-    rw [(hev x hx).self_of_nhds, (hev x hx).mfderiv_eq]
-    exact hdata.pullback_apply x hx v
-  c0_small := hdata.c0_small
-  cov_deriv_small := hdata.cov_deriv_small
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] [SigmaCompactSpace N] in

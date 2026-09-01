@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Composition.Bounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Defs
 
 
 open DifferentialGeometry.Geometry.Curvature
@@ -52,7 +52,7 @@ def PartialDiffeomorphMetricApproximation.mono [T2Space N]
   forward := D.forward.mono hK hε hε1
   reverse := let _ := hSigma; (D.reverse.mono (Set.image_mono hK) hε hε1 :)
 
-def MapMetricApproximationOn.monoP
+def MapMetricApproximationOn.monoOrder
     {K : Set M} {ε : ℝ} {p p' : ℕ}
     {Phi : M → N} {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
     (D : MapMetricApproximationOn (I := I) K ε p Phi g h) (hp : p' ≤ p) :
@@ -66,7 +66,7 @@ def MapMetricApproximationOn.monoP
   cov_deriv_small := fun a h1 h2 x hx =>
     D.cov_deriv_small a h1 (le_trans h2 hp) x hx
 
-def PartialDiffeomorphMetricApproximation.monoP [T2Space N]
+def PartialDiffeomorphMetricApproximation.monoOrder [T2Space N]
     [hSigma : SigmaCompactSpace N]
     {K : Set M} {ε : ℝ} {p p' : ℕ}
     {Phi : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
@@ -74,8 +74,8 @@ def PartialDiffeomorphMetricApproximation.monoP [T2Space N]
     (D : PartialDiffeomorphMetricApproximation (I := I) K ε p Phi g h) (hp : p' ≤ p) :
     PartialDiffeomorphMetricApproximation (I := I) K ε p' Phi g h where
   source_sub := D.source_sub
-  forward := D.forward.monoP hp
-  reverse := let _ := hSigma; D.reverse.monoP hp
+  forward := D.forward.monoOrder hp
+  reverse := let _ := hSigma; D.reverse.monoOrder hp
 
 end DataMono
 

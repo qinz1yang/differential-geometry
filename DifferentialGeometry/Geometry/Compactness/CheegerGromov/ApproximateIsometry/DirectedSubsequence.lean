@@ -3,11 +3,14 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Congruence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Identity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.BallImage
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Composition.ForwardBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Composition.ReverseBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequenceRadii
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAddition
 import DifferentialGeometry.Analysis.Calculus.DiagonalSubsequence
 import DifferentialGeometry.Analysis.Estimates.IteratedApproximationError
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -320,7 +323,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           δF δF p (Ψ (s + l))
           (X.obj (σ (s + l))).metric (X.obj (σ (s + l + 1))).metric := by
         dsimp [δF]
-        exact ((DstepF.monoP hp_stepF).mono Metric.ball_subset_closedBall le_rfl
+        exact ((DstepF.monoOrder hp_stepF).mono Metric.ball_subset_closedBall le_rfl
           DstepF.forward.eps_lt_one).toSeparateBounds
       have hclosed_mid_sub :
           Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid) ⊆
@@ -426,7 +429,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           D₁mid D₂openF
       obtain ⟨DstepR⟩ := hΨdata s
       have hp_stepR : p ≤ s := le_trans hpj hs
-      have DstepR_p := DstepR.monoP hp_stepR
+      have DstepR_p := DstepR.monoOrder hp_stepR
       have hstepR_half : δR ≤ 1 / 2 := by
         dsimp [δR]
         exact half_pow_succ_le_half s
@@ -598,7 +601,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             (s + (l + 1)) rfl).symm :
             (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
           (X.obj (σ (s + (l + 1)))).metric (X.obj (σ s)).metric := by
-        simpa [image_eq_of_fun_eq hfoldR_eq] using
+        simpa [hfoldR_eq] using
           hRclosedSep.congrEq hfoldR_symm_eq
       have hLR_eq :
           (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
@@ -644,7 +647,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             ((chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1)).symm :
                 (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M) := by
         have hgermU :=
-          symm_eventuallyEq_on_image (I := I)
+          PartialDiffeomorph.symm_eventuallyEq_on_image_of_eq (I := I)
             (Φ := chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1))
             (Ψ := chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl)
@@ -659,7 +662,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             (s + (l + 1)) rfl).symm :
             (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
           (X.obj (σ (s + (l + 1)))).metric (X.obj (σ s)).metric := by
-        simpa [image_eq_of_fun_eq hLR_eq] using hRclosed
+        simpa [hLR_eq] using hRclosed
       have hLeftReverse : MapMetricApproximationBoundsOn (I := I)
           ((chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1) :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) ''
