@@ -790,6 +790,40 @@ theorem cylinderDiagonalQuotientPotential_continuous :
   exact roundThreeCylinderShrinkerPotential.contMDiff.continuous.quotient_lift
     (fun _ _ hxy => cylinderDiagonalPotential_respects hxy)
 
+theorem noncompactSpace_orbitRelQuotient_of_roundThreeCylinderShrinkerPotential_invariant
+    {Gamma : Type*} [Group Gamma]
+    [MulAction Gamma
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)]
+    (hpotential : ∀ (gamma : Gamma) x,
+      roundThreeCylinderShrinkerPotential (gamma • x) =
+        roundThreeCylinderShrinkerPotential x) :
+    NoncompactSpace (MulAction.orbitRel.Quotient Gamma
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)) := by
+  let Fbar : MulAction.orbitRel.Quotient Gamma
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) → Real :=
+    Quotient.lift roundThreeCylinderShrinkerPotential (by
+      intro x y hxy
+      rcases hxy with ⟨gamma, rfl⟩
+      exact hpotential gamma y)
+  have hFbar : Continuous Fbar :=
+    roundThreeCylinderShrinkerPotential.contMDiff.continuous.quotient_lift
+      (by
+        intro x y hxy
+        rcases hxy with ⟨gamma, rfl⟩
+        exact hpotential gamma y)
+  refine not_compactSpace_iff.mp ?_
+  intro hcompact
+  let _ : CompactSpace (MulAction.orbitRel.Quotient Gamma
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)) := hcompact
+  obtain ⟨C, hC⟩ := (isCompact_range hFbar).bddAbove
+  let y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 :=
+    ⟨EuclideanSpace.single 0 1, by simp [PiLp.norm_single]⟩
+  have hle : Fbar (Quotient.mk'' (y, 2 * (|C| + 1))) ≤ C :=
+    hC ⟨_, rfl⟩
+  change roundThreeCylinderShrinkerPotential (y, 2 * (|C| + 1)) ≤ C at hle
+  rw [roundThreeCylinderShrinkerPotential_apply] at hle
+  nlinarith [abs_nonneg C, le_abs_self C]
+
 def roundThreeCylinderSolitonAutomorphism
     (psi : Equiv.Perm
       (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)) : Prop :=
@@ -802,6 +836,20 @@ def roundThreeCylinderSolitonAutomorphism
         roundThreeCylinderShrinkerMetric ∧
       ∀ x, roundThreeCylinderShrinkerPotential (Phi x) =
         roundThreeCylinderShrinkerPotential x
+
+theorem noncompactSpace_orbitRelQuotient_of_roundThreeCylinderSolitonAutomorphism
+    (Gamma : Subgroup (Equiv.Perm
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)))
+    (hsoliton : ∀ gamma : Gamma,
+      roundThreeCylinderSolitonAutomorphism gamma.1) :
+    NoncompactSpace (MulAction.orbitRel.Quotient Gamma
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)) := by
+  apply noncompactSpace_orbitRelQuotient_of_roundThreeCylinderShrinkerPotential_invariant
+  intro gamma x
+  obtain ⟨Phi, hPhi, _, hpotential⟩ := hsoliton gamma
+  change roundThreeCylinderShrinkerPotential (gamma.1 x) = _
+  rw [← hPhi]
+  exact hpotential x
 
 private theorem roundThreeCylinderSolitonAutomorphism_mem_cases
     (Gamma : Subgroup (Equiv.Perm

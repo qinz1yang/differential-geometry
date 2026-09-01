@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
 import DifferentialGeometry.Geometry.Metric.PullbackCross
+import DifferentialGeometry.Topology.Covering.DeckGroup
 import Mathlib.Topology.Covering.Basic
 import Mathlib.Topology.Homeomorph.Lemmas
 
@@ -134,6 +135,93 @@ theorem solitonModelCovering_deck_preserves
     change Fpot (γ x) = Fpot x
     rw [solitonModelCovering_potential hπ (γ x), hγ x,
       solitonModelCovering_potential hπ x]
+
+theorem solitonModelCovering_deckGroup_potential
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover)
+    (gamma : coveringDeckGroup cover) (x : N) :
+    Fpot (gamma • x) = Fpot x := by
+  rw [solitonModelCovering_potential hπ,
+    coveringDeckGroup_map gamma,
+    solitonModelCovering_potential hπ]
+
+theorem solitonModelCovering_deckGroup_isQuotientCoveringMap
+    [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) :
+    IsQuotientCoveringMap cover (coveringDeckGroup cover) :=
+  isQuotientCoveringMap_coveringDeckGroup
+    (solitonModelCovering_isCoveringMap hπ)
+    (solitonModelCovering_surjective hπ)
+
+noncomputable def solitonModelCoveringDeckQuotientHomeomorph
+    [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) :
+    MulAction.orbitRel.Quotient (coveringDeckGroup cover) N ≃ₜ M :=
+  coveringDeckGroupQuotientHomeomorph
+    (solitonModelCovering_isCoveringMap hπ)
+    (solitonModelCovering_surjective hπ)
+
+theorem solitonModelCoveringDeckQuotientHomeomorph_apply
+    [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) (x : N) :
+    solitonModelCoveringDeckQuotientHomeomorph hπ (Quotient.mk'' x) = cover x :=
+  coveringDeckGroupQuotientHomeomorph_apply
+    (solitonModelCovering_isCoveringMap hπ)
+    (solitonModelCovering_surjective hπ) x
+
+noncomputable def solitonModelCoveringDeckQuotientPotential
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) :
+    MulAction.orbitRel.Quotient (coveringDeckGroup cover) N → Real :=
+  Quotient.lift Fpot (fun x y hxy => by
+    rcases hxy with ⟨gamma, rfl⟩
+    exact solitonModelCovering_deckGroup_potential hπ gamma y)
+
+theorem solitonModelCoveringDeckQuotientPotential_apply
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) (x : N) :
+    solitonModelCoveringDeckQuotientPotential hπ (Quotient.mk'' x) = Fpot x :=
+  rfl
+
+theorem solitonModelCoveringDeckQuotientPotential_continuous
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) :
+    Continuous (solitonModelCoveringDeckQuotientPotential hπ) := by
+  exact Fpot.contMDiff.continuous.quotient_lift (fun x y hxy => by
+    rcases hxy with ⟨gamma, rfl⟩
+    exact solitonModelCovering_deckGroup_potential hπ gamma y)
+
+theorem solitonModelCoveringDeckQuotientPotential_eq_target
+    [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover)
+    (q : MulAction.orbitRel.Quotient (coveringDeckGroup cover) N) :
+    solitonModelCoveringDeckQuotientPotential hπ q =
+      f (solitonModelCoveringDeckQuotientHomeomorph hπ q) := by
+  induction q using Quotient.inductionOn with
+  | _ x =>
+    rw [solitonModelCoveringDeckQuotientPotential_apply,
+      solitonModelCoveringDeckQuotientHomeomorph_apply,
+      solitonModelCovering_potential hπ]
 
 private noncomputable def identityTrivialization :
     Trivialization Unit (id : M → M) :=
