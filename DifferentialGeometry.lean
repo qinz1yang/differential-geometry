@@ -3064,6 +3064,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderIsometry
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotients
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCylinderQuotient
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCurvatureRank
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.RankReduction
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.SmoothMetricFromCoeff
 import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExt
