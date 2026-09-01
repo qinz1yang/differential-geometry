@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
+import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Curvature.Scaling
 import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.LinearAlgebra.Matrix.Trace
@@ -181,6 +181,31 @@ theorem bivectorBasisPairing_eq_delta
   fin_cases p <;> fin_cases q <;>
     simp [bivectorIndex3, horth 0 0, horth 0 1, horth 0 2, horth 1 0, horth 1 1, horth 1 2,
       horth 2 0, horth 2 1, horth 2 2, delta3]
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem algebraicCurvatureIdentityQuadraticEval_bivectorBasis
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis) (c : Fin 3 → Real) :
+    algebraicCurvatureIdentityQuadraticEval (I := I) g c
+        (fun i => basis (bivectorIndex3 i).1)
+        (fun i => basis (bivectorIndex3 i).2) =
+      ∑ i : Fin 3, c i ^ 2 := by
+  unfold algebraicCurvatureIdentityQuadraticEval
+  have hdelta : ∀ i j : Fin 3,
+      g.inner x (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 j).1) *
+          g.inner x (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 j).2) -
+        g.inner x (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 j).2) *
+          g.inner x (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 j).1) =
+        if i = j then (1 : Real) else 0 :=
+    bivectorBasisPairing_eq_delta (I := I) g x basis horth
+  simp_rw [hdelta]
+  rw [Fin.sum_univ_three, Fin.sum_univ_three]
+  simp only [Fin.isValue, ↓reduceIte, mul_one, zero_ne_one, mul_zero, add_zero, Fin.reduceEq,
+    mul_ite, Finset.sum_ite_eq, Finset.mem_univ]
+  rw [Fin.sum_univ_three]
+  ring
 
 private theorem identityQuad_firstExpansion
     {n : Nat} (c : Fin n → Real) (r t : Fin n → Fin 3 → Real) :
@@ -1365,27 +1390,15 @@ theorem exists_leastCurvatureOperatorEigenvalueAt_rayleigh_minimizer
       exact b.orthonormal.1 2
     simpa [hnorm] using (inner_product_apply_eigenvector (T := T) (v := bvec) heig)
   have hid : algebraicCurvatureIdentityQuadraticEval (I := I) g c v w = 1 := by
-    unfold algebraicCurvatureIdentityQuadraticEval
-    have hdelta : ∀ i j : Fin 3,
-        (g.inner x (v i) (v j)) * (g.inner x (w i) (w j)) -
-            (g.inner x (v i) (w j)) * (g.inner x (w i) (v j)) =
-          if i = j then (1 : Real) else 0 := by
-      intro i j
-      dsimp [v, w]
-      exact bivectorBasisPairing_eq_delta (I := I) g x basis horth i j
-    simp_rw [hdelta]
-    rw [Fin.sum_univ_three, Fin.sum_univ_three]
-    simp only [Fin.isValue, ↓reduceIte, mul_one, zero_ne_one, mul_zero, add_zero, Fin.reduceEq,
-      mul_ite, Finset.sum_ite_eq, Finset.mem_univ]
     have hnormsum : ∑ i : Fin 3, c i ^ 2 = 1 := by
       have hb : ‖(b 2 : EuclideanSpace Real (Fin 3))‖ = 1 := b.orthonormal.1 2
       have hsq : ‖(b 2 : EuclideanSpace Real (Fin 3))‖ ^ 2 = 1 ^ 2 :=
         congrArg (fun t : Real => t ^ 2) hb
       rw [EuclideanSpace.real_norm_sq_eq (b 2)] at hsq
       simpa [c, bvec] using hsq
-    convert hnormsum using 1
-    rw [Fin.sum_univ_three]
-    ring
+    rw [algebraicCurvatureIdentityQuadraticEval_bivectorBasis
+      (I := I) g x basis horth c]
+    exact hnormsum
   refine ⟨c, hid, ?_⟩
   calc
     algebraicCurvatureOperatorQuadraticEval (I := I) A c v w =
@@ -1395,6 +1408,115 @@ theorem exists_leastCurvatureOperatorEigenvalueAt_rayleigh_minimizer
     _ = leastCurvatureOperatorEigenvalueAt (I := I) g x A :=
       (leastCurvatureOperatorEigenvalueAt_eq_sectionalMin
         (I := I) g x basis horth A).symm
+
+omit [SigmaCompactSpace M] in
+theorem exists_pos_curvatureOperatorLowerBound
+    [IsManifold I 3 M] [CompactSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (hdim : Module.finrank Real E = 3) :
+    ∃ K : Real, 0 < K ∧ ∀ x : M,
+      curvatureOperatorLowerBoundAt (I := I) g x
+        (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x) K := by
+  obtain ⟨C, _, hRm⟩ := exists_rm04_bound (I := I) (M := M) g
+  refine ⟨9 * Real.sqrt C + 1, by positivity, fun x => ?_⟩
+  obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (I := I) g x
+    (by change Module.finrank Real E = 3; exact hdim)
+  apply (curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le
+    (I := I) basis horth).2
+  let A := metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x
+  obtain ⟨c, hidentity, hoperator⟩ :=
+    exists_leastCurvatureOperatorEigenvalueAt_rayleigh_minimizer
+      (I := I) g x basis horth A
+  let v : Fin 3 → TangentSpace I x := fun i => basis (bivectorIndex3 i).1
+  let w : Fin 3 → TangentSpace I x := fun i => basis (bivectorIndex3 i).2
+  have hidentity' : algebraicCurvatureIdentityQuadraticEval (I := I) g c v w = 1 := by
+    simpa [v, w] using hidentity
+  have hoperator' : algebraicCurvatureOperatorQuadraticEval (I := I) A c v w =
+      leastCurvatureOperatorEigenvalueAt (I := I) g x A := by
+    simpa [v, w] using hoperator
+  have hnormsum : ∑ i : Fin 3, c i ^ 2 = 1 := by
+    rw [algebraicCurvatureIdentityQuadraticEval_bivectorBasis
+      (I := I) g x basis horth c] at hidentity
+    exact hidentity
+  have hc : ∀ i : Fin 3, |c i| ≤ 1 := by
+    intro i
+    rw [← sq_le_one_iff_abs_le_one]
+    rw [← hnormsum]
+    exact Finset.single_le_sum (fun j _ => sq_nonneg (c j)) (Finset.mem_univ i)
+  have hON : ∀ i j : Fin 3,
+      g.inner x (basis i) (basis j) = if i = j then 1 else 0 := by
+    simpa [OrthonormalBasisAt, delta3] using horth
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
+      (identityInvMetric (Idx := Fin 3)) := by
+    change MetricInverseInBasisGen (I := I) g x basis
+      (fun a k : Fin 3 => if a = k then 1 else 0)
+    exact metricInverseInBasis_of_orthonormal (I := I) g basis hON
+  have hcomponent : ∀ i j : Fin 3,
+      |metricRm04StdAt (I := I) (M := M) g x (v i) (w i) (w j) (v j)| ≤
+        Real.sqrt (normSq0S (I := I) g x 4
+          (metricRm04At (I := I) (M := M) g x)) := by
+    intro i j
+    have hcomp := abs_component0S_le_sqrt_normSq0S (I := I) g basis hinv
+      (metricRm04At (I := I) (M := M) g x)
+      (slots4 (bivectorIndex3 i).1 (bivectorIndex3 i).2
+        (bivectorIndex3 j).2 (bivectorIndex3 j).1)
+    change |rm04CompAt (I := I) basis (metricRm04At (I := I) (M := M) g x)
+      (bivectorIndex3 i).1 (bivectorIndex3 i).2
+      (bivectorIndex3 j).2 (bivectorIndex3 j).1| ≤ _ at hcomp
+    rw [rm04CompAt_apply] at hcomp
+    simpa [v, w, metricRm04StdAt_apply] using hcomp
+  have heval :
+      |algebraicCurvatureOperatorQuadraticEval (I := I) A c v w| ≤
+        9 * Real.sqrt (normSq0S (I := I) g x 4
+          (metricRm04At (I := I) (M := M) g x)) := by
+    unfold algebraicCurvatureOperatorQuadraticEval
+    calc
+      |∑ i : Fin 3, ∑ j : Fin 3,
+          c i * c j * tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+            (v i) (w i) (w j) (v j)| ≤
+          ∑ i : Fin 3, ∑ j : Fin 3,
+            |c i * c j * tensor04StdAt (I := I) (M := M)
+              (A : Tensor04At (I := I) (M := M) x) (v i) (w i) (w j) (v j)| := by
+        refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
+        apply Finset.sum_le_sum
+        intro i _
+        exact Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _i : Fin 3, ∑ _j : Fin 3,
+          Real.sqrt (normSq0S (I := I) g x 4
+            (metricRm04At (I := I) (M := M) g x)) := by
+        apply Finset.sum_le_sum
+        intro i _
+        apply Finset.sum_le_sum
+        intro j _
+        rw [abs_mul, abs_mul]
+        have hcoef : |c i| * |c j| ≤ 1 := by
+          calc
+            |c i| * |c j| ≤ 1 * 1 :=
+              mul_le_mul (hc i) (hc j) (abs_nonneg _) zero_le_one
+            _ = 1 := one_mul 1
+        have hcomp :
+            |tensor04StdAt (I := I) (M := M)
+              (A : Tensor04At (I := I) (M := M) x) (v i) (w i) (w j) (v j)| ≤
+              Real.sqrt (normSq0S (I := I) g x 4
+                (metricRm04At (I := I) (M := M) g x)) := by
+          simpa [A, metricAlgebraicCurvatureTensorAt_coe] using hcomponent i j
+        simpa only [one_mul] using
+          (mul_le_mul hcoef hcomp (abs_nonneg _) zero_le_one)
+      _ = 9 * Real.sqrt (normSq0S (I := I) g x 4
+          (metricRm04At (I := I) (M := M) g x)) := by
+        simp only [Fin.sum_univ_three]
+        ring
+  rw [hoperator'] at heval
+  have hsqrt : Real.sqrt (normSq0S (I := I) g x 4
+      (metricRm04At (I := I) (M := M) g x)) ≤ Real.sqrt C := by
+    apply Real.sqrt_le_sqrt
+    simpa using hRm x
+  have habs : |leastCurvatureOperatorEigenvalueAt (I := I) g x A| ≤
+      9 * Real.sqrt C :=
+    heval.trans (mul_le_mul_of_nonneg_left hsqrt (by norm_num))
+  have hneg : -leastCurvatureOperatorEigenvalueAt (I := I) g x A ≤
+      9 * Real.sqrt C := (neg_le_abs _).trans habs
+  simpa [A] using hneg.trans (le_add_of_nonneg_right zero_le_one)
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in
