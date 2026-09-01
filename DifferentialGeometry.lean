@@ -2764,6 +2764,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Diag
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Topology.Exhaustion
+import DifferentialGeometry.Topology.FirstExit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalConstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalCompatibility
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence

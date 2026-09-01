@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Construction
+import DifferentialGeometry.Topology.FirstExit
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 
 open DifferentialGeometry.Geometry.Curvature
@@ -229,8 +230,8 @@ theorem path_escape_core
   have hstart : γ 0 ∈ interior (limitCore b j₀ S n) := by
     rw [hγ0]
     exact center_mem_coreInt b j₀ n S
-  obtain ⟨t, ht, hstay, hfront⟩ := exists_first_exit
-    (limitCore_closed b j₀ n S) hγ.continuousOn hstart hγ1
+  obtain ⟨t, ht, hstay, hfront⟩ := exists_first_exit_frontier
+    (limitCore_closed b j₀ n S) zero_lt_one hγ.continuousOn hstart hγ1
   obtain ⟨x, hxinc, hxrad⟩ := frontier_core_radius b j₀ n S hfront
   have hγpre : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc 0 t) :=
     hγ.mono (Set.Icc_subset_Icc le_rfl ht.2)

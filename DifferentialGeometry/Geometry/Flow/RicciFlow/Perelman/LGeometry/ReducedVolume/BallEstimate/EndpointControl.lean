@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBou
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.FlowUniformEquivalence
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
+import DifferentialGeometry.Topology.FirstExit
 
 set_option autoImplicit false
 
@@ -528,58 +529,6 @@ theorem lRegSpeed_scale
   exact lRegSpeed_fixed S hS time hrho hreg A hA hgrad heps heps32
     (by simpa only [C, n] using hsqrtC) B hBrho hB Z hZ hs hpoint
 
-private theorem first_exit_to
-    {X : Type*} [TopologicalSpace X] {K : Set X} (hK : IsClosed K)
-    {gamma : Real → X} {b : Real} (hb : 0 < b)
-    (hgamma : ContinuousOn gamma (Set.Icc 0 b))
-    (h0 : gamma 0 ∈ interior K) (hbK : gamma b ∉ K) :
-    ∃ t : Real, t ∈ Set.Ioc 0 b ∧
-      (∀ s ∈ Set.Icc 0 t, gamma s ∈ K) ∧ gamma t ∈ frontier K := by
-  let T := Set.Icc (0 : Real) b
-  let : CompactSpace T := isCompact_iff_compactSpace.mp isCompact_Icc
-  let gammaT : T → X := fun t ↦ gamma t
-  let A : Set T := gammaT ⁻¹' (interior K)ᶜ
-  have hgammaT : Continuous gammaT := hgamma.domRestrict
-  have hAclosed : IsClosed A :=
-    isOpen_interior.isClosed_compl.preimage hgammaT
-  have hbA : (⟨b, by simp [T, hb.le]⟩ : T) ∈ A := by
-    change gamma b ∉ interior K
-    exact fun h ↦ hbK (interior_subset h)
-  obtain ⟨t, htA, htmin⟩ := hAclosed.isCompact.exists_isMinOn
-    ⟨⟨b, by simp [T, hb.le]⟩, hbA⟩ continuous_subtype_val.continuousOn
-  have htNot : gamma (t : Real) ∉ interior K := by
-    simpa only [A, gammaT, Set.mem_preimage, Set.mem_compl_iff] using htA
-  have htne : (t : Real) ≠ 0 := by
-    intro ht
-    apply htNot
-    simpa only [ht] using h0
-  have htpos : (0 : Real) < t := lt_of_le_of_ne t.property.1 (Ne.symm htne)
-  have hbefore : ∀ s ∈ Set.Ico (0 : Real) t, gamma s ∈ interior K := by
-    intro s hs
-    by_contra hsNot
-    let sT : T := ⟨s, hs.1, (le_of_lt hs.2).trans t.property.2⟩
-    have hsA : sT ∈ A := by
-      change gamma s ∉ interior K
-      exact hsNot
-    exact (not_le_of_gt hs.2) (htmin hsA)
-  have htClosure : (t : Real) ∈ closure (Set.Ico (0 : Real) t) := by
-    rw [closure_Ico (Ne.symm htne)]
-    exact ⟨htpos.le, le_rfl⟩
-  have hcont : ContinuousWithinAt gamma (Set.Ico (0 : Real) t) t :=
-    (hgamma t t.property).mono fun s hs ↦
-      ⟨hs.1, (le_of_lt hs.2).trans t.property.2⟩
-  have htKclosure : gamma t ∈ closure K :=
-    hcont.mem_closure htClosure fun s hs ↦ interior_subset (hbefore s hs)
-  have htK : gamma t ∈ K := by
-    simpa only [hK.closure_eq] using htKclosure
-  refine ⟨t, ⟨htpos, t.property.2⟩, ?_, ?_⟩
-  · intro s hs
-    by_cases hst : s = t
-    · simpa only [hst] using htK
-    · exact interior_subset (hbefore s ⟨hs.1, lt_of_le_of_ne hs.2 hst⟩)
-  · rw [frontier, hK.closure_eq]
-    exact ⟨htK, htNot⟩
-
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -1051,7 +1000,7 @@ theorem lRegRange_scale
     have halphaS : ContinuousOn alpha (Icc (0 : Real) s) :=
       halpha.mono fun q hq ↦ ⟨hq.1, hq.2.trans hs.2⟩
     obtain ⟨t, ht, hstay, hfront⟩ :=
-      first_exit_to hKclosed hspos halphaS halpha0 hsK
+      exists_first_exit_frontier hKclosed hspos halphaS halpha0 hsK
     have hfrontNot : alpha t ∉ interior K := by
       rw [frontier, hKclosed.closure_eq] at hfront
       exact hfront.2

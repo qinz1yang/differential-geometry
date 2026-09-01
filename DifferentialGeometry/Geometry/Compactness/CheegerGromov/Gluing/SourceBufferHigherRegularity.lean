@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceBuff
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
+import DifferentialGeometry.Topology.FirstExit
 
 set_option autoImplicit false
 
@@ -29,61 +30,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-
-private theorem first_exit
-    {Z : Type*} [TopologicalSpace Z] {K : Set Z} (hK : IsClosed K)
-    {gamma : Real → Z} {b : Real} (hb : 0 < b)
-    (hgamma : ContinuousOn gamma (Set.Icc 0 b))
-    (hzero : gamma 0 ∈ interior K) (hone : gamma b ∉ K) :
-    ∃ t : Real, t ∈ Set.Ioc 0 b ∧
-      (∀ s ∈ Set.Icc 0 t, gamma s ∈ K) ∧ gamma t ∈ frontier K := by
-  let T := Set.Icc (0 : Real) b
-  let : CompactSpace T := isCompact_iff_compactSpace.mp isCompact_Icc
-  let gammaT : T → Z := fun t => gamma t
-  let B : Set T := gammaT ⁻¹' (interior K)ᶜ
-  have hgammaT : Continuous gammaT := hgamma.domRestrict
-  have hBclosed : IsClosed B :=
-    isOpen_interior.isClosed_compl.preimage hgammaT
-  have honeB : (⟨b, by simp [T, hb.le]⟩ : T) ∈ B := by
-    change gamma b ∉ interior K
-    exact fun h => hone (interior_subset h)
-  have hBne : B.Nonempty := ⟨⟨b, by simp [T, hb.le]⟩, honeB⟩
-  obtain ⟨t, htB, htmin⟩ :=
-    hBclosed.isCompact.exists_isMinOn hBne continuous_subtype_val.continuousOn
-  have htNot : gamma (t : Real) ∉ interior K := by
-    simpa only [B, gammaT, Set.mem_preimage, Set.mem_compl_iff] using htB
-  have htne : (t : Real) ≠ 0 := by
-    intro ht
-    apply htNot
-    simpa only [ht] using hzero
-  have htpos : (0 : Real) < t :=
-    lt_of_le_of_ne t.property.1 (Ne.symm htne)
-  have hbefore : ∀ s ∈ Set.Ico (0 : Real) t, gamma s ∈ interior K := by
-    intro s hs
-    by_contra hsNot
-    let sT : T := ⟨s, hs.1, (le_of_lt hs.2).trans t.property.2⟩
-    have hsB : sT ∈ B := by
-      change gamma s ∉ interior K
-      exact hsNot
-    exact (not_le_of_gt hs.2) (htmin hsB)
-  have htClosure : (t : Real) ∈ closure (Set.Ico (0 : Real) t) := by
-    rw [closure_Ico (Ne.symm htne)]
-    exact ⟨htpos.le, le_rfl⟩
-  have hcont : ContinuousWithinAt gamma (Set.Ico (0 : Real) t) t :=
-    (hgamma t t.property).mono fun s hs =>
-      ⟨hs.1, (le_of_lt hs.2).trans t.property.2⟩
-  have htKclosure : gamma t ∈ closure K :=
-    hcont.mem_closure htClosure fun s hs => interior_subset (hbefore s hs)
-  have htK : gamma t ∈ K := by
-    simpa only [hK.closure_eq] using htKclosure
-  refine ⟨t, ⟨htpos, t.property.2⟩, ?_, ?_⟩
-  · intro s hs
-    by_cases hst : s = t
-    · simpa only [hst] using htK
-    · exact interior_subset
-        (hbefore s ⟨hs.1, lt_of_le_of_ne hs.2 hst⟩)
-  · rw [frontier, hK.closure_eq]
-    exact ⟨htK, htNot⟩
 
 omit [CompleteSpace E] in
 private theorem NormalBallChart.MetricEquivOn.inv_join_le
@@ -404,7 +350,7 @@ theorem NormalBallChart.MetricEquivOn.core_dist
       apply hqK
       simpa only [hqzero, hgammaZero] using interior_subset hyInt
     have hqpos : 0 < q := lt_of_le_of_ne hq.1 (Ne.symm hqne)
-    obtain ⟨t, ht, hstay, hfront⟩ := first_exit hKclosed hqpos
+    obtain ⟨t, ht, hstay, hfront⟩ := exists_first_exit_frontier hKclosed hqpos
       (hgammaCont.continuousOn.mono (show
         Set.Icc (0 : Real) q ⊆ Set.Icc 0 1 from by
           intro s hs
