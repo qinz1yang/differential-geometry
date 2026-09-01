@@ -18,6 +18,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 
+omit [NeZero (Module.finrank ℝ E)] in
 noncomputable def parallelTransportSectionOnIcc [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -128,6 +129,7 @@ theorem parallelTransportSectionOnIcc_smul [I.Boundaryless]
   · exact ⟨le_rfl, le_of_lt hL⟩
   · simp [V, W, Vv]
 
+omit [NeZero (Module.finrank ℝ E)] in
 noncomputable def parallelTransportLinearMapOnIcc [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -201,6 +203,7 @@ theorem parallelTransportLinearMapOnIcc_surjective [I.Boundaryless]
   rw [← LinearMap.injective_iff_surjective_of_finrank_eq_finrank (by rfl)]
   exact parallelTransportLinearMapOnIcc_injective (I := I) g γ hγ hL
 
+omit [NeZero (Module.finrank ℝ E)] in
 noncomputable def parallelTransportLinearEquivOnIcc [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -230,6 +233,7 @@ theorem parallelTransportLinearEquivOnIcc_inner [I.Boundaryless]
       g.inner (γ 0) v w :=
   parallelTransportLinearMapOnIcc_inner (I := I) g γ hγ hL v w
 
+omit [NeZero (Module.finrank ℝ E)] in
 noncomputable def parallelTransportLinearEquivBetween [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)

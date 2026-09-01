@@ -400,4 +400,21 @@ theorem map_contractionAnnihilator_compContinuousLinearEquiv
     simpa [e₂, ContinuousAlternatingMap.curryLeft_compContinuousLinearMap,
       Function.comp_def] using hz
 
+theorem map_contractionAnnihilator_of_map_eq
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (K : Submodule ℝ (E [⋀^Fin 2]→L[ℝ] ℝ))
+    (L : Submodule ℝ (F [⋀^Fin 2]→L[ℝ] ℝ)) (e : E ≃L[ℝ] F)
+    (h : Submodule.map
+      (e.continuousAlternatingMapCongrLeft (ι := Fin 2)).toLinearMap K = L) :
+    Submodule.map e.toLinearMap (contractionAnnihilator K) =
+      contractionAnnihilator L := by
+  have hback :
+      Submodule.map
+          (e.symm.continuousAlternatingMapCongrLeft (ι := Fin 2)).toLinearMap L = K := by
+    let e₂ : (E [⋀^Fin 2]→L[ℝ] ℝ) ≃L[ℝ] (F [⋀^Fin 2]→L[ℝ] ℝ) :=
+      e.continuousAlternatingMapCongrLeft (ι := Fin 2)
+    exact (Submodule.map_symm_eq_iff e₂.toLinearEquiv).2 h
+  rw [← hback]
+  exact map_contractionAnnihilator_compContinuousLinearEquiv L e
+
 end ContinuousAlternatingMap

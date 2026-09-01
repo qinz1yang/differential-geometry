@@ -21,7 +21,7 @@ variable {n : WithTop ℕ∞}
 private theorem exists_range_frame
     {F : Type uF} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
     {G : Type uG} [NormedAddCommGroup G] [NormedSpace 𝕜 G]
-    [FiniteDimensional 𝕜 F] [FiniteDimensional 𝕜 G]
+    [FiniteDimensional 𝕜 F]
     (A : M → F →L[𝕜] G)
     (W : Set M) (hW : IsOpen W)
     (hA : ContMDiffOn I 𝓘(𝕜, F →L[𝕜] G) n A W)
