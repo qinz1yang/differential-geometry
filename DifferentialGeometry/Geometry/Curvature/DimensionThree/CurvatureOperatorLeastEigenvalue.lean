@@ -1256,6 +1256,33 @@ theorem curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt
 
 omit [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in
+theorem zero_le_leastCurvatureOperatorEigenvalueAt_iff_mem_curvatureOperatorNonnegativeCone
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    {A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x} :
+    0 ≤ leastCurvatureOperatorEigenvalueAt (I := I) g x A ↔
+      A ∈ algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M) := by
+  obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (I := I) g x hdim
+  constructor
+  · intro hleast
+    apply mem_algebraicCurvatureOperatorNonnegativeCone.mpr
+    intro n c v w
+    have hlower : curvatureOperatorLowerBoundAt (I := I) g x A 0 :=
+      (curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le
+        (I := I) basis horth).mpr (by linarith)
+    simpa [curvatureOperatorLowerBoundAt] using hlower n c v w
+  · intro hcone
+    have hlower : curvatureOperatorLowerBoundAt (I := I) g x A 0 := by
+      intro n c v w
+      simpa using
+        (mem_algebraicCurvatureOperatorNonnegativeCone.mp hcone n c v w)
+    have hleast :=
+      (curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le
+        (I := I) basis horth).mp hlower
+    linarith
+
+omit [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
 theorem leastCurvatureOperatorEigenvalueAt_scaleMetric_smul
     (a : Real) (ha : 0 < a) (g : SmoothRiemannianMetric I M) (x : M)
     (hdim : Module.finrank Real (TangentSpace I x) = 3)

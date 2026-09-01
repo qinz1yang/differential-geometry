@@ -63,8 +63,8 @@ theorem curvatureOperator_nonnegative_of_parabolic_closed_flow
     letI : SigmaCompactSpace L.M := L.sigmaCompact
     letI : T2Space L.M := L.t2
     ∀ t ∈ D.carrier, ∀ x : L.M,
-      0 ≤ leastCurvatureOperatorEigenvalueAt (I := I) (L.S.family.metric t) x
-        (metricAlgebraicCurvatureTensorAt (I := I) (L.S.family.metric t) x) := by
+      metricAlgebraicCurvatureTensorAt (I := I) (L.S.family.metric t) x ∈
+        algebraicCurvatureOperatorNonnegativeCone (I := I) (M := L.M) := by
   let X := parabolicPointedFlowSeq (I := I) S hS time scale hscalePos htimeMem
     hcarrier hregular basepoint
   change SmoothCGHConverges (I := I) X L subseq at h
@@ -248,6 +248,11 @@ theorem curvatureOperator_nonnegative_of_parabolic_closed_flow
     have hscaled := mul_le_mul_of_nonneg_left hpinch
       (le_of_lt (inv_pos.mpr (hscalePos i)))
     nlinarith
+  apply
+    (zero_le_leastCurvatureOperatorEigenvalueAt_iff_mem_curvatureOperatorNonnegativeCone
+      (I := I) (x := x)
+      (A := metricAlgebraicCurvatureTensorAt (I := I) (L.S.family.metric t) x)
+      (L.S.family.metric t) (by change Module.finrank Real E = 3; exact hdim)).mp
   change 0 ≤ leastLimit
   exact nonnegative_of_hamilton_ivey_rescaled_upper_limit
     (L.S.scalar t x / 2) leastLimit ageLimit scalarSeq leastSeq
