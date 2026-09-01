@@ -247,7 +247,7 @@ theorem MetricCompactnessInputs.exists_live_cores
   obtain ⟨hgp, hrad⟩ := inp.exponential_scale_tails h8 hradRatio P L r
   have hgpPsi := hpsi.tendsto_atTop.eventually hgp
   have hradPsi := hpsi.tendsto_atTop.eventually hrad
-  have hmetric := inp.normalRadius.metricScaleTail inp.hD
+  have hmetric := inp.normalRadius.metric_scale_tail inp.hD
     (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
     P inp.realizes L inp.pack r
   have hmetricPsi := hpsi.tendsto_atTop.eventually hmetric

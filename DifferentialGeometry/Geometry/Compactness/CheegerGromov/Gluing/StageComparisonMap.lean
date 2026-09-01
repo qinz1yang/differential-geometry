@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactnessInputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
 open DifferentialGeometry.Geometry.Curvature
 

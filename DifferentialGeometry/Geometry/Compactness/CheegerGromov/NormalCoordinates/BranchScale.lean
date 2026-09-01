@@ -392,7 +392,7 @@ theorem normalMinScale
   let aMin : Real := min aρ (min (aq / 4) h.gpRatio)
   have haMin : 0 < aMin := by
     dsimp only [aMin]
-    exact lt_min haρ (lt_min (div_pos haq (by norm_num)) h.gpRatio_pos)
+    exact lt_min haρ (lt_min (div_pos haq (by norm_num)) h.gp_ratio_pos)
   have haMinρ : aMin ≤ aρ := by
     dsimp only [aMin]
     exact min_le_left _ _
@@ -428,7 +428,7 @@ theorem normalMinScale
       (hconn k) x q δ (aMin * hd.mu R) :=
     HasNormalBrFull.mono (I := I) (X.obj k) (hcomplete.complete k)
       (hconn k) x (hfull k x hx) hρsmall
-  have hMinRatio : aMin ≤ h.ratio := haMinGp.trans h.gpRatio_le_ratio
+  have hMinRatio : aMin ≤ h.ratio := haMinGp.trans h.gp_ratio_le_ratio
   have hradius : aMin * hd.mu R ≤ hb.radius k x :=
     (mul_le_mul_of_nonneg_right hMinRatio (hd.mu_nonneg R)).trans
       (h.floor_le_radius hx)
@@ -439,7 +439,7 @@ theorem normalMinScale
       (aMin * hd.mu R) / 2 ≤ aMin * hd.mu R := by
         nlinarith [mul_nonneg haMin.le (hd.mu_nonneg R)]
       _ ≤ h.gpRatio * hd.mu R := hMinFloor
-  exact ⟨hbranch, hradius, hhalfFloor.trans (h.floor_le_expGp hx)⟩
+  exact ⟨hbranch, hradius, hhalfFloor.trans (h.floor_le_exp_gp hx)⟩
 
 theorem normalBrScale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

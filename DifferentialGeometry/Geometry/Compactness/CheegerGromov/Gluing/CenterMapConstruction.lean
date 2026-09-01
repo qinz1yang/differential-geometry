@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformDat
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.ExponentialBallCovering
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.TransitionRefine
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactnessInputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeightSubsequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.PairwiseTransition
@@ -538,7 +538,7 @@ theorem HasAtomWeightLim.binf_of_live
     (hlim.weight_ne_tail hz hweight)
   have hrad : ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
       (exponentialBallRadiusFactor inp.decay inp.D) :=
-    inp.normalRadius.radiusScaleTail inp.hD
+    inp.normalRadius.radius_scale_tail inp.hD
       (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r
   have hradTail := hphi.tendsto_atTop.eventually hrad

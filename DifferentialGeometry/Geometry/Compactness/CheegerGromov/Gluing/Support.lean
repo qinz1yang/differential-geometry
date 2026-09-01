@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.StableNet
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterEquationSelection

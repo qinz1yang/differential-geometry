@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactnessInputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.TransitionOverlap
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
@@ -245,10 +245,10 @@ theorem MetricCompactnessInputs.pair_exp_maps_tail
               (exponentialBallRadiusFactor inp.decay inp.D * L.lamInf (β.1 : Nat))) := by
   have hrad : ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
       (exponentialBallRadiusFactor inp.decay inp.D) :=
-    inp.normalRadius.radiusScaleTail inp.hD
+    inp.normalRadius.radius_scale_tail inp.hD
       (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r
-  have hgp := inp.normalRadius.halfGpScaleTail inp.hD
+  have hgp := inp.normalRadius.half_gp_scale_tail inp.hD
     (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
     P inp.realizes L inp.pack r
   have hα := seqCenterD_live inp.decay P L (α.1 : Nat) α.2
@@ -325,10 +325,10 @@ theorem MetricCompactnessInputs.pair_overlap_tail
   have hmaps := inp.pair_exp_maps_tail hradRatio P L r α β hinter
   have hrad : ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
       (exponentialBallRadiusFactor inp.decay inp.D) :=
-    inp.normalRadius.radiusScaleTail inp.hD
+    inp.normalRadius.radius_scale_tail inp.hD
       (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r
-  have hmetric := inp.normalRadius.metricScaleTail inp.hD
+  have hmetric := inp.normalRadius.metric_scale_tail inp.hD
     (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
     P inp.realizes L inp.pack r
   have hα := seqCenterD_live inp.decay P L (α.1 : Nat) α.2
