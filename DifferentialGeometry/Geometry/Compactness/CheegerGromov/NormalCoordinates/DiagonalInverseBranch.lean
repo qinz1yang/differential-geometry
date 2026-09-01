@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Exponential.DiagInvReadout
 import DifferentialGeometry.Geometry.Exponential.NormalBallHome
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalPhase
@@ -45,7 +47,7 @@ noncomputable def normalTanHome
   letI : IsManifold I 1 Y.M := IsManifold.of_le
     (I := I) (M := Y.M) (n := ∞) (by decide)
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  exact (legacyBallChart (I := I) Y x).tangentHome
+  exact (c2RadiusNormalBallChart (I := I) Y x).tangentHome
 
 noncomputable def normalPairHome
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -58,7 +60,7 @@ noncomputable def normalPairHome
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  exact (legacyBallChart (I := I) Y x).pairHome
+  exact (c2RadiusNormalBallChart (I := I) Y x).pairHome
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalTanHome_apply
@@ -77,9 +79,9 @@ theorem normalTanHome_apply
   let : IsManifold I 1 Y.M := IsManifold.of_le
     (I := I) (M := Y.M) (n := ∞) (by decide)
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  change (legacyBallChart (I := I) Y x).tangentHome z =
-    (legacyBallChart (I := I) Y x).tangent z
-  apply (legacyBallChart (I := I) Y x).tangentHome_apply
+  change (c2RadiusNormalBallChart (I := I) Y x).tangentHome z =
+    (c2RadiusNormalBallChart (I := I) Y x).tangent z
+  apply (c2RadiusNormalBallChart (I := I) Y x).tangentHome_apply
   with_unfolding_all
     change z.1 ∈ Metric.ball 0 (expMapC2Radius (I := I) Y.metric x) at hz
   exact hz
@@ -97,7 +99,7 @@ theorem normalPairHome_apply
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  exact (legacyBallChart (I := I) Y x).pairHome_apply z
+  exact (c2RadiusNormalBallChart (I := I) Y x).pairHome_apply z
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalTanHome_source
@@ -116,7 +118,7 @@ theorem normalTanHome_source
   let : IsManifold I 1 Y.M := IsManifold.of_le
     (I := I) (M := Y.M) (n := ∞) (by decide)
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  rw [normalTanHome, (legacyBallChart (I := I) Y x).tangentHome_source]
+  rw [normalTanHome, (c2RadiusNormalBallChart (I := I) Y x).tangentHome_source]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -133,7 +135,7 @@ theorem normalPair_source
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  rw [normalPairHome, (legacyBallChart (I := I) Y x).pairHome_source]
+  rw [normalPairHome, (c2RadiusNormalBallChart (I := I) Y x).pairHome_source]
   rfl
 
 noncomputable def normalDiagHome
@@ -152,8 +154,8 @@ noncomputable def normalDiagHome
   letI : IsManifold I 1 Y.M := IsManifold.of_le
     (I := I) (M := Y.M) (n := ∞) (by decide)
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  exact (legacyBallChart (I := I) Y x).tangentHome.symm.trans
-    (e.trans (legacyBallChart (I := I) Y x).pairHome)
+  exact (c2RadiusNormalBallChart (I := I) Y x).tangentHome.symm.trans
+    (e.trans (c2RadiusNormalBallChart (I := I) Y x).pairHome)
 
 noncomputable def chartTanHome
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
@@ -341,7 +343,7 @@ theorem normalPair_inv_inf
     (normalExpPD (I := I) Y x).contMDiffOn_invFun
   convert! h using 1
 
-namespace NormalCoordMetricBoundInput
+namespace NormalCoordMetricBounds
 
 theorem chart_mem_norm_le
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -439,7 +441,7 @@ theorem chart_mem_norm_le
 
 theorem raw_chart_mem_norm_le
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (c y : (X.obj k).M)
     (hdist :
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -510,7 +512,7 @@ theorem raw_chart_mem_norm_le
   have hmetricZero :
       normalCoordMetric (I := I) (X.obj k) c 0 v v =
         (X.obj k).metric.inner c v v := by
-    rw [normalCoordMetric_apply (I := I),
+    rw [normal_coord_metric_apply (I := I),
       NormalCoordinates.expMapDiffeo_zero (I := I)]
     exact NormalCoordinates.normalChartAt_metric_pullback_at_origin
       (I := I) (X.obj k).metric c v v
@@ -535,7 +537,7 @@ theorem raw_chart_mem_norm_le
     (sq_lt_sq₀ (mul_nonneg (by norm_num) hdistNonneg) (norm_nonneg v)).2 hlt
   nlinarith
 
-end NormalCoordMetricBoundInput
+end NormalCoordMetricBounds
 
 namespace IsNormalDiag
 
@@ -1493,7 +1495,7 @@ theorem target_of_chart_dom
   have htransport := full_transport (I := I) Y hcomplete hconn x hq h hf
   have himage : (y, p) ∈ P '' e.target := by
     change (y, p) ∈
-      (legacyBallChart (I := I) Y x).pairHome '' e.target
+      (c2RadiusNormalBallChart (I := I) Y x).pairHome '' e.target
     rw [htransport.2.1]
     exact hdom
   obtain ⟨w, hw, hwEq⟩ := himage
@@ -1654,7 +1656,7 @@ def HasNormalBranchDom
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
     (x : Y.M) (q : NNReal) (δ ρ : Real)
-    (c : NormalChartAt (I := I) Y x := legacyBallChart (I := I) Y x) :
+    (c : NormalChartAt (I := I) Y x := c2RadiusNormalBallChart (I := I) Y x) :
     Prop := by
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
@@ -1688,7 +1690,7 @@ def HasNormalBranchInv
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
     (x : Y.M) (q : NNReal) (δ ρ : Real) (η : NNReal)
-    (c : NormalChartAt (I := I) Y x := legacyBallChart (I := I) Y x) :
+    (c : NormalChartAt (I := I) Y x := c2RadiusNormalBallChart (I := I) Y x) :
     Prop := by
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
@@ -1726,7 +1728,7 @@ namespace HasNormalBranchDom
 
 theorem exists_pair_branch
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1866,7 +1868,7 @@ theorem exists_pair_branch
 
 theorem exists_pair_readout
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1937,7 +1939,7 @@ theorem exists_pair_readout
   have haReal : (riemannianEDist I x (a i)).toReal < ρ / 2 :=
     (ENNReal.lt_ofReal_iff_toReal_lt haFin).mp haLt
   have haSource :=
-    (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I)
+    (NormalCoordMetricBounds.chart_mem_norm_le (I := I)
       k x (a i) ⟨haFin, haReal.trans hρExp⟩).1
   rw [TangentBundle.trivializationAt_baseSet]
   apply NormalCoordinates.exp_target_sub_chart (I := I) (X.obj k).metric x
@@ -2091,7 +2093,7 @@ namespace NormalRadiusProfile
 theorem exists_common_dom
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Analysis.ODE.PhaseEndpointInverse
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseSmallness
 open DifferentialGeometry.Geometry.Curvature
@@ -20,7 +21,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 theorem exists_normal_q
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X) {r : Real} (hr : 0 < r) :
+    (h : NormalCoordMetricBounds (I := I) X) {r : Real} (hr : 0 < r) :
     ∃ q : NNReal, 0 < q ∧
       4 * (q : Real) < r ∧
       3 * h.metricC 1 * (2 * (q : Real)) ^ 2 ≤ (q : Real) ∧
@@ -86,7 +87,7 @@ theorem exists_normal_q
 
 theorem exists_normal_inv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real} (hr : 0 < r)
     (hrMetric : Metric.ball (0 : E) r ⊆
       Metric.ball (0 : E) (h.radius k x))

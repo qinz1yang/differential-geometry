@@ -15,30 +15,30 @@ def koszulCov
   (1 / 2 : Real) • ((D v) w + (D w) v - (D.flip v).flip w)
 
 
-@[simp] theorem koszulCov_apply
+@[simp] theorem koszul_cov_apply
     (D : E →L[Real] E →L[Real] E →L[Real] Real) (u v w : E) :
     koszulCov D v w u =
       (1 / 2 : Real) * (D v w u + D w v u - D u v w) := by
   simp [koszulCov]
 
 
-theorem koszulCov_sub
+theorem koszul_cov_sub
     (D F : E →L[Real] E →L[Real] E →L[Real] Real) (v w : E) :
     koszulCov (D - F) v w = koszulCov D v w - koszulCov F v w := by
   ext u
-  simp only [koszulCov_apply, sub_apply]
+  simp only [koszul_cov_apply, sub_apply]
   ring
 
-theorem koszulCov_diag_sub
+theorem koszul_cov_diag_sub
     (D : E →L[Real] E →L[Real] E →L[Real] Real) (v w : E) :
     koszulCov D v v - koszulCov D w w =
       koszulCov D (v - w) v + koszulCov D w (v - w) := by
   ext u
   simp only [sub_apply, add_apply,
-    koszulCov_apply, map_sub]
+    koszul_cov_apply, map_sub]
   ring
 
-theorem koszulCov_norm_le
+theorem koszul_cov_norm_le
     (D : E →L[Real] E →L[Real] E →L[Real] Real)
     {C : Real} (hC : 0 ≤ C)
     (hD : ∀ u v w : E, ‖D u v w‖ ≤ C * ‖u‖ * ‖v‖ * ‖w‖)
@@ -123,37 +123,37 @@ private noncomputable def koszulCovBilin
     LinearMap.mk₂ Real (fun v w => koszulCov D v w)
       (fun v₁ v₂ w => by
         ext u
-        simp [koszulCov_apply]
+        simp [koszul_cov_apply]
         ring)
       (fun c v w => by
         ext u
-        simp [koszulCov_apply]
+        simp [koszul_cov_apply]
         ring)
       (fun v w₁ w₂ => by
         ext u
-        simp [koszulCov_apply]
+        simp [koszul_cov_apply]
         ring)
       (fun c v w => by
         ext u
-        simp [koszulCov_apply]
+        simp [koszul_cov_apply]
         ring)
   f.mkContinuous₂ ((3 / 2 : Real) * ‖D‖) fun v w =>
-    koszulCov_norm_le D (norm_nonneg D) (tri_norm_apply D) v w
+    koszul_cov_norm_le D (norm_nonneg D) (tri_norm_apply D) v w
 
-@[simp] private theorem koszulCovBilin_apply
+@[simp] private theorem koszul_cov_bilin_apply
     (D : E →L[Real] E →L[Real] E →L[Real] Real) (v w : E) :
     koszulCovBilin D v w = koszulCov D v w := by
   rfl
 
-private theorem koszulCovBilin_le
+private theorem koszul_cov_bilin_le
     (D : E →L[Real] E →L[Real] E →L[Real] Real) :
     ‖koszulCovBilin D‖ ≤ (3 / 2 : Real) * ‖D‖ := by
   refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) ?_
   intro v
   refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) ?_
   intro w
-  simpa only [koszulCovBilin_apply, mul_assoc] using
-    koszulCov_norm_le D (norm_nonneg D) (tri_norm_apply D) v w
+  simpa only [koszul_cov_bilin_apply, mul_assoc] using
+    koszul_cov_norm_le D (norm_nonneg D) (tri_norm_apply D) v w
 
 noncomputable def koszulCovCLM :
     (E →L[Real] E →L[Real] E →L[Real] Real) →L[Real]
@@ -163,24 +163,24 @@ noncomputable def koszulCovCLM :
     { toFun := koszulCovBilin
       map_add' := fun D F => by
         ext v w u
-        simp [koszulCov_apply]
+        simp [koszul_cov_apply]
         ring
       map_smul' := fun c D => by
         ext v w u
-        simp [koszulCov_apply]
+        simp [koszul_cov_apply]
         ring }
-  f.mkContinuous (3 / 2 : Real) koszulCovBilin_le
+  f.mkContinuous (3 / 2 : Real) koszul_cov_bilin_le
 
 
-@[simp] theorem koszulCovCLM_apply
+@[simp] theorem koszul_cov_clm_apply
     (D : E →L[Real] E →L[Real] E →L[Real] Real) (v w : E) :
     koszulCovCLM D v w = koszulCov D v w := by
   simp [koszulCovCLM]
 
 
-theorem koszulCovCLM_norm_le : ‖koszulCovCLM (E := E)‖ ≤ (3 / 2 : Real) := by
+theorem koszul_cov_clm_norm_le : ‖koszulCovCLM (E := E)‖ ≤ (3 / 2 : Real) := by
   refine ContinuousLinearMap.opNorm_le_bound _ (by norm_num) ?_
-  exact koszulCovBilin_le
+  exact koszul_cov_bilin_le
 
 end CovCLM
 
@@ -191,14 +191,14 @@ noncomputable def koszulVec
   hco.sharp (koszulCov D v w)
 
 
-@[simp] theorem apply_koszulVec
+@[simp] theorem apply_koszul_vec
     [CompleteSpace E] [CoerciveBilinInverse E]
     {B : E →L[Real] E →L[Real] Real} (hco : IsCoercive B)
     (D : E →L[Real] E →L[Real] E →L[Real] Real) (v w : E) :
     B (koszulVec hco D v w) = koszulCov D v w := by
   exact hco.apply_sharp _
 
-theorem koszulVec_norm_le
+theorem koszul_vec_norm_le
     [CompleteSpace E] [CoerciveBilinInverse E]
     {B : E →L[Real] E →L[Real] Real} (hco : IsCoercive B)
     {c : Real} (hc : 0 < c)
@@ -213,10 +213,10 @@ theorem koszulVec_norm_le
     ‖koszulVec hco D v w‖ ≤ c⁻¹ * ‖koszulCov D v w‖ :=
       hco.sharp_norm_le hc hB _
     _ ≤ c⁻¹ * ((3 / 2 : Real) * C * ‖v‖ * ‖w‖) :=
-      mul_le_mul_of_nonneg_left (koszulCov_norm_le D hC hD v w) (inv_nonneg.mpr hc.le)
+      mul_le_mul_of_nonneg_left (koszul_cov_norm_le D hC hD v w) (inv_nonneg.mpr hc.le)
 
 
-theorem koszulVec_diag_le
+theorem koszul_vec_diag_le
     [CompleteSpace E] [CoerciveBilinInverse E]
     {B : E →L[Real] E →L[Real] Real} (hco : IsCoercive B)
     {c : Real} (hc : 0 < c)
@@ -235,7 +235,7 @@ theorem koszulVec_diag_le
           hco.sharp (koszulCov D v v - koszulCov D w w) :=
         (hco.sharp_sub _ _).symm
       _ = hco.sharp (koszulCov D (v - w) v + koszulCov D w (v - w)) :=
-        congrArg hco.sharp (koszulCov_diag_sub D v w)
+        congrArg hco.sharp (koszul_cov_diag_sub D v w)
       _ = koszulVec hco D (v - w) v + koszulVec hco D w (v - w) := by
         simp only [koszulVec, IsCoercive.sharp, map_add]
   rw [hsplit]
@@ -246,12 +246,12 @@ theorem koszulVec_diag_le
     _ ≤ c⁻¹ * ((3 / 2 : Real) * C * ‖v - w‖ * ‖v‖) +
         c⁻¹ * ((3 / 2 : Real) * C * ‖w‖ * ‖v - w‖) :=
       add_le_add
-        (koszulVec_norm_le hco hc hB D hC hD (v - w) v)
-        (koszulVec_norm_le hco hc hB D hC hD w (v - w))
+        (koszul_vec_norm_le hco hc hB D hC hD (v - w) v)
+        (koszul_vec_norm_le hco hc hB D hC hD w (v - w))
     _ = c⁻¹ * ((3 / 2 : Real) * C * (‖v‖ + ‖w‖) * ‖v - w‖) := by
       ring
 
-theorem koszulVec_sub_le
+theorem koszul_vec_sub_le
     [CompleteSpace E] [CoerciveBilinInverse E]
     {B C : E →L[Real] E →L[Real] Real}
     (hBco : IsCoercive B) (hCco : IsCoercive C)
@@ -276,16 +276,16 @@ theorem koszulVec_sub_le
     abel
   rw [hsplit]
   refine (norm_add_le _ _).trans (add_le_add ?_ ?_)
-  · rw [← hBco.sharp_sub, ← koszulCov_sub]
+  · rw [← hBco.sharp_sub, ← koszul_cov_sub]
     exact hBco.sharp_norm_le hcB hB _ |>.trans
       (mul_le_mul_of_nonneg_left
-        (koszulCov_norm_le (D - F) hCsub hsub v w)
+        (koszul_cov_norm_le (D - F) hCsub hsub v w)
         (inv_nonneg.mpr hcB.le))
   · exact (hBco.sharp_sub_le hCco hcB hcC hB hC (koszulCov F v w)).trans
       (mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
-            (koszulCov_norm_le F hCF hF v w)
+            (koszul_cov_norm_le F hCF hF v w)
             (inv_nonneg.mpr hcC.le))
           (norm_nonneg (C - B)))
         (inv_nonneg.mpr hcB.le))

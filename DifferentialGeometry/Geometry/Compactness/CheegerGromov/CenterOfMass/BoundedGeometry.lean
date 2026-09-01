@@ -1084,7 +1084,7 @@ theorem hess_lower
   have hVnorm : ‖(e.symm (z, xi)).2‖ ≤ (q : Real) :=
     (norm_snd_le (e.symm (z, xi))).trans hpreNorm.le
   have hKnorm : ‖K‖ ≤ 3 * d.metricC 1 * ‖v‖ * (q : Real) := by
-    refine ((d.metricBounds k x).koszulVec_norm_le
+    refine ((d.metricBounds k x).koszul_vec_norm_le
       (X.obj k).metric hzMetric v (e.symm (z, xi)).2).trans ?_
     exact mul_le_mul_of_nonneg_left hVnorm
       (mul_nonneg

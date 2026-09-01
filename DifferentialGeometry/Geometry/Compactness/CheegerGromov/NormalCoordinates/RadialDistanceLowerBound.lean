@@ -180,7 +180,7 @@ theorem normLowerOfSepExp
         ENNReal.ofReal (Real.sqrt
           (normalCoordMetric (I := J') Y x (t • v) v v)) := by
     intro t ht
-    exact radialEnorm_normal (I := J') Y x v t (hsmall t ht)
+    exact radial_enorm_normal (I := J') Y x v t (hsmall t ht)
   apply normLowerOfSep (J' := J') Y x heq hseg _ hcurve hend hderiv
   simpa only [one_smul] using hlam
 

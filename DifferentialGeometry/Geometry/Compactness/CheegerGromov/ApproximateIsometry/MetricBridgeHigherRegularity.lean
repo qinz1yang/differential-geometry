@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricBridge
 
 
@@ -257,7 +258,7 @@ theorem HasStageJetDataOn.pb_conv
       obtain ⟨hRad, _hmap⟩ :=
         hdata.geom_on inp P L r hr chart U C0 C1 aInf Jinf Jbarinf
           (ln n) alpha
-      have hsmooth := chiL.metric_contDiffOn Yl.metric hDopen
+      have hsmooth := chiL.metric_cont_diff_on Yl.metric hDopen
         (chiL.smooth_to.mono (hDU.trans hRad))
       simpa only [B, NormalChartFamily.metric, Yl, cl, chiL, Lphi] using hsmooth
     exact ⟨hAcd, hAmap, hBcd⟩

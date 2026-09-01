@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.InverseHigherRegularity
 
 
@@ -457,7 +458,7 @@ theorem BoundedGeometryNormalData.inv_cov_comp_tail
       obtain ⟨hRad, _hmap⟩ :=
         hdata.geom_on inp P L r hr d.chart U C0 C1 aInf Jinf Jbarinf
           (kn n) alpha
-      have hsmooth := chiK.metric_contDiffOn Yk.metric isOpen_interior
+      have hsmooth := chiK.metric_cont_diff_on Yk.metric isOpen_interior
         (chiK.smooth_to.mono (hDU.trans hRad))
       simpa only [B, NormalChartFamily.metric, Yk, ck, chiK, Lphi] using
         hsmooth
@@ -475,7 +476,7 @@ theorem BoundedGeometryNormalData.inv_cov_comp_tail
       obtain ⟨hRad, _hmap⟩ :=
         hdata.geom_on inp P L r hr d.chart U C0 C1 aInf Jinf Jbarinf
           (ln n) alpha
-      have hsmooth := chiL.metric_contDiffOn Yl.metric hOopen
+      have hsmooth := chiL.metric_cont_diff_on Yl.metric hOopen
         (chiL.smooth_to.mono ((hOD.trans hDU).trans hRad))
       simpa only [B, NormalChartFamily.metric, Yl, cl, chiL, Lphi] using
         hsmooth

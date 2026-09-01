@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalCompactness
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -54,7 +54,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_metricLimit_normalCoord
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (input : NormalCoordMetricBoundInput (I := I) X)
+    (input : NormalCoordMetricBounds (I := I) X)
     (c : ∀ k : ℕ, (X.obj k).M)
     {U : Set E} (hU : IsOpen U)
     (hdom : ∀ k, U ⊆ Metric.ball (0 : E) (input.radius k (c k)))
@@ -71,7 +71,7 @@ theorem exists_metricLimit_normalCoord
         ∀ z ∈ U, ∀ v : E,
           (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ gInf z v v ∧ gInf z v v ≤ 2 * ‖v‖ ^ 2 :=
   exists_metricLimit_on hU (fun k => normalCoordMetric (I := I) (X.obj k) (c k))
-    (contDiffOn_normalCoordMetric_of_subset_expBall (I := I) c hsub)
+    (normal_coord_metric_cont_diff_on_of_subset_exp_ball (I := I) c hsub)
     (fun r _K _hKcpt hKU =>
       ⟨input.metricC r, fun k z hz => input.metric_deriv k r (c k) z (hdom k (hKU hz))⟩)
     (fun k z hz v => input.metric_equiv k (c k) z (hdom k hz) v)
@@ -80,7 +80,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_metric_lim_pi
     {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (input : NormalCoordMetricBoundInput (I := I) X)
+    (input : NormalCoordMetricBounds (I := I) X)
     (c : ι → ∀ k : Nat, (X.obj k).M)
     {U : Set E} (hU : IsOpen U)
     (hdom : ∀ k i, U ⊆ Metric.ball (0 : E) (input.radius k (c i k)))
@@ -108,7 +108,7 @@ theorem exists_metric_lim_pi
   have hsmooth_comp : ∀ k i, ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun z ↦ gLoc k z i) U := by
     intro k i
-    exact contDiffOn_normalCoordMetric_of_subset_expBall
+    exact normal_coord_metric_cont_diff_on_of_subset_exp_ball
       (I := I) (fun n ↦ c i n) (fun n ↦ hsub n i) k
   have hsmooth : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (gLoc k) U :=
     fun k ↦ contDiffOn_pi.mpr (hsmooth_comp k)

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactnessInputs
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.TransitionOverlap
@@ -113,7 +114,7 @@ theorem MetricCompactnessInputs.atom_trans_small
       have hhalf : (1 / 2 : Real) ≤
           Geometry.Riemannian.gpCoerciveConst
             (I := I) (X.obj (L.φ k)).metric y :=
-        inp.normalBounds.half_le_gpConst (L.φ k) y
+        inp.normalBounds.half_le_gp_const (L.φ k) y
       have hsqrtPos : 0 < Real.sqrt
           (Geometry.Riemannian.gpCoerciveConst
             (I := I) (X.obj (L.φ k)).metric y) :=
@@ -273,7 +274,7 @@ theorem MetricCompactnessInputs.pair_exp_maps_tail
       (X.obj (L.φ k)).metric.inner
           (seqCenterD inp.decay P L k (α.1 : Nat)) z z ≤ 2 * ‖z‖ ^ 2 := by
     intro z
-    rw [← normalMetric_zero (I := I) (X.obj (L.φ k))
+    rw [← normal_coord_metric_zero (I := I) (X.obj (L.φ k))
       (seqCenterD inp.decay P L k (α.1 : Nat))]
     exact (inp.normalBounds.metric_equiv (L.φ k)
       (seqCenterD inp.decay P L k (α.1 : Nat)) 0 hzeroX z).2
@@ -281,7 +282,7 @@ theorem MetricCompactnessInputs.pair_exp_maps_tail
       Geometry.Riemannian.gpCoerciveConst (I := I)
         (X.obj (L.φ k)).metric
         (seqCenterD inp.decay P L k (β.1 : Nat)) :=
-    inp.normalBounds.half_le_gpConst (L.φ k)
+    inp.normalBounds.half_le_gp_const (L.φ k)
       (seqCenterD inp.decay P L k (β.1 : Nat))
   exact L.pair_exp_maps inp.decay inp.hD P inp.pack r α.1 β.1
     hfreq k hk hx hy hradk hmetric hhalf
@@ -429,7 +430,7 @@ theorem MetricCompactnessInputs.exists_pair_trans
   classical
   dsimp only
   refine existsTransTail (I := I) (X := X.subseq L.φ)
-    (NormalCoordMetricBoundInput.subseq (I := I) inp.normalBounds L.φ)
+    (NormalCoordMetricBounds.subseq (I := I) inp.normalBounds L.φ)
     (fun i k => seqCenterD inp.decay P L k ((α i).1 : Nat))
     (fun i k => seqCenterD inp.decay P L k ((β i).1 : Nat))
     (fun i => Metric.ball 0 (8 * L.lamInf ((α i).1 : Nat)))

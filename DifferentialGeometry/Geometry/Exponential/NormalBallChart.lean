@@ -62,7 +62,7 @@ def ofHigher {p : M} {r : Real} (hr : 0 < r)
     exact Φ.map_source (hsub hz)
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space (TangentBundle I M)] in
-@[simp] theorem ofHigher_radius {p : M} {r : Real} (hr : 0 < r)
+@[simp] theorem of_higher_radius {p : M} {r : Real} (hr : 0 < r)
     (Φ : PartialDiffeomorph (modelWithCornersSelf Real E) I E M ∞)
     (hsub : Metric.ball (0 : E) r ⊆ Φ.source)
     (hzero : Φ 0 = p) :
@@ -70,7 +70,7 @@ omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space (T
   rfl
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space (TangentBundle I M)] in
-@[simp] theorem ofHigher_apply {p : M} {r : Real} (hr : 0 < r)
+@[simp] theorem of_higher_apply {p : M} {r : Real} (hr : 0 < r)
     (Φ : PartialDiffeomorph (modelWithCornersSelf Real E) I E M ∞)
     (hsub : Metric.ball (0 : E) r ⊆ Φ.source)
     (hzero : Φ 0 = p) (z : E) :
@@ -112,7 +112,7 @@ noncomputable def restrictBall {p : M}
         exact c.smooth_inv }
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space (TangentBundle I M)] in
-@[simp] theorem restrictBall_source {p : M}
+@[simp] theorem restrict_ball_source {p : M}
     (c : NormalBallChart (I := I) p) :
     (c.restrictBall : PartialDiffeomorph
       (modelWithCornersSelf Real E) I E M ∞).source =
@@ -120,7 +120,7 @@ omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space (T
   rfl
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space (TangentBundle I M)] in
-@[simp] theorem restrictBall_apply {p : M}
+@[simp] theorem restrict_ball_apply {p : M}
     (c : NormalBallChart (I := I) p) (z : E) :
     c.restrictBall z = c.hom z :=
   rfl
@@ -357,7 +357,7 @@ private theorem push_smooth {p : M}
   rw [hmf]
 
 omit [I.Boundaryless] [T2Space (TangentBundle I M)] in
-theorem metric_contDiffOn (g : SmoothRiemannianMetric I M) {p : M}
+theorem metric_cont_diff_on (g : SmoothRiemannianMetric I M) {p : M}
     (c : NormalBallChart (I := I) p) {U : Set E}
     (hU : IsOpen U)
     (hf : ContMDiffOn (modelWithCornersSelf Real E) I ∞ c.hom U) :
@@ -424,7 +424,7 @@ def MetricDerivBound (g : SmoothRiemannianMetric I M) {p₀ : M}
 namespace MetricDerivBound
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space (TangentBundle I M)] in
-theorem of_eqOn (g : SmoothRiemannianMetric I M) {p₀ : M}
+theorem of_eq_on (g : SmoothRiemannianMetric I M) {p₀ : M}
     {c : NormalBallChart (I := I) p₀} {U : Set E} (hU : IsOpen U)
     {f : E → E →L[Real] E →L[Real] Real} {p : Nat} {C : Real}
     (heq : Set.EqOn (c.metric g) f U)
@@ -542,13 +542,13 @@ theorem fderiv_apply_le (g : SmoothRiemannianMetric I M) {p : M}
     _ = h.C 1 * ‖u‖ * ‖v‖ * ‖w‖ := rfl
 
 omit [I.Boundaryless] [T2Space (TangentBundle I M)] in
-theorem koszulVec_norm_le (g : SmoothRiemannianMetric I M) {p : M}
+theorem koszul_vec_norm_le (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} (h : c.MetricBounds g)
     {z : E} (hz : z ∈ Metric.ball (0 : E) h.radius) (v w : E) :
     ‖MetricKoszul.koszulVec (h.equiv.coercive g hz)
         (fderiv Real (c.metric g) z) v w‖ ≤
       3 * h.C 1 * ‖v‖ * ‖w‖ := by
-  have hraw := MetricKoszul.koszulVec_norm_le
+  have hraw := MetricKoszul.koszul_vec_norm_le
     (h.equiv.coercive g hz)
     (c := (1 / 2 : Real)) (by norm_num)
     (fun u ↦ by
@@ -561,7 +561,7 @@ theorem koszulVec_norm_le (g : SmoothRiemannianMetric I M) {p : M}
   exact hraw
 
 omit [I.Boundaryless] [T2Space (TangentBundle I M)] in
-theorem koszulVec_pair_le (g : SmoothRiemannianMetric I M) {p : M}
+theorem koszul_vec_pair_le (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} (h : c.MetricBounds g)
     {z y : E}
     (hz : z ∈ Metric.ball (0 : E) h.radius)
@@ -578,7 +578,7 @@ theorem koszulVec_pair_le (g : SmoothRiemannianMetric I M) {p : M}
           (fderiv Real (c.metric g) y) v w‖ ≤
       (6 * (h.C 1) ^ 2 + 3 * h.C 2) *
         ‖z - y‖ * ‖v‖ * ‖w‖ := by
-  have hraw := MetricKoszul.koszulVec_sub_le
+  have hraw := MetricKoszul.koszul_vec_sub_le
     (h.equiv.coercive g hz) (h.equiv.coercive g hy)
     (cB := (1 / 2 : Real)) (cC := (1 / 2 : Real))
     (by norm_num) (by norm_num)
@@ -635,7 +635,7 @@ private theorem fderiv_eval3
   simpa using happ
 
 omit [I.Boundaryless] [T2Space (TangentBundle I M)] in
-theorem koszulVec_lip_on (g : SmoothRiemannianMetric I M) {p : M}
+theorem koszul_vec_lip_on (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} (h : c.MetricBounds g)
     {r : Real}
     (hr : Metric.ball (0 : E) r ⊆ Metric.ball (0 : E) h.radius)
@@ -659,7 +659,7 @@ theorem koszulVec_lip_on (g : SmoothRiemannianMetric I M) {p : M}
   let G := c.metric g
   let U := Metric.ball (0 : E) r
   have hsm : ContDiffOn Real (⊤ : ℕ∞) G U :=
-    (c.metric_contDiffOn g Metric.isOpen_ball c.smooth_to).mono hrChart
+    (c.metric_cont_diff_on g Metric.isOpen_ball c.smooth_to).mono hrChart
   have hdiff : ∀ q ∈ U, DifferentiableAt Real G q := by
     intro q hq
     exact (hsm q hq).contDiffAt (Metric.isOpen_ball.mem_nhds hq)
@@ -742,12 +742,12 @@ theorem koszulVec_lip_on (g : SmoothRiemannianMetric I M) {p : M}
         dsimp only [C]
         rw [norm_sub_rev y z]
         ring
-  exact h.koszulVec_pair_le g (hr hz) (hr hy)
+  exact h.koszul_vec_pair_le g (hr hz) (hr hy)
     (by simpa only [G] using hmetric)
     (by simpa only [G] using hjet) v w
 
 omit [I.Boundaryless] [T2Space (TangentBundle I M)] in
-theorem koszulAccel_lip_on (g : SmoothRiemannianMetric I M) {p : M}
+theorem koszul_accel_lip_on (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} (h : c.MetricBounds g)
     {r : Real}
     (hr : Metric.ball (0 : E) r ⊆ Metric.ball (0 : E) h.radius)
@@ -779,7 +779,7 @@ theorem koszulAccel_lip_on (g : SmoothRiemannianMetric I M) {p : M}
     simpa only [Prod.snd_sub] using norm_snd_le (z - y)
   have hpos : ‖Kz z.2 z.2 - Ky z.2 z.2‖ ≤
       A * R ^ 2 * ‖z - y‖ := by
-    have hraw := h.koszulVec_lip_on g hr hrChart hz hy z.2 z.2
+    have hraw := h.koszul_vec_lip_on g hr hrChart hz hy z.2 z.2
     calc
       ‖Kz z.2 z.2 - Ky z.2 z.2‖ ≤
           A * ‖z.1 - y.1‖ * ‖z.2‖ * ‖z.2‖ := by
@@ -788,7 +788,7 @@ theorem koszulAccel_lip_on (g : SmoothRiemannianMetric I M) {p : M}
       _ = A * R ^ 2 * ‖z - y‖ := by ring
   have hvel : ‖Ky z.2 z.2 - Ky y.2 y.2‖ ≤
       6 * h.C 1 * R * ‖z - y‖ := by
-    have hraw := MetricKoszul.koszulVec_diag_le
+    have hraw := MetricKoszul.koszul_vec_diag_le
       (h.equiv.coercive g (hr hy))
       (c := (1 / 2 : Real)) (by norm_num)
       (fun u ↦ by

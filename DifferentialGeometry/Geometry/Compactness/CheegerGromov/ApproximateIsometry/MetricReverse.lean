@@ -438,7 +438,7 @@ theorem HasStageJetData.inv_cov_comp_tail
       have hgeomK := hdata.geom_on inp P L r hr U C0 C1 aInf Jinf Jbarinf
         (kn n) alpha
       simpa only [B, Lphi] using
-        (normalCoordMetric_contDiffOn_expBall (I := I)
+        (normal_coord_metric_cont_diff_on_exp_ball (I := I)
           (X.obj (Lphi.φ (kn n)))
           (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))).mono
             (hDU.trans hgeomK.2.1)
@@ -448,7 +448,7 @@ theorem HasStageJetData.inv_cov_comp_tail
       have hgeomL := hdata.geom_on inp P L r hr U C0 C1 aInf Jinf Jbarinf
         (ln n) alpha
       simpa only [B, Lphi] using
-        (normalCoordMetric_contDiffOn_expBall (I := I)
+        (normal_coord_metric_cont_diff_on_exp_ball (I := I)
           (X.obj (Lphi.φ (ln n)))
           (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))).mono
             (hOD.trans (hDU.trans hgeomL.2.1))

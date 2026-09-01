@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Construction
 
 
@@ -33,7 +34,7 @@ private theorem cast_preapprox
     (i j K L' : Nat) (hi : L.φ i = K) (hj : L.φ j = L')
     (r R ε : Real) (p : Nat)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X)
+      c2RadiusNormalChartFamily (I := I) X)
     (hnative :
       let Yi := X.obj (L.φ i)
       let Yj := X.obj (L.φ j)
@@ -174,7 +175,7 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
   have hnative := hmetric (k - q) hkNative (l - q) hlNative
   have hpair := cast_preapprox inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) Lq q
     (Nat.cast_nonneg q) (k - q) (l - q) (psi k) (psi l)
-    hki hli r R ε p (chart := legacyChartFamily (I := I) X) hnative
+    hki hli r R ε p (chart := c2RadiusNormalChartFamily (I := I) X) hnative
   refine ⟨R, hrR, F, ?_, ?_, ?_, ?_, ?_⟩
   · intro x
     exact hgeomKL.1 ⟨x, Metric.ball_subset_closedBall x.property⟩

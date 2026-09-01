@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringOrdered
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalTransitionBounds
 import DifferentialGeometry.Geometry.Comparison.GeodesicConvexity
@@ -507,7 +508,7 @@ theorem NormalCoordMetricEquivOn.symm_dist_le
           (mfderiv 𝓘(Real, E) I e (eta t) (v - u))
           (mfderiv 𝓘(Real, E) I e (eta t) (v - u)))
           = Real.sqrt (normalCoordMetric (I := I) Y c (eta t) (v - u) (v - u)) := by
-              rw [normalCoordMetric_apply (I := I)]
+              rw [normal_coord_metric_apply (I := I)]
       _ ≤ Real.sqrt (2 * ‖v - u‖ ^ 2) := Real.sqrt_le_sqrt hub
       _ = Real.sqrt 2 * dist u v := by
           rw [Real.sqrt_mul (by norm_num : (0 : Real) ≤ 2),
@@ -728,7 +729,7 @@ theorem NormalCoordMetricEquivOn.chart_dist_le
       exact heq.self_of_nhds
     have hmetric : normalCoordMetric (I := I) Y c (eta t)
           (deriv eta t) (deriv eta t) = d ^ 2 := by
-      rw [normalCoordMetric_apply (I := I), hbase]
+      rw [normal_coord_metric_apply (I := I), hbase]
       change Y.metric.inner (gamma t)
           (mfderiv 𝓘(Real, E) I e (eta t) (deriv eta t))
           (mfderiv 𝓘(Real, E) I e (eta t) (deriv eta t)) = d ^ 2

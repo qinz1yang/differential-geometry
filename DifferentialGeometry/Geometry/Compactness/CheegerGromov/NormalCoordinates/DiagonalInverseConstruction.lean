@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricConvergence
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseConvergence
@@ -115,7 +117,7 @@ theorem exists_live_diag
       simpa only [index, Xpsi, c, PointedRiemannianSeq.subseq] using
         (mapCInf_apply Metric.isOpen_ball hconv hstage hgInf alpha)
     simpa only [MetricCompactnessInputs.subseq, NormalRadiusProfile.subseq,
-        InjRadiusDecayInput.subseq, NormalCoordMetricBoundInput.subseq,
+        InjRadiusDecayInput.subseq, NormalCoordMetricBounds.subseq,
         NormalRadiusProfile.phaseRadius] using
       (inp.normalRadius.subseq index).exists_diagPair_conv
         (hcomplete.subseq index)
@@ -232,7 +234,7 @@ theorem exists_slot_diag
         (gInf alpha) := by
       simpa only [Ralpha, index, Xpsi, c, PointedRiemannianSeq.subseq] using hm.2.1
     simpa only [Ralpha, NormalRadiusProfile.subseq,
-        InjRadiusDecayInput.subseq, NormalCoordMetricBoundInput.subseq,
+        InjRadiusDecayInput.subseq, NormalCoordMetricBounds.subseq,
         NormalRadiusProfile.phaseRadius] using
       (inp.normalRadius.subseq index).exists_diagPair_at
         (hcomplete.subseq index)
@@ -320,10 +322,10 @@ theorem exists_diag_full
           (PointedRiemannianSeq.connected_subseq hconn index)
           (c alpha) (q alpha) (q alpha / 2)
           (δ alpha) (deltaInf alpha) (e alpha) (eInf alpha)
-          (chart := legacyChartFamily (I := I) Xpsi) ∧
+          (chart := c2RadiusNormalChartFamily (I := I) Xpsi) ∧
         ∀ n, NormalDiagFence (I := I) (Xpsi.obj n)
           (c alpha n) (q alpha) (e alpha n)
-          (c := legacyBallChart (I := I) (Xpsi.obj n) (c alpha n)) := by
+          (c := c2RadiusNormalBallChart (I := I) (Xpsi.obj n) (c alpha n)) := by
   classical
   obtain ⟨psi0, gInf, deltaStage, deltaInf, e0, eInf,
       hpsi0, hcenter0, hmetric0, hpair0⟩ :=
@@ -356,11 +358,11 @@ theorem exists_diag_full
           (hcomplete.complete (L.φ (psi n))) (hconn (L.φ (psi n)))
           (seqCenterD inp.decay P Lpsi n (alpha.1 : Nat))
           (q alpha) (δ alpha) e
-          (c := legacyBallChart (I := I) (X.obj (L.φ (psi n)))
+          (c := c2RadiusNormalBallChart (I := I) (X.obj (L.φ (psi n)))
             (seqCenterD inp.decay P Lpsi n (alpha.1 : Nat))) ∧
         NormalDiagFence (I := I) (X.obj (L.φ (psi n)))
           (seqCenterD inp.decay P Lpsi n (alpha.1 : Nat)) (q alpha) e
-          (c := legacyBallChart (I := I) (X.obj (L.φ (psi n)))
+          (c := c2RadiusNormalBallChart (I := I) (X.obj (L.φ (psi n)))
             (seqCenterD inp.decay P Lpsi n (alpha.1 : Nat))) := by
     intro alpha n
     have hfull := hbranchAll n alpha
@@ -404,13 +406,13 @@ theorem exists_diag_full
         (PointedRiemannianSeq.connected_subseq hconn index)
         c (q alpha) (q alpha / 2) (δ alpha) (deltaInf alpha)
         (e alpha) (eInf alpha)
-        (chart := legacyChartFamily (I := I) Xpsi) := by
+        (chart := c2RadiusNormalChartFamily (I := I) Xpsi) := by
     intro alpha
     have hcan := (hpair0 alpha).1.subseq shift hshift.tendsto_atTop
     have hcanFence : ∀ n,
         NormalDiagFence (I := I) ((X0.subseq shift).obj n)
           (c0 alpha (shift n)) (q alpha) (e0 alpha (shift n))
-          (c := legacyBallChart (I := I) ((X0.subseq shift).obj n)
+          (c := c2RadiusNormalBallChart (I := I) ((X0.subseq shift).obj n)
             (c0 alpha (shift n))) := by
       intro n
       exact (hpair0 alpha).2 (shift n)

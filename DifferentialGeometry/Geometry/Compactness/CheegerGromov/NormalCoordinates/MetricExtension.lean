@@ -1,7 +1,8 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricKoszul
 import DifferentialGeometry.Geometry.Exponential.NormalBallMetric
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
 import DifferentialGeometry.Geometry.Metric.BumpExtend
 import DifferentialGeometry.Geometry.Metric.MetricExistence
 import DifferentialGeometry.Geometry.Metric.PullbackCross
@@ -99,7 +100,7 @@ noncomputable def normalExpPD
       open_source := U.2
       open_target := image_opens_isOpen Φ hU
       contMDiffOn_toFun := by
-        have h := expMapDiffeo_contMDiffOn_expBall (I := I) Y x
+        have h := exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) Y x
         have hfun :
             (Φ : E → Y.M) = fun w : E ↦ expMapDiffeo (I := I) Y.metric x w := by
           funext w
@@ -109,7 +110,7 @@ noncomputable def normalExpPD
         rw [hfun, hset]
         exact h
       contMDiffOn_invFun := by
-        have hsm := normalChartAt_contMDiffOn_infty (I := I) Y.metric x
+        have hsm := normal_chart_at_cont_mdiff_on_infty (I := I) Y.metric x
         have hsm' : ContMDiffOn I 𝓘(Real, E) ∞
             (normalChartAt (I := I) Y.metric x) ((Φ : E → Y.M) '' (U : Set E)) := by
           rw [himage]
@@ -304,7 +305,7 @@ theorem normalMetric_inner
   rw [normalMetric, Diffeomorph.pullbackMetricCross_inner,
     SmoothRiemannianMetric.restrictOpen_inner]
   rw [ballDiffeo_apply, ballDiffeo_mfd, ballDiffeo_mfd]
-  exact (normalCoordMetric_apply (I := I) Y x (z : E) v w).symm
+  exact (normal_coord_metric_apply (I := I) Y x (z : E) v w).symm
 
 noncomputable def normalCut
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -427,12 +428,12 @@ private noncomputable def modelFlatMetric
   have hBsymm : ∀ v w : E, B v w = B w v := by
     intro v w
     dsimp only [B]
-    rw [normalMetric_zero (I := I)]
+    rw [normal_coord_metric_zero (I := I)]
     exact Y.metric.symm x v w
   have hBpos : ∀ v : E, v ≠ 0 → 0 < B v v := by
     intro v hv
     dsimp only [B]
-    rw [normalMetric_zero (I := I)]
+    rw [normal_coord_metric_zero (I := I)]
     exact Y.metric.pos x v hv
   exact
     { inner := Bt
@@ -621,7 +622,7 @@ theorem normal_cov_eq
     filter_upwards [Metric.isOpen_ball.mem_nhds hz] with y hy
     exact normalTotal_eq (I := I) Y x y hy
   have hdiff : DifferentiableAt Real (normalCoordMetric (I := I) Y x) z := by
-    exact ((normalCoordMetric_contDiffOn_expBall (I := I) Y x).contDiffAt
+    exact ((normal_coord_metric_cont_diff_on_exp_ball (I := I) Y x).contDiffAt
       (Metric.isOpen_ball.mem_nhds (hsub hz))).differentiableAt (by simp)
   exact DifferentialGeometry.Geometry.Connection.const_cov_eq_nhds
     (normalTotal (I := I) Y x) (normalCoordMetric (I := I) Y x)
@@ -670,7 +671,7 @@ theorem normal_cov_eq_fderiv
     filter_upwards [Metric.isOpen_ball.mem_nhds hz] with y hy
     exact normalTotal_eq (I := I) Y x y hy
   have hdiff : DifferentiableAt Real (normalCoordMetric (I := I) Y x) z := by
-    exact ((normalCoordMetric_contDiffOn_expBall (I := I) Y x).contDiffAt
+    exact ((normal_coord_metric_cont_diff_on_exp_ball (I := I) Y x).contDiffAt
       (Metric.isOpen_ball.mem_nhds (hsub hz))).differentiableAt (by simp)
   exact DifferentialGeometry.Geometry.Connection.cov_eq_fderiv_add
     (normalTotal (I := I) Y x) (normalCoordMetric (I := I) Y x)

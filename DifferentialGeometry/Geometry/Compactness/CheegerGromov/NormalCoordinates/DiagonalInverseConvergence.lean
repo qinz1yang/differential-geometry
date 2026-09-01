@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Analysis.Calculus.MovingInverse
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseBranch
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.LimitPhaseFlow
@@ -33,7 +35,7 @@ def HasDiagPairConv
     (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
     (eInf : OpenPartialHomeomorph (E × E) (E × E))
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : Prop :=
+      c2RadiusNormalChartFamily (I := I) X) : Prop :=
   0 < qStage ∧ 0 < qInf ∧ qInf < qStage ∧
   0 < deltaStage ∧ 0 < deltaInf ∧
   (∀ n, IsNormalDiag (I := I) (X.obj n)
@@ -335,7 +337,7 @@ namespace NormalRadiusProfile
 theorem exists_diagInv_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -473,7 +475,7 @@ theorem exists_diagInv_conv
 theorem exists_diagPair_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -593,7 +595,7 @@ theorem exists_diagPair_at
 theorem exists_diagPair_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,

@@ -87,7 +87,7 @@ private theorem ballDiffeo_apply {p : M}
     (c : NormalBallChart (I := I) p) (z : c.ball) :
     ((c.ballDiffeo z : c.image) : M) = c.hom (z : E) := by
   change c.restrictBall (z : E) = c.hom (z : E)
-  exact c.restrictBall_apply (z : E)
+  exact c.restrict_ball_apply (z : E)
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 private theorem ballDiffeo_mfd {p : M}
@@ -321,7 +321,7 @@ theorem total_cov_const (g : SmoothRiemannianMetric I M) {p : M}
     filter_upwards [Metric.isOpen_ball.mem_nhds hz] with y hy
     exact c.totalMetric_eq g y hy
   have hdiff : DifferentiableAt Real (c.metric g) z := by
-    exact ((c.metric_contDiffOn g Metric.isOpen_ball c.smooth_to).contDiffAt
+    exact ((c.metric_cont_diff_on g Metric.isOpen_ball c.smooth_to).contDiffAt
       (Metric.isOpen_ball.mem_nhds (hsub hz))).differentiableAt (by simp)
   exact _root_.DifferentialGeometry.Geometry.Connection.const_cov_eq_nhds
     (c.totalMetric g) (c.metric g) hEq hdiff hco v w
@@ -356,7 +356,7 @@ theorem total_cov_fderiv (g : SmoothRiemannianMetric I M) {p : M}
     filter_upwards [Metric.isOpen_ball.mem_nhds hz] with y hy
     exact c.totalMetric_eq g y hy
   have hdiff : DifferentiableAt Real (c.metric g) z := by
-    exact ((c.metric_contDiffOn g Metric.isOpen_ball c.smooth_to).contDiffAt
+    exact ((c.metric_cont_diff_on g Metric.isOpen_ball c.smooth_to).contDiffAt
       (Metric.isOpen_ball.mem_nhds (hsub hz))).differentiableAt (by simp)
   exact _root_.DifferentialGeometry.Geometry.Connection.cov_eq_fderiv_add
     (c.totalMetric g) (c.metric g) hEq hdiff hco V _hV v

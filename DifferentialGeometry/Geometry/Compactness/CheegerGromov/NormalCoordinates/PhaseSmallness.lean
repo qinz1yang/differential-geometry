@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Analysis.ODE.PhaseFlowSmallness
 import DifferentialGeometry.Analysis.ODE.PhaseEndpointInverse
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactnessInputs
@@ -33,14 +34,14 @@ namespace NormalRadiusProfile
 def phaseRadius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real) : Real :=
   h.ratio * hd.mu R / 4
 
 theorem phaseRadius_pos
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real) : 0 < h.phaseRadius R := by
   dsimp only [phaseRadius]
   exact div_pos (h.floor_pos R) (by norm_num)
@@ -48,7 +49,7 @@ theorem phaseRadius_pos
 theorem phaseRadius_metric
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {k : Nat} {x : (X.obj k).M} {R : Real}
     (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
     Metric.ball (0 : E) (h.phaseRadius R) ⊆
@@ -63,7 +64,7 @@ theorem phaseRadius_metric
 theorem phaseRadius_exp
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {k : Nat} {x : (X.obj k).M} {R : Real}
     (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -87,7 +88,7 @@ end NormalRadiusProfile
 omit [NeZero (Module.finrank Real E)] in
 @[simp] theorem normalPhaseK_zero
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X) : normalPhaseK h 0 = 0 := by
+    (h : NormalCoordMetricBounds (I := I) X) : normalPhaseK h 0 = 0 := by
   apply NNReal.eq
   simp [normalPhaseK]
   rfl
@@ -95,7 +96,7 @@ omit [NeZero (Module.finrank Real E)] in
 omit [NeZero (Module.finrank Real E)] in
 theorem normalPhaseK_cont
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X) :
+    (h : NormalCoordMetricBounds (I := I) X) :
     Continuous (normalPhaseK h) := by
   unfold normalPhaseK
   apply Continuous.subtype_mk
@@ -104,7 +105,7 @@ theorem normalPhaseK_cont
 omit [NeZero (Module.finrank Real E)] in
 theorem normalPhaseK_lim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X) :
+    (h : NormalCoordMetricBounds (I := I) X) :
     Tendsto (normalPhaseK h) (nhds 0) (nhds 0) := by
   have hcont : Tendsto (normalPhaseK h) (nhds (0 : NNReal))
       (nhds (normalPhaseK h 0)) := (normalPhaseK_cont h).continuousAt
@@ -113,7 +114,7 @@ theorem normalPhaseK_lim
 omit [NeZero (Module.finrank Real E)] in
 theorem normalPhaseErr_lim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X) :
+    (h : NormalCoordMetricBounds (I := I) X) :
     Tendsto (fun R ↦ PhaseFlow.phaseErr (normalPhaseK h R))
       (nhds 0) (nhds 0) :=
   PhaseFlow.phaseErr_tendsto.comp (normalPhaseK_lim h)
@@ -121,7 +122,7 @@ theorem normalPhaseErr_lim
 omit [NeZero (Module.finrank Real E)] in
 theorem normalPhaseErr_lt_ev
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     {eps : NNReal} (heps : 0 < eps) :
     ∀ᶠ R in nhds 0, PhaseFlow.phaseErr (normalPhaseK h R) < eps :=
   normalPhaseErr_lim h (Iio_mem_nhds heps)
@@ -129,7 +130,7 @@ theorem normalPhaseErr_lt_ev
 omit [NeZero (Module.finrank Real E)] in
 theorem exists_normal_q_lt
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     {r : Real} (hr : 0 < r) {eps : NNReal} (heps : 0 < eps) :
     ∃ q : NNReal, 0 < q ∧
       4 * (q : Real) < r ∧
@@ -189,7 +190,7 @@ namespace NormalRadiusProfile
 theorem exists_phase_q
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real)
     {eps : NNReal} (heps : 0 < eps) :
     ∃ q : NNReal, 0 < q ∧
@@ -201,7 +202,7 @@ theorem exists_phase_q
 theorem exists_phase_scale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) :
     let N : NNReal :=
       ‖((PhaseFlow.freeDiagCLE (E := E)).symm :

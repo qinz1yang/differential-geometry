@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparisonMap
 import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Fill
@@ -52,7 +53,7 @@ theorem uniqueStage_of_fill
     (rad : (X.obj (L.φ k)).M → Real)
     (x : (X.obj (L.φ k)).M)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X)
+      c2RadiusNormalChartFamily (I := I) X)
     (hcm :
       let Y := X.obj (L.φ l)
       letI : TopologicalSpace Y.M := Y.topology
@@ -115,7 +116,7 @@ theorem stageCompare_eq_cm
     (x : (X.obj (L.φ k)).M)
     (hx : x ∈ L.hatSourceBall inp.decay P s k)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X)
+      c2RadiusNormalChartFamily (I := I) X)
     (hcm :
       let Y := X.obj (L.φ l)
       letI : TopologicalSpace Y.M := Y.topology
@@ -347,8 +348,8 @@ theorem HasSuppConvData.pts_target_tail
   have hweightOrig :
       stageWeight inp P L hr alpha (phi k) z target.1.1 ≠ 0 := by
     simpa only [stageWeight, stageWeightSub_eq, rawWeights, cutRaw,
-      seqAtomChart, NormalChartFamily.hom, legacyChartFamily,
-      legacyChart_apply, MetricCompactnessInputs.toCore] using hweight
+      seqAtomChart, NormalChartFamily.hom, c2RadiusNormalChartFamily,
+      c2_radius_normal_ball_chart_apply, MetricCompactnessInputs.toCore] using hweight
   have hsmall : normalTransition (I := I) Yk
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
         (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)) z ∈
@@ -421,8 +422,8 @@ theorem HasSuppConvData.pts_target_tail
     have hov := (hrevL alpha target _ hv).2
     rw [hchiK]
     simpa only [stageTarget, normalTransition, Yk, Yl,
-      MetricCompactnessInputs.toCore, legacyChartFamily, legacyInv_eq,
-      legacyChart_apply] using hov
+      MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_inv,
+      c2_radius_normal_ball_chart_apply] using hov
   rw [hraw]
   constructor
   · have hchart :
@@ -439,17 +440,17 @@ theorem HasSuppConvData.pts_target_tail
               (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
               (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)) z) := by
       rw [hchiK]
-      simpa only [MetricCompactnessInputs.toCore, legacyChartFamily,
-        legacyInv_eq, legacyTransition_eq, legacyChart_apply] using
+      simpa only [MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily,
+        c2_radius_normal_ball_chart_inv, c2_radius_normal_ball_chart_transition, c2_radius_normal_ball_chart_apply] using
         (stageTarget_chart (I := I) inp.toCore P Lphi r k l
           alpha.1 target.1.1 z
-            (chart := legacyChartFamily (I := I) X))
+            (chart := c2RadiusNormalChartFamily (I := I) X))
     rw [← hchart]
     exact (NormalCoordinates.normalChartAt (I := I) Yl.metric
       (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))).left_inv hsrc
   · exact stageTarget_chart (I := I) inp.toCore P Lphi r k l
       alpha.1 target.1.1 z
-        (chart := legacyChartFamily (I := I) X)
+        (chart := c2RadiusNormalChartFamily (I := I) X)
 
 theorem HasSuppConvData.pts_target_dist
     (inp : MetricCompactnessInputs (I := I) X)
@@ -624,7 +625,7 @@ theorem HasSuppConvData.actual_cm_tail
           HasChartCmSol (I := I) Yl (hcomplete.complete (Lphi.φ l))
             (hconn (Lphi.φ l))
             (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
-            (legacyBallChart (I := I) Yl
+            (c2RadiusNormalBallChart (I := I) Yl
               (seqCenterD inp.decay P Lphi l (alpha.1 : Nat)))
             (q := q alpha) (delta := δ alpha) (mu z)
             (centerAverage.activeFill mu stagePts qstar z)
@@ -732,8 +733,8 @@ theorem HasSuppConvData.actual_cm_tail
   have hzNorm : ‖z‖ < expMapC2Radius (I := I) Yl.metric x0 := by
     simpa only [Metric.mem_ball, dist_zero_right, Yl, x0, Lphi,
       NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
-      NormalChartFamily.radius, legacyChartFamily,
-      legacyBallChart_radius] using hzBall
+      NormalChartFamily.radius, c2RadiusNormalChartFamily,
+      c2_radius_normal_ball_chart_radius] using hzBall
   have hzTarget : z ∈ chiL.target := by
     exact ball_subset_normalChartAt_target (I := I) Yl.metric x0 hzNorm
   have hzExpSrc : z ∈
@@ -744,15 +745,15 @@ theorem HasSuppConvData.actual_cm_tail
     change z ∈ (NormalCoordinates.normalChartAt (I := I) Yl.metric x0).target
     simpa only [NormalCoordinates.normalChartAt_target_eq] using hzExpSrc
   have hchiL : chiL.symm z =
-      (legacyChartFamily (I := I) X).hom (L.φ (phi l))
+      (c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi l))
         (seqCenterD inp.decay P L (phi l) (alpha.1 : Nat)) z := by
     change (NormalCoordinates.normalChartAt (I := I) Yl.metric x0).symm z = _
     rw [NormalCoordinates.normalChartAt_symm_apply (I := I) Yl.metric x0
       hzChartSrc]
     rw [← NormalCoordinates.expMapDiffeo_apply_eq (I := I) Yl.metric x0 hzExpSrc]
     simp only [Yl, x0, Lphi, NetLimitData.subseq_phi, Function.comp_apply,
-      seqCenterD_subseq, NormalChartFamily.hom, legacyChartFamily,
-      legacyChart_apply]
+      seqCenterD_subseq, NormalChartFamily.hom, c2RadiusNormalChartFamily,
+      c2_radius_normal_ball_chart_apply]
   have hactive : ∀ gamma, mu z gamma ≠ 0 →
       dist p (stagePts z gamma) < rad := by
     intro gamma hne
@@ -2157,7 +2158,7 @@ def HasStageRootReadout
     (alpha : LiveSlot L inp.pack r)
     (Phi3 : Nat → Nat → Nat → E → E)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : Prop :=
+      c2RadiusNormalChartFamily (I := I) X) : Prop :=
   ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ z ∈ C0 alpha,
     let Lphi := L.subseq hphi
     let Yk := X.obj (Lphi.φ k)
@@ -2344,12 +2345,12 @@ theorem HasSuppConvData.stage_root_tail
   rcases hread with ⟨hcTarget, hsol⟩
   have hsolSel : HasCmSolC (I := I) Yl.metric
       (normal_enorm (I := I) Yl) x0
-      (legacyBallChart (I := I) Yl x0)
+      (c2RadiusNormalBallChart (I := I) Yl x0)
       (IsNormalDiag.toBranch (I := I) Yl
         (hcomplete.complete (Lphi.φ l)) (hconn (Lphi.φ l))
         x0 hqSel heSel) zc (mu z, xi) := by
     with_unfolding_all exact hsol
-  let chartSel := legacyBallChart (I := I) Yl x0
+  let chartSel := c2RadiusNormalBallChart (I := I) Yl x0
   have htgtSel : ∀ i, (zc, xi i) ∈ eSel.target := by
     intro i
     have hzcTarget : chartSel.hom zc ∈ chartSel.restrictBall.target := by
@@ -2440,8 +2441,8 @@ theorem HasSuppConvData.stage_root_tail
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) := by
     simpa only [Metric.mem_ball, dist_zero_right, Yk, Lphi,
       NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
-      NormalChartFamily.radius, legacyChartFamily,
-      legacyBallChart_radius] using hzBallK
+      NormalChartFamily.radius, c2RadiusNormalChartFamily,
+      c2_radius_normal_ball_chart_radius] using hzBallK
   have hzTargetK : z ∈ chiK.target := by
     exact ball_subset_normalChartAt_target (I := I) Yk.metric
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) hzNormK
@@ -2457,7 +2458,7 @@ theorem HasSuppConvData.stage_root_tail
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))).target
     simpa only [NormalCoordinates.normalChartAt_target_eq] using hzExpSrcK
   have hchiK : x =
-      (legacyChartFamily (I := I) X).hom (L.φ (phi k))
+      (c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)) z := by
     change (NormalCoordinates.normalChartAt (I := I) Yk.metric
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))).symm z = _
@@ -2466,8 +2467,8 @@ theorem HasSuppConvData.stage_root_tail
     rw [← NormalCoordinates.expMapDiffeo_apply_eq (I := I) Yk.metric
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) hzExpSrcK]
     simp only [Yk, Lphi, NetLimitData.subseq_phi, Function.comp_apply,
-      seqCenterD_subseq, NormalChartFamily.hom, legacyChartFamily,
-      legacyChart_apply]
+      seqCenterD_subseq, NormalChartFamily.hom, c2RadiusNormalChartFamily,
+      c2_radius_normal_ball_chart_apply]
   let muM := fun (y : Yk.M) (gamma : Fin (inp.pack.A r)) =>
     rawWeights
       (cutRaw
@@ -2485,7 +2486,7 @@ theorem HasSuppConvData.stage_root_tail
       MetricCompactnessInputs.toCore]
     rw [hchiK]
     simp only [muM, i0, hseq, rawWeights, cutRaw,
-      NormalChartFamily.hom, legacyChartFamily, legacyChart_apply]
+      NormalChartFamily.hom, c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_apply]
     rfl
   have hptsEq : centerAverage.activeFill muM
       (stageTarget inp.toCore P Lphi r k l) qstarM x = pts := by
@@ -2501,7 +2502,7 @@ theorem HasSuppConvData.stage_root_tail
       exact hcm
   have hmap := stageCompare_eq_cm (I := I) inp P Lphi r hr hconn k l
     qstarM join pM radM x hx
-      (chart := legacyChartFamily (I := I) X) hcmM
+      (chart := c2RadiusNormalChartFamily (I := I) X) hcmM
   have hcGlobal : c = centerOfMass (I := I) Yl.metric (muM x)
       (centerAverage.activeFill muM (stageTarget inp.toCore P Lphi r k l)
         qstarM x) join (pM x) (radM x) hcmM := by
@@ -2525,7 +2526,7 @@ theorem HasSuppConvData.stage_root_tail
       exact hzcBall
   have hdecode : chiL.symm zc = c := by
     have hright :=
-      (legacyBallChart (I := I) Yl x0).restrictBall.right_inv hcTarget
+      (c2RadiusNormalBallChart (I := I) Yl x0).restrictBall.right_inv hcTarget
     with_unfolding_all
       exact hright
   have hmapDecode :
@@ -2537,13 +2538,13 @@ theorem HasSuppConvData.stage_root_tail
       _ = chiL.symm (Phi3 l k l z) := congrArg chiL.symm hcenterRoot
   have htarget :
       stageComparisonMap inp.toCore P Lphi r hr k l x ∈
-        (legacyBallChart (I := I) Yl x0).hom.target := by
+        (c2RadiusNormalBallChart (I := I) Yl x0).hom.target := by
     rw [hmapDecode]
     have hball :
         Phi3 l k l z ∈
-          Metric.ball 0 (legacyBallChart (I := I) Yl x0).radius := by
+          Metric.ball 0 (c2RadiusNormalBallChart (I := I) Yl x0).radius := by
       exact hrootBall
-    have hExpSrc := (legacyBallChart (I := I) Yl x0).ball_subset hball
+    have hExpSrc := (c2RadiusNormalBallChart (I := I) Yl x0).ball_subset hball
     have hExpSrc' : Phi3 l k l z ∈
         (NormalCoordinates.expMapDiffeo (I := I) Yl.metric x0).source := by
       with_unfolding_all
@@ -2563,7 +2564,7 @@ theorem HasSuppConvData.stage_root_tail
       exact (NormalCoordinates.expMapDiffeo_apply_eq (I := I) Yl.metric x0
         hExpSrc').symm
     rw [hchiL]
-    exact (legacyBallChart (I := I) Yl x0).hom.map_source hExpSrc
+    exact (c2RadiusNormalBallChart (I := I) Yl x0).hom.map_source hExpSrc
   exact ⟨hchartReadout, hrootBall, hmapDecode, htarget⟩
 
 theorem HasSuppConvData.stage_jet_of_root
@@ -2682,8 +2683,8 @@ theorem HasSuppConvData.stage_jet_of_root
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) := by
         simpa only [Metric.mem_ball, dist_zero_right, Yk, Lphi,
           NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
-          NormalChartFamily.radius, legacyChartFamily,
-          legacyBallChart_radius] using hzBall
+          NormalChartFamily.radius, c2RadiusNormalChartFamily,
+          c2_radius_normal_ball_chart_radius] using hzBall
       exact ball_subset_normalChartAt_target (I := I) Yk.metric
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) hzNorm
     have hchi : ContinuousAt chiK.symm z :=
@@ -2751,8 +2752,8 @@ theorem HasSuppConvData.stage_jet_of_root
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) := by
     simpa only [Metric.mem_ball, dist_zero_right, Yk, Lphi,
       NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
-      NormalChartFamily.radius, legacyChartFamily,
-      legacyBallChart_radius] using hzBallK
+      NormalChartFamily.radius, c2RadiusNormalChartFamily,
+      c2_radius_normal_ball_chart_radius] using hzBallK
   have hzTargetK : z ∈ chiK.target := by
     exact ball_subset_normalChartAt_target (I := I) Yk.metric
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) hzNormK
@@ -2768,7 +2769,7 @@ theorem HasSuppConvData.stage_jet_of_root
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))).target
     simpa only [NormalCoordinates.normalChartAt_target_eq] using hzExpSrcK
   have hchiK : chiK.symm z =
-      (legacyChartFamily (I := I) X).hom (L.φ (phi k))
+      (c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)) z := by
     change (NormalCoordinates.normalChartAt (I := I) Yk.metric
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))).symm z = _
@@ -2777,15 +2778,15 @@ theorem HasSuppConvData.stage_jet_of_root
     rw [← NormalCoordinates.expMapDiffeo_apply_eq (I := I) Yk.metric
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) hzExpSrcK]
     simp only [Yk, Lphi, NetLimitData.subseq_phi, Function.comp_apply,
-      seqCenterD_subseq, NormalChartFamily.hom, legacyChartFamily,
-      legacyChart_apply]
+      seqCenterD_subseq, NormalChartFamily.hom, c2RadiusNormalChartFamily,
+      c2_radius_normal_ball_chart_apply]
   have htarget :
       stageComparisonMap inp P Lphi r hr k l (chiK.symm z) ∈
         (normalExpPD (I := I) Yl x0).target := by
     have hdecode := hreadAt.2.2.1
     have hdecodeExp :
         stageComparisonMap inp P Lphi r hr k l
-            ((legacyChartFamily (I := I) X).hom (L.φ (phi k))
+            ((c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi k))
               (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)) z) =
           NormalCoordinates.expMapDiffeo (I := I) Yl.metric x0
             (Phi3 l k l z) := by
@@ -2797,7 +2798,7 @@ theorem HasSuppConvData.stage_jet_of_root
       calc
         stageComparisonMap inp P Lphi r hr k l (chiK.symm z) =
             stageComparisonMap inp P Lphi r hr k l
-              ((legacyChartFamily (I := I) X).hom (L.φ (phi k))
+              ((c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi k))
                 (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)) z) :=
           congrArg (stageComparisonMap inp P Lphi r hr k l) hchiK
         _ = NormalCoordinates.expMapDiffeo (I := I) Yl.metric x0
@@ -2823,7 +2824,7 @@ def HasStageJetTail
     (C0 : LiveSlot L inp.pack r → Set E)
     (R : Real) (p : Nat) (eps : Real)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : Prop :=
+      c2RadiusNormalChartFamily (I := I) X) : Prop :=
   ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N,
     ∀ alpha : LiveSlot L inp.pack r, ∀ z ∈ C0 alpha,
       let Lphi := L.subseq hphi
@@ -2862,7 +2863,7 @@ theorem HasStageJetTail.subseq
     (C0 : LiveSlot L inp.pack r → Set E)
     (R : Real) (p : Nat) (eps : Real)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X)
+      c2RadiusNormalChartFamily (I := I) X)
     (h : HasStageJetTail inp P L hr phi hphi C0 R p eps
       (chart := chart))
     {ψ : Nat → Nat} (hψ : StrictMono ψ) :
@@ -2934,18 +2935,18 @@ theorem HasSuppConvData.stage_jet_tail
         letI : IsManifold I ∞ Yl.M := Yl.smooth
         letI : T2Space Yl.M := Yl.t2
         letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-        let chiK := legacyChartFamily (I := I) X (Lphi.φ k)
+        let chiK := c2RadiusNormalChartFamily (I := I) X (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
-        let chiL := legacyChartFamily (I := I) X (Lphi.φ l)
+        let chiL := c2RadiusNormalChartFamily (I := I) X (Lphi.φ l)
           (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
         let Fkl := fun w =>
           chiL.inv
             (stageComparisonMap inp P Lphi r hr k l
-              (chiK.hom w) (chart := legacyChartFamily (I := I) X))
+              (chiK.hom w) (chart := c2RadiusNormalChartFamily (I := I) X))
         z ∈ interior (C0 alpha) →
         chiK.hom z ∈ Lphi.hatSourceBall inp.decay P R k →
           stageComparisonMap inp P Lphi r hr k l
-              (chiK.hom z) (chart := legacyChartFamily (I := I) X) ∈
+              (chiK.hom z) (chart := c2RadiusNormalChartFamily (I := I) X) ∈
               chiL.restrictBall.target ∧
             ContDiffAt Real ∞ Fkl z ∧
             ∀ j ≤ p, mapDerivNorm j Fkl id z ≤ eps := by
@@ -3042,7 +3043,7 @@ theorem HasSuppConvData.exists_stage_tail
         (PointedRiemannianSeq.connected_subseq hconn index)
         (c alpha) (q alpha) (q alpha / 2) (δ alpha) (deltaInf alpha)
         (e alpha) (eInf alpha)
-        (chart := legacyChartFamily (I := I) Xphi))
+        (chart := c2RadiusNormalChartFamily (I := I) Xphi))
     (hfence :
       let Lphi := L.subseq hphi
       let index : Nat → Nat := fun n => Lphi.φ n
@@ -3051,7 +3052,7 @@ theorem HasSuppConvData.exists_stage_tail
         fun alpha n => seqCenterD inp.decay P Lphi n (alpha.1 : Nat)
       ∀ alpha n, NormalDiagFence (I := I) (Xphi.obj n)
         (c alpha n) (q alpha) (e alpha n)
-        (c := legacyBallChart (I := I) (Xphi.obj n) (c alpha n))) :
+        (c := c2RadiusNormalBallChart (I := I) (Xphi.obj n) (c alpha n))) :
     ∃ (W : LiveSlot L inp.pack r → Set E)
         (PhiInf : LiveSlot L inp.pack r → E → E)
         (rootRho : LiveSlot L inp.pack r → Real)
@@ -3110,7 +3111,7 @@ def HasStageBaseTail
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : Prop :=
+      c2RadiusNormalChartFamily (I := I) X) : Prop :=
   let Lphi := L.subseq hphi
   ∀ᶠ k in Filter.atTop, ∀ l,
     stageComparisonMap inp P Lphi r hr k l (chart := chart)
@@ -3123,7 +3124,7 @@ theorem HasStageBaseTail.subseq
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     {phi : Nat → Nat} (hphi : StrictMono phi)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X)
+      c2RadiusNormalChartFamily (I := I) X)
     (h : HasStageBaseTail inp P L hr phi hphi (chart := chart))
     {ψ : Nat → Nat} (hψ : StrictMono ψ) :
     HasStageBaseTail inp P L hr (phi ∘ ψ) (hphi.comp hψ)
@@ -3379,7 +3380,7 @@ theorem HasStageJetData.hloc_tail
       Metric.ball 0 (expMapC2Radius (I := I) Yk.metric xk0) := by
     simpa only [Yk, xk0, Lphi, NetLimitData.subseq_phi,
       Function.comp_apply, seqCenterD_subseq, NormalChartFamily.radius,
-      legacyChartFamily, legacyBallChart_radius] using hzBall
+      c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_radius] using hzBall
   have hzTarget : z ∈ chiK.target := by
     have hzNorm : ‖z‖ < expMapC2Radius (I := I) Yk.metric xk0 := by
       simpa only [Metric.mem_ball, dist_zero_right] using hzNormal

@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Analysis.Calculus.CLMNeumann
 
 import DifferentialGeometry.Bundle.Frame
@@ -722,7 +724,7 @@ theorem inv_cov_coord
 
 theorem hess_inv_coord
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -893,13 +895,13 @@ theorem hess_inv_coord
       _ = -((X.obj k).metric.inner y0 (dExp K) (dExp w)) := by
               rw [hcov']
       _ = -normalCoordMetric (I := I) (X.obj k) x z K w := by
-              rw [normalCoordMetric_apply (I := I)]
+              rw [normal_coord_metric_apply (I := I)]
   with_unfolding_all
     exact hmain
 
 theorem inv_cov_expand
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -981,7 +983,7 @@ theorem inv_cov_expand
 
 theorem hess_inv_lower
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1110,7 +1112,7 @@ theorem hess_inv_lower
     (norm_snd_le (e.symm (z, xi))).trans hpreNorm.le
   have hKnorm : ‖K‖ ≤ 3 * hb.metricC 1 * ‖v‖ * (q : Real) := by
     with_unfolding_all
-      refine (hb.koszulVec_norm_le k x hzMetric v
+      refine (hb.koszul_vec_norm_le k x hzMetric v
         (e.symm (z, xi)).2).trans ?_
     exact mul_le_mul_of_nonneg_left hVnorm
       (mul_nonneg
@@ -1194,7 +1196,7 @@ theorem hess_inv_lower
 
 theorem hess_inv_sixth
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -2002,9 +2004,9 @@ theorem cmC_sol_of_vel
     {e : OpenPartialHomeomorph (E × E) (E × E)}
     (hq : 0 < q)
     (he : IsNormalDiag (I := I) Y hcomplete hconn x q delta e
-      (c := legacyBallChart (I := I) Y x))
+      (c := c2RadiusNormalBallChart (I := I) Y x))
     (hf : NormalDiagFence (I := I) Y x q e
-      (c := legacyBallChart (I := I) Y x))
+      (c := c2RadiusNormalBallChart (I := I) Y x))
     {eta : NNReal}
     (happrox : ApproximatesLinearOn (e.symm : E × E → E × E)
       ((PhaseFlow.freeDiagCLE (E := E)).symm :
@@ -2035,7 +2037,7 @@ theorem cmC_sol_of_vel
       (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    let c := legacyBallChart (I := I) Y x
+    let c := c2RadiusNormalBallChart (I := I) Y x
     let B := IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he
     ∃ L : E ≃L[Real] E,
       HasFDerivAt
@@ -2074,7 +2076,7 @@ theorem cmC_sol_of_vel
       (fun y : Y.M ↦ TangentSpace I y) := Y.riemBundle_cont (I := I)
   let : EMetricSpace Y.M := Y.emetricSpace (I := I)
   let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-  let c := legacyBallChart (I := I) Y x
+  let c := c2RadiusNormalBallChart (I := I) Y x
   let B := IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he
   have hzBall : z ∈ Metric.ball (0 : E) c.radius := by
     with_unfolding_all
@@ -2084,7 +2086,7 @@ theorem cmC_sol_of_vel
       he hf (htgt i)).2
   have hzTarget : c.hom z ∈ c.restrictBall.target := by
     have hmap := c.restrictBall.map_source hzBall
-    simpa only [NormalBallChart.restrictBall_apply] using hmap
+    simpa only [NormalBallChart.restrict_ball_apply] using hmap
   have hdom (i : ι) :
       (c.hom z, c.hom (xi i)) ∈ B.chartReadDom c := by
     have hpair :
@@ -2561,7 +2563,7 @@ theorem cm_sol_cd
         (NormalCoordinates.normalChartAt (I := I) Y.metric x).symm u) z := by
     change ContMDiffAt 𝓘(Real, E) I (n : ℕ∞)
       (fun u : E => expMapDiffeo (I := I) Y.metric x u) z
-    exact ((expMapDiffeo_contMDiffOn_expBall (I := I) Y x).contMDiffAt
+    exact ((exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) Y x).contMDiffAt
       (Metric.isOpen_ball.mem_nhds (hnormal i0).1)).of_le
         (WithTop.coe_le_coe.mpr le_top)
   have hchxi (i : ι) : ContMDiffAt 𝓘(Real, E) I (n : ℕ∞)
@@ -2569,7 +2571,7 @@ theorem cm_sol_cd
         (NormalCoordinates.normalChartAt (I := I) Y.metric x).symm u) (xi i) := by
     change ContMDiffAt 𝓘(Real, E) I (n : ℕ∞)
       (fun u : E => expMapDiffeo (I := I) Y.metric x u) (xi i)
-    exact ((expMapDiffeo_contMDiffOn_expBall (I := I) Y x).contMDiffAt
+    exact ((exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) Y x).contMDiffAt
       (Metric.isOpen_ball.mem_nhds (hnormal i).2)).of_le
         (WithTop.coe_le_coe.mpr le_top)
   have htransport := full_transport (I := I) Y hcomplete hconn x hq he hf
@@ -2607,7 +2609,7 @@ namespace HasNormalBrFull
 
 theorem hess_pos
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)

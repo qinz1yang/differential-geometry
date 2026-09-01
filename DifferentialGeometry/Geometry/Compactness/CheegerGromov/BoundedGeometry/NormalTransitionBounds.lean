@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalCompactness
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Analysis.Calculus.RingInverseDeriv
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
@@ -743,7 +743,7 @@ private theorem koszulRieszCLM_le (u v : E0) :
     _ = ‖MetricKoszul.koszulCov D u v‖ := one_mul _
     _ ≤
         (3 / 2 : Real) * ‖D‖ * ‖u‖ * ‖v‖ :=
-      MetricKoszul.koszulCov_norm_le D (norm_nonneg D) hD u v
+      MetricKoszul.koszul_cov_norm_le D (norm_nonneg D) hD u v
     _ = ((3 / 2 : Real) * ‖u‖ * ‖v‖) * ‖D‖ := by ring
 
 private theorem raised_deriv_le
@@ -1503,7 +1503,7 @@ theorem isom_koszul
   rw [hAx] at h1 h2 h3
   rw [hDAsymm u w, hCsymm (L v) (DA w u)] at h1
   rw [hDAsymm v u, hDAsymm v w] at h2
-  rw [MetricKoszul.koszulCov_apply, MetricKoszul.koszulCov_apply]
+  rw [MetricKoszul.koszul_cov_apply, MetricKoszul.koszul_cov_apply]
   linear_combination -(1 / 2 : Real) * h1 - (1 / 2 : Real) * h2 +
     (1 / 2 : Real) * h3
 
@@ -1538,7 +1538,7 @@ theorem second_eq_koszul
       simp only [map_sub, sub_apply]
       rw [hisom]
       unfold sourceKoszul targetKoszul
-      rw [MetricKoszul.apply_koszulVec, MetricKoszul.apply_koszulVec]
+      rw [MetricKoszul.apply_koszul_vec, MetricKoszul.apply_koszul_vec]
       exact hpair u v w
     _ = e sourceKoszul - targetKoszul := hCco.sharp_apply _
 
@@ -1578,7 +1578,7 @@ theorem second_norm_le
   have hsource :
       ‖MetricKoszul.koszulVec hBco DB u v‖ <=
         3 * CB * ‖u‖ * ‖v‖ := by
-    have hraw := MetricKoszul.koszulVec_norm_le hBco
+    have hraw := MetricKoszul.koszul_vec_norm_le hBco
       (c := (1 / 2 : Real)) (by norm_num)
       (fun q => by simpa [pow_two, mul_assoc] using hBlower q)
       DB hCB hDB u v
@@ -1588,7 +1588,7 @@ theorem second_norm_le
   have htarget :
       ‖MetricKoszul.koszulVec hCco DC (e u) (e v)‖ <=
         3 * CC * ‖e u‖ * ‖e v‖ := by
-    have hraw := MetricKoszul.koszulVec_norm_le hCco
+    have hraw := MetricKoszul.koszul_vec_norm_le hCco
       (c := (1 / 2 : Real)) (by norm_num)
       (fun q => by simpa [pow_two, mul_assoc] using hClower q)
       DC hCC hDC (e u) (e v)
@@ -2117,7 +2117,7 @@ theorem normal_transition_isometry
       (I := 𝓘(Real, E')) (I' := I) heq
     rw [mfderiv_comp z hdy hT] at hderiv
     simpa only using hderiv
-  rw [normalCoordMetric_apply (I := I), normalCoordMetric_apply (I := I), hbase]
+  rw [normal_coord_metric_apply (I := I), normal_coord_metric_apply (I := I), hbase]
   have hu := DFunLike.congr_fun hcomp u
   have hv := DFunLike.congr_fun hcomp v
   rw [mfderiv_eq_fderiv (𝕜 := Real) (E := E') (E' := E')
@@ -2207,7 +2207,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [NeZero (Module.finrank Real E')] in
 theorem normal_bounds_on
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (x y : ∀ k, (X.obj k).M) (U V : Set E')
     (hU : IsOpen U) (hV : IsOpen V)
     (hVnorm : ∃ Z : Real, ∀ z ∈ V, ‖z‖ ≤ Z)
@@ -2259,7 +2259,7 @@ theorem normal_bounds_on
     let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
     let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
-    exact (normalCoordMetric_contDiffOn_expBall (I := I) (X.obj k) (x k)).mono
+    exact (normal_coord_metric_cont_diff_on_exp_ball (I := I) (X.obj k) (x k)).mono
       (hUexp k)
   · intro k
     let : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -2267,7 +2267,7 @@ theorem normal_bounds_on
     let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
     let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
-    exact (normalCoordMetric_contDiffOn_expBall (I := I) (X.obj k) (y k)).mono
+    exact (normal_coord_metric_cont_diff_on_exp_ball (I := I) (X.obj k) (y k)).mono
       (hVexp k)
   · exact hPhi
   · exact hmap
@@ -2285,7 +2285,7 @@ theorem normal_bounds_on
     let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
     let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
-    rw [normalCoordMetric_apply (I := I), normalCoordMetric_apply (I := I)]
+    rw [normal_coord_metric_apply (I := I), normal_coord_metric_apply (I := I)]
     exact (X.obj k).metric.symm _ _ _
   · intro k z hz q
     exact h.metric_equiv k (x k) z (hUmetric k hz) q

@@ -139,7 +139,7 @@ theorem liveMetric0_symm
     let : IsManifold I ∞ Y.M := Y.smooth
     let : T2Space Y.M := Y.t2
     let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-    rw [normalCoordMetric_apply (I := I), normalCoordMetric_apply (I := I)]
+    rw [normal_coord_metric_apply (I := I), normal_coord_metric_apply (I := I)]
     exact Y.metric.symm _ _ _
   have hvw' : Filter.Tendsto
       (fun k => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
@@ -450,14 +450,14 @@ theorem MetricCompactnessInputs.exists_live_cores
         (3 * L.lamInf (alpha.1 : Nat)) ^ 2 := by
       rw [abs_le] at herr
       nlinarith
-    rw [normalMetric_zero] at hstage
+    rw [normal_coord_metric_zero] at hstage
     have hzero : (0 : E) ∈ Metric.ball 0
         (inp.normalBounds.radius (L.φ (psi k)) c) := by
       rw [Metric.mem_ball, dist_self]
       exact inp.normalBounds.radius_pos (L.φ (psi k)) c
     have hstageLower :=
       (inp.normalBounds.metric_equiv (L.φ (psi k)) c 0 hzero v).1
-    rw [normalMetric_zero (I := I) Y c] at hstageLower
+    rw [normal_coord_metric_zero (I := I) Y c] at hstageLower
     have hstageNonneg : 0 ≤ Y.metric.inner c v v :=
       (mul_nonneg (by norm_num) (sq_nonneg ‖v‖)).trans hstageLower
     have hsqrt : Real.sqrt (Y.metric.inner c v v) <
@@ -519,7 +519,7 @@ theorem MetricCompactnessInputs.exists_live_cores
       have hwsrc : w ∈ (expMapDiffeo (I := I) Y.metric c).source := by
         simpa only [normalChartAt_target_eq] using hwtgt
       have herr := hclosek alpha w
-      rw [hcD, normalMetric_zero (I := I) Y c] at herr
+      rw [hcD, normal_coord_metric_zero (I := I) Y c] at herr
       rw [abs_le] at herr
       have hzero : (0 : E) ∈ Metric.ball 0
           (inp.normalBounds.radius (L.φ (psi k)) c) := by
@@ -527,7 +527,7 @@ theorem MetricCompactnessInputs.exists_live_cores
         exact inp.normalBounds.radius_pos (L.φ (psi k)) c
       have hlowerMetric :=
         (inp.normalBounds.metric_equiv (L.φ (psi k)) c 0 hzero w).1
-      rw [normalMetric_zero (I := I) Y c] at hlowerMetric
+      rw [normal_coord_metric_zero (I := I) Y c] at hlowerMetric
       have hmetricNonneg : 0 ≤ Y.metric.inner c w w :=
         (mul_nonneg (by norm_num) (sq_nonneg ‖w‖)).trans hlowerMetric
       have hmetricSq : Y.metric.inner c w w = dist c y ^ 2 := by

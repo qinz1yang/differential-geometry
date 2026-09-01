@@ -54,7 +54,7 @@ theorem exists_chart_metric_limit_subsequence
         U ⊆ Metric.ball (0 : E) (d.chart k (c k)).radius := by
       simpa only [d.radius_eq k (c k)] using hsub k
     simpa only [BoundedGeometryNormalData.chartMetric] using
-      (d.chart k (c k)).metric_contDiffOn (X.obj k).metric hU
+      (d.chart k (c k)).metric_cont_diff_on (X.obj k).metric hU
         ((d.chart k (c k)).smooth_to.mono hrad)
   · intro p K hK hKU
     refine ⟨d.metricC p, ?_⟩
@@ -117,7 +117,7 @@ theorem exists_finite_chart_metric_limit_subsequence
         U ⊆ Metric.ball (0 : E) (d.chart k (c i k)).radius := by
       simpa only [d.radius_eq k (c i k)] using hsub k i
     simpa only [gLoc, BoundedGeometryNormalData.chartMetric] using
-      (d.chart k (c i k)).metric_contDiffOn (X.obj k).metric hU
+      (d.chart k (c i k)).metric_cont_diff_on (X.obj k).metric hU
         ((d.chart k (c i k)).smooth_to.mono hrad)
   have hsmooth : ∀ k, ContDiffOn Real (⊤ : ℕ∞) (gLoc k) U :=
     fun k ↦ contDiffOn_pi.mpr (hsmoothComp k)

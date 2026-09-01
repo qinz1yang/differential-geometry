@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactnessInputs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
 open DifferentialGeometry.Geometry.Curvature
@@ -32,7 +33,7 @@ noncomputable def stageTarget
     (L : NetLimitData inp.decay inp.D P) (s : Real) (k l : Nat)
     (x : (X.obj (L.φ k)).M) (gamma : Fin (inp.pack.A s))
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) :
+      c2RadiusNormalChartFamily (I := I) X) :
     (X.obj (L.φ l)).M :=
   let Yk := X.obj (L.φ k)
   let Yl := X.obj (L.φ l)
@@ -55,7 +56,7 @@ noncomputable def stageTarget
     (L : NetLimitData inp.decay inp.D P) (s : Real) (k l : Nat)
     (alpha gamma : Fin (inp.pack.A s)) (z : E)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) :
+      c2RadiusNormalChartFamily (I := I) X) :
     let Yk := X.obj (L.φ k)
     let Yl := X.obj (L.φ l)
     letI : TopologicalSpace Yk.M := Yk.topology
@@ -159,7 +160,7 @@ theorem stageTarget_subseq
     (L : NetLimitData inp.decay inp.D P) (s : Real)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (k l : Nat)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) :
+      c2RadiusNormalChartFamily (I := I) X) :
     stageTarget inp P (L.subseq hψ) s k l (chart := chart) =
       stageTarget inp P L s (ψ k) (ψ l) (chart := chart) := by
   rfl
@@ -208,7 +209,7 @@ def HasUniqueStageCenter
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l : Nat) (x : (X.obj (L.φ k)).M)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : Prop :=
+      c2RadiusNormalChartFamily (I := I) X) : Prop :=
   let Y := X.obj (L.φ l)
   let i0 := baseIndex inp.decay inp.realizes inp.pack hs
   ∃! y : Y.M,
@@ -227,7 +228,7 @@ theorem uniqueCenter_subseq
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (k l : Nat)
     (x : (X.obj ((L.subseq hψ).φ k)).M)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) :
+      c2RadiusNormalChartFamily (I := I) X) :
     HasUniqueStageCenter inp P (L.subseq hψ) s hs k l x
         (chart := chart) ↔
       HasUniqueStageCenter inp P L s hs (ψ k) (ψ l) x
@@ -247,7 +248,7 @@ noncomputable def stageComparisonMap
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l : Nat) (x : (X.obj (L.φ k)).M)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : (X.obj (L.φ l)).M := by
+      c2RadiusNormalChartFamily (I := I) X) : (X.obj (L.φ l)).M := by
   classical
   exact
     if hx : x ∈ L.hatSourceBall inp.decay P s k then
@@ -295,7 +296,7 @@ theorem stageCompare_subseq
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (k l : Nat)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) :
+      c2RadiusNormalChartFamily (I := I) X) :
     stageComparisonMap inp P (L.subseq hψ) s hs k l
         (chart := chart) =
       stageComparisonMap inp P L s hs (ψ k) (ψ l)
@@ -363,7 +364,7 @@ theorem stageCmp_base_raw
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l : Nat)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) :
+      c2RadiusNormalChartFamily (I := I) X) :
     stageComparisonMap inp P L s hs k l
         (X.obj (L.φ k)).basepoint (chart := chart) =
       (X.obj (L.φ l)).basepoint := by
@@ -473,7 +474,7 @@ theorem stageCompare_base
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l : Nat)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) :
+      c2RadiusNormalChartFamily (I := I) X) :
     stageComparisonMap inp P L s hs k l
         (X.obj (L.φ k)).basepoint (chart := chart) =
       (X.obj (L.φ l)).basepoint :=

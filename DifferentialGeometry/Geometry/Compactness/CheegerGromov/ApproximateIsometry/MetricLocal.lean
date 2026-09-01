@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricBridge
 
 
@@ -478,19 +479,19 @@ theorem HasStageJetData.pb_buf_tail
     let : T2Space (TangentBundle I Yln.M) := Yln.t2TangentBundle
     let ckn := seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat)
     let cln := seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat)
-    have hhom : (legacyBallChart (I := I) Ykn ckn).hom (zn n) =
+    have hhom : (c2RadiusNormalBallChart (I := I) Ykn ckn).hom (zn n) =
         (NormalCoordinates.normalChartAt (I := I) Ykn.metric ckn).symm
           (zn n) := by
       rfl
-    have hinv : (legacyBallChart (I := I) Yln cln).inv =
+    have hinv : (c2RadiusNormalBallChart (I := I) Yln cln).inv =
         NormalCoordinates.normalChartAt (I := I) Yln.metric cln := by
-      simpa only using legacyInv_eq (I := I) Yln cln
+      simpa only using c2_radius_normal_ball_chart_inv (I := I) Yln cln
     have hjet0 := hjet.2.2 0 le_rfl
     simp only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
-      MetricCompactnessInputs.toCore, legacyChartFamily] at hjet0
-    change ‖(legacyBallChart (I := I) Yln cln).inv
+      MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at hjet0
+    change ‖(c2RadiusNormalBallChart (I := I) Yln cln).inv
         (stageComparisonMap inp P Lphi r hr (kn n) (ln n)
-          ((legacyBallChart (I := I) Ykn ckn).hom (zn n))) - zn n‖ ≤
+          ((c2RadiusNormalBallChart (I := I) Ykn ckn).hom (zn n))) - zn n‖ ≤
       eta / 2 at hjet0
     rw [hinv, hhom] at hjet0
     simpa only [dist_eq_norm, A, Ykn, Yln, ckn, cln] using hjet0
@@ -506,12 +507,12 @@ theorem HasStageJetData.pb_buf_tail
     (ln n) alpha
   have hBksm : ContDiffOn Real (∞ : WithTop ℕ∞) (B (kn n)) (U alpha) := by
     simpa only [B, Lphi] using
-      (normalCoordMetric_contDiffOn_expBall (I := I)
+      (normal_coord_metric_cont_diff_on_exp_ball (I := I)
         (X.obj (Lphi.φ (kn n)))
         (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))).mono hgeomK.2.1
   have hBlsm : ContDiffOn Real (∞ : WithTop ℕ∞) (B (ln n)) (U alpha) := by
     simpa only [B, Lphi] using
-      (normalCoordMetric_contDiffOn_expBall (I := I)
+      (normal_coord_metric_cont_diff_on_exp_ball (I := I)
         (X.obj (Lphi.φ (ln n)))
         (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))).mono hgeomL.2.1
   have hGcd : ContDiffAt Real (∞ : WithTop ℕ∞) (B (kn n)) (zn n) :=

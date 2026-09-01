@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Analysis.ODE.PhaseFlowExistence
 import DifferentialGeometry.Geometry.Metric.TensorInner.MetricGeodesicSpray
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricExtension
@@ -74,7 +75,7 @@ def normalPhaseBox (r : Real) (R : ℝ≥0) : Set (E × E) :=
 
 def normalPhaseK
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X) (R : ℝ≥0) : ℝ≥0 where
+    (h : NormalCoordMetricBounds (I := I) X) (R : ℝ≥0) : ℝ≥0 where
   val := (6 * (h.metricC 1) ^ 2 + 3 * h.metricC 2) * (R : Real) ^ 2 +
     6 * h.metricC 1 * (R : Real)
   property := by
@@ -89,7 +90,7 @@ def normalPhaseK
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalPhaseK_mono
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     {R S : ℝ≥0} (hRS : R ≤ S) : normalPhaseK h R ≤ normalPhaseK h S := by
   apply NNReal.coe_le_coe.mp
   have hRS' : (R : ℝ) ≤ (S : ℝ) := by exact_mod_cast hRS
@@ -159,7 +160,7 @@ theorem normalPhase_eq_spray
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalAccel_norm
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real}
     (hrMetric : Metric.ball (0 : E) r ⊆
       Metric.ball (0 : E) (h.radius k x))
@@ -185,7 +186,7 @@ theorem normalAccel_norm
     ‖MetricKoszul.koszulVec ((h.metric_equiv k x).coercive (hrMetric hz.1))
         (fderiv Real (normalCoordMetric (I := I) (X.obj k) x) z.1) z.2 z.2‖ ≤
         3 * h.metricC 1 * ‖z.2‖ * ‖z.2‖ :=
-      h.koszulVec_norm_le k x (hrMetric hz.1) z.2 z.2
+      h.koszul_vec_norm_le k x (hrMetric hz.1) z.2 z.2
     _ ≤ 3 * h.metricC 1 * (R : Real) * (R : Real) := by
       have hC : 0 ≤ 3 * h.metricC 1 :=
         mul_nonneg (by norm_num) (h.metricC_nonneg 1)
@@ -196,7 +197,7 @@ theorem normalAccel_norm
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalAccel_lip
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real}
     (hrMetric : Metric.ball (0 : E) r ⊆
       Metric.ball (0 : E) (h.radius k x))
@@ -228,7 +229,7 @@ theorem normalAccel_lip
     hrQuarter.trans hquarter
   apply LipschitzOnWith.of_dist_le_mul
   intro z hz y hy
-  have hraw := h.koszulAccel_lip_on k x hrMetric hrExp R.coe_nonneg
+  have hraw := h.koszul_accel_lip_on k x hrMetric hrExp R.coe_nonneg
     hz.1 hy.1 hz.2 hy.2
   rw [normalAccel_eq (I := I) (X.obj k) x z (hrQuarter hz.1)
       ((h.metric_equiv k x).coercive (hrMetric hz.1)),
@@ -244,7 +245,7 @@ theorem normalAccel_lip
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalDiag_approx
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real}
     (hrMetric : Metric.ball (0 : E) r ⊆
       Metric.ball (0 : E) (h.radius k x))
@@ -271,7 +272,7 @@ theorem normalDiag_approx
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_normalFlow
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real}
     (hrMetric : Metric.ball (0 : E) r ⊆
       Metric.ball (0 : E) (h.radius k x))
@@ -436,7 +437,7 @@ theorem chartAccel_norm (g : SmoothRiemannianMetric I M) {p : M}
         (b.equiv.coercive g (hrMetric hz.1))
         (fderiv Real (c.metric g) z.1) z.2 z.2‖ ≤
         3 * b.C 1 * ‖z.2‖ * ‖z.2‖ :=
-      b.koszulVec_norm_le g (hrMetric hz.1) z.2 z.2
+      b.koszul_vec_norm_le g (hrMetric hz.1) z.2 z.2
     _ ≤ 3 * b.C 1 * (R : Real) * (R : Real) := by
       have hC : 0 ≤ 3 * b.C 1 :=
         mul_nonneg (by norm_num) (b.C_nonneg 1)
@@ -465,7 +466,7 @@ theorem chartAccel_lip (g : SmoothRiemannianMetric I M) {p : M}
     hrQuarter.trans hinner
   apply LipschitzOnWith.of_dist_le_mul
   intro z hz y hy
-  have hraw := b.koszulAccel_lip_on g hrMetric hrChart R.coe_nonneg
+  have hraw := b.koszul_accel_lip_on g hrMetric hrChart R.coe_nonneg
     hz.1 hy.1 hz.2 hy.2
   rw [c.accel_eq g z (hrQuarter hz.1)
       (b.equiv.coercive g (hrMetric hz.1)),

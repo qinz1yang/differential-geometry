@@ -146,7 +146,7 @@ theorem const_flat_eq_koszul
   simp only [map_zero, sub_zero, add_zero] at hKos
   rw [dir_const_eval2 hBdiff u v w, dir_const_eval2 hBdiff u w v,
     dir_const_eval2 hBdiff w u v] at hKos
-  rw [MetricKoszul.koszulCov_apply]
+  rw [MetricKoszul.koszul_cov_apply]
   exact hKos
 
 theorem const_flat_eq_nhds
@@ -237,7 +237,7 @@ theorem const_flat_eq_nhds
     bracket_const_eq_zero] at hKos
   simp only [map_zero, sub_zero, add_zero] at hKos
   rw [hdir_wu, hdir_uv, hdir_vw] at hKos
-  rw [MetricKoszul.koszulCov_apply]
+  rw [MetricKoszul.koszul_cov_apply]
   exact hKos
 
 theorem const_cov_eq_koszul

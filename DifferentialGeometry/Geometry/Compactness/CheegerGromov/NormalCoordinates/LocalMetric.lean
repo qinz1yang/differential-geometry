@@ -265,7 +265,7 @@ theorem normalTotal_quarter
                 (I := modelWithCornersSelf Real E) (z : E)).symm w) := by
         rw [hv, hw]
       exact hinner.trans (normalTotal_inner (I := I) Y x (z : E) z.2 v w)
-    _ = _ := normalCoordMetric_apply (I := I) Y x (z : E) v w
+    _ = _ := normal_coord_metric_apply (I := I) Y x (z : E) v w
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normal_cov_map

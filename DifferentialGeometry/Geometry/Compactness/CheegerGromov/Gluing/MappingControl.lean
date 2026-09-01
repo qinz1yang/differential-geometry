@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
 
 open DifferentialGeometry.Geometry.Curvature
@@ -27,26 +28,26 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem legacy_hom_eq
+private theorem c2_radius_normal_ball_chart_hom_eq_normal_chart_symm
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) (z : E) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-    (legacyBallChart (I := I) Y x).hom z =
+    (c2RadiusNormalBallChart (I := I) Y x).hom z =
       (NormalCoordinates.normalChartAt (I := I) Y.metric x).symm z := by
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem legacy_restrict_eq
+private theorem c2_radius_normal_ball_chart_restrict_ball_target
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-    (legacyBallChart (I := I) Y x).restrictBall.target =
+    (c2RadiusNormalBallChart (I := I) Y x).restrictBall.target =
       (normalExpPD (I := I) Y x).target := by
   rfl
 
@@ -182,10 +183,10 @@ theorem HasStageJetData.mapsTo_tail
   have hxEq : chiK.symm z = x := by
     with_unfolding_all
       exact hzx
-  have hxLegacy : (legacyBallChart (I := I) Yk ck).hom z = x := by
-    simpa only [legacy_hom_eq, chiK] using hxEq
-  have hInvL : (legacyBallChart (I := I) Yl cl).inv = chiL := by
-    simpa only [chiL] using legacyInv_eq (I := I) Yl cl
+  have hxChart : (c2RadiusNormalBallChart (I := I) Yk ck).hom z = x := by
+    simpa only [c2_radius_normal_ball_chart_hom_eq_normal_chart_symm, chiK] using hxEq
+  have hInvL : (c2RadiusNormalBallChart (I := I) Yl cl).inv = chiL := by
+    simpa only [chiL] using c2_radius_normal_ball_chart_inv (I := I) Yl cl
   have hxCoord : chiK.symm z ∈ Lphi.hatSourceBall inp.decay P R0 k := by
     rwa [hxEq]
   have hNjetMax : Njet alpha ≤ Njets :=
@@ -200,7 +201,7 @@ theorem HasStageJetData.mapsTo_tail
   have hxHat : x ∈
       Lphi.hatBall inp.decay inp.D P inp.pack s k alpha.1 := by
     rw [NetLimitData.hatBall_subseq]
-    rw [← hxLegacy]
+    rw [← hxChart]
     exact (hmapK hzU).1
   have hxCenter : dist x ck < 4 * L.lamInf (alpha.1 : Nat) := by
     simpa only [ck, Lphi, NetLimitData.subseq_lamInf] using
@@ -212,11 +213,11 @@ theorem HasStageJetData.mapsTo_tail
   have hcoord : dist w z ≤ epsA alpha := by
     have hjet0 := hjet.2.2 0 le_rfl
     simp only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
-      MetricCompactnessInputs.toCore, legacyChartFamily] at hjet0
-    change ‖(legacyBallChart (I := I) Yl cl).inv
-        (F ((legacyBallChart (I := I) Yk ck).hom z)) - z‖ ≤
+      MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at hjet0
+    change ‖(c2RadiusNormalBallChart (I := I) Yl cl).inv
+        (F ((c2RadiusNormalBallChart (I := I) Yk ck).hom z)) - z‖ ≤
       epsA alpha at hjet0
-    rw [hInvL, hxLegacy] at hjet0
+    rw [hInvL, hxChart] at hjet0
     simpa only [dist_eq_norm, w] using hjet0
   have hepsEta : epsA alpha ≤ eta alpha := by
     have hhalf : eta alpha / 2 ≤ eta alpha := by linarith [heta alpha]
@@ -239,8 +240,8 @@ theorem HasStageJetData.mapsTo_tail
     have hqNorm : ‖q‖ < expMapC2Radius (I := I) Yl.metric cl := by
       simpa only [Metric.mem_ball, dist_zero_right, Yl, cl, Lphi,
         NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
-        NormalChartFamily.radius, legacyChartFamily,
-        legacyBallChart_radius] using hqBall
+        NormalChartFamily.radius, c2RadiusNormalChartFamily,
+        c2_radius_normal_ball_chart_radius] using hqBall
     simpa only [chiL] using
       Geometry.Riemannian.ball_subset_normalChartAt_target
         (I := I) Yl.metric cl hqNorm
@@ -249,11 +250,11 @@ theorem HasStageJetData.mapsTo_tail
   have hFw : chiL.symm w = F x := by
     have htarget : F x ∈ (normalExpPD (I := I) Yl cl).target := by
       have htarget' := hjet.1
-      simp only [MetricCompactnessInputs.toCore, legacyChartFamily] at htarget'
-      change F ((legacyBallChart (I := I) Yk ck).hom z) ∈
-        (legacyBallChart (I := I) Yl cl).restrictBall.target at htarget'
-      rw [hxLegacy] at htarget'
-      rwa [legacy_restrict_eq (I := I) Yl cl] at htarget'
+      simp only [MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at htarget'
+      change F ((c2RadiusNormalBallChart (I := I) Yk ck).hom z) ∈
+        (c2RadiusNormalBallChart (I := I) Yl cl).restrictBall.target at htarget'
+      rw [hxChart] at htarget'
+      rwa [c2_radius_normal_ball_chart_restrict_ball_target (I := I) Yl cl] at htarget'
     change (normalExpPD (I := I) Yl cl)
       ((normalExpPD (I := I) Yl cl).symm (F x)) = F x
     exact (normalExpPD (I := I) Yl cl).right_inv htarget
@@ -422,10 +423,10 @@ theorem HasStageJetData.return_tail
   have hxEq : chiK.symm z = x := by
     with_unfolding_all
       exact hzx
-  have hxLegacy : (legacyBallChart (I := I) Yk ck).hom z = x := by
-    simpa only [legacy_hom_eq, chiK] using hxEq
-  have hInvL : (legacyBallChart (I := I) Yl cl).inv = chiL := by
-    simpa only [chiL] using legacyInv_eq (I := I) Yl cl
+  have hxChart : (c2RadiusNormalBallChart (I := I) Yk ck).hom z = x := by
+    simpa only [c2_radius_normal_ball_chart_hom_eq_normal_chart_symm, chiK] using hxEq
+  have hInvL : (c2RadiusNormalBallChart (I := I) Yl cl).inv = chiL := by
+    simpa only [chiL] using c2_radius_normal_ball_chart_inv (I := I) Yl cl
   have hxCoord : chiK.symm z ∈ Lphi.hatSourceBall inp.decay P R0 k := by
     rwa [hxEq]
   have hNf : Nfwd alpha ≤ Nf :=
@@ -445,11 +446,11 @@ theorem HasStageJetData.return_tail
   have hwz : dist w z ≤ delta alpha := by
     have hforward0 := hforward.2.2 0 le_rfl
     simp only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
-      MetricCompactnessInputs.toCore, legacyChartFamily] at hforward0
-    change ‖(legacyBallChart (I := I) Yl cl).inv
-        (Fkl ((legacyBallChart (I := I) Yk ck).hom z)) - z‖ ≤
+      MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at hforward0
+    change ‖(c2RadiusNormalBallChart (I := I) Yl cl).inv
+        (Fkl ((c2RadiusNormalBallChart (I := I) Yk ck).hom z)) - z‖ ≤
       delta alpha at hforward0
-    rw [hInvL, hxLegacy] at hforward0
+    rw [hInvL, hxChart] at hforward0
     simpa only [dist_eq_norm, w] using hforward0
   have hdeltaEta : delta alpha ≤ eta alpha / 4 := min_le_left _ _
   have hquarterEta : eta alpha / 4 ≤ eta alpha := by
@@ -462,30 +463,30 @@ theorem HasStageJetData.return_tail
   have hFw : chiL.symm w = Fkl x := by
     have htarget : Fkl x ∈ (normalExpPD (I := I) Yl cl).target := by
       have htarget' := hforward.1
-      simp only [MetricCompactnessInputs.toCore, legacyChartFamily] at htarget'
-      change Fkl ((legacyBallChart (I := I) Yk ck).hom z) ∈
-        (legacyBallChart (I := I) Yl cl).restrictBall.target at htarget'
-      rw [hxLegacy] at htarget'
-      rwa [legacy_restrict_eq (I := I) Yl cl] at htarget'
+      simp only [MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at htarget'
+      change Fkl ((c2RadiusNormalBallChart (I := I) Yk ck).hom z) ∈
+        (c2RadiusNormalBallChart (I := I) Yl cl).restrictBall.target at htarget'
+      rw [hxChart] at htarget'
+      rwa [c2_radius_normal_ball_chart_restrict_ball_target (I := I) Yl cl] at htarget'
     change (normalExpPD (I := I) Yl cl)
       ((normalExpPD (I := I) Yl cl).symm (Fkl x)) = Fkl x
     exact (normalExpPD (I := I) Yl cl).right_inv htarget
-  have hFwLegacy : (legacyBallChart (I := I) Yl cl).hom w = Fkl x := by
-    simpa only [legacy_hom_eq, chiL] using hFw
+  have hFwChart : (c2RadiusNormalBallChart (I := I) Yl cl).hom w = Fkl x := by
+    simpa only [c2_radius_normal_ball_chart_hom_eq_normal_chart_symm, chiL] using hFw
   have hyCoord : chiL.symm w ∈ Lphi.hatSourceBall inp.decay P R1 l := by
     rwa [hFw]
   have hreverse := hNrev alpha l hlR k hkR alpha w hwC0 hwInt hyCoord
   let u := chiK (Flk (Fkl x))
-  have hInvK : (legacyBallChart (I := I) Yk ck).inv = chiK := by
-    simpa only [chiK] using legacyInv_eq (I := I) Yk ck
+  have hInvK : (c2RadiusNormalBallChart (I := I) Yk ck).inv = chiK := by
+    simpa only [chiK] using c2_radius_normal_ball_chart_inv (I := I) Yk ck
   have huw : dist u w ≤ delta alpha := by
     have hrev0 := hreverse.2.2 0 le_rfl
     simp only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
-      MetricCompactnessInputs.toCore, legacyChartFamily] at hrev0
-    change ‖(legacyBallChart (I := I) Yk ck).inv
-        (Flk ((legacyBallChart (I := I) Yl cl).hom w)) - w‖ ≤
+      MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at hrev0
+    change ‖(c2RadiusNormalBallChart (I := I) Yk ck).inv
+        (Flk ((c2RadiusNormalBallChart (I := I) Yl cl).hom w)) - w‖ ≤
       delta alpha at hrev0
-    rw [hInvK, hFwLegacy] at hrev0
+    rw [hInvK, hFwChart] at hrev0
     simpa only [dist_eq_norm, u, w, Fkl, Flk] using hrev0
   have huz : dist u z ≤ 2 * delta alpha := by
     calc
@@ -517,8 +518,8 @@ theorem HasStageJetData.return_tail
     have hqNorm : ‖q‖ < expMapC2Radius (I := I) Yk.metric ck := by
       simpa only [Metric.mem_ball, dist_zero_right, Yk, ck, Lphi,
         NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
-        NormalChartFamily.radius, legacyChartFamily,
-        legacyBallChart_radius] using hqBall
+        NormalChartFamily.radius, c2RadiusNormalChartFamily,
+        c2_radius_normal_ball_chart_radius] using hqBall
     simpa only [chiK] using
       Geometry.Riemannian.ball_subset_normalChartAt_target
         (I := I) Yk.metric ck hqNorm
@@ -527,11 +528,11 @@ theorem HasStageJetData.return_tail
   have hHu : chiK.symm u = Flk (Fkl x) := by
     have htarget : Flk (Fkl x) ∈ (normalExpPD (I := I) Yk ck).target := by
       have htarget' := hreverse.1
-      simp only [MetricCompactnessInputs.toCore, legacyChartFamily] at htarget'
-      change Flk ((legacyBallChart (I := I) Yl cl).hom w) ∈
-        (legacyBallChart (I := I) Yk ck).restrictBall.target at htarget'
-      rw [hFwLegacy] at htarget'
-      rwa [legacy_restrict_eq (I := I) Yk ck] at htarget'
+      simp only [MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at htarget'
+      change Flk ((c2RadiusNormalBallChart (I := I) Yl cl).hom w) ∈
+        (c2RadiusNormalBallChart (I := I) Yk ck).restrictBall.target at htarget'
+      rw [hFwChart] at htarget'
+      rwa [c2_radius_normal_ball_chart_restrict_ball_target (I := I) Yk ck] at htarget'
     change (normalExpPD (I := I) Yk ck)
       ((normalExpPD (I := I) Yk ck).symm (Flk (Fkl x))) = Flk (Fkl x)
     exact (normalExpPD (I := I) Yk ck).right_inv htarget

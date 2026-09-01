@@ -87,7 +87,7 @@ theorem chartCmC_zero_of_sum
   classical
   have hzTarget : c.hom z ∈ c.restrictBall.target := by
     have hmap := c.restrictBall.map_source hz
-    simpa only [NormalBallChart.restrictBall_apply] using hmap
+    simpa only [NormalBallChart.restrict_ball_apply] using hmap
   have hinvBase (i : ι) :
       B.inv (c.hom z, c.hom (xi i)) =
         (⟨c.hom z,

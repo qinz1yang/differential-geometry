@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Transition
 
 
@@ -31,7 +32,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_normal_transition_limit_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     (phi0 : Nat -> Nat) (hphi0 : StrictMono phi0)
     (x y : ∀ k : Nat, (X.obj (phi0 k)).M)
     {U V Ua Va : Set E}
@@ -111,7 +112,7 @@ theorem exists_normal_transition_limit_subsequence
   obtain ⟨φ, Jinf, Jbarinf, hφ, hJinf, hJbarinf, hconv, hconvbar,
       hleft, hright⟩ :=
     exists_normal_transition_subsequence (I := I) (X := X.subseq phi0)
-      (NormalCoordMetricBoundInput.subseq (I := I) metricInput phi0)
+      (NormalCoordMetricBounds.subseq (I := I) metricInput phi0)
       x y hU hV hUa hVa hUanorm hVanorm
       hUmetric hVmetric hUametric hVametric hUexp hVexp hUaexp hVaexp
       hJ hJbar hovlJ hovlJbar hmapJ hmapJbar hLeft hRight
@@ -124,7 +125,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_finite_normal_transition_limit_subsequence
     {ι : Type*} (s : Finset ι)
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     (x y : ι -> forall k : Nat, (X.obj k).M)
     (U V Ua Va : ι -> Set E)
     (hU : forall i, i ∈ s -> IsOpen (U i))
@@ -275,7 +276,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_normal_transition_limit_subsequence_of_finite
     {ι : Type*} [Finite ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     (x y : ι -> forall k : Nat, (X.obj k).M)
     (U V Ua Va : ι -> Set E)
     (hU : forall i, IsOpen (U i))
@@ -418,7 +419,7 @@ theorem exists_normal_transition_limit_subsequence_of_finite
 
 structure NormalTransAt
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)} {ι : Type*}
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     (x y : ι → ∀ k : Nat, (X.obj k).M)
     (U V Ua Va : ι → Set E) (i : ι) (k : Nat) : Prop where
   Umetric : U i ⊆ Metric.ball (0 : E) (metricInput.radius k (x i k))
@@ -473,7 +474,7 @@ structure NormalTransAt
 omit [NeZero (Module.finrank ℝ E)] in
 theorem existsTransTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)} {ι : Type*} [Finite ι]
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     (x y : ι → ∀ k : Nat, (X.obj k).M)
     (U V Ua Va : ι → Set E)
     (hU : ∀ i, IsOpen (U i)) (hV : ∀ i, IsOpen (V i))
@@ -515,16 +516,16 @@ theorem existsTransTail
     fun i k => y i (tau k)
   obtain ⟨phi1, hphi1, Jinf, Jbarinf, hspec⟩ :=
     exists_normal_transition_limit_subsequence_of_finite (I := I) (X := X.subseq tau)
-      (NormalCoordMetricBoundInput.subseq (I := I) metricInput tau)
+      (NormalCoordMetricBounds.subseq (I := I) metricInput tau)
       xt yt U V Ua Va hU hV hUa hVa hUanorm hVanorm
       (fun i k => by
-        simpa only [NormalCoordMetricBoundInput.subseq, xt] using (hdata k i).Umetric)
+        simpa only [NormalCoordMetricBounds.subseq, xt] using (hdata k i).Umetric)
       (fun i k => by
-        simpa only [NormalCoordMetricBoundInput.subseq, yt] using (hdata k i).Vmetric)
+        simpa only [NormalCoordMetricBounds.subseq, yt] using (hdata k i).Vmetric)
       (fun i k => by
-        simpa only [NormalCoordMetricBoundInput.subseq, xt] using (hdata k i).Uametric)
+        simpa only [NormalCoordMetricBounds.subseq, xt] using (hdata k i).Uametric)
       (fun i k => by
-        simpa only [NormalCoordMetricBoundInput.subseq, yt] using (hdata k i).Vametric)
+        simpa only [NormalCoordMetricBounds.subseq, yt] using (hdata k i).Vametric)
       (fun i k => by
         simpa only [PointedRiemannianSeq.subseq, xt] using (hdata k i).Uexp)
       (fun i k => by

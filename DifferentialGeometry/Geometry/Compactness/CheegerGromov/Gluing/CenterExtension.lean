@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Analysis.Calculus.MovingImplicit
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Averaging
 
@@ -595,7 +596,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 theorem centerReadoutB_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -723,7 +724,7 @@ theorem centerReadoutB_min
   have hcReal : (riemannianEDist I x c).toReal < ρ / 2 :=
     (ENNReal.lt_ofReal_iff_toReal_lt hcFin).mp hcLt
   have hcSource :=
-    (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I)
+    (NormalCoordMetricBounds.chart_mem_norm_le (I := I)
       k x c ⟨hcFin, hcReal.trans_le hρexp⟩).1
   have hbase : c ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet]

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseEndpointConvergence
 
 
@@ -27,7 +28,7 @@ namespace NormalRadiusProfile
 theorem limit_accel_bounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
     (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)
@@ -58,7 +59,7 @@ theorem limit_accel_bounds
     let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
     let : T2Space (TangentBundle I (X.obj n).M) :=
       (X.obj n).t2TangentBundle
-    apply (normalCoordMetric_contDiffOn_expBall (I := I) (X.obj n) (c n)).mono
+    apply (normal_coord_metric_cont_diff_on_exp_ball (I := I) (X.obj n) (c n)).mono
     exact (h.phaseRadius_exp (hc n)).trans (Metric.ball_subset_ball (by
       nlinarith [Geometry.Riemannian.expMapC2Radius_pos
         (I := I) (X.obj n).metric (c n)]))
@@ -123,7 +124,7 @@ theorem limit_accel_bounds
 theorem exists_limit_phase
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
     (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)
@@ -299,7 +300,7 @@ theorem exists_limit_phase
 theorem exists_limit_diag
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
     (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)

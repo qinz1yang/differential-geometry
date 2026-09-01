@@ -74,7 +74,7 @@ theorem limit_accel_bounds
         Metric.ball_subset_ball (by
           nlinarith [(d.chart n (c n)).radius_pos])
     simpa only [U, g, BoundedGeometryNormalData.chartMetric] using
-      (d.chart n (c n)).metric_contDiffOn (X.obj n).metric
+      (d.chart n (c n)).metric_cont_diff_on (X.obj n).metric
         Metric.isOpen_ball ((d.chart n (c n)).smooth_to.mono hrad)
   have hg_co : ∀ n z, z ∈ U → IsCoercive (g n z) := by
     intro n z hz
@@ -763,7 +763,7 @@ theorem exists_diagInv_conv
         Metric.ball_subset_ball (by
           nlinarith [(d.chart n (c n)).radius_pos])
     simpa only [U, BoundedGeometryNormalData.chartMetric] using
-      (d.chart n (c n)).metric_contDiffOn (X.obj n).metric
+      (d.chart n (c n)).metric_cont_diff_on (X.obj n).metric
         Metric.isOpen_ball ((d.chart n (c n)).smooth_to.mono hrad)
   have hg_co : ∀ n z, z ∈ U →
       IsCoercive (d.chartMetric n (c n) z) := by

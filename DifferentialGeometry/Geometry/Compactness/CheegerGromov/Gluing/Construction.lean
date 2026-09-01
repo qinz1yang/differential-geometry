@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Diagonal
 
 
@@ -32,7 +33,7 @@ noncomputable def stageMapCast
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l K L' : Nat) (hk : L.φ k = K) (hl : L.φ l = L')
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) :
+      c2RadiusNormalChartFamily (I := I) X) :
     (X.obj K).M → (X.obj L').M := by
   subst K
   subst L'
@@ -44,7 +45,7 @@ private theorem cast_geom
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l K L' : Nat) (hk : L.φ k = K) (hl : L.φ l = L') (R : Real)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X)
+      c2RadiusNormalChartFamily (I := I) X)
     (hgeom :
       let Yk := X.obj (L.φ k)
       let Yl := X.obj (L.φ l)

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseFlow
@@ -151,7 +152,7 @@ theorem normalFlow_contDiff
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalFlow_geoOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real}
     (hrMetric : Metric.ball (0 : E) r ⊆
       Metric.ball (0 : E) (h.radius k x))

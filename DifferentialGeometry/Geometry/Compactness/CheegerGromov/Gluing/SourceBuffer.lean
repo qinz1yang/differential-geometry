@@ -267,7 +267,7 @@ private theorem NormalCoordMetricEquivOn.chart_join_le
     have hbase : e (eta s) = gamma s := heq.self_of_nhds
     have hmetric : normalCoordMetric (I := I) Y c (eta s)
           (deriv eta s) (deriv eta s) = d ^ 2 := by
-      rw [normalCoordMetric_apply (I := I), hbase]
+      rw [normal_coord_metric_apply (I := I), hbase]
       change Y.metric.inner (gamma s)
           (mfderiv 𝓘(Real, E) I e (eta s) (deriv eta s))
           (mfderiv 𝓘(Real, E) I e (eta s) (deriv eta s)) = d ^ 2

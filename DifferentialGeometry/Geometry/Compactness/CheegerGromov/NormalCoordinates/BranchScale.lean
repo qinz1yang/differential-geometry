@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseAt
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseBranch
@@ -68,9 +70,9 @@ def HasNormalBrFull
   exact ∃ hq : 0 < q,
     ∃ e : OpenPartialHomeomorph (E × E) (E × E),
       ∃ he : IsNormalDiag (I := I) Y hcomplete hconn x q δ e
-          (c := legacyBallChart (I := I) Y x),
+          (c := c2RadiusNormalBallChart (I := I) Y x),
         NormalDiagFence (I := I) Y x q e
-          (c := legacyBallChart (I := I) Y x) ∧
+          (c := c2RadiusNormalBallChart (I := I) Y x) ∧
         (∀ w ∈ Metric.closedBall (0 : E × E) ρ,
           normalPair (I := I) Y x w ∈
             (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he).dom) ∧
@@ -141,9 +143,9 @@ theorem toDom
   change ∃ hq : 0 < q,
     ∃ e : OpenPartialHomeomorph (E × E) (E × E),
       ∃ he : IsNormalDiag (I := I) Y hcomplete hconn x q δ e
-          (c := legacyBallChart (I := I) Y x),
+          (c := c2RadiusNormalBallChart (I := I) Y x),
         NormalDiagFence (I := I) Y x q e
-          (c := legacyBallChart (I := I) Y x) ∧
+          (c := c2RadiusNormalBallChart (I := I) Y x) ∧
         (∀ w ∈ Metric.closedBall (0 : E × E) ρ,
           normalPair (I := I) Y x w ∈
             (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he).dom) ∧
@@ -175,7 +177,7 @@ end HasNormalBrFull
 theorem normalBrAccept
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -313,9 +315,9 @@ theorem normalBrAccept
   change ∃ hq' : 0 < q,
     ∃ e : OpenPartialHomeomorph (E × E) (E × E),
       ∃ he : IsNormalDiag (I := I) (X.obj k) (hcomplete.complete k) (hconn k)
-          x q δ e (c := legacyBallChart (I := I) (X.obj k) x),
+          x q δ e (c := c2RadiusNormalBallChart (I := I) (X.obj k) x),
         NormalDiagFence (I := I) (X.obj k) x q e
-          (c := legacyBallChart (I := I) (X.obj k) x) ∧
+          (c := c2RadiusNormalBallChart (I := I) (X.obj k) x) ∧
         (∀ w ∈ Metric.closedBall (0 : E × E) (aρ * hd.mu R),
           normalPair (I := I) (X.obj k) x w ∈
             (IsNormalDiag.toBranch (I := I) (X.obj k) (hcomplete.complete k)
@@ -349,7 +351,7 @@ theorem normalBrAccept
 theorem normalMinScale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -442,7 +444,7 @@ theorem normalMinScale
 theorem normalBrScale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,

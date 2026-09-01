@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseBranch
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.BranchScale
@@ -53,7 +55,7 @@ def HasLiveBrFull
 theorem exists_slot_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hre : hd.RealizesEdist)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -229,7 +231,7 @@ theorem exists_live_dom
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real)
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -258,7 +260,7 @@ theorem exists_live_min
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real)
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -316,7 +318,7 @@ theorem exists_live_min
 
 theorem HasNormalBrFull.exists_cm_eqn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -412,7 +414,7 @@ theorem HasNormalBrFull.exists_cm_eqn
       ne_of_lt (hiLt.trans ENNReal.ofReal_lt_top)
     have hiReal : (riemannianEDist I x (pts i)).toReal < ρ / 2 :=
       (ENNReal.lt_ofReal_iff_toReal_lt hiFin).mp hiLt
-    exact (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I) k x (pts i)
+    exact (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x (pts i)
       ⟨hiFin, hiReal.trans_le hρexp⟩).1
   let xi : ι → E := fun i =>
     NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
@@ -450,7 +452,7 @@ theorem HasNormalBrFull.exists_cm_eqn
 
 theorem HasNormalBrFull.exists_cm_deriv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -567,7 +569,7 @@ theorem HasNormalBrFull.exists_cm_deriv
       ne_of_lt (hiLt.trans ENNReal.ofReal_lt_top)
     have hiReal : (riemannianEDist I x (pts i)).toReal < ρ / 2 :=
       (ENNReal.lt_ofReal_iff_toReal_lt hiFin).mp hiLt
-    exact (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I) k x (pts i)
+    exact (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x (pts i)
       ⟨hiFin, hiReal.trans_le hρexp⟩).1
   let xi : ι → E := fun i =>
     NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
@@ -618,7 +620,7 @@ theorem HasNormalBrFull.exists_cm_deriv
     (ENNReal.lt_ofReal_iff_toReal_lt hcFin).mp hcLt
   have hcSource : c ∈ (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).source :=
-    (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I) k x c
+    (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x c
       ⟨hcFin, hcReal.trans_le hρexp⟩).1
   have htgt (i : ι) :
       (NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x c,
@@ -655,7 +657,7 @@ theorem HasNormalBrFull.exists_cm_deriv
 
 theorem HasNormalBrFull.exists_cmC
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -697,7 +699,7 @@ theorem HasNormalBrFull.exists_cmC
       ρ ≤ hb.radius k x →
       ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
       HasChartCmSol (I := I) (X.obj k) hcomplete hconn x
-        (legacyBallChart (I := I) (X.obj k) x)
+        (c2RadiusNormalBallChart (I := I) (X.obj k) x)
         (q := q) (delta := δ) mu pts join p r h := by
   classical
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -742,7 +744,7 @@ theorem HasNormalBrFull.exists_cmC
       ne_of_lt (hiLt.trans ENNReal.ofReal_lt_top)
     have hiReal : (riemannianEDist I x (pts i)).toReal < ρ / 2 :=
       (ENNReal.lt_ofReal_iff_toReal_lt hiFin).mp hiLt
-    exact (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I) k x (pts i)
+    exact (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x (pts i)
       ⟨hiFin, hiReal.trans_le hρexp⟩).1
   let xi : ι → E := fun i =>
     NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
@@ -796,7 +798,7 @@ theorem HasNormalBrFull.exists_cmC
     (ENNReal.lt_ofReal_iff_toReal_lt hyFin).mp hyLt
   have hySource : y ∈ (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).source :=
-    (NormalCoordMetricBoundInput.chart_mem_norm_le (I := I) k x y
+    (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x y
       ⟨hyFin, hyReal.trans_le hρexp⟩).1
   have htgt (i : ι) :
       (NormalCoordinates.normalChartAt
@@ -827,7 +829,7 @@ theorem HasNormalBrFull.exists_cmC
           (expMapC2Radius (I := I) (X.obj k).metric x)
     with_unfolding_all
       exact hout
-  let c := legacyBallChart (I := I) (X.obj k) x
+  let c := c2RadiusNormalBallChart (I := I) (X.obj k) x
   let z := NormalCoordinates.normalChartAt
     (I := I) (X.obj k).metric x y
   have htgtZ (i : ι) : (z, xi i) ∈ e.target := by
@@ -857,7 +859,7 @@ theorem HasNormalBrFull.exists_cmC
     calc
       c.hom z = NormalCoordinates.expMapDiffeo
           (I := I) (X.obj k).metric x z := by
-        simpa only [c] using legacyChart_apply
+        simpa only [c] using c2_radius_normal_ball_chart_apply
           (I := I) (X.obj k) x z
       _ = expMap (I := I) (X.obj k).metric x
           (show TangentSpace I x from z) :=
@@ -909,7 +911,7 @@ theorem exists_hat_cm_eqn_at
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
@@ -1068,7 +1070,7 @@ theorem exists_hat_cm_sol_at
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
@@ -1252,7 +1254,7 @@ theorem exists_hat_cmC_at
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
@@ -1326,7 +1328,7 @@ theorem exists_hat_cmC_at
           HasChartCmSol (I := I) (X.obj (L.φ k))
             (hcomplete.complete (L.φ k)) (hconn (L.φ k))
             (seqCenterD hd P L k (alpha.1 : Nat))
-            (legacyBallChart (I := I) (X.obj (L.φ k))
+            (c2RadiusNormalBallChart (I := I) (X.obj (L.φ k))
               (seqCenterD hd P L k (alpha.1 : Nat)))
             (q := q alpha) (delta := δ alpha) mu pts join x rad h := by
   classical
@@ -1396,7 +1398,7 @@ theorem exists_hat_cm_eqn
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
@@ -1536,7 +1538,7 @@ theorem exists_hat_cm_eqn
 
 theorem exists_cm_branch
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)

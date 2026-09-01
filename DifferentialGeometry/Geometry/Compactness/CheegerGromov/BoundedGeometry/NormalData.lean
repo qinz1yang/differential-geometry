@@ -1067,7 +1067,7 @@ theorem exists_bounded_geometry_normal_data
       { C := hgeom.C
         nonneg := hgeom.nonneg
         bound := hgeom.bound k }
-    refine NormalBallChart.MetricDerivBound.of_eqOn
+    refine NormalBallChart.MetricDerivBound.of_eq_on
       (g := (X.obj k).metric) Metric.isOpen_ball
       (d.toChartData.metric_eq_intr k (hcomplete.complete k) x) ?_
     intro z hz
@@ -1080,7 +1080,7 @@ theorem exists_bounded_geometry_normal_data
     have hchartSmooth :
         ContDiffAt Real ∞
           ((d.toChartData.chart k x).metric (X.obj k).metric) z :=
-      ((d.toChartData.chart k x).metric_contDiffOn
+      ((d.toChartData.chart k x).metric_cont_diff_on
         (X.obj k).metric Metric.isOpen_ball
         (d.toChartData.chart k x).smooth_to).contDiffAt
           (Metric.isOpen_ball.mem_nhds hz)

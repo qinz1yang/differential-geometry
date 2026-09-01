@@ -130,7 +130,7 @@ theorem chartReadoutInf
     refine ⟨0, ?_, ?_⟩
     · change (0 : E') ∈ Metric.ball 0 c.radius
       simpa only [Metric.mem_ball, dist_self] using c.radius_pos
-    · simpa only [NormalBallChart.restrictBall_apply] using c.map_zero
+    · simpa only [NormalBallChart.restrict_ball_apply] using c.map_zero
   have hp : (p, p) ∈ B.chartReadDom c :=
     ⟨B.center_mem, hpTarget⟩
   have hsmooth : ContMDiffOn (I'.prod I') 𝓘(ℝ, E') ∞

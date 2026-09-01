@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BranchConstruction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalMetrics
@@ -65,7 +66,7 @@ theorem exists_live_metric
     exact Nat.add_lt_add_right hab N
   let index : Nat → Nat := fun k ↦ L.φ (shift k)
   let X' : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
-  let input' : NormalCoordMetricBoundInput (I := I) X' :=
+  let input' : NormalCoordMetricBounds (I := I) X' :=
     inp.normalBounds.subseq index
   let c : LiveSlot L inp.pack r → ∀ k : Nat, (X'.obj k).M :=
     fun alpha k ↦ seqCenterD inp.decay P L (shift k) (alpha.1 : Nat)
@@ -115,7 +116,7 @@ theorem exists_live_metric
   · intro k
     refine contDiffOn_pi.mpr fun alpha ↦ ?_
     simpa only [psi, X', input', index, c, PointedRiemannianSeq.subseq] using
-      (normalCoordMetric_contDiffOn_expBall
+      (normal_coord_metric_cont_diff_on_exp_ball
         (I := I) (X'.obj (phi k)) (c alpha (phi k))).mono (hsub (phi k) alpha)
 
 theorem exists_slot_metric
@@ -173,7 +174,7 @@ theorem exists_slot_metric
     intro alpha τ hτ
     let index : Nat → Nat := fun n => L.φ (shift (τ n))
     let X' : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
-    let input' : NormalCoordMetricBoundInput (I := I) X' :=
+    let input' : NormalCoordMetricBounds (I := I) X' :=
       inp.normalBounds.subseq index
     let c : ∀ n : Nat, (X'.obj n).M := fun n =>
       seqCenterD inp.decay P L (shift (τ n)) (alpha.1 : Nat)

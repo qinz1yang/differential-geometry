@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactne
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.ExponentialBallCovering
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeComparison
 open DifferentialGeometry.Geometry.Curvature
 
@@ -29,7 +29,7 @@ variable [I.Boundaryless]
 structure NormalRadiusProfile
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X)
-    (hb : NormalCoordMetricBoundInput (I := I) X) where
+    (hb : NormalCoordMetricBounds (I := I) X) where
   ratio : Real
   ratio_pos : 0 < ratio
   le_radius : ∀ k x,
@@ -47,7 +47,7 @@ namespace NormalRadiusProfile
 def subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (f : Nat → Nat) :
     NormalRadiusProfile (hd.subseq f) (hb.subseq f) where
   ratio := h.ratio
@@ -71,14 +71,14 @@ def subseq
 def gpRatio
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) : Real :=
   Real.sqrt (1 / 2 : Real) * h.ratio
 
 theorem gpRatio_pos
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) : 0 < h.gpRatio := by
   rw [gpRatio]
   exact mul_pos (Real.sqrt_pos.mpr (by norm_num)) h.ratio_pos
@@ -86,7 +86,7 @@ theorem gpRatio_pos
 theorem gpRatio_le_ratio
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) : h.gpRatio ≤ h.ratio := by
   rw [gpRatio]
   have hsqrt : Real.sqrt (1 / 2 : Real) ≤ 1 :=
@@ -97,7 +97,7 @@ theorem gpRatio_le_ratio
 theorem floor_pos
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real) :
     0 < h.ratio * hd.mu R :=
   mul_pos h.ratio_pos (hd.mu_pos R)
@@ -105,7 +105,7 @@ theorem floor_pos
 theorem floor_le_radius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {k : Nat} {x : (X.obj k).M} {R : Real}
     (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
     h.ratio * hd.mu R ≤ hb.radius k x := by
@@ -118,7 +118,7 @@ theorem floor_le_radius
 theorem floor_le_exp
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {k : Nat} {x : (X.obj k).M} {R : Real}
     (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -141,7 +141,7 @@ theorem floor_le_exp
 theorem floor_le_expGp
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {k : Nat} {x : (X.obj k).M} {R : Real}
     (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -161,7 +161,7 @@ theorem floor_le_expGp
     _ ≤ Real.sqrt (Geometry.Riemannian.gpCoerciveConst
           (I := I) (X.obj k).metric x) * (h.ratio * hd.mu R) :=
       mul_le_mul_of_nonneg_right
-        (Real.sqrt_le_sqrt (hb.half_le_gpConst k x)) (h.floor_pos R).le
+        (Real.sqrt_le_sqrt (hb.half_le_gp_const k x)) (h.floor_pos R).le
     _ ≤ Real.sqrt (Geometry.Riemannian.gpCoerciveConst
           (I := I) (X.obj k).metric x) *
           Geometry.Riemannian.expMapC2Radius (I := I) (X.obj k).metric x :=
@@ -170,7 +170,7 @@ theorem floor_le_expGp
 theorem mul_lambda_lt_floor
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D c R : Real}
     (hD : 0 < D) (hc : c < h.ratio * D) :
     c * hd.lambda D R < h.ratio * hd.mu R := by
@@ -183,7 +183,7 @@ theorem mul_lambda_lt_floor
 theorem mul_lambda_lt_radius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D c R : Real}
     (hD : 0 < D) (hc : c < h.ratio * D)
     {k : Nat} {x : (X.obj k).M}
@@ -194,7 +194,7 @@ theorem mul_lambda_lt_radius
 theorem mul_lambda_lt_exp
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D c R : Real}
     (hD : 0 < D) (hc : c < h.ratio * D)
     {k : Nat} {x : (X.obj k).M}
@@ -214,7 +214,7 @@ theorem mul_lambda_lt_exp
 theorem mul_lambda_lt_expGp
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D c R : Real}
     (hD : 0 < D) (hc : c < h.gpRatio * D)
     {k : Nat} {x : (X.obj k).M}
@@ -240,7 +240,7 @@ theorem mul_lambda_lt_expGp
 theorem gpScaleTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D : Real} (hD : 0 < D)
     (h8 : (8 : Real) < h.gpRatio * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -282,7 +282,7 @@ theorem gpScaleTail
 theorem halfGpScaleTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D a : Real} (hD : 0 < D)
     (ha : 0 < a) (haRatio : 2 * a < h.ratio * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -346,7 +346,7 @@ theorem halfGpScaleTail
 theorem metricScaleTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D a : Real} (hD : 0 < D)
     (ha : 0 < a) (haRatio : 2 * a < h.ratio * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -389,7 +389,7 @@ theorem metricScaleTail
 theorem radiusScaleTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D a : Real} (hD : 0 < D) (ha : 0 < a)
     (haRatio : 2 * a < h.ratio * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -589,7 +589,7 @@ structure MetricCompactBase
   volume : VolumeComparisonInput (I := I) X
   dist_eq : volume.dist = decay.dist
   realizes : decay.RealizesEdist
-  normalBounds : NormalCoordMetricBoundInput (I := I) X
+  normalBounds : NormalCoordMetricBounds (I := I) X
   normalRadius : NormalRadiusProfile decay normalBounds
 
 namespace MetricCompactBase
@@ -769,7 +769,7 @@ structure MetricCompactnessInputs
     max 4 (50 * Real.exp (decay.C * (20 * decay.lambda D 0))) *
       decay.lambda D 0 <= volume.r0
   realizes : decay.RealizesEdist
-  normalBounds : NormalCoordMetricBoundInput (I := I) X
+  normalBounds : NormalCoordMetricBounds (I := I) X
 
   normalRadius : NormalRadiusProfile decay normalBounds
 
@@ -902,7 +902,7 @@ def ofUniformVolume
       max 4 (50 * Real.exp (decay.C * (20 * decay.lambda D 0))) *
         decay.lambda D 0 ≤ vol.r0)
     (realizes : decay.RealizesEdist)
-    (normalBounds : NormalCoordMetricBoundInput (I := I) X)
+    (normalBounds : NormalCoordMetricBounds (I := I) X)
     (normalRadius : NormalRadiusProfile decay normalBounds) :
     MetricCompactnessInputs (I := I) X where
   decay := decay

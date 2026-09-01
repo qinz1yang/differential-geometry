@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
 import DifferentialGeometry.Geometry.Exponential.NormalConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseEndpoint
@@ -27,7 +28,7 @@ namespace NormalRadiusProfile
 theorem diag_end_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
     (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)
@@ -71,7 +72,7 @@ theorem diag_end_conv
     let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
     let : T2Space (TangentBundle I (X.obj n).M) :=
       (X.obj n).t2TangentBundle
-    apply (normalCoordMetric_contDiffOn_expBall (I := I) (X.obj n) (c n)).mono
+    apply (normal_coord_metric_cont_diff_on_exp_ball (I := I) (X.obj n) (c n)).mono
     exact (h.phaseRadius_exp (hc n)).trans (Metric.ball_subset_ball (by
       nlinarith [Geometry.Riemannian.expMapC2Radius_pos
         (I := I) (X.obj n).metric (c n)]))

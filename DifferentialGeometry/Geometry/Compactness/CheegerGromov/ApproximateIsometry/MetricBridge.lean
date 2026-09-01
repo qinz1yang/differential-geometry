@@ -258,7 +258,7 @@ theorem HasStageJetData.coeff_tail
   have hgeomL := hdata.geom_on inp P L r hr U C0 C1 aInf Jinf Jbarinf l alpha
   let G := normalCoordMetric (I := I) Yl cl
   have hGsm : ContDiffOn Real (∞ : WithTop ℕ∞) G (U alpha) :=
-    (normalCoordMetric_contDiffOn_expBall (I := I) Yl cl).mono hgeomL.2.1
+    (normal_coord_metric_cont_diff_on_exp_ball (I := I) Yl cl).mono hgeomL.2.1
   have hGdiff : ∀ q ∈ segment Real z (Fkl z), DifferentiableAt Real G q := by
     intro q hq
     have hqU := hsegU hq
@@ -628,7 +628,7 @@ theorem HasStageJetData.pb_conv
         exact hquarter'.trans (Metric.ball_subset_ball (by
           nlinarith [expMapC2Radius_pos (I := I) Yl.metric cl]))
       simpa only [B, Yl, cl, Lphi] using
-        (normalCoordMetric_contDiffOn_expBall (I := I) Yl cl).mono hDexp
+        (normal_coord_metric_cont_diff_on_exp_ball (I := I) Yl cl).mono hDexp
     exact ⟨hAcd, hAmap, hBcd⟩
   obtain ⟨N, hN⟩ := eventually_atTop.mp hgood
   let Ap : Nat → E → E := fun n ↦ if N ≤ n then A n else id

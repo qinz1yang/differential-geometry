@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.InverseVelocityConvergence
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DistanceComparison
@@ -160,8 +161,8 @@ theorem HasSuppConvData.exists_invVel_core
             (fun _ : Fin (inp.pack.A r) => q.1) q.2)
           PhiInf) := by
   exact
-    (hdata.toOnLegacy inp P L r hr U C0 C1 aInf Jinf Jbarinf).exists_invVel_core
-      inp P L hr phi hphi (legacyChartFamily (I := I) X)
+    (hdata.to_on_c2_radius_normal_chart_family inp P L r hr U C0 C1 aInf Jinf Jbarinf).exists_invVel_core
+      inp P L hr phi hphi (c2RadiusNormalChartFamily (I := I) X)
       U C0 C1 aInf Jinf Jbarinf alpha hpair hC1q
 
 omit [FiniteDimensional Real E] [CompleteSpace E]
@@ -229,7 +230,7 @@ noncomputable def stageInvVelSub
     (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
     (n k l : Nat) (q : E × E)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : E :=
+      c2RadiusNormalChartFamily (I := I) X) : E :=
   invVelSum (e n)
     (stageCfgSub inp P L hr phi hphi alpha k l q.1
       (chart := chart)).1
@@ -245,7 +246,7 @@ noncomputable def stageRootSub
     (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
     (PhiInf : E → E) (rho : Real) (n k l : Nat) (z : E)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : E := by
+      c2RadiusNormalChartFamily (I := I) X) : E := by
   classical
   exact if h : ∃ x : E, dist x (PhiInf z) < rho ∧
         stageInvVelSub inp P L hr phi hphi alpha e n k l (z, x)
@@ -289,7 +290,7 @@ def HasStageRootCube
     (W : Set E) (PhiInf : E → E) (rho : Real)
     (Phi3 : Nat → Nat → Nat → E → E)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : Prop :=
+      c2RadiusNormalChartFamily (I := I) X) : Prop :=
   IsOpen W ∧ IsCompact (closure W) ∧ C1 alpha ⊆ W ∧
   0 < rho ∧ Set.EqOn PhiInf id (C1 alpha) ∧
   (∀ (nn kn ln : Nat → Nat), Tendsto nn atTop atTop →
@@ -529,8 +530,8 @@ theorem HasSuppConvData.exists_stage_root
             dist x (PhiInf z) < rho →
               (F m (z, x) = 0 ↔ x = Phi m z) := by
   exact
-    (hdata.toOnLegacy inp P L r hr U C0 C1 aInf Jinf Jbarinf).exists_stage_root
-      inp P L hr phi hphi (legacyChartFamily (I := I) X)
+    (hdata.to_on_c2_radius_normal_chart_family inp P L r hr U C0 C1 aInf Jinf Jbarinf).exists_stage_root
+      inp P L hr phi hphi (c2RadiusNormalChartFamily (I := I) X)
       U C0 C1 aInf Jinf Jbarinf alpha hpair hC1q
 
 theorem HasSuppConvDataOn.exists_stage_cube
@@ -664,8 +665,8 @@ theorem HasSuppConvData.exists_stage_cube
       HasStageRootCube inp P L hr phi hphi C1 alpha e
         W PhiInf rho Phi3 := by
   exact
-    (hdata.toOnLegacy inp P L r hr U C0 C1 aInf Jinf Jbarinf).exists_stage_cube
-      inp P L hr phi hphi (legacyChartFamily (I := I) X)
+    (hdata.to_on_c2_radius_normal_chart_family inp P L r hr U C0 C1 aInf Jinf Jbarinf).exists_stage_cube
+      inp P L hr phi hphi (c2RadiusNormalChartFamily (I := I) X)
       U C0 C1 aInf Jinf Jbarinf alpha hpair hC1q
 
 theorem HasStageRootCube.map_tail

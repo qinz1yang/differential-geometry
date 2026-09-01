@@ -1,7 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalCompactness
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalTransitionBounds
 open DifferentialGeometry.Geometry.Curvature
 
@@ -85,12 +86,12 @@ theorem cont_diff_on_normal_transition
   rw [← contMDiffOn_iff_contDiffOn]
   have hexp : ContMDiffOn 𝓘(ℝ, E) I ∞
       (fun z => expMapDiffeo (I := I) Y.metric x z) U :=
-    (expMapDiffeo_contMDiffOn_expBall (I := I) Y x).mono hUx
+    (exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) Y x).mono hUx
   have hchart : ContMDiffOn I 𝓘(ℝ, E) ∞ (normalChartAt (I := I) Y.metric y)
       ((fun v : E =>
         (expMap (I := I) Y.metric y (show TangentSpace I y from v) : Y.M)) ''
           Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric y)) :=
-    normalChartAt_contMDiffOn_infty (I := I) Y.metric y
+    normal_chart_at_cont_mdiff_on_infty (I := I) Y.metric y
   exact hchart.comp hexp hmaps
 
 end Raw
@@ -106,7 +107,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_normal_transition_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     (x y : ∀ k : ℕ, (X.obj k).M)
     {U V Ua Va : Set E}
     (hU : IsOpen U) (hV : IsOpen V) (hUa : IsOpen Ua) (hVa : IsOpen Va)

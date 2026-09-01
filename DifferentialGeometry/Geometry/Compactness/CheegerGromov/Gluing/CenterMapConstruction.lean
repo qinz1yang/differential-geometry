@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformData
 
 
@@ -426,7 +428,7 @@ theorem SigmaScaleField.expRadiusGp {hd : InjRadiusDecayInput (I := I) X} {D : R
 
 theorem NormalRadiusProfile.sigmaCenterTail
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D : Real} (hD : 0 < D)
     (h16 : (16 : Real) < h.ratio * D)
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -460,7 +462,7 @@ theorem NormalRadiusProfile.sigmaCenterTail
   constructor
   · have hhalf : (1 / 2 : Real) ≤ gpCoerciveConst (I := I)
         (X.obj (L.φ n)).metric (seqCenterD hd P L n (gamma : Nat)) :=
-      hb.half_le_gpConst (L.φ n) (seqCenterD hd P L n (gamma : Nat))
+      hb.half_le_gp_const (L.φ n) (seqCenterD hd P L n (gamma : Nat))
     have hsqrt_half : (1 / 2 : Real) < Real.sqrt (1 / 2 : Real) := by
       have hs := Real.sq_sqrt (by norm_num : (0 : Real) ≤ 1 / 2)
       have hn := Real.sqrt_nonneg (1 / 2 : Real)
@@ -1286,7 +1288,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
       have hk := hN (shift k) (by simpa only [shift] using Nat.le_add_left N k)
       intro z hz
       have hout := ((hk.1.1 alpha).2.2 hz).1
-      simp only [← legacyChart_apply (I := I)] at hout ⊢
+      simp only [← c2_radius_normal_ball_chart_apply (I := I)] at hout ⊢
       convert hout using 1
       all_goals
         simp only [beta, Lphi, phi, NetLimitData.subseq_phi, Function.comp_apply,
@@ -1311,7 +1313,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
       have hk := hN (shift k) (by simpa only [shift] using Nat.le_add_left N k)
       intro z hz
       have hmem := (hk.1.1 alpha).2.2 hz
-      simp only [← legacyChart_apply (I := I)] at hmem ⊢
+      simp only [← c2_radius_normal_ball_chart_apply (I := I)] at hmem ⊢
       convert hmem.2 using 1
       all_goals
         simp only [beta, Lphi, phi, NetLimitData.subseq_phi, Function.comp_apply,
@@ -1387,7 +1389,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
               (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))))
             (aInf alpha gamma) := by
           refine hraw.congr (hUopen alpha) (fun k z hz => ?_) (fun z _hz => ?_)
-          · simpa only [gluingAtomChart, gluingAtomOn, legacyChart_apply, hslot] using
+          · simpa only [gluingAtomChart, gluingAtomOn, c2_radius_normal_ball_chart_apply, hslot] using
               (gluing_atom_readout (I := I) (X.obj (Lphi.φ k)) (beta k)
                 (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
                 (L.lamInf (gamma : Nat))
@@ -1481,7 +1483,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
     intro k
     have hk := hN (shift k) (by simpa only [shift] using Nat.le_add_left N k)
     have hbuf := hk.2.2.2.2
-    simp only [← legacyChart_apply (I := I)] at hbuf ⊢
+    simp only [← c2_radius_normal_ball_chart_apply (I := I)] at hbuf ⊢
     convert hbuf using 1
     all_goals
       simp only [phi, NetLimitData.subseq_phi, Function.comp_apply,
@@ -1490,7 +1492,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
   · intro k
     have hk := hN (shift k) (by simpa only [shift] using Nat.le_add_left N k)
     have hcoreK := hk.2.2.2.1
-    simp only [← legacyChart_apply (I := I)] at hcoreK ⊢
+    simp only [← c2_radius_normal_ball_chart_apply (I := I)] at hcoreK ⊢
     convert hcoreK using 1
     all_goals
       simp only [phi, NetLimitData.subseq_phi, Function.comp_apply,
@@ -1499,7 +1501,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
   · intro k
     have hk := hN (shift k) (by simpa only [shift] using Nat.le_add_left N k)
     have hgeom := hk.1
-    simp only [← legacyChart_apply (I := I), ← legacyBallChart_radius (I := I)]
+    simp only [← c2_radius_normal_ball_chart_apply (I := I), ← c2_radius_normal_ball_chart_radius (I := I)]
       at hgeom ⊢
     convert hgeom using 1
     all_goals
@@ -1618,7 +1620,7 @@ def HasSuppConvData
       letI : MetricSpace Y.M := (P (L.φ (phi k))).ms
       ∀ y ∈ L.hatSourceBall inp.decay P r (phi k),
         ∃ (alpha : LiveSlot L inp.pack r) (z : E),
-          (legacyChartFamily (I := I) X).hom (L.φ (phi k))
+          (c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi k))
               (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)) z = y ∧
             Metric.closedBall z (eta alpha) ⊆ interior (C0 alpha)) ∧
   (∀ k,
@@ -1631,7 +1633,7 @@ def HasSuppConvData
     letI : MetricSpace Y.M := (P (L.φ (phi k))).ms
     L.hatSourceBall inp.decay P r (phi k) ⊆
       ⋃ alpha : LiveSlot L inp.pack r,
-        (legacyChartFamily (I := I) X).hom (L.φ (phi k))
+        (c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi k))
           (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)) ''
             interior (C0 alpha)) ∧
   (∀ k,
@@ -1647,10 +1649,10 @@ def HasSuppConvData
           (inp.normalBounds.radius (L.φ (phi k))
             (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))) ∧
       U alpha ⊆ Metric.ball 0
-          ((legacyChartFamily (I := I) X).radius (L.φ (phi k))
+          ((c2RadiusNormalChartFamily (I := I) X).radius (L.φ (phi k))
             (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))) ∧
       Set.MapsTo
-        ((legacyChartFamily (I := I) X).hom (L.φ (phi k))
+        ((c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi k))
           (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)))
         (U alpha)
         (L.hatBall inp.decay inp.D P inp.pack r (phi k) alpha.1 ∩
@@ -1658,7 +1660,7 @@ def HasSuppConvData
             L.innerBall inp.decay inp.D P inp.pack r (phi k) gamma)) ∧
     L.hatSourceBall inp.decay P r (phi k) ⊆
       ⋃ alpha : LiveSlot L inp.pack r,
-        (legacyChartFamily (I := I) X).hom (L.φ (phi k))
+        (c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi k))
           (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)) '' U alpha) ∧
   (∀ alpha,
     HasAtomWeightLim (I := I) inp.decay inp.hD P Lphi inp.realizes
@@ -1685,13 +1687,13 @@ def HasSuppConvData
         (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))) ∧
     MapCInfConvOnCompacts
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
-      (fun k => (legacyChartFamily (I := I) X).transition (L.φ (phi k))
+      (fun k => (c2RadiusNormalChartFamily (I := I) X).transition (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
         (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)))
       (Jinf alpha target) ∧
     MapCInfConvOnCompacts
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
-      (fun k => (legacyChartFamily (I := I) X).transition (L.φ (phi k))
+      (fun k => (c2RadiusNormalChartFamily (I := I) X).transition (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)))
       (Jbarinf alpha target) ∧
@@ -1706,12 +1708,12 @@ def HasSuppConvData
   ∀ (alpha : LiveSlot L inp.pack r)
       (target : InterSlot L inp.pack r alpha) (k : Nat),
     ContDiffOn Real (⊤ : ℕ∞)
-      ((legacyChartFamily (I := I) X).transition (L.φ (phi k))
+      ((c2RadiusNormalChartFamily (I := I) X).transition (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
         (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)))
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))) ∧
     ContDiffOn Real (⊤ : ℕ∞)
-      ((legacyChartFamily (I := I) X).transition (L.φ (phi k))
+      ((c2RadiusNormalChartFamily (I := I) X).transition (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)))
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
@@ -1905,10 +1907,10 @@ theorem HasSuppConvData.geom_on
         (inp.normalBounds.radius (L.φ (phi k))
           (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))) ∧
       U alpha ⊆ Metric.ball 0
-        ((legacyChartFamily (I := I) X).radius (L.φ (phi k))
+        ((c2RadiusNormalChartFamily (I := I) X).radius (L.φ (phi k))
           (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))) ∧
       Set.MapsTo
-        ((legacyChartFamily (I := I) X).hom (L.φ (phi k))
+        ((c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi k))
           (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)))
         (U alpha)
         (L.hatBall inp.decay inp.D P inp.pack r (phi k) alpha.1 ∩
@@ -2105,8 +2107,8 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
     hbuffer, hcore, ?_, hlim, hweightData, htrans, hstage⟩, ?_⟩
   · intro k
     have hgeomK := hgeom k
-    simp only [NormalChartFamily.hom, NormalChartFamily.radius, legacyChartFamily,
-      legacyChart_apply, legacyBallChart_radius] at ⊢
+    simp only [NormalChartFamily.hom, NormalChartFamily.radius, c2RadiusNormalChartFamily,
+      c2_radius_normal_ball_chart_apply, c2_radius_normal_ball_chart_radius] at ⊢
     convert hgeomK using 1
     all_goals
       simp only [NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
@@ -2362,7 +2364,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
           8 * L.lamInf (alpha.1 : Nat) := by
         have hhalf : (1 / 2 : Real) ≤ gpCoerciveConst (I := I) Y.metric
             (seqCenterD inp.decay P (L.subseq hphi) n (alpha.1 : Nat)) :=
-          inp.normalBounds.half_le_gpConst ((L.subseq hphi).φ n)
+          inp.normalBounds.half_le_gp_const ((L.subseq hphi).φ n)
             (seqCenterD inp.decay P (L.subseq hphi) n (alpha.1 : Nat))
         have hsqrtHalf : (1 / 2 : Real) < Real.sqrt (1 / 2 : Real) := by
           have hs := Real.sq_sqrt (by norm_num : (0 : Real) ≤ 1 / 2)
@@ -2622,7 +2624,7 @@ def HasSuppConvDataOn
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)))
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
 
-theorem HasSuppConvData.toOnLegacy
+theorem HasSuppConvData.to_on_c2_radius_normal_chart_family
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -2639,7 +2641,7 @@ theorem HasSuppConvData.toOnLegacy
     (h : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf) :
     HasSuppConvDataOn (I := I) inp P L r hr phi hphi
-      (legacyChartFamily (I := I) X) U C0 C1 aInf Jinf Jbarinf := by
+      (c2RadiusNormalChartFamily (I := I) X) U C0 C1 aInf Jinf Jbarinf := by
   dsimp only [HasSuppConvData] at h
   dsimp only [HasSuppConvDataOn, MetricCompactnessInputs.toCore]
   rcases h with
@@ -2657,7 +2659,7 @@ theorem HasSuppConvData.toOnLegacy
     let : T2Space Y.M := Y.t2
     let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     let : MetricSpace Y.M := (P ((L.subseq hphi).φ k)).ms
-    simpa only [NormalChartFamily.hom, legacyChartFamily, legacyChart_apply,
+    simpa only [NormalChartFamily.hom, c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_apply,
       NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
       NetLimitData.hatSourceBall_subseq] using heta k
   · intro k
@@ -2668,7 +2670,7 @@ theorem HasSuppConvData.toOnLegacy
     let : T2Space Y.M := Y.t2
     let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     let : MetricSpace Y.M := (P ((L.subseq hphi).φ k)).ms
-    simpa only [NormalChartFamily.hom, legacyChartFamily, legacyChart_apply,
+    simpa only [NormalChartFamily.hom, c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_apply,
       NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
       NetLimitData.hatSourceBall_subseq] using hcover k
   · intro k
@@ -2684,15 +2686,15 @@ theorem HasSuppConvData.toOnLegacy
     · intro alpha
       rcases hsource alpha with ⟨_hmetric, hradius, hmaps⟩
       exact ⟨by
-        simpa only [NormalChartFamily.radius, legacyChartFamily,
-          legacyBallChart_radius, NetLimitData.subseq_phi, Function.comp_apply,
+        simpa only [NormalChartFamily.radius, c2RadiusNormalChartFamily,
+          c2_radius_normal_ball_chart_radius, NetLimitData.subseq_phi, Function.comp_apply,
           seqCenterD_subseq] using hradius,
         by
           intro z hz
-          simpa only [NormalChartFamily.hom, legacyChartFamily, legacyChart_apply,
+          simpa only [NormalChartFamily.hom, c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_apply,
             NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
             NetLimitData.hatBall_subseq, NetLimitData.innerBall_subseq] using hmaps hz⟩
-    · simpa only [NormalChartFamily.hom, legacyChartFamily, legacyChart_apply,
+    · simpa only [NormalChartFamily.hom, c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_apply,
         NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
         NetLimitData.hatSourceBall_subseq] using hcoverU
   · intro alpha
@@ -2701,11 +2703,11 @@ theorem HasSuppConvData.toOnLegacy
     rcases htrans alpha target with
       ⟨hJ, hJbar, hJcont, hJbarCont, hJlim, hJbarLim, hleft, hright⟩
     refine ⟨hJ, hJbar, hJcont, hJbarCont, ?_, ?_, hleft, hright⟩
-    · simpa only [NormalChartFamily.transition, legacyChartFamily,
-        legacyTransition_eq, NetLimitData.subseq_phi, Function.comp_apply,
+    · simpa only [NormalChartFamily.transition, c2RadiusNormalChartFamily,
+        c2_radius_normal_ball_chart_transition, NetLimitData.subseq_phi, Function.comp_apply,
         seqCenterD_subseq] using hJlim
-    · simpa only [NormalChartFamily.transition, legacyChartFamily,
-        legacyTransition_eq, NetLimitData.subseq_phi, Function.comp_apply,
+    · simpa only [NormalChartFamily.transition, c2RadiusNormalChartFamily,
+        c2_radius_normal_ball_chart_transition, NetLimitData.subseq_phi, Function.comp_apply,
         seqCenterD_subseq] using hJbarLim
   · intro alpha target k
     let Y := X.obj ((L.subseq hphi).φ k)
@@ -2713,8 +2715,8 @@ theorem HasSuppConvData.toOnLegacy
     let : ChartedSpace H Y.M := Y.charted
     let : IsManifold I ∞ Y.M := Y.smooth
     let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-    simpa only [NormalChartFamily.transition, legacyChartFamily,
-      legacyTransition_eq, NetLimitData.subseq_phi, Function.comp_apply,
+    simpa only [NormalChartFamily.transition, c2RadiusNormalChartFamily,
+      c2_radius_normal_ball_chart_transition, NetLimitData.subseq_phi, Function.comp_apply,
       seqCenterD_subseq] using hsmooth alpha target k
 
 omit [CompleteSpace E] in

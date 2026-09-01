@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction
 
 
@@ -359,7 +360,7 @@ theorem exists_center_average_identity_convergence_subsequence (hd : InjRadiusDe
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     (x y : Fin (pb.A r) -> forall k : Nat, (X.obj (L.φ k)).M)
     (U V Ua Va : Fin (pb.A r) -> Set E)
     (rho :
@@ -597,7 +598,7 @@ theorem exists_center_average_identity_convergence_subsequence (hd : InjRadiusDe
   classical
   have htail (gamma : Fin (pb.A r)) : ∀ᶠ k in atTop,
       NormalTransAt (I := I)
-        (NormalCoordMetricBoundInput.subseq (I := I) metricInput L.φ)
+        (NormalCoordMetricBounds.subseq (I := I) metricInput L.φ)
         x y U V Ua Va gamma k := by
     filter_upwards
       [hUmetric gamma, hVmetric gamma, hUametric gamma, hVametric gamma,
@@ -625,7 +626,7 @@ theorem exists_center_average_identity_convergence_subsequence (hd : InjRadiusDe
         right := hkRight }
   obtain ⟨phi, hphi, Jinf, Jbarinf, hspec⟩ :=
     existsTransTail (I := I) (X := X.subseq L.φ)
-      (NormalCoordMetricBoundInput.subseq (I := I) metricInput L.φ)
+      (NormalCoordMetricBounds.subseq (I := I) metricInput L.φ)
       x y U V Ua Va hU hVopen hUa hVa hUanorm hVanorm htail
   refine ⟨phi, hphi, ?_⟩
   exact uniform_center_average_convergence hd P L pb r n rho hrho join

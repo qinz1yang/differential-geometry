@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -146,7 +146,7 @@ theorem normalBump_contMDiff (g : SmoothRiemannianMetric I M) (p : M)
     simpa only [ψ] using normalChartAt_symm_apply (I := I) g p hvtgt
   have hqexp : q = expMap (I := I) g p (show TangentSpace I p from v) :=
     hqv.symm.trans hsymm
-  have hchart := normalChartAt_contMDiffAt_infty (I := I) g p hvnorm
+  have hchart := normal_chart_at_cont_mdiff_at_infty (I := I) g p hvnorm
   rw [← hqexp] at hchart
   exact f.contDiffAt.contMDiffAt.comp q hchart
 
@@ -284,7 +284,7 @@ theorem quadNormal_contMDiff (g : SmoothRiemannianMetric I M) (p : M)
     simpa only [ψ] using normalChartAt_symm_apply (I := I) g p hvtgt
   have hqexp : q = expMap (I := I) g p (show TangentSpace I p from v) :=
     hqv.symm.trans hsymm
-  have hchart := normalChartAt_contMDiffAt_infty (I := I) g p hvnorm
+  have hchart := normal_chart_at_cont_mdiff_at_infty (I := I) g p hvnorm
   rw [← hqexp] at hchart
   have hscalar : ContDiff Real ∞ (fun w : E => f (g.inner p w w)) :=
     f.contDiff.comp ((g.inner p).contDiff.clm_apply contDiff_id)

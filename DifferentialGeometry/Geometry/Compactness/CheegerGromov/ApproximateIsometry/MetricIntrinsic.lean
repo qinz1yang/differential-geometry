@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricLocal
 
 
@@ -520,7 +521,7 @@ private theorem stagePull_coeff
   rw [quarterPull_inner (I := I) Yk ck G z u v]
   rw [hG]
   rw [_root_.DifferentialGeometry.HCGCompactness.pullbackForm_apply]
-  rw [normalCoordMetric_apply (I := I), hbase]
+  rw [normal_coord_metric_apply (I := I), hbase]
   exact congrArg₂
     (fun a b => Yl.metric.inner (F (eK (z : E))) a b) hu.symm hv.symm
 
@@ -1041,7 +1042,7 @@ theorem HasStageJetData.cov_comp_tail
       have hgeomK := hdata.geom_on inp P L r hr U C0 C1 aInf Jinf Jbarinf
         (kn n) alpha
       simpa only [B, Lphi] using
-        (normalCoordMetric_contDiffOn_expBall (I := I)
+        (normal_coord_metric_cont_diff_on_exp_ball (I := I)
           (X.obj (Lphi.φ (kn n)))
           (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))).mono
             (hVU.trans hgeomK.2.1)
@@ -1129,7 +1130,7 @@ theorem HasStageJetData.cov_comp_tail
           exact hquarter'.trans (Metric.ball_subset_ball (by
             nlinarith [expMapC2Radius_pos (I := I) Yl.metric cl]))
         simpa only [B, Yl, cl, Lphi] using
-          (normalCoordMetric_contDiffOn_expBall (I := I) Yl cl).mono hDexp
+          (normal_coord_metric_cont_diff_on_exp_ball (I := I) Yl cl).mono hDexp
       exact ⟨hAcd, hAmap, hBtarget⟩
     obtain ⟨Nsm, hNsm⟩ := eventually_atTop.mp hgood
     have hQsmooth : ∀ n, Nsm ≤ n →
@@ -1440,7 +1441,7 @@ theorem HasStageJetData.fwd_norm_tail
     have hzNorm : ‖z‖ < expMapC2Radius (I := I) Yk.metric ck := by
       simpa only [Metric.mem_ball, dist_zero_right, Yk, ck, Lphi,
         NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
-        NormalChartFamily.radius, legacyChartFamily, legacyBallChart_radius] using
+        NormalChartFamily.radius, c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_radius] using
           hgeomK.2.1 hzU
     refine ⟨?_, ?_⟩
     · exact mem_expMapDiffeo_source_of_norm_lt_radius
@@ -1540,7 +1541,7 @@ theorem HasStageJetData.fwd_norm_tail
       exact Metric.ball_subset_ball (by
         nlinarith [expMapC2Radius_pos (I := I) Yk.metric ck]) hwq
     have hraw :=
-      (normalCoordMetric_contDiffOn_expBall (I := I) Yk ck).mono hVexp
+      (normal_coord_metric_cont_diff_on_exp_ball (I := I) Yk ck).mono hVexp
     with_unfolding_all
       exact hraw
   have hAcd : ContDiffOn Real (∞ : WithTop ℕ∞) A V := by
@@ -1558,7 +1559,7 @@ theorem HasStageJetData.fwd_norm_tail
       (fun w => normalCoordMetric (I := I) Yl cl (A w)) V := by
     have htarget : ContDiffOn Real (∞ : WithTop ℕ∞)
         (normalCoordMetric (I := I) Yl cl) (normalBall (I := I) Yl cl) := by
-      have hraw := normalCoordMetric_contDiffOn_expBall (I := I) Yl cl
+      have hraw := normal_coord_metric_cont_diff_on_exp_ball (I := I) Yl cl
       with_unfolding_all
         exact hraw
     simpa only [Function.comp_def] using htarget.comp hAcd hAmap
@@ -1849,7 +1850,7 @@ theorem HasStageJetData.inv_norm_tail
       (expMapC2Radius (I := I) Yk.metric ck)
     simpa only [Metric.mem_ball, dist_zero_right, Yk, ck, Lphi,
       NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq,
-      NormalChartFamily.radius, legacyChartFamily, legacyBallChart_radius] using
+      NormalChartFamily.radius, c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_radius] using
         hgeomK.2.1 hzU
   let dK := normalExpPD (I := I) Yk ck
   let dL := normalExpPD (I := I) Yl cl
@@ -2097,7 +2098,7 @@ theorem HasStageJetData.inv_norm_tail
       (hgeomL.1 (hVU ⟨A z, hAzV⟩)) v
     simpa only [BL] using hraw
   have hBLcd : ContDiffOn Real (∞ : WithTop ℕ∞) BL V := by
-    have hraw := (normalCoordMetric_contDiffOn_expBall (I := I) Yl cl).mono
+    have hraw := (normal_coord_metric_cont_diff_on_exp_ball (I := I) Yl cl).mono
       (fun w hw => hgeomL.2.1 (hVU ⟨w, hw⟩))
     with_unfolding_all
       exact hraw
@@ -2105,7 +2106,7 @@ theorem HasStageJetData.inv_norm_tail
       (fun w => BK (Grev w)) V := by
     have hsource : ContDiffOn Real (∞ : WithTop ℕ∞) BK
         (normalBall (I := I) Yk ck) := by
-      have hraw := normalCoordMetric_contDiffOn_expBall (I := I) Yk ck
+      have hraw := normal_coord_metric_cont_diff_on_exp_ball (I := I) Yk ck
       with_unfolding_all
         exact hraw
     simpa only [Function.comp_def] using hsource.comp hGrevcd hGrevMap

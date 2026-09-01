@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeightLimit
 
 
@@ -342,7 +344,7 @@ theorem HasAtomWeightLim.binter_of_weight
 
 theorem exists_atom_lim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
@@ -409,7 +411,7 @@ theorem exists_atom_lim
 theorem exists_atom_fin
     {ι : Type uι} (s : Finset ι)
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)

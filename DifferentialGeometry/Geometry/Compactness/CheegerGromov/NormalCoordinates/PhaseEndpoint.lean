@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Exponential.ExpVariationSmooth
 
 
@@ -39,7 +41,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 private theorem exists_smooth_q
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X) {r : Real} (hr : 0 < r) :
+    (h : NormalCoordMetricBounds (I := I) X) {r : Real} (hr : 0 < r) :
     ∃ q : NNReal, 0 < q ∧
       6 * (q : Real) < r ∧
       3 * h.metricC 1 * (2 * (q : Real)) ^ 2 ≤
@@ -127,7 +129,7 @@ theorem normal_enorm
 noncomputable def normalTangent
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z : E × E)
-    (c : NormalChartAt (I := I) Y x := legacyBallChart (I := I) Y x) :
+    (c : NormalChartAt (I := I) Y x := c2RadiusNormalBallChart (I := I) Y x) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -142,7 +144,7 @@ noncomputable def normalTangent
 noncomputable def normalPair
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z : E × E)
-    (c : NormalChartAt (I := I) Y x := legacyBallChart (I := I) Y x) :
+    (c : NormalChartAt (I := I) Y x := c2RadiusNormalBallChart (I := I) Y x) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -160,7 +162,7 @@ def IsNormalDiag
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
     (x : Y.M) (q : NNReal) (δ : Real)
     (e : OpenPartialHomeomorph (E × E) (E × E))
-    (c : NormalChartAt (I := I) Y x := legacyBallChart (I := I) Y x) :
+    (c : NormalChartAt (I := I) Y x := c2RadiusNormalBallChart (I := I) Y x) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -217,7 +219,7 @@ def IsNormalDiag
 def NormalDiagFence
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (q : NNReal) (e : OpenPartialHomeomorph (E × E) (E × E))
-    (c : NormalChartAt (I := I) Y x := legacyBallChart (I := I) Y x) :
+    (c : NormalChartAt (I := I) Y x := c2RadiusNormalBallChart (I := I) Y x) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -268,7 +270,7 @@ theorem normal_launch_mfd
     exact hgammaDeriv.differentiableAt
   have hExpMd : MDifferentiableAt 𝓘(Real, E) I
       (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (Z 0).1 :=
-    (((expMapDiffeo_contMDiffOn_expBall (I := I) Y x) (Z 0).1 hpos).contMDiffAt
+    (((exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) Y x) (Z 0).1 hpos).contMDiffAt
       (Metric.isOpen_ball.mem_nhds hpos)).mdifferentiableAt (by simp)
   have hgammaMfd : mfderiv 𝓘(Real, Real) 𝓘(Real, E) gamma 0 1 = (Z 0).2 := by
     rw [mfderiv_eq_fderiv]
@@ -389,7 +391,7 @@ theorem normal_end_eq_intr
         hmem hgamma hgeo
   have hGammaCont : ContinuousOn Gamma (Icc (-1) 1) := by
     have hExp :=
-      (expMapDiffeo_contMDiffOn_expBall (I := I) Y x).continuousOn
+      (exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) Y x).continuousOn
     apply hExp.comp hZcont.fst
     intro t ht
     have hquarter := hrQuarter (hZmem t ht).1
@@ -478,7 +480,7 @@ theorem normal_end_eq_diag
 
 theorem exists_normal_diag
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real} (hr : 0 < r)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn :
@@ -608,7 +610,7 @@ namespace NormalRadiusProfile
 theorem exists_flow_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -794,7 +796,7 @@ theorem exists_flow_at
 theorem exists_uniform_flow
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -839,7 +841,7 @@ theorem exists_uniform_flow
 theorem exists_uniform_diag
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,

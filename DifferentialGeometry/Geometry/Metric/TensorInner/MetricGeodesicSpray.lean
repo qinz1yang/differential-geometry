@@ -151,7 +151,7 @@ theorem raisedKoszulOp_eq
       ((ContinuousDualEquiv.equiv (E := E)).symm (koszulCov D u v)) = _
   rw [Ring.inverse_unit]
   apply hB.bilin_injective
-  rw [apply_koszulVec]
+  rw [apply_koszul_vec]
   have he := e.apply_symm_apply
     ((ContinuousDualEquiv.equiv (E := E)).symm (koszulCov D u v))
   change (ContinuousDualEquiv.equiv (E := E)).symm

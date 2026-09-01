@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseEndpoint
 
 
@@ -27,7 +28,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 theorem normalDiagAtFull
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real}
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn :
@@ -166,7 +167,7 @@ theorem normalDiagAtFull
 
 theorem normalDiagAt
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real}
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn :

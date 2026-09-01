@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
 
 
 import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
@@ -426,7 +427,7 @@ theorem framedChart_smooth
       expMapC2Radius (I := I) Y.metric x := by
     apply norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) Y.metric x
     simpa only [normalFrame_sqrt] using hv
-  have hchart := normalChartAt_contMDiffAt_infty (I := I) Y.metric x hvRaw
+  have hchart := normal_chart_at_cont_mdiff_at_infty (I := I) Y.metric x hvRaw
   have hframe : ContMDiffAt 𝓘(Real, E) 𝓘(Real, E) ∞
       (fun w : E => (normalFrame (I := I) Y.metric x).symm w)
       (normalChartAt (I := I) Y.metric x

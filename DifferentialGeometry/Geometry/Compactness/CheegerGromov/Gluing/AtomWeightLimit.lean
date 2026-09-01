@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricTransitionLimit
 
 
@@ -668,7 +670,7 @@ private theorem existsAtomWeightCore
 
 theorem exists_smooth_atom_weight_limit_of_inner_cover
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
@@ -750,7 +752,7 @@ theorem exists_smooth_atom_weight_limit_of_inner_cover
 
 theorem exists_smooth_atom_weight_limit
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)

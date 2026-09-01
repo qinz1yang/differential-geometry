@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseFlowRealization
 open DifferentialGeometry.Geometry.Curvature
@@ -29,7 +30,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_normal_biflow
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (h : NormalCoordMetricBoundInput (I := I) X)
+    (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real}
     (hrMetric : Metric.ball (0 : E) r ⊆
       Metric.ball (0 : E) (h.radius k x))

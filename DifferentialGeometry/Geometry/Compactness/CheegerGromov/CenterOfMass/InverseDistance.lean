@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseBranch
 
 import DifferentialGeometry.Geometry.Comparison.CenterOfMass
@@ -48,7 +50,7 @@ theorem normalTan_metric
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  rw [normalCoordMetric_apply]
+  rw [normal_coord_metric_apply]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -177,7 +179,7 @@ theorem tan_mem_of_ctrl
       z.1 = c.restrictBall.symm (c.restrictBall z.1) := hzLeft.symm
       _ = c.restrictBall.symm y := by
         exact congrArg (fun w : Y.M ↦ c.restrictBall.symm w)
-          (by simpa only [c.restrictBall_apply] using hbase)
+          (by simpa only [c.restrict_ball_apply] using hbase)
       _ = c.inv y := rfl
   have hzMetric : z.1 ∈ Metric.ball (0 : E) mb.radius := by
     rw [Metric.mem_ball, dist_zero_right, hz1]
@@ -802,7 +804,7 @@ theorem hess_half_ctrl
 
 theorem tan_mem_of_small
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1007,7 +1009,7 @@ theorem tan_mem_of_small
 
 theorem inv_is_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1015,9 +1017,9 @@ theorem inv_is_min
     {e : OpenPartialHomeomorph (E × E) (E × E)}
     (hq : 0 < q)
     (he : IsNormalDiag (I := I) (X.obj k) hcomplete hconn x q δ e
-      (c := legacyBallChart (I := I) (X.obj k) x))
+      (c := c2RadiusNormalBallChart (I := I) (X.obj k) x))
     (hf : NormalDiagFence (I := I) (X.obj k) x q e
-      (c := legacyBallChart (I := I) (X.obj k) x))
+      (c := c2RadiusNormalBallChart (I := I) (X.obj k) x))
     {y pt : (X.obj k).M} :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -1133,7 +1135,7 @@ theorem inv_is_min
 
 theorem halfSq_eq_inv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1141,9 +1143,9 @@ theorem halfSq_eq_inv
     {e : OpenPartialHomeomorph (E × E) (E × E)}
     (hq : 0 < q)
     (he : IsNormalDiag (I := I) (X.obj k) hcomplete hconn x q δ e
-      (c := legacyBallChart (I := I) (X.obj k) x))
+      (c := c2RadiusNormalBallChart (I := I) (X.obj k) x))
     (hf : NormalDiagFence (I := I) (X.obj k) x q e
-      (c := legacyBallChart (I := I) (X.obj k) x))
+      (c := c2RadiusNormalBallChart (I := I) (X.obj k) x))
     {y pt : (X.obj k).M} :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -1222,7 +1224,7 @@ theorem halfSq_eq_inv
 
 theorem halfSq_inf
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1230,9 +1232,9 @@ theorem halfSq_inf
     {e : OpenPartialHomeomorph (E × E) (E × E)}
     (hq : 0 < q)
     (he : IsNormalDiag (I := I) (X.obj k) hcomplete hconn x q δ e
-      (c := legacyBallChart (I := I) (X.obj k) x))
+      (c := c2RadiusNormalBallChart (I := I) (X.obj k) x))
     (hf : NormalDiagFence (I := I) (X.obj k) x q e
-      (c := legacyBallChart (I := I) (X.obj k) x))
+      (c := c2RadiusNormalBallChart (I := I) (X.obj k) x))
     {pt : (X.obj k).M} :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -1357,7 +1359,7 @@ theorem halfSq_inf
 
 theorem grad_half_inv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1365,9 +1367,9 @@ theorem grad_half_inv
     {e : OpenPartialHomeomorph (E × E) (E × E)}
     (hq : 0 < q)
     (he : IsNormalDiag (I := I) (X.obj k) hcomplete hconn x q δ e
-      (c := legacyBallChart (I := I) (X.obj k) x))
+      (c := c2RadiusNormalBallChart (I := I) (X.obj k) x))
     (hf : NormalDiagFence (I := I) (X.obj k) x q e
-      (c := legacyBallChart (I := I) (X.obj k) x))
+      (c := c2RadiusNormalBallChart (I := I) (X.obj k) x))
     {y pt : (X.obj k).M} :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -1465,7 +1467,7 @@ theorem grad_half_inv
 
 theorem hess_half_inv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
+    (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1473,9 +1475,9 @@ theorem hess_half_inv
     {e : OpenPartialHomeomorph (E × E) (E × E)}
     (hq : 0 < q)
     (he : IsNormalDiag (I := I) (X.obj k) hcomplete hconn x q δ e
-      (c := legacyBallChart (I := I) (X.obj k) x))
+      (c := c2RadiusNormalBallChart (I := I) (X.obj k) x))
     (hf : NormalDiagFence (I := I) (X.obj k) x q e
-      (c := legacyBallChart (I := I) (X.obj k) x))
+      (c := c2RadiusNormalBallChart (I := I) (X.obj k) x))
     {y pt : (X.obj k).M} :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted

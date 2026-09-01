@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
 import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
 
@@ -128,12 +129,12 @@ theorem HasStageJetDataOn.hloc_tail
     rfl
   have hxc : x ∈ c.source := by
     have hout := chiK.restrictBall.map_source hzSource
-    rw [NormalCoordinates.NormalBallChart.restrictBall_apply, hxEq] at hout
+    rw [NormalCoordinates.NormalBallChart.restrict_ball_apply, hxEq] at hout
     with_unfolding_all
       exact hout
   have hcx : c x = z := by
     have hout := chiK.restrictBall.left_inv hzSource
-    rw [NormalCoordinates.NormalBallChart.restrictBall_apply, hxEq] at hout
+    rw [NormalCoordinates.NormalBallChart.restrict_ball_apply, hxEq] at hout
     with_unfolding_all
       exact hout
   let Bmid : Set Yk.M :=
@@ -164,7 +165,7 @@ theorem HasStageJetDataOn.hloc_tail
     rw [hcx]
     refine ⟨hzInt, hzSource, ?_⟩
     change chiK.restrictBall z ∈ Bmid
-    simpa only [NormalCoordinates.NormalBallChart.restrictBall_apply, hxEq]
+    simpa only [NormalCoordinates.NormalBallChart.restrict_ball_apply, hxEq]
       using hxBmid
   have hjetAt (w : E) (hw : w ∈ Vloc) :
       stageComparisonMap inp P Lphi r hr k l
@@ -185,7 +186,7 @@ theorem HasStageJetDataOn.hloc_tail
       have hwBmid : chiK.hom w ∈ Bmid := by
         have hwRestr : chiK.restrictBall w ∈ Bmid := by
           exact hw.2.2
-        simpa only [NormalCoordinates.NormalBallChart.restrictBall_apply]
+        simpa only [NormalCoordinates.NormalBallChart.restrict_ball_apply]
           using hwRestr
       exact Metric.ball_subset_closedBall
         (by simpa only [Bmid, NetLimitData.hatSourceBall, Yk] using hwBmid)

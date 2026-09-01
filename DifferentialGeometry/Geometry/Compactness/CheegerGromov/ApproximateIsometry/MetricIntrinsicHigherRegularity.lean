@@ -322,7 +322,7 @@ theorem BoundedGeometryNormalData.cov_comp_tail
       obtain ⟨hRad, _hmap⟩ :=
         hdata.geom_on inp P L r hr d.chart U C0 C1 aInf Jinf Jbarinf
           (kn n) alpha
-      have hsmooth := chiK.metric_contDiffOn Yk.metric hVopen
+      have hsmooth := chiK.metric_cont_diff_on Yk.metric hVopen
         (chiK.smooth_to.mono (hVU.trans hRad))
       simpa only [B, BoundedGeometryNormalData.chartMetric, Yk, ck, chiK, Lphi] using hsmooth
     have hBco : ∀ n z, z ∈ V → IsCoercive (B alpha (kn n) z) := by
@@ -404,7 +404,7 @@ theorem BoundedGeometryNormalData.cov_comp_tail
         obtain ⟨hRad, _hmap⟩ :=
           hdata.geom_on inp P L r hr d.chart U C0 C1 aInf Jinf Jbarinf
             (ln n) alpha
-        have hsmooth := chiL.metric_contDiffOn Yl.metric hDopen
+        have hsmooth := chiL.metric_cont_diff_on Yl.metric hDopen
           (chiL.smooth_to.mono (hIntU.trans hRad))
         simpa only [B, BoundedGeometryNormalData.chartMetric, Yl, cl, chiL, Lphi] using hsmooth
       exact ⟨hAcd, hAmap, hBtarget⟩
@@ -656,10 +656,10 @@ private theorem chart_pull_coeff
   have hL : MDifferentiableAt 𝓘(Real, E) I cl.hom (A z) :=
     ((cl.hom.contMDiffOn_toFun.mdifferentiableOn one_ne_zero
       (A z) (cl.ball_subset (by
-        simpa only [NormalBallChart.restrictBall_source] using hzL))).mdifferentiableAt
+        simpa only [NormalBallChart.restrict_ball_source] using hzL))).mdifferentiableAt
         (cl.hom.open_source.mem_nhds
           (cl.ball_subset (by
-            simpa only [NormalBallChart.restrictBall_source] using hzL))))
+            simpa only [NormalBallChart.restrict_ball_source] using hzL))))
   have hnear : ∀ᶠ q in nhds z, F (ck.hom q) ∈ cl.restrictBall.target :=
     hFK.continuousAt.eventually (cl.restrictBall.open_target.mem_nhds htarget)
   have heq : cl.hom ∘ A =ᶠ[nhds z] F ∘ ck.hom := by
@@ -1062,9 +1062,9 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
   have hzV : z ∈ V := by
     refine ⟨Metric.mem_ball_self (by linarith [heta alpha]), ?_⟩
     refine ⟨?_, ?_⟩
-    · simpa only [NormalBallChart.restrictBall_source] using hzBall
+    · simpa only [NormalBallChart.restrict_ball_source] using hzBall
     · change chiK.restrictBall z ∈ Bmid
-      rw [NormalBallChart.restrictBall_apply, hzy]
+      rw [NormalBallChart.restrict_ball_apply, hzy]
       exact hyBmid
   have hVclosed : ∀ w : V, (w : E) ∈ Metric.closedBall z (eta alpha) := by
     intro w
@@ -1083,7 +1083,7 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
   have hsourceS (w : V) :
       chiK.hom (w : E) ∈ Lphi.hatSourceBall inp.decay P S k := by
     have hwBmid : chiK.restrictBall (w : E) ∈ Bmid := w.2.2.2
-    rw [NormalBallChart.restrictBall_apply] at hwBmid
+    rw [NormalBallChart.restrict_ball_apply] at hwBmid
     exact Metric.ball_subset_closedBall
       (by simpa only [Bmid] using hwBmid)
   have hjetAt (w : V) :
@@ -1135,7 +1135,7 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
     simpa only [B, BoundedGeometryNormalData.chartMetric, chiK, ck, Yk, Lphi] using
       d.metric_equiv (Lphi.φ k) ck z hzBall v
   have hBcd : ContDiffOn Real (∞ : WithTop ℕ∞) B V := by
-    have hsmooth := chiK.metric_contDiffOn Yk.metric hVopen
+    have hsmooth := chiK.metric_cont_diff_on Yk.metric hVopen
       (chiK.smooth_to.mono hVc)
     with_unfolding_all
       exact hsmooth
@@ -1148,7 +1148,7 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
     with_unfolding_all
       exact hout
   have hBLcd : ContDiffOn Real (∞ : WithTop ℕ∞) BL chiL.ball := by
-    have hsmooth := chiL.metric_contDiffOn Yl.metric Metric.isOpen_ball
+    have hsmooth := chiL.metric_cont_diff_on Yl.metric Metric.isOpen_ball
       chiL.smooth_to
     with_unfolding_all
       exact hsmooth
@@ -1524,14 +1524,14 @@ theorem BoundedGeometryNormalData.inv_norm_tail
     refine ⟨z, ?_, ?_⟩
     · with_unfolding_all
         exact hzBall
-    · simpa only [NormalBallChart.restrictBall_apply] using hzy
+    · simpa only [NormalBallChart.restrict_ball_apply] using hzy
   have hAzV : A z ∈ V := by
     refine ⟨Metric.mem_ball_self (by linarith [heta alpha]), hAzInt, ?_⟩
     have hAzSource : A z ∈ chiL.restrictBall.source :=
       chiL.restrictBall.map_target hjetZ.1
     refine ⟨hAzSource, ?_⟩
     change chiL.restrictBall (A z) ∈ Wphi
-    rw [NormalBallChart.restrictBall_apply, hdecode]
+    rw [NormalBallChart.restrict_ball_apply, hdecode]
     refine ⟨⟨y, hySopen, hPhiY⟩, ?_, ?_⟩
     · rw [hPhiTgt]
       exact ⟨y, Metric.ball_subset_ball hST.le hySopen, rfl⟩
@@ -1580,12 +1580,12 @@ theorem BoundedGeometryNormalData.inv_norm_tail
         Q (w : E) u v := by
     intro w u v
     have hPhiTarget : chiL.hom (w : E) ∈ Phi.target := by
-      simpa only [NormalBallChart.restrictBall_apply] using
+      simpa only [NormalBallChart.restrict_ball_apply] using
         w.2.2.2.2.2.1
     have hInvTarget :
         Hinv (chiL.hom (w : E)) ∈ chiK.restrictBall.target := by
       have hmem := w.2.2.2.2.2.2
-      rw [NormalBallChart.restrictBall_apply] at hmem
+      rw [NormalBallChart.restrict_ball_apply] at hmem
       change Phi.symm (chiL.hom (w : E)) ∈
         chiK.restrictBall.target at hmem
       rw [hsymmEq hPhiTarget] at hmem
@@ -1598,7 +1598,7 @@ theorem BoundedGeometryNormalData.inv_norm_tail
         F '' Metric.ball Yk.basepoint S := by
       have hraw := w.2.2.2.2.1
       rw [hImageEq] at hraw
-      simpa only [NormalBallChart.restrictBall_apply] using hraw
+      simpa only [NormalBallChart.restrict_ball_apply] using hraw
     have hstageClosed : chiL.hom (w : E) ∈
         F '' Lphi.hatSourceBall inp.decay P S k := by
       apply Set.image_mono _ hstageBall
@@ -1645,14 +1645,14 @@ theorem BoundedGeometryNormalData.inv_norm_tail
     simpa only [BL, BoundedGeometryNormalData.chartMetric, chiL, cl, Yl, Lphi] using
       d.metric_equiv (Lphi.φ l) cl (A z) (hRadL (hVU ⟨A z, hAzV⟩)) v
   have hBLcd : ContDiffOn Real (∞ : WithTop ℕ∞) BL V := by
-    have hsmooth := chiL.metric_contDiffOn Yl.metric hVopen
+    have hsmooth := chiL.metric_cont_diff_on Yl.metric hVopen
       (chiL.smooth_to.mono hVc)
     with_unfolding_all
       exact hsmooth
   have hBKcd : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun w => BK (Grev w)) V := by
     have hsource : ContDiffOn Real (∞ : WithTop ℕ∞) BK chiK.ball := by
-      have hsmooth := chiK.metric_contDiffOn Yk.metric Metric.isOpen_ball
+      have hsmooth := chiK.metric_cont_diff_on Yk.metric Metric.isOpen_ball
         chiK.smooth_to
       with_unfolding_all
         exact hsmooth

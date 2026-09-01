@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Transition
@@ -27,7 +28,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 theorem exists_joint_normal_metric_transition_limit
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (metricInput : NormalCoordMetricBoundInput (I := I) X)
+    (metricInput : NormalCoordMetricBounds (I := I) X)
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r rho : Real)
@@ -202,16 +203,16 @@ theorem exists_joint_normal_metric_transition_limit
         (seqCenterD hd P L (psi1 (tau k)) (gamma.1 : Nat)) z) := by
     let f : Nat → Nat := fun k => L.φ (psi1 (tau k))
     have hbound := MetricIsometry.normal_bounds_on (I := I)
-      (X.subseq f) (NormalCoordMetricBoundInput.subseq (I := I) metricInput f)
+      (X.subseq f) (NormalCoordMetricBounds.subseq (I := I) metricInput f)
       (fun k => beta (psi1 (tau k)))
       (fun k => seqCenterD hd P L (psi1 (tau k)) (gamma.1 : Nat))
       U (Metric.ball (0 : E) rho) hU Metric.isOpen_ball
       ⟨max rho 0, fun z hz =>
         (le_of_lt (mem_ball_zero_iff.mp hz)).trans (le_max_left _ _)⟩
       (fun k => by
-        simpa only [NormalCoordMetricBoundInput.subseq, f] using hUMetric k gamma)
+        simpa only [NormalCoordMetricBounds.subseq, f] using hUMetric k gamma)
       (fun k => by
-        simpa only [NormalCoordMetricBoundInput.subseq, f] using hVMetric k gamma)
+        simpa only [NormalCoordMetricBounds.subseq, f] using hVMetric k gamma)
       (fun k => by
         simpa only [PointedRiemannianSeq.subseq, f] using hUExp k gamma)
       (fun k => by

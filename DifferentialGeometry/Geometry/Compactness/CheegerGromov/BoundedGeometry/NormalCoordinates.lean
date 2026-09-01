@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Exponential.IntrinsicBallChart
 import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicGronwall
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -1297,7 +1297,7 @@ theorem framedMetric_eq_pullback_normalCoordMetric
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).toContinuousLinearMap.comp
       (normalFrame (I := I) Y.metric x).toContinuousLinearMap
   ext v w
-  rw [pullbackForm_apply, framedMetric_apply, normalCoordMetric_apply,
+  rw [pullbackForm_apply, framedMetric_apply, normal_coord_metric_apply,
     framedExp_apply, mfderiv_framedExp (I := I) Y.metric x hz]
   rfl
 
@@ -1324,7 +1324,7 @@ theorem framedMetric_continuousAt_zero
     simpa only [Metric.mem_ball, dist_self] using
       expMapC2Radius_pos (I := I) Y.metric x
   have hraw : ContinuousAt raw 0 :=
-    ((normalCoordMetric_contDiffOn_expBall (I := I) Y x).contDiffAt
+    ((normal_coord_metric_cont_diff_on_exp_ball (I := I) Y x).contDiffAt
       (Metric.isOpen_ball.mem_nhds hzeroRaw)).continuousAt
   have hrawL : ContinuousAt (fun z => raw (L z)) 0 := by
     change ContinuousAt (raw ∘ L) 0

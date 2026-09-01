@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Analysis.Calculus.BumpClamp
 
 
@@ -391,7 +392,7 @@ noncomputable def pairStageFillSub
     (alpha : LiveSlot L inp.pack r)
     (target : InterSlot L inp.pack r alpha) (k l : Nat)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : E → E := by
+      c2RadiusNormalChartFamily (I := I) X) : E → E := by
   let _ := hphi
   let Yk := X.obj (L.φ (phi k))
   let Yl := X.obj (L.φ (phi l))
@@ -422,7 +423,7 @@ noncomputable def stagePtsSub
     (alpha : LiveSlot L inp.pack r) (k l : Nat)
     (z : E) (gamma : Fin (inp.pack.A r))
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : E :=
+      c2RadiusNormalChartFamily (I := I) X) : E :=
   stageTotal alpha
     (pairStageFillSub inp P L phi hphi alpha (chart := chart)) k l z gamma
 
@@ -434,7 +435,7 @@ noncomputable def stageWeightSub
     (alpha : LiveSlot L inp.pack r) (k : Nat)
     (z : E) (gamma : Fin (inp.pack.A r))
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) : Real := by
+      c2RadiusNormalChartFamily (I := I) X) : Real := by
   let _ := hphi
   let beta := fun j => seqCenterD inp.decay P L j (alpha.1 : Nat)
   let i0 := baseIndex inp.decay inp.realizes inp.pack hr
@@ -454,7 +455,7 @@ theorem stageWeightSub_eq
     (alpha : LiveSlot L inp.pack r) (k : Nat)
     (z : E) (gamma : Fin (inp.pack.A r))
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) :
+      c2RadiusNormalChartFamily (I := I) X) :
     stageWeightSub inp P L hr phi hphi alpha k z gamma (chart := chart) =
       let Y := X.obj (L.φ (phi k))
       letI : TopologicalSpace Y.M := Y.topology
@@ -481,7 +482,7 @@ noncomputable def stageCfgSub
     (phi : Nat → Nat) (hphi : StrictMono phi)
     (alpha : LiveSlot L inp.pack r) (k l : Nat) (z : E)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X) :
+      c2RadiusNormalChartFamily (I := I) X) :
     (Fin (inp.pack.A r) → Real) × (Fin (inp.pack.A r) → E) :=
   (stageWeightSub inp P L hr phi hphi alpha k z (chart := chart),
     stagePtsSub inp P L phi hphi alpha k l z (chart := chart))
@@ -585,7 +586,7 @@ theorem HasSuppConvData.weightSub_ev
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   let : MetricSpace Y.M := (P (L.φ (phi k))).ms
   let f : E → Y.M :=
-    (legacyChartFamily (I := I) X).hom (L.φ (phi k))
+    (c2RadiusNormalChartFamily (I := I) X).hom (L.φ (phi k))
       (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
   let i0 := baseIndex inp.decay inp.realizes inp.pack hr
   let s : Set Y.M := ⋃ gamma : Fin (inp.pack.A r),
@@ -772,7 +773,7 @@ theorem HasAtomWeightLim.stageWeightSub_data
           inp.pack r
           (fun j => seqCenterD inp.decay P L (phi j) (alpha.1 : Nat))
           gamma k =
-        seqAtomOn (I := I) (legacyChartFamily (I := I) X)
+        seqAtomOn (I := I) (c2RadiusNormalChartFamily (I := I) X)
           inp.decay inp.hD P L inp.pack r
           (fun j => seqCenterD inp.decay P L j (alpha.1 : Nat))
           gamma (phi k) := by
@@ -786,7 +787,7 @@ theorem HasAtomWeightLim.stageWeightSub_data
             gamma hphi k)
       _ = _ := by
         funext z
-        simp only [seqAtomChart, seqAtomOn,           legacyChartFamily, legacyChart_apply]
+        simp only [seqAtomChart, seqAtomOn,           c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_apply]
   simp only [hatom] at hlim
   simpa only [stageWeightSub, MetricCompactnessInputs.toCore] using
     ⟨hlim.2.2.2.2.1, hlim.2.2.2.2.2.1, hlim.2.2.2.2.2.2⟩
@@ -960,7 +961,7 @@ theorem stagePtsSub_eq_raw
     (target : InterSlot L inp.pack r alpha) (k l : Nat)
     (z : E)
     (chart : NormalChartFamily (I := I) X :=
-      legacyChartFamily (I := I) X)
+      c2RadiusNormalChartFamily (I := I) X)
     (hsmall : chart.transition (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
         (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)) z ∈
@@ -986,7 +987,7 @@ theorem stagePtsSub_eq_raw
       exact (h ⟨target, rfl⟩).elim
   simp only [stagePtsSub, stageTotal, hlookup]
   simpa only [pairStageFillSub, NormalChartFamily.transition,
-    legacyChartFamily, legacyTransition_eq] using
+    c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_transition] using
     (stageFill_eq_raw (E := E) (L.lamInf (target.1.1 : Nat))
       (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))
       (chart.transition (L.φ (phi k))
@@ -1034,19 +1035,19 @@ theorem stagePtsSub_eq_ne
   have hweight' : stageWeight inp P L hr alpha (phi k) z target.1.1 ≠ 0 := by
     simpa only [stageWeight, stageWeightSub_eq, rawWeights, cutRaw,
       seqAtomChart,
-      NormalChartFamily.hom, legacyChartFamily, legacyChart_apply,
+      NormalChartFamily.hom, c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_apply,
       MetricCompactnessInputs.toCore] using hweight
   have hsmall : normalTransition (I := I) (X.obj (L.φ (phi k)))
       (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
       (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)) z ∈
         Metric.closedBall 0 (6 * L.lamInf (target.1.1 : Nat)) := by
     exact stageWeight_small inp P L hr alpha (phi k) hgp target.1.1 hC2 z hweight'
-  simpa only [NormalChartFamily.transition, legacyChartFamily,
-    legacyTransition_eq, MetricCompactnessInputs.toCore] using
+  simpa only [NormalChartFamily.transition, c2RadiusNormalChartFamily,
+    c2_radius_normal_ball_chart_transition, MetricCompactnessInputs.toCore] using
       (stagePtsSub_eq_raw inp.toCore P L phi hphi alpha target k l z
-        (chart := legacyChartFamily (I := I) X) (hsmall := by
-          simpa only [NormalChartFamily.transition, legacyChartFamily,
-            legacyTransition_eq, MetricCompactnessInputs.toCore] using hsmall))
+        (chart := c2RadiusNormalChartFamily (I := I) X) (hsmall := by
+          simpa only [NormalChartFamily.transition, c2RadiusNormalChartFamily,
+            c2_radius_normal_ball_chart_transition, MetricCompactnessInputs.toCore] using hsmall))
 
 theorem pairStageFill_conv
     (inp : MetricCompactnessInputs (I := I) X)
@@ -1145,7 +1146,7 @@ theorem pairStageSub_conv
       (fun m => pairStageFillSub inp P L phi hphi alpha target
         (kn m) (ln m)) id := by
   simpa only [pairStageFillSub, NormalChartFamily.transition,
-    legacyChartFamily, legacyTransition_eq] using
+    c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_transition] using
     (stageFill_conv (E := E) (L.lamInf (target.1.1 : Nat))
       (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))
       Metric.isOpen_ball hJ hJbar hstage hJc hstageBar hJbarc hinv
@@ -1250,7 +1251,7 @@ theorem pairStageSub_smooth
       (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))
       (Set.mem_univ _)
   simpa only [pairStageFillSub, NormalChartFamily.transition,
-    legacyChartFamily, legacyTransition_eq, stageFill, stageClamp] using
+    c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_transition, stageFill, stageClamp] using
     (safeFill_smooth
       (activityBump (E := E) (L.lamInf (target.1.1 : Nat))
         (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))).contDiff
@@ -1900,11 +1901,11 @@ theorem HasSuppConvData.pts_eq_ne
       L.hatBall inp.decay inp.D P inp.pack r (phi k) alpha.1 := by
     have hmem := ((hgeom k).1 alpha).2.2 hz
     simpa only [q, MetricCompactnessInputs.toCore,
-      NormalChartFamily.hom, legacyChartFamily, legacyChart_apply] using hmem.1
+      NormalChartFamily.hom, c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_apply] using hmem.1
   have hnum : seqAtom inp.decay inp.hD P L inp.pack r (phi k) gamma q ≠ 0 := by
     simpa only [stageWeightSub_eq, seqAtomOn, q, Y,
       MetricCompactnessInputs.toCore, NormalChartFamily.hom,
-      legacyChartFamily, legacyChart_apply] using
+      c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_apply] using
       (num_ne_of_cut_ne (num_ne_of_raw_ne hweight))
   have hhatGamma : q ∈
       L.hatBall inp.decay inp.D P inp.pack r (phi k) gamma :=

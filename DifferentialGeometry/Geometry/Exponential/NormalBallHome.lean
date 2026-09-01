@@ -46,11 +46,11 @@ theorem tangentHome_apply {p : M}
   have huniq : UniqueMDiffWithinAt 𝓘(Real, E)
       c.restrictBall.source z.1 :=
     c.restrictBall.open_source.uniqueMDiffOn z.1 (by
-      simpa only [restrictBall_source] using hz)
+      simpa only [restrict_ball_source] using hz)
   have hdiff : MDifferentiableAt 𝓘(Real, E) I
       (c.restrictBall : E → M) z.1 :=
     c.restrictBall.mdifferentiableAt (by simp) (by
-      simpa only [restrictBall_source] using hz)
+      simpa only [restrict_ball_source] using hz)
   rw [tangentMapWithin_eq_tangentMap huniq hdiff]
   rfl
 

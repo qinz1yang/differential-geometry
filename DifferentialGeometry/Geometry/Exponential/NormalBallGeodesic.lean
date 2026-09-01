@@ -73,7 +73,7 @@ private theorem innerDiffeo_apply {p : M}
     (c : NormalBallChart (I := I) p) (z : c.inner) :
     ((c.innerDiffeo z : c.innerImage) : M) = c.hom (z : E) := by
   change c.restrictBall (z : E) = c.hom (z : E)
-  exact c.restrictBall_apply (z : E)
+  exact c.restrict_ball_apply (z : E)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 private theorem innerDiffeo_mfd {p : M}

@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationConstruction
 import DifferentialGeometry.Analysis.Calculus.QuadraticEvaluationConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.WeightConvergence
@@ -56,7 +58,7 @@ theorem quadNormal_readout
   let : T2Space Y.M := Y.t2
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   rw [quadNormal_of_mem Y.metric gamma f hsrc,
-    normalMetric_zero (I := I) Y gamma]
+    normal_coord_metric_zero (I := I) Y gamma]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -98,7 +100,7 @@ noncomputable def gluingAtomChart
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (beta gamma : Y.M)
     (lam : Real) (hlam : 0 < lam) (z : E) : Real :=
   gluingAtomOn (I := I) Y beta gamma lam hlam
-    (legacyBallChart (I := I) Y beta) z
+    (c2RadiusNormalBallChart (I := I) Y beta) z
 
 noncomputable def seqAtomOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -159,7 +161,7 @@ omit [CompleteSpace E] in
     seqAtomChart (I := I) hd hD P (L.subseq hψ) pb r
         (fun j => beta (ψ j)) gamma k =
       seqAtomChart (I := I) hd hD P L pb r beta gamma (ψ k) := by
-  exact seqAtomOn_subseq (I := I) (legacyChartFamily (I := I) X)
+  exact seqAtomOn_subseq (I := I) (c2RadiusNormalChartFamily (I := I) X)
     hd hD P L pb r beta gamma hψ k
 
 theorem seqAtomOn_smooth
@@ -222,7 +224,7 @@ theorem seqAtomChart_smooth
       (seqAtom hd hD P L pb r k gamma ∘
         fun z => expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z) U
   exact (seqAtom_contMDiff (I := I) hd hD P L pb r k hgp gamma).comp_contMDiffOn
-    ((expMapDiffeo_contMDiffOn_expBall (I := I) (X.obj (L.φ k)) (beta k)).mono hUx)
+    ((exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) (X.obj (L.φ k)) (beta k)).mono hUx)
 
 theorem seqAtom_live_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -384,14 +386,14 @@ theorem gluing_atom_converges {ι : Type*} [Fintype ι]
     (fun _ => contDiffOn_const) hginf (hJc i) (hJinfc i)
     i (gluingBump (lam i) (hlam i)) (gluingBump (lam i) (hlam i)).contDiff
   refine hraw.congr hU (fun k z hz => ?_) (fun _ _ => rfl)
-  simpa only [gluingAtomChart, gluingAtomOn, legacyChart_apply] using
+  simpa only [gluingAtomChart, gluingAtomOn, c2_radius_normal_ball_chart_apply] using
     (gluing_atom_readout (I := I) (X.obj k) (beta k) (center i k)
       (lam i) (hlam i) (hsrc i k z hz))
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem existsOriginMetric
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (input : NormalCoordMetricBoundInput (I := I) X)
+    (input : NormalCoordMetricBounds (I := I) X)
     (c : forall k : Nat, (X.obj k).M) :
     exists (phi : Nat -> Nat)
         (gInf : E -> (E →L[Real] E →L[Real] Real)),
@@ -432,7 +434,7 @@ theorem existsOriginMetric
 omit [NeZero (Module.finrank ℝ E)] in
 theorem existsMetric0Univ {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (input : NormalCoordMetricBoundInput (I := I) X)
+    (input : NormalCoordMetricBounds (I := I) X)
     (c : ι -> forall k : Nat, (X.obj k).M) :
     exists (phi : Nat -> Nat)
         (gInf : E -> (ι -> (E →L[Real] E →L[Real] Real))),
@@ -469,7 +471,7 @@ theorem existsMetric0Univ {ι : Type*} [Fintype ι]
 
 theorem existsLiveMetric0
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (input : NormalCoordMetricBoundInput (I := I) X)
+    (input : NormalCoordMetricBounds (I := I) X)
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) :
@@ -482,7 +484,7 @@ theorem existsLiveMetric0
           gInf := by
   classical
   let X' := X.subseq L.φ
-  let input' : NormalCoordMetricBoundInput (I := I) X' := input.subseq L.φ
+  let input' : NormalCoordMetricBounds (I := I) X' := input.subseq L.φ
   let c : LiveSlot L pb r -> forall k : Nat, (X'.obj k).M :=
     fun gamma k => seqCenterD hd P L k (gamma.1 : Nat)
   obtain ⟨psi, gInf, hpsi, hginf, hconv⟩ :=
@@ -492,7 +494,7 @@ theorem existsLiveMetric0
 
 theorem liveMetric0_equiv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (input : NormalCoordMetricBoundInput (I := I) X)
+    (input : NormalCoordMetricBounds (I := I) X)
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)

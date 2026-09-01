@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BranchConstruction
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateStrictConvexity
@@ -298,7 +299,7 @@ def HasHatCmStrict
 theorem exists_hat_cm_tail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (hprof : NormalRadiusProfile hd hb)
     (hre : hd.RealizesEdist)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -572,7 +573,7 @@ theorem exists_hat_cm_tail
 theorem exists_hat_cm_tail_support
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (hprof : NormalRadiusProfile hd hb)
     (hre : hd.RealizesEdist)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -754,7 +755,7 @@ theorem exists_hat_cm_tail_support
 theorem exists_hat_cm_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    {hb : NormalCoordMetricBoundInput (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
     (hprof : NormalRadiusProfile hd hb)
     (hre : hd.RealizesEdist)
     (hcomplete : SeqMetricComplete (I := I) X)
