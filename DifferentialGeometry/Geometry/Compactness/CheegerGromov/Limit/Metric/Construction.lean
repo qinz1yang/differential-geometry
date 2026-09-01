@@ -470,7 +470,7 @@ theorem chainPullback_bdd
   · refine ⟨1 / 2, by norm_num, fun k x v => ?_⟩
     have hUK : (U : Set (M j)) ⊆ Metric.closedBall (b j) ((2 : ℝ) ^ j) :=
       fun y hy => Metric.mem_closedBall.mpr (Metric.mem_ball.mp hy).le
-    have hb := ballPullback_lower (I := I)
+    have hb := pullback_metric_inner_lower (I := I)
       (chainComp (I := I) (Mf := M) Ψ j k) U (hU k) hUK
       (g j) (g (j + k)) (D0 k).forward x v
     norm_num at hb
@@ -778,7 +778,7 @@ theorem exists_limits_close
           ((g (j₀ + n)).restrictOpen (I := I) (U n))
           ((g (j₀ + n)).restrictOpen (I := I) (U n)) y ≤ δ := by
       simpa only [chainPullbackSeq] using
-        pullbackDiff_le (I := I)
+        pullback_metric_deriv_norm_le (I := I)
           (chainComp (I := I) (Mf := M) Ψ (j₀ + n) m) (U n) (hU n m) hUK
           (g (j₀ + n)) (g ((j₀ + n) + m)) (D m).forward hap y
     have hInfBase : ∀ y ∈ (Set.univ : Set (U n)), ∀ a, a ≤ p →

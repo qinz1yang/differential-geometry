@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DistanceControl
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricBallImage
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationMonotonicity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationPullback
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Defs
 import DifferentialGeometry.Geometry.Metric.Convergence.ComponentSubsequence
@@ -469,130 +469,6 @@ theorem tailBall_preconn (b : ∀ j, M j) (j₀ n : ℕ) :
     exact hpath
   infer_instance
 
-omit [I.Boundaryless] [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
-  [∀ j, IsRiemannianManifold I (M j)]
-  [NeZero (Module.finrank ℝ E)] in
-omit [CompleteSpace E] [∀ (j : ℕ), SigmaCompactSpace (M j)] [∀ (j : ℕ), T2Space (M j)] in
-theorem speed_ge_of_c0 {j : ℕ}
-    (P : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
-      (I := I) (M := M j) (n := (∞ : WithTop ℕ∞)) 2)
-    (g : SmoothRiemannianMetric I (M j)) {ε : ℝ} {x : M j}
-    (hc0 : metricTensorErrorNorm (I := I) P g x ≤ ε)
-    (v : TangentSpace I x) :
-    (1 - ε) * g.inner x v v ≤ P x (fun _ => v) := by
-  classical
-  obtain ⟨basis, hON⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
-  have hCS := Tensor0SBundle.abs_apply_le_sqrt_normSq0S (I := I)
-    g x 2 basis (fun i k => hON i k)
-    (P x - Tensor0SBundle.metricTensorField (I := I) g x)
-    (fun _ => v)
-  have hval : (P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v) =
-      P x (fun _ => v) - g.inner x v v := by
-    simp [Tensor0SBundle.metricTensorField_apply]
-  have hnn : 0 ≤ g.inner x v v := metric_inner_self_nonneg (I := I) g x v
-  have hprod : (∏ _a : Fin 2, Real.sqrt (g.inner x v v)) = g.inner x v v := by
-    rw [Fin.prod_univ_two, Real.mul_self_sqrt hnn]
-  have habs : |P x (fun _ => v) - g.inner x v v| ≤ ε * g.inner x v v := by
-    unfold metricTensorErrorNorm at hc0
-    calc
-      |P x (fun _ => v) - g.inner x v v| =
-          |(P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v)| := by
-            rw [hval]
-      _ ≤ Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2
-            (P x - Tensor0SBundle.metricTensorField (I := I) g x)) *
-          ∏ _a : Fin 2, Real.sqrt (g.inner x v v) := hCS
-      _ ≤ ε * g.inner x v v := by
-        rw [hprod]
-        exact mul_le_mul_of_nonneg_right hc0 hnn
-  nlinarith [abs_le.mp habs]
-
-omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
-  [∀ j, IsRiemannianManifold I (M j)] in
-omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
-omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem ballPullback_covNorm {j l : ℕ}
-    (Φ : PartialDiffeomorph I I (M j) (M l) (∞ : WithTop ℕ∞))
-    {K : Set (M j)} (U : Opens (M j)) (hU : (U : Set (M j)) ⊆ Φ.source)
-    (hUK : (U : Set (M j)) ⊆ K)
-    (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
-    {ε : ℝ} {p : ℕ}
-    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
-    (q : ℕ) (x : U) :
-    metricCovDerivNorm (I := I) q (PartialDiffeomorph.pullbackMetricOn Φ U hU g)
-        (gRef.restrictOpen (I := I) U) x =
-      tensor02CovDerivNormWith (I := I) q D.pullback gRef gRef (x : M j) := by
-  let hB := PartialDiffeomorph.pullbackMetricOn Φ U hU g
-  have hbase : ∀ (y : U) (slots : Fin 2 → TangentSpace I y),
-      Tensor0SBundle.metricTensorField (I := I) hB y slots =
-        D.pullback (y : M j) slots := by
-    intro y slots
-    rw [Tensor0SBundle.metricTensorField_apply, PartialDiffeomorph.pullbackMetricOn_inner]
-    exact (D.pullback_apply (y : M j) (hUK y.2) slots).symm
-  have htower := covDerivOfField_restrictOpen (I := I) gRef U
-    (Tensor0SBundle.metricTensorField (I := I) hB) D.pullback hbase q x
-  have hT : metricCovDeriv (I := I) hB (gRef.restrictOpen (I := I) U) q x =
-      covDerivOfField (I := I) gRef D.pullback q (x : M j) := by
-    rw [metricCovDeriv_eq_covDerivOfField]
-    exact ContinuousMultilinearMap.ext htower
-  unfold metricCovDerivNorm tensor02CovDerivNormWith
-  rw [tensor02_eq_covDOF, hT]
-  congr 1
-  exact normSq0S_restrictOpen_apply (I := I) gRef U (q + 2) x _
-
-omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
-  [∀ j, IsRiemannianManifold I (M j)] in
-omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
-omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem ballPullback_cov_le {j l : ℕ}
-    (Φ : PartialDiffeomorph I I (M j) (M l) (∞ : WithTop ℕ∞))
-    {K : Set (M j)} (U : Opens (M j)) (hU : (U : Set (M j)) ⊆ Φ.source)
-    (hUK : (U : Set (M j)) ⊆ K)
-    (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
-    {ε : ℝ} {p q : ℕ}
-    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
-    (hq1 : 1 ≤ q) (hqp : q ≤ p) (x : U) :
-    metricCovDerivNorm (I := I) q (PartialDiffeomorph.pullbackMetricOn Φ U hU g)
-      (gRef.restrictOpen (I := I) U) x ≤ ε := by
-  rw [ballPullback_covNorm Φ U hU hUK gRef g D q x]
-  exact D.cov_deriv_small q hq1 hqp (x : M j) (hUK x.2)
-
-omit [NeZero (Module.finrank ℝ E)] in
-omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
-  [∀ j, IsRiemannianManifold I (M j)] [I.Boundaryless] in
-theorem prefixTail_cov_le {j l m : ℕ}
-    (Φ : PartialDiffeomorph I I (M j) (M l) (∞ : WithTop ℕ∞))
-    (Θ : PartialDiffeomorph I I (M l) (M m) (∞ : WithTop ℕ∞))
-    {K : Set (M l)} (U : Opens (M j)) (hU : (U : Set (M j)) ⊆ Φ.source)
-    (hnext : (Φ : M j → M l) '' (U : Set (M j)) ⊆ Θ.source)
-    (hUK : (Φ : M j → M l) '' (U : Set (M j)) ⊆ K)
-    (gMid : SmoothRiemannianMetric I (M l)) (g : SmoothRiemannianMetric I (M m))
-    {ε : ℝ} {p q : ℕ}
-    (D : MapMetricApproximationOn (I := I) K ε p (Θ : M l → M m) gMid g)
-    (hq1 : 1 ≤ q) (hqp : q ≤ p) (x : U) :
-    letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-    metricCovDerivNorm (I := I) q
-        (PartialDiffeomorph.pullbackMetricOn (_root_.PartialDiffeomorph.trans (I := I) Φ Θ) U
-          (PartialDiffeomorph.subset_trans_source Φ Θ U hU hnext) g)
-        (PartialDiffeomorph.pullbackMetricOn Φ U hU gMid) x ≤ ε := by
-  let _ : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-  rw [PartialDiffeomorph.pullbackMetricOn_trans]
-  · let W : Opens (M l) :=
-      ⟨(Φ : M j → M l) '' (U : Set (M j)), image_opens_isOpen Φ hU⟩
-    let _ : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen I W.isOpen)
-    let F : Diffeomorph I I U W (∞ : WithTop ℕ∞) :=
-      PartialDiffeomorph.toOpensDiffeo Φ hU
-    change metricCovDerivNorm (I := I) q
-        (Diffeomorph.pullbackMetric (I := I) (PartialDiffeomorph.pullbackMetricOn Θ W hnext g) F)
-        (Diffeomorph.pullbackMetric (I := I) (gMid.restrictOpen (I := I) W) F) x ≤ ε
-    rw [metricCovDerivNorm_pullback (I := I)]
-    exact ballPullback_cov_le Θ W hnext hUK gMid g D hq1 hqp (F x)
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] [I.Boundaryless] in
@@ -626,145 +502,8 @@ theorem chainPrefix_cov_le
     PartialDiffeomorph.subset_trans_source Φ Θ U hpre hnext
   rw [PartialDiffeomorph.pullbackMetricOn_congr A (_root_.PartialDiffeomorph.trans (I := I) Φ Θ) U hfull htrans g
     (fun x _ => congrFun (chainCompAssoc_eq (I := I) (Mf := M) Ψ j a b) x)]
-  exact prefixTail_cov_le Φ Θ U hpre hnext hUK gMid g D hq1 hqp x
-
-omit [I.Boundaryless]
-  [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
-  [∀ j, IsRiemannianManifold I (M j)] [NeZero (Module.finrank ℝ E)] in
-omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem ballPullback_lower {j l : ℕ}
-    (Φ : PartialDiffeomorph I I (M j) (M l) (∞ : WithTop ℕ∞))
-    {K : Set (M j)} (U : Opens (M j)) (hU : (U : Set (M j)) ⊆ Φ.source)
-    (hUK : (U : Set (M j)) ⊆ K)
-    (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
-    {ε : ℝ} {p : ℕ}
-    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
-    (x : U) (v : TangentSpace I x) :
-    (1 - ε) * (gRef.restrictOpen (I := I) U).inner x v v ≤
-      (PartialDiffeomorph.pullbackMetricOn Φ U hU g).inner x v v := by
-  let vM : TangentSpace I (x : M j) := (v : E)
-  calc
-    (1 - ε) * (gRef.restrictOpen (I := I) U).inner x v v =
-        (1 - ε) * gRef.inner (x : M j) vM vM := rfl
-    _ ≤ D.pullback (x : M j) (fun _ => vM) :=
-      speed_ge_of_c0 D.pullback gRef
-        (D.c0_small (x : M j) (hUK x.2)) vM
-    _ = (PartialDiffeomorph.pullbackMetricOn Φ U hU g).inner x v v := by
-      with_unfolding_all
-        rw [D.pullback_apply (x : M j) (hUK x.2), PartialDiffeomorph.pullbackMetricOn_inner]
-
-omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
-  [∀ j, IsRiemannianManifold I (M j)] in
-omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem ballPullback_upper {j l : ℕ}
-    (Φ : PartialDiffeomorph I I (M j) (M l) (∞ : WithTop ℕ∞))
-    {K : Set (M j)} (U : Opens (M j)) (hU : (U : Set (M j)) ⊆ Φ.source)
-    (hUK : (U : Set (M j)) ⊆ K)
-    (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
-    {ε : ℝ} {p : ℕ}
-    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
-    (x : U) (v : TangentSpace I x) :
-    (PartialDiffeomorph.pullbackMetricOn Φ U hU g).inner x v v ≤
-      (1 + ε) * (gRef.restrictOpen (I := I) U).inner x v v := by
-  let vM : TangentSpace I (x : M j) := (v : E)
-  calc
-    (PartialDiffeomorph.pullbackMetricOn Φ U hU g).inner x v v =
-        D.pullback (x : M j) (fun _ => vM) := by
-      with_unfolding_all
-        rw [D.pullback_apply (x : M j) (hUK x.2), PartialDiffeomorph.pullbackMetricOn_inner]
-    _ ≤ (1 + ε) * gRef.inner (x : M j) vM vM :=
-      speed_le_of_c0 (I := I) D.pullback gRef
-        (D.c0_small (x : M j) (hUK x.2)) vM
-    _ = (1 + ε) * (gRef.restrictOpen (I := I) U).inner x v v := rfl
-
-omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
-  [∀ j, IsRiemannianManifold I (M j)] in
-omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem ballPullback_zero_le {j l : ℕ}
-    (Φ : PartialDiffeomorph I I (M j) (M l) (∞ : WithTop ℕ∞))
-    {K : Set (M j)} (U : Opens (M j)) (hU : (U : Set (M j)) ⊆ Φ.source)
-    (hUK : (U : Set (M j)) ⊆ K)
-    (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
-    {ε : ℝ} {p : ℕ}
-    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
-    (hε : ε ≤ 1 / 2) (x : U) :
-    metricCovDerivNorm (I := I) 0 (PartialDiffeomorph.pullbackMetricOn Φ U hU g)
-        (gRef.restrictOpen (I := I) U) x ≤
-      2 * Real.sqrt (Module.finrank ℝ E : ℝ) := by
-  apply covNorm0_le (I := I) (PartialDiffeomorph.pullbackMetricOn Φ U hU g)
-    (gRef.restrictOpen (I := I) U) x (C := 2) (by norm_num)
-  intro v
-  have hl := ballPullback_lower Φ U hU hUK gRef g D x v
-  have hu := ballPullback_upper Φ U hU hUK gRef g D x v
-  have hnn : 0 ≤ (gRef.restrictOpen (I := I) U).inner x v v :=
-    metric_inner_self_nonneg (I := I) (gRef.restrictOpen (I := I) U) x v
-  constructor
-  · have hu' : (PartialDiffeomorph.pullbackMetricOn Φ U hU g).inner x v v ≤
-        (3 / 2 : ℝ) * (gRef.restrictOpen (I := I) U).inner x v v := by
-      nlinarith
-    calc
-      (2 : ℝ)⁻¹ * (PartialDiffeomorph.pullbackMetricOn Φ U hU g).inner x v v =
-          (1 / 2 : ℝ) * (PartialDiffeomorph.pullbackMetricOn Φ U hU g).inner x v v := by norm_num
-      _ ≤ (1 / 2 : ℝ) * ((3 / 2 : ℝ) *
-          (gRef.restrictOpen (I := I) U).inner x v v) :=
-        mul_le_mul_of_nonneg_left hu' (by norm_num)
-      _ ≤ (gRef.restrictOpen (I := I) U).inner x v v := by nlinarith
-  · nlinarith
-
-omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
-  [∀ j, IsRiemannianManifold I (M j)] in
-omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
-omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem pullbackDiff_le {j l : ℕ}
-    (Φ : PartialDiffeomorph I I (M j) (M l) (∞ : WithTop ℕ∞))
-    {K : Set (M j)} (U : Opens (M j)) (hU : (U : Set (M j)) ⊆ Φ.source)
-    (hUK : (U : Set (M j)) ⊆ K)
-    (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
-    {ε : ℝ} {p q : ℕ}
-    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
-    (hqp : q ≤ p) (x : U) :
-    metricDerivNorm (I := I) q (PartialDiffeomorph.pullbackMetricOn Φ U hU g)
-      (gRef.restrictOpen (I := I) U) (gRef.restrictOpen (I := I) U) x ≤ ε := by
-  let hB := PartialDiffeomorph.pullbackMetricOn Φ U hU g
-  let gU := gRef.restrictOpen (I := I) U
-  by_cases hq0 : q = 0
-  · subst q
-    have hpb : Tensor0SBundle.metricTensorField (I := I) hB x = D.pullback (x : M j) := by
-      apply ContinuousMultilinearMap.ext
-      intro slots
-      let slotsM : Fin 2 → TangentSpace I (x : M j) :=
-        fun i => (slots i : E)
-      change hB.inner x (slots 0) (slots 1) =
-        D.pullback (x : M j) slotsM
-      with_unfolding_all
-        rw [PartialDiffeomorph.pullbackMetricOn_inner]
-      exact (D.pullback_apply (x : M j) (hUK x.2) slotsM).symm
-    have href : Tensor0SBundle.metricTensorField (I := I) gU x =
-        Tensor0SBundle.metricTensorField (I := I) gRef (x : M j) := by
-      apply ContinuousMultilinearMap.ext
-      intro slots
-      change gU.inner x (slots 0) (slots 1) =
-        gRef.inner (x : M j) (slots 0) (slots 1)
-      rfl
-    unfold metricDerivNorm metricDiffCovDerivAt
-    change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gU x 2
-      (Tensor0SBundle.metricTensorField (I := I) hB x -
-        Tensor0SBundle.metricTensorField (I := I) gU x)) ≤ ε
-    rw [hpb, href, normSq0S_restrictOpen_apply (I := I)]
-    exact D.c0_small (x : M j) (hUK x.2)
-  · have hq1 : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr hq0
-    have hzero : metricCovDeriv (I := I) gU gU q x = 0 := by
-      obtain ⟨r, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hq0
-      rw [metricCovDeriv_eq_covDerivOfField, covDerivOfField_eq_iterCov,
-        iterCov_metric_zero]
-      exact DFunLike.congr_fun (MultilinearSection.domDomCongr_zero
-        (IB := I) (F := E) (n := (∞ : WithTop ℕ∞)) (acEquiv r.succ)) x
-    unfold metricDerivNorm metricDiffCovDerivAt
-    rw [hzero, sub_zero]
-    exact ballPullback_cov_le Φ U hU hUK gRef g D hq1 hqp x
+  exact trans_pullback_metric_cov_deriv_norm_le
+    Φ Θ U hpre hnext hUK gMid g D hq1 hqp x
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
@@ -839,7 +578,7 @@ theorem chainLimit_base_le
     rw [hUball] at hy
     exact Metric.mem_closedBall.mpr (Metric.mem_ball.mp hy).le
   simpa only [chainPullbackSeq] using
-    pullbackDiff_le (I := I)
+    pullback_metric_deriv_norm_le (I := I)
       (chainComp (I := I) (Mf := M) Ψ j (ρ k)) U (hU (ρ k)) hUK
       (g j) (g (j + ρ k)) (D (ρ k)).forward hqp x
 
@@ -1139,41 +878,6 @@ theorem diffNorm_limit_le
 omit [NeZero (Module.finrank ℝ E)] in
 omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] [I.Boundaryless] in
-theorem prefixTail_zero_le {j l m : ℕ}
-    (Φ : PartialDiffeomorph I I (M j) (M l) (∞ : WithTop ℕ∞))
-    (Θ : PartialDiffeomorph I I (M l) (M m) (∞ : WithTop ℕ∞))
-    {K : Set (M l)} (U : Opens (M j)) (hU : (U : Set (M j)) ⊆ Φ.source)
-    (hnext : (Φ : M j → M l) '' (U : Set (M j)) ⊆ Θ.source)
-    (hUK : (Φ : M j → M l) '' (U : Set (M j)) ⊆ K)
-    (gMid : SmoothRiemannianMetric I (M l)) (g : SmoothRiemannianMetric I (M m))
-    {ε : ℝ} {p : ℕ}
-    (D : MapMetricApproximationOn (I := I) K ε p (Θ : M l → M m) gMid g)
-    (hε : ε ≤ 1 / 2) (x : U) :
-    letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-    metricCovDerivNorm (I := I) 0
-        (PartialDiffeomorph.pullbackMetricOn (_root_.PartialDiffeomorph.trans (I := I) Φ Θ) U
-          (PartialDiffeomorph.subset_trans_source Φ Θ U hU hnext) g)
-        (PartialDiffeomorph.pullbackMetricOn Φ U hU gMid) x ≤
-      2 * Real.sqrt (Module.finrank ℝ E : ℝ) := by
-  let _ : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-  rw [PartialDiffeomorph.pullbackMetricOn_trans]
-  · let W : Opens (M l) :=
-      ⟨(Φ : M j → M l) '' (U : Set (M j)), image_opens_isOpen Φ hU⟩
-    let _ : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen I W.isOpen)
-    let F : Diffeomorph I I U W (∞ : WithTop ℕ∞) :=
-      PartialDiffeomorph.toOpensDiffeo Φ hU
-    change metricCovDerivNorm (I := I) 0
-        (Diffeomorph.pullbackMetric (I := I) (PartialDiffeomorph.pullbackMetricOn Θ W hnext g) F)
-        (Diffeomorph.pullbackMetric (I := I) (gMid.restrictOpen (I := I) W) F) x ≤ _
-    rw [metricCovDerivNorm_pullback (I := I)]
-    exact ballPullback_zero_le Θ W hnext hUK gMid g D hε (F x)
-
-omit [NeZero (Module.finrank ℝ E)] in
-omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
-  [∀ j, IsRiemannianManifold I (M j)] [I.Boundaryless] in
 theorem chainPrefix_zero_le
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     {j a b : ℕ} {K : Set (M (j + a))} (U : Opens (M j))
@@ -1205,7 +909,8 @@ theorem chainPrefix_zero_le
     PartialDiffeomorph.subset_trans_source Φ Θ U hpre hnext
   rw [PartialDiffeomorph.pullbackMetricOn_congr A (_root_.PartialDiffeomorph.trans (I := I) Φ Θ) U hfull htrans g
     (fun x _ => congrFun (chainCompAssoc_eq (I := I) (Mf := M) Ψ j a b) x)]
-  exact prefixTail_zero_le Φ Θ U hpre hnext hUK gMid g D hε x
+  exact trans_pullback_metric_zero_cov_deriv_norm_le
+    Φ Θ U hpre hnext hUK gMid g D hε x
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

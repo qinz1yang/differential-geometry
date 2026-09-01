@@ -70,6 +70,40 @@ theorem speed_le_of_c0
         exact mul_le_mul_of_nonneg_right hc0 hnn
   nlinarith [abs_le.mp habs]
 
+theorem speed_ge_of_c0
+    (P : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
+    (g : SmoothRiemannianMetric I M) {ε : ℝ} {x : M}
+    (hc0 : metricTensorErrorNorm (I := I) P g x ≤ ε)
+    (v : TangentSpace I x) :
+    (1 - ε) * g.inner x v v ≤ P x (fun _ => v) := by
+  classical
+  obtain ⟨basis, hON⟩ :=
+    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
+  have hCS := Tensor0SBundle.abs_apply_le_sqrt_normSq0S (I := I)
+    g x 2 basis (fun i k => hON i k)
+    (P x - Tensor0SBundle.metricTensorField (I := I) g x)
+    (fun _ => v)
+  have hval : (P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v) =
+      P x (fun _ => v) - g.inner x v v := by
+    simp [Tensor0SBundle.metricTensorField_apply]
+  have hnn : 0 ≤ g.inner x v v := metric_inner_self_nonneg (I := I) g x v
+  have hprod : (∏ _a : Fin 2, Real.sqrt (g.inner x v v)) = g.inner x v v := by
+    rw [Fin.prod_univ_two, Real.mul_self_sqrt hnn]
+  have habs : |P x (fun _ => v) - g.inner x v v| ≤ ε * g.inner x v v := by
+    unfold metricTensorErrorNorm at hc0
+    calc
+      |P x (fun _ => v) - g.inner x v v| =
+          |(P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v)| := by
+            rw [hval]
+      _ ≤ Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2
+            (P x - Tensor0SBundle.metricTensorField (I := I) g x)) *
+          ∏ _a : Fin 2, Real.sqrt (g.inner x v v) := hCS
+      _ ≤ ε * g.inner x v v := by
+        rw [hprod]
+        exact mul_le_mul_of_nonneg_right hc0 hnn
+  nlinarith [abs_le.mp habs]
+
 end Speed
 
 section BookData
