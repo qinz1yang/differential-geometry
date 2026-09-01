@@ -77,6 +77,16 @@ theorem solitonModelCovering_surjective
     Function.Surjective cover :=
   hπ.2.2.2.1
 
+theorem compactSpace_of_solitonModelCovering
+    [CompactSpace N]
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) :
+    CompactSpace M := by
+  rw [← isCompact_univ_iff]
+  rw [← Set.range_eq_univ.mpr (solitonModelCovering_surjective hπ)]
+  exact isCompact_range (solitonModelCovering_contMDiff hπ).continuous
+
 theorem solitonModelCovering_isCoveringMap
     {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {cover : N → M}
