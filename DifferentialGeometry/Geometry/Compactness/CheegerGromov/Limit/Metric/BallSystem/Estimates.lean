@@ -151,6 +151,115 @@ theorem chainPrefix_zero_le
   exact trans_pullback_metric_zero_cov_deriv_norm_le
     Φ Θ U hpre hnext hUK gMid g D hε x
 
+omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
+  [∀ j, IsRiemannianManifold I (M j)]
+  [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
+theorem chain_pullback_metric_deriv_norm_sup_lt
+    (j₀ : ℕ)
+    (U : ∀ n, Opens (M (j₀ + n)))
+    (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
+    (g : ∀ j, SmoothRiemannianMetric I (M j))
+    (hU : ∀ n k, (U n : Set (M (j₀ + n))) ⊆
+      (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k).source)
+    (gInf : ∀ n, SmoothRiemannianMetric I (U n))
+    (hclose : ∀ ε : ℝ, 0 < ε → ∀ p : ℕ, ∃ n₀ : ℕ,
+      ∀ n : ℕ, n₀ ≤ n →
+        ∀ l q : ℕ, q ≤ p → ∀ x : U n,
+          metricDerivNorm (I := I) q
+            (chainPullbackSeq (I := I) Ψ g (U n) (hU n) l)
+            (gInf n) (gInf n) x ≤ ε) :
+    ∀ ε : ℝ, 0 < ε → ∀ p : ℕ, ∃ n₀ : ℕ,
+      ∀ n : ℕ, n₀ ≤ n →
+        ∀ l : ℕ, ∀ K : Set (U n), IsCompact K →
+          metricDerivNormSupOn (I := I) K p
+            (chainPullbackSeq (I := I) Ψ g (U n) (hU n) l)
+            (gInf n) (gInf n) < ε := by
+  intro ε hε p
+  obtain ⟨n₀, hn₀⟩ := hclose (ε / 2) (by linarith) p
+  refine ⟨n₀, fun n hn => ?_⟩
+  intro l K _hK
+  exact lt_of_le_of_lt
+    (metricDerivNormSupOn_le_of_forall (I := I) K p
+      (chainPullbackSeq (I := I) Ψ g (U n) (hU n) l)
+      (gInf n) (gInf n) (ε / 2) (by linarith)
+      (fun q hqp x _ => hn₀ n hn l q hqp x)) (by linarith)
+
+omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
+  [∀ j, IsRiemannianManifold I (M j)] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
+theorem tail_metric_deriv_norm_sup_lt
+    (b : ∀ j, M j) (j₀ : ℕ)
+    (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
+    (g : ∀ j, SmoothRiemannianMetric I (M j))
+    (hU : ∀ n k,
+      (ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n) : Set (M (j₀ + n))) ⊆
+        (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k).source)
+    (gInf : ∀ n, SmoothRiemannianMetric I
+      (ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)))
+    (hclose : ∀ ε : ℝ, 0 < ε → ∀ p : ℕ, ∃ n₀ : ℕ,
+      ∀ n : ℕ, n₀ ≤ n →
+        letI : SigmaCompactSpace
+            (ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)) :=
+          isSigmaCompact_iff_sigmaCompactSpace.mp
+            (Geometry.isSigmaCompact_of_isOpen I
+              (ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)).isOpen)
+        ∀ l q : ℕ, q ≤ p →
+          ∀ x : ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n),
+            metricDerivNorm (I := I) q
+              (chainPullbackSeq (I := I) Ψ g
+                (ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)) (hU n) l)
+              (gInf n) (gInf n) x ≤ ε) :
+    ∀ ε : ℝ, 0 < ε → ∀ p : ℕ, ∃ n₀ : ℕ,
+      ∀ n : ℕ, n₀ ≤ n →
+        letI : SigmaCompactSpace
+            (ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)) :=
+          isSigmaCompact_iff_sigmaCompactSpace.mp
+            (Geometry.isSigmaCompact_of_isOpen I
+              (ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)).isOpen)
+        letI : SigmaCompactSpace (tailBallOpen b j₀ n) :=
+          isSigmaCompact_iff_sigmaCompactSpace.mp
+            (Geometry.isSigmaCompact_of_isOpen I (tailBallOpen b j₀ n).isOpen)
+        ∀ K : Set (tailBallOpen b j₀ n), IsCompact K →
+          metricDerivNormSupOn (I := I) K p
+            ((g (j₀ + n)).restrictOpen (I := I) (tailBallOpen b j₀ n))
+            (tailMetric (I := I) b j₀ gInf n)
+            (tailMetric (I := I) b j₀ gInf n) < ε := by
+  intro ε hε p
+  obtain ⟨n₀, hn₀⟩ := hclose (ε / 2) (by linarith) p
+  refine ⟨n₀, fun n hn => ?_⟩
+  let U := ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)
+  let V := tailBallOpen b j₀ n
+  let _ : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
+  let _ : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen I V.isOpen)
+  intro K _hK
+  refine lt_of_le_of_lt
+    (metricDerivNormSupOn_le_of_forall (I := I) K p
+      ((g (j₀ + n)).restrictOpen (I := I) V)
+      (tailMetric (I := I) b j₀ gInf n)
+      (tailMetric (I := I) b j₀ gInf n) (ε / 2) (by linarith) ?_) (by linarith)
+  intro q hqp x _hxK
+  let inc : V → U := Opens.inclusion (tailBall_le_large b j₀ n)
+  have hbig := hn₀ n hn 0 q hqp (inc x)
+  rw [chainPullback_zero (I := I) Ψ g U (hU n)] at hbig
+  calc
+    metricDerivNorm (I := I) q
+        ((g (j₀ + n)).restrictOpen (I := I) V)
+        (tailMetric (I := I) b j₀ gInf n)
+        (tailMetric (I := I) b j₀ gInf n) x =
+      metricDerivNorm (I := I) q
+        ((g (j₀ + n)).restrictOpen (I := I) U)
+        (gInf n) (gInf n) (inc x) := by
+          simpa only [U, V, inc, tailMetric,
+            SmoothRiemannianMetric.restrictOpen_flat] using
+            metricDerivNorm_flat (I := I) (tailBall_le_large b j₀ n)
+              ((g (j₀ + n)).restrictOpen (I := I) U) (gInf n) (gInf n) q x
+    _ ≤ ε / 2 := hbig
+
 
 end ApproxData
 
