@@ -152,18 +152,18 @@ theorem curryLeft_contMDiff {m : ℕ} :
 
 end ContinuousAlternatingMap
 
+open scoped Topology Manifold ContDiff
+
 noncomputable section charted
 
 variable
   {EM : Type*} [NormedAddCommGroup EM] [NormedSpace ℝ EM]
   {HM : Type*} [TopologicalSpace HM]
   (IM : ModelWithCorners ℝ EM HM)
-  (M : Type*) [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ⊤ M]
+  (M : Type*) [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ∞ M]
   {m : ℕ}
 
 open Bundle Set Function Filter
-open scoped Topology Manifold ContDiff
-
 namespace DifferentialGeometry
 
 @[instance_reducible]

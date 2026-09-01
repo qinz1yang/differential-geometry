@@ -60,7 +60,7 @@ private theorem oneForm_fderiv_symm
 variable {EM : Type*} [NormedAddCommGroup EM] [NormedSpace Real EM]
   {HM : Type*} [TopologicalSpace HM]
   {IM : ModelWithCorners Real EM HM}
-  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ⊤ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ∞ M]
 
 private def oneFormLocalRep (alpha : DifferentialForm IM M 1) (x : M) :
     EM → EM [⋀^Fin 1]→L[Real] Real := fun z =>

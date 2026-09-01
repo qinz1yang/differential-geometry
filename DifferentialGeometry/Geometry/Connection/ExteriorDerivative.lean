@@ -18,7 +18,7 @@ attribute [local instance] normedSpaceTangentSpace
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
-  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ⊤ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 private theorem extend_eq_symmL
     (x : M) (v : TangentSpace I x) {y : M}
@@ -98,7 +98,7 @@ private theorem mlieBracket_extend_extend_eq_zero
     simp [VectorField.lieBracketWithin]]
   exact ContinuousLinearMap.map_zero _
 
-omit [IsManifold I ⊤ M] in
+omit [IsManifold I ∞ M] in
 private theorem mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
     [BoundarylessManifold I M]
     {f : M → Real} {φ : E → Real} {x : M}
@@ -117,7 +117,7 @@ private theorem mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
 
 private def cotangentLocalRep
     (theta : ∀ x : M, TangentSpace I x →L[Real] Real)
-    (htheta : ContMDiff I (I.prod 𝓘(Real, E →L[Real] Real)) ⊤
+    (htheta : ContMDiff I (I.prod 𝓘(Real, E →L[Real] Real)) ∞
       (fun x : M => TotalSpace.mk' (E →L[Real] Real) x (theta x)))
     (x : M) : E → E [⋀^Fin 1]→L[Real] Real := fun z =>
   (trivializationAt (E [⋀^Fin 1]→L[Real] Real)
@@ -128,7 +128,7 @@ private def cotangentLocalRep
 private theorem cotangentLocalRep_apply_const_eventuallyEq
     [BoundarylessManifold I M]
     (theta : ∀ x : M, TangentSpace I x →L[Real] Real)
-    (htheta : ContMDiff I (I.prod 𝓘(Real, E →L[Real] Real)) ⊤
+    (htheta : ContMDiff I (I.prod 𝓘(Real, E →L[Real] Real)) ∞
       (fun x : M => TotalSpace.mk' (E →L[Real] Real) x (theta x)))
     (x : M) (w : TangentSpace I x) :
     writtenInExtChartAt I 𝓘(Real, Real) x
@@ -165,7 +165,7 @@ private theorem cotangentLocalRep_apply_const_eventuallyEq
 private theorem exteriorDerivative_ofCotangent_apply_eq_mvfderiv_sub
     [BoundarylessManifold I M]
     (theta : ∀ x : M, TangentSpace I x →L[Real] Real)
-    (htheta : ContMDiff I (I.prod 𝓘(Real, E →L[Real] Real)) ⊤
+    (htheta : ContMDiff I (I.prod 𝓘(Real, E →L[Real] Real)) ∞
       (fun x : M => TotalSpace.mk' (E →L[Real] Real) x (theta x)))
     (x : M) (v w : TangentSpace I x) :
     exteriorDerivative (ofCotangent theta htheta) x ![v, w] =
@@ -272,7 +272,7 @@ theorem exteriorDerivative_ofCotangent_apply
     [BoundarylessManifold I M] [FiniteDimensional Real E]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (theta : ∀ x : M, TangentSpace I x →L[Real] Real)
-    (htheta : ContMDiff I (I.prod 𝓘(Real, E →L[Real] Real)) ⊤
+    (htheta : ContMDiff I (I.prod 𝓘(Real, E →L[Real] Real)) ∞
       (fun x : M => TotalSpace.mk' (E →L[Real] Real) x (theta x)))
     (x : M) (v w : TangentSpace I x) :
     exteriorDerivative (ofCotangent theta htheta) x ![v, w] =
@@ -298,7 +298,7 @@ theorem isClosed_of_cotangentCov_eq_zero_of_torsion_eq_zero
     [BoundarylessManifold I M] [FiniteDimensional Real E]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (theta : ∀ x : M, TangentSpace I x →L[Real] Real)
-    (htheta : ContMDiff I (I.prod 𝓘(Real, E →L[Real] Real)) ⊤
+    (htheta : ContMDiff I (I.prod 𝓘(Real, E →L[Real] Real)) ∞
       (fun x : M => TotalSpace.mk' (E →L[Real] Real) x (theta x)))
     (hcovtheta : (Geometry.Connection.cotangentCov cov).toFun theta = 0)
     (htorsion : cov.torsion = 0) :
