@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValue
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceJetTower
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDifferenceMultiplier
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import Mathlib.Analysis.Calculus.Deriv.Slope

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.FractionalPower
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.L2BanachIso
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.L2BanachIsomorphism
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.NablaTensor.IteratedNabla
 import Mathlib.Analysis.Normed.Operator.Extend

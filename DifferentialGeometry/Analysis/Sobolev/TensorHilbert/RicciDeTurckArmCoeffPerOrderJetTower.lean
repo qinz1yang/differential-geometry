@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ArmCoefficient.ReindexingNorm
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

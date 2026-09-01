@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffPassZero
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ArmCoefficient.PassZero
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Norm
 

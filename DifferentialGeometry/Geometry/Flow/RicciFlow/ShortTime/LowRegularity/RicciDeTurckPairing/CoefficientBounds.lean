@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.LinearTerms
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.FirstOrderCoefficientLipschitzBounds
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetNaturality
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldJetProduct
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.JetProduct
 
 section
 

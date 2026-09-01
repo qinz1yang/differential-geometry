@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.MetricCoefficientBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.CoefficientBounds
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetNaturality
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 
 noncomputable section
 

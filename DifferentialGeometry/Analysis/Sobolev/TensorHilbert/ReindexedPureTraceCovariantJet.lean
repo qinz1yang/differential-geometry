@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetNaturality
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroMixedConnectionExpansion
 
 noncomputable section

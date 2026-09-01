@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CompactInclusionIntrinsic
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.CompactInclusion
 import DifferentialGeometry.Analysis.Spectral.Tensor.Rellich.Tensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.Resolvent
 

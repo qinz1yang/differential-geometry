@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HilbertSpace
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedHsNorm
 
 namespace DifferentialGeometry

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantDerivativePointwiseBounds
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.PointwiseBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroCoefficientDifferenceRadiusFree
 
 noncomputable section

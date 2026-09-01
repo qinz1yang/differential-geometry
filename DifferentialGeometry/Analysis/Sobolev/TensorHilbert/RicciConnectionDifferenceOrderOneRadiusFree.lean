@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.AntidiagonalTupleGridWindowOperatorComposition
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.OperatorComposition
 
 noncomputable section
 

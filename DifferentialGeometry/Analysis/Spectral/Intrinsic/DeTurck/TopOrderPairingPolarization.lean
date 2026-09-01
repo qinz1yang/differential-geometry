@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingDecomposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricDifferenceSlotPairing
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDifferenceMultiplier
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CometricSlotPairing
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 
 noncomputable section
 

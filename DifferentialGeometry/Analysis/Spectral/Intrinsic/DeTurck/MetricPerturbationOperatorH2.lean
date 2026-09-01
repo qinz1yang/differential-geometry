@@ -2,7 +2,7 @@ import Mathlib.Analysis.Normed.Operator.NormedSpace
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.AppH2Hs
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SymmRaiseEndoField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ArmCoefficient.ReindexingNorm
 
 
 noncomputable section

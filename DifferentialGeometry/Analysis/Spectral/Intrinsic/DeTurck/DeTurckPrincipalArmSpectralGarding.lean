@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipal
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalArmEnergyCrossTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNormEquiv
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDifferenceMultiplier
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

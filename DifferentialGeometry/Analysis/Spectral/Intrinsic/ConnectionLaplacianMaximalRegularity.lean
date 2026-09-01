@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HilbertSpace
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.PouSobolevIso.SpectralPouH2Identify
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Operator.L2PMap
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionSpace

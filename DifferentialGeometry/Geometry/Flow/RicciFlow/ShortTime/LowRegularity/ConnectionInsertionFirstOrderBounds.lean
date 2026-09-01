@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.CoefficientJetBounds
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ArmCoefficient.ReindexingNorm
 open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
     DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Sobolev

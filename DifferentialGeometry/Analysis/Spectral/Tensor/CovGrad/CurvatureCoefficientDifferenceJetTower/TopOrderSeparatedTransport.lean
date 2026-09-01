@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficien
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Lowered
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Palatini
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradSectionPermutationInvariance
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetNaturality
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev

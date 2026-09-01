@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ArmCoefficient.ReindexingNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RecoveryEndomorphismJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedOperatorFieldApplicationLeibniz
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricRaiseSlot0CovariantParallelism

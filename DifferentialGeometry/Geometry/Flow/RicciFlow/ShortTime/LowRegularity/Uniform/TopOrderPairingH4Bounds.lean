@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.LowerScaleCoefficientBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.BackgroundDifferenceSecondDerivativePairingBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.CenteredPathPairing
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetInterpolation
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Interpolation
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LowOrderCoefficientJetBounds
 

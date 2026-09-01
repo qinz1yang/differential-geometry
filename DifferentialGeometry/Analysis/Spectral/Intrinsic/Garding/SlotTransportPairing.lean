@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.BalancedPairing
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricOperatorFieldApplicationJetBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.Parametric.ApplicationJetBound
 
 
 open DifferentialGeometry.Analysis.Sobolev

@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Curvature.Bochner.PointwiseTensorBochner
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.GradientField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.AllOrderGardingConstant
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HomFieldActionL2JetBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.HomFieldActionL2JetBound
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

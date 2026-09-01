@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.BalancedPairing
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricOperatorFieldApplicationJetBound
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricScalarSmulJet
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.Parametric.ApplicationJetBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.Parametric.ScalarSmulJet
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricScalarSmulJet
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.Parametric.ScalarSmulJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ParametricAppHsTime
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 open DifferentialGeometry.Analysis.Sobolev

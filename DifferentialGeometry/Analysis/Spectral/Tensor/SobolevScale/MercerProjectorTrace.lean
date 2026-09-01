@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSmoothRepresentativeRealize
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ContinuousSobolevRealization
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HilbertSpace
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedHsNormReverseOrderZero
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Bound

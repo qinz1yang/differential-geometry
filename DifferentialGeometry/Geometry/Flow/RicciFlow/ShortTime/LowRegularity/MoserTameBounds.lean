@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RemainderAction
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldCompositionJetMul
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetNaturality
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 
 noncomputable section
 

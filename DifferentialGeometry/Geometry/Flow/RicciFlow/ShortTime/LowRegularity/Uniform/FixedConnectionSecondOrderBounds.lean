@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.DeTurckRHSFirstDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.GagliardoNirenberg
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ArmCoefficient.ReindexingNorm
 
 set_option autoImplicit false
 

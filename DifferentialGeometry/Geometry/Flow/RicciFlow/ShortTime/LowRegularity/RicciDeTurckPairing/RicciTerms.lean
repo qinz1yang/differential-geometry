@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.MetricDifference
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetInterpolation
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Interpolation
 
 noncomputable section
 

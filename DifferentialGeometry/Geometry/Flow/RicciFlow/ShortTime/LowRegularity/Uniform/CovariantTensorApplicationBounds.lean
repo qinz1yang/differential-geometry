@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.M
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.CovariantDerivativeApplicationBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.MixedTensorApplicationFirstSecondOrderBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.ConvexJets
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldApplicationJetWindowTame
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.ApplicationJetWindow
 
 set_option autoImplicit false
 

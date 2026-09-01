@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldApplicationJetWindowTame
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.ApplicationJetWindow
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffPerOrderJetEnvelopes
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral

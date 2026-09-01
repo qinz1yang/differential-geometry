@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Ricc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.CoefficientJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.DeTurckLieInsertionCorrection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.ConnectionInsertionFirstOrderBounds
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetNaturality
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ReindexedPureTraceCovariantJet
 
 noncomputable section

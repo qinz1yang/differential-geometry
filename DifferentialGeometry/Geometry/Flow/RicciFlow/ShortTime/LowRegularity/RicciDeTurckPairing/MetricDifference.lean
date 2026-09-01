@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.FirstOrderCoefficientLipschitzBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.MetricCoefficientBounds
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldJetDifference
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.JetDifference
 
 noncomputable section
 

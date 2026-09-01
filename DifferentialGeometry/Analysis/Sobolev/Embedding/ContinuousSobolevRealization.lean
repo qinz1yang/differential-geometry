@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Embedding.TensorSobolevEmbeddingCm
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCmOrderDropping
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.SmoothCcDense
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Density
 import Mathlib.Analysis.Normed.Operator.Extend
 import Mathlib.Analysis.Normed.Module.Completion
 open DifferentialGeometry.Analysis.Sobolev

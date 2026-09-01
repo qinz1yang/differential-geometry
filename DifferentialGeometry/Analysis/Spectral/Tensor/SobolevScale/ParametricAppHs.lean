@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricOperatorFieldApplicationJetBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.Parametric.ApplicationJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
 open DifferentialGeometry.Analysis.Sobolev

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorFieldJetRadiusFree
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroCoeffL2JetBound
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.TameArmJets
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.ArmJets
 
 noncomputable section
 

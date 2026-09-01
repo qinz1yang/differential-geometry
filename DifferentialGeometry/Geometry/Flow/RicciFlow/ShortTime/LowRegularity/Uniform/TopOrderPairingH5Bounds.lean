@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.H1Jet
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetInterpolation
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Interpolation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LowOrderCoefficientJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Morrey
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.MixedTensorApplicationThirdOrderBounds

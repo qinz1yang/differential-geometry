@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.MetricDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.LinearTerms
 import DifferentialGeometry.Analysis.Estimates.QuarticInterpolation
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetInterpolation
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Interpolation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ReindexedPureTraceCovariantJet
 
 noncomputable section

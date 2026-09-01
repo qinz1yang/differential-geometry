@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceFibreBound
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDifferenceMultiplier
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorFiberNormBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Tensor02FiberNormBound
 open DifferentialGeometry.Analysis.Spectral

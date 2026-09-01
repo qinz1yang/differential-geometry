@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldApplicationJetWindowTame
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.ApplicationJetWindow
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderDifferenceEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefectSymmetry
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSThreeArmCancel

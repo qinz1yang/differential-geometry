@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RemainderAction
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetInterpolation
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Interpolation
 
 noncomputable section
 
