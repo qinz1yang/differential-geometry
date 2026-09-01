@@ -974,8 +974,6 @@ private theorem roundThreeCylinderSolitonAutomorphism_mem_cases
 theorem roundThreeCylinderSolitonAutomorphism_subgroup_eq_trichotomy
     (Gamma : Subgroup (Equiv.Perm
       (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)))
-    [ProperlyDiscontinuousSMul Gamma
-      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)]
     (hsoliton : ∀ gamma : Gamma,
       roundThreeCylinderSolitonAutomorphism gamma.1)
     (hfree : ∀ (gamma : Gamma)
