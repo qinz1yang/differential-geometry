@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalPullbackBounds.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricDerivativeBounds.StageJet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.InverseCovariantDerivativeComponents.BoundedGeometry
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.LocalOn
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Metric.Convergence.MetricTowerConvergence
 
 set_option autoImplicit false

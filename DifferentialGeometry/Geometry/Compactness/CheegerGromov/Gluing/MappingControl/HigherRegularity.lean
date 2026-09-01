@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.Basic
 
 set_option autoImplicit false
 

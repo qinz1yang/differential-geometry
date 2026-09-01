@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Diagonal
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageConstruction.Diagonal
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Injectivity
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.LocalOn
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.InjectivityHigherRegularity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.Injectivity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.LocalDiffeomorphism
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.InjectivityHigherRegularity
 
 open DifferentialGeometry.Geometry.Curvature
 

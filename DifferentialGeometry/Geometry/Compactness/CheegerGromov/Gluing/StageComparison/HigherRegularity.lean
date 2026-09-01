@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.HigherRegularity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.ScaleSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.MetricLimits
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Diagonal
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageConstruction.Diagonal
 
 set_option autoImplicit false
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.StageJet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricDerivativeBounds.BoundedGeometry
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.InjectivityHigherRegularity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.InjectivityHigherRegularity
 
 set_option autoImplicit false
 
