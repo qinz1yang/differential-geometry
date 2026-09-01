@@ -1,7 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Monotonicity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.OfMetricDerivNorm
-
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximateIsometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricDerivativeBounds.StageJet
 import DifferentialGeometry.Geometry.Metric.Pullback.CompactExtension

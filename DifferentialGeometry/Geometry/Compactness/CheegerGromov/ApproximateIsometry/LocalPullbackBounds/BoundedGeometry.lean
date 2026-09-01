@@ -1,7 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricBridgeHigherRegularity
-
-
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricConvergence.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DistanceComparison
 
 set_option autoImplicit false

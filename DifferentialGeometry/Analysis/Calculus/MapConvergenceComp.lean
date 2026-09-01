@@ -712,6 +712,56 @@ theorem MapCInfConvOnCompacts.pullbackForm
   · exact fun _ _ => Set.mem_univ _
   · exact fun _ _ _ => Set.mem_univ _
 
+theorem MapCInfConvOnCompacts.pullbackForm_comp_fderiv
+    {V W : Type*}
+    [NormedAddCommGroup V] [NormedSpace Real V]
+    [NormedAddCommGroup W] [NormedSpace Real W] [ProperSpace W]
+    [ProperSpace ((W →L[Real] W →L[Real] Real) × (V →L[Real] W))]
+    {U : Set V} {D : Set W} (hU : IsOpen U) (hD : IsOpen D)
+    {A : Nat → V → W} {Ainf : V → W}
+    {B : Nat → W → (W →L[Real] W →L[Real] Real)}
+    {Binf : W → (W →L[Real] W →L[Real] Real)}
+    (hA : MapCInfConvOnCompacts U A Ainf)
+    (hB : MapCInfConvOnCompacts D B Binf)
+    (hAc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (A n) U)
+    (hAinfC : ContDiffOn Real (∞ : WithTop ℕ∞) Ainf U)
+    (hBc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (B n) D)
+    (hBinfC : ContDiffOn Real (∞ : WithTop ℕ∞) Binf D)
+    (hmapInf : Set.MapsTo Ainf U D)
+    (hmap : ∀ n, Set.MapsTo (A n) U D) :
+    MapCInfConvOnCompacts U
+      (fun n z ↦ _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+        (B n (A n z), fderiv Real (A n) z))
+      (fun z ↦ _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+        (Binf (Ainf z), fderiv Real Ainf z)) := by
+  have hBA : MapCInfConvOnCompacts U
+      (fun n z ↦ B n (A n z)) (fun z ↦ Binf (Ainf z)) :=
+    MapCInfConvOnCompacts.comp hU hD hA hB hAc hAinfC hBc hBinfC
+      hmapInf hmap
+  have hDA : MapCInfConvOnCompacts U
+      (fun n z ↦ fderiv Real (A n) z) (fun z ↦ fderiv Real Ainf z) :=
+    hA.fderivOn hU hAc hAinfC
+  have hBAc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
+      (fun z ↦ B n (A n z)) U := by
+    intro n
+    simpa only [Function.comp_def] using
+      ContDiffOn.comp (hBc n) (hAc n) (hmap n)
+  have hBAinfC : ContDiffOn Real (∞ : WithTop ℕ∞)
+      (fun z ↦ Binf (Ainf z)) U := by
+    simpa only [Function.comp_def] using
+      ContDiffOn.comp hBinfC hAinfC hmapInf
+  have hDAc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
+      (fun z ↦ fderiv Real (A n) z) U := by
+    intro n z hz
+    exact (((hAc n).contDiffAt (hU.mem_nhds hz)).fderiv_right
+      (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt
+  have hDAinfC : ContDiffOn Real (∞ : WithTop ℕ∞)
+      (fun z ↦ fderiv Real Ainf z) U := by
+    intro z hz
+    exact ((hAinfC.contDiffAt (hU.mem_nhds hz)).fderiv_right
+      (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt
+  exact hBA.pullbackForm hU hDA hBAc hBAinfC hDAc hDAinfC
+
 end BasicClosures
 
 theorem MapCInfConvOnCompacts.ringInv

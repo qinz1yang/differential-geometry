@@ -1,9 +1,6 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inverse
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.InverseChartConvergence.StageJet
 import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
-
-
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricBridgeHigherRegularity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricConvergence.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.InjectivityHigherRegularity
 
 set_option autoImplicit false

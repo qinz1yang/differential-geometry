@@ -3,8 +3,8 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Constructi
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.StableNet
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricCarrier
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricCarrierHigherRegularity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.StageJet
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparisonHigherRegularity
 
 open DifferentialGeometry.Geometry.Curvature

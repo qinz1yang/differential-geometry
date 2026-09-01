@@ -1,9 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.InverseHigherRegularity
-
-
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricLocalHigherRegularity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.InverseChartConvergence.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalPullbackBounds.BoundedGeometry
 import DifferentialGeometry.Geometry.Metric.Convergence.MetricTowerConvergence
 
 set_option autoImplicit false
@@ -509,7 +506,7 @@ theorem BoundedGeometryNormalChartData.inv_cov_comp_tail
     let Qp : Nat → E → (E →L[Real] E →L[Real] Real) := fun n w =>
       _root_.DifferentialGeometry.HCGCompactness.pullbackForm
         (B alpha (kn n) (Gp n w), fderiv Real (Gp n) w)
-    have hQraw := MapCInfConvOnCompacts.pullbackAlong
+    have hQraw := MapCInfConvOnCompacts.pullbackForm_comp_fderiv
       hOopen isOpen_interior hGpconv hBkconvD hGpcd
       ((contDiff_id :
         ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn)

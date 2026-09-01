@@ -1,9 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.MovingInverse
 import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
-
-
 import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorph
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricLocal
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalPullbackBounds.StageJet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Injectivity
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

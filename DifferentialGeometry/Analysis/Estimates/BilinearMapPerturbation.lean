@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
 import Mathlib.Analysis.Normed.Operator.Bilinear
 import Mathlib.Tactic.Abel
 import Mathlib.Tactic.GCongr
@@ -97,6 +98,14 @@ theorem bilinPerturbTri {B₀ B₁ : E' →L[Real] E' →L[Real] Real}
         + ‖B₁ - B₀‖ * (‖v‖ * ‖w‖) := add_le_add h1 h2
     _ = (‖B₁‖ * ‖A - ContinuousLinearMap.id Real E'‖ * (1 + ‖A‖) + ‖B₁ - B₀‖) *
         (‖v‖ * ‖w‖) := by ring
+
+theorem norm_pullbackForm_sub_le
+    (B₀ B₁ : E' →L[Real] E' →L[Real] Real) (A : E' →L[Real] E') :
+    ‖pullbackForm (B₁, A) - B₀‖ ≤
+      ‖B₁‖ * ‖A - ContinuousLinearMap.id Real E'‖ * (1 + ‖A‖) + ‖B₁ - B₀‖ := by
+  refine ContinuousLinearMap.opNorm_le_bound₂ _ (by positivity) fun v w ↦ ?_
+  simpa only [sub_apply, pullbackForm_apply, Real.norm_eq_abs, mul_assoc] using
+    (bilinPerturbTri (B₀ := B₀) (B₁ := B₁) (A := A) v w)
 
 theorem quadPerturbNeumann {B₀ B₁ : E' →L[Real] E' →L[Real] Real}
     {A : E' →L[Real] E'} {ε : Real}

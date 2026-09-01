@@ -1,6 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inverse
-
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.InverseChartConvergence.StageJet
 import DifferentialGeometry.Geometry.Metric.Convergence.MetricTowerConvergence
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -477,7 +475,7 @@ theorem HasStageJetData.inv_cov_comp_tail
     let Qp : Nat → E → (E →L[Real] E →L[Real] Real) := fun n w =>
       _root_.DifferentialGeometry.HCGCompactness.pullbackForm
         (B alpha (kn n) (Gp n w), fderiv Real (Gp n) w)
-    have hQraw := MapCInfConvOnCompacts.pullbackAlong
+    have hQraw := MapCInfConvOnCompacts.pullbackForm_comp_fderiv
       hOopen isOpen_interior hGpconv hBkconvD hGpcd
       ((contDiff_id : ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn)
       hBkcd hgInfD hOD hGpmap

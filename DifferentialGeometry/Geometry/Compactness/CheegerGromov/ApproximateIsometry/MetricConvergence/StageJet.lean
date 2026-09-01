@@ -1,8 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
 import DifferentialGeometry.Analysis.Estimates.BilinearMapPerturbation
-
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -24,67 +22,6 @@ open DifferentialGeometry.Geometry.Riemannian
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace
-
-theorem MapCInfConvOnCompacts.pullbackAlong
-    {V W : Type*}
-    [NormedAddCommGroup V] [NormedSpace Real V]
-    [NormedAddCommGroup W] [NormedSpace Real W] [ProperSpace W]
-    [ProperSpace ((W →L[Real] W →L[Real] Real) × (V →L[Real] W))]
-    {U : Set V} {D : Set W} (hU : IsOpen U) (hD : IsOpen D)
-    {A : Nat → V → W} {Ainf : V → W}
-    {B : Nat → W → (W →L[Real] W →L[Real] Real)}
-    {Binf : W → (W →L[Real] W →L[Real] Real)}
-    (hA : MapCInfConvOnCompacts U A Ainf)
-    (hB : MapCInfConvOnCompacts D B Binf)
-    (hAc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (A n) U)
-    (hAinfC : ContDiffOn Real (∞ : WithTop ℕ∞) Ainf U)
-    (hBc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (B n) D)
-    (hBinfC : ContDiffOn Real (∞ : WithTop ℕ∞) Binf D)
-    (hmapInf : Set.MapsTo Ainf U D)
-    (hmap : ∀ n, Set.MapsTo (A n) U D) :
-    MapCInfConvOnCompacts U
-      (fun n z ↦ _root_.DifferentialGeometry.HCGCompactness.pullbackForm
-        (B n (A n z), fderiv Real (A n) z))
-      (fun z ↦ _root_.DifferentialGeometry.HCGCompactness.pullbackForm
-        (Binf (Ainf z), fderiv Real Ainf z)) := by
-  have hBA : MapCInfConvOnCompacts U
-      (fun n z ↦ B n (A n z)) (fun z ↦ Binf (Ainf z)) :=
-    MapCInfConvOnCompacts.comp hU hD hA hB hAc hAinfC hBc hBinfC
-      hmapInf hmap
-  have hDA : MapCInfConvOnCompacts U
-      (fun n z ↦ fderiv Real (A n) z) (fun z ↦ fderiv Real Ainf z) :=
-    hA.fderivOn hU hAc hAinfC
-  have hBAc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
-      (fun z ↦ B n (A n z)) U := by
-    intro n
-    simpa only [Function.comp_def] using
-      ContDiffOn.comp (hBc n) (hAc n) (hmap n)
-  have hBAinfC : ContDiffOn Real (∞ : WithTop ℕ∞)
-      (fun z ↦ Binf (Ainf z)) U := by
-    simpa only [Function.comp_def] using
-      ContDiffOn.comp hBinfC hAinfC hmapInf
-  have hDAc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
-      (fun z ↦ fderiv Real (A n) z) U := by
-    intro n z hz
-    exact (((hAc n).contDiffAt (hU.mem_nhds hz)).fderiv_right
-      (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt
-  have hDAinfC : ContDiffOn Real (∞ : WithTop ℕ∞)
-      (fun z ↦ fderiv Real Ainf z) U := by
-    intro z hz
-    exact ((hAinfC.contDiffAt (hU.mem_nhds hz)).fderiv_right
-      (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt
-  exact hBA.pullbackForm hU hDA hBAc hBAinfC hDAc hDAinfC
-
-theorem pullback_sub_norm
-    {V : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
-    (B₀ B₁ : V →L[Real] V →L[Real] Real) (A : V →L[Real] V) :
-    ‖_root_.DifferentialGeometry.HCGCompactness.pullbackForm (B₁, A) - B₀‖ ≤
-      ‖B₁‖ * ‖A - ContinuousLinearMap.id Real V‖ * (1 + ‖A‖) + ‖B₁ - B₀‖ := by
-  refine ContinuousLinearMap.opNorm_le_bound₂ _ (by positivity) fun v w ↦ ?_
-  simpa only [sub_apply,
-    _root_.DifferentialGeometry.HCGCompactness.pullbackForm_apply,
-    Real.norm_eq_abs, mul_assoc] using
-      (bilinPerturbTri (B₀ := B₀) (B₁ := B₁) (A := A) v w)
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -370,7 +307,7 @@ theorem HasStageJetData.coeff_tail
               (1 + ‖fderiv Real Fkl z‖) +
           ‖normalCoordMetric (I := I) Yl cl (Fkl z) -
             normalCoordMetric (I := I) Yk ck z‖ :=
-      pullback_sub_norm _ _ _
+      norm_pullbackForm_sub_le _ _ _
     _ ≤ 2 * tau * (2 + tau) + 3 * tau := by
       have hfactor : 1 + ‖fderiv Real Fkl z‖ ≤ 2 + tau := by
         linarith [hfderivNorm]
@@ -667,7 +604,7 @@ theorem HasStageJetData.pb_conv
     · simp only [Ap, if_neg hn]
       intro z hz
       exact hVD hz
-  have hpb := MapCInfConvOnCompacts.pullbackAlong
+  have hpb := MapCInfConvOnCompacts.pullbackForm_comp_fderiv
     (V := E) (W := E) hVopen Metric.isOpen_ball
       hApconv hBpconv hApc
       (contDiff_id : ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn

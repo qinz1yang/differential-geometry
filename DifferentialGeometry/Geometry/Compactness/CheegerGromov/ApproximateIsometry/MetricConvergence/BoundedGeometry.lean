@@ -1,8 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricBridge
-
-
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricConvergence.StageJet
 
 set_option autoImplicit false
 
@@ -299,7 +296,7 @@ theorem HasStageJetDataOn.pb_conv
     · simpa only [Ap, if_pos hn] using (hN n hn).2.1
     · intro z hz
       simpa only [Ap, if_neg hn, id_eq] using hVD hz
-  have hpb := MapCInfConvOnCompacts.pullbackAlong
+  have hpb := MapCInfConvOnCompacts.pullbackForm_comp_fderiv
     (V := E) (W := E) hVopen hDopen
       hApconv hBpconv hApc
       (contDiff_id : ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn
