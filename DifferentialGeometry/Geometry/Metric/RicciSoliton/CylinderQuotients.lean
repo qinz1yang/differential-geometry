@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderIsometry
+import DifferentialGeometry.Geometry.Metric.Quotient
 import DifferentialGeometry.Geometry.Metric.Pullback.Euclidean
 import DifferentialGeometry.Geometry.Metric.Pullback.Product
 import DifferentialGeometry.Geometry.Metric.Sphere.FreeOrthogonalAction
@@ -792,6 +793,88 @@ theorem cylinderDiagonalQuotientMap_eq_iff
     · rw [h]
       refine ⟨cylinderDiagonalGroupGenerator, ?_⟩
       exact cylinderDiagonalGroupGenerator_smul y
+
+theorem cylinderAntipodalQuotientMap_metricFiberCompatible :
+    metricFiberCompatible roundThreeCylinderShrinkerMetric
+      cylinderAntipodalQuotientMap
+      cylinderAntipodalQuotientMap_isLocalDiffeomorph := by
+  intro x y hxy
+  rcases cylinderAntipodalQuotientMap_eq_iff.mp hxy with h | h
+  · subst x
+    cases hxy
+    rfl
+  · subst x
+    let Phi := cylinderAntipodalDiffeomorph
+    have hcomp : cylinderAntipodalQuotientMap ∘
+        (Phi : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → _) =
+      cylinderAntipodalQuotientMap := by
+      funext z
+      exact cylinderAntipodalQuotientMap_eq_iff.mpr (Or.inr rfl)
+    exact localPushInner_eq_of_fiber_preserving_isometry
+      roundThreeCylinderShrinkerMetric cylinderAntipodalQuotientMap
+      cylinderAntipodalQuotientMap_isLocalDiffeomorph Phi hcomp
+      cylinderAntipodalDiffeomorph_pullbackMetric y
+
+theorem cylinderDiagonalQuotientMap_metricFiberCompatible :
+    metricFiberCompatible roundThreeCylinderShrinkerMetric
+      cylinderDiagonalQuotientMap
+      cylinderDiagonalQuotientMap_isLocalDiffeomorph := by
+  intro x y hxy
+  rcases cylinderDiagonalQuotientMap_eq_iff.mp hxy with h | h
+  · subst x
+    cases hxy
+    rfl
+  · subst x
+    let Phi := cylinderDiagonalDiffeomorph
+    have hcomp : cylinderDiagonalQuotientMap ∘
+        (Phi : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → _) =
+      cylinderDiagonalQuotientMap := by
+      funext z
+      exact cylinderDiagonalQuotientMap_eq_iff.mpr (Or.inr rfl)
+    exact localPushInner_eq_of_fiber_preserving_isometry
+      roundThreeCylinderShrinkerMetric cylinderDiagonalQuotientMap
+      cylinderDiagonalQuotientMap_isLocalDiffeomorph Phi hcomp
+      cylinderDiagonalDiffeomorph_pullbackMetric y
+
+noncomputable def cylinderAntipodalQuotientMetric :
+    SmoothRiemannianMetric ((𝓡 2).prod 𝓘(Real, Real))
+      CylinderAntipodalQuotient :=
+  descendedMetric roundThreeCylinderShrinkerMetric
+    cylinderAntipodalQuotientMap
+    cylinderAntipodalQuotientMap_isLocalDiffeomorph
+    cylinderAntipodalQuotientMap_surjective
+    cylinderAntipodalQuotientMap_metricFiberCompatible
+
+noncomputable def cylinderDiagonalQuotientMetric :
+    SmoothRiemannianMetric ((𝓡 2).prod 𝓘(Real, Real))
+      CylinderDiagonalQuotient :=
+  descendedMetric roundThreeCylinderShrinkerMetric
+    cylinderDiagonalQuotientMap
+    cylinderDiagonalQuotientMap_isLocalDiffeomorph
+    cylinderDiagonalQuotientMap_surjective
+    cylinderDiagonalQuotientMap_metricFiberCompatible
+
+theorem localPullMetric_cylinderAntipodalQuotientMetric :
+    localPullMetric cylinderAntipodalQuotientMetric
+        cylinderAntipodalQuotientMap
+        cylinderAntipodalQuotientMap_isLocalDiffeomorph =
+      roundThreeCylinderShrinkerMetric :=
+  localPullMetric_descendedMetric roundThreeCylinderShrinkerMetric
+    cylinderAntipodalQuotientMap
+    cylinderAntipodalQuotientMap_isLocalDiffeomorph
+    cylinderAntipodalQuotientMap_surjective
+    cylinderAntipodalQuotientMap_metricFiberCompatible
+
+theorem localPullMetric_cylinderDiagonalQuotientMetric :
+    localPullMetric cylinderDiagonalQuotientMetric
+        cylinderDiagonalQuotientMap
+        cylinderDiagonalQuotientMap_isLocalDiffeomorph =
+      roundThreeCylinderShrinkerMetric :=
+  localPullMetric_descendedMetric roundThreeCylinderShrinkerMetric
+    cylinderDiagonalQuotientMap
+    cylinderDiagonalQuotientMap_isLocalDiffeomorph
+    cylinderDiagonalQuotientMap_surjective
+    cylinderDiagonalQuotientMap_metricFiberCompatible
 
 private theorem cylinderDiagonalOrbitRel_iff_threeSphereAwayFromRealProjectivePunctureOrbitRel
     (x y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :

@@ -138,6 +138,56 @@ private theorem cast_localPushInner_apply
   cases hxy
   exact localPushInner_apply g f hf x v w
 
+omit [IsManifold I ∞ N] in
+theorem localPushInner_eq_of_fiber_preserving_isometry
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) (f : M → N)
+    (hf : IsLocalDiffeomorph I I ∞ f)
+    (Phi : M ≃ₘ⟮I, I⟯ M)
+    (hcomp : f ∘ (Phi : M → M) = f)
+    (hmetric : Diffeomorph.pullbackMetric g Phi = g)
+    (x : M) :
+    congrFun hcomp x ▸ localPushInner g f hf (Phi x) =
+      localPushInner g f hf x := by
+  let hmap : f (Phi x) = f x := congrFun hcomp x
+  let A : TangentSpace I (Phi x) ≃L[Real] TangentSpace I (f x) :=
+    hmap ▸ hf.mfderivToContinuousLinearEquiv infty_ne_zero (Phi x)
+  let B : TangentSpace I x ≃L[Real] TangentSpace I (f x) :=
+    hf.mfderivToContinuousLinearEquiv infty_ne_zero x
+  let C : TangentSpace I x ≃L[Real] TangentSpace I (Phi x) :=
+    Phi.mfderivToContinuousLinearEquiv infty_ne_zero x
+  have hchain := mfderiv_comp x
+    (hf.contMDiff.mdifferentiableAt infty_ne_zero)
+    (Phi.contMDiff.mdifferentiableAt infty_ne_zero)
+  rw [hcomp] at hchain
+  have hAC (u : TangentSpace I x) : A (C u) = B u := by
+    have hu := ContinuousLinearMap.ext_iff.mp hchain u
+    change A (C u) = B u
+    dsimp only [A, B, C]
+    rw [cast_continuousLinearEquiv_apply]
+    change hmap ▸ mfderiv I I f (Phi x) (mfderiv I I Phi x u) =
+      mfderiv I I f x u
+    exact cast_tangent_eq_of_heq hmap _ _ (heq_of_eq hu.symm)
+  have hinv (v : TangentSpace I (f x)) : A.symm v = C (B.symm v) := by
+    apply A.injective
+    rw [A.apply_symm_apply, hAC, B.apply_symm_apply]
+  have hisometry (u z : TangentSpace I x) :
+      g.inner (Phi x) (C u) (C z) = g.inner x u z := by
+    have h := Diffeomorph.pullbackMetric_inner g Phi x u z
+    rw [hmetric] at h
+    change g.inner (Phi x) (mfderiv I I Phi x u)
+      (mfderiv I I Phi x z) = g.inner x u z
+    exact h.symm
+  apply ContinuousLinearMap.ext
+  intro v
+  apply ContinuousLinearMap.ext
+  intro w
+  rw [cast_localPushInner_apply, localPushInner_apply]
+  change g.inner (Phi x) (A.symm v) (A.symm w) =
+    g.inner x (B.symm v) (B.symm w)
+  rw [hinv, hinv]
+  exact hisometry (B.symm v) (B.symm w)
+
 omit [FiniteDimensional Real E] [IsManifold I ∞ N] in
 private theorem descendedInner_symm
     (g : SmoothRiemannianMetric I M) (f : M → N)
