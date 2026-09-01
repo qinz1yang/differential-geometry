@@ -407,7 +407,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             exact le_max_left _ _
       have hFclosedSep : MapMetricApproximationBoundsOn (I := I)
           (Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
-          (PartialDiffeomorph.trans (I := I)
+          (_root_.PartialDiffeomorph.trans (I := I)
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l) (Ψ (s + l)) :
               (X.obj (σ s)).M → (X.obj (σ (s + l + 1))).M)
           (X.obj (σ s)).metric (X.obj (σ (s + l + 1))).metric :=
@@ -515,12 +515,12 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             dsimp [covNext]
             exact le_max_right _ _
       have hRclosedSep : MapMetricApproximationBoundsOn (I := I)
-          ((PartialDiffeomorph.trans (I := I) (Ψ s)
+          ((_root_.PartialDiffeomorph.trans (I := I) (Ψ s)
               (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
                 htail_index) :
                 (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) ''
             Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
-          ((PartialDiffeomorph.trans (I := I) (Ψ s)
+          ((_root_.PartialDiffeomorph.trans (I := I) (Ψ s)
               (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
                 htail_index)).symm :
                 (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
@@ -544,7 +544,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1) :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M)
             =
-          (PartialDiffeomorph.trans (I := I)
+          (_root_.PartialDiffeomorph.trans (I := I)
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l) (Ψ (s + l)) :
               (X.obj (σ s)).M → (X.obj (σ (s + l + 1))).M) := by
         funext x
@@ -555,7 +555,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
               (s + (l + 1)) rfl :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M)
             =
-          (PartialDiffeomorph.trans (I := I) (Ψ s)
+          (_root_.PartialDiffeomorph.trans (I := I) (Ψ s)
             (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l
               (s + 1) (s + (l + 1)) htail_index) :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) := by
@@ -577,7 +577,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
               (s + (l + 1)) rfl).symm :
               (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
             =
-          ((PartialDiffeomorph.trans (I := I) (Ψ s)
+          ((_root_.PartialDiffeomorph.trans (I := I) (Ψ s)
             (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l
               (s + 1) (s + (l + 1)) htail_index)).symm :
               (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M) := by

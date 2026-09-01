@@ -88,12 +88,12 @@ noncomputable def compSepRev
     (D₁ : PartialDiffeomorphMetricApproximationBounds (I := I) (U₁ : Set M) c0 cov p Φ g h)
     (D₂ : PartialDiffeomorphMetricApproximationBounds (I := I) (K₂ : Set N) c0' cov' p Φ' h h') :
     MapMetricApproximationBoundsOn (I := I)
-      ((PartialDiffeomorph.trans (I := I) Φ Φ' : M → P) '' K)
+      ((_root_.PartialDiffeomorph.trans (I := I) Φ Φ' : M → P) '' K)
       c0'' cov'' p
-      ((PartialDiffeomorph.trans (I := I) Φ Φ').symm : P → M) h' g := by
+      ((_root_.PartialDiffeomorph.trans (I := I) Φ Φ').symm : P → M) h' g := by
   let _ := hSigmaCompactN
   classical
-  set Ψ := PartialDiffeomorph.trans (I := I) Φ Φ' with hΨdef
+  set Ψ := _root_.PartialDiffeomorph.trans (I := I) Φ Φ' with hΨdef
   have hsrcU : (U₁ : Set M) ⊆ Ψ.source := by
     intro y hy
     exact ⟨hU₁ hy, hK₂ (himg (Set.mem_image_of_mem _ hy))⟩

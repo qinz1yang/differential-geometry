@@ -8,86 +8,39 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
 
 open scoped Manifold ContDiff
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
-variable [FiniteDimensional Real E]
-variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
-variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
-
-section PartialTrans
-
-noncomputable def PartialDiffeomorph.trans {P : Type u} [TopologicalSpace P]
-    [ChartedSpace H P] [hManifoldP : IsManifold I ∞ P]
-    (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
-    (Φ' : PartialDiffeomorph I I N P (∞ : WithTop ℕ∞)) :
-    PartialDiffeomorph I I M P (∞ : WithTop ℕ∞) where
-  toPartialEquiv := Φ.toPartialEquiv.trans Φ'.toPartialEquiv
-  open_source := by
-    let _ := hManifoldP
-    have hsrc : (Φ.toPartialEquiv.trans Φ'.toPartialEquiv).source
-        = Φ.source ∩ (Φ : M → N) ⁻¹' Φ'.source := rfl
-    rw [hsrc]
-    exact Φ.contMDiffOn_toFun.continuousOn.isOpen_inter_preimage Φ.open_source
-      Φ'.open_source
-  open_target := by
-    have htgt : (Φ.toPartialEquiv.trans Φ'.toPartialEquiv).target
-        = Φ'.target ∩ (Φ'.symm : P → N) ⁻¹' Φ.target := by
-      rw [PartialEquiv.trans_target]
-      rfl
-    rw [htgt]
-    exact Φ'.symm.contMDiffOn_toFun.continuousOn.isOpen_inter_preimage Φ'.open_target
-      Φ.open_target
-  contMDiffOn_toFun := by
-    have hsrc : (Φ.toPartialEquiv.trans Φ'.toPartialEquiv).source
-        = Φ.source ∩ (Φ : M → N) ⁻¹' Φ'.source := rfl
-    rw [hsrc]
-    exact Φ'.contMDiffOn_toFun.comp
-      (Φ.contMDiffOn_toFun.mono Set.inter_subset_left)
-      (fun y hy => hy.2)
-  contMDiffOn_invFun := by
-    have htgt : (Φ.toPartialEquiv.trans Φ'.toPartialEquiv).target
-        = Φ'.target ∩ (Φ'.symm : P → N) ⁻¹' Φ.target := by
-      rw [PartialEquiv.trans_target]
-      rfl
-    rw [htgt]
-    exact Φ.symm.contMDiffOn_toFun.comp
-      (Φ'.symm.contMDiffOn_toFun.mono Set.inter_subset_left)
-      (fun y hy => hy.2)
-
-end PartialTrans
-
-
-section Chain
+variable {I : ModelWithCorners Real E H}
 
 noncomputable def PartialDiffeomorph.refl (M : Type u) [TopologicalSpace M]
-    [ChartedSpace H M] [hManifold : IsManifold I ∞ M] :
+    [ChartedSpace H M] :
     PartialDiffeomorph I I M M (∞ : WithTop ℕ∞) where
   toPartialEquiv := PartialEquiv.refl M
-  open_source := let _ := hManifold; isOpen_univ
+  open_source := isOpen_univ
   open_target := isOpen_univ
   contMDiffOn_toFun := contMDiff_id.contMDiffOn
   contMDiffOn_invFun := contMDiff_id.contMDiffOn
 
+namespace HCGCompactness
+
+section Chain
+
 noncomputable def chainComp {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞)) (j l : ℕ) :
     PartialDiffeomorph I I (Mf j) (Mf (j + l)) (∞ : WithTop ℕ∞) :=
   Nat.rec
     (motive := fun l => PartialDiffeomorph I I (Mf j) (Mf (j + l)) (∞ : WithTop ℕ∞))
     (PartialDiffeomorph.refl (I := I) (Mf j))
     (fun l prev =>
-      PartialDiffeomorph.trans (E := E) (H := H) (I := I) (M := Mf j)
-        (N := Mf (j + l)) (P := Mf (j + l + 1)) prev (Ψ (j + l)))
+      _root_.PartialDiffeomorph.trans (I := I) prev (Ψ (j + l)))
     l
 
 noncomputable def chainComp' {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞)) :
     ∀ (l j m : ℕ), j + l = m → PartialDiffeomorph I I (Mf j) (Mf m) (∞ : WithTop ℕ∞) :=
   Nat.rec
@@ -95,12 +48,10 @@ noncomputable def chainComp' {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf 
       PartialDiffeomorph I I (Mf j) (Mf m) (∞ : WithTop ℕ∞))
     (fun j m h => (Nat.add_zero j ▸ h : j = m) ▸ PartialDiffeomorph.refl (I := I) (Mf j))
     (fun l ih j m h =>
-      PartialDiffeomorph.trans (E := E) (H := H) (I := I) (M := Mf j)
-        (N := Mf (j + 1)) (P := Mf m) (Ψ j) (ih (j + 1) m (by omega)))
+      _root_.PartialDiffeomorph.trans (I := I) (Ψ j) (ih (j + 1) m (by omega)))
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp_apply_succ {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (j l : ℕ) (x : Mf j) :
     (chainComp (I := I) (Mf := Mf) Ψ j (l + 1) : Mf j → Mf (j + (l + 1))) x
@@ -108,9 +59,8 @@ theorem chainComp_apply_succ {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf 
           ((chainComp (I := I) (Mf := Mf) Ψ j l : Mf j → Mf (j + l)) x) :=
   rfl
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp_base {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (b : ∀ j, Mf j)
     (hbase : ∀ j, (Ψ j : Mf j → Mf (j + 1)) (b j) = b (j + 1))
@@ -125,9 +75,8 @@ theorem chainComp_base {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
         b ((j + l) + 1)
       exact hbase (j + l)
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp_add_apply {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (j a b : ℕ) (x : Mf j) :
     cast (congrArg Mf (Nat.add_assoc j a b).symm)
@@ -174,13 +123,12 @@ theorem chainComp_add_apply {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j
               rw [ih]
 
 noncomputable def chainCompAssoc {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (j a b : ℕ) :
     PartialDiffeomorph I I (Mf j) (Mf ((j + a) + b)) (∞ : WithTop ℕ∞) :=
   (Nat.add_assoc j a b).symm ▸ chainComp (I := I) (Mf := Mf) Ψ j (a + b)
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 private theorem targetCast_source {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)]
     {j l m : ℕ} (h : l = m)
@@ -189,9 +137,8 @@ private theorem targetCast_source {Mf : ℕ → Type u} [∀ j, TopologicalSpace
   subst h
   rfl
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainAssoc_source {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (j a b : ℕ) :
     (chainCompAssoc (I := I) (Mf := Mf) Ψ j a b).source =
@@ -200,9 +147,8 @@ theorem chainAssoc_source {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     targetCast_source (I := I) (Nat.add_assoc j a b).symm
       (chainComp (I := I) (Mf := Mf) Ψ j (a + b))
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainCompAssoc_apply {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (j a b : ℕ) (x : Mf j) :
     (chainCompAssoc (I := I) (Mf := Mf) Ψ j a b : Mf j → Mf ((j + a) + b)) x =
@@ -219,9 +165,8 @@ theorem chainCompAssoc_apply {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf 
   rw [cast_apply]
   exact chainComp_add_apply (I := I) (Mf := Mf) Ψ j a b x
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainCompAssoc_eq {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (j a b : ℕ) :
     (chainCompAssoc (I := I) (Mf := Mf) Ψ j a b : Mf j → Mf ((j + a) + b)) =
@@ -231,9 +176,8 @@ theorem chainCompAssoc_eq {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
   funext x
   exact chainCompAssoc_apply (I := I) (Mf := Mf) Ψ j a b x
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp'_apply_succ {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (l j m : ℕ) (h : j + (l + 1) = m) (x : Mf j) :
     (chainComp' (I := I) (Mf := Mf) Ψ (l + 1) j m h : Mf j → Mf m) x
@@ -241,9 +185,8 @@ theorem chainComp'_apply_succ {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf
           ((Ψ j : Mf j → Mf (j + 1)) x) :=
   rfl
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp'_apply_zero {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (j m : ℕ) (h : j + 0 = m) (x : Mf j) :
     (chainComp' (I := I) (Mf := Mf) Ψ 0 j m h : Mf j → Mf m) x
@@ -252,9 +195,8 @@ theorem chainComp'_apply_zero {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf
   subst hj
   rfl
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp'_snoc {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞)) :
     ∀ (l j m : ℕ) (h : j + (l + 1) = m) (x : Mf j),
       (chainComp' (I := I) (Mf := Mf) Ψ (l + 1) j m h : Mf j → Mf m) x
@@ -286,9 +228,8 @@ theorem chainComp'_snoc {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
       rw [hcast (j + (l + 1)) (by omega)]
       simp only [eqRec_eq_cast]
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp_eq_right {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (l j : ℕ) :
     (chainComp (I := I) (Mf := Mf) Ψ j l : Mf j → Mf (j + l))
@@ -302,9 +243,8 @@ theorem chainComp_eq_right {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)
   | succ l ih =>
       rw [chainComp_apply_succ, ih j, chainComp'_snoc]
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp_coe_head {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞)) :
     ∀ (l j : ℕ) (x : Mf j),
       (chainComp (I := I) (Mf := Mf) Ψ j (l + 1) : Mf j → Mf (j + (l + 1))) x

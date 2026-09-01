@@ -81,7 +81,7 @@ noncomputable def sepDataComp {P : Type u} [TopologicalSpace P] [ChartedSpace H 
     (D₁ : PartialDiffeomorphMetricApproximationBounds (I := I) (U₁ : Set M) c0 cov p Φ g h)
     (D₂ : PartialDiffeomorphMetricApproximationBounds (I := I) (K₂ : Set N) c0' cov' p Φ' h h') :
     PartialDiffeomorphMetricApproximationBounds (I := I) K c0'' cov'' p
-      (PartialDiffeomorph.trans (I := I) Φ Φ') g h' where
+      (_root_.PartialDiffeomorph.trans (I := I) Φ Φ') g h' where
   source_sub := by
     intro y hy
     exact ⟨hU₁ (hKU hy), hK₂ (himg (Set.mem_image_of_mem _ (hKU hy)))⟩

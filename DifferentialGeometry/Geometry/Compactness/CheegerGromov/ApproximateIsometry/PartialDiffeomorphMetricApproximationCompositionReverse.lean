@@ -79,11 +79,11 @@ theorem partialData_comp_reverse
       ε' / (1 - ε') + ε * max C 2 ≤ ε'' →
       ε'' < 1 →
       Nonempty (MapMetricApproximationOn (I := I)
-        ((PartialDiffeomorph.trans (I := I) Φ Φ' : M → P) '' K) ε'' p
-        ((PartialDiffeomorph.trans (I := I) Φ Φ').symm : P → M) h' g) := by
+        ((_root_.PartialDiffeomorph.trans (I := I) Φ Φ' : M → P) '' K) ε'' p
+        ((_root_.PartialDiffeomorph.trans (I := I) Φ Φ').symm : P → M) h' g) := by
   let _ := hSigmaCompactN
   classical
-  set Ψ := PartialDiffeomorph.trans (I := I) Φ Φ' with hΨdef
+  set Ψ := _root_.PartialDiffeomorph.trans (I := I) Φ Φ' with hΨdef
   have hsrcU : (U₁ : Set M) ⊆ Ψ.source := by
     intro y hy
     exact ⟨hU₁ hy, hK₂ (himg (Set.mem_image_of_mem _ hy))⟩

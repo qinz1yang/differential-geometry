@@ -71,13 +71,13 @@ theorem partialData_comp {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [I
       ε' / (1 - ε') + ε * max C 2 ≤ ε'' →
       ε'' < 1 →
       Nonempty (PartialDiffeomorphMetricApproximation (I := I) K ε'' p
-        (PartialDiffeomorph.trans (I := I) Φ Φ') g h') := by
+        (_root_.PartialDiffeomorph.trans (I := I) Φ Φ') g h') := by
   intro ε'' hlb1 hlb2 hub
   obtain ⟨Dforward⟩ := partialData_comp_forward (I := I) Φ Φ' hU₁ hK₂ himg
     hK hKU hε2 C hC0 hC g h h' D₁ D₂ ε'' hlb1 hub
   obtain ⟨Dreverse⟩ := partialData_comp_reverse (I := I) Φ Φ' hU₁ hK₂ himg
     hK hKU hε'2 C hC0 hC g h h' D₁ D₂ ε'' hlb2 hub
-  have hsource : K ⊆ (PartialDiffeomorph.trans (I := I) Φ Φ').source := by
+  have hsource : K ⊆ (_root_.PartialDiffeomorph.trans (I := I) Φ Φ').source := by
     intro y hy
     exact ⟨hU₁ (hKU hy), hK₂ (himg (Set.mem_image_of_mem _ (hKU hy)))⟩
   exact ⟨⟨hsource, Dforward, Dreverse⟩⟩
