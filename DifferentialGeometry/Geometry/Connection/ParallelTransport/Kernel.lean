@@ -120,6 +120,35 @@ theorem transport_mem_iff (h : IsTransportInvariantSubmoduleFamily V P S)
   · intro hv
     exact ⟨v, hv, rfl⟩
 
+theorem orthogonal (h : IsTransportInvariantSubmoduleFamily V P S) :
+    IsTransportInvariantSubmoduleFamily V P
+      (fun x => Submodule.orthogonal (S x)) := by
+  intro x y
+  calc
+    Submodule.map (P.transport x y).toLinearMap
+        (Submodule.orthogonal (S x)) =
+      Submodule.orthogonal
+        (Submodule.map (P.transport x y).toLinearMap (S x)) := by
+          exact Submodule.map_orthogonal_equiv (S x) (P.transport x y)
+    _ = Submodule.orthogonal (S y) :=
+      congrArg Submodule.orthogonal (h x y)
+
+theorem range_of_isSymmetric
+    [∀ x, FiniteDimensional ℝ (V x)]
+    {A : ∀ x, V x →L[ℝ] V x}
+    (hker : IsTransportInvariantSubmoduleFamily V P (fun x => (A x).ker))
+    (hA : ∀ x, (A x : V x →ₗ[ℝ] V x).IsSymmetric) :
+    IsTransportInvariantSubmoduleFamily V P (fun x => (A x).range) := by
+  have hrange (x : X) :
+      (A x).range = Submodule.orthogonal (A x).ker := by
+    rw [← (hA x).orthogonal_range]
+    exact (A x).range.orthogonal_orthogonal.symm
+  intro x y
+  change Submodule.map (P.transport x y).toLinearMap (A x).range =
+    (A y).range
+  rw [hrange x, hrange y]
+  exact orthogonal (V := V) hker x y
+
 end IsTransportInvariantSubmoduleFamily
 
 def IsTransportInvariantAlternatingSubmoduleFamily
