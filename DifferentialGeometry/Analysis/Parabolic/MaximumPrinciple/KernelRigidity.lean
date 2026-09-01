@@ -327,6 +327,99 @@ theorem kernel_reaction_inner_eq_zero_of_constant_rank
       (hB _ (hzker (t, x) htxU)) hevolution
   simpa only [hzpoint] using hzrigid.2
 
+theorem kernel_isCovariantlyInvariant_of_constant_rank
+    (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
+    [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯)
+    {W : Set (ℝ × M)} (hW : IsOpen W)
+    (hAspace : ContMDiffOnSpacetimeEndomorphism
+      (I := I) (F := F) (V := V) (n := ∞)
+      (fun t x => A t x) W)
+    (k : ℕ) (hker : ∀ p ∈ W, Module.finrank ℝ (A p.1 p.2).ker = k)
+    {t : ℝ} (htW : ∀ x, (t, x) ∈ W)
+    (hA : ∀ x, (A t x : V x →ₗ[ℝ] V x).IsSymmetric)
+    (hApos : ∀ x, (A t x).IsPositive)
+    (Z : ∀ x, TangentSpace I x) (B : ∀ x, V x →L[ℝ] V x)
+    (hAt : ∀ x, DifferentiableAt ℝ (fun s => A s x) t)
+    (hB : ∀ x v, A t x v = 0 → 0 ≤ inner ℝ (B x v) v)
+    (hevolution : ∀ x,
+      deriv (fun s => A s x) t =
+        rawBundleEndomorphismConnLap (I := I) g cov (fun y => A t y) x +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V cov cov (fun y => A t y) x (Z x) + B x) :
+    IsCovariantlyInvariantSubmoduleFamily cov (fun x => (A t x).ker) := by
+  have hderivKer : ∀ (x : M) (Y : TangentSpace I x) (v : V x),
+      v ∈ (A t x).ker →
+        (HomConnectionGen.homBundleCovariantDerivativeGen
+          I M F V F V cov cov (fun y => A t y) x Y) v = 0 := by
+    intro x Y v hv
+    obtain ⟨U, w, hU, htxU, _, _, hwspan, hwsmooth, hwderiv⟩ :=
+      exists_local_kernel_frame_covariantDerivative_mem_and_reaction_inner_eq_zero
+        g cov hcov A hW hAspace k hker (htW x) hA (hApos x)
+          (Z x) (B x) (hAt x) (hB x) (hevolution x)
+    have hvspan : v ∈ Submodule.span ℝ (Set.range (w · (t, x))) := by
+      rw [hwspan (t, x) htxU]
+      exact hv
+    obtain ⟨a, ha⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hvspan
+    rw [← ha, map_sum]
+    apply Finset.sum_eq_zero
+    intro i hi
+    rw [map_smul]
+    suffices (HomConnectionGen.homBundleCovariantDerivativeGen
+        I M F V F V cov cov (fun y => A t y) x Y) (w i (t, x)) = 0 by
+      rw [this, smul_zero]
+    let S : Set M := (fun y : M => (t, y)) ⁻¹' U
+    have hS : IsOpen S := hU.preimage (continuous_const.prodMk continuous_id)
+    have hxS : x ∈ S := htxU
+    have hwslice : ContMDiffOn I (I.prod (modelWithCornersSelf ℝ F)) ∞
+        (fun y => TotalSpace.mk' F y (w i (t, y))) S :=
+      contMDiffOn_fixed_time_of_contMDiffOn_pullback_section (hwsmooth i)
+        (fun y hy => hy)
+    obtain ⟨w', hw'⟩ := exists_contMDiffSection_eqOn_nhd
+      (I := I) (F := F) (V := V) (n := (⊤ : ℕ∞))
+      (s := fun _ : Unit => fun y => w i (t, y))
+      (u := S) (fun _ => hwslice) hS hxS
+    let w₀ : Cₛ^∞⟮I; F, V⟯ := w' ()
+    have hw₀eq : ∀ᶠ y in nhds x, w₀ y = w i (t, y) := by
+      filter_upwards [hw'] with y hy
+      exact hy ()
+    obtain ⟨O, hOSub, hO, hxO⟩ := mem_nhds_iff.mp hw₀eq
+    let Q := O ∩ S
+    have hQ : IsOpen Q := hO.inter hS
+    have hxQ : x ∈ Q := ⟨hxO, hxS⟩
+    have hw₀ker : ∀ y ∈ Q, A t y (w₀ y) = 0 := by
+      intro y hy
+      rw [hOSub hy.1]
+      apply LinearMap.mem_ker.mp
+      rw [← hwspan (t, y) hy.2]
+      exact Submodule.subset_span (Set.mem_range_self i)
+    have hcovEq : cov (fun y => w₀ y) x = cov (fun y => w i (t, y)) x := by
+      have hlocalDiff : MDiffAt (T% fun y : M => w i (t, y)) x :=
+        ((hwslice x hxS).contMDiffAt (hS.mem_nhds hxS)).mdifferentiableAt (by simp)
+      exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+        w₀.mdifferentiableAt hlocalDiff Filter.univ_mem hw₀eq
+    have happly :=
+      HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_eventually_mem_ker
+        cov (A t) w₀ hQ hxQ hw₀ker Y
+    have hcovmem : cov (fun y => w₀ y) x Y ∈ (A t x).ker := by
+      rw [hcovEq]
+      exact (hwderiv i).1 Y
+    have hcovzero : A t x (cov (w₀ : (y : M) → V y) x Y) = 0 :=
+      LinearMap.mem_ker.mp hcovmem
+    rw [hcovzero, neg_zero] at happly
+    simpa only [hw₀eq.self_of_nhds] using happly
+  intro s U hU hs x hx Y
+  have hsKer : ∀ y ∈ U, A t y (s y) = 0 := by
+    intro y hy
+    exact LinearMap.mem_ker.mp (hs y hy)
+  have happly :=
+    HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_eventually_mem_ker
+      cov (A t) s hU hx hsKer Y
+  have hzero := hderivKer x Y (s x) (hs x hx)
+  rw [hzero] at happly
+  apply LinearMap.mem_ker.mpr
+  exact neg_eq_zero.mp happly.symm
+
 omit [IsContMDiffRiemannianBundle I 1 F V] in
 theorem kernel_motion_of_isCovariantlyInvariant
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
