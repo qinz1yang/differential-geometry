@@ -58,4 +58,32 @@ theorem normalizedGradientRicciSoliton_metricCurvatureOperatorRankAt_eq_zero_or_
         exact hdim)
       (hcone x) (hdefect x)
 
+theorem normalizedGradientRicciSoliton_metricCurvatureOperatorRankAt_eq_one_or_three_of_compact_of_finrank_eq_three_of_nonnegative_of_not_isGaussian
+    [CompactSpace M] [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 3)
+    (hnot : ¬ isGaussianGradientRicciSoliton (E := E) g f 1)
+    (hcone : ∀ x : M,
+      metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x ∈
+        algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M)) :
+    ∀ x : M,
+      metricCurvatureOperatorRankAt (I := I) g x (by
+        rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+        exact hdim) = 1 ∨
+      metricCurvatureOperatorRankAt (I := I) g x (by
+        rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+        exact hdim) = 3 := by
+  let _ : NeZero (Module.finrank Real E) := ⟨by
+    rw [hdim]
+    norm_num⟩
+  intro x
+  rcases normalizedGradientRicciSoliton_metricCurvatureOperatorRankAt_eq_zero_or_one_or_three_of_compact_of_finrank_eq_three_of_nonnegative_of_not_isGaussian
+      (I := I) (M := M) h hdim hnot hcone x with hzero | hone | hthree
+  · exact False.elim (hnot
+      (normalizedGradientRicciSoliton_isGaussian_of_curvatureOperatorRankAt_eq_zero
+        (I := I) (M := M) h hdim x hzero))
+  · exact Or.inl hone
+  · exact Or.inr hthree
+
 end DifferentialGeometry.Geometry
