@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PullbackCovariantNaturality
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
-
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -23,48 +23,6 @@ variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
-
-section PartialTrans
-
-noncomputable def PartialDiffeomorph.trans {P : Type u} [TopologicalSpace P]
-    [ChartedSpace H P] [hManifoldP : IsManifold I ∞ P]
-    (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
-    (Φ' : PartialDiffeomorph I I N P (∞ : WithTop ℕ∞)) :
-    PartialDiffeomorph I I M P (∞ : WithTop ℕ∞) where
-  toPartialEquiv := Φ.toPartialEquiv.trans Φ'.toPartialEquiv
-  open_source := by
-    let _ := hManifoldP
-    have hsrc : (Φ.toPartialEquiv.trans Φ'.toPartialEquiv).source
-        = Φ.source ∩ (Φ : M → N) ⁻¹' Φ'.source := rfl
-    rw [hsrc]
-    exact Φ.contMDiffOn_toFun.continuousOn.isOpen_inter_preimage Φ.open_source
-      Φ'.open_source
-  open_target := by
-    have htgt : (Φ.toPartialEquiv.trans Φ'.toPartialEquiv).target
-        = Φ'.target ∩ (Φ'.symm : P → N) ⁻¹' Φ.target := by
-      rw [PartialEquiv.trans_target]
-      rfl
-    rw [htgt]
-    exact Φ'.symm.contMDiffOn_toFun.continuousOn.isOpen_inter_preimage Φ'.open_target
-      Φ.open_target
-  contMDiffOn_toFun := by
-    have hsrc : (Φ.toPartialEquiv.trans Φ'.toPartialEquiv).source
-        = Φ.source ∩ (Φ : M → N) ⁻¹' Φ'.source := rfl
-    rw [hsrc]
-    exact Φ'.contMDiffOn_toFun.comp
-      (Φ.contMDiffOn_toFun.mono Set.inter_subset_left)
-      (fun y hy => hy.2)
-  contMDiffOn_invFun := by
-    have htgt : (Φ.toPartialEquiv.trans Φ'.toPartialEquiv).target
-        = Φ'.target ∩ (Φ'.symm : P → N) ⁻¹' Φ.target := by
-      rw [PartialEquiv.trans_target]
-      rfl
-    rw [htgt]
-    exact Φ.symm.contMDiffOn_toFun.comp
-      (Φ'.symm.contMDiffOn_toFun.mono Set.inter_subset_left)
-      (fun y hy => hy.2)
-
-end PartialTrans
 
 section TowerZero
 
