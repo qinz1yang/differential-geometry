@@ -354,11 +354,19 @@ private lemma quotientChartPartialDiffeomorph_symm_apply
   rw [(chartAt H (quotientRepresentative x)).left_inv hm'.1]
   rw [quotientMap_isLocalHomeomorph.localInverseAt_symm]
 
-private noncomputable def smulDiffeomorph
+noncomputable def smulDiffeomorph
     [ContMDiffConstSMul I n G M] (g : G) : M ≃ₘ^n⟮I, I⟯ M where
   toEquiv := MulAction.toPerm g
   contMDiff_toFun := ContMDiffConstSMul.contMDiff_const_smul g
   contMDiff_invFun := ContMDiffConstSMul.contMDiff_const_smul g⁻¹
+
+omit [ProperlyDiscontinuousSMul G M] [ContinuousConstSMul G M]
+  [IsCancelSMul G M] [T2Space M] [LocallyCompactSpace M]
+  [IsManifold I n M] in
+@[simp] theorem smulDiffeomorph_apply
+    [ContMDiffConstSMul I n G M] (g : G) (x : M) :
+    smulDiffeomorph (n := n) I g x = g • x :=
+  rfl
 
 omit [TopologicalSpace M] [ProperlyDiscontinuousSMul G M]
   [ContinuousConstSMul G M] [IsCancelSMul G M] [T2Space M]
@@ -397,5 +405,13 @@ theorem isLocalDiffeomorph_quotientMk_of_properlyDiscontinuousSMul
     change Quotient.mk (orbitRel G M) y = phi.symm (g • y)
     rw [quotientChartPartialDiffeomorph_symm_apply (n := n) I x hgy]
     exact orbitRel.Quotient.quotient_smul_eq.symm
+
+noncomputable instance orbitRel.Quotient.sigmaCompactSpace
+    [SigmaCompactSpace M] :
+    SigmaCompactSpace (orbitRel.Quotient G M) :=
+  ⟨by
+    rw [← isQuotientCoveringMap_quotientMk_of_properlyDiscontinuousSMul.surjective.range_eq]
+    exact isSigmaCompact_range
+      isQuotientCoveringMap_quotientMk_of_properlyDiscontinuousSMul.isCoveringMap.continuous⟩
 
 end MulAction

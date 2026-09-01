@@ -738,20 +738,6 @@ theorem cylinderDiagonalQuotientMap_surjective :
     Function.Surjective cylinderDiagonalQuotientMap :=
   cylinderDiagonalQuotientMap_isQuotientCoveringMap.surjective
 
-noncomputable instance cylinderAntipodalQuotientSigmaCompactSpace :
-    SigmaCompactSpace CylinderAntipodalQuotient :=
-  ⟨by
-    rw [← cylinderAntipodalQuotientMap_surjective.range_eq]
-    exact isSigmaCompact_range
-      cylinderAntipodalQuotientMap_isCoveringMap.continuous⟩
-
-noncomputable instance cylinderDiagonalQuotientSigmaCompactSpace :
-    SigmaCompactSpace CylinderDiagonalQuotient :=
-  ⟨by
-    rw [← cylinderDiagonalQuotientMap_surjective.range_eq]
-    exact isSigmaCompact_range
-      cylinderDiagonalQuotientMap_isCoveringMap.continuous⟩
-
 theorem cylinderAntipodalQuotientMap_eq_iff_mem_orbit
     {x y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real} :
     cylinderAntipodalQuotientMap x = cylinderAntipodalQuotientMap y ↔

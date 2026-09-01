@@ -192,6 +192,37 @@ theorem localPushInner_eq_of_fiber_preserving_isometry
   rw [hinv, hinv]
   exact hisometry (B.symm v) (B.symm w)
 
+omit [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N] in
+theorem metricFiberCompatible_quotientMk_of_invariant
+    {G : Type*} [Group G] [MulAction G M]
+    [ProperlyDiscontinuousSMul G M] [ContinuousConstSMul G M]
+    [IsCancelSMul G M] [T2Space M] [LocallyCompactSpace M]
+    [ContMDiffConstSMul I ∞ G M]
+    (g : SmoothRiemannianMetric I M)
+    (hinvariant : ∀ gamma : G,
+      Diffeomorph.pullbackMetric g
+        (MulAction.smulDiffeomorph (n := ∞) I gamma) = g) :
+    metricFiberCompatible g
+      (Quotient.mk'' : M → MulAction.orbitRel.Quotient G M)
+      (MulAction.isLocalDiffeomorph_quotientMk_of_properlyDiscontinuousSMul
+        (n := ∞) I) := by
+  let q : M → MulAction.orbitRel.Quotient G M := Quotient.mk''
+  let hq : IsLocalDiffeomorph I I ∞ q :=
+    MulAction.isLocalDiffeomorph_quotientMk_of_properlyDiscontinuousSMul I
+  change metricFiberCompatible g q hq
+  intro x y hxy
+  obtain ⟨gamma, hgamma⟩ :=
+    isQuotientCoveringMap_quotientMk_of_properlyDiscontinuousSMul.apply_eq_iff_mem_orbit.mp
+      hxy
+  subst x
+  let Phi : M ≃ₘ⟮I, I⟯ M :=
+    MulAction.smulDiffeomorph (n := ∞) I gamma
+  have hcomp : q ∘ (Phi : M → M) = q := by
+    funext z
+    exact MulAction.orbitRel.Quotient.quotient_smul_eq
+  exact localPushInner_eq_of_fiber_preserving_isometry
+    g q hq Phi hcomp (hinvariant gamma) y
+
 omit [FiniteDimensional Real E] [IsManifold I ∞ N] in
 private theorem descendedInner_symm
     (g : SmoothRiemannianMetric I M) (f : M → N)
