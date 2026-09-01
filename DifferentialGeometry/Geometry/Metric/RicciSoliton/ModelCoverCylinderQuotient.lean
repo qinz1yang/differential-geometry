@@ -17,6 +17,23 @@ variable {J : ModelWithCorners Real E G} [J.Boundaryless]
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
   [IsManifold J ∞ N] [SigmaCompactSpace N] [T2Space N]
 
+theorem noncompactSpace_of_solitonModelCovering_roundThreeCylinder
+    {g : SmoothRiemannianMetric J N} {f : C^∞⟮J, N; Real⟯}
+    {cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → N}
+    (hpi : solitonModelCovering roundThreeCylinderShrinkerMetric
+      roundThreeCylinderShrinkerPotential g f cover) :
+    NoncompactSpace N := by
+  refine not_compactSpace_iff.mp ?_
+  intro hcompact
+  let _ : CompactSpace N := hcompact
+  obtain ⟨C, hC⟩ := (isCompact_range f.contMDiff.continuous).bddAbove
+  let y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 :=
+    ⟨EuclideanSpace.single 0 1, by simp [PiLp.norm_single]⟩
+  have hle : f (cover (y, 2 * (|C| + 1))) ≤ C := hC ⟨_, rfl⟩
+  rw [← solitonModelCovering_potential hpi,
+    roundThreeCylinderShrinkerPotential_apply] at hle
+  nlinarith [abs_nonneg C, le_abs_self C]
+
 theorem solitonModelCovering_roundThreeCylinder_deckGroup_eq_trichotomy
     {g : SmoothRiemannianMetric J N} {f : C^∞⟮J, N; Real⟯}
     {cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → N}
