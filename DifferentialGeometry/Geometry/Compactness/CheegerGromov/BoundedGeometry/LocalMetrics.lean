@@ -121,7 +121,7 @@ theorem exists_finite_chart_metric_limit_subsequence
         ((d.chart k (c i k)).smooth_to.mono hrad)
   have hsmooth : ∀ k, ContDiffOn Real (⊤ : ℕ∞) (gLoc k) U :=
     fun k ↦ contDiffOn_pi.mpr (hsmoothComp k)
-  have hbddComp : ∀ i, IsometryDerivBoundsOn U
+  have hbddComp : ∀ i, iteratedFDerivBoundsOnCompactsWithin U
       (fun k z ↦ gLoc k z i) := by
     intro i p K hK hKU
     refine ⟨d.metricC p, ?_⟩
@@ -136,8 +136,8 @@ theorem exists_finite_chart_metric_limit_subsequence
       simpa only [d.radius_eq k (c i k)] using hsub k i
     simpa only [gLoc, BoundedGeometryNormalChartData.chartMetric] using
       d.metric_deriv k p (c i k) z (hrad (hKU hz))
-  have hbdd : IsometryDerivBoundsOn U gLoc :=
-    IsometryDerivBoundsOn.pi hU hsmoothComp hbddComp
+  have hbdd : iteratedFDerivBoundsOnCompactsWithin U gLoc :=
+    iteratedFDerivBoundsOnCompactsWithin.pi hU hsmoothComp hbddComp
   obtain ⟨phi, gInf, hphi, hginf, hconv⟩ :=
     exists_cInf_subseq_on hU gLoc hsmooth hbdd
   refine ⟨phi, gInf, hphi, hginf, hconv, ?_⟩

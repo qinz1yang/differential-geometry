@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalCompactness
+import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
@@ -1886,7 +1886,7 @@ theorem isom_bounds_on
     (hCB : ∀ i, 0 ≤ CB i) (hCC : ∀ i, 0 ≤ CC i)
     (hDB : ∀ k i, ∀ x ∈ U, ‖iteratedFDeriv Real i (B k) x‖ ≤ CB i)
     (hDC : ∀ k i, ∀ y ∈ V, ‖iteratedFDeriv Real i (C k) y‖ ≤ CC i) :
-    IsometryDerivBoundsOn U Phi := by
+    iteratedFDerivBoundsOnCompactsWithin U Phi := by
   intro r K _ hKU
   rcases r with _ | r
   · obtain ⟨Z, hZ⟩ := hVnorm
@@ -2245,7 +2245,7 @@ theorem normal_bounds_on
             (normalChartAt (I := I) (X.obj k).metric (y k)).source)
     (hmap : ∀ k, Set.MapsTo
       (normalTransition (I := I) (X.obj k) (x k) (y k)) U V) :
-    IsometryDerivBoundsOn U
+    iteratedFDerivBoundsOnCompactsWithin U
       (fun k => normalTransition (I := I) (X.obj k) (x k) (y k)) := by
   apply isom_bounds_on
     (CB := h.metricC) (CC := h.metricC)

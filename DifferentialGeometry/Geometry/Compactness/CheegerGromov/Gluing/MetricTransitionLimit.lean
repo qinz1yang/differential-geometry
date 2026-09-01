@@ -197,7 +197,7 @@ theorem exists_joint_normal_metric_transition_limit
       (beta (psi1 (tau k)))
       (seqCenterD hd P L (psi1 (tau k)) (gamma.1 : Nat))
       (hVExp k gamma) (hMaps k gamma)
-  have hbddComp (gamma : LiveSlot L pb r) : IsometryDerivBoundsOn U
+  have hbddComp (gamma : LiveSlot L pb r) : iteratedFDerivBoundsOnCompactsWithin U
       (fun k z => normalTransition (I := I) (X.obj (L.φ (psi1 (tau k))))
         (beta (psi1 (tau k)))
         (seqCenterD hd P L (psi1 (tau k)) (gamma.1 : Nat)) z) := by
@@ -227,14 +227,14 @@ theorem exists_joint_normal_metric_transition_limit
       (fun k => by
         simpa only [PointedRiemannianSeq.subseq, f] using hcoord k gamma)
     simpa only [PointedRiemannianSeq.subseq, f] using hbound
-  have hbdd : IsometryDerivBoundsOn U J := by
-    apply IsometryDerivBoundsOn.pi hU
+  have hbdd : iteratedFDerivBoundsOnCompactsWithin U J := by
+    apply iteratedFDerivBoundsOnCompactsWithin.pi hU
     · intro k gamma
       exact contDiffOn_pi.mp (hsmooth k) gamma
     · intro gamma
       simpa only [J] using hbddComp gamma
   obtain ⟨psi2, Jhat, hpsi2, hJhat, hJconv⟩ :=
-    isometry_seq_cInf_on hU J hsmooth hbdd
+    exists_c_inf_convergent_subsequence_on hU J hsmooth hbdd
   refine ⟨psi1 ∘ tau ∘ psi2, gInf, fun gamma z => Jhat z gamma,
     hpsi1.comp (htau.comp hpsi2), hginf, ?_, ?_⟩
   · simpa only [Function.comp_apply] using hg.comp_subseq (htau.comp hpsi2)

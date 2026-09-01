@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalCompactness
+import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
@@ -113,12 +113,12 @@ theorem exists_metric_lim_pi
   have hsmooth : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (gLoc k) U :=
     fun k ↦ contDiffOn_pi.mpr (hsmooth_comp k)
   have hbdd_comp : ∀ i,
-      IsometryDerivBoundsOn U (fun k z ↦ gLoc k z i) := by
+      iteratedFDerivBoundsOnCompactsWithin U (fun k z ↦ gLoc k z i) := by
     intro i r K hK hKU
     exact ⟨input.metricC r, fun k z hz ↦
       input.metric_deriv k r (c i k) z (hdom k i (hKU hz))⟩
-  have hbdd : IsometryDerivBoundsOn U gLoc :=
-    IsometryDerivBoundsOn.pi hU hsmooth_comp hbdd_comp
+  have hbdd : iteratedFDerivBoundsOnCompactsWithin U gLoc :=
+    iteratedFDerivBoundsOnCompactsWithin.pi hU hsmooth_comp hbdd_comp
   obtain ⟨phi, gInf, hphi, hginf, hconv⟩ :=
     exists_cInf_subseq_on hU gLoc hsmooth hbdd
   refine ⟨phi, gInf, hphi, hginf, hconv, ?_⟩

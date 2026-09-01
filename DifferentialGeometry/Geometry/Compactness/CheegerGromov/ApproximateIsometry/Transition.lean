@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalCompactness
+import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
@@ -21,7 +21,7 @@ theorem exists_transition_limit_on
     (J : ℕ → E → E) (Jbar : ℕ → E → E)
     (hJ : ∀ k, ContDiffOn ℝ (⊤ : ℕ∞) (J k) U)
     (hJbar : ∀ k, ContDiffOn ℝ (⊤ : ℕ∞) (Jbar k) V)
-    (hbJ : IsometryDerivBoundsOn U J) (hbJbar : IsometryDerivBoundsOn V Jbar)
+    (hbJ : iteratedFDerivBoundsOnCompactsWithin U J) (hbJbar : iteratedFDerivBoundsOnCompactsWithin V Jbar)
     (hLeft : ∀ k, ∀ x ∈ U, Jbar k (J k x) = x) (hRight : ∀ k, ∀ y ∈ V, J k (Jbar k y) = y) :
     ∃ (φ : ℕ → ℕ) (Jinf : E → E) (Jbarinf : E → E),
       StrictMono φ ∧ ContDiffOn ℝ (⊤ : ℕ∞) Jinf U ∧ ContDiffOn ℝ (⊤ : ℕ∞) Jbarinf V ∧
@@ -29,7 +29,7 @@ theorem exists_transition_limit_on
         MapCInfConvOnCompacts V (fun k => Jbar (φ k)) Jbarinf ∧
         (∀ x ∈ U, Jinf x ∈ V → Jbarinf (Jinf x) = x) ∧
         (∀ y ∈ V, Jbarinf y ∈ U → Jinf (Jbarinf y) = y) :=
-  isometry_seq_diffeo_on hU hV J Jbar hJ hJbar hbJ hbJbar hLeft hRight
+  exists_smooth_inverse_limit_subsequence_on hU hV J Jbar hJ hJbar hbJ hbJbar hLeft hRight
 
 section HCGNormalTransition
 

@@ -39,7 +39,7 @@ theorem trans_bounds_on
         (d.ratio * hd.mu (hd.dist k (y k) (X.obj k).basepoint)))
     (hovl : ∀ k, d.chartOverlapOn k (x k) (y k) U)
     (hmap : ∀ k, Set.MapsTo (d.chartTransition k (x k) (y k)) U V) :
-    IsometryDerivBoundsOn U
+    iteratedFDerivBoundsOnCompactsWithin U
       (fun k => d.chartTransition k (x k) (y k)) := by
   apply MetricIsometry.isom_bounds_on
     (CB := d.metricC) (CC := d.metricC)

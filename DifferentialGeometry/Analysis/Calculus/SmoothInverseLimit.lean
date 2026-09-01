@@ -1,6 +1,4 @@
 import DifferentialGeometry.Analysis.Calculus.SmoothMapCompactness
-
-
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 set_option autoImplicit false
@@ -14,27 +12,27 @@ variable {E F : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
 
-def IsometryDerivBounds (Φ : ℕ → E → F) : Prop :=
+def iteratedFDerivBoundsOnCompacts (Φ : ℕ → E → F) : Prop :=
   ∀ r : ℕ, ∀ K : Set E, IsCompact K →
     ∃ M : ℝ, ∀ k : ℕ, ∀ x ∈ K, ‖iteratedFDeriv ℝ r (Φ k) x‖ ≤ M
 
 omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] in
-theorem IsometryDerivBounds.comp_subseq {Φ : ℕ → E → F} (h : IsometryDerivBounds Φ)
-    (φ : ℕ → ℕ) : IsometryDerivBounds (fun k => Φ (φ k)) := by
+theorem iteratedFDerivBoundsOnCompacts.comp_subseq {Φ : ℕ → E → F} (h : iteratedFDerivBoundsOnCompacts Φ)
+    (φ : ℕ → ℕ) : iteratedFDerivBoundsOnCompacts (fun k => Φ (φ k)) := by
   intro r K hK
   obtain ⟨M, hM⟩ := h r K hK
   exact ⟨M, fun k x hx => hM (φ k) x hx⟩
 
-theorem isometry_seq_cInf
+theorem exists_c_inf_convergent_subsequence
     (Φ : ℕ → E → F) (hΦ : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (Φ k))
-    (hbdd : IsometryDerivBounds Φ) :
+    (hbdd : iteratedFDerivBoundsOnCompacts Φ) :
     ∃ (φ : ℕ → ℕ) (Φinf : E → F),
       StrictMono φ ∧ ContDiff ℝ (⊤ : ℕ∞) Φinf ∧
         MapCInfConvOnCompacts Set.univ (fun k => Φ (φ k)) Φinf :=
   exists_cInf_subseq Φ hΦ hbdd
 
 omit [FiniteDimensional ℝ E] in
-theorem comp_eq_id_of_cInf
+theorem comp_eq_id_of_c_inf
     {Φ : ℕ → F → E} {Φinf : F → E} {Ψ : ℕ → E → F} {Ψinf : E → F}
     (hΦ : MapCInfConvOnCompacts Set.univ Φ Φinf) (hΦc : Continuous Φinf)
     (hΨ : MapCInfConvOnCompacts Set.univ Ψ Ψinf)
@@ -53,10 +51,10 @@ theorem comp_eq_id_of_cInf
   simp only [hid] at hcomp
   exact (tendsto_nhds_unique tendsto_const_nhds hcomp).symm
 
-theorem isometry_seq_diffeo
+theorem exists_smooth_inverse_limit_subsequence
     (Φ : ℕ → E → F) (Ψ : ℕ → F → E)
     (hΦ : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (Φ k)) (hΨ : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (Ψ k))
-    (hbΦ : IsometryDerivBounds Φ) (hbΨ : IsometryDerivBounds Ψ)
+    (hbΦ : iteratedFDerivBoundsOnCompacts Φ) (hbΨ : iteratedFDerivBoundsOnCompacts Ψ)
     (hLeft : ∀ k x, Ψ k (Φ k x) = x) (hRight : ∀ k y, Φ k (Ψ k y) = y) :
     ∃ (φ : ℕ → ℕ) (Φinf : E → F) (Ψinf : F → E),
       StrictMono φ ∧ ContDiff ℝ (⊤ : ℕ∞) Φinf ∧ ContDiff ℝ (⊤ : ℕ∞) Ψinf ∧
@@ -69,9 +67,9 @@ theorem isometry_seq_diffeo
   have hΦconv' : MapCInfConvOnCompacts Set.univ (fun k => Φ (φ1 (φ2 k))) Φinf :=
     hΦconv.comp_subseq hφ2
   refine ⟨φ1 ∘ φ2, Φinf, Ψinf, hφ1.comp hφ2, hΦinf, hΨinf, hΦconv', hΨconv, ?_, ?_⟩
-  · exact comp_eq_id_of_cInf hΨconv hΨinf.continuous hΦconv'
+  · exact comp_eq_id_of_c_inf hΨconv hΨinf.continuous hΦconv'
       (fun k x => hLeft (φ1 (φ2 k)) x)
-  · exact comp_eq_id_of_cInf hΦconv' hΦinf.continuous hΨconv
+  · exact comp_eq_id_of_c_inf hΦconv' hΦinf.continuous hΨconv
       (fun k y => hRight (φ1 (φ2 k)) y)
 
 end HCGCompactness

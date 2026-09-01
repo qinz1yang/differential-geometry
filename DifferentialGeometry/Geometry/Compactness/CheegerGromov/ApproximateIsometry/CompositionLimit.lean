@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalCompactness
+import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
