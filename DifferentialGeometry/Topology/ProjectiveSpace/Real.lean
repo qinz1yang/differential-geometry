@@ -1,6 +1,7 @@
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.Topology.Algebra.ConstMulAction
+import Mathlib.Topology.Covering.Quotient
 import Mathlib.Topology.Homeomorph.Lemmas
 
 set_option autoImplicit false
@@ -90,6 +91,16 @@ instance realProjectivePlaneAntipodalGroupMulAction :
       (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1) :=
   MulAction.instMulAction realProjectivePlaneAntipodalGroup
 
+noncomputable instance realProjectivePlaneAntipodalGroupFinite :
+    Finite realProjectivePlaneAntipodalGroup := by
+  have hfinite : IsOfFinOrder realProjectivePlaneAntipodalHomeomorph.toEquiv :=
+    orderOf_pos_iff.mp (by
+      rw [realProjectivePlaneAntipodalHomeomorph_orderOf]
+      exact Nat.zero_lt_two)
+  exact Finite.of_equiv
+    (Fin (orderOf realProjectivePlaneAntipodalHomeomorph.toEquiv))
+    (finEquivZPowers hfinite)
+
 private theorem realProjectivePlaneAntipodalGroup_eq_one_or_generator
     (psi : realProjectivePlaneAntipodalGroup) :
     psi.1 = 1 ∨
@@ -110,6 +121,18 @@ instance realProjectivePlaneAntipodalGroupContinuousConstSMul :
       rw [hpsi]
       exact realProjectivePlaneAntipodalHomeomorph.continuous
 
+instance realProjectivePlaneAntipodalGroupIsCancelSMul :
+    IsCancelSMul realProjectivePlaneAntipodalGroup
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1) := by
+  rw [isCancelSMul_iff_eq_one_of_smul_eq]
+  intro psi x hpsi
+  rcases realProjectivePlaneAntipodalGroup_eq_one_or_generator psi with hone | hanti
+  · exact Subtype.ext hone
+  · exfalso
+    change psi.1 x = x at hpsi
+    rw [hanti] at hpsi
+    exact realProjectivePlaneAntipodalHomeomorph_fixed_point_free x hpsi
+
 abbrev RealProjectivePlane := MulAction.orbitRel.Quotient
   realProjectivePlaneAntipodalGroup
     (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1)
@@ -122,6 +145,19 @@ def realProjectivePlaneQuotientMap
 theorem realProjectivePlaneQuotientMap_isOpenQuotientMap :
     IsOpenQuotientMap realProjectivePlaneQuotientMap :=
   MulAction.isOpenQuotientMap_quotientMk
+
+theorem realProjectivePlaneQuotientMap_isQuotientCoveringMap :
+    IsQuotientCoveringMap realProjectivePlaneQuotientMap
+      realProjectivePlaneAntipodalGroup :=
+  isQuotientCoveringMap_quotientMk_of_properlyDiscontinuousSMul
+
+theorem realProjectivePlaneQuotientMap_isCoveringMap :
+    IsCoveringMap realProjectivePlaneQuotientMap :=
+  realProjectivePlaneQuotientMap_isQuotientCoveringMap.isCoveringMap
+
+theorem realProjectivePlaneQuotientMap_surjective :
+    Function.Surjective realProjectivePlaneQuotientMap :=
+  realProjectivePlaneQuotientMap_isQuotientCoveringMap.surjective
 
 theorem realProjectivePlaneQuotientMap_eq_iff
     {x y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1} :
