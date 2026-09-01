@@ -308,7 +308,7 @@ theorem ricciTensor_cross
         (mfderiv I J (Phi : M → N) x w) := by
   classical
   obtain ⟨basis, hON⟩ :=
-    exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x
   let dPhi : TangentSpace I x ≃L[Real] TangentSpace J (Phi x) :=
     Diffeomorph.mfderivToContinuousLinearEquiv Phi infty_ne_zeroC x
@@ -515,7 +515,7 @@ theorem metricScalar_cross
       metricScalarAt (I := J) g (Phi x) := by
   classical
   obtain ⟨basis, hON⟩ :=
-    exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x
   let dPhi : TangentSpace I x ≃L[Real] TangentSpace J (Phi x) :=
     Diffeomorph.mfderivToContinuousLinearEquiv Phi infty_ne_zeroC x
@@ -594,7 +594,7 @@ theorem ricciNormSq_cross
         (metricRicci (I := J) g (Phi x)) := by
   classical
   obtain ⟨basis, hON⟩ :=
-    exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x
   exact normSq0S_pullbackCross_eval_of_orthonormal
     (I := I) (J := J) g Phi x 2 basis hON
@@ -621,7 +621,7 @@ theorem metricDerivNorm_pullbackCross
       metricDerivNorm (I := J) a gk gInf gRef (Phi x) := by
   classical
   obtain ⟨basis, hON⟩ :=
-    exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := I) (Diffeomorph.pullbackMetricCross (I := I) (J := J) gRef Phi) x
   unfold metricDerivNorm
   rw [normSq0S_pullbackCross_eval_of_orthonormal (I := I) (J := J)

@@ -211,7 +211,7 @@ theorem tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph
   unfold tensor02CovDerivNormWith
   rw [tensor02_cov_deriv_eq_cov_deriv_of_field,
     tensor02_cov_deriv_eq_cov_deriv_of_field]
-  obtain ⟨basis, hONb⟩ := DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I)
+  obtain ⟨basis, hONb⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I)
     (Diffeomorph.pullbackMetric (I := I) (g'.restrictOpen (I := I) W) F) xV
   have hnorm1 : Tensor0SBundle.normSq0S (I := I) G x (a + 2)
         (covDerivOfField (I := I) G δM a x)

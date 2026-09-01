@@ -185,7 +185,7 @@ private theorem innerPtDiag (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
         ((show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace s I x from W)
           (unitZeroSec (I := I) (M := M) x)) := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   rw [show tensorInnerPointwise (I := I) (M := M) g 0 s x
         (TensorRSSpace.toModel W) (TensorRSSpace.toModel W) =
       covariantTensorInnerPointwise (I := I) (M := M) (0 + s) g x

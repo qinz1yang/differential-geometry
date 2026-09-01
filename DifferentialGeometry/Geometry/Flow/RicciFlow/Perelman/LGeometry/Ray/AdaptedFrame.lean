@@ -69,7 +69,7 @@ theorem exists_lRegCurve_adaptedFrame
     simpa only [hrho_id hsIcc, id_eq] using hsreg
   let q := S.base.metric (T - b ^ 2)
   obtain ⟨basis, hbasis⟩ :=
-    exists_gOrthonormalBasis (I := I) q (alpha b)
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) q (alpha b)
   have hex (i : Fin (Module.finrank Real E)) :=
     exists_lAdaptedField S hS T alpha halpha ha hb hbd hreg (basis i)
   choose R Ωi hΩi hseg_i hsub_i hRsm hRb hRode using hex

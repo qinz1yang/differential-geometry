@@ -90,30 +90,6 @@ end RicciField
 
 section FluxField
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
-    ∃ b : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
-        (TangentSpace I x),
-      ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
-  classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
-  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  let : NormedAddCommGroup (TangentSpace I x) :=
-    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  let : InnerProductSpace Real (TangentSpace I x) :=
-    @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
-  let ob := stdOrthonormalBasis Real (TangentSpace I x)
-  refine ⟨ob.toBasis, ?_⟩
-  intro i j
-  have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
-    MetricFiberData.toCore_inner D (ob i) (ob j)
-  change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricDataGen.inner_eq_gen
-    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
-  change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
-  rw [← hinner]
-  exact ob.inner_eq_ite i j
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
 private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -134,7 +110,7 @@ theorem reLowerPairSq_le (g : SmoothRiemannianMetric I M) {s : ℕ}
       (Module.finrank Real E : Real) ^ (s + 4) *
         (normSq0S (I := I) g x (s + 1) (T x) * normSq0S (I := I) g x 3 (K x)) := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv := onFrame_inv (I := I) g basis hON
   have hprod : normSq0S (I := I) g x (s + 1 + 3)
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
@@ -342,7 +318,7 @@ theorem ricciSq_le_rm04 (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
           (CovariantDerivative.riemannCurvature04At (I := I) g₁ (metricCov (I := I) g₂)
             (metricCov_smooth (I := I) g₂) x) := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g₁ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   have hinv := onFrame_inv (I := I) g₁ basis hON
   have htr := traceNormSq_le (I := I) (s := 2) g₁ x
     ((CovariantDerivative.riemannCurvature04At (I := I) g₁ (metricCov (I := I) g₂)
@@ -499,7 +475,7 @@ theorem fu_metric_comp_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     rcases eq_or_ne v 0 with hv0 | hv0
     · rw [hv0]; simp
     · exact (g₂.pos x v hv0).le
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g₂ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₂ x
   have h := abs_apply_le_sqrt_normSq0S (I := I) g₂ x 2 basis hON
     (metricTensorField (I := I) g₁ x) (fun _ : Fin 2 => v)
   have hval : metricTensorField (I := I) g₁ x (fun _ : Fin 2 => v) = g₁.inner x v v :=
@@ -585,7 +561,7 @@ theorem tracePairSq_le (g : SmoothRiemannianMetric I M) (x : M)
     (metricTracePair0SAt (I := I) g Q) ^ 2 ≤
       (Module.finrank Real E : Real) * normSq0S (I := I) g x 2 Q := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have h := metricTracePair0SAt_sq_le_card_mul_normSq0S (I := I) g basis
     (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x))))
     (onFrame_inv (I := I) g basis hON) Q
@@ -831,7 +807,7 @@ theorem movingReactAbs_le {s : Nat} {x : M} {t : Real}
       2 * (s : Real) * (Module.finrank Real E : Real) ^ (2 * s + 2) *
         Real.sqrt (normSq0S (I := I) (g t) x 2 Q) * normSq0S (I := I) (g t) x s W := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) (g t) x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (g t) x
   have hinv := onFrame_inv (I := I) (g t) basis hON
   set NQ : Real := Real.sqrt (normSq0S (I := I) (g t) x 2 Q) with hNQ
   set NW : Real := Real.sqrt (normSq0S (I := I) (g t) x s W) with hNW

@@ -432,8 +432,7 @@ theorem koszul2
   linarith [hmaster, hkW, hkX, hkY, hkZ]
 
 open DifferentialGeometry.Geometry.Curvature
-  (smoothExtensionTangent smoothExtensionTangent_eq smoothExtensionTangent_contMDiff
-    exists_gOrthonormalBasis) in
+  (smoothExtensionTangent smoothExtensionTangent_eq smoothExtensionTangent_contMDiff) in
 open DifferentialGeometry.Geometry.Connection (leviCivitaConnectionOfMetric) in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem covDConnectionDifference2_g1_le
@@ -469,7 +468,7 @@ theorem covDConnectionDifference2_g1_le
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
   have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₁ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   set NA : ℝ := Real.sqrt (Tensor0SBundle.normSqRS (I := I) (g := g₁) (x := x) 1 2
     (Tensor0SBundle.connectionDifferenceTensorAt (I := I)
       (leviCivitaConnectionOfMetric (I := I) g₁)
@@ -2193,7 +2192,7 @@ private theorem mixedComm_le
     rw [hNAbdef]
     exact mul_nonneg (mul_nonneg (by norm_num) (by positivity)) hL'nn
   obtain ⟨basis, hON⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g₂ x
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₂ x
   have hbnorm : ∀ i, Real.sqrt (g₂.inner x (basis i) (basis i)) = 1 := by
     intro i; rw [hON i i]; simp
   have hinv : MetricInverseInBasisGen (I := I) g₂ x basis
@@ -2757,7 +2756,7 @@ theorem covStepDiff2_le
             - covStep (I := I) g₁ (s + 1) (covStep (I := I) g₂ s S))) x := by
     rw [hop]; rfl
   obtain ⟨basis, hON⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g₂ x
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₂ x
   have hinv : MetricInverseInBasisGen (I := I) g₂ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j; constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]

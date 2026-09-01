@@ -227,30 +227,6 @@ end RicciTrace
 
 section TraceNorm
 
-omit [SigmaCompactSpace M] [T2Space M] in
-private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
-    ∃ b : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
-        (TangentSpace I x),
-      ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
-  classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
-  let _ : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  let _ : NormedAddCommGroup (TangentSpace I x) :=
-    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  let _ : InnerProductSpace Real (TangentSpace I x) :=
-    @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
-  let ob := stdOrthonormalBasis Real (TangentSpace I x)
-  refine ⟨ob.toBasis, ?_⟩
-  intro i j
-  have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
-    MetricFiberData.toCore_inner D (ob i) (ob j)
-  change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricDataGen.inner_eq_gen
-    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
-  change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
-  rw [← hinner]
-  exact ob.inner_eq_ite i j
-
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
 private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -266,7 +242,7 @@ theorem normSq_ricciTraceRep (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
         ((rmDiffLowAt (I := I) g₁ g₂ x).domDomCongr rm04TraceSlots) =
       rmDiffSq (I := I) g₁ g₂ x := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g₁ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   rw [rmDiffSq_def]
   exact normSq0S_domDomCongr (I := I) g₁ x basis (onFrame_inv (I := I) g₁ basis hON)
     rm04TraceSlots (rmDiffLowAt (I := I) g₁ g₂ x)

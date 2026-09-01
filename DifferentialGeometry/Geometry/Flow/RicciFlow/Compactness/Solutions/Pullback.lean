@@ -343,7 +343,7 @@ theorem ricciNorm_pullback
   let _ := hManifoldM
   let _ := hManifoldN
   obtain ⟨B, hB⟩ :=
-    exists_gOrthonormalBasis (Diffeomorph.pullbackMetric (I := I) (S.base.metric t) Φ) x
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (Diffeomorph.pullbackMetric (I := I) (S.base.metric t) Φ) x
   change Tensor0SBundle.normSq0S (I := I)
         (Diffeomorph.pullbackMetric (I := I) (S.base.metric t) Φ) x 2
         (metricRicci (I := I) (Diffeomorph.pullbackMetric (I := I) (S.base.metric t) Φ) x)

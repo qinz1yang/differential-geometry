@@ -481,7 +481,7 @@ theorem uniformRHSFib_of
   have hK₀ := uniformRHSBilin_of (I := I) (M := M) gBase g₀ hΛ
     hKb0 hKb hcomp hjet1 hjet2
   intro x
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
   rw [riemannianFiberNormSq0_unit_eq (I := I) g₀ 2 x (deTurckRHSSection (I := I) gBase g₀)]
   have hcompbound : ∀ slots : Fin 2 → Fin (Module.finrank ℝ (TangentSpace I x)),
       |Tensor0SBundle.component0S (I := I) basis

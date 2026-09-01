@@ -28,30 +28,6 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 section Frame
 
-omit [SigmaCompactSpace M] [T2Space M] in
-private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
-    ∃ b : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
-        (TangentSpace I x),
-      ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
-  classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
-  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  let : NormedAddCommGroup (TangentSpace I x) :=
-    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  let : InnerProductSpace Real (TangentSpace I x) :=
-    @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
-  let ob := stdOrthonormalBasis Real (TangentSpace I x)
-  refine ⟨ob.toBasis, ?_⟩
-  intro i j
-  have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
-    MetricFiberData.toCore_inner D (ob i) (ob j)
-  change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricDataGen.inner_eq_gen
-    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
-  change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
-  rw [← hinner]
-  exact ob.inner_eq_ite i j
-
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
 private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -104,7 +80,7 @@ private theorem normSq0S_reindex (g : SmoothRiemannianMetric I M) {x : M} {s s' 
     (N : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :
     normSq0S (I := I) g x s' (N.domDomCongr e) = normSq0S (I := I) g x s N := by
   classical
-  obtain ⟨b, hON⟩ := exists_onFrame (I := I) g x
+  obtain ⟨b, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   exact normSq0S_domDomCongr (I := I) g x b (onFrame_inv (I := I) g b hON) e N
 
 end Frame
@@ -190,7 +166,7 @@ theorem lowerBilin_normSq_le (g : SmoothRiemannianMetric I M) (x : M)
         normSq0S (I := I) g x 3
           (lowerBilin (I := I) (metricTensorField (I := I) g x) A) := by
   classical
-  obtain ⟨b, hON⟩ := exists_onFrame (I := I) g x
+  obtain ⟨b, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv := onFrame_inv (I := I) g b hON
   have hq : normSq0S (I := I) g x 2 q =
       ∑ l : Fin (Module.finrank Real (TangentSpace I x)),
@@ -908,7 +884,7 @@ theorem lowerBilin_metric_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
       Λ ^ 2 * normSq0S (I := I) g₁ x 3
         (lowerBilin (I := I) (metricTensorField (I := I) g₂ x) A) := by
   classical
-  obtain ⟨b, hON⟩ := exists_onFrame (I := I) g₁ x
+  obtain ⟨b, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   have hinv := onFrame_inv (I := I) g₁ b hON
   have hexp : ∀ q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x,
       normSq0S (I := I) g₁ x 3 (lowerBilin (I := I) q A) =

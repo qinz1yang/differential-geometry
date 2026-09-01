@@ -92,7 +92,7 @@ private theorem metricNorm_le_basis_comp
   let hframe : IsLocalFrameOn 𝓘(Real, E) E (1 : WithTop ℕ∞)
       frame Set.univ := constantBasis_isLocalFrameOn V e
   obtain ⟨b, hbON⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := 𝓘(Real, E)) g z
   have hbinv : Tensor0SBundle.MetricInverseInBasisGen
       (I := 𝓘(Real, E)) g z b

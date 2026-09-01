@@ -255,7 +255,7 @@ private lemma eval_le
       ∀ T : Tensor0SBundle.Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := M) s x,
         |T slots| ≤ C * Real.sqrt (normSq0S (I := I) gRef x s T) := by
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gRef x
   refine ⟨∏ a : Fin s, Real.sqrt (gRef.inner x (slots a) (slots a)),
     Finset.prod_nonneg (fun a _ => Real.sqrt_nonneg _), fun T => ?_⟩
   have h := abs_apply_le_sqrt_normSq0S (I := I) (g := gRef)

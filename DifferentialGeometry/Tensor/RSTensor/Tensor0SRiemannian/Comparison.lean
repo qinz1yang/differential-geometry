@@ -699,7 +699,7 @@ end MetricEquiv
 
 section PointwiseCS
 
-private theorem exists_onFrame
+theorem exists_orthonormal_basis
     (g : SmoothMetricGen I M) (x : M) :
     ∃ basis :
         Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
@@ -832,7 +832,7 @@ theorem abs_apply_le_norm0S
       Real.sqrt (normSq0S (I := I) g x s T) *
         ∏ a : Fin s, Real.sqrt (g.inner x (v a) (v a)) := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g x
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis (I := I) g x
   exact abs_apply_le_sqrt_normSq0S (I := I) g x s basis hON T v
 
 end PointwiseCS

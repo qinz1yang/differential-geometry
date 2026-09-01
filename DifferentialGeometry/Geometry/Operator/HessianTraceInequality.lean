@@ -256,7 +256,7 @@ theorem laplacian_sq_le_dim_mul_hessianFrobeniusSq_of_boundaryless
     (ΔG (I := I) g ⟨f, hf⟩ x)^2 ≤
       (Module.finrank ℝ E : ℝ) * chartHessFrobeniusSq (I := I) g f x := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hfinrank : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := by
     have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
       rw [TangentBundle.trivializationAt_baseSet]

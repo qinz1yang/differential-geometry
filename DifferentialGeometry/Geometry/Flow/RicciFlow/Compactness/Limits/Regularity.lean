@@ -104,7 +104,7 @@ theorem chartGram_sub_le
           = Tensor0SBundle.metricTensorField (I := I) u' x from rfl,
       hu, hu']
   rw [hentry]
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gRef x
   have h := abs_apply_le_sqrt_normSq0S (I := I) (g := gRef) (x := x) (s := 2)
     basis hON (metricDiffCovDerivAt (I := I) 0 u u' gRef x)
     ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x]

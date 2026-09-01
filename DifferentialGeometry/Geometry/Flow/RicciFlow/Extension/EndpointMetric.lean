@@ -108,7 +108,7 @@ theorem exists_endMetric
               Real.sqrt (Lambda * gRef.inner x w w)) := by
         intro s hs
         obtain ⟨basis, hON⟩ :=
-          exists_gOrthonormalBasis (I := I) (S.base.metric s) x
+          DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (S.base.metric s) x
         have hNorm :
             Real.sqrt (normSq0S (I := I) (S.base.metric s) x 2
               (ricCovTower (I := I) (S.base.metric s) (S.base.metric s) 0 x)) <=

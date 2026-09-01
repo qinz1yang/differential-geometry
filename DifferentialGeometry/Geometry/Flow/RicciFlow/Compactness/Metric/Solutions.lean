@@ -177,7 +177,7 @@ theorem exists_uniform_zero_order_metric_covariant_derivative_bound
   have hcomp := sqrt_normSq0S_le_of_metric_equiv
     (I := I) (g := gSeq i t) (h := gRef) z 2 hBmax1
     (fun v => (hsymm.2 z hz v)) (metricTensor0S (I := I) (gSeq i t) z)
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) (gSeq i t) z
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (gSeq i t) z
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (gSeq i t) z basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I z)))) := by

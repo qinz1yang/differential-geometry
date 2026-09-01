@@ -61,7 +61,7 @@ lemma exists_intrFrame
     (intrinsicGeodesic_contMDiff (I := I) g hEnorm p v).of_le
       (by exact_mod_cast le_top)
   obtain ⟨basis, hON0⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := I) g (intrinsicGeodesic (I := I) g hEnorm p v 0)
   obtain ⟨F, _hF0, hFdiff, hFpar, hFON⟩ :=
     exists_parallel_frame (I := I) g (intrinsicGeodesic (I := I) g hEnorm p v)

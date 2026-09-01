@@ -108,7 +108,7 @@ theorem intrJacobi_ode
         (Fin (Module.finrank Real (TangentSpace I q))) :=
       Fin.pos_iff_nonempty.mp (Nat.pos_of_ne_zero hfin)
     obtain ⟨basis, hON⟩ :=
-      DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+      DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
         (I := I) g q
     have hOp :=
       DifferentialGeometry.Integral.Connection.riemannOp_sq_le
@@ -269,7 +269,7 @@ theorem intrJacobi_bounds
   have hγ2 : ContMDiff 𝓘(Real, Real) I (2 : ℕ∞) γ :=
     hγInf.of_le ENat.LEInfty.out
   obtain ⟨basis, hON0⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := I) g (γ 0)
   obtain ⟨F, _hF0, hFdiff, hFpar, hFON⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_parallel_frame
@@ -387,7 +387,7 @@ theorem intrForce_pair
   have hγ2 : ContMDiff 𝓘(Real, Real) I (2 : ℕ∞) γ :=
     hγInf.of_le ENat.LEInfty.out
   obtain ⟨basis, hON0⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := I) g (γ 0)
   obtain ⟨F, _hF0, hFdiff, hFpar, hFON⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_parallel_frame
@@ -482,7 +482,7 @@ theorem intrJacobi_pair
   have hγ2 : ContMDiff 𝓘(Real, Real) I (2 : ℕ∞) γ :=
     hγInf.of_le ENat.LEInfty.out
   obtain ⟨basis, hON0⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := I) g (γ 0)
   obtain ⟨F, _hF0, hFdiff, hFpar, hFON⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_parallel_frame

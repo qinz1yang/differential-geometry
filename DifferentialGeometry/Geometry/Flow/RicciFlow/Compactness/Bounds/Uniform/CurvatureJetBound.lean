@@ -382,7 +382,7 @@ private lemma riemannianFiberNormSq_eq_normSq0S_unit'
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
           (unitZeroSec (I := I) (M := M) x)) := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gBase x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gBase x
   rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) gBase 0 s x
     (W.toSection x)]
   rw [show tensorInnerPointwise (I := I) (M := M) gBase 0 s x
@@ -452,7 +452,7 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 2
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gBase x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gBase x
   have hΛ1 : (0 : ℝ) ≤ Λ - 1 := by linarith
   rw [norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) gBase 0 2 x
     (metricDifferenceCcTensor (I := I) (M := M) gBase g₀)]

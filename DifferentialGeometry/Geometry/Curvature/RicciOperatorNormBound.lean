@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricContinuity
+import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -19,30 +20,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {x : M}
-
-theorem exists_gOrthonormalBasis (g : SmoothRiemannianMetric I M) (x : M) :
-    ∃ basis :
-        Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real (TangentSpace I x),
-      ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0 := by
-  classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
-  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  let : NormedAddCommGroup (TangentSpace I x) :=
-    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  let : InnerProductSpace Real (TangentSpace I x) :=
-    @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
-  let ob := stdOrthonormalBasis Real (TangentSpace I x)
-  refine ⟨ob.toBasis, ?_⟩
-  intro i j
-  have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
-    MetricFiberData.toCore_inner D (ob i) (ob j)
-  have hob := ob.inner_eq_ite i j
-  change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
-    (ob.toBasis i) (ob.toBasis j)]
-  change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
-  rw [← hinner]
-  exact hob
 
 theorem ricci_unitSphere_le_of_componentBound
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -238,7 +215,7 @@ theorem tensor02_quadForm_abs_le_normSq0S
       ≤ (Module.finrank Real (TangentSpace I x) : Real)
           * Real.sqrt (normSq0S (I := I) g x 2 T) * g.inner x v v := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON
@@ -290,7 +267,7 @@ theorem exists_ricci_bound
   have hC_nonneg : 0 ≤ C :=
     mul_nonneg (sq_nonneg _) (Real.sqrt_nonneg _)
   refine ⟨C, hC_nonneg, fun x v => ?_⟩
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON

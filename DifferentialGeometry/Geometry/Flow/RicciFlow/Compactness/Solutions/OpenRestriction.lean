@@ -61,7 +61,7 @@ theorem ricciTensor_restrictOpen
           (mfderiv I I (Subtype.val : U → M) x v)
           (mfderiv I I (Subtype.val : U → M) x w) := by
   classical
-  obtain ⟨B, hB⟩ := exists_gOrthonormalBasis (I := I) (M := M) g (x : M)
+  obtain ⟨B, hB⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (M := M) g (x : M)
   let hdim : Module.finrank ℝ E = Module.finrank ℝ (TangentSpace I (x : M)) := by
     rfl
   let Bf : Fin (Module.finrank ℝ E) → TangentSpace I (x : M) :=
@@ -171,7 +171,7 @@ theorem metricScalarAt_restrictOpen
     metricScalarAt (I := I) (M := U) (g.restrictOpen (I := I) U) x
       = metricScalarAt (I := I) (M := M) g (x : M) := by
   classical
-  obtain ⟨basisU, hONU⟩ := exists_gOrthonormalBasis (I := I) (M := U)
+  obtain ⟨basisU, hONU⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (M := U)
     (g.restrictOpen (I := I) U) x
   let eM : TangentSpace I x ≃ₗ[ℝ] TangentSpace I (x : M) :=
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).toLinearEquiv.trans

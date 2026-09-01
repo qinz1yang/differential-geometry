@@ -127,7 +127,7 @@ theorem rm04Data_jacobi
           (TangentSpace I (radialCurve (I := I) g p x t)) =
             Module.finrank ℝ E := rfl
       rw [← hfin]
-      exact DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+      exact DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
         (I := I) g (radialCurve (I := I) g p x t)
     choose basis hON using hbasis
     have hcurv : ∀ t ∈ Ioo (0 : ℝ) b,

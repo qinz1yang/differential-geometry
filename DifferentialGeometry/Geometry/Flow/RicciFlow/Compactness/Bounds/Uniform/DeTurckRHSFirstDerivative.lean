@@ -190,7 +190,7 @@ private theorem trace31_norm_le
       (∞ : WithTop ℕ∞) e
       (iterCov (I := I) g 3 A k)) x)
   rw [Tensor0SField.domDomCongr_apply] at htrace
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
@@ -238,7 +238,7 @@ private theorem reverseJetThree
     g₀ gBase 2 (metricUniformEquivalentOn_symm (I := I) hEq)
       hrev1' hfwd1' hjet2 hjet3
   intro x _
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
   have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON

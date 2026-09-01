@@ -273,7 +273,7 @@ theorem intrPull_quad_le
           (I := I) (M := M) g q)) ≤ K := by
     simpa only [F, q] using hRm
   obtain ⟨basis, hON⟩ :=
-    Geometry.Curvature.exists_gOrthonormalBasis (I := I) g q
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g q
   have hquad :=
     Integral.Connection.riemann_quad_le (I := I) g basis hON
       hRm' dJ dV

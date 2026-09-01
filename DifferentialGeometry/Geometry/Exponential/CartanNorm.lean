@@ -164,7 +164,7 @@ theorem expDiff_sq_xfer
       intrinsicGeodesic_zero (I := I') g' hEnorm' p'
         (show TangentSpace I' p' from i u)
   obtain ⟨basis, hbasis⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := I) g p
   have hseed : ∀ a b,
       g.inner (γ 0) (basis a) (basis b) =

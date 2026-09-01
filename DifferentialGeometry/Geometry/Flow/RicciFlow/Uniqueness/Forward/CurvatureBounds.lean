@@ -33,30 +33,6 @@ private theorem innerSelfNonneg (g : SmoothRiemannianMetric I M) (x : M)
   · simp [hv]
   · exact (g.pos x v hv).le
 
-omit [SigmaCompactSpace M] [T2Space M] in
-private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
-    ∃ b : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
-        (TangentSpace I x),
-      ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
-  classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
-  let _ : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  let _ : NormedAddCommGroup (TangentSpace I x) :=
-    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  let _ : InnerProductSpace Real (TangentSpace I x) :=
-    @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
-  let ob := stdOrthonormalBasis Real (TangentSpace I x)
-  refine ⟨ob.toBasis, ?_⟩
-  intro i j
-  have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
-    MetricFiberData.toCore_inner D (ob i) (ob j)
-  change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricDataGen.inner_eq_gen
-    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
-  change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
-  rw [← hinner]
-  exact ob.inner_eq_ite i j
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
 private theorem frankEq (x : M) :
     (Module.finrank Real (TangentSpace I x) : Real) = (Module.finrank Real E : Real) := rfl
@@ -75,7 +51,7 @@ private theorem metricCS (g : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
     |g.inner x u v| ≤ Real.sqrt (g.inner x u u) * Real.sqrt (g.inner x v v) := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   set α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
     dualToCotangentGen (I := I) (tangentFlatLinearGen (I := I) g x u) with hα
   have hαnorm : normSq0S (I := I) g x 1 α = g.inner x u u := by
@@ -215,7 +191,7 @@ theorem connectionDifferenceVec_le (g₁ g₂ : SmoothRiemannianMetric I M) (x :
   classical
   set w : TangentSpace I x :=
     CovariantDerivative.difference (metricCov (I := I) g₁) (metricCov (I := I) g₂) x Y X with hw
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g₁ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   set v : Fin 3 -> TangentSpace I x := ![X, Y, w] with hv
   have h0 : v 0 = X := by simp [hv]
   have h1 : v 1 = Y := by simp [hv]
@@ -263,7 +239,7 @@ theorem fluxNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
       (s : Real) ^ 2 * (Module.finrank Real E : Real) ^ (s + 1) *
         connectionDifferenceSq (I := I) g₁ g₂ x * normSq0S (I := I) g₁ x s (T x) := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g₁ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   have hinv := onFrame_inv (I := I) g₁ basis hON
   have hbnorm : ∀ i, Real.sqrt (g₁.inner x (basis i) (basis i)) = 1 := by
     intro i; rw [hON i i]; simp
@@ -350,7 +326,7 @@ theorem traceNormSq_le (g : SmoothRiemannianMetric I M) (x : M)
     normSq0S (I := I) g x s (metricTraceFirstTwo0STensor (I := I) g V) ≤
       (Module.finrank Real E : Real) ^ (s + 2) * normSq0S (I := I) g x (s + 2) V := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv := onFrame_inv (I := I) g basis hON
   set NV := Real.sqrt (normSq0S (I := I) g x (s + 2) V) with hNV
   have hNVnn : 0 ≤ NV := Real.sqrt_nonneg _
@@ -581,7 +557,7 @@ theorem traceDiffNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) {s :
       (Module.finrank Real E : Real) ^ (s + 6) * Λ ^ 2 *
         metricDiffSq (I := I) g₁ g₂ x * normSq0S (I := I) g₁ x (s + 2) W := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g₁ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   have hinv1 := onFrame_inv (I := I) g₁ basis hON
   have hinv2 := basisInvMetric_real (I := I) g₂ x basis
   set nR : Real := (Module.finrank Real E : Real) with hnR
@@ -710,7 +686,7 @@ theorem remNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
         2 * (Module.finrank Real E : Real) ^ (s + 6) * Λ ^ 2 *
           metricDiffSq (I := I) g₁ g₂ x * B₂ := by
   classical
-  obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g₁ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   have hinv := onFrame_inv (I := I) g₁ basis hON
   set W : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2) :=

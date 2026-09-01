@@ -123,7 +123,7 @@ private theorem div_ricGrad [I.Boundaryless]
     rw [show cov =
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g by rfl]
     exact leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   let delta : Fin (Module.finrank Real (TangentSpace I x)) ->
       Fin (Module.finrank Real (TangentSpace I x)) -> Real :=
     fun i j => if i = j then 1 else 0

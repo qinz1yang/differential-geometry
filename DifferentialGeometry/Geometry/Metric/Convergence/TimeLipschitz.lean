@@ -106,7 +106,7 @@ theorem timeLipschitz_of_hasDerivAt
       metricDerivNorm (I := I) a (g s) (g t) gRef x ≤ L * |s - t| := by
   classical
   intro s hs t ht x hxK
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gRef x
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by

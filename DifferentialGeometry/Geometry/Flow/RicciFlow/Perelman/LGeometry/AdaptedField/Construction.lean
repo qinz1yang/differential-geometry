@@ -493,7 +493,7 @@ private theorem exists_parFrame
       (∀ s ∈ Set.Ioo (-eps) (b + eps), ∀ i j,
         q.inner (alpha s) (F i s) (F j s) = if i = j then 1 else 0) := by
   classical
-  obtain ⟨basis, hbasis⟩ := exists_gOrthonormalBasis (I := I) q (alpha b)
+  obtain ⟨basis, hbasis⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) q (alpha b)
   let beta : Real → M := fun r ↦ alpha (b - r)
   have hbeta : ContMDiff (modelWithCornersSelf Real Real) I ∞ beta := by
     exact halpha.comp (contMDiff_const.sub contMDiff_id)

@@ -372,7 +372,7 @@ theorem covDerivConnectionDifference_g1_le
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
   have : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₁ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   set B : TangentSpace I x :=
     covDerivConnectionDifference (I := I) g₂ g₁
       (smoothExtensionTangent (I := I) x v)

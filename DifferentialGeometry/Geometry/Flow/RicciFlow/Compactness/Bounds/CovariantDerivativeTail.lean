@@ -52,7 +52,7 @@ private theorem covOrder_zero_point
   classical
   have hcomp := sqrt_normSq0S_le_of_metric_equiv
     (I := I) (g := g) (h := gRef) x 2 hC1 hpair (metricTensor0S (I := I) g x)
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by

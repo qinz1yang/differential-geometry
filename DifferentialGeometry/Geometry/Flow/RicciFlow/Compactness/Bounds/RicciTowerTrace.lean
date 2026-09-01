@@ -77,7 +77,7 @@ theorem iterRic_normSq_le
     ((Tensor0SField.domDomCongr (I := I) (∞ : WithTop ℕ∞) e
       (iterCov (I := I) g 4 Rm k)) x)
   rw [Tensor0SField.domDomCongr_apply] at htrace
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by

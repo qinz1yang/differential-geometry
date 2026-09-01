@@ -254,7 +254,7 @@ theorem normSq0S_restrictOpen_apply
       Tensor0SBundle.normSq0S (I := I) (M := M) g (x : M) s A := by
   classical
   obtain ⟨basis, hON⟩ :=
-    exists_gOrthonormalBasis (I := I) (M := M) g (x : M)
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (M := M) g (x : M)
   have hONU :
       ∀ i j,
         (g.restrictOpen (I := I) U).inner x (basis i) (basis j) =

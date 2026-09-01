@@ -307,7 +307,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_forward
       (Tensor0SBundle.metricTensorField (I := I) g) (r' + 1)
     rw [hδ₀def, hsub, iterCov_metric_zero, sub_zero]
     obtain ⟨basis, hON⟩ :=
-      DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
+      DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) g basis hON
     rw [← tensor02CovDerivNormWith_eq_iterCov (I := I) D₁.forward.pullback g (r' + 1) basis hinv]
@@ -319,7 +319,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_forward
         (iterCov (I := I) G₁ 2 (Tensor0SBundle.metricTensorField (I := I) g) j x)) ≤ ε₀ := by
     intro hNV x hxV j hj1 hjp
     obtain ⟨basis, hON⟩ :=
-      DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) G₁ x
+      DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) G₁ x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) G₁ basis hON
     rw [← tensor02CovDerivNormWith_eq_iterCov (I := I)
@@ -334,7 +334,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_forward
         (iterCov (I := I) G₁ 2 δ₁ k x)) ≤ ε' := by
     intro hNV x hxV k hkp
     obtain ⟨basis, hON⟩ :=
-      DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) G₁ x
+      DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) G₁ x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) G₁ basis hON
     rw [← tensor02CovDerivNormWith_eq_iterCov (I := I) δ₁ G₁ k basis hinv]
@@ -440,7 +440,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_forward
         (iterCov (I := I) g 2 (P₁ - D₁.forward.pullback) (a' + 1) x) slots = 0 at hz
       rw [hz, sub_zero]
     obtain ⟨basis, hON⟩ :=
-      DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
+      DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) g basis hON
     rw [tensor02CovDerivNormWith_eq_iterCov (I := I) P'' g (a' + 1) basis hinv, hdecI]
@@ -469,7 +469,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_forward
     unfold metricTensorErrorNorm
     rw [hval]
     obtain ⟨basis, hON⟩ :=
-      DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
+      DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) g basis hON
     have htri := sqrt_normSq0S_add_le (I := I) g (δ₀ x) (δ₁ x) basis hinv

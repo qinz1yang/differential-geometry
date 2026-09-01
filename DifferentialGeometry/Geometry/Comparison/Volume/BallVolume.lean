@@ -1181,7 +1181,7 @@ lemma exists_extFrameData
     intro w
     by_cases hw : w ∈ Metric.ball (0 : E) R
     · obtain ⟨basis, hON0⟩ :=
-        DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+        DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
           (I := I) g (D.gamma w 0)
       obtain ⟨F, _hF0, hFdiff, hFpar, hFON⟩ :=
         DifferentialGeometry.Geometry.Riemannian.exists_parallel_frame

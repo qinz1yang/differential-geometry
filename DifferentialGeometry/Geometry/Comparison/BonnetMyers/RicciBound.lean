@@ -38,7 +38,7 @@ theorem ricciLower_of_rm
       (-((Module.finrank ℝ E : ℝ) ^ 2 * Rm)) := by
   classical
   intro x v
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   let A : ℝ := Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 4
     (metricRm04At (I := I) (M := M) g x))
   have hfinrank : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := by

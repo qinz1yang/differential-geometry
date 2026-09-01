@@ -54,7 +54,7 @@ private theorem metric_self_norm
     (g : SmoothRiemannianMetric I M) (x : M) :
     normSq0S (I := I) g x 2 (metricTensorField (I := I) g x) =
       (Module.finrank ℝ E : ℝ) := by
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
@@ -75,7 +75,7 @@ private theorem sqrt_normSq_zero
     Real.sqrt (normSq0S (I := I) g x s
       (0 : Tensor0SSpace s I x)) = 0 := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     intro i j
@@ -134,7 +134,7 @@ theorem reverseJetOne
       (revJetOneC (E := E) Λ) := by
   have hΛ0 : 0 ≤ Λ := le_trans zero_le_one hEq.1
   intro x _
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
   have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
@@ -188,7 +188,7 @@ theorem reverseJetTwo
             (3 / 2 : ℝ) * (Real.sqrt (Λ ^ 3) * L₁))
         else 0) 2
   intro x _
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
   have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON

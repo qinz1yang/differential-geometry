@@ -33,7 +33,7 @@ theorem ricci_quadratic_form_on_unit_vector_le_of_solution
     |S.ricciAt t x (vec2 (I := I) u u)|
       ≤ (Module.finrank Real (TangentSpace I x) : Real) ^ 2
           * Real.sqrt (normSq0S (I := I) (S.base.metric t) x 4 (S.base.rm04 t x)) := by
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) (S.base.metric t) x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (S.base.metric t) x
   have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) (S.base.metric t) basis hON

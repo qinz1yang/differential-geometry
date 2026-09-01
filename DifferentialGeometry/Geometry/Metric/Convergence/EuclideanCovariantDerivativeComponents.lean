@@ -161,7 +161,7 @@ theorem metricDerivNorm_le_of_iterCovComp_le
     rw [hg0]
     simpa only [one_div] using hequiv v
   obtain ⟨b, hbON⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := 𝓘(Real, E)) g z
   have hbinv : Tensor0SBundle.MetricInverseInBasisGen
       (I := 𝓘(Real, E)) g z b

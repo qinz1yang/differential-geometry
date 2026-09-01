@@ -90,7 +90,7 @@ private lemma riemannianFiberNormSq0_eq_normSq0S
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
           (unitZeroSec (I := I) (M := M) x)) := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g 0 s x
     (W.toSection x)]
   rw [show tensorInnerPointwise (I := I) (M := M) g 0 s x

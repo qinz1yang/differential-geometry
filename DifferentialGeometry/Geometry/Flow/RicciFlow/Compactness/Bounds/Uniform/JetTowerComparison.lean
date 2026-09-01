@@ -136,7 +136,7 @@ theorem riemannianFiberNormSq0_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ
     riemannianFiberNormSq (I := I) (M := M) g 0 s x (W.toSection x) =
       normSq0S (I := I) g x s (ccUnitField (I := I) g s W x) := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g 0 s x
     (W.toSection x)]
   rw [show tensorInnerPointwise (I := I) (M := M) g 0 s x
@@ -263,7 +263,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private theorem sqrtNormSq0SZero (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ) :
     Real.sqrt (normSq0S (I := I) g x s (0 : Tensor0SSpace s I x)) = 0 := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   rw [normSq0S_identity_eq_sum_sq (I := I) g x s basis
     (metricInverseInBasis_of_orthonormal (I := I) g basis hON)]
   rw [show (∑ slots : Fin s → Fin (Module.finrank Real (TangentSpace I x)),

@@ -138,7 +138,7 @@ theorem metricDerivNorm_self
   unfold metricDerivNorm
   have h0 : metricDiffCovDerivAt (I := I) a g g gRef x = 0 := sub_self _
   rw [h0]
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gRef x
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by

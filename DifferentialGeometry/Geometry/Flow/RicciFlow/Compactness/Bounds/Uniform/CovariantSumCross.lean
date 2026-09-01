@@ -399,7 +399,7 @@ private theorem connectionDifferenceTensor_normSqRS_swap
       = normSqRS (I := I) (g := g₀) (x := x) 1 2 (connectionDifferenceTensorAt
         (I := I) cov' cov x) := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
   have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j

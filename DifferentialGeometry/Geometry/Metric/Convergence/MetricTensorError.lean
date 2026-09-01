@@ -31,7 +31,7 @@ theorem tensor_apply_bounds_of_metricTensorErrorNorm_le
       P x (fun _ => v) ≤ (1 + ε) * g.inner x v v := by
   classical
   obtain ⟨basis, hON⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hCS := Tensor0SBundle.abs_apply_le_sqrt_normSq0S (I := I)
     g x 2 basis (fun i j => hON i j)
     (P x - Tensor0SBundle.metricTensorField (I := I) g x)
@@ -97,7 +97,7 @@ theorem tensor02CovDerivNormWith_metricTensorField_eq_metricDerivNorm
         (Tensor0SBundle.metricTensorField (I := I) G) g g x =
       metricDerivNorm (I := I) a G g g x := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by

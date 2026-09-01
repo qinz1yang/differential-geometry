@@ -174,7 +174,7 @@ private theorem norm_sq_shift
         2 * a * (r + l) + a ^ 2 * (Module.finrank Real E : Real) := by
   classical
   let D := tensor0SMetricData (I := I) g x 2
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by

@@ -31,7 +31,7 @@ theorem ricciLowerAt_of_rm
     -((Module.finrank ℝ E : ℝ) ^ 2 * Rm) * g.inner x v v ≤
       ricciTensor (I := I) g x v v := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hxbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet]
     exact mem_chart_source H x

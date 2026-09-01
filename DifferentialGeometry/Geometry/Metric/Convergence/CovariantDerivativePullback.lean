@@ -555,7 +555,7 @@ theorem ricciTensor_pullback
       = ricciTensor (I := I) g (Φ x)
           (mfderiv I I (Φ : M → N) x v) (mfderiv I I (Φ : M → N) x w) := by
   classical
-  obtain ⟨B, hB⟩ := exists_gOrthonormalBasis (Diffeomorph.pullbackMetric (I := I) g Φ) x
+  obtain ⟨B, hB⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (Diffeomorph.pullbackMetric (I := I) g Φ) x
   have hB' : ∀ i j, g.inner (Φ x)
         (mfderiv I I (Φ : M → N) x (B i)) (mfderiv I I (Φ : M → N) x (B j))
       = if i = j then (1 : ℝ) else 0 := by
@@ -776,7 +776,7 @@ theorem metricDerivNorm_pullback
       metricDerivNorm (I := I) a gk gInf gRef (Phi x) := by
   classical
   obtain ⟨basis, hON⟩ :=
-    exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := I) (Diffeomorph.pullbackMetric (I := I) gRef Phi) x
   exact
     metricDerivNorm_pullback_of_orthonormal
@@ -844,7 +844,7 @@ theorem metricScalarAt_pullback
       = metricScalarAt (I := I) g (Phi x) := by
   classical
   obtain ⟨basis, hON⟩ :=
-    exists_gOrthonormalBasis (Diffeomorph.pullbackMetric (I := I) g Phi) x
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (Diffeomorph.pullbackMetric (I := I) g Phi) x
   let dPhi : TangentSpace I x ≃L[Real] TangentSpace I (Phi x) :=
     Diffeomorph.mfderivToContinuousLinearEquiv Phi infty_ne_zero x
   let basis' : Module.Basis _ Real (TangentSpace I (Phi x)) := basis.map dPhi.toLinearEquiv
@@ -903,7 +903,7 @@ theorem metricCovDerivNorm_pullback
         (Diffeomorph.pullbackMetric (I := I) h Φ)
         (Diffeomorph.pullbackMetric (I := I) gRef Φ) x
       = metricCovDerivNorm (I := I) a h gRef (Φ x) := by
-  obtain ⟨B, hB⟩ := exists_gOrthonormalBasis (Diffeomorph.pullbackMetric (I := I) gRef Φ) x
+  obtain ⟨B, hB⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (Diffeomorph.pullbackMetric (I := I) gRef Φ) x
   unfold metricCovDerivNorm
   rw [normSq0S_pullback_eval_of_orthonormal (I := I) gRef Φ x (a + 2) B hB
     (metricCovDeriv (I := I) (Diffeomorph.pullbackMetric (I := I) h Φ)

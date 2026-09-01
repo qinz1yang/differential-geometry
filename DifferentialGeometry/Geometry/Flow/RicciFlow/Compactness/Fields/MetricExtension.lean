@@ -853,7 +853,7 @@ theorem hgLip_gSeqExt
     · have hxU : x ∈ Φ.source k := bf.chi_supp k hxsupp
       have hyC : (⟨x, hxU⟩ : SourceDomain (I := I) Φ k) ∈
           sourceCompactSet (I := I) Φ k (K' ∩ tsupport (bf.chi k)) := ⟨hx, hxsupp⟩
-      obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I)
+      obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I)
         (refRes (I := I) Φ R k)
         (⟨x, hxU⟩ : SourceDomain (I := I) Φ k)
       have hinv : MetricInverseInBasisGen (I := I)

@@ -35,7 +35,7 @@ theorem ricci_quadratic_form_bound_of_solution_curvature_bound
         (S.base.metric t).inner x v v := by
   let n := Module.finrank Real (TangentSpace I x)
   obtain ⟨basis, hON⟩ :=
-    exists_gOrthonormalBasis (I := I) (S.base.metric t) x
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (S.base.metric t) x
   have hcomp : ∀ i j : Fin n,
       |S.ricciAt t x (vec2 (I := I) (basis i) (basis j))| ≤
         (n : Real) * Real.sqrt C := by

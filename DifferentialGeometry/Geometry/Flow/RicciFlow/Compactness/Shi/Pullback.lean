@@ -80,7 +80,7 @@ theorem ricCovTower_normSq0S_pullback
           (Diffeomorph.pullbackMetric (I := I) g Φ) s x)
       = Tensor0SBundle.normSq0S (I := I) g (Φ x) (2 + s)
           (ricCovTower (I := I) g g s (Φ x)) := by
-  obtain ⟨B, hB⟩ := exists_gOrthonormalBasis (Diffeomorph.pullbackMetric (I := I) g Φ) x
+  obtain ⟨B, hB⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (Diffeomorph.pullbackMetric (I := I) g Φ) x
   exact normSq0S_pullback_eval_of_orthonormal (I := I) g Φ x (2 + s) B hB
     (ricCovTower (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ)
       (Diffeomorph.pullbackMetric (I := I) g Φ) s x)

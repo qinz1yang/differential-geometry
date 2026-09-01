@@ -669,7 +669,7 @@ private theorem jet1_norm_le
         (iterCov (I := I) g 4 (metricRm04 (I := I) (M := M) g) 1 x)) ≤
       Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5) * K := by
   classical
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON

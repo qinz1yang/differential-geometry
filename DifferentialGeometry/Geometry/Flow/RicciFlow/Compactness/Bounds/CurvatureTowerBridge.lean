@@ -122,7 +122,7 @@ theorem curvCovDeriv_normSq_eq
               (I := I) (M := M) g) m) x) := by
     refine ContinuousMultilinearMap.ext (fun v => ?_)
     exact curv_apply_iterCov (I := I) (M := M) g m x v
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv :
       MetricInverseInBasisGen (I := I) g x basis
         (identityInvMetric

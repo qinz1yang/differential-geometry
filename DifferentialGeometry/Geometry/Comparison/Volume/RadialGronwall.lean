@@ -127,7 +127,7 @@ lemma exists_radialFrame
           if i = j then (1 : ℝ) else 0) := by
   classical
   obtain ⟨basis, hON0⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := I) g (radialCurve (I := I) g p x 0)
   obtain ⟨F, _hF0, hFdiff, hFpar, hFON⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_parallel_frame
@@ -394,7 +394,7 @@ private theorem exists_gON_tangentBasis_E
     (g : SmoothRiemannianMetric I M) (y : M) :
     ∃ basis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I y),
       ∀ i j, g.inner y (basis i) (basis j) = if i = j then (1 : ℝ) else 0 := by
-  have h := DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
+  have h := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
     (I := I) g y
   change ∃ basis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I y),
     ∀ i j, g.inner y (basis i) (basis j) = if i = j then (1 : ℝ) else 0 at h
