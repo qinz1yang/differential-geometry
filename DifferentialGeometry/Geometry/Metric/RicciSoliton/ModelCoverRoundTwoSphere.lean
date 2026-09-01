@@ -153,4 +153,48 @@ theorem solitonModelCovering_roundTwoSphere_deckGroup_eq_bot_or_antipodal
       · exact (hanti ⟨gamma, hgenerator⟩).elim
     · exact bot_le
 
+theorem solitonModelCovering_target_homeomorphic_two_sphere_or_real_projective_plane_of_isQuotientCoveringMap
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : sphere (0 : EuclideanSpace Real (Fin 3)) 1 → M}
+    (hπ : solitonModelCovering roundTwoSphereShrinkerMetric
+      roundTwoSphereShrinkerPotential g f cover)
+    (hquotient : IsQuotientCoveringMap cover (coveringDeckGroup cover)) :
+    (∃ e : sphere (0 : EuclideanSpace Real (Fin 3)) 1 ≃ₜ M,
+      ∀ x, e x = cover x) ∨
+    (∃ e : RealProjectivePlane ≃ₜ M,
+      ∀ x, e (realProjectivePlaneQuotientMap x) = cover x) := by
+  rcases solitonModelCovering_roundTwoSphere_deckGroup_eq_bot_or_antipodal hπ with
+    htrivial | hantipodal
+  · left
+    have hinjective : Function.Injective cover := by
+      intro x y hxy
+      obtain ⟨gamma, hgamma⟩ := hquotient.apply_eq_iff_mem_orbit.mp hxy
+      have hmem : gamma.1 ∈ (⊥ : Subgroup
+          (Equiv.Perm (sphere (0 : EuclideanSpace Real (Fin 3)) 1))) := by
+        rw [← htrivial]
+        exact gamma.property
+      have hone : gamma.1 = 1 := by
+        simpa only [Subgroup.mem_bot] using hmem
+      change gamma.1 y = x at hgamma
+      rw [hone] at hgamma
+      exact hgamma.symm
+    let e : sphere (0 : EuclideanSpace Real (Fin 3)) 1 ≃ₜ M :=
+      Continuous.homeoOfEquivCompactToT2
+        (f := Equiv.ofBijective cover
+          ⟨hinjective, solitonModelCovering_surjective hπ⟩)
+        (solitonModelCovering_contMDiff hπ).continuous
+    exact ⟨e, fun _ => rfl⟩
+  · right
+    have hquotient' : IsQuotientCoveringMap cover
+        realProjectivePlaneAntipodalGroup :=
+      (IsQuotientCoveringMap.subgroup_congr
+        cover (Equiv.Perm
+          (sphere (0 : EuclideanSpace Real (Fin 3)) 1))
+        (coveringDeckGroup cover) realProjectivePlaneAntipodalGroup
+        hantipodal).mp hquotient
+    let e : RealProjectivePlane ≃ₜ M :=
+      hquotient'.orbitRelQuotientHomeomorph
+    refine ⟨e, fun x => ?_⟩
+    exact hquotient'.orbitRelQuotientHomeomorph_apply x
+
 end DifferentialGeometry.Geometry

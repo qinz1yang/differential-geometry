@@ -202,49 +202,63 @@ theorem coveringDeckGroup_properlyDiscontinuousSMul
     refine ⟨z, by simpa using hzt, ?_⟩
     exact ⟨gamma • x, ⟨x, hxW.1, rfl⟩, hxW.2⟩
 
-noncomputable def coveringDeckGroupQuotientHomeomorph
-    {E X : Type*} [TopologicalSpace E] [TopologicalSpace X]
-    [SimplyConnectedSpace E] [LocallyPathConnectedSpace E]
-    {p : E → X} (hp : IsCoveringMap p) (hsurj : Function.Surjective p) :
-    MulAction.orbitRel.Quotient (coveringDeckGroup p) E ≃ₜ X := by
-  let Q := MulAction.orbitRel.Quotient (coveringDeckGroup p) E
+noncomputable def _root_.IsQuotientCoveringMap.orbitRelQuotientHomeomorph
+    {E X G : Type*} [TopologicalSpace E] [TopologicalSpace X]
+    [Group G] [MulAction G E]
+    {f : E → X} (h : IsQuotientCoveringMap f G) :
+    MulAction.orbitRel.Quotient G E ≃ₜ X := by
+  let Q := MulAction.orbitRel.Quotient G E
   let q : E → Q := Quotient.mk''
-  let F : Q → X := Quotient.lift p (fun e1 e2 he =>
-    (coveringDeckGroup_apply_eq_iff hp).mpr he)
-  have hFcont : Continuous F := hp.continuous.quotient_lift
-    (fun e1 e2 he => (coveringDeckGroup_apply_eq_iff hp).mpr he)
+  let F : Q → X := Quotient.lift f
+    (fun e₁ e₂ he => h.apply_eq_iff_mem_orbit.mpr he)
+  have hFcont : Continuous F := h.continuous.quotient_lift
+    (fun e₁ e₂ he => h.apply_eq_iff_mem_orbit.mpr he)
   have hFsurj : Function.Surjective F := by
     intro x
-    obtain ⟨e, rfl⟩ := hsurj x
+    obtain ⟨e, rfl⟩ := h.surjective x
     exact ⟨q e, rfl⟩
   have hFinj : Function.Injective F := by
     intro a b hab
     induction a using Quotient.inductionOn with
-    | _ e1 =>
+    | _ e₁ =>
       induction b using Quotient.inductionOn with
-      | _ e2 =>
+      | _ e₂ =>
         apply Quotient.sound
-        exact (coveringDeckGroup_apply_eq_iff hp).mp hab
+        exact h.apply_eq_iff_mem_orbit.mp hab
   let equiv : Q ≃ X := Equiv.ofBijective F ⟨hFinj, hFsurj⟩
-  have hinvComp : equiv.invFun ∘ p = q := by
+  have hinvComp : equiv.invFun ∘ f = q := by
     funext e
     apply equiv.injective
-    change equiv (equiv.symm (p e)) = equiv (q e)
+    change equiv (equiv.symm (f e)) = equiv (q e)
     rw [Equiv.apply_symm_apply]
     rfl
   exact
     { toEquiv := equiv
       continuous_toFun := hFcont
-      continuous_invFun := (hp.isQuotientMap hsurj).continuous_iff.mpr (by
+      continuous_invFun := h.continuous_iff.mpr (by
         rw [hinvComp]
         exact continuous_quot_mk) }
+
+theorem _root_.IsQuotientCoveringMap.orbitRelQuotientHomeomorph_apply
+    {E X G : Type*} [TopologicalSpace E] [TopologicalSpace X]
+    [Group G] [MulAction G E]
+    {f : E → X} (h : IsQuotientCoveringMap f G) (e : E) :
+    h.orbitRelQuotientHomeomorph (Quotient.mk'' e) = f e := by
+  rw [IsQuotientCoveringMap.orbitRelQuotientHomeomorph]
+  rfl
+
+noncomputable def coveringDeckGroupQuotientHomeomorph
+    {E X : Type*} [TopologicalSpace E] [TopologicalSpace X]
+    [SimplyConnectedSpace E] [LocallyPathConnectedSpace E]
+    {p : E → X} (hp : IsCoveringMap p) (hsurj : Function.Surjective p) :
+    MulAction.orbitRel.Quotient (coveringDeckGroup p) E ≃ₜ X :=
+  (isQuotientCoveringMap_coveringDeckGroup hp hsurj).orbitRelQuotientHomeomorph
 
 theorem coveringDeckGroupQuotientHomeomorph_apply
     {E X : Type*} [TopologicalSpace E] [TopologicalSpace X]
     [SimplyConnectedSpace E] [LocallyPathConnectedSpace E]
     {p : E → X} (hp : IsCoveringMap p) (hsurj : Function.Surjective p) (e : E) :
     coveringDeckGroupQuotientHomeomorph hp hsurj (Quotient.mk'' e) = p e := by
-  rw [coveringDeckGroupQuotientHomeomorph]
-  rfl
+  exact (isQuotientCoveringMap_coveringDeckGroup hp hsurj).orbitRelQuotientHomeomorph_apply e
 
 end DifferentialGeometry
