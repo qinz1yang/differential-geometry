@@ -2,6 +2,7 @@ import Mathlib.Analysis.InnerProductSpace.EuclideanDist
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
 import DifferentialGeometry.Geometry.Metric.Sphere.CoverQuotient
 import DifferentialGeometry.Geometry.Metric.Sphere.PositiveCover
+import DifferentialGeometry.Topology.Covering.DeckGroup
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Topology.StandardModel
 open DifferentialGeometry.Geometry.Curvature
@@ -30,7 +31,7 @@ private instance roundSphereFinFact (n : ℕ) :
       (EuclideanSpace ℝ (Fin (n + 1))) = n + 1) :=
   ⟨by rw [finrank_euclideanSpace_fin]⟩
 
-theorem exists_round_sphere_cover_of_constant_positive_sectional_curvature
+theorem exists_round_sphere_quotient_cover_of_constant_positive_sectional_curvature
     {n : ℕ} (hn : 1 < n)
     (hcompact : CompactSpace M) (hconn : ConnectedSpace M)
     (hbdry : I.Boundaryless) (hdim : Module.finrank ℝ E = n)
@@ -42,8 +43,7 @@ theorem exists_round_sphere_cover_of_constant_positive_sectional_curvature
     ∃ cover : sphere
         (0 : EuclideanSpace ℝ (Fin (n + 1))) 1 → M,
       IsLocalDiffeomorph (𝓡 n) I ∞ cover ∧
-        Function.Surjective cover ∧
-        IsCoveringMap cover ∧
+        IsQuotientCoveringMap cover (coveringDeckGroup cover) ∧
         ∀ (x : sphere
             (0 : EuclideanSpace ℝ (Fin (n + 1))) 1)
           (v w : TangentSpace (𝓡 n) x),
@@ -133,9 +133,53 @@ theorem exists_round_sphere_cover_of_constant_positive_sectional_curvature
         (I := 𝓡 n) (M := S.Q)) d.isLocalDiffeomorph
   have hcoverLocal : IsLocalDiffeomorph (𝓡 n) I ∞ cover :=
     isLocalDiffeomorph_comp S.equiv.symm.isLocalDiffeomorph hprojLocal
+  have hcoverSurj : Function.Surjective cover :=
+    S.equiv.symm.surjective.comp (hprojSurj.comp d.surjective)
+  have hcovering : IsCoveringMap cover :=
+    hcoverLocal.isLocalHomeomorph.covering_compact
+  have hrank : 1 < Module.rank ℝ
+      (EuclideanSpace ℝ (Fin (n + 1))) :=
+    Module.one_lt_rank_of_one_lt_finrank (by
+      rw [finrank_euclideanSpace_fin]
+      omega)
+  let : PreconnectedSpace
+      (sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1) :=
+    Subtype.preconnectedSpace (isPreconnected_sphere hrank 0 1)
+  have htrans : ∀ {x y}, cover x = cover y →
+      ∃ gamma : coveringDeckGroup cover, gamma • y = x := by
+    intro x y hxy
+    have hproj : proj x = proj y := by
+      apply S.equiv.symm.injective
+      exact hxy
+    obtain ⟨a, ha⟩ :=
+      (Riemannian.Topology.UniversalCover.proj_eq_iff_smul (d y) (d x)).mp
+        hproj.symm
+    let phi : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1
+        ≃ₘ⟮𝓡 n, 𝓡 n⟯ sphere
+          (0 : EuclideanSpace ℝ (Fin (n + 1))) 1 :=
+      (d.trans (Riemannian.Topology.UniversalCover.deckDiffeo
+        (I := 𝓡 n) a)).trans d.symm
+    have hphiCover (z : sphere
+        (0 : EuclideanSpace ℝ (Fin (n + 1))) 1) :
+        cover (phi z) = cover z := by
+      change S.equiv.symm (Riemannian.Topology.UniversalCover.proj (d (phi z))) =
+        S.equiv.symm (Riemannian.Topology.UniversalCover.proj (d z))
+      simp only [phi, Diffeomorph.coe_trans, Function.comp_apply,
+        Diffeomorph.apply_symm_apply]
+      exact congrArg S.equiv.symm
+        (Riemannian.Topology.UniversalCover.proj_deckAct a (d z))
+    let gamma : coveringDeckGroup cover :=
+      ⟨phi.toEquiv, phi.contMDiff.continuous,
+        phi.symm.contMDiff.continuous, hphiCover⟩
+    refine ⟨gamma, ?_⟩
+    change phi y = x
+    apply d.injective
+    change d (d.symm (a • d y)) = d x
+    rw [d.apply_symm_apply]
+    exact ha
   refine ⟨cover, hcoverLocal,
-    S.equiv.symm.surjective.comp (hprojSurj.comp d.surjective),
-    hcoverLocal.isLocalHomeomorph.covering_compact, ?_⟩
+    isQuotientCoveringMap_coveringDeckGroup_of_fiber_transitive
+      hcovering hcoverSurj htrans, ?_⟩
   intro x v w
   have hprojDeriv (u : TangentSpace (𝓡 n) x) :
       mfderiv (𝓡 n) (𝓡 n) proj x u =
@@ -170,6 +214,57 @@ theorem exists_round_sphere_cover_of_constant_positive_sectional_curvature
         (mfderiv (𝓡 n) (𝓡 n) d x w) = _
   exact hd x v w
 
+theorem exists_round_sphere_cover_of_constant_positive_sectional_curvature
+    {n : ℕ} (hn : 1 < n)
+    (hcompact : CompactSpace M) (hconn : ConnectedSpace M)
+    (hbdry : I.Boundaryless) (hdim : Module.finrank ℝ E = n)
+    (g : SmoothRiemannianMetric I M) (c : ℝ) (hc : 0 < c)
+    (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
+      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+        c * (g.inner x X X * g.inner x Y Y -
+          g.inner x X Y * g.inner x X Y)) :
+    ∃ cover : sphere
+        (0 : EuclideanSpace ℝ (Fin (n + 1))) 1 → M,
+      IsLocalDiffeomorph (𝓡 n) I ∞ cover ∧
+        Function.Surjective cover ∧
+        IsCoveringMap cover ∧
+        ∀ (x : sphere
+            (0 : EuclideanSpace ℝ (Fin (n + 1))) 1)
+          (v w : TangentSpace (𝓡 n) x),
+          (scaleMetric c hc g).inner (cover x)
+              (mfderiv (𝓡 n) I cover x v)
+              (mfderiv (𝓡 n) I cover x w) =
+            (roundMetric
+              (E := EuclideanSpace ℝ (Fin (n + 1)))
+              (n := n)).inner x v w := by
+  obtain ⟨cover, hlocal, hquotient, hmetric⟩ :=
+    exists_round_sphere_quotient_cover_of_constant_positive_sectional_curvature
+      (I := I) (M := M) hn hcompact hconn hbdry hdim g c hc hsec
+  exact ⟨cover, hlocal, hquotient.surjective,
+    hquotient.isCoveringMap, hmetric⟩
+
+theorem exists_round_two_sphere_quotient_cover_of_constant_positive_sectional_curvature
+    (hcompact : CompactSpace M) (hconn : ConnectedSpace M)
+    (hbdry : I.Boundaryless) (hdim : Module.finrank ℝ E = 2)
+    (g : SmoothRiemannianMetric I M) (c : ℝ) (hc : 0 < c)
+    (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
+      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+        c * (g.inner x X X * g.inner x Y Y -
+          g.inner x X Y * g.inner x X Y)) :
+    ∃ cover : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → M,
+      IsLocalDiffeomorph (𝓡 2) I ∞ cover ∧
+        IsQuotientCoveringMap cover (coveringDeckGroup cover) ∧
+        ∀ (x : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
+          (v w : TangentSpace (𝓡 2) x),
+          (scaleMetric c hc g).inner (cover x)
+              (mfderiv (𝓡 2) I cover x v)
+              (mfderiv (𝓡 2) I cover x w) =
+            (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)).inner x v w := by
+  simpa only [Nat.reduceAdd] using
+    exists_round_sphere_quotient_cover_of_constant_positive_sectional_curvature
+      (I := I) (M := M) (n := 2) (by omega)
+      hcompact hconn hbdry hdim g c hc hsec
+
 theorem exists_round_two_sphere_cover_of_constant_positive_sectional_curvature
     (hcompact : CompactSpace M) (hconn : ConnectedSpace M)
     (hbdry : I.Boundaryless) (hdim : Module.finrank ℝ E = 2)
@@ -191,6 +286,28 @@ theorem exists_round_two_sphere_cover_of_constant_positive_sectional_curvature
   simpa only [Nat.reduceAdd] using
     exists_round_sphere_cover_of_constant_positive_sectional_curvature
       (I := I) (M := M) (n := 2) (by omega)
+      hcompact hconn hbdry hdim g c hc hsec
+
+theorem exists_round_three_sphere_quotient_cover_of_constant_positive_sectional_curvature
+    (hcompact : CompactSpace M) (hconn : ConnectedSpace M)
+    (hbdry : I.Boundaryless) (hdim : Module.finrank ℝ E = 3)
+    (g : SmoothRiemannianMetric I M) (c : ℝ) (hc : 0 < c)
+    (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
+      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+        c * (g.inner x X X * g.inner x Y Y -
+          g.inner x X Y * g.inner x X Y)) :
+    ∃ cover : sphere (0 : EuclideanSpace ℝ (Fin 4)) 1 → M,
+      IsLocalDiffeomorph (𝓡 3) I ∞ cover ∧
+        IsQuotientCoveringMap cover (coveringDeckGroup cover) ∧
+        ∀ (x : sphere (0 : EuclideanSpace ℝ (Fin 4)) 1)
+          (v w : TangentSpace (𝓡 3) x),
+          (scaleMetric c hc g).inner (cover x)
+              (mfderiv (𝓡 3) I cover x v)
+              (mfderiv (𝓡 3) I cover x w) =
+            (roundMetric (E := EuclideanSpace ℝ (Fin 4)) (n := 3)).inner x v w := by
+  simpa only [Nat.reduceAdd] using
+    exists_round_sphere_quotient_cover_of_constant_positive_sectional_curvature
+      (I := I) (M := M) (n := 3) (by omega)
       hcompact hconn hbdry hdim g c hc hsec
 
 theorem exists_round_three_sphere_cover_of_constant_positive_sectional_curvature

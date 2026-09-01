@@ -98,6 +98,39 @@ private theorem normalizedGradientRicciSoliton_potential_eq_one_of_compact_of_fi
   rw [hscalar x, hnorm] at hpotential
   linarith
 
+theorem exists_roundTwoSphere_solitonModelQuotientCovering_of_compact_of_finrank_eq_two_of_constant_sectional_curvature
+    [CompactSpace M] [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2)
+    (hsec : ∀ x : M, ∀ v w : TangentSpace I x,
+      metricRm04StdAt (I := I) (M := M) g x v w w v =
+        (1 / 2 : Real) * (g.inner x v v * g.inner x w w -
+          g.inner x v w * g.inner x v w)) :
+    ∃ cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 → M,
+      solitonModelCovering roundTwoSphereShrinkerMetric
+        roundTwoSphereShrinkerPotential g f cover ∧
+      IsQuotientCoveringMap cover (coveringDeckGroup cover) := by
+  obtain ⟨cover, hcoverLocal, hquotient, hcoverMetric⟩ :=
+    exists_round_two_sphere_quotient_cover_of_constant_positive_sectional_curvature
+      (I := I) (M := M) inferInstance inferInstance inferInstance hdim g
+        (1 / 2) (by norm_num) hsec
+  have hpotential :=
+    normalizedGradientRicciSoliton_potential_eq_one_of_compact_of_finrank_eq_two_of_constant_sectional_curvature
+      (I := I) h hdim hsec
+  refine ⟨cover, ?_, hquotient⟩
+  refine ⟨normalizedGradientRicciSoliton_roundTwoSphere, h,
+    hcoverLocal, hquotient.surjective, hquotient.isCoveringMap, ?_, ?_⟩
+  · intro x v w
+    have hmetric := hcoverMetric x v w
+    rw [scaleMetric_inner] at hmetric
+    rw [roundTwoSphereShrinkerMetric, roundSphereShrinkerMetric,
+      scaleMetric_inner]
+    norm_num [roundSphereShrinkerRadius] at hmetric ⊢
+    linarith
+  · intro x
+    rw [roundTwoSphereShrinkerPotential_apply, hpotential (cover x)]
+
 theorem exists_roundTwoSphere_solitonModelCovering_of_compact_of_finrank_eq_two_of_constant_sectional_curvature
     [CompactSpace M] [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
@@ -110,24 +143,45 @@ theorem exists_roundTwoSphere_solitonModelCovering_of_compact_of_finrank_eq_two_
     ∃ cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 → M,
       solitonModelCovering roundTwoSphereShrinkerMetric
         roundTwoSphereShrinkerPotential g f cover := by
-  obtain ⟨cover, hcoverLocal, hcoverSurj, hcovering, hcoverMetric⟩ :=
-    exists_round_two_sphere_cover_of_constant_positive_sectional_curvature
+  obtain ⟨cover, hcover, _⟩ :=
+    exists_roundTwoSphere_solitonModelQuotientCovering_of_compact_of_finrank_eq_two_of_constant_sectional_curvature
+      (I := I) (M := M) h hdim hsec
+  exact ⟨cover, hcover⟩
+
+theorem exists_roundThreeSphere_solitonModelQuotientCovering_of_compact_of_finrank_eq_three_of_sectional_pos
+    [CompactSpace M] [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 3)
+    (hsec : ∀ (x : M) (v w : TangentSpace I x),
+      LinearIndependent Real (vec2 (I := I) v w) →
+        0 < metricRm04StdAt (I := I) (M := M) g x v w w v) :
+    ∃ cover : Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1 → M,
+      solitonModelCovering roundThreeSphereShrinkerMetric
+        roundThreeSphereShrinkerPotential g f cover ∧
+      IsQuotientCoveringMap cover (coveringDeckGroup cover) := by
+  have hround :=
+    gradientRicciSoliton_constant_sectional_curvature_of_compact_of_finrank_eq_three_of_sectional_pos
+      (I := I) (M := M) h.2.1 hdim hsec
+  obtain ⟨cover, hcoverLocal, hquotient, hcoverMetric⟩ :=
+    exists_round_three_sphere_quotient_cover_of_constant_positive_sectional_curvature
       (I := I) (M := M) inferInstance inferInstance inferInstance hdim g
-        (1 / 2) (by norm_num) hsec
+        (1 / 4) (by norm_num) (by simpa using hround)
   have hpotential :=
-    normalizedGradientRicciSoliton_potential_eq_one_of_compact_of_finrank_eq_two_of_constant_sectional_curvature
-      (I := I) h hdim hsec
-  refine ⟨cover, normalizedGradientRicciSoliton_roundTwoSphere, h,
-    hcoverLocal, hcoverSurj, hcovering, ?_, ?_⟩
+    normalizedGradientRicciSoliton_potential_eq_three_div_two_of_compact_of_finrank_eq_three_of_sectional_pos
+      (I := I) (M := M) h hdim hsec
+  refine ⟨cover, ?_, hquotient⟩
+  refine ⟨normalizedGradientRicciSoliton_roundThreeSphere, h,
+    hcoverLocal, hquotient.surjective, hquotient.isCoveringMap, ?_, ?_⟩
   · intro x v w
     have hmetric := hcoverMetric x v w
     rw [scaleMetric_inner] at hmetric
-    rw [roundTwoSphereShrinkerMetric, roundSphereShrinkerMetric,
+    rw [roundThreeSphereShrinkerMetric, roundSphereShrinkerMetric,
       scaleMetric_inner]
     norm_num [roundSphereShrinkerRadius] at hmetric ⊢
     linarith
   · intro x
-    rw [roundTwoSphereShrinkerPotential_apply, hpotential (cover x)]
+    rw [roundThreeSphereShrinkerPotential_apply, hpotential (cover x)]
 
 theorem exists_roundThreeSphere_solitonModelCovering_of_compact_of_finrank_eq_three_of_sectional_pos
     [CompactSpace M] [ConnectedSpace M]
@@ -140,26 +194,9 @@ theorem exists_roundThreeSphere_solitonModelCovering_of_compact_of_finrank_eq_th
     ∃ cover : Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1 → M,
       solitonModelCovering roundThreeSphereShrinkerMetric
         roundThreeSphereShrinkerPotential g f cover := by
-  have hround :=
-    gradientRicciSoliton_constant_sectional_curvature_of_compact_of_finrank_eq_three_of_sectional_pos
-      (I := I) (M := M) h.2.1 hdim hsec
-  obtain ⟨cover, hcoverLocal, hcoverSurj, hcovering, hcoverMetric⟩ :=
-    exists_round_three_sphere_cover_of_constant_positive_sectional_curvature
-      (I := I) (M := M) inferInstance inferInstance inferInstance hdim g
-        (1 / 4) (by norm_num) (by simpa using hround)
-  have hpotential :=
-    normalizedGradientRicciSoliton_potential_eq_three_div_two_of_compact_of_finrank_eq_three_of_sectional_pos
+  obtain ⟨cover, hcover, _⟩ :=
+    exists_roundThreeSphere_solitonModelQuotientCovering_of_compact_of_finrank_eq_three_of_sectional_pos
       (I := I) (M := M) h hdim hsec
-  refine ⟨cover, normalizedGradientRicciSoliton_roundThreeSphere, h,
-    hcoverLocal, hcoverSurj, hcovering, ?_, ?_⟩
-  · intro x v w
-    have hmetric := hcoverMetric x v w
-    rw [scaleMetric_inner] at hmetric
-    rw [roundThreeSphereShrinkerMetric, roundSphereShrinkerMetric,
-      scaleMetric_inner]
-    norm_num [roundSphereShrinkerRadius] at hmetric ⊢
-    linarith
-  · intro x
-    rw [roundThreeSphereShrinkerPotential_apply, hpotential (cover x)]
+  exact ⟨cover, hcover⟩
 
 end DifferentialGeometry.Geometry
