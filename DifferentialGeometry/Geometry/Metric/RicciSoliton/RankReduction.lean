@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankReduction
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CompactAnisotropy
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.GaussianModelCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.GaussianRigidity
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCurvatureRank
 
 set_option autoImplicit false
 
@@ -85,5 +87,33 @@ theorem normalizedGradientRicciSoliton_metricCurvatureOperatorRankAt_eq_one_or_t
         (I := I) (M := M) h hdim x hzero))
   · exact Or.inl hone
   · exact Or.inr hthree
+
+theorem normalizedGradientRicciSoliton_metricCurvatureOperatorRankAt_eq_zero_of_isGaussian
+    [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 3)
+    (hGaussian : isGaussianGradientRicciSoliton (E := E) g f 1) :
+    ∀ x : M,
+      metricCurvatureOperatorRankAt (I := I) g x (by
+        rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+        exact hdim) = 0 := by
+  let _ : NeZero (Module.finrank Real E) := ⟨by
+    rw [hdim]
+    norm_num⟩
+  obtain ⟨cover, hcover⟩ :=
+    exists_solitonModelCovering_of_isGaussianGradientRicciSoliton
+      (I := I) h hGaussian
+  intro y
+  obtain ⟨x, hxy⟩ := solitonModelCovering_surjective hcover y
+  have hrank := solitonModelCovering_metricCurvatureOperatorRankAt_eq
+    (I := I) (J := modelWithCornersSelf Real E)
+    (N := E) hcover x (by
+      change Module.finrank Real E = 3
+      exact hdim)
+  have hsource := euclideanMetric_curvatureOperatorRankAt x hdim
+  rw [hxy] at hrank
+  rw [← hrank]
+  exact hsource
 
 end DifferentialGeometry.Geometry
