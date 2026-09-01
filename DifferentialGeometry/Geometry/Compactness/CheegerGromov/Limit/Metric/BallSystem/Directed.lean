@@ -64,7 +64,7 @@ def metricApproximationBallSystem
       rw [Metric.closedEBall_ofReal (hr j).le]
       exact (D j).source_sub
     simpa only [ballOpen, Opens.coe_mk, hbase j] using
-      (data_image_metric_ball (I := I) (Ψ j) (hnorm j) (hnorm (j + 1))
+      (MapMetricApproximationOn.image_metric_ball_subset (I := I) (Ψ j) (hnorm j) (hnorm (j + 1))
         (hr j) le_rfl (hε j) (hgrow j) hdata hsource)
   exact ballSystem b r hr Ψ hsrc hmap
 

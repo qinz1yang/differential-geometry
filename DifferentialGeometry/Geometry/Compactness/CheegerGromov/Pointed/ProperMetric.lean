@@ -70,6 +70,26 @@ theorem ProperMetricOn.top_eq {I : ModelWithCorners Real E H}
   change P.ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace = Y.topology
   rw [htop, hcan]
 
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
+theorem ProperMetricOn.isRiemannianManifold {I : ModelWithCorners Real E H}
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    (P : ProperMetricOn (I := I) Y) :
+    letI : TopologicalSpace Y.M := Y.topology
+    letI : ChartedSpace H Y.M := Y.charted
+    letI : IsManifold I ∞ Y.M := Y.smooth
+    letI : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) := Y.riemBundle
+    letI : MetricSpace Y.M := P.ms
+    IsRiemannianManifold I Y.M := by
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) := Y.riemBundle
+  let : MetricSpace Y.M := P.ms
+  refine ⟨fun x y => ?_⟩
+  have hreal := P.realizes x y
+  rw [edist_dist, ← hreal]
+  rfl
+
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in

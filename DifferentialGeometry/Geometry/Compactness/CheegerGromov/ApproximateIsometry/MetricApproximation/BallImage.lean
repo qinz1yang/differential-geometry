@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.DistanceControl
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Monotonicity
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximateIsometry
 import DifferentialGeometry.Topology.MetricBall
 
 set_option autoImplicit false
@@ -21,12 +20,10 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-section MemberBridge
-
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem data_image_metric_ball
+theorem MapMetricApproximationOn.image_metric_ball_subset
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     [IsManifold I ∞ M]
     [PseudoMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -60,7 +57,7 @@ theorem data_image_metric_ball
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem data_image_metric_ball_of_superset
+theorem MapMetricApproximationOn.image_metric_ball_subset_of_closedEBall_subset
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsManifold I ∞ M]
     [hManifoldM : IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [PseudoMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -87,29 +84,8 @@ theorem data_image_metric_ball_of_superset
   let _ := hT2N
   let _ := hSigmaN
   let _ := hManifoldN
-  exact data_image_metric_ball (I := I) Φ hgnorm hhnorm hr hrr₂ hε0 hR
-    (hdata.mono hK le_rfl hdata.eps_lt_one) hsub
-
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
-theorem member_isRiemannian (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
-    (P : ProperMetricOn (I := I) Y) :
-    letI : TopologicalSpace Y.M := Y.topology
-    letI : ChartedSpace H Y.M := Y.charted
-    letI : IsManifold I ∞ Y.M := Y.smooth
-    letI : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) := Y.riemBundle
-    letI : MetricSpace Y.M := P.ms
-    IsRiemannianManifold I Y.M := by
-  let : TopologicalSpace Y.M := Y.topology
-  let : ChartedSpace H Y.M := Y.charted
-  let : IsManifold I ∞ Y.M := Y.smooth
-  let : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) := Y.riemBundle
-  let : MetricSpace Y.M := P.ms
-  refine ⟨fun x y => ?_⟩
-  have hreal := P.realizes x y
-  rw [edist_dist, ← hreal]
-  rfl
-
-end MemberBridge
+  exact (hdata.mono hK le_rfl hdata.eps_lt_one).image_metric_ball_subset
+    (I := I) Φ hgnorm hhnorm hr hrr₂ hε0 hR hsub
 
 end HCGCompactness
 end DifferentialGeometry

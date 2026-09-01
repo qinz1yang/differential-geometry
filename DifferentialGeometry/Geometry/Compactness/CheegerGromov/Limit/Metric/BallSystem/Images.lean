@@ -70,7 +70,7 @@ theorem chain_image_open
       (chainComp (I := I) (Mf := M) Ψ j a).source := by
     rw [Metric.closedEBall_ofReal hr.le]
     exact D.source_sub
-  have himg := data_image_metric_ball (I := I)
+  have himg := MapMetricApproximationOn.image_metric_ball_subset (I := I)
     (chainComp (I := I) (Mf := M) Ψ j a) (hnorm j) (hnorm (j + a))
     hr le_rfl (by norm_num : (0 : ℝ) ≤ 1 / 2) hR hdata hsource
   intro y hy
@@ -155,7 +155,7 @@ theorem tail_ball_image
         (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1).source := by
     rw [Metric.closedEBall_ofReal (by positivity : (0 : ℝ) ≤ (2 : ℝ) ^ (j₀ + n))]
     exact D.source_sub
-  have himg := data_image_metric_ball_of_superset (I := I)
+  have himg := MapMetricApproximationOn.image_metric_ball_subset_of_closedEBall_subset (I := I)
     (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1)
     (hnorm (j₀ + n)) (hnorm ((j₀ + n) + 1)) hr hpow
     (by norm_num : (0 : ℝ) ≤ 1 / 2) hR hK D.forward hsub
@@ -218,7 +218,7 @@ theorem tail_closed_ball_image
         (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1).source := by
     rw [Metric.closedEBall_ofReal (by positivity : (0 : ℝ) ≤ (2 : ℝ) ^ (j₀ + n))]
     exact D.source_sub
-  have himg := data_image_metric_ball_of_superset (I := I)
+  have himg := MapMetricApproximationOn.image_metric_ball_subset_of_closedEBall_subset (I := I)
     (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1)
     (hnorm (j₀ + n)) (hnorm ((j₀ + n) + 1)) hrMid hrr₂
     (by norm_num : (0 : ℝ) ≤ 1 / 2) hR hK D.forward hsub

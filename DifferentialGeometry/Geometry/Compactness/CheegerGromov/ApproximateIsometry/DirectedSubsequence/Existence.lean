@@ -96,7 +96,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
   let hRB : ∀ j, Bundle.RiemannianBundle (fun x : (X.obj (σ j)).M => TangentSpace I x) :=
     fun j => (X.obj (σ j)).riemBundle
   have hRiem : ∀ j, IsRiemannianManifold I (X.obj (σ j)).M := fun j =>
-    member_isRiemannian (X.obj (σ j)) (P (σ j))
+    (P (σ j)).isRiemannianManifold (X.obj (σ j))
   have hProper : ∀ j, ProperSpace (X.obj (σ j)).M := fun j => (P (σ j)).proper
   have hstep : ∀ j : ℕ, T j ≤ σ j ∧ T j ≤ σ (j + 1) := fun j =>
     ⟨hσge j, le_trans (hσge j) (le_of_lt (hσmono (Nat.lt_succ_self j)))⟩
@@ -362,7 +362,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
                     (X.obj (σ s)).M → (X.obj (σ (s + l))).M)
                   ((X.obj (σ s)).basepoint))
                 ((2 : ℝ) ^ (s + l + 1)) :=
-          data_image_metric_ball (I := I)
+          MapMetricApproximationOn.image_metric_ball_subset (I := I)
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l)
             (by
               intro x v
@@ -492,7 +492,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
               Metric.ball ((Ψ s : (X.obj (σ s)).M → (X.obj (σ (s + 1))).M)
                   ((X.obj (σ s)).basepoint))
                 ((2 : ℝ) ^ (s + 1) * (1 + (1 / 2 : ℝ) ^ (l + 1))) :=
-          data_image_metric_ball_of_superset (I := I) (Ψ s)
+          MapMetricApproximationOn.image_metric_ball_subset_of_closedEBall_subset (I := I) (Ψ s)
             (by
               intro x v
               exact (Geometry.Riemannian.isMetricNorm_of_riemannianBundle
