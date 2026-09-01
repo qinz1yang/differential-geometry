@@ -158,7 +158,8 @@ theorem hatSrcPtsOfComp
           exact ψ.contMDiffOn_toFun.continuousOn.mono (hsrcK gamma)
         have hKimg : IsCompact (ψ '' sourceK gamma) :=
           (hKsrc gamma).image_of_continuousOn hcont
-        comp_tendsto_id_on (E := E) (F := E) (U := U gamma) (V := V gamma)
+        mapCInf_comp_pair_dist_tail
+          (E := E) (F := E) (U := U gamma) (V := V gamma)
           (K := ψ '' sourceK gamma) (hVopen gamma) (B gamma) (Binf gamma)
           (A gamma) (Ainf gamma) (hB gamma) (hA gamma) (hBcont gamma)
           (hAcont gamma) (hid gamma) hKimg (hKU gamma) (hKV gamma) δ hδ)
@@ -292,7 +293,8 @@ theorem hatSuppPtsOfComp
       forall a : Nat, a >= N -> forall b : Nat, b >= N -> forall v : E,
         v ∈ psi '' sourceK gamma -> dist (A gamma b (B gamma a v)) v < delta := by
     intro delta hdelta
-    exact comp_tendsto_id_on (E := E) (F := E) (U := U gamma) (V := V gamma)
+    exact mapCInf_comp_pair_dist_tail
+      (E := E) (F := E) (U := U gamma) (V := V gamma)
       (K := psi '' sourceK gamma) (hVopen gamma) (B gamma) (Binf gamma)
       (A gamma) (Ainf gamma) (hB gamma) (hA gamma) (hBcont gamma)
       (hAcont gamma) (hid gamma) hKimg (hKU gamma) (hKV gamma) delta hdelta
@@ -613,7 +615,8 @@ theorem hatChartPtsOfComp
       (fun gamma a b v => A gamma b (B gamma a v)) hconn hK hKtarget hsource
       hcoord
       (fun gamma δ hδ =>
-        comp_tendsto_id_on (E := E) (F := E) (U := U gamma) (V := V gamma)
+        mapCInf_comp_pair_dist_tail
+          (E := E) (F := E) (U := U gamma) (V := V gamma)
           (K := coordK gamma) (hVopen gamma) (B gamma) (Binf gamma) (A gamma)
           (Ainf gamma) (hB gamma) (hA gamma) (hBcont gamma) (hAcont gamma)
           (hid gamma) (hK gamma) (hKU gamma) (hKV gamma) δ hδ)

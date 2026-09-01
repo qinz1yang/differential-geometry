@@ -12,7 +12,69 @@ variable {E' P Q : Type*}
   [NormedAddCommGroup P] [NormedSpace Real P]
   [NormedAddCommGroup Q] [NormedSpace Real Q]
 
-theorem averagedCInf_id {U : Set E'} {V : Set (P × Q)}
+omit [NormedAddCommGroup P] [NormedSpace Real P]
+    [NormedAddCommGroup Q] [NormedSpace Real Q] in
+theorem mapCInf_comp_pair_dist_tail
+    {E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {U : Set E} {V : Set F} (hV : IsOpen V)
+    (B : ℕ → E → F) (Binf : E → F) (A : ℕ → F → E) (Ainf : F → E)
+    (hB : MapCInfConvOnCompacts U B Binf) (hA : MapCInfConvOnCompacts V A Ainf)
+    (hBcont : ContinuousOn Binf U) (hAcont : ContinuousOn Ainf V)
+    (hid : ∀ x ∈ U, Binf x ∈ V → Ainf (Binf x) = x)
+    {K : Set E} (hKcpt : IsCompact K) (hKU : K ⊆ U)
+    (hKV : ∀ x ∈ K, Binf x ∈ V) :
+    ∀ ε > 0, ∃ N : ℕ, ∀ k ≥ N, ∀ l ≥ N, ∀ x ∈ K,
+      dist (A l (B k x)) x < ε := by
+  intro ε hε
+  have hBKcpt : IsCompact (Binf '' K) :=
+    hKcpt.image_of_continuousOn (hBcont.mono hKU)
+  have hBKV : Binf '' K ⊆ V := by
+    rintro _ ⟨x, hx, rfl⟩
+    exact hKV x hx
+  obtain ⟨δ₀, hδ₀pos, hδ₀V⟩ := hBKcpt.exists_cthickening_subset_open hV hBKV
+  set K' : Set F := Metric.cthickening δ₀ (Binf '' K) with hK'def
+  have hK'cpt : IsCompact K' := hBKcpt.cthickening
+  have hK'V : K' ⊆ V := hδ₀V
+  have huc : UniformContinuousOn Ainf K' :=
+    hK'cpt.uniformContinuousOn_of_continuous (hAcont.mono hK'V)
+  rw [Metric.uniformContinuousOn_iff] at huc
+  obtain ⟨δ, hδpos, hδ⟩ := huc (ε / 2) (by positivity)
+  have hA₀ : TendstoUniformlyOn A Ainf Filter.atTop K' :=
+    tendstoUniformlyOn_of_cPConv (hA K' hK'cpt hK'V 0)
+  rw [Metric.tendstoUniformlyOn_iff] at hA₀
+  obtain ⟨NA, hNA⟩ := Filter.eventually_atTop.mp (hA₀ (ε / 2) (by positivity))
+  have hB₀ : TendstoUniformlyOn B Binf Filter.atTop K :=
+    tendstoUniformlyOn_of_cPConv (hB K hKcpt hKU 0)
+  rw [Metric.tendstoUniformlyOn_iff] at hB₀
+  obtain ⟨NB, hNB⟩ := Filter.eventually_atTop.mp (hB₀ (min δ δ₀) (by positivity))
+  refine ⟨max NA NB, fun k hk l hl x hx => ?_⟩
+  have hxU : x ∈ U := hKU hx
+  have hBxV : Binf x ∈ V := hKV x hx
+  have hBkx : dist (Binf x) (B k x) < min δ δ₀ :=
+    hNB k (le_trans (le_max_right _ _) hk) x hx
+  have hBkxK' : B k x ∈ K' :=
+    Metric.mem_cthickening_of_dist_le (B k x) (Binf x) δ₀ (Binf '' K)
+      ⟨x, hx, rfl⟩
+      (by rw [dist_comm]; exact le_of_lt (lt_of_lt_of_le hBkx (min_le_right _ _)))
+  have hBinfxK' : Binf x ∈ K' :=
+    Metric.self_subset_cthickening _ ⟨x, hx, rfl⟩
+  calc
+    dist (A l (B k x)) x = dist (A l (B k x)) (Ainf (Binf x)) := by
+      rw [hid x hxU hBxV]
+    _ ≤ dist (A l (B k x)) (Ainf (B k x)) +
+        dist (Ainf (B k x)) (Ainf (Binf x)) := dist_triangle _ _ _
+    _ < ε / 2 + ε / 2 := by
+      apply add_lt_add
+      · rw [dist_comm]
+        exact hNA l (le_trans (le_max_left _ _) hl) (B k x) hBkxK'
+      · refine hδ (B k x) hBkxK' (Binf x) hBinfxK' ?_
+        rw [dist_comm]
+        exact lt_of_lt_of_le hBkx (min_le_left _ _)
+    _ = ε := by ring
+
+theorem mapCInfConvOnCompacts_comp_prodMk_id {U : Set E'} {V : Set (P × Q)}
     (hU : IsOpen U) (hV : IsOpen V) [ProperSpace (P × Q)]
     {u : Nat → E' → P} {uinf : E' → P}
     {v : Nat → E' → Q} {vinf : E' → Q} {Φ : P × Q → E'}
@@ -39,7 +101,7 @@ theorem averagedCInf_id {U : Set E'} {V : Set (P × Q)}
     (fun _ => hΦc) hΦc hmap hmapk
   exact hcomp.congr hU (fun _ => Set.eqOn_refl _ _) (fun y hy => (hdiag y hy).symm)
 
-theorem compDiagConvId {F' : Type*}
+theorem mapCInfConvOnCompacts_comp_tendsto_atTop_id {F' : Type*}
     [NormedAddCommGroup F'] [NormedSpace Real F'] [ProperSpace F']
     {U : Set E'} {V : Set F'} (hU : IsOpen U) (hV : IsOpen V)
     {B : Nat → E' → F'} {Binf : E' → F'}
@@ -64,7 +126,35 @@ theorem compDiagConvId {F' : Type*}
     hmap (fun n => hmapk (kn n))
   exact hcomp.congr hU (fun _ => Set.eqOn_refl _ _) (fun y hy => (hid y hy).symm)
 
-theorem targetsDiagConv {ι : Type*} [Fintype ι] {F' : Type*}
+omit [NormedAddCommGroup P] [NormedSpace Real P]
+    [NormedAddCommGroup Q] [NormedSpace Real Q] in
+theorem mapCInf_comp_pair_tail
+    {E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {U : Set E} {V : Set F} (hU : IsOpen U) (hV : IsOpen V)
+    (B : ℕ → E → F) (Binf : E → F) (A : ℕ → F → E) (Ainf : F → E)
+    (hB : MapCInfConvOnCompacts U B Binf) (hA : MapCInfConvOnCompacts V A Ainf)
+    (hBc : ∀ k, ContDiffOn ℝ (⊤ : ℕ∞) (B k) U)
+    (hBinfc : ContDiffOn ℝ (⊤ : ℕ∞) Binf U)
+    (hAc : ∀ k, ContDiffOn ℝ (⊤ : ℕ∞) (A k) V)
+    (hAinfc : ContDiffOn ℝ (⊤ : ℕ∞) Ainf V)
+    (hmap : Set.MapsTo Binf U V) (hmapk : ∀ k, Set.MapsTo (B k) U V)
+    (hid : ∀ x ∈ U, Ainf (Binf x) = x)
+    {K : Set E} (hKcpt : IsCompact K) (hKU : K ⊆ U) :
+    ∀ p : ℕ, ∀ ε > 0, ∃ N : ℕ, ∀ k ≥ N, ∀ l ≥ N, ∀ r ≤ p, ∀ x ∈ K,
+      mapDerivNorm r (fun y => A l (B k y)) (fun y : E => y) x ≤ ε := by
+  intro p
+  apply mapCInf_pair_tail
+    (U := U) (Φ := fun k l y => A l (B k y)) (Φinf := fun y : E => y)
+      ?_ hKcpt hKU p
+  intro kn ln hkn hln
+  exact mapCInfConvOnCompacts_comp_tendsto_atTop_id
+    (E' := E) hU hV hB hA hBc hBinfc hAc hAinfc hmap hmapk hid
+    kn ln hkn hln
+
+theorem mapCInfConvOnCompacts_pi_comp_tendsto_atTop_id
+    {ι : Type*} [Fintype ι] {F' : Type*}
     [NormedAddCommGroup F'] [NormedSpace Real F'] [ProperSpace F']
     {U : Set E'} {V : ι → Set F'} (hU : IsOpen U) (hV : ∀ i, IsOpen (V i))
     {B : ι → Nat → E' → F'} {Binf : ι → E' → F'}
@@ -84,14 +174,15 @@ theorem targetsDiagConv {ι : Type*} [Fintype ι] {F' : Type*}
       (fun y (_ : ι) => y) := by
   have hslot : ∀ i, MapCInfConvOnCompacts U
       (fun n y => A i (ln n) (B i (kn n) y)) (fun y => y) := fun i =>
-    compDiagConvId hU (hV i) (hB i) (hA i) (hBc i) (hBinfc i) (hAc i) (hAinfc i)
+    mapCInfConvOnCompacts_comp_tendsto_atTop_id
+      hU (hV i) (hB i) (hA i) (hBc i) (hBinfc i) (hAc i) (hAinfc i)
       (hmap i) (hmapk i) (hid i) kn ln hkn hln
   have hslotc : ∀ i n, ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun y => A i (ln n) (B i (kn n) y)) U := fun i n =>
     (hAc i (ln n)).comp (hBc i (kn n)) (hmapk i (kn n))
   exact mapCInfConv_pi hU hslot hslotc (fun _ => contDiffOn_id)
 
-theorem averagedCInf_id₂ {U : Set E'} {V : Set (P × Q)}
+theorem mapCInf_comp_prodMk_pair_tail {U : Set E'} {V : Set (P × Q)}
     (hU : IsOpen U) (hV : IsOpen V) [ProperSpace (P × Q)]
     {u : Nat → Nat → E' → P} {uinf : E' → P}
     {v : Nat → Nat → E' → Q} {vinf : E' → Q} {Φ : P × Q → E'}
@@ -112,28 +203,18 @@ theorem averagedCInf_id₂ {U : Set E'} {V : Set (P × Q)}
     {K : Set E'} (hK : IsCompact K) (hKU : K ⊆ U) (p : Nat) :
     ∀ ε > 0, ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ r ≤ p, ∀ x ∈ K,
       mapDerivNorm r (fun y => Φ (u k l y, v k l y)) (fun y => y) x ≤ ε := by
-  classical
-  intro ε hε
-  by_contra hbad
-  push Not at hbad
-  choose k hk hbad using hbad
-  choose l hl hbad using hbad
-  choose r hr hbad using hbad
-  choose x hx hbad using hbad
-  have hk_tendsto : Filter.Tendsto k Filter.atTop Filter.atTop :=
-    Filter.tendsto_atTop_mono hk Filter.tendsto_id
-  have hl_tendsto : Filter.Tendsto l Filter.atTop Filter.atTop :=
-    Filter.tendsto_atTop_mono hl Filter.tendsto_id
-  have hconv : MapCInfConvOnCompacts U
-      (fun n y => Φ (u (k n) (l n) y, v (k n) (l n) y)) (fun y => y) :=
-    averagedCInf_id hU hV (hu k l hk_tendsto hl_tendsto)
-      (hv k l hk_tendsto hl_tendsto)
-      (fun n => huc (k n) (l n)) huinfc (fun n => hvc (k n) (l n)) hvinfc hΦc
-      (fun n => hmapk (k n) (l n)) hmap hdiag
-  obtain ⟨N, hN⟩ := hconv K hK hKU p ε hε
-  exact not_lt_of_ge (hN N le_rfl (r N) (hr N) (x N) (hx N)) (hbad N)
+  apply mapCInf_pair_tail
+    (U := U) (Φ := fun k l y => Φ (u k l y, v k l y))
+      (Φinf := fun y => y) ?_ hK hKU p
+  intro kn ln hkn hln
+  exact mapCInfConvOnCompacts_comp_prodMk_id hU hV
+    (hu kn ln hkn hln) (hv kn ln hkn hln)
+    (fun n => huc (kn n) (ln n)) huinfc
+    (fun n => hvc (kn n) (ln n)) hvinfc hΦc
+    (fun n => hmapk (kn n) (ln n)) hmap hdiag
 
-theorem averagedTargets₂ {ι : Type*} [Fintype ι] {F' : Type*}
+theorem mapCInf_comp_prodMk_pi_pair_tail
+    {ι : Type*} [Fintype ι] {F' : Type*}
     [NormedAddCommGroup F'] [NormedSpace Real F'] [ProperSpace F']
     {U : Set E'} {V : ι → Set F'} {W : Set (P × (ι → E'))}
     (hU : IsOpen U) (hV : ∀ i, IsOpen (V i)) (hW : IsOpen W)
@@ -165,9 +246,10 @@ theorem averagedTargets₂ {ι : Type*} [Fintype ι] {F' : Type*}
     ∀ ε > 0, ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ r ≤ p, ∀ x ∈ K,
       mapDerivNorm r (fun y => Φ (w k l y, fun i : ι => A i l (B i k y)))
         (fun y => y) x ≤ ε :=
-  averagedCInf_id₂ (v := fun k l y (i : ι) => A i l (B i k y))
+  mapCInf_comp_prodMk_pair_tail (v := fun k l y (i : ι) => A i l (B i k y))
     (vinf := fun y (_ : ι) => y) hU hW hw
-    (fun kn ln hkn hln => targetsDiagConv hU hV hB hA hBc hBinfc hAc hAinfc
+    (fun kn ln hkn hln => mapCInfConvOnCompacts_pi_comp_tendsto_atTop_id
+      hU hV hB hA hBc hBinfc hAc hAinfc
       hmapBV hmapBVk hid kn ln hkn hln)
     hwc hwinfc
     (fun k l => contDiffOn_pi.mpr fun i => (hAc i l).comp (hBc i k) (hmapBVk i k))

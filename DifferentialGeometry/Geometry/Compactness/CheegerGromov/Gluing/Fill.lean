@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Analysis.Calculus.BumpClamp
 
 
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceDiagonal
+import DifferentialGeometry.Analysis.Calculus.MapConvergenceTwoParameter
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction
 open DifferentialGeometry.Geometry.Curvature
 
@@ -116,7 +116,8 @@ theorem safeFill_diag
     q.1 + cut q.2.1 • (q.2.2 - q.1)
   have houter : ContDiff Real (∞ : WithTop ℕ∞) outer := by
     fun_prop
-  have hconv := averagedCInf_id (E' := X) (P := X) (Q := Y × X)
+  have hconv := mapCInfConvOnCompacts_comp_prodMk_id
+    (E' := X) (P := X) (Q := Y × X)
     hU (isOpen_univ : IsOpen (Set.univ : Set (X × (Y × X))))
     (mapCInfConv_const (U := U) id) htargets
     (fun _ => contDiffOn_id) contDiffOn_id htargetsc htargetsInfc
