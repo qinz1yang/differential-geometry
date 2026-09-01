@@ -3043,6 +3043,9 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.Anisotropy
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CompactAnisotropy
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PositiveRoundness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCover
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverGaussian
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverRoundTwoSphere
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCurvatureRank
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelQuotient
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.GaussianModelCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PositiveModelCover
@@ -3056,7 +3059,9 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceIdentities
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceCompactness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.MunteanuWang
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.MunteanuWangCompactness
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderIsometry
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotients
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCylinderQuotient
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCurvatureRank
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.SmoothMetricFromCoeff
