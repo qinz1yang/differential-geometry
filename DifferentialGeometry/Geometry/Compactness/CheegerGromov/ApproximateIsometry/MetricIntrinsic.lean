@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricReverse
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.ErrorBounds
+import DifferentialGeometry.Geometry.Metric.TensorInner.ComponentBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.MetricTowerConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.IteratedCovariantComponents
 import DifferentialGeometry.Geometry.Metric.Convergence.PullbackCross
@@ -148,7 +148,7 @@ private theorem metricNorm_le_basis_comp
           (fun a k => if a = k then 1 else 0)
     exact h
   rw [metricDerivNorm_eq_iterCov (I := 𝓘(Real, E)) G g g a b hbinv]
-  apply sqrt_norm_le_basis_comp_of_coercive
+  apply Tensor0SBundle.sqrt_normSq0S_le_of_component_bound_of_coercive
     (I := 𝓘(Real, E)) g z (2 + a) e
       (c := (1 / 2 : Real)) (B := B) (by norm_num) hlow _ hB
   intro slots
@@ -2283,7 +2283,7 @@ theorem metric_norm_le_comp
           (fun i j => if i = j then 1 else 0)
     exact h
   rw [metricDerivNorm_eq_iterCov (I := 𝓘(Real, E)) G g g a b hbinv]
-  apply sqrt_norm_le_comp (I := 𝓘(Real, E)) g0 g z (2 + a) e hinv0
+  apply Tensor0SBundle.sqrt_normSq0S_le_of_metric_equiv_of_component_bound (I := 𝓘(Real, E)) g0 g z (2 + a) e hinv0
     (C := 2) (B := B) (by norm_num) hequiv' _ hB
   intro slots
   with_unfolding_all

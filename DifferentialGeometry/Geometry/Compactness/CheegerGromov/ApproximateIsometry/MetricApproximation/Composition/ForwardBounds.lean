@@ -173,7 +173,7 @@ noncomputable def compSepFwd
     intro x hx
     rw [← hPG₁]
     exact hc0T x hx
-  have hEqG₁ := inner_le_of_c0 (I := I) G₁ g hG₁c0
+  have hEqG₁ := inner_bounds_of_metricTensorErrorNorm_le (I := I) G₁ g hG₁c0
   set δ₀ := D₁.forward.pullback - Tensor0SBundle.metricTensorField (I := I) g with hδ₀def
   set δ₁ := P'' - P₁ with hδ₁def
   set δN₂ := D₂.forward.pullback - Tensor0SBundle.metricTensorField (I := I) h with hδN₂def
@@ -284,7 +284,7 @@ noncomputable def compSepFwd
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) g basis hON
-    rw [← t02Norm_eq_iterCov (I := I) D₁.forward.pullback g (r' + 1) basis hinv]
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I) D₁.forward.pullback g (r' + 1) basis hinv]
     calc tensor02CovDerivNormWith (I := I) (r' + 1) D₁.forward.pullback g g x
         ≤ cov := D₁.forward.cov_small (r' + 1) (by omega) hrp x (hKGU (hVKG hxV))
       _ ≤ q := hq_cov
@@ -296,7 +296,7 @@ noncomputable def compSepFwd
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) G₁ x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) G₁ basis hON
-    rw [← t02Norm_eq_iterCov (I := I)
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I)
       (Tensor0SBundle.metricTensorField (I := I) g) G₁ j basis hinv]
     rw [hgKtow hNV j x hxV]
     calc tensor02CovDerivNormWith (I := I) j D₁.reverse.pullback h h ((Φ : M → N) x)
@@ -311,7 +311,7 @@ noncomputable def compSepFwd
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) G₁ x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) G₁ basis hON
-    rw [← t02Norm_eq_iterCov (I := I) δ₁ G₁ k basis hinv]
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I) δ₁ G₁ k basis hinv]
     rw [hδ₁tow hNV k x hxV]
     have hΦxK₂ : (Φ : M → N) x ∈ (K₂ : Set N) :=
       himg (Set.mem_image_of_mem _ (hKGU (hVKG hxV)))
@@ -371,7 +371,7 @@ noncomputable def compSepFwd
             (I := I) (M := V) (n := (∞ : WithTop ℕ∞)) 2) a ⟨x, hxV⟩) slots =
       Tensor0SBundle.Tensor0SSpace.eval
         (covDerivOfField (I := I) g (P₁ - D₁.forward.pullback) a x) slots at hres
-    rw [← hres, covDOF_zero]
+    rw [← hres, covDerivOfField_zero_tensor]
     exact Tensor0SBundle.Tensor0SSpace.eval_zero slots
   have hcovP'' : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ x ∈ K,
       tensor02CovDerivNormWith (I := I) a P'' g g x ≤ q + e1 * C := by
@@ -417,7 +417,7 @@ noncomputable def compSepFwd
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) g basis hON
-    rw [t02Norm_eq_iterCov (I := I) P'' g (a' + 1) basis hinv, hdecI]
+    rw [tensor02CovDerivNormWith_eq_iterCov (I := I) P'' g (a' + 1) basis hinv, hdecI]
     exact hCp x hxV (a' + 1) (by omega) hap
   have hc0P'' : ∀ x ∈ K,
       metricTensorErrorNorm (I := I) P'' g x ≤ c0 + c0' * (1 + q) := by
@@ -458,7 +458,7 @@ noncomputable def compSepFwd
         ≤ (1 + q) * c0' := by
       have hMUE : MetricUniformEquivalentOn (I := I) (V : Set M) G₁ g (1 + q) :=
         ⟨by linarith, fun y hy v => hequivF5 y hy v⟩
-      have hcompn := sqrt_normSq_two_le (I := I) hMUE hxV (δ₁ x)
+      have hcompn := MetricUniformEquivalentOn.sqrt_normSq0S_le (I := I) hMUE hxV (δ₁ x)
       have hG₁δ : Real.sqrt (Tensor0SBundle.normSq0S (I := I) G₁ x 2 (δ₁ x)) ≤ c0' := by
         change tensor02CovDerivNormWith (I := I) 0 δ₁ G₁ G₁ x ≤ c0'
         rw [hδ₁tow ⟨⟨x, hxV⟩⟩ 0 x hxV]

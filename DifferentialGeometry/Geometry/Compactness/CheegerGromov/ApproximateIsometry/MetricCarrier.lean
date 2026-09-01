@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Monotonicity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.OfMetricDerivNorm
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximateIsometry
@@ -86,7 +87,7 @@ theorem preapprox_pair
     exact hTfΦ x (hKK' hx) v
   have hfwdΦ : MapMetricApproximationOn (I := I) K eps p
       (Φ : M → N) g h :=
-    MapMetricApproximationOn.ofMetric (I := I) Gf g h heps heps1
+    MapMetricApproximationOn.ofMetricDerivNorm (I := I) Gf g h heps heps1
       (Φ.contMDiffOn_toFun.mono hKsrc) hTf (hfwd Gf hGfF)
   have hfwdF : MapMetricApproximationOn (I := I) K eps p F g h :=
     hfwdΦ.congr (fun x hx ↦ (hevF x (hKK' hx)).symm)
@@ -146,7 +147,7 @@ theorem preapprox_pair
     exact hTrΦ y (Set.image_mono hKK' hy) v
   have hrevΦ : MapMetricApproximationOn (I := I) (F '' K) eps p
       (Φ.symm : N → M) h g :=
-    MapMetricApproximationOn.ofMetric (I := I) Gr h g heps heps1
+    MapMetricApproximationOn.ofMetricDerivNorm (I := I) Gr h g heps heps1
       (Φ.symm.contMDiffOn_toFun.mono hFKsrc) hTr (hrev Gr hGrInv)
   have hrevF : MapMetricApproximationOn (I := I) (F '' K) eps p
       (Function.invFunOn F U) h g :=

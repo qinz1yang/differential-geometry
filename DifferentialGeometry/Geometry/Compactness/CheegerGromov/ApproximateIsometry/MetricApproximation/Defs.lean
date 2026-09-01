@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
+import DifferentialGeometry.Geometry.Metric.Convergence.MetricTensorError
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 open DifferentialGeometry.Geometry.Curvature
@@ -41,15 +41,6 @@ structure SmoothPullbackMetricTensor
         h.inner (Phi x)
           (mfderiv I I Phi x (v 0))
           (mfderiv I I Phi x (v 1))
-
-noncomputable def metricTensorErrorNorm
-    (A :
-      Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-        (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
-    (g : SmoothRiemannianMetric I M) (x : M) : Real :=
-  Real.sqrt
-    (Tensor0SBundle.normSq0S (I := I) g x 2
-      (A x - Tensor0SBundle.metricTensorField (I := I) g x))
 
 structure MapMetricApproximation
     (K : Set M) (eps : Real) (p : Nat)

@@ -1,5 +1,7 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.NormBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Defs
+import DifferentialGeometry.Geometry.Metric.Convergence.MetricTensorError
 import DifferentialGeometry.Geometry.Metric.Pullback.CompactExtension
+import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -193,7 +195,7 @@ theorem partialData_comp_forward
     intro x hx
     rw [← hPG₁]
     exact hc0T x hx
-  have hEqG₁ := inner_le_of_c0 (I := I) G₁ g hG₁c0
+  have hEqG₁ := inner_bounds_of_metricTensorErrorNorm_le (I := I) G₁ g hG₁c0
   set δ₀ := D₁.forward.pullback - Tensor0SBundle.metricTensorField (I := I) g with hδ₀def
   set δ₁ := P'' - P₁ with hδ₁def
   set δN₂ := D₂.forward.pullback - Tensor0SBundle.metricTensorField (I := I) h with hδN₂def
@@ -308,7 +310,7 @@ theorem partialData_comp_forward
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) g basis hON
-    rw [← t02Norm_eq_iterCov (I := I) D₁.forward.pullback g (r' + 1) basis hinv]
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I) D₁.forward.pullback g (r' + 1) basis hinv]
     calc tensor02CovDerivNormWith (I := I) (r' + 1) D₁.forward.pullback g g x
         ≤ ε := D₁.forward.cov_deriv_small (r' + 1) (by omega) hrp x (hKGU (hVKG hxV))
       _ ≤ ε₀ := hεε₀
@@ -320,7 +322,7 @@ theorem partialData_comp_forward
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) G₁ x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) G₁ basis hON
-    rw [← t02Norm_eq_iterCov (I := I)
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I)
       (Tensor0SBundle.metricTensorField (I := I) g) G₁ j basis hinv]
     rw [hgKtow hNV j x hxV]
     calc tensor02CovDerivNormWith (I := I) j D₁.reverse.pullback h h ((Φ : M → N) x)
@@ -335,7 +337,7 @@ theorem partialData_comp_forward
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) G₁ x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) G₁ basis hON
-    rw [← t02Norm_eq_iterCov (I := I) δ₁ G₁ k basis hinv]
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I) δ₁ G₁ k basis hinv]
     rw [hδ₁tow hNV k x hxV]
     have hΦxK₂ : (Φ : M → N) x ∈ (K₂ : Set N) :=
       himg (Set.mem_image_of_mem _ (hKGU (hVKG hxV)))
@@ -388,7 +390,7 @@ theorem partialData_comp_forward
       (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := V) (n := (∞ : WithTop ℕ∞)) 2)
       (P₁ - D₁.forward.pullback) hA0 a ⟨x, hxV⟩ slots
-    rw [← hres, covDOF_zero]
+    rw [← hres, covDerivOfField_zero_tensor]
     with_unfolding_all rfl
   have hcovP'' : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ x ∈ K,
       tensor02CovDerivNormWith (I := I) a P'' g g x ≤ ε₀ + ε' * C := by
@@ -441,7 +443,7 @@ theorem partialData_comp_forward
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) g basis hON
-    rw [t02Norm_eq_iterCov (I := I) P'' g (a' + 1) basis hinv, hdecI]
+    rw [tensor02CovDerivNormWith_eq_iterCov (I := I) P'' g (a' + 1) basis hinv, hdecI]
     exact hCp x hxV (a' + 1) (by omega) hap
   have hc0P'' : ∀ x ∈ K,
       metricTensorErrorNorm (I := I) P'' g x ≤ ε + ε' * (1 + ε₀) := by
@@ -483,7 +485,7 @@ theorem partialData_comp_forward
         ≤ (1 + ε₀) * ε' := by
       have hMUE : MetricUniformEquivalentOn (I := I) (V : Set M) G₁ g (1 + ε₀) :=
         ⟨by linarith, fun y hy v => hequivF5 y hy v⟩
-      have hcompn := sqrt_normSq_two_le (I := I) hMUE hxV (δ₁ x)
+      have hcompn := MetricUniformEquivalentOn.sqrt_normSq0S_le (I := I) hMUE hxV (δ₁ x)
       have hG₁δ : Real.sqrt (Tensor0SBundle.normSq0S (I := I) G₁ x 2 (δ₁ x)) ≤ ε' := by
         have h := hδ₁F5 ⟨⟨x, hxV⟩⟩ x hxV 0 (Nat.zero_le p)
         change Real.sqrt (Tensor0SBundle.normSq0S (I := I) G₁ x 2 (δ₁ x)) ≤ ε' at h

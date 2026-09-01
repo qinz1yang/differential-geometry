@@ -172,6 +172,16 @@ theorem covDerivOfField_sub
     covDerivOfField_smul, neg_one_smul, ← sub_eq_add_neg]
 
 omit [SigmaCompactSpace M] in
+theorem covDerivOfField_zero_tensor
+    (gRef : SmoothRiemannianMetric I M) (a : Nat) :
+    covDerivOfField (I := I) gRef
+        (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
+          (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2) a
+      = 0 := by
+  have h := covDerivOfField_sub (I := I) gRef 0 0 a
+  simpa using h
+
+omit [SigmaCompactSpace M] in
 theorem metricDerivNorm_congr_difference
     (a : Nat) (g₁ g₂ h₁ h₂ gRef : SmoothRiemannianMetric I M) (x : M)
     (hdiff : Tensor0SBundle.metricTensorField (I := I) g₁

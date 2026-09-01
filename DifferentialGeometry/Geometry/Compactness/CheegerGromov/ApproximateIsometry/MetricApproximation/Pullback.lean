@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.DistanceControl
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.NormBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormFlat

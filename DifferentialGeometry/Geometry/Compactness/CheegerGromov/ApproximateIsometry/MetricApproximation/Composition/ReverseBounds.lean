@@ -201,7 +201,7 @@ noncomputable def compSepRev
     intro y hy
     rw [← hPG₂r]
     exact hc0Tr y hy
-  have hEqG₂r := inner_le_of_c0 (I := I) G₂r h' hG₂rc0
+  have hEqG₂r := inner_bounds_of_metricTensorErrorNorm_le (I := I) G₂r h' hG₂rc0
   have hchainr : ∀ y ∈ (VP : Set P), ∀ v : TangentSpace I y,
       mfderiv I I (Ψ.symm : P → M) y v
         = mfderiv I I (Φ.symm : N → M) ((Φ'.symm : P → N) y)
@@ -338,7 +338,7 @@ noncomputable def compSepRev
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) h' y
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) h' basis hON
-    rw [← t02Norm_eq_iterCov (I := I) D₂.reverse.pullback h' (r' + 1) basis hinv]
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I) D₂.reverse.pullback h' (r' + 1) basis hinv]
     calc tensor02CovDerivNormWith (I := I) (r' + 1) D₂.reverse.pullback h' h' y
         ≤ cov' := D₂.reverse.cov_small (r' + 1) (by omega) hrp y hyΦ'K₂
       _ ≤ q := hq_cov
@@ -352,7 +352,7 @@ noncomputable def compSepRev
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) G₂r y
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) G₂r basis hON
-    rw [← t02Norm_eq_iterCov (I := I)
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I)
       (Tensor0SBundle.metricTensorField (I := I) h') G₂r j basis hinv]
     rw [hgKrtow hNVP j y hyVP]
     calc tensor02CovDerivNormWith (I := I) j D₂.forward.pullback h h
@@ -368,7 +368,7 @@ noncomputable def compSepRev
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) G₂r y
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) G₂r basis hON
-    rw [← t02Norm_eq_iterCov (I := I) δ₁r G₂r k basis hinv]
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I) δ₁r G₂r k basis hinv]
     rw [hδ₁rtow hNVP k y hyVP]
     rcases Nat.eq_zero_or_pos k with hk0 | hk1
     · subst hk0
@@ -431,7 +431,7 @@ noncomputable def compSepRev
             (I := I) (M := VP) (n := (∞ : WithTop ℕ∞)) 2) a ⟨y, hyVP⟩) slots =
       Tensor0SBundle.Tensor0SSpace.eval
         (covDerivOfField (I := I) h' (P₂r - D₂.reverse.pullback) a y) slots at hres
-    rw [← hres, covDOF_zero]
+    rw [← hres, covDerivOfField_zero_tensor]
     exact Tensor0SBundle.Tensor0SSpace.eval_zero slots
   have hcovPr : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ y ∈ (Ψ : M → P) '' K,
       tensor02CovDerivNormWith (I := I) a Pr h' h' y ≤ q + e1 * C := by
@@ -479,7 +479,7 @@ noncomputable def compSepRev
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) h' y
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) h' basis hON
-    rw [t02Norm_eq_iterCov (I := I) Pr h' (a' + 1) basis hinv, hdecI]
+    rw [tensor02CovDerivNormWith_eq_iterCov (I := I) Pr h' (a' + 1) basis hinv, hdecI]
     exact hCpr y hyVP (a' + 1) (by omega) hap
   have hc0Pr : ∀ y ∈ (Ψ : M → P) '' K,
       metricTensorErrorNorm (I := I) Pr h' y ≤ c0' + c0 * (1 + q) := by
@@ -524,7 +524,7 @@ noncomputable def compSepRev
         ≤ (1 + q) * c0 := by
       have hMUE : MetricUniformEquivalentOn (I := I) (VP : Set P) G₂r h' (1 + q) :=
         ⟨by linarith, fun z hz v => hequivF5r z hz v⟩
-      have hcompn := sqrt_normSq_two_le (I := I) hMUE hyVP (δ₁r y)
+      have hcompn := MetricUniformEquivalentOn.sqrt_normSq0S_le (I := I) hMUE hyVP (δ₁r y)
       have hG₂δ : Real.sqrt (Tensor0SBundle.normSq0S (I := I) G₂r y 2 (δ₁r y)) ≤ c0 := by
         change tensor02CovDerivNormWith (I := I) 0 δ₁r G₂r G₂r y ≤ c0
         rw [hδ₁rtow ⟨⟨y, hyVP⟩⟩ 0 y hyVP]

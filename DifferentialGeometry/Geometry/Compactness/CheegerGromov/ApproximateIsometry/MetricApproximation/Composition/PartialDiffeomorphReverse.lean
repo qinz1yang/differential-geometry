@@ -178,7 +178,7 @@ theorem partialData_comp_reverse
     intro y hy
     rw [← hPG₂r]
     exact hc0Tr y hy
-  have hEqG₂r := inner_le_of_c0 (I := I) G₂r h' hG₂rc0
+  have hEqG₂r := inner_bounds_of_metricTensorErrorNorm_le (I := I) G₂r h' hG₂rc0
   have hchainr : ∀ y ∈ (VP : Set P), ∀ v : TangentSpace I y,
       mfderiv I I (Ψ.symm : P → M) y v
         = mfderiv I I (Φ.symm : N → M) ((Φ'.symm : P → N) y)
@@ -307,7 +307,7 @@ theorem partialData_comp_reverse
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) h' y
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) h' basis hON
-    rw [← t02Norm_eq_iterCov (I := I) D₂.reverse.pullback h' (r' + 1) basis hinv]
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I) D₂.reverse.pullback h' (r' + 1) basis hinv]
     calc tensor02CovDerivNormWith (I := I) (r' + 1) D₂.reverse.pullback h' h' y
         ≤ ε' := D₂.reverse.cov_deriv_small (r' + 1) (by omega) hrp y hyΦ'K₂
       _ ≤ ε₀' := hε'ε₀'
@@ -321,7 +321,7 @@ theorem partialData_comp_reverse
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) G₂r y
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) G₂r basis hON
-    rw [← t02Norm_eq_iterCov (I := I)
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I)
       (Tensor0SBundle.metricTensorField (I := I) h') G₂r j basis hinv]
     rw [hgKrtow hNVP j y hyVP]
     calc tensor02CovDerivNormWith (I := I) j D₂.forward.pullback h h
@@ -337,7 +337,7 @@ theorem partialData_comp_reverse
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) G₂r y
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) G₂r basis hON
-    rw [← t02Norm_eq_iterCov (I := I) δ₁r G₂r k basis hinv]
+    rw [← tensor02CovDerivNormWith_eq_iterCov (I := I) δ₁r G₂r k basis hinv]
     rw [hδ₁rtow hNVP k y hyVP]
     rcases Nat.eq_zero_or_pos k with hk0 | hk1
     · subst hk0
@@ -392,7 +392,7 @@ theorem partialData_comp_reverse
       (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := VP) (n := (∞ : WithTop ℕ∞)) 2)
       (P₂r - D₂.reverse.pullback) hA0 a ⟨y, hyVP⟩ slots
-    rw [← hres, covDOF_zero]
+    rw [← hres, covDerivOfField_zero_tensor]
     simp
     rfl
   have hcovPr : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ y ∈ (Ψ : M → P) '' K,
@@ -449,7 +449,7 @@ theorem partialData_comp_reverse
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) h' y
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) h' basis hON
-    rw [t02Norm_eq_iterCov (I := I) Pr h' (a' + 1) basis hinv, hdecI]
+    rw [tensor02CovDerivNormWith_eq_iterCov (I := I) Pr h' (a' + 1) basis hinv, hdecI]
     exact hCpr y hyVP (a' + 1) (by omega) hap
   have hc0Pr : ∀ y ∈ (Ψ : M → P) '' K,
       metricTensorErrorNorm (I := I) Pr h' y ≤ ε' + ε * (1 + ε₀') := by
@@ -495,7 +495,7 @@ theorem partialData_comp_reverse
         ≤ (1 + ε₀') * ε := by
       have hMUE : MetricUniformEquivalentOn (I := I) (VP : Set P) G₂r h' (1 + ε₀') :=
         ⟨by linarith, fun z hz v => hequivF5r z hz v⟩
-      have hcompn := sqrt_normSq_two_le (I := I) hMUE hyVP (δ₁r y)
+      have hcompn := MetricUniformEquivalentOn.sqrt_normSq0S_le (I := I) hMUE hyVP (δ₁r y)
       have hG₂δ : Real.sqrt (Tensor0SBundle.normSq0S (I := I) G₂r y 2 (δ₁r y)) ≤ ε := by
         have h := hδ₁rF5 ⟨⟨y, hyVP⟩⟩ y hyVP 0 (Nat.zero_le p)
         change Real.sqrt (Tensor0SBundle.normSq0S (I := I) G₂r y 2 (δ₁r y)) ≤ ε at h

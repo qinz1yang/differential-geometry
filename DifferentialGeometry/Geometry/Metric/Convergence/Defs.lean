@@ -17,6 +17,15 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [T2Space M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M]
 
+noncomputable def metricTensorErrorNorm
+    (A :
+      Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
+    (g : SmoothRiemannianMetric I M) (x : M) : Real :=
+  Real.sqrt
+    (Tensor0SBundle.normSq0S (I := I) g x 2
+      (A x - Tensor0SBundle.metricTensorField (I := I) g x))
+
 noncomputable def metricDiffCovDerivAt
     (a : Nat) (gk gInf gRef : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace (𝕜 := Real) (E := E) (H := H)

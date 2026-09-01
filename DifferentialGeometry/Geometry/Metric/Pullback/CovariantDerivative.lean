@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBound
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeRestriction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
+import DifferentialGeometry.Geometry.Metric.Convergence.Tensor02CovariantDerivative
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.OpensRestrict
 
 open DifferentialGeometry.Geometry.Curvature
@@ -29,20 +30,6 @@ variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ 
 section PartialCovNaturality
 
 open TopologicalSpace
-
-omit [SigmaCompactSpace M] in
-theorem tensor02_cov_deriv_eq_cov_deriv_of_field
-    (A : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
-    (gRef : SmoothRiemannianMetric I M) :
-    ∀ a : ℕ, tensor02CovDeriv (I := I) A gRef a = covDerivOfField (I := I) gRef A a := by
-  intro a
-  induction a with
-  | zero => rfl
-  | succ a ih =>
-      change metricCovDerivStep (I := I) gRef a (tensor02CovDeriv (I := I) A gRef a)
-        = covDerivOfField (I := I) gRef A (a + 1)
-      rw [ih, covDerivOfField_succ]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 private theorem srm_ext {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M']
