@@ -283,7 +283,7 @@ theorem sobolev_two_integral
     refine integral_congr_ae (ae_of_all μ fun x => ?_)
     dsimp only [gradNorm]
     rw [Real.sq_sqrt]
-    exact DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+    exact DifferentialGeometry.metric_inner_self_nonneg
       (I := I) (M := M) g x _
   have hmain := hSob hu
   change lpNorm u

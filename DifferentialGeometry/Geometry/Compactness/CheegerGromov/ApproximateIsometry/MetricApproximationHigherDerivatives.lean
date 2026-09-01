@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.Covaria
 
 
 import DifferentialGeometry.Geometry.Metric.Convergence.ProductDerivativeNorm
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationComposition
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 open DifferentialGeometry.Geometry.Curvature
 
@@ -117,12 +116,6 @@ theorem comp_cov_le
       ≤ eps0 + Real.sqrt ((2 : Real) ^ (2 + p)) * (eps1 * (1 + Cc * (p : Real))) :=
         add_le_add ht0 ht1'
     _ = eps0 + eps1 * (Real.sqrt ((2 : Real) ^ (2 + p)) * (1 + Cc * (p : Real))) := by ring
-
-theorem comp_cov_accum {C : Real} {e δ : Nat → Real}
-    (h0 : e 0 ≤ C * δ 0)
-    (hstep : ∀ k : Nat, e (k + 1) ≤ e k + C * δ (k + 1)) (n : Nat) :
-    e n ≤ C * Finset.sum (Finset.range (n + 1)) (fun i => δ i) :=
-  compEpsAccum h0 hstep n
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in

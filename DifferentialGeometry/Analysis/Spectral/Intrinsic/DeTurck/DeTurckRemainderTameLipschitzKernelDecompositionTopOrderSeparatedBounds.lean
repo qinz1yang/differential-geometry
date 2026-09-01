@@ -1288,9 +1288,9 @@ theorem riemannianFiberNormSq_operatorFieldComposition_sharpFlatEndoCc_contravar
       (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.metricComparisonEndomorphism (I := I) g₀ g₁ x u)
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.metricComparisonEndomorphism (I := I) g₀ g₁ x
           u) :=
-      DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x _
+      DifferentialGeometry.metric_inner_self_nonneg (I := I) (M := M) g₀ x _
     have h0u : 0 ≤ g₀.inner x u u :=
-      DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x u
+      DifferentialGeometry.metric_inner_self_nonneg (I := I) (M := M) g₀ x u
     have hinv : 1 / (1 - δ) ≤ 1 / (1 - δ₀) := by
       rw [div_le_div_iff₀ h1δ h1δ₀]
       linarith
@@ -2428,9 +2428,9 @@ theorem riemannianFiberNormSq_operatorFieldComposition_ricciCometricFourTraceCas
       (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.metricComparisonEndomorphism (I := I) g₀ g₁ x u)
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.metricComparisonEndomorphism (I := I) g₀ g₁ x
           u) :=
-      DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x _
+      DifferentialGeometry.metric_inner_self_nonneg (I := I) (M := M) g₀ x _
     have h0u : 0 ≤ g₀.inner x u u :=
-      DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x u
+      DifferentialGeometry.metric_inner_self_nonneg (I := I) (M := M) g₀ x u
     have hinv : 1 / (1 - δ) ≤ 1 / (1 - δ₀) := by
       rw [div_le_div_iff₀ h1δ h1δ₀]
       linarith

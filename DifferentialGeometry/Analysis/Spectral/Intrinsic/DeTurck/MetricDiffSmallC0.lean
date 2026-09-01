@@ -313,7 +313,7 @@ theorem pairOpBound
   let qu : Real := q.inner x u u
   have hqu : 0 ≤ qu := by
     dsimp only [qu]
-    exact DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+    exact DifferentialGeometry.metric_inner_self_nonneg
       (I := I) (M := M) q x u
   have hsqrt : Real.sqrt qu * Real.sqrt qu = qu := by
     rw [← Real.sqrt_mul hqu, Real.sqrt_mul_self hqu]

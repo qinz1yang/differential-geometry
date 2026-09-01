@@ -126,6 +126,17 @@ theorem metricUniformEquivalentOn_of_le
         (mul_le_mul_of_nonneg_right hCC' hgin_nonneg)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
+theorem MetricUniformEquivalentOn.trans_one_add
+    {K : Set M} {g h f : SmoothRiemannianMetric I M} {eps₀ eps₁ : Real}
+    (hgh : MetricUniformEquivalentOn (I := I) K g h (1 + eps₀))
+    (hhf : MetricUniformEquivalentOn (I := I) K h f (1 + eps₁))
+    (heps₀ : 0 ≤ eps₀) (heps₀_one : eps₀ ≤ 1) (heps₁ : 0 ≤ eps₁) :
+    MetricUniformEquivalentOn (I := I) K g f (1 + 3 * (eps₀ + eps₁)) := by
+  have hC : (1 + eps₀) * (1 + eps₁) ≤ 1 + 3 * (eps₀ + eps₁) := by
+    nlinarith [mul_le_of_le_one_left heps₁ heps₀_one]
+  exact metricUniformEquivalentOn_of_le (hgh.trans hhf) hC
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem metricUniformEquivalentOnWindow_mono
     {K K' : Set M} {β ψ : Real} {gRef : SmoothRiemannianMetric I M}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M} {B : Real -> Real}

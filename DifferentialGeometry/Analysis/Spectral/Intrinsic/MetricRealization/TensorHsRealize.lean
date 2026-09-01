@@ -215,9 +215,9 @@ theorem ccTensorBilin_abs_le_fibreNorm_mul_sqrt
       hcomp_fiber (default : Fin 0 → Fin n) (J 0) (J 1), hJ]
   have hnorm_nn : 0 ≤ ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ := norm_nonneg _
   have hvv_nn : 0 ≤ g₀.inner x v v :=
-    DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x v
+    DifferentialGeometry.metric_inner_self_nonneg (I := I) (M := M) g₀ x v
   have hww_nn : 0 ≤ g₀.inner x w w :=
-    DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x w
+    DifferentialGeometry.metric_inner_self_nonneg (I := I) (M := M) g₀ x w
   have habs_sq : |B v w| ^ 2 ≤
       ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 *
         (g₀.inner x v v * g₀.inner x w w) := by

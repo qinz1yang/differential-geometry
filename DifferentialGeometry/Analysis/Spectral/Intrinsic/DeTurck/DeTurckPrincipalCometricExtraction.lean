@@ -649,7 +649,7 @@ theorem riemannianFiberNormSq_deTurckPrincipalCometricCoeff_le
     have he1 : g₀.inner x (e b) (e b) = 1 := by rw [horth b b]; simp
     rw [he1, Real.sqrt_one, mul_one] at hsqrt
     have hLnn : 0 ≤ g₀.inner x (Λ (e b)) (Λ (e b)) :=
-      DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x
+      DifferentialGeometry.metric_inner_self_nonneg (I := I) (M := M) g₀ x
         (Λ (e b))
     have hsq := Real.sq_sqrt hLnn
     exact real_le_sq_of_sqrt_le hLnn hr_nn hsqrt

@@ -417,7 +417,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
   set TinnerSqrt : M → ℝ := fun b : M => Real.sqrt (Tinner b) with hTinnerSqrt_def
   have hTinner_nn : ∀ b, 0 ≤ Tinner b := fun b => by
     rw [hTinner_def]
-    exact DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+    exact DifferentialGeometry.metric_inner_self_nonneg
       (I := I) (M := M) g b _
   change eLpNorm TinnerSqrt 2 μ ≤ ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞)
   set rawZ : M → ℝ := fun b : M =>

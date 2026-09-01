@@ -435,7 +435,6 @@ open DifferentialGeometry.Geometry.Curvature
   (smoothExtensionTangent smoothExtensionTangent_eq smoothExtensionTangent_contMDiff
     exists_gOrthonormalBasis) in
 open DifferentialGeometry.Geometry.Connection (leviCivitaConnectionOfMetric) in
-open DifferentialGeometry.Analysis.Laplacian (metric_inner_self_nonneg) in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem covDConnectionDifference2_g1_le
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]

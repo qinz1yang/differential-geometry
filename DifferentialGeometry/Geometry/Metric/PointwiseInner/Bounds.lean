@@ -15,14 +15,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-lemma metric_inner_self_nonneg
-    (g : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
-    0 ≤ g.inner x v v := by
-  rcases eq_or_ne v 0 with hv0 | hv0
-  · have heq : g.inner x v v = 0 := by rw [hv0]; simp
-    rw [heq]
-  · exact (g.pos x v hv0).le
-
 lemma metric_inner_smul_self
     (g : SmoothRiemannianMetric I M) (x : M) (c : Real)
     (v : TangentSpace I x) :

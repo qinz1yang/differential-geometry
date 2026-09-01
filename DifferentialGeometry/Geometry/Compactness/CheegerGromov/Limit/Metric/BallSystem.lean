@@ -612,7 +612,7 @@ theorem speed_ge_of_c0 {j : ℕ}
   have hval : (P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v) =
       P x (fun _ => v) - g.inner x v v := by
     simp [Tensor0SBundle.metricTensorField_apply]
-  have hnn : 0 ≤ g.inner x v v := metricInner_nonneg (I := I) g x v
+  have hnn : 0 ≤ g.inner x v v := metric_inner_self_nonneg (I := I) g x v
   have hprod : (∏ _a : Fin 2, Real.sqrt (g.inner x v v)) = g.inner x v v := by
     rw [Fin.prod_univ_two, Real.mul_self_sqrt hnn]
   have habs : |P x (fun _ => v) - g.inner x v v| ≤ ε * g.inner x v v := by
@@ -821,7 +821,7 @@ theorem ballPullback_zero_le {j l : ℕ}
   have hl := ballPullback_lower Φ U hU hUK gRef g D x v
   have hu := ballPullback_upper Φ U hU hUK gRef g D x v
   have hnn : 0 ≤ (gRef.restrictOpen (I := I) U).inner x v v :=
-    metricInner_nonneg (I := I) (gRef.restrictOpen (I := I) U) x v
+    metric_inner_self_nonneg (I := I) (gRef.restrictOpen (I := I) U) x v
   constructor
   · have hu' : (ballPullbackMetric Φ U hU g).inner x v v ≤
         (3 / 2 : ℝ) * (gRef.restrictOpen (I := I) U).inner x v v := by

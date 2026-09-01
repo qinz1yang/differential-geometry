@@ -617,10 +617,10 @@ theorem cross_le
   have hb : (G.metric t).inner x b b ≤ 4 * B.w k t x * B.w (k + 1) t x := by
     simpa [b] using hgrad k hk t ht htpos x
   have haa : 0 ≤ (G.metric t).inner x a a :=
-    DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+    DifferentialGeometry.metric_inner_self_nonneg
       (I := I) (M := M) (G.metric t) x a
   have hbb : 0 ≤ (G.metric t).inner x b b :=
-    DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+    DifferentialGeometry.metric_inner_self_nonneg
       (I := I) (M := M) (G.metric t) x b
   have hsq : c ^ 2 ≤ p * q := by
     calc
@@ -694,7 +694,7 @@ theorem pow_parabolic_le
           smul_apply, smul_eq_mul]
         exact mul_nonneg
           (mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hchi p))
-          (DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+          (DifferentialGeometry.metric_inner_self_nonneg
             (I := I) (M := M) (G.metric t) x
               (gradientFun (I := I) (G.metric t) (cut.chi n t) x))
       have hcross : -2 * (G.metric t).inner x
@@ -772,10 +772,10 @@ theorem pow_cross_le
   have hb : (G.metric t).inner x b b ≤ 4 * B.w k t x * B.w (k + 1) t x := by
     simpa [b] using hgrad k hk t ht htpos x
   have haa : 0 ≤ (G.metric t).inner x a a :=
-    DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+    DifferentialGeometry.metric_inner_self_nonneg
       (I := I) (M := M) (G.metric t) x a
   have hbb : 0 ≤ (G.metric t).inner x b b :=
-    DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+    DifferentialGeometry.metric_inner_self_nonneg
       (I := I) (M := M) (G.metric t) x b
   have hsq₀ : c₀ ^ 2 ≤
       (cut.err n * cut.chi n t x) *
@@ -911,7 +911,7 @@ private theorem support_pow_para
           smul_apply, smul_eq_mul]
         exact mul_nonneg
           (mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hphi0 p))
-          (DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+          (DifferentialGeometry.metric_inner_self_nonneg
             (I := I) (M := M) (G.metric t) x
               (gradientFun (I := I) (G.metric t) (support.phi t) x))
       have hphi_mul := mul_le_mul_of_nonneg_left ih hphi0
@@ -973,7 +973,7 @@ private theorem support_pow_cross
       _ ≤ (eps * support.phi t x) *
           (4 * B.w k t x * B.w (k + 1) t x) :=
         mul_le_mul support.grad_sq_le (hgrad k hk t ht htpos x)
-          (DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+          (DifferentialGeometry.metric_inner_self_nonneg
             (I := I) (M := M) (G.metric t) x b)
           (mul_nonneg heps hphi0)
   have hc : c = r * c₀ := by

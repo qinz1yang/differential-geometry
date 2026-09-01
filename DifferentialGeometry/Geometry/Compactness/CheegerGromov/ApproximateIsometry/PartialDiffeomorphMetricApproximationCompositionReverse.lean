@@ -288,7 +288,7 @@ theorem partialData_comp_reverse
         h'.inner y v v ≤ (1 + ε₀') * G₂r.inner y v v := by
     intro y hy v
     have hE := hEqG₂r y hy v
-    have hnn : 0 ≤ h'.inner y v v := metricInner_nonneg (I := I) h' y v
+    have hnn : 0 ≤ h'.inner y v v := metric_inner_self_nonneg (I := I) h' y v
     exact metric_equiv_of_one_sub_bounds hε'0' hε'2 hε₀'def hnn hE
   have hδ₀rF5 : ∀ y ∈ (VP : Set P), ∀ r : ℕ, 0 < r → r ≤ p →
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) h' y (2 + r)

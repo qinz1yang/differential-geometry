@@ -294,7 +294,7 @@ theorem partialData_comp_forward
         g.inner x v v ≤ (1 + ε₀) * G₁.inner x v v := by
     intro x hxV v
     have hE := hEqG₁ x (hVKG hxV) v
-    have hgnn : 0 ≤ g.inner x v v := metricInner_nonneg (I := I) g x v
+    have hgnn : 0 ≤ g.inner x v v := metric_inner_self_nonneg (I := I) g x v
     exact metric_equiv_of_one_sub_bounds hε0 hε2 hε₀def hgnn hE
   have hδ₀F5 : ∀ x ∈ (V : Set M), ∀ r : ℕ, 0 < r → r ≤ p →
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x (2 + r)

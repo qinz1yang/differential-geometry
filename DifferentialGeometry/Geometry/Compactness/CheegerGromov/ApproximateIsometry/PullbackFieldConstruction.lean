@@ -1,10 +1,9 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationComposition
-
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationDefs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationHigherDerivatives
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
+import DifferentialGeometry.Geometry.Metric.MetricExistence
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.OpensRestrict
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
 open DifferentialGeometry.Geometry.Curvature
@@ -45,7 +44,7 @@ theorem exists_pullbackField
           (mfderiv I I (Φ : M → N) x (v 0)) (mfderiv I I (Φ : M → N) x (v 1)) := by
   classical
   obtain ⟨χ, P₀, hP₀smooth, hχ, hχK, hχsupp, hχ01, hP₀def⟩ :=
-    exists_pullbackInner (I := I) Φ hK hKs h
+    DifferentialGeometry.PartialDiffeomorph.exists_cutoff_pullback_inner Φ hK hKs h
   set G : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ := fun x =>
     P₀ x + (1 - χ x) • gM.inner x with hG
   have hGapply : ∀ (x : M) (v w : TangentSpace I x),
@@ -64,7 +63,7 @@ theorem exists_pullbackField
     rcases lt_or_eq_of_le ha with ha' | ha'
     · have hxs : x ∈ Φ.source :=
         hχsupp (subset_tsupport χ (Function.mem_support.mpr (ne_of_gt ha')))
-      have hpull := pullInner_pos (I := I) Φ hxs h v hv
+      have hpull := DifferentialGeometry.PartialDiffeomorph.pullback_inner_pos Φ hxs h v hv
       nlinarith
     · rw [← ha']
       simpa using hgM

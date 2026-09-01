@@ -926,7 +926,7 @@ theorem galLim_d_zero
       _ ≤ q.inner x X X *
           (C * ‖ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU‖) ^ 2 :=
         mul_le_mul_of_nonneg_left ((hgrad DU).1 x)
-          (DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+          (DifferentialGeometry.metric_inner_self_nonneg
             (I := I) (M := M) q x X)
       _ = q.inner x X X * (C * N t) ^ 2 := by rw [hDU]
   have habs : Tendsto (fun t => |mvfderiv (I := I) (f t) x X - f0|)
@@ -1074,7 +1074,7 @@ theorem galLim_d_joint
       _ ≤ q.inner p.2 (Xf p.2) (Xf p.2) *
           (C * ‖ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU‖) ^ 2 :=
         mul_le_mul_of_nonneg_left ((hgrad DU).1 p.2)
-          (DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+          (DifferentialGeometry.metric_inner_self_nonneg
             (I := I) (M := M) q p.2 (Xf p.2))
       _ = q.inner p.2 (Xf p.2) (Xf p.2) * (C * N p.1) ^ 2 := by
         rw [hDU]

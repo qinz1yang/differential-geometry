@@ -28,7 +28,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPath convexPerturbation metricPerturbationPath_inner_of_mem convexPerturbation_gFibreOpBound_abs
     abs_convex_smallConstant_lt_one metricPerturbationPathDomain Icc_subset_metricPerturbationPathDomain)
 open DifferentialGeometry.Analysis.Laplacian
-  (metric_inner_self_nonneg metric_inner_cauchy_schwarz_sq)
+  (metric_inner_cauchy_schwarz_sq)
 open DifferentialGeometry.Geometry.Curvature
   (exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope
     abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt)

@@ -454,7 +454,7 @@ private theorem chartAtlasPOU_mul_sqrt_g_inner_Phi_le_sqrt_const_globally
   set q_b : ℝ := g.inner b Φ_b Φ_b with hq_b_def
   have hq_b_nn : 0 ≤ q_b := by
     rw [hq_b_def]
-    exact DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
+    exact DifferentialGeometry.metric_inner_self_nonneg
       (I := I) (M := M) g b Φ_b
   have hρ_b_nn : 0 ≤ ρ_b := by
     rw [hρ_b_def]

@@ -320,7 +320,7 @@ noncomputable def compSepRev
         h'.inner y v v ≤ (1 + q) * G₂r.inner y v v := by
     intro y hy v
     exact metric_equiv_of_div_one_sub_le hc0'_half hq0 hq_c0
-      (metricInner_nonneg (I := I) h' y v) (hEqG₂r y hy v)
+      (metric_inner_self_nonneg (I := I) h' y v) (hEqG₂r y hy v)
   have hδ₀rF5 : ∀ y ∈ (VP : Set P), ∀ r : ℕ, 0 < r → r ≤ p →
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) h' y (2 + r)
         (iterCov (I := I) h' 2 δ₀r r y)) ≤ q := by

@@ -88,7 +88,7 @@ theorem half_ambient_le_tail
       ((g (j₀ + n)).restrictOpen (I := I) (U n)) (gInf n) (gInf n) (inc x) ≤ 1
     exact (mul_le_mul_of_nonneg_left hnorm₀ hd₀).trans hdε
   have hinner₀ : 0 ≤ (gInf n).inner (inc x) v v :=
-    metricInner_nonneg (I := I) (gInf n) (inc x) v
+    metric_inner_self_nonneg (I := I) (gInf n) (inc x) v
   have hscaled :
       (Module.finrank ℝ (TangentSpace I (inc x)) : ℝ) *
           metricDerivNorm (I := I) 0

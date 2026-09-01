@@ -31,4 +31,13 @@ theorem SmoothRiemannianMetric.ext_inner
   subst hfield
   rfl
 
+theorem metric_inner_self_nonneg
+    {I : ModelWithCorners Real E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    (g : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
+    0 ≤ g.inner x v v := by
+  by_cases hv : v = 0
+  · simp [hv]
+  · exact (g.pos x v hv).le
+
 end DifferentialGeometry

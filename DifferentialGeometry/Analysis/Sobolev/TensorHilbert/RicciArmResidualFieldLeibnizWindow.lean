@@ -876,9 +876,9 @@ private lemma metricComparisonEndomorphism_sq_le (g₀ g₁ : SmoothRiemannianMe
     (show δ < 1 from by linarith) hδ0 hbound x u
   have h0T : 0 ≤ g₀.inner x (metricComparisonEndomorphism (I := I) g₀ g₁ x u)
       (metricComparisonEndomorphism (I := I) g₀ g₁ x u) :=
-    DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x _
+    DifferentialGeometry.metric_inner_self_nonneg (I := I) (M := M) g₀ x _
   have h0u : 0 ≤ g₀.inner x u u :=
-    DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x u
+    DifferentialGeometry.metric_inner_self_nonneg (I := I) (M := M) g₀ x u
   have hinv : 1 / (1 - δ) ≤ 1 / (1 - δ₀) := by
     rw [div_le_div_iff₀ h1δ h1δ₀]
     linarith

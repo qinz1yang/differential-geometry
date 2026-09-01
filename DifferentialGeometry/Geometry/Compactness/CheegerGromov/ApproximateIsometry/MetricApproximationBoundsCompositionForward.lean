@@ -269,7 +269,7 @@ noncomputable def compSepFwd
         g.inner x v v ≤ (1 + q) * G₁.inner x v v := by
     intro x hxV v
     exact metric_equiv_of_div_one_sub_le hc0_half hq0 hq_c0
-      (metricInner_nonneg (I := I) g x v) (hEqG₁ x (hVKG hxV) v)
+      (metric_inner_self_nonneg (I := I) g x v) (hEqG₁ x (hVKG hxV) v)
   have hδ₀F5 : ∀ x ∈ (V : Set M), ∀ r : ℕ, 0 < r → r ≤ p →
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x (2 + r)
         (iterCov (I := I) g 2 δ₀ r x)) ≤ q := by
