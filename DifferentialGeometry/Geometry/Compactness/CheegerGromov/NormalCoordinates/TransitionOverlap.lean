@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.FramedMetric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Framed
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
 open DifferentialGeometry.Geometry.Curvature
 

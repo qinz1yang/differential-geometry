@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseFlowRealization
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.GeodesicRealization
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

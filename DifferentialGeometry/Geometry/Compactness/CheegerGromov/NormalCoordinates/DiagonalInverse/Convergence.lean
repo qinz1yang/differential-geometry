@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Analysis.Calculus.MovingInverse
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseBranch
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.LimitPhaseFlow
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Branch
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.LimitFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

@@ -71,7 +71,7 @@ theorem range_exhausts (S : SmoothSeqSystem I A) :
     rw [hKeq]
     exact (Set.image_subset_range _ _).trans (S.toSeqSystem.range_incl_mono hk)
 
-noncomputable def limitCGMapsOf (S : SmoothSeqSystem I A) (O₀ : A 0)
+noncomputable def limitConvergenceMapsOf (S : SmoothSeqSystem I A) (O₀ : A 0)
     (gSeq gLim : ∀ k, SmoothRiemannianMetric I (A k)) (hgLim : S.MetricCocycle gLim) :
     PointedRiemannianConvergenceMaps.{u, uE, uH} (I := I)
       (X := factorSeq S O₀ gSeq)
@@ -83,13 +83,13 @@ noncomputable def limitCGMapsOf (S : SmoothSeqSystem I A) (O₀ : A 0)
   base_mem k := ⟨S.toSeqSystem.F (Nat.zero_le k) O₀, S.toSeqSystem.incl_comp (Nat.zero_le k) O₀⟩
   basepoint_map k := S.invIncl_incl_le (Nat.zero_le k) O₀
 
-noncomputable def limitCGMaps (S : SmoothSeqSystem I A) (O₀ : A 0)
+noncomputable def limitConvergenceMaps (S : SmoothSeqSystem I A) (O₀ : A 0)
     (g : ∀ k, SmoothRiemannianMetric I (A k)) (hg : S.MetricCocycle g) :
     PointedRiemannianConvergenceMaps.{u, uE, uH} (I := I)
       (X := factorSeq S O₀ g)
       (L := (limitPointedCoc S O₀ g hg : PointedRiemannianManifold.{u, uE, uH} (I := I)))
       (subseq := id) :=
-  limitCGMapsOf S O₀ g g hg
+  limitConvergenceMapsOf S O₀ g g hg
 
 end
 

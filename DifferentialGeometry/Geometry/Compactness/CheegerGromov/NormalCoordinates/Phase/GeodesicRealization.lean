@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseFlow
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.Flow
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

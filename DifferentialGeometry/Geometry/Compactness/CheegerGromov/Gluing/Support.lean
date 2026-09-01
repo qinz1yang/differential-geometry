@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricComp
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterEquationSelection
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseConstruction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Construction
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

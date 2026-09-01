@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Exponential.IntrinsicBallChart
 import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicGronwall
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

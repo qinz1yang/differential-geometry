@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.Defs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricJetBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.JetBounds
 
 set_option autoImplicit false
 

@@ -155,7 +155,7 @@ theorem chain_pullback_bounded
 omit [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_chain_limit
+theorem exists_chain_pullback_metric_limit
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (hbase : ∀ j, (Ψ j : M j → M (j + 1)) (b j) = b (j + 1))
@@ -193,7 +193,7 @@ theorem exists_chain_limit
 omit [I.Boundaryless] [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] [NeZero (Module.finrank ℝ E)] in
 omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem exists_chain_data
+theorem exists_chain_metric_approximation_data
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
@@ -234,7 +234,7 @@ theorem exists_chain_data
 omit [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_limits_diag
+theorem exists_chain_pullback_metric_limits
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (hbase : ∀ j, (Ψ j : M j → M (j + 1)) (b j) = b (j + 1))
@@ -269,7 +269,8 @@ theorem exists_limits_diag
                   (φ k - (j₀ + n)))
                 (gInf n) ((g (j₀ + n)).restrictOpen (I := I) (U n)) := by
   classical
-  obtain ⟨j₀, hj₀, hpacks⟩ := exists_chain_data (I := I) b Ψ g hdata
+  obtain ⟨j₀, hj₀, hpacks⟩ :=
+    exists_chain_metric_approximation_data (I := I) b Ψ g hdata
   let U : ∀ n, Opens (M (j₀ + n)) :=
     fun n => ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)
   have hpacks' : ∀ n,
@@ -369,7 +370,7 @@ theorem exists_limits_diag
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_limits_close
+theorem exists_compatible_chain_pullback_metric_limits
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (hbase : ∀ j, (Ψ j : M j → M (j + 1)) (b j) = b (j + 1))
@@ -420,7 +421,7 @@ theorem exists_limits_close
                     (mfderiv I I F x v) (mfderiv I I F x w) := by
   classical
   obtain ⟨j₀, hj₀, D₀, hU, hmap, φ, hφ, gInf, hconv⟩ :=
-    exists_limits_diag (I := I) b Ψ hbase g hnorm hdata
+    exists_chain_pullback_metric_limits (I := I) b Ψ hbase g hnorm hdata
   let U : ∀ n, Opens (M (j₀ + n)) :=
     fun n => ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)
   refine ⟨j₀, hj₀, ?_⟩

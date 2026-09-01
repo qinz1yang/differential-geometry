@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
 
 

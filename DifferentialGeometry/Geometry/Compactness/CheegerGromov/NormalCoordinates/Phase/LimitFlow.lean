@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseEndpointConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.EndpointConvergence
 
 
 open DifferentialGeometry.Geometry.Curvature

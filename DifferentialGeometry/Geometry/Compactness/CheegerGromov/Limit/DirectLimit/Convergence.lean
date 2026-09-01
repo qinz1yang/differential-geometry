@@ -27,7 +27,7 @@ variable {A : ℕ → Type u} [∀ k, TopologicalSpace (A k)] [∀ k, ChartedSpa
   [∀ k, IsManifold I ∞ (A k)] [∀ k, Nonempty (A k)]
   [∀ k, SigmaCompactSpace (A k)] [∀ k, T2Space (A k)]
 
-def limitCGConverges
+def limitPointedRiemannianConvergence
     (S : SmoothSeqSystem I A) (O₀ : A 0)
     (gSeq gLim : ∀ k, SmoothRiemannianMetric I (A k))
     (hgLim : S.MetricCocycle gLim)
@@ -36,8 +36,8 @@ def limitCGConverges
         metricDerivNormSupOn (I := I) K p (gSeq k) (gLim k) (gLim k) < ε) :
     PointedRiemannianConverges (I := I)
       (factorSeq S O₀ gSeq) (limitPointedCoc S O₀ gLim hgLim) id
-      (limitCGMapsOf S O₀ gSeq gLim hgLim) := by
-  let Φ := limitCGMapsOf S O₀ gSeq gLim hgLim
+      (limitConvergenceMapsOf S O₀ gSeq gLim hgLim) := by
+  let Φ := limitConvergenceMapsOf S O₀ gSeq gLim hgLim
   have hσsrc : ∀ k : ℕ,
       letI : TopologicalSpace (limitPointedCoc S O₀ gLim hgLim).M :=
         (limitPointedCoc S O₀ gLim hgLim).topology

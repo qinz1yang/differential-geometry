@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DistanceComparison
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.FramedMetric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Framed
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringSeq
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
 

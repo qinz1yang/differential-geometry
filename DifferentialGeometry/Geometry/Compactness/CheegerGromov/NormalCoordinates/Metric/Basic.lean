@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorp
 import DifferentialGeometry.Geometry.Exponential.Smoothness.OffZero
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.InjectivityRadiusDecay.Defs
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

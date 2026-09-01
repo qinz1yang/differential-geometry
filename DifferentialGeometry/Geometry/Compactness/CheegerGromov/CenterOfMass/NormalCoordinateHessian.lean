@@ -1,11 +1,11 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Analysis.Calculus.CLMNeumann
 
 import DifferentialGeometry.Bundle.Frame
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.InverseDistance
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.BranchScale
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.LocalMetric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.LocalGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.ChartEquation
 

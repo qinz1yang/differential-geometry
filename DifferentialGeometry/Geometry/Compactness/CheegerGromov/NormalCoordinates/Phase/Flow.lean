@@ -1,8 +1,7 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Analysis.ODE.PhaseFlowExistence
 import DifferentialGeometry.Geometry.Metric.TensorInner.MetricGeodesicSpray
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricExtension
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

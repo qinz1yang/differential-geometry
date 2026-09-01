@@ -36,7 +36,7 @@ variable [NeZero (Module.finrank ℝ E)]
 
 omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] in
-def ambientCGConverges
+def ambientPointedRiemannianConvergence
     (j₀ : ℕ) (U : ∀ n, Opens (M (j₀ + n)))
     [∀ n, Nonempty (U n)] [∀ n, SigmaCompactSpace (U n)]
     (S : SmoothSeqSystem I (fun n => U n)) (O₀ : U 0)
@@ -224,7 +224,7 @@ def ambientCGConverges
 
 omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] in
-def chainCGConverges
+def chainPointedRiemannianConvergence
     (j₀ : ℕ) (U : ∀ n, Opens (M (j₀ + n)))
     [∀ n, Nonempty (U n)] [∀ n, SigmaCompactSpace (U n)]
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
@@ -259,13 +259,13 @@ def chainCGConverges
       chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
     PointedRiemannianConverges (I := I)
       (factorSeq S O₀ gSeq) (limitPointedCoc S O₀ gInf hgInf) id
-      (limitCGMapsOf S O₀ gSeq gInf hgInf) := by
+      (limitConvergenceMapsOf S O₀ gSeq gInf hgInf) := by
   let S := chainBallSystem (I := I) j₀ U Ψ hU hmap
   let gSeq : ∀ n, SmoothRiemannianMetric I (U n) := fun n =>
     chainPullbackSeq (I := I) Ψ g (U n) (hU n) 0
   let hgInf : S.MetricCocycle gInf :=
     chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
-  apply limitCGConverges (I := I) S O₀ gSeq gInf hgInf
+  apply limitPointedRiemannianConvergence (I := I) S O₀ gSeq gInf hgInf
   intro ε hε p
   obtain ⟨n₀, hn₀⟩ := chain_pullback_metric_deriv_norm_sup_lt
     (I := I) j₀ U Ψ g hU gInf hclose ε hε p
@@ -274,7 +274,7 @@ def chainCGConverges
 
 omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] in
-def chainAmbientConv
+def chainAmbientPointedRiemannianConvergence
     (j₀ : ℕ) (U : ∀ n, Opens (M (j₀ + n)))
     [∀ n, Nonempty (U n)] [∀ n, SigmaCompactSpace (U n)]
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
@@ -312,7 +312,7 @@ def chainAmbientConv
   let S := chainBallSystem (I := I) j₀ U Ψ hU hmap
   let hgInf : S.MetricCocycle gInf :=
     chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
-  apply ambientCGConverges (I := I) j₀ U S O₀ g gInf hgInf
+  apply ambientPointedRiemannianConvergence (I := I) j₀ U S O₀ g gInf hgInf
   intro ε hε p
   obtain ⟨n₀, hn₀⟩ := chain_pullback_metric_deriv_norm_sup_lt
     (I := I) j₀ U Ψ g hU gInf hclose ε hε p
@@ -322,7 +322,7 @@ def chainAmbientConv
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-def tailAmbientConv
+def tailAmbientPointedRiemannianConvergence
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (hbase : ∀ j, (Ψ j : M j → M (j + 1)) (b j) = b (j + 1))
@@ -389,7 +389,7 @@ def tailAmbientConv
   let gTail := tailMetric (I := I) b j₀ gInf
   let hgTail : S.MetricCocycle gTail :=
     tail_ball_system_metric_cocycle (I := I) b Ψ hbase g hnorm j₀ D₀ hU hmap gInf hstep
-  apply ambientCGConverges (I := I) j₀ (tailBallOpen b j₀) S
+  apply ambientPointedRiemannianConvergence (I := I) j₀ (tailBallOpen b j₀) S
     (tailCenter b j₀ 0) g gTail hgTail
   exact tail_metric_deriv_norm_sup_lt (I := I) b j₀ Ψ g hU gInf hclose
 

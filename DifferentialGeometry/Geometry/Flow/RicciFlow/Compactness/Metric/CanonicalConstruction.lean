@@ -987,7 +987,7 @@ private opaque connectedCanonicalMetricCompactness
   let g := fun j => (X.obj (σ j)).metric
   have hD : Nonempty (ConvergentMetricChain (I := I) b Ψ g) := by
     obtain ⟨j₀, hj₀, D₀, hU, hmap, _φ, _hφ, gInf, _hconv, hclose, hstep⟩ :=
-      exists_limits_close (I := I) b Ψ hbase g (by
+      exists_compatible_chain_pullback_metric_limits (I := I) b Ψ hbase g (by
         intro j x v
         with_unfolding_all exact
           (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
@@ -1035,7 +1035,7 @@ private opaque connectedCanonicalMetricCompactness
         (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) (g j) x v)) j₀ hj₀ D₀
       hU hmap gInf hstep hclose
-  let hchain := tailAmbientConv (I := I) b Ψ hbase g (by
+  let hchain := tailAmbientPointedRiemannianConvergence (I := I) b Ψ hbase g (by
     intro j x v
     with_unfolding_all exact
       (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
@@ -1043,7 +1043,8 @@ private opaque connectedCanonicalMetricCompactness
     hU hmap gInf hstep hclose
   have hchain_ref : HasLimitReferenceMetric (I := I) hchain := by
     intro k
-    simp only [hchain, tailAmbientConv, ambientCGConverges,
+    simp only [hchain, tailAmbientPointedRiemannianConvergence,
+      ambientPointedRiemannianConvergence,
       PointedRiemannianConverges.ofRestrictPullback,
       MetricConvergenceData.ofRestrictPullback,
       MetricConvergenceData.ofDerivNormSupOn,
@@ -1056,7 +1057,8 @@ private opaque connectedCanonicalMetricCompactness
           (chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S
             (tailCenter b j₀ 0) g gTail hgTail) k := by
     intro k
-    simp only [hchain, tailAmbientConv, ambientCGConverges,
+    simp only [hchain, tailAmbientPointedRiemannianConvergence,
+      ambientPointedRiemannianConvergence,
       PointedRiemannianConverges.ofRestrictPullback,
       MetricConvergenceData.ofRestrictPullback,
       MetricConvergenceData.ofDerivNormSupOn,
@@ -1069,7 +1071,8 @@ private opaque connectedCanonicalMetricCompactness
     constructor
     · obtain ⟨Crel, hCrel, hrel⟩ := hstage.1
       refine ⟨Crel, hCrel, fun k => ?_⟩
-      simp only [hchain, tailAmbientConv, ambientCGConverges,
+      simp only [hchain, tailAmbientPointedRiemannianConvergence,
+        ambientPointedRiemannianConvergence,
         PointedRiemannianConverges.ofRestrictPullback,
         MetricConvergenceData.ofRestrictPullback,
         MetricConvergenceData.ofDerivNormSupOn,
@@ -1109,7 +1112,8 @@ private opaque connectedCanonicalMetricCompactness
     · intro q
       obtain ⟨Cq, hCq, hcov⟩ := hstage.2 q
       refine ⟨Cq, hCq, fun k x => ?_⟩
-      simp only [hchain, tailAmbientConv, ambientCGConverges,
+      simp only [hchain, tailAmbientPointedRiemannianConvergence,
+        ambientPointedRiemannianConvergence,
         PointedRiemannianConverges.ofRestrictPullback,
         MetricConvergenceData.ofRestrictPullback,
         MetricConvergenceData.ofDerivNormSupOn,

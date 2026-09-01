@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.BilinearFormCompactness
 import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

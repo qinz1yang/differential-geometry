@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Bran
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateHessian
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterEquationSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Support
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricExtension
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.ChartSolution
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 open DifferentialGeometry.Geometry.Curvature
