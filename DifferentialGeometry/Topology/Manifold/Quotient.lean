@@ -9,6 +9,34 @@ noncomputable section
 
 open scoped ContDiff Manifold
 
+theorem IsLocalDiffeomorph.contMDiff_of_comp_of_surjective
+    {k : Type*} [NontriviallyNormedField k]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace k E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace k F]
+    {G : Type*} [NormedAddCommGroup G] [NormedSpace k G]
+    {H : Type*} [TopologicalSpace H]
+    {H' : Type*} [TopologicalSpace H']
+    {H'' : Type*} [TopologicalSpace H'']
+    {I : ModelWithCorners k E H}
+    {J : ModelWithCorners k F H'}
+    {K : ModelWithCorners k G H''}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {N : Type*} [TopologicalSpace N] [ChartedSpace H' N]
+    {P : Type*} [TopologicalSpace P] [ChartedSpace H'' P]
+    {n : WithTop ℕ∞} {f : M → N}
+    (hf : IsLocalDiffeomorph I J n f)
+    (hsurj : Function.Surjective f) {g : N → P}
+    (hcomp : ContMDiff I K n (g ∘ f)) : ContMDiff J K n g := by
+  intro y
+  obtain ⟨x, rfl⟩ := hsurj y
+  have hlocal := hf x
+  have hsmooth : ContMDiffAt J K n
+      ((g ∘ f) ∘ hlocal.localInverse) (f x) :=
+    hcomp.contMDiffAt.comp (f x) hlocal.localInverse_contMDiffAt
+  apply hsmooth.congr_of_eventuallyEq
+  simpa only [Function.comp_id, Function.comp_assoc] using
+    (hlocal.localInverse_eventuallyEq_right.fun_comp g).symm
+
 class ContMDiffConstSMul {k : Type*} [NontriviallyNormedField k]
     {H : Type*} [TopologicalSpace H]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace k E]

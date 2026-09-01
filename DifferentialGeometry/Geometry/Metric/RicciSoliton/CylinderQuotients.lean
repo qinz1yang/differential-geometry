@@ -1033,15 +1033,39 @@ private theorem cylinderDiagonalPotential_respects
     rw [h]
     exact cylinderDiagonal_potential y
 
-noncomputable def cylinderAntipodalQuotientPotential :
+private noncomputable def cylinderAntipodalQuotientPotentialFn :
     CylinderAntipodalQuotient → Real :=
   Quotient.lift roundThreeCylinderShrinkerPotential
     (fun _ _ h => cylinderAntipodalPotential_respects h)
 
-noncomputable def cylinderDiagonalQuotientPotential :
+private noncomputable def cylinderDiagonalQuotientPotentialFn :
     CylinderDiagonalQuotient → Real :=
   Quotient.lift roundThreeCylinderShrinkerPotential
     (fun _ _ h => cylinderDiagonalPotential_respects h)
+
+noncomputable def cylinderAntipodalQuotientPotential :
+    C^∞⟮(𝓡 2).prod 𝓘(Real, Real), CylinderAntipodalQuotient; Real⟯ :=
+  ⟨cylinderAntipodalQuotientPotentialFn,
+    cylinderAntipodalQuotientMap_isLocalDiffeomorph.contMDiff_of_comp_of_surjective
+      cylinderAntipodalQuotientMap_surjective (by
+        have heq : cylinderAntipodalQuotientPotentialFn ∘
+            cylinderAntipodalQuotientMap = roundThreeCylinderShrinkerPotential := by
+          funext x
+          rfl
+        rw [heq]
+        exact roundThreeCylinderShrinkerPotential.contMDiff)⟩
+
+noncomputable def cylinderDiagonalQuotientPotential :
+    C^∞⟮(𝓡 2).prod 𝓘(Real, Real), CylinderDiagonalQuotient; Real⟯ :=
+  ⟨cylinderDiagonalQuotientPotentialFn,
+    cylinderDiagonalQuotientMap_isLocalDiffeomorph.contMDiff_of_comp_of_surjective
+      cylinderDiagonalQuotientMap_surjective (by
+        have heq : cylinderDiagonalQuotientPotentialFn ∘
+            cylinderDiagonalQuotientMap = roundThreeCylinderShrinkerPotential := by
+          funext x
+          rfl
+        rw [heq]
+        exact roundThreeCylinderShrinkerPotential.contMDiff)⟩
 
 theorem cylinderAntipodalQuotientPotential_apply
     (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
@@ -1057,13 +1081,11 @@ theorem cylinderDiagonalQuotientPotential_apply
 
 theorem cylinderAntipodalQuotientPotential_continuous :
     Continuous cylinderAntipodalQuotientPotential := by
-  exact roundThreeCylinderShrinkerPotential.contMDiff.continuous.quotient_lift
-    (fun _ _ hxy => cylinderAntipodalPotential_respects hxy)
+  exact cylinderAntipodalQuotientPotential.contMDiff.continuous
 
 theorem cylinderDiagonalQuotientPotential_continuous :
     Continuous cylinderDiagonalQuotientPotential := by
-  exact roundThreeCylinderShrinkerPotential.contMDiff.continuous.quotient_lift
-    (fun _ _ hxy => cylinderDiagonalPotential_respects hxy)
+  exact cylinderDiagonalQuotientPotential.contMDiff.continuous
 
 private theorem cylinderAntipodalToRealProjectivePlaneProduct_respects
     {x y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real}
