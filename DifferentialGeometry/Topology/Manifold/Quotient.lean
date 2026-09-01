@@ -7,7 +7,8 @@ set_option autoImplicit false
 
 noncomputable section
 
-open scoped ContDiff Manifold
+open Filter
+open scoped ContDiff Manifold Topology
 
 theorem IsLocalDiffeomorph.contMDiff_of_comp_of_surjective
     {k : Type*} [NontriviallyNormedField k]
@@ -36,6 +37,39 @@ theorem IsLocalDiffeomorph.contMDiff_of_comp_of_surjective
   apply hsmooth.congr_of_eventuallyEq
   simpa only [Function.comp_id, Function.comp_assoc] using
     (hlocal.localInverse_eventuallyEq_right.fun_comp g).symm
+
+theorem IsLocalDiffeomorph.contMDiff_of_continuous_of_comp
+    {k : Type*} [NontriviallyNormedField k]
+    {D : Type*} [NormedAddCommGroup D] [NormedSpace k D]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace k E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace k F]
+    {G : Type*} [TopologicalSpace G]
+    {H : Type*} [TopologicalSpace H]
+    {H' : Type*} [TopologicalSpace H']
+    {L : ModelWithCorners k D G}
+    {I : ModelWithCorners k E H}
+    {J : ModelWithCorners k F H'}
+    {Q : Type*} [TopologicalSpace Q] [ChartedSpace G Q]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {N : Type*} [TopologicalSpace N] [ChartedSpace H' N]
+    {m n : WithTop ℕ∞} {f : M → N} {h : Q → M}
+    (hf : IsLocalDiffeomorph I J n f)
+    (hh : Continuous h)
+    (hcomp : ContMDiff L J m (f ∘ h))
+    (hmn : m ≤ n) : ContMDiff L I m h := by
+  intro x
+  have hlocal := hf (h x)
+  have hsmooth : ContMDiffAt L I m
+      (hlocal.localInverse ∘ (f ∘ h)) x :=
+    (hlocal.localInverse_contMDiffAt.of_le hmn).comp x hcomp.contMDiffAt
+  apply hsmooth.congr_of_eventuallyEq
+  have hevent : ∀ᶠ y in 𝓝 x, h y ∈ hlocal.localInverse.target :=
+    hh.continuousAt
+      (hlocal.localInverse.open_target.mem_nhds
+        hlocal.localInverse_mem_target)
+  filter_upwards [hevent] with y hy
+  change h y = hlocal.localInverse (f (h y))
+  exact (hlocal.localInverse_left_inv hy).symm
 
 class ContMDiffConstSMul {k : Type*} [NontriviallyNormedField k]
     {H : Type*} [TopologicalSpace H]

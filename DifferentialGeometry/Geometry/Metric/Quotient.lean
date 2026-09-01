@@ -1,7 +1,11 @@
 import DifferentialGeometry.Geometry.Metric.LocalPullback
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.SmoothMetricFromCoeff
 import DifferentialGeometry.Geometry.Metric.BumpExtend
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.Quotient
+import Mathlib.Topology.Algebra.InfiniteSum.ENNReal
+import Mathlib.Topology.Homotopy.Lifting
 
 set_option autoImplicit false
 
@@ -11,7 +15,7 @@ namespace DifferentialGeometry
 
 open Bundle Manifold Set TopologicalSpace
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -510,5 +514,165 @@ theorem exists_unique_metric_of_surjective_localDiffeomorph
   intro h hh
   exact localPullMetric_injective_of_surjective f hf hsurj
     (hh.trans (localPullMetric_descendedMetric g f hf hsurj hcompat).symm)
+
+section CoveringCompleteness
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
+variable {G : Type*} [TopologicalSpace G]
+variable {J : ModelWithCorners Real F G}
+variable {P : Type*} [TopologicalSpace P] [ChartedSpace G P]
+  [IsManifold J ∞ P]
+
+private theorem exists_lift_edist_lt
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M)
+    (h : SmoothRiemannianMetric J P)
+    {f : M → P}
+    (hf : IsLocalDiffeomorph I J ∞ f)
+    (hcover : IsCoveringMap f)
+    (hpull : localPullMetric h f hf = g)
+    {r : ENNReal} {x : M} {y z : P}
+    (hxy : f x = y)
+    (hdist : riemannianEDistOf (I := J) h y z < r) :
+    ∃ x' : M, f x' = z ∧
+      riemannianEDistOf (I := I) g x x' < r := by
+  rw [edistOf_iInf] at hdist
+  simp only [iInf_lt_iff, exists_prop] at hdist
+  obtain ⟨gamma, hgamma, hgammaLen⟩ := hdist
+  let gammaLiftC := hcover.liftPath gamma.toContinuousMap x
+    (gamma.source.trans hxy.symm)
+  let x' : M := gammaLiftC 1
+  let gammaLift : Path x x' :=
+    { toContinuousMap := gammaLiftC
+      source' := hcover.liftPath_zero gamma.toContinuousMap x
+        (gamma.source.trans hxy.symm)
+      target' := rfl }
+  have hproj : f ∘ (gammaLift : unitInterval → M) = gamma :=
+    hcover.liftPath_lifts gamma.toContinuousMap x
+      (gamma.source.trans hxy.symm)
+  have hgammaLift : CMDiff 1 gammaLift := by
+    refine hf.contMDiff_of_continuous_of_comp gammaLift.continuous ?_ (by norm_num)
+    rw [hproj]
+    exact hgamma
+  have hx' : f x' = z := by
+    exact (congrFun hproj 1).trans gamma.target
+  refine ⟨x', hx', lt_of_le_of_lt ?_ hgammaLen⟩
+  rw [edistOf_iInf]
+  refine iInf_le_of_le gammaLift (iInf_le_of_le hgammaLift ?_)
+  apply le_of_eq
+  rw [← hproj]
+  apply MeasureTheory.lintegral_congr
+  intro t
+  have hder := mfderiv_comp_apply t
+    (hf.contMDiff.contMDiffAt.mdifferentiableAt (by norm_num))
+    (hgammaLift.contMDiffAt.mdifferentiableAt (by norm_num)) 1
+  congr 2
+  calc
+    g.inner (gammaLift t) (mfderiv% gammaLift t 1)
+        (mfderiv% gammaLift t 1) =
+        (localPullMetric h f hf).inner (gammaLift t)
+          (mfderiv% gammaLift t 1) (mfderiv% gammaLift t 1) := by
+      rw [hpull]
+    _ = h.inner (f (gammaLift t))
+          (mfderiv I J f (gammaLift t) (mfderiv% gammaLift t 1))
+          (mfderiv I J f (gammaLift t) (mfderiv% gammaLift t 1)) :=
+      localPullMetric_inner h f hf _ _ _
+    _ = h.inner ((f ∘ (gammaLift : unitInterval → M)) t)
+          (mfderiv% (f ∘ (gammaLift : unitInterval → M)) t 1)
+          (mfderiv% (f ∘ (gammaLift : unitInterval → M)) t 1) := by
+      simp only [Function.comp_apply]
+      rw [hder]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem RiemannianMetricComplete.of_coveringMap_localPullMetric
+    [FiniteDimensional Real F]
+    [T2Space M] [SigmaCompactSpace M]
+    [T2Space P] [SigmaCompactSpace P]
+    (g : SmoothRiemannianMetric I M)
+    (h : SmoothRiemannianMetric J P)
+    {f : M → P}
+    (hf : IsLocalDiffeomorph I J ∞ f)
+    (hcover : IsCoveringMap f)
+    (hsurj : Function.Surjective f)
+    (hpull : localPullMetric h f hf = g)
+    (hg : RiemannianMetricComplete (I := I) g) :
+    RiemannianMetricComplete (I := J) h := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  let _ : CompleteSpace F := FiniteDimensional.complete Real F
+  let : IsManifold J 1 P :=
+    IsManifold.of_le (I := J) (M := P) (n := ∞)
+      (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  let : TopologicalSpace.MetrizableSpace P := Manifold.metrizableSpace J P
+  let : T3Space P := inferInstance
+  refine ⟨?_⟩
+  let : RiemannianBundle (fun y : P => TangentSpace J y) :=
+    ⟨h.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle F
+      (fun y : P => TangentSpace J y) :=
+    ⟨h.inner, h.contMDiff.continuous, by intro y v w; rfl⟩
+  let : EMetricSpace P := EMetricSpace.ofRiemannianMetric J P
+  refine EMetric.complete_of_cauchySeq_tendsto (α := P) fun s hs => ?_
+  let d : ℕ → NNReal := fun n => (2⁻¹ : NNReal) ^ n
+  have hdPos (n : ℕ) : 0 < (d n : ENNReal) := by
+    positivity
+  obtain ⟨phi, hphiMono, hphiStep⟩ :=
+    hs.subseq_mem (fun n => edist_mem_uniformity (hdPos n))
+  have htargetStep (n : ℕ) :
+      riemannianEDistOf (I := J) h (s (phi n)) (s (phi (n + 1))) <
+        (d n : ENNReal) := by
+    change edist (s (phi n)) (s (phi (n + 1))) < (d n : ENNReal)
+    rw [edist_comm]
+    exact hphiStep n
+  let x0 : {x : M // f x = s (phi 0)} :=
+    ⟨Classical.choose (hsurj (s (phi 0))),
+      Classical.choose_spec (hsurj (s (phi 0)))⟩
+  have hnext (n : ℕ) (x : {x : M // f x = s (phi n)}) :
+      ∃ y : M, f y = s (phi (n + 1)) ∧
+        riemannianEDistOf (I := I) g x y < (d n : ENNReal) :=
+    exists_lift_edist_lt g h hf hcover hpull x.property (htargetStep n)
+  let next (n : ℕ) (x : {x : M // f x = s (phi n)}) :
+      {y : M // f y = s (phi (n + 1)) ∧
+        riemannianEDistOf (I := I) g x y < (d n : ENNReal)} :=
+    ⟨Classical.choose (hnext n x), Classical.choose_spec (hnext n x)⟩
+  let x : (n : ℕ) → {x : M // f x = s (phi n)} := fun n =>
+    Nat.rec (motive := fun k => {x : M // f x = s (phi k)}) x0
+      (fun k xk => ⟨(next k xk).1, (next k xk).2.1⟩) n
+  let : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞)
+      (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun y : M => TangentSpace I y) :=
+    ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E
+      (fun y : M => TangentSpace I y) :=
+    ⟨g.inner, g.contMDiff.continuous, by intro y v w; rfl⟩
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : CompleteSpace M := hg.complete
+  have hxStep (n : ℕ) : edist (x n : M) (x (n + 1) : M) ≤ (d n : ENNReal) := by
+    change riemannianEDistOf (I := I) g (x n : M) (x (n + 1) : M) ≤
+      (d n : ENNReal)
+    change riemannianEDistOf (I := I) g (x n : M) (next n (x n)).1 ≤
+      (d n : ENNReal)
+    exact (next n (x n)).2.2.le
+  have hdSummable : Summable d := by
+    simpa only [d] using
+      (NNReal.summable_geometric (r := (2⁻¹ : NNReal)) (by norm_num))
+  have hxCauchy : CauchySeq (fun n => (x n : M)) :=
+    cauchySeq_of_edist_le_of_summable d hxStep hdSummable
+  obtain ⟨xLimit, hxLimit⟩ := cauchySeq_tendsto_of_complete hxCauchy
+  refine ⟨f xLimit, tendsto_nhds_of_cauchySeq_of_subseq hs
+    hphiMono.tendsto_atTop ?_⟩
+  have hprojected :
+      Filter.Tendsto (fun n => f (x n : M)) Filter.atTop (𝓝 (f xLimit)) :=
+    (hf.contMDiff.continuous.tendsto xLimit).comp hxLimit
+  have heq : (fun n => f (x n : M)) = s ∘ phi := by
+    funext n
+    exact (x n).property
+  rw [← heq]
+  exact hprojected
+
+end CoveringCompleteness
 
 end DifferentialGeometry

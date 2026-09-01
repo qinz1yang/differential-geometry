@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Scaling
+import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityLocalCross
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturalityCross
 import DifferentialGeometry.Geometry.Metric.Product
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
@@ -63,6 +64,46 @@ theorem gradientRicciSoliton_pullbackCross
     Diffeomorph.pullbackMetricCross_inner]
   exact h (Φ x) (mfderiv I J (Φ : M → N) x v)
     (mfderiv I J (Φ : M → N) x w)
+
+theorem gradientRicciSoliton_of_surjective_localPullMetric
+    [SigmaCompactSpace M] [SigmaCompactSpace N]
+    {h : SmoothRiemannianMetric I M} {Fpot : C^∞⟮I, M; Real⟯}
+    {g : SmoothRiemannianMetric J N} {f : C^∞⟮J, N; Real⟯}
+    {Phi : M → N} {sigma : Real}
+    (hsol : gradientRicciSoliton (I := I) h Fpot sigma)
+    (hPhi : IsLocalDiffeomorph I J ∞ Phi)
+    (hsurj : Function.Surjective Phi)
+    (hpull : localPullMetric (I := I) (J := J) g Phi hPhi = h)
+    (hpotential : ∀ x : M, Fpot x = f (Phi x)) :
+    gradientRicciSoliton (I := J) g f sigma := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  let _ : CompleteSpace F := FiniteDimensional.complete Real F
+  have hpotentialEq : (Fpot : M → Real) = f ∘ Phi :=
+    funext hpotential
+  intro y a b
+  obtain ⟨x, rfl⟩ := hsurj y
+  let e : TangentSpace I x ≃L[Real] TangentSpace J (Phi x) :=
+    hPhi.mfderivToContinuousLinearEquiv (by simp) x
+  let v : TangentSpace I x := e.symm a
+  let w : TangentSpace I x := e.symm b
+  have hsource := hsol x v w
+  rw [← hpull, hpotentialEq,
+    Curvature.ricciTensor_localPull (I := I) (J := J) g Phi hPhi,
+    Operator.hessFun_localPull (I := I) (J := J) g Phi hPhi,
+    localPullMetric_inner] at hsource
+  have he_apply (z : TangentSpace I x) :
+      e z = mfderiv I J Phi x z := by
+    have hco := hPhi.mfderivToContinuousLinearEquiv_coe
+      (x := x) (by simp)
+    exact congrArg
+      (fun L : TangentSpace I x →L[Real] TangentSpace J (Phi x) ↦ L z) hco
+  have hv : mfderiv I J Phi x v = a := by
+    rw [← he_apply]
+    exact e.apply_symm_apply a
+  have hw : mfderiv I J Phi x w = b := by
+    rw [← he_apply]
+    exact e.apply_symm_apply b
+  simpa only [hv, hw] using hsource
 
 theorem gradientRicciSoliton_prod
     [CompleteSpace E] [CompleteSpace F]

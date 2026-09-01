@@ -66,6 +66,44 @@ theorem normalizedGradientRicciSoliton_prod
 
 end Product
 
+section LocalPull
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
+  [FiniteDimensional Real F]
+variable {G : Type*} [TopologicalSpace G]
+variable {J : ModelWithCorners Real F G} [J.Boundaryless]
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
+  [IsManifold J ∞ N] [SigmaCompactSpace N] [T2Space N]
+
+theorem normalizedGradientRicciSoliton_of_surjective_localPullMetric
+    {h : SmoothRiemannianMetric I M} {Fpot : C^∞⟮I, M; Real⟯}
+    {g : SmoothRiemannianMetric J N} {f : C^∞⟮J, N; Real⟯}
+    {Phi : M → N}
+    (hsol : normalizedGradientRicciSoliton (I := I) h Fpot)
+    (hcomplete : RiemannianMetricComplete (I := J) g)
+    (hPhi : IsLocalDiffeomorph I J ∞ Phi)
+    (hsurj : Function.Surjective Phi)
+    (hpull : localPullMetric (I := I) (J := J) g Phi hPhi = h)
+    (hpotential : ∀ x : M, Fpot x = f (Phi x)) :
+    normalizedGradientRicciSoliton (I := J) g f := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  let _ : CompleteSpace F := FiniteDimensional.complete Real F
+  refine ⟨hcomplete,
+    gradientRicciSoliton_of_surjective_localPullMetric hsol.2.1
+      hPhi hsurj hpull hpotential, ?_⟩
+  intro y
+  obtain ⟨x, rfl⟩ := hsurj y
+  have hsource := hsol.2.2 x
+  have hpotentialEq : (Fpot : M → Real) = f ∘ Phi :=
+    funext hpotential
+  rw [← hpull, hpotentialEq,
+    Curvature.metricScalarAt_localPull (I := I) (J := J) g Phi hPhi,
+    Operator.normGradSqFun_localPull (I := I) (J := J) g Phi hPhi f x
+      (f.contMDiff.mdifferentiableAt (by simp))] at hsource
+  exact hsource
+
+end LocalPull
+
 theorem normalizedGradientRicciSoliton_complete
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f) :

@@ -738,6 +738,20 @@ theorem cylinderDiagonalQuotientMap_surjective :
     Function.Surjective cylinderDiagonalQuotientMap :=
   cylinderDiagonalQuotientMap_isQuotientCoveringMap.surjective
 
+noncomputable instance cylinderAntipodalQuotientSigmaCompactSpace :
+    SigmaCompactSpace CylinderAntipodalQuotient :=
+  ⟨by
+    rw [← cylinderAntipodalQuotientMap_surjective.range_eq]
+    exact isSigmaCompact_range
+      cylinderAntipodalQuotientMap_isCoveringMap.continuous⟩
+
+noncomputable instance cylinderDiagonalQuotientSigmaCompactSpace :
+    SigmaCompactSpace CylinderDiagonalQuotient :=
+  ⟨by
+    rw [← cylinderDiagonalQuotientMap_surjective.range_eq]
+    exact isSigmaCompact_range
+      cylinderDiagonalQuotientMap_isCoveringMap.continuous⟩
+
 theorem cylinderAntipodalQuotientMap_eq_iff_mem_orbit
     {x y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real} :
     cylinderAntipodalQuotientMap x = cylinderAntipodalQuotientMap y ↔
@@ -875,6 +889,26 @@ theorem localPullMetric_cylinderDiagonalQuotientMetric :
     cylinderDiagonalQuotientMap_isLocalDiffeomorph
     cylinderDiagonalQuotientMap_surjective
     cylinderDiagonalQuotientMap_metricFiberCompatible
+
+theorem cylinderAntipodalQuotientMetric_complete :
+    RiemannianMetricComplete cylinderAntipodalQuotientMetric :=
+  RiemannianMetricComplete.of_coveringMap_localPullMetric
+    roundThreeCylinderShrinkerMetric cylinderAntipodalQuotientMetric
+    cylinderAntipodalQuotientMap_isLocalDiffeomorph
+    cylinderAntipodalQuotientMap_isCoveringMap
+    cylinderAntipodalQuotientMap_surjective
+    localPullMetric_cylinderAntipodalQuotientMetric
+    roundThreeCylinderShrinkerMetric_complete
+
+theorem cylinderDiagonalQuotientMetric_complete :
+    RiemannianMetricComplete cylinderDiagonalQuotientMetric :=
+  RiemannianMetricComplete.of_coveringMap_localPullMetric
+    roundThreeCylinderShrinkerMetric cylinderDiagonalQuotientMetric
+    cylinderDiagonalQuotientMap_isLocalDiffeomorph
+    cylinderDiagonalQuotientMap_isCoveringMap
+    cylinderDiagonalQuotientMap_surjective
+    localPullMetric_cylinderDiagonalQuotientMetric
+    roundThreeCylinderShrinkerMetric_complete
 
 private theorem cylinderDiagonalOrbitRel_iff_threeSphereAwayFromRealProjectivePunctureOrbitRel
     (x y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
@@ -1086,6 +1120,28 @@ theorem cylinderAntipodalQuotientPotential_continuous :
 theorem cylinderDiagonalQuotientPotential_continuous :
     Continuous cylinderDiagonalQuotientPotential := by
   exact cylinderDiagonalQuotientPotential.contMDiff.continuous
+
+theorem normalizedGradientRicciSoliton_cylinderAntipodalQuotient :
+    normalizedGradientRicciSoliton cylinderAntipodalQuotientMetric
+      cylinderAntipodalQuotientPotential :=
+  normalizedGradientRicciSoliton_of_surjective_localPullMetric
+    normalizedGradientRicciSoliton_roundThreeCylinder
+    cylinderAntipodalQuotientMetric_complete
+    cylinderAntipodalQuotientMap_isLocalDiffeomorph
+    cylinderAntipodalQuotientMap_surjective
+    localPullMetric_cylinderAntipodalQuotientMetric
+    (fun x ↦ (cylinderAntipodalQuotientPotential_apply x).symm)
+
+theorem normalizedGradientRicciSoliton_cylinderDiagonalQuotient :
+    normalizedGradientRicciSoliton cylinderDiagonalQuotientMetric
+      cylinderDiagonalQuotientPotential :=
+  normalizedGradientRicciSoliton_of_surjective_localPullMetric
+    normalizedGradientRicciSoliton_roundThreeCylinder
+    cylinderDiagonalQuotientMetric_complete
+    cylinderDiagonalQuotientMap_isLocalDiffeomorph
+    cylinderDiagonalQuotientMap_surjective
+    localPullMetric_cylinderDiagonalQuotientMetric
+    (fun x ↦ (cylinderDiagonalQuotientPotential_apply x).symm)
 
 private theorem cylinderAntipodalToRealProjectivePlaneProduct_respects
     {x y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real}

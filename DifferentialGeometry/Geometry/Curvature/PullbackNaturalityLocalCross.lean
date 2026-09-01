@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturalityCross
 import DifferentialGeometry.Geometry.Curvature.RestrictOpenRm04
 import DifferentialGeometry.Geometry.Metric.LocalPullback
 import DifferentialGeometry.Topology.SigmaCompactOpen
@@ -177,3 +178,199 @@ theorem rm04_localPull
       rw [← hEq hxΦ]
 
 end DifferentialGeometry.Integral.Connection
+
+namespace DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Curvature.CovariantDerivative
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor0SBundle
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+  [FiniteDimensional Real E] [CompleteSpace E] [NeZero (Module.finrank Real E)]
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
+  [FiniteDimensional Real F] [CompleteSpace F] [NeZero (Module.finrank Real F)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+variable {G : Type*} [TopologicalSpace G] {J : ModelWithCorners Real F G}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [IsManifold I 1 M]
+  [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
+  [IsManifold J ∞ N] [IsManifold J 1 N]
+  [T2Space N] [SigmaCompactSpace N] [J.Boundaryless]
+
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+private theorem metricRm04StdAt_eq_inner_riemannOp_local
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (X Y Z W : TangentSpace I x) :
+    metricRm04StdAt (I := I) g x X Y Z W =
+      g.inner x W (riemannOp (cov := LeviCivita (I := I) g) x X Y Z) := by
+  rw [metricRm04StdAt_apply,
+    show metricRm04At (I := I) g x =
+        riemannCurvature04At g (metricCov (I := I) g)
+          (metricCov_smooth (I := I) g) x from rfl,
+    riemannCurvature04At_apply_const]
+  have : CovariantDerivative.ContMDiffCovariantDerivative
+      (metricCov (I := I) g) ∞ :=
+    LeviCivita_isContMDiff g
+  rw [riemannCurvatureAux_tangentConst_eq_riemannOp
+      (metricCov (I := I) g) (metricCov_smooth (I := I) g) x X Y Z,
+    show riemannOp (cov := metricCov (I := I) g) x X Y Z =
+        riemannOp (cov := LeviCivita (I := I) g) x X Y Z from rfl]
+
+omit [NeZero (Module.finrank Real E)] [NeZero (Module.finrank Real F)] in
+theorem ricciTensor_localPull
+    (g : SmoothRiemannianMetric J N) (Phi : M → N)
+    (hPhi : IsLocalDiffeomorph I J ∞ Phi)
+    (x : M) (v w : TangentSpace I x) :
+    ricciTensor (I := I)
+        (localPullMetric (I := I) (J := J) g Phi hPhi) x v w =
+      ricciTensor (I := J) g (Phi x)
+        (mfderiv I J Phi x v) (mfderiv I J Phi x w) := by
+  classical
+  obtain ⟨basis, hON⟩ :=
+    exists_gOrthonormalBasis
+      (localPullMetric (I := I) (J := J) g Phi hPhi) x
+  let dPhi : TangentSpace I x ≃L[Real] TangentSpace J (Phi x) :=
+    hPhi.mfderivToContinuousLinearEquiv (by simp) x
+  let idxEquiv :
+      Fin (Module.finrank Real (TangentSpace I x)) ≃
+        Fin (Module.finrank Real (TangentSpace J (Phi x))) :=
+    finCongr dPhi.toLinearEquiv.finrank_eq
+  let basis' :
+      Module.Basis (Fin (Module.finrank Real (TangentSpace J (Phi x))))
+        Real (TangentSpace J (Phi x)) :=
+    (basis.map dPhi.toLinearEquiv).reindex idxEquiv
+  have hdPhi_apply (z : TangentSpace I x) :
+      dPhi z = mfderiv I J Phi x z := by
+    have hco := hPhi.mfderivToContinuousLinearEquiv_coe
+      (x := x) (by simp)
+    exact congrArg
+      (fun L : TangentSpace I x →L[Real] TangentSpace J (Phi x) ↦ L z) hco
+  have hbasis'_apply (j) :
+      basis' j = mfderiv I J Phi x (basis (idxEquiv.symm j)) := by
+    change ((basis.map dPhi.toLinearEquiv).reindex idxEquiv) j = _
+    rw [Module.Basis.reindex_apply, Module.Basis.map_apply]
+    exact hdPhi_apply _
+  have hON' : ∀ i j,
+      g.inner (Phi x) (basis' i) (basis' j) =
+        if i = j then (1 : Real) else 0 := by
+    intro i j
+    rw [hbasis'_apply, hbasis'_apply,
+      ← localPullMetric_inner (I := I) (J := J) g Phi hPhi x
+        (basis (idxEquiv.symm i)) (basis (idxEquiv.symm j))]
+    simpa using hON (idxEquiv.symm i) (idxEquiv.symm j)
+  rw [ricciTensor_eq_orthonormal_trace
+        (I := I) (localPullMetric (I := I) (J := J) g Phi hPhi)
+        x v w (fun i ↦ basis i) hON,
+      ricciTensor_eq_orthonormal_trace
+        (I := J) g (Phi x) (mfderiv I J Phi x v)
+        (mfderiv I J Phi x w) (fun i ↦ basis' i) hON']
+  refine Fintype.sum_equiv idxEquiv _ _ ?_
+  intro i
+  have hbasis'_comp :
+      basis' (idxEquiv i) = mfderiv I J Phi x (basis i) := by
+    simpa using hbasis'_apply (idxEquiv i)
+  rw [hbasis'_comp]
+  rw [(localPullMetric (I := I) (J := J) g Phi hPhi).symm x
+        (riemannOp
+          (cov := LeviCivita (I := I)
+            (localPullMetric (I := I) (J := J) g Phi hPhi))
+          x (basis i) v w) (basis i),
+      ← metricRm04StdAt_eq_inner_riemannOp_local
+        (I := I) (localPullMetric (I := I) (J := J) g Phi hPhi)
+        x (basis i) v w (basis i),
+      DifferentialGeometry.Integral.Connection.rm04_localPull
+        (I := I) (J := J) g Phi hPhi x (basis i) v w (basis i),
+      metricRm04StdAt_eq_inner_riemannOp_local
+        (I := J) g (Phi x) (mfderiv I J Phi x (basis i))
+        (mfderiv I J Phi x v) (mfderiv I J Phi x w)
+        (mfderiv I J Phi x (basis i)),
+      g.symm (Phi x) (mfderiv I J Phi x (basis i))
+        (riemannOp (cov := LeviCivita (I := J) g) (Phi x)
+          (mfderiv I J Phi x (basis i))
+          (mfderiv I J Phi x v) (mfderiv I J Phi x w))]
+
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+theorem metricScalarAt_eq_orthonormal_trace
+    (g : SmoothRiemannianMetric I M) (x : M)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hON : ∀ i j, g.inner x (basis i) (basis j) =
+      if i = j then (1 : Real) else 0) :
+    metricScalarAt (I := I) g x =
+      ∑ i : Idx, ricciTensor (I := I) g x (basis i) (basis i) := by
+  classical
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
+      (identityInvMetric (Idx := Idx)) :=
+    metricInverseInBasis_of_orthonormal (I := I) g basis hON
+  rw [metricScalarAt_def,
+    Operator.metricTracePair0SAt_eq_sum_basis (I := I) g basis
+      (identityInvMetric (Idx := Idx)) hinv
+      (metricRicciAt (I := I) (M := M) g x)]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [Finset.sum_eq_single i]
+  · rw [identityInvMetric_apply_self, one_mul,
+      metricRicciAt_apply_eq_ricciTensor]
+  · intro j _ hji
+    have hij : i ≠ j := fun hij ↦ hji hij.symm
+    rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne hij, zero_mul]
+  · intro hi
+    exact False.elim (hi (Finset.mem_univ i))
+
+omit [NeZero (Module.finrank Real E)] [NeZero (Module.finrank Real F)] in
+theorem metricScalarAt_localPull
+    (g : SmoothRiemannianMetric J N) (Phi : M → N)
+    (hPhi : IsLocalDiffeomorph I J ∞ Phi) (x : M) :
+    metricScalarAt (I := I)
+        (localPullMetric (I := I) (J := J) g Phi hPhi) x =
+      metricScalarAt (I := J) g (Phi x) := by
+  classical
+  obtain ⟨basis, hON⟩ :=
+    exists_gOrthonormalBasis
+      (localPullMetric (I := I) (J := J) g Phi hPhi) x
+  let dPhi : TangentSpace I x ≃L[Real] TangentSpace J (Phi x) :=
+    hPhi.mfderivToContinuousLinearEquiv (by simp) x
+  let idxEquiv :
+      Fin (Module.finrank Real (TangentSpace I x)) ≃
+        Fin (Module.finrank Real (TangentSpace J (Phi x))) :=
+    finCongr dPhi.toLinearEquiv.finrank_eq
+  let basis' :
+      Module.Basis (Fin (Module.finrank Real (TangentSpace J (Phi x))))
+        Real (TangentSpace J (Phi x)) :=
+    (basis.map dPhi.toLinearEquiv).reindex idxEquiv
+  have hdPhi_apply (z : TangentSpace I x) :
+      dPhi z = mfderiv I J Phi x z := by
+    have hco := hPhi.mfderivToContinuousLinearEquiv_coe
+      (x := x) (by simp)
+    exact congrArg
+      (fun L : TangentSpace I x →L[Real] TangentSpace J (Phi x) ↦ L z) hco
+  have hbasis'_apply (j) :
+      basis' j = mfderiv I J Phi x (basis (idxEquiv.symm j)) := by
+    change ((basis.map dPhi.toLinearEquiv).reindex idxEquiv) j = _
+    rw [Module.Basis.reindex_apply, Module.Basis.map_apply]
+    exact hdPhi_apply _
+  have hON' : ∀ i j,
+      g.inner (Phi x) (basis' i) (basis' j) =
+        if i = j then (1 : Real) else 0 := by
+    intro i j
+    rw [hbasis'_apply, hbasis'_apply,
+      ← localPullMetric_inner (I := I) (J := J) g Phi hPhi x
+        (basis (idxEquiv.symm i)) (basis (idxEquiv.symm j))]
+    simpa using hON (idxEquiv.symm i) (idxEquiv.symm j)
+  rw [metricScalarAt_eq_orthonormal_trace
+      (I := I) (localPullMetric (I := I) (J := J) g Phi hPhi)
+      x basis hON,
+    metricScalarAt_eq_orthonormal_trace
+      (I := J) g (Phi x) basis' hON']
+  refine Fintype.sum_equiv idxEquiv _ _ ?_
+  intro i
+  have hbasis'_comp :
+      basis' (idxEquiv i) = mfderiv I J Phi x (basis i) := by
+    simpa using hbasis'_apply (idxEquiv i)
+  rw [hbasis'_comp,
+    ricciTensor_localPull (I := I) (J := J) g Phi hPhi x]
+
+end DifferentialGeometry.Geometry.Curvature
