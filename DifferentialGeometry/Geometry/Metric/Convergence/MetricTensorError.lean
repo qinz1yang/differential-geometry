@@ -21,6 +21,42 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+theorem tensor_apply_bounds_of_metricTensorErrorNorm_le
+    (P : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
+    (g : SmoothRiemannianMetric I M) {ε : ℝ} {x : M}
+    (hc0 : metricTensorErrorNorm (I := I) P g x ≤ ε)
+    (v : TangentSpace I x) :
+    (1 - ε) * g.inner x v v ≤ P x (fun _ => v) ∧
+      P x (fun _ => v) ≤ (1 + ε) * g.inner x v v := by
+  classical
+  obtain ⟨basis, hON⟩ :=
+    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
+  have hCS := Tensor0SBundle.abs_apply_le_sqrt_normSq0S (I := I)
+    g x 2 basis (fun i j => hON i j)
+    (P x - Tensor0SBundle.metricTensorField (I := I) g x)
+    (fun _ => v)
+  have hval : (P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v) =
+      P x (fun _ => v) - g.inner x v v := by
+    simp [Tensor0SBundle.metricTensorField_apply]
+  have hnn : 0 ≤ g.inner x v v := metric_inner_self_nonneg (I := I) g x v
+  have hprod : (∏ _a : Fin 2, Real.sqrt (g.inner x v v)) = g.inner x v v := by
+    rw [Fin.prod_univ_two, Real.mul_self_sqrt hnn]
+  have habs : |P x (fun _ => v) - g.inner x v v| ≤ ε * g.inner x v v := by
+    unfold metricTensorErrorNorm at hc0
+    calc
+      |P x (fun _ => v) - g.inner x v v| =
+          |(P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v)| := by
+            rw [hval]
+      _ ≤ Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2
+            (P x - Tensor0SBundle.metricTensorField (I := I) g x)) *
+          ∏ _a : Fin 2, Real.sqrt (g.inner x v v) := hCS
+      _ ≤ ε * g.inner x v v := by
+        rw [hprod]
+        exact mul_le_mul_of_nonneg_right hc0 hnn
+  constructor <;> nlinarith [abs_le.mp habs]
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem inner_bounds_of_metricTensorErrorNorm_le
     (G g : SmoothRiemannianMetric I M) {K : Set M} {ε : ℝ}
     (hc0 : ∀ x ∈ K, metricTensorErrorNorm (I := I)
@@ -28,48 +64,10 @@ theorem inner_bounds_of_metricTensorErrorNorm_le
     ∀ x ∈ K, ∀ v : TangentSpace I x,
       (1 - ε) * g.inner x v v ≤ G.inner x v v ∧
         G.inner x v v ≤ (1 + ε) * g.inner x v v := by
-  classical
   intro x hx v
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hCS := Tensor0SBundle.abs_apply_le_sqrt_normSq0S (I := I)
-    g x 2 basis (fun i j => hON i j)
-    ((Tensor0SBundle.metricTensorField (I := I) G) x
-      - Tensor0SBundle.metricTensorField (I := I) g x)
-    (fun _ => v)
-  have hval : ((Tensor0SBundle.metricTensorField (I := I) G) x
-      - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v) =
-      G.inner x v v - g.inner x v v := by
-    calc
-      ((Tensor0SBundle.metricTensorField (I := I) G) x -
-          Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v) =
-          Tensor0SBundle.metricTensorField (I := I) G x (fun _ => v) -
-            Tensor0SBundle.metricTensorField (I := I) g x (fun _ => v) :=
-        Tensor0SBundle.Tensor0SSpace.sub_apply 2 x _ _ _
-      _ = G.inner x v v - g.inner x v v := by
-        rw [Tensor0SBundle.metricTensorField_apply,
-          Tensor0SBundle.metricTensorField_apply]
-  have hnn : 0 ≤ g.inner x v v := by
-    rcases eq_or_ne v 0 with hv | hv
-    · simp [hv]
-    · exact le_of_lt (g.pos x v hv)
-  have hprod : (∏ _a : Fin 2, Real.sqrt (g.inner x v v)) = g.inner x v v := by
-    rw [Fin.prod_univ_two, Real.mul_self_sqrt hnn]
-  have habs : |G.inner x v v - g.inner x v v| ≤ ε * g.inner x v v := by
-    have herr := hc0 x hx
-    calc
-      |G.inner x v v - g.inner x v v| =
-          |((Tensor0SBundle.metricTensorField (I := I) G) x
-            - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v)| := by rw [hval]
-      _ ≤ Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2
-            ((Tensor0SBundle.metricTensorField (I := I) G) x
-              - Tensor0SBundle.metricTensorField (I := I) g x)) *
-            ∏ _a : Fin 2, Real.sqrt (g.inner x v v) := hCS
-      _ ≤ ε * g.inner x v v := by
-        rw [hprod]
-        exact mul_le_mul_of_nonneg_right herr hnn
-  constructor
-  · nlinarith [abs_le.mp habs]
-  · nlinarith [abs_le.mp habs]
+  simpa [Tensor0SBundle.metricTensorField_apply] using
+    tensor_apply_bounds_of_metricTensorErrorNorm_le (I := I)
+      (Tensor0SBundle.metricTensorField (I := I) G) g (hc0 x hx) v
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem MetricUniformEquivalentOn.sqrt_normSq0S_le

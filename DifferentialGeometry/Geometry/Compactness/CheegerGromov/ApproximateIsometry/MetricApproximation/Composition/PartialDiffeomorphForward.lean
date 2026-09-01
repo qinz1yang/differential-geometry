@@ -87,11 +87,11 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
-section PartialDataComp
+section Composition
 
 open TopologicalSpace
 
-theorem partialData_comp_forward
+theorem PartialDiffeomorphMetricApproximation.trans_forward
     {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
     [T2Space N] [hSigmaCompactN : SigmaCompactSpace N] [T2Space P]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
@@ -533,7 +533,7 @@ theorem partialData_comp_forward
       cov_deriv_small := fun a h1 h2 x hx =>
         le_trans (hcovP'' a h1 h2 x hx) harithcov }⟩
 
-end PartialDataComp
+end Composition
 
 end HCGCompactness
 end DifferentialGeometry

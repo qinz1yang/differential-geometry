@@ -1,8 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Defs
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Metric.PathLengthComparison
-
-open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
@@ -17,96 +14,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 
 universe u uE uH
 
-open DifferentialGeometry.Tensor0SBundle
-
-section Speed
-
-variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
-variable [FiniteDimensional Real E]
-variable {H : Type uH} [TopologicalSpace H]
-variable {I : ModelWithCorners Real E H}
-variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-theorem speed_le_of_c0
-    (P : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
-    (g : SmoothRiemannianMetric I M) {ε : ℝ} {x : M}
-    (hc0 : metricTensorErrorNorm (I := I) P g x ≤ ε)
-    (v : TangentSpace I x) :
-    P x (fun _ => v) ≤ (1 + ε) * g.inner x v v := by
-  classical
-  obtain ⟨basis, hON⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
-  have hCS := Tensor0SBundle.abs_apply_le_sqrt_normSq0S (I := I)
-    g x 2 basis (fun i j => hON i j)
-    (P x - Tensor0SBundle.metricTensorField (I := I) g x)
-    (fun _ => v)
-  have hval : (P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v)
-      = P x (fun _ => v) - g.inner x v v := by
-    calc
-      (P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v) =
-          P x (fun _ => v) -
-            Tensor0SBundle.metricTensorField (I := I) g x (fun _ => v) :=
-        Tensor0SSpace.sub_apply 2 x _ _ _
-      _ = P x (fun _ => v) - g.inner x v v := by
-        rw [Tensor0SBundle.metricTensorField_apply]
-  have hnn : 0 ≤ g.inner x v v := by
-    by_cases hv : v = 0
-    · simp [hv]
-    · exact (g.pos x v hv).le
-  have hprod : (∏ _a : Fin 2, Real.sqrt (g.inner x v v)) = g.inner x v v := by
-    rw [Fin.prod_univ_two, Real.mul_self_sqrt hnn]
-  have habs : |P x (fun _ => v) - g.inner x v v| ≤ ε * g.inner x v v := by
-    unfold metricTensorErrorNorm at hc0
-    calc
-      |P x (fun _ => v) - g.inner x v v| =
-          |(P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v)| := by
-        rw [hval]
-      _ ≤ Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2
-            (P x - Tensor0SBundle.metricTensorField (I := I) g x))
-          * ∏ _a : Fin 2, Real.sqrt (g.inner x v v) := hCS
-      _ ≤ ε * g.inner x v v := by
-        rw [hprod]
-        exact mul_le_mul_of_nonneg_right hc0 hnn
-  nlinarith [abs_le.mp habs]
-
-theorem speed_ge_of_c0
-    (P : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
-    (g : SmoothRiemannianMetric I M) {ε : ℝ} {x : M}
-    (hc0 : metricTensorErrorNorm (I := I) P g x ≤ ε)
-    (v : TangentSpace I x) :
-    (1 - ε) * g.inner x v v ≤ P x (fun _ => v) := by
-  classical
-  obtain ⟨basis, hON⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
-  have hCS := Tensor0SBundle.abs_apply_le_sqrt_normSq0S (I := I)
-    g x 2 basis (fun i k => hON i k)
-    (P x - Tensor0SBundle.metricTensorField (I := I) g x)
-    (fun _ => v)
-  have hval : (P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v) =
-      P x (fun _ => v) - g.inner x v v := by
-    simp [Tensor0SBundle.metricTensorField_apply]
-  have hnn : 0 ≤ g.inner x v v := metric_inner_self_nonneg (I := I) g x v
-  have hprod : (∏ _a : Fin 2, Real.sqrt (g.inner x v v)) = g.inner x v v := by
-    rw [Fin.prod_univ_two, Real.mul_self_sqrt hnn]
-  have habs : |P x (fun _ => v) - g.inner x v v| ≤ ε * g.inner x v v := by
-    unfold metricTensorErrorNorm at hc0
-    calc
-      |P x (fun _ => v) - g.inner x v v| =
-          |(P x - Tensor0SBundle.metricTensorField (I := I) g x) (fun _ => v)| := by
-            rw [hval]
-      _ ≤ Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2
-            (P x - Tensor0SBundle.metricTensorField (I := I) g x)) *
-          ∏ _a : Fin 2, Real.sqrt (g.inner x v v) := hCS
-      _ ≤ ε * g.inner x v v := by
-        rw [hprod]
-        exact mul_le_mul_of_nonneg_right hc0 hnn
-  nlinarith [abs_le.mp habs]
-
-end Speed
-
-section BookData
+section BallImage
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -117,7 +25,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
 omit [SigmaCompactSpace M] in
-theorem data_image_ball
+theorem MapMetricApproximationOn.image_eball_subset_closedEBall
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M]
     [PseudoEMetricSpace N] [RiemannianBundle (fun y : N => TangentSpace I y)]
@@ -185,7 +93,8 @@ theorem data_image_ball
       rw [hdata.pullback_apply (γ t) hγt (fun _ => w)]
     have hquad : hdata.pullback (γ t) (fun _ => w) ≤
         (1 + ε) * g.inner (γ t) w w :=
-      speed_le_of_c0 (I := I) hdata.pullback g (hdata.c0_small (γ t) hγt) w
+      (tensor_apply_bounds_of_metricTensorErrorNorm_le (I := I) hdata.pullback g
+        (hdata.c0_small (γ t) hγt) w).2
     calc
       ‖mfderiv I I (Φ : M → N) (γ t) w‖ₑ =
           ENNReal.ofReal (Real.sqrt (h.inner ((Φ : M → N) (γ t))
@@ -202,7 +111,7 @@ theorem data_image_ball
       _ = ENNReal.ofReal (Real.sqrt (1 + ε)) * ‖w‖ₑ := by
         rw [hgnorm (γ t) w]
 
-end BookData
+end BallImage
 
 end HCGCompactness
 end DifferentialGeometry

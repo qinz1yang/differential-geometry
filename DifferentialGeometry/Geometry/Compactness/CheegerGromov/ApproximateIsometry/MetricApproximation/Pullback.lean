@@ -123,7 +123,8 @@ theorem pullback_metric_inner_lower
     (1 - ε) * (gRef.restrictOpen (I := I) U).inner x v v =
         (1 - ε) * gRef.inner (x : M) vM vM := rfl
     _ ≤ D.pullback (x : M) (fun _ => vM) :=
-      speed_ge_of_c0 D.pullback gRef (D.c0_small (x : M) (hUK x.2)) vM
+      (tensor_apply_bounds_of_metricTensorErrorNorm_le
+        D.pullback gRef (D.c0_small (x : M) (hUK x.2)) vM).1
     _ = (PartialDiffeomorph.pullbackMetricOn Φ U hU g).inner x v v := by
       with_unfolding_all
         rw [D.pullback_apply (x : M) (hUK x.2),
@@ -147,7 +148,8 @@ theorem pullback_metric_inner_upper
         rw [D.pullback_apply (x : M) (hUK x.2),
           PartialDiffeomorph.pullbackMetricOn_inner]
     _ ≤ (1 + ε) * gRef.inner (x : M) vM vM :=
-      speed_le_of_c0 (I := I) D.pullback gRef (D.c0_small (x : M) (hUK x.2)) vM
+      (tensor_apply_bounds_of_metricTensorErrorNorm_le (I := I)
+        D.pullback gRef (D.c0_small (x : M) (hUK x.2)) vM).2
     _ = (1 + ε) * (gRef.restrictOpen (I := I) U).inner x v v := rfl
 
 theorem pullback_metric_zero_cov_deriv_norm_le

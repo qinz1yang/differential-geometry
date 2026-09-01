@@ -21,11 +21,12 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
-section PartialDataComp
+section Composition
 
 open TopologicalSpace
 
-noncomputable def sepDataComp {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
+noncomputable def PartialDiffeomorphMetricApproximationBounds.trans
+    {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
     [T2Space N] [SigmaCompactSpace N] [T2Space P] [SigmaCompactSpace P]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
@@ -85,14 +86,16 @@ noncomputable def sepDataComp {P : Type u} [TopologicalSpace P] [ChartedSpace H 
   source_sub := by
     intro y hy
     exact ⟨hU₁ (hKU hy), hK₂ (himg (Set.mem_image_of_mem _ (hKU hy)))⟩
-  forward := compSepFwd (I := I) Φ Φ' hU₁ hK₂ himg hK hKU hc0_half
+  forward := PartialDiffeomorphMetricApproximationBounds.transForward
+    (I := I) Φ Φ' hU₁ hK₂ himg hK hKU hc0_half
     hqF0 hqF1 hqF_c0 hqF_cov heF0 heF_c0 heF_cov C hC0 hc0F_out hcovF_out hC
     g h h' D₁ D₂
-  reverse := compSepRev (I := I) Φ Φ' hU₁ hK₂ himg hK hKU hc0'_half
+  reverse := PartialDiffeomorphMetricApproximationBounds.transReverse
+    (I := I) Φ Φ' hU₁ hK₂ himg hK hKU hc0'_half
     hqR0 hqR1 hqR_c0 hqR_cov heR0 heR_c0 heR_cov C hC0 hc0R_out hcovR_out hC
     g h h' D₁ D₂
 
-end PartialDataComp
+end Composition
 
 end HCGCompactness
 end DifferentialGeometry

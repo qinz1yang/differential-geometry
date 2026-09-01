@@ -20,11 +20,12 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
-section PartialDataComp
+section Composition
 
 open TopologicalSpace
 
-theorem partialData_comp {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
+theorem PartialDiffeomorphMetricApproximation.trans
+    {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
     [T2Space N] [SigmaCompactSpace N] [T2Space P] [SigmaCompactSpace P]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
@@ -73,16 +74,18 @@ theorem partialData_comp {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [I
       Nonempty (PartialDiffeomorphMetricApproximation (I := I) K ε'' p
         (_root_.PartialDiffeomorph.trans (I := I) Φ Φ') g h') := by
   intro ε'' hlb1 hlb2 hub
-  obtain ⟨Dforward⟩ := partialData_comp_forward (I := I) Φ Φ' hU₁ hK₂ himg
+  obtain ⟨Dforward⟩ := PartialDiffeomorphMetricApproximation.trans_forward
+    (I := I) Φ Φ' hU₁ hK₂ himg
     hK hKU hε2 C hC0 hC g h h' D₁ D₂ ε'' hlb1 hub
-  obtain ⟨Dreverse⟩ := partialData_comp_reverse (I := I) Φ Φ' hU₁ hK₂ himg
+  obtain ⟨Dreverse⟩ := PartialDiffeomorphMetricApproximation.trans_reverse
+    (I := I) Φ Φ' hU₁ hK₂ himg
     hK hKU hε'2 C hC0 hC g h h' D₁ D₂ ε'' hlb2 hub
   have hsource : K ⊆ (_root_.PartialDiffeomorph.trans (I := I) Φ Φ').source := by
     intro y hy
     exact ⟨hU₁ (hKU hy), hK₂ (himg (Set.mem_image_of_mem _ (hKU hy)))⟩
   exact ⟨⟨hsource, Dforward, Dreverse⟩⟩
 
-end PartialDataComp
+end Composition
 
 end HCGCompactness
 end DifferentialGeometry

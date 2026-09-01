@@ -50,7 +50,7 @@ theorem MapMetricApproximationOn.image_metric_ball_subset
   have hyClosed :
       y ∈ Metric.closedEBall ((Φ : M → N) O)
         (ENNReal.ofReal (Real.sqrt (1 + ε) * r)) :=
-    data_image_ball (I := I) Φ hgnorm hhnorm hrr₂ hε0 hdata hsub hyE
+    hdata.image_eball_subset_closedEBall (I := I) Φ hgnorm hhnorm hrr₂ hε0 hsub hyE
   exact closedEBall_ofReal_subset_ball ((Φ : M → N) O)
     (mul_nonneg (Real.sqrt_nonneg _) hr.le) hR hyClosed
 

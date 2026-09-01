@@ -33,12 +33,12 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
-section PartialDataComp
+section Composition
 
 open TopologicalSpace
 
 
-noncomputable def compSepRev
+noncomputable def PartialDiffeomorphMetricApproximationBounds.transReverse
     {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
     [T2Space N] [hSigmaCompactN : SigmaCompactSpace N]
     [T2Space P] [SigmaCompactSpace P]
@@ -565,7 +565,7 @@ noncomputable def compSepRev
       c0_small := fun y hy => le_trans (hc0Pr y hy) hc0_out
       cov_small := fun a h1 h2 y hy => le_trans (hcovPr a h1 h2 y hy) hcov_out }
 
-end PartialDataComp
+end Composition
 
 end HCGCompactness
 end DifferentialGeometry

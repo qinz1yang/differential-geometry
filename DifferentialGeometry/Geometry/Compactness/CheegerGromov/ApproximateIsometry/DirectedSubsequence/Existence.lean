@@ -415,7 +415,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l) (Ψ (s + l)) :
               (X.obj (σ s)).M → (X.obj (σ (s + l + 1))).M)
           (X.obj (σ s)).metric (X.obj (σ (s + l + 1))).metric :=
-        compSepFwd (I := I)
+        PartialDiffeomorphMetricApproximationBounds.transForward (I := I)
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l) (Ψ (s + l))
           hU₁_src hK₂_src himg_mid hKcompactF hKU₁F hc0F2
           hfeedF0 hqF1 (sepFeed_c0 c0F covF) (sepFeed_cov c0F covF)
@@ -528,7 +528,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
                 htail_index)).symm :
                 (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
           (X.obj (σ (s + (l + 1)))).metric (X.obj (σ s)).metric :=
-        compSepRev (I := I)
+        PartialDiffeomorphMetricApproximationBounds.transReverse (I := I)
           (Ψ s) (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
             htail_index)
           DstepRopen.source_sub hKtail_src himg_step_mid hKcompactF hKU₁F hc0R2
