@@ -3215,7 +3215,7 @@ import DifferentialGeometry.Tensor.Alternating.Curry
 import DifferentialGeometry.Tensor.Alternating.FDeriv
 import DifferentialGeometry.Tensor.Alternating.Flip
 import DifferentialGeometry.Tensor.Alternating.Wedge
-import DifferentialGeometry.Tensor.Auxiliary.BanachAlgebraSmoothness
+import DifferentialGeometry.Analysis.Calculus.BanachAlgebraSmoothness
 import DifferentialGeometry.Analysis.Sobolev.AntidiagonalTupleGridPartialSum
 import DifferentialGeometry.Tensor.Auxiliary.DerivationAlgebra
 import DifferentialGeometry.Tensor.Auxiliary.DetOpNormBound
@@ -3382,7 +3382,6 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.ConvexPerturbationPointwi
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingUnif
 import DifferentialGeometry.Analysis.Sobolev.MarkedTupleGrid
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.AntidiagonalTupleGridWindowOperatorComposition
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.BanachAlgebraSmoothness
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieCoeffDiffRadiusFree
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBoundUniform
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorFieldEndomorphismInsertionBounds
