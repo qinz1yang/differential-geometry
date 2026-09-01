@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
 import DifferentialGeometry.Geometry.Metric.LocalPullback
 import DifferentialGeometry.Geometry.Metric.PullbackCross
-import DifferentialGeometry.Topology.Covering.DeckGroup
+import DifferentialGeometry.Topology.Covering.DeckDiffeomorph
 import Mathlib.Topology.Covering.Basic
 import Mathlib.Topology.Homeomorph.Lemmas
 
@@ -153,6 +153,23 @@ theorem solitonModelCovering_deck_preserves
     change Fpot (γ x) = Fpot x
     rw [solitonModelCovering_potential hπ (γ x), hγ x,
       solitonModelCovering_potential hπ x]
+
+theorem solitonModelCovering_deckGroup_preserves
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover)
+    (gamma : coveringDeckGroup cover) :
+    Diffeomorph.pullbackMetricCross h
+        (coveringDeckGroupDiffeomorph
+          (solitonModelCovering_isLocalDiffeomorph hπ) gamma) = h ∧
+      Fpot.comp
+        (coveringDeckGroupDiffeomorph
+          (solitonModelCovering_isLocalDiffeomorph hπ) gamma).toContMDiffMap = Fpot :=
+  solitonModelCovering_deck_preserves hπ
+    (coveringDeckGroupDiffeomorph
+      (solitonModelCovering_isLocalDiffeomorph hπ) gamma)
+    (coveringDeckGroup_map gamma)
 
 theorem solitonModelCovering_deckGroup_potential
     {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
