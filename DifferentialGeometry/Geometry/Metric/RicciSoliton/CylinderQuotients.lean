@@ -337,6 +337,16 @@ noncomputable def cylinderDiagonalGroup : Subgroup (Equiv.Perm
     (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)) :=
   Subgroup.zpowers cylinderDiagonalDiffeomorph.toEquiv
 
+instance cylinderAntipodalGroupSMul :
+    SMul cylinderAntipodalGroup
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) where
+  smul gamma x := gamma.1 x
+
+instance cylinderDiagonalGroupSMul :
+    SMul cylinderDiagonalGroup
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) where
+  smul gamma x := gamma.1 x
+
 instance cylinderAntipodalGroupMulAction :
     MulAction cylinderAntipodalGroup
       (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :=
