@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metric
+import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Analysis.InnerProductSpace.PiL2

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Defs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metric
+import DifferentialGeometry.Geometry.Metric.Convergence.Defs
+import DifferentialGeometry.Topology.Exhaustion
 
 
 set_option autoImplicit false

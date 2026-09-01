@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Variation.TimeDerivativeBounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metric
+import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.TimeLipschitz
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components

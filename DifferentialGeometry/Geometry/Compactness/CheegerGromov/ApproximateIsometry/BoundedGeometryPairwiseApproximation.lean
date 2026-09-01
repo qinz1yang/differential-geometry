@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Constructi
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricCarrier
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricCarrierHigherRegularity
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.ComparisonHigherRegularity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparisonHigherRegularity
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

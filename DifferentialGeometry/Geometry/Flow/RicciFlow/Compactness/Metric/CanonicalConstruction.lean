@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence
+import DifferentialGeometry.Topology.Exhaustion
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Convergence
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds

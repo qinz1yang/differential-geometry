@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metric
+import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds

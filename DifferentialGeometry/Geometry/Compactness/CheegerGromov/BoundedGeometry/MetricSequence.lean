@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.L
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinateConvergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Comparison
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
 
 set_option autoImplicit false
 

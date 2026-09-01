@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metric
+import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.TotalNabla0SLinear
 import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Comparison
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison
 import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
 
 

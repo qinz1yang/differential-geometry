@@ -1,12 +1,11 @@
 import DifferentialGeometry.Geometry.Metric.DirectLimit
-
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
 import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
 import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Exhaustion
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

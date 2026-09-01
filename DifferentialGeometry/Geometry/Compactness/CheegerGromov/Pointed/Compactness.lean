@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metric
+import DifferentialGeometry.Geometry.Metric.Convergence.Defs
+import DifferentialGeometry.Topology.Exhaustion
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
