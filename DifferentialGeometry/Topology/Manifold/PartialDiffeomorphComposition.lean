@@ -225,7 +225,7 @@ theorem chainCompAssoc_eq {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (j a b : ℕ) :
     (chainCompAssoc (I := I) (Mf := Mf) Ψ j a b : Mf j → Mf ((j + a) + b)) =
-      (PartialDiffeomorph.trans (I := I)
+      (_root_.PartialDiffeomorph.trans (I := I)
         (chainComp (I := I) (Mf := Mf) Ψ j a)
         (chainComp (I := I) (Mf := Mf) Ψ (j + a) b) : Mf j → Mf ((j + a) + b)) := by
   funext x

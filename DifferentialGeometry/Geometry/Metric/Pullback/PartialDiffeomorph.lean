@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
 import DifferentialGeometry.Geometry.Metric.Basic
+import DifferentialGeometry.Geometry.Metric.OpenSubtype
+import DifferentialGeometry.Geometry.Metric.Pullback.Basic
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
@@ -156,5 +159,118 @@ theorem PartialDiffeomorph.pullback_inner_pos
     exact hv.trans (by rfl)
   rw [← happ, hzero]
   exact (mfderiv I I (Φ.symm : N → M) ((Φ : M → N) x)).map_zero
+
+section PullbackMetricOn
+
+variable {X : Type*} [TopologicalSpace X] [ChartedSpace H X] [IsManifold I ∞ X] [T2Space X]
+variable {Y : Type*} [TopologicalSpace Y] [ChartedSpace H Y] [IsManifold I ∞ Y] [T2Space Y]
+
+noncomputable def PartialDiffeomorph.pullbackMetricOn
+    (Φ : PartialDiffeomorph I I X Y (∞ : WithTop ℕ∞))
+    (U : TopologicalSpace.Opens X) (hU : (U : Set X) ⊆ Φ.source)
+    (g : SmoothRiemannianMetric I Y) : SmoothRiemannianMetric I U := by
+  let W : TopologicalSpace.Opens Y :=
+    ⟨(Φ : X → Y) '' (U : Set X), image_opens_isOpen Φ hU⟩
+  let F : Diffeomorph I I U W (∞ : WithTop ℕ∞) :=
+    PartialDiffeomorph.toOpensDiffeo Φ hU
+  exact Diffeomorph.pullbackMetric (I := I) (g.restrictOpen (I := I) W) F
+
+theorem PartialDiffeomorph.pullbackMetricOn_inner
+    (Φ : PartialDiffeomorph I I X Y (∞ : WithTop ℕ∞))
+    (U : TopologicalSpace.Opens X) (hU : (U : Set X) ⊆ Φ.source)
+    (g : SmoothRiemannianMetric I Y) (x : U) (v w : TangentSpace I x) :
+    (PartialDiffeomorph.pullbackMetricOn Φ U hU g).inner x v w =
+      g.inner ((Φ : X → Y) x)
+        (mfderiv I I (Φ : X → Y) (x : X) v)
+        (mfderiv I I (Φ : X → Y) (x : X) w) := by
+  let W : TopologicalSpace.Opens Y :=
+    ⟨(Φ : X → Y) '' (U : Set X), image_opens_isOpen Φ hU⟩
+  let F : Diffeomorph I I U W (∞ : WithTop ℕ∞) :=
+    PartialDiffeomorph.toOpensDiffeo Φ hU
+  rw [PartialDiffeomorph.pullbackMetricOn, Diffeomorph.pullbackMetric_inner,
+    SmoothRiemannianMetric.restrictOpen_inner]
+  rw [PartialDiffeomorph.mfderiv_toOpensDiffeo Φ hU x v,
+    PartialDiffeomorph.mfderiv_toOpensDiffeo Φ hU x w]
+  rfl
+
+variable {Z : Type*} [TopologicalSpace Z] [ChartedSpace H Z] [IsManifold I ∞ Z] [T2Space Z]
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ X] [IsManifold I ∞ Y]
+    [IsManifold I ∞ Z] [T2Space X] [T2Space Y] [T2Space Z] in
+theorem PartialDiffeomorph.subset_trans_source
+    (Φ : PartialDiffeomorph I I X Y (∞ : WithTop ℕ∞))
+    (Θ : PartialDiffeomorph I I Y Z (∞ : WithTop ℕ∞))
+    (U : TopologicalSpace.Opens X) (hU : (U : Set X) ⊆ Φ.source)
+    (hnext : (Φ : X → Y) '' (U : Set X) ⊆ Θ.source) :
+    (U : Set X) ⊆ (_root_.PartialDiffeomorph.trans (I := I) Φ Θ).source := by
+  intro x hx
+  exact ⟨hU hx, hnext (Set.mem_image_of_mem _ hx)⟩
+
+noncomputable def PartialDiffeomorph.nestedPullbackMetricOn
+    (Φ : PartialDiffeomorph I I X Y (∞ : WithTop ℕ∞))
+    (Θ : PartialDiffeomorph I I Y Z (∞ : WithTop ℕ∞))
+    (U : TopologicalSpace.Opens X) (hU : (U : Set X) ⊆ Φ.source)
+    (hnext : (Φ : X → Y) '' (U : Set X) ⊆ Θ.source)
+    (g : SmoothRiemannianMetric I Z) : SmoothRiemannianMetric I U := by
+  let W : TopologicalSpace.Opens Y :=
+    ⟨(Φ : X → Y) '' (U : Set X), image_opens_isOpen Φ hU⟩
+  let F : Diffeomorph I I U W (∞ : WithTop ℕ∞) :=
+    PartialDiffeomorph.toOpensDiffeo Φ hU
+  exact Diffeomorph.pullbackMetric (I := I)
+    (PartialDiffeomorph.pullbackMetricOn Θ W hnext g) F
+
+theorem PartialDiffeomorph.pullbackMetricOn_trans
+    (Φ : PartialDiffeomorph I I X Y (∞ : WithTop ℕ∞))
+    (Θ : PartialDiffeomorph I I Y Z (∞ : WithTop ℕ∞))
+    (U : TopologicalSpace.Opens X) (hU : (U : Set X) ⊆ Φ.source)
+    (hnext : (Φ : X → Y) '' (U : Set X) ⊆ Θ.source)
+    (g : SmoothRiemannianMetric I Z) :
+    PartialDiffeomorph.pullbackMetricOn (_root_.PartialDiffeomorph.trans (I := I) Φ Θ) U
+        (PartialDiffeomorph.subset_trans_source Φ Θ U hU hnext) g =
+      PartialDiffeomorph.nestedPullbackMetricOn Φ Θ U hU hnext g := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [PartialDiffeomorph.pullbackMetricOn_inner]
+  let W : TopologicalSpace.Opens Y :=
+    ⟨(Φ : X → Y) '' (U : Set X), image_opens_isOpen Φ hU⟩
+  let F : Diffeomorph I I U W (∞ : WithTop ℕ∞) :=
+    PartialDiffeomorph.toOpensDiffeo Φ hU
+  change _ = (Diffeomorph.pullbackMetric (I := I)
+    (PartialDiffeomorph.pullbackMetricOn Θ W hnext g) F).inner x v w
+  rw [Diffeomorph.pullbackMetric_inner, PartialDiffeomorph.pullbackMetricOn_inner,
+    PartialDiffeomorph.mfderiv_toOpensDiffeo,
+    PartialDiffeomorph.mfderiv_toOpensDiffeo]
+  have hΦd : MDifferentiableAt I I (Φ : X → Y) (x : X) :=
+    (Φ.contMDiffOn_toFun.contMDiffAt
+      (Φ.open_source.mem_nhds (hU x.2))).mdifferentiableAt (by decide)
+  have hΘd : MDifferentiableAt I I (Θ : Y → Z) ((Φ : X → Y) x) :=
+    (Θ.contMDiffOn_toFun.contMDiffAt
+      (Θ.open_source.mem_nhds (hnext (Set.mem_image_of_mem _ x.2)))).mdifferentiableAt
+        (by decide)
+  have hcomp : mfderiv I I
+      (_root_.PartialDiffeomorph.trans (I := I) Φ Θ : X → Z) (x : X) =
+      (mfderiv I I (Θ : Y → Z) ((Φ : X → Y) x)).comp
+        (mfderiv I I (Φ : X → Y) (x : X)) := by
+    exact mfderiv_comp (x : X) hΘd hΦd
+  rw [hcomp]
+  rfl
+
+theorem PartialDiffeomorph.pullbackMetricOn_congr
+    (Φ Ψ : PartialDiffeomorph I I X Y (∞ : WithTop ℕ∞))
+    (U : TopologicalSpace.Opens X) (hΦ : (U : Set X) ⊆ Φ.source)
+    (hΨ : (U : Set X) ⊆ Ψ.source)
+    (g : SmoothRiemannianMetric I Y)
+    (hmap : Set.EqOn (Φ : X → Y) (Ψ : X → Y) U) :
+    PartialDiffeomorph.pullbackMetricOn Φ U hΦ g =
+      PartialDiffeomorph.pullbackMetricOn Ψ U hΨ g := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  have hmap_nhds : (Φ : X → Y) =ᶠ[nhds (x : X)] (Ψ : X → Y) :=
+    Filter.Eventually.mono (U.isOpen.mem_nhds x.2) fun y hy => hmap hy
+  rw [PartialDiffeomorph.pullbackMetricOn_inner,
+    PartialDiffeomorph.pullbackMetricOn_inner, hmap_nhds.eq_of_nhds,
+    hmap_nhds.mfderiv_eq]
+
+end PullbackMetricOn
 
 end DifferentialGeometry

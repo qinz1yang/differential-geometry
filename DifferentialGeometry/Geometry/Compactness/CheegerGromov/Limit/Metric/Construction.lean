@@ -452,7 +452,7 @@ theorem chainPullback_bdd
     · subst q
       have hb := chainPrefix_zero_le (I := I) Ψ U hpre hnext himg hfull
         (g (j + a r)) (g ((j + a r) + c)) (htail r c).forward (by norm_num) z
-      rw [ballPullback_assoc (I := I) Ψ g U hfull (hU (a r + c))] at hb
+      rw [chainPullback_assoc (I := I) Ψ g U hfull (hU (a r + c))] at hb
       rw [hdecomp] at hb
       have hb' : metricCovDerivNorm (I := I) 0 (gSeq k) (gRef r) z ≤
           2 * Real.sqrt (Module.finrank ℝ E : ℝ) := by
@@ -462,7 +462,7 @@ theorem chainPullback_bdd
     · have hq1 : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr hq0
       have hb := chainPrefix_cov_le (I := I) Ψ U hpre hnext himg hfull
         (g (j + a r)) (g ((j + a r) + c)) (htail r c).forward hq1 hqr z
-      rw [ballPullback_assoc (I := I) Ψ g U hfull (hU (a r + c))] at hb
+      rw [chainPullback_assoc (I := I) Ψ g U hfull (hU (a r + c))] at hb
       rw [hdecomp] at hb
       have hb' : metricCovDerivNorm (I := I) q (gSeq k) (gRef r) z ≤ 1 / 2 := by
         simpa only [gSeq, gRef, chainPullbackSeq] using hb
@@ -475,7 +475,7 @@ theorem chainPullback_bdd
       (g j) (g (j + k)) (D0 k).forward x v
     norm_num at hb
     change (1 / 2 : ℝ) * (g j).inner (x : M j) v v ≤
-      (ballPullbackMetric (I := I)
+      (PartialDiffeomorph.pullbackMetricOn (I := I)
         (chainComp (I := I) (Mf := M) Ψ j k) U (hU k) (g (j + k))).inner x v v
     exact hb
 
