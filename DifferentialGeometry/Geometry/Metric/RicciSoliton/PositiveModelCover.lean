@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCover
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverRoundTwoSphere
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PositiveRoundness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceIdentities
@@ -198,5 +198,30 @@ theorem exists_roundThreeSphere_solitonModelCovering_of_compact_of_finrank_eq_th
     exists_roundThreeSphere_solitonModelQuotientCovering_of_compact_of_finrank_eq_three_of_sectional_pos
       (I := I) (M := M) h hdim hsec
   exact ⟨cover, hcover⟩
+
+theorem exists_roundTwoSphere_solitonModelQuotientCovering_with_target_homeomorphism_of_compact_of_finrank_eq_two_of_constant_sectional_curvature
+    [CompactSpace M] [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2)
+    (hsec : ∀ x : M, ∀ v w : TangentSpace I x,
+      metricRm04StdAt (I := I) (M := M) g x v w w v =
+        (1 / 2 : Real) * (g.inner x v v * g.inner x w w -
+          g.inner x v w * g.inner x v w)) :
+    ∃ cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 → M,
+      solitonModelCovering roundTwoSphereShrinkerMetric
+          roundTwoSphereShrinkerPotential g f cover ∧
+        IsQuotientCoveringMap cover (coveringDeckGroup cover) ∧
+        ((∃ e : Metric.sphere
+            (0 : EuclideanSpace Real (Fin 3)) 1 ≃ₜ M,
+            ∀ x, e x = cover x) ∨
+          (∃ e : RealProjectivePlane ≃ₜ M,
+            ∀ x, e (realProjectivePlaneQuotientMap x) = cover x)) := by
+  obtain ⟨cover, hcover, hquotient⟩ :=
+    exists_roundTwoSphere_solitonModelQuotientCovering_of_compact_of_finrank_eq_two_of_constant_sectional_curvature
+      (I := I) (M := M) h hdim hsec
+  exact ⟨cover, hcover, hquotient,
+    solitonModelCovering_target_homeomorphic_two_sphere_or_real_projective_plane_of_isQuotientCoveringMap
+      hcover hquotient⟩
 
 end DifferentialGeometry.Geometry
