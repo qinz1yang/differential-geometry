@@ -6,8 +6,8 @@ import DifferentialGeometry.Geometry.Metric.Sphere.FreeOrthogonalAction
 import DifferentialGeometry.Geometry.Metric.Sphere.IsometryRepresentation
 import DifferentialGeometry.Geometry.Metric.Sphere.OrthogonalAction
 import DifferentialGeometry.Topology.ProperlyDiscontinuousAction
+import DifferentialGeometry.Topology.Manifold.Quotient
 import DifferentialGeometry.Topology.ProjectiveSpace.PuncturedThree
-import Mathlib.Geometry.Manifold.Instances.Quotient
 import Mathlib.GroupTheory.OrderOfElement
 
 set_option autoImplicit false
@@ -599,6 +599,32 @@ theorem cylinderDiagonalGroupDiffeomorph_apply
   · simp [cylinderDiagonalGroupDiffeomorph, h,
       cylinderDiagonalDiffeomorph_toEquiv_ne_one]
 
+instance cylinderAntipodalGroupContMDiffConstSMul :
+    ContMDiffConstSMul
+      ((modelWithCornersSelf Real (EuclideanSpace Real (Fin 2))).prod
+        (modelWithCornersSelf Real Real)) ∞
+      cylinderAntipodalGroup
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) where
+  contMDiff_const_smul psi := by
+    change ContMDiff ((𝓡 2).prod 𝓘(Real, Real))
+      ((𝓡 2).prod 𝓘(Real, Real)) ∞
+      (psi.1 : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → _)
+    refine (cylinderAntipodalGroupDiffeomorph psi).contMDiff.congr ?_
+    exact fun x => (cylinderAntipodalGroupDiffeomorph_apply psi x).symm
+
+instance cylinderDiagonalGroupContMDiffConstSMul :
+    ContMDiffConstSMul
+      ((modelWithCornersSelf Real (EuclideanSpace Real (Fin 2))).prod
+        (modelWithCornersSelf Real Real)) ∞
+      cylinderDiagonalGroup
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) where
+  contMDiff_const_smul psi := by
+    change ContMDiff ((𝓡 2).prod 𝓘(Real, Real))
+      ((𝓡 2).prod 𝓘(Real, Real)) ∞
+      (psi.1 : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → _)
+    refine (cylinderDiagonalGroupDiffeomorph psi).contMDiff.congr ?_
+    exact fun x => (cylinderDiagonalGroupDiffeomorph_apply psi x).symm
+
 theorem cylinderAntipodalGroupDiffeomorph_pullbackMetric
     (psi : cylinderAntipodalGroup) :
     Diffeomorph.pullbackMetric roundThreeCylinderShrinkerMetric
@@ -690,6 +716,18 @@ theorem cylinderAntipodalQuotientMap_isCoveringMap :
 theorem cylinderDiagonalQuotientMap_isCoveringMap :
     IsCoveringMap cylinderDiagonalQuotientMap :=
   cylinderDiagonalQuotientMap_isQuotientCoveringMap.isCoveringMap
+
+theorem cylinderAntipodalQuotientMap_isLocalDiffeomorph :
+    IsLocalDiffeomorph ((𝓡 2).prod 𝓘(Real, Real))
+      ((𝓡 2).prod 𝓘(Real, Real)) ∞ cylinderAntipodalQuotientMap := by
+  exact MulAction.isLocalDiffeomorph_quotientMk_of_properlyDiscontinuousSMul
+    ((𝓡 2).prod 𝓘(Real, Real))
+
+theorem cylinderDiagonalQuotientMap_isLocalDiffeomorph :
+    IsLocalDiffeomorph ((𝓡 2).prod 𝓘(Real, Real))
+      ((𝓡 2).prod 𝓘(Real, Real)) ∞ cylinderDiagonalQuotientMap := by
+  exact MulAction.isLocalDiffeomorph_quotientMk_of_properlyDiscontinuousSMul
+    ((𝓡 2).prod 𝓘(Real, Real))
 
 theorem cylinderAntipodalQuotientMap_surjective :
     Function.Surjective cylinderAntipodalQuotientMap :=
