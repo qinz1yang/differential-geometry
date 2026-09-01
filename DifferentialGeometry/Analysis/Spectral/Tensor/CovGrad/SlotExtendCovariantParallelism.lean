@@ -6,15 +6,12 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
-namespace DeTurck
-
 
 open DifferentialGeometry.Integral.L2
 
@@ -141,7 +138,6 @@ private theorem core_curry_reading (g₀ : SmoothRiemannianMetric I M) (r s : �
   rw [hcurU_op, ContinuousLinearMap.comp_apply]
   abel
 
-
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem tensorCovDerivAt_slotExtend_eq (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -172,7 +168,6 @@ theorem tensorCovDerivAt_slotExtend_eq (g₀ : SmoothRiemannianMetric I M) (r s 
           (vs := Matrix.vecTail m)]
   congr 1
   exact core_curry_reading (I := I) (M := M) g₀ r s Φ x v D (m 0)
-
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -228,7 +223,6 @@ theorem covGrad_slotExtend_eq_zero_of_covGrad_eq_zero (g₀ : SmoothRiemannianMe
     hslotZero x, zero_apply, Tensor0SBundle.Tensor0SSpace.toModel_zero,
     zero_apply]
 
-end DeTurck
 end Spectral
 end Analysis
 end DifferentialGeometry

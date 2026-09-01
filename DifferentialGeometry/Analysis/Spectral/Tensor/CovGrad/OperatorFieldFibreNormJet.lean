@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplic
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradSlotPermutationNaturality
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedOperatorFieldApplicationLeibniz
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomFieldActionIteratedCovGradWindow
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SlotExtendCovariantParallelism
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SlotExtendCovariantParallelism
 import DifferentialGeometry.Geometry.Connection.TensorNabla.FiberNorm.SliceBound
 
 open DifferentialGeometry.Analysis.Spectral
@@ -280,7 +280,7 @@ private lemma fiberNormSqComponent_covGrad_slotExtend_eq_swap
     rw [covGrad_toSection_apply_natural (I := I) (M := M) g (r + 1) (s + 1)
       (slotExtend (I := I) (M := M) g r s Φ) x (coframeS (I := I) (M := M) g x (r + 1) e K')
       (fun k => e (J' k))]
-    rw [DifferentialGeometry.Analysis.Spectral.DeTurck.tensorCovDerivAt_slotExtend_eq
+    rw [DifferentialGeometry.Analysis.Spectral.tensorCovDerivAt_slotExtend_eq
       (I := I) (M := M) g r s Φ x
         (tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J' 0)))]
     rw [show Matrix.vecTail (fun k => e (J' k)) =
@@ -595,7 +595,7 @@ private lemma covGrad_slotExtend_toSection_rsDomDomCongr
       (fun k => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) k))
   rw [covGrad_toSection_apply_natural (I := I) (M := M) g (r + 1) (s + 1)
     (slotExtend (I := I) (M := M) g r s Φ) x d m]
-  rw [DifferentialGeometry.Analysis.Spectral.DeTurck.tensorCovDerivAt_slotExtend_eq
+  rw [DifferentialGeometry.Analysis.Spectral.tensorCovDerivAt_slotExtend_eq
     (I := I) (M := M) g r s Φ x
       (tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0))]
   rw [show Matrix.vecTail m =

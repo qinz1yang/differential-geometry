@@ -339,7 +339,7 @@ private lemma covGrad_slotExtend_toSection
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [covGrad_toSection_apply_eval (I := I) (M := M) g (r + 1) (s + 1)
     (slotExtend (I := I) (M := M) g r s Φ) x d m]
-  rw [DifferentialGeometry.Analysis.Spectral.DeTurck.tensorCovDerivAt_slotExtend_eq
+  rw [DifferentialGeometry.Analysis.Spectral.tensorCovDerivAt_slotExtend_eq
     (I := I) (M := M) g r s Φ x (m 0)]
   rw [show Matrix.vecTail m =
       Fin.cons (m 1) (fun k : Fin s => m (Fin.succ (Fin.succ k))) from by

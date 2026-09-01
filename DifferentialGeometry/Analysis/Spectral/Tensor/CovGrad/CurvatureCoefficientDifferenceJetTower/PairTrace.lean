@@ -119,7 +119,7 @@ lemma covGrad_slotExtend_toSection_rsDomDomCongr_b
       (fun k => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) k))
   rw [covGrad_toSection_apply_natural (I := I) (M := M) g (r + 1) (s + 1)
     (slotExtend (I := I) (M := M) g r s Φ) x d m]
-  rw [DifferentialGeometry.Analysis.Spectral.DeTurck.tensorCovDerivAt_slotExtend_eq
+  rw [DifferentialGeometry.Analysis.Spectral.tensorCovDerivAt_slotExtend_eq
     (I := I) (M := M) g r s Φ x
       (tangentSpaceModelContinuousLinearEquiv (I := I) x (m 0))]
   rw [show Matrix.vecTail m =

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.CometricDifferenceRaisedGreenPairing
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ComparisonEndomorphismPairing
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
 import DifferentialGeometry.Geometry.Operator.Gradient

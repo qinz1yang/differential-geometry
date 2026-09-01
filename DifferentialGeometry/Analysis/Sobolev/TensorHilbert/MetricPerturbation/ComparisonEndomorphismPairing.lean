@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.In
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 noncomputable section
 
-
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
