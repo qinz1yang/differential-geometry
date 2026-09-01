@@ -5,6 +5,8 @@ set_option autoImplicit false
 
 noncomputable section
 
+open scoped Topology
+
 namespace DifferentialGeometry
 
 def coveringDeckGroup {E X : Type*} [TopologicalSpace E]
@@ -33,6 +35,19 @@ theorem coveringDeckGroup_map
     (gamma : coveringDeckGroup p) (e : E) :
     p (gamma • e) = p e :=
   gamma.property.2.2 e
+
+noncomputable def coveringDeckGroupHomeomorph
+    {E X : Type*} [TopologicalSpace E] {p : E → X}
+    (gamma : coveringDeckGroup p) : E ≃ₜ E where
+  toEquiv := gamma.1
+  continuous_toFun := gamma.property.1
+  continuous_invFun := gamma.property.2.1
+
+@[simp] theorem coveringDeckGroupHomeomorph_apply
+    {E X : Type*} [TopologicalSpace E] {p : E → X}
+    (gamma : coveringDeckGroup p) (e : E) :
+    coveringDeckGroupHomeomorph gamma e = gamma • e :=
+  rfl
 
 theorem coveringDeckGroup_eq_one_of_apply_eq
     {E X : Type*} [TopologicalSpace E] [TopologicalSpace X]
@@ -109,6 +124,66 @@ theorem isQuotientCoveringMap_coveringDeckGroup
     have hfix : gamma • y = y :=
       hUInj hgammaU hyU (coveringDeckGroup_map gamma y)
     exact coveringDeckGroup_eq_one_of_apply_eq hp gamma y hfix
+
+private theorem coveringDeckGroup_exists_prod_nhds_finite_inter
+    {E X : Type*} [TopologicalSpace E] [TopologicalSpace X]
+    [SimplyConnectedSpace E] [LocallyPathConnectedSpace E] [T2Space X]
+    {p : E → X} (hp : IsCoveringMap p) (hsurj : Function.Surjective p)
+    (x y : E) :
+    ∃ U ∈ 𝓝 x, ∃ V ∈ 𝓝 y,
+      Set.Finite {gamma : coveringDeckGroup p |
+        ((gamma • ·) '' U ∩ V).Nonempty} := by
+  by_cases hxy : p x = p y
+  · obtain ⟨delta, hdelta⟩ :=
+      (coveringDeckGroup_apply_eq_iff hp).mp hxy.symm
+    obtain ⟨W, hW, hWdisjoint⟩ :=
+      (isQuotientCoveringMap_coveringDeckGroup hp hsurj).disjoint x
+    refine ⟨W, hW, (delta • ·) '' W, ?_, ?_⟩
+    · rw [← hdelta]
+      exact (coveringDeckGroupHomeomorph delta).isOpenMap.image_mem_nhds hW
+    · refine (Set.finite_singleton delta).subset ?_
+      intro gamma hgamma
+      obtain ⟨_, ⟨u, huW, rfl⟩, w, hwW, hwu⟩ := hgamma
+      have hinter : (((delta⁻¹ * gamma) • ·) '' W ∩ W).Nonempty := by
+        refine ⟨w, ⟨u, huW, ?_⟩, hwW⟩
+        calc
+          (delta⁻¹ * gamma) • u = delta⁻¹ • (gamma • u) := mul_smul _ _ _
+          _ = delta⁻¹ • (delta • w) := congrArg (delta⁻¹ • ·) hwu.symm
+          _ = w := inv_smul_smul _ _
+      have hone := hWdisjoint (delta⁻¹ * gamma) hinter
+      exact (inv_mul_eq_one.mp hone).symm
+  · obtain ⟨A, B, hA, hB, hAB⟩ := t2_separation_nhds hxy
+    refine ⟨p ⁻¹' A, hp.continuous.continuousAt.preimage_mem_nhds hA,
+      p ⁻¹' B, hp.continuous.continuousAt.preimage_mem_nhds hB,
+      Set.finite_empty.subset ?_⟩
+    intro gamma hgamma
+    obtain ⟨_, ⟨u, huA, rfl⟩, hgammaB⟩ := hgamma
+    have hpB : p u ∈ B := by
+      rw [← coveringDeckGroup_map gamma u]
+      exact hgammaB
+    exact (hAB.le_bot ⟨huA, hpB⟩).elim
+
+theorem coveringDeckGroup_properlyDiscontinuousSMul
+    {E X : Type*} [TopologicalSpace E] [TopologicalSpace X]
+    [SimplyConnectedSpace E] [LocallyPathConnectedSpace E] [T2Space X]
+    {p : E → X} (hp : IsCoveringMap p) (hsurj : Function.Surjective p) :
+    ProperlyDiscontinuousSMul (coveringDeckGroup p) E where
+  finite_disjoint_inter_image := by
+    intro K L hK hL
+    choose U hU V hV hfinite using fun z : E × E =>
+      coveringDeckGroup_exists_prod_nhds_finite_inter hp hsurj z.1 z.2
+    let W : E × E → Set (E × E) := fun z => U z ×ˢ V z
+    obtain ⟨t, _, hcover⟩ := (hK.prod hL).elim_nhds_subcover W (by
+      intro z hz
+      exact prod_mem_nhds (hU z) (hV z))
+    refine (t.finite_toSet.biUnion fun z _ => hfinite z).subset ?_
+    intro gamma hgamma
+    obtain ⟨_, ⟨x, hxK, rfl⟩, hgammaL⟩ := hgamma
+    have hxgamma : (x, gamma • x) ∈ K ×ˢ L := ⟨hxK, hgammaL⟩
+    obtain ⟨z, hzt, hxW⟩ := Set.mem_iUnion₂.mp (hcover hxgamma)
+    apply Set.mem_iUnion₂.mpr
+    refine ⟨z, by simpa using hzt, ?_⟩
+    exact ⟨gamma • x, ⟨x, hxW.1, rfl⟩, hxW.2⟩
 
 noncomputable def coveringDeckGroupQuotientHomeomorph
     {E X : Type*} [TopologicalSpace E] [TopologicalSpace X]

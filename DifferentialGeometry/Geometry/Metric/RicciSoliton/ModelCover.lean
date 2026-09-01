@@ -158,6 +158,17 @@ theorem solitonModelCovering_deckGroup_isQuotientCoveringMap
     (solitonModelCovering_isCoveringMap hπ)
     (solitonModelCovering_surjective hπ)
 
+theorem solitonModelCovering_deckGroup_properlyDiscontinuousSMul
+    [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) :
+    ProperlyDiscontinuousSMul (coveringDeckGroup cover) N :=
+  coveringDeckGroup_properlyDiscontinuousSMul
+    (solitonModelCovering_isCoveringMap hπ)
+    (solitonModelCovering_surjective hπ)
+
 noncomputable def solitonModelCoveringDeckQuotientHomeomorph
     [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
     {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
