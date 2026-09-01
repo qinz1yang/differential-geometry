@@ -26,7 +26,7 @@ def pointedCGHMapsOfAtZero
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (L : PointedFlowData.{u, uE, uH} (I := I) X.D)
     (subseq : Nat -> Nat)
-    (rmaps : PointedRiemannianCGMaps (I := I) (X.atZero (I := I))
+    (rmaps : PointedRiemannianConvergenceMaps (I := I) (X.atZero (I := I))
       (L.atTime (I := I) 0) subseq) :
     PointedCGHMaps (I := I) X (L.atTime 0) subseq where
   partialDiffeomorph := rmaps.partialDiffeomorph
@@ -38,7 +38,7 @@ def pointedCGHMapsOfManifold
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (subseq : Nat -> Nat)
-    (rmaps : PointedRiemannianCGMaps (I := I) (X.atZero (I := I)) P subseq) :
+    (rmaps : PointedRiemannianConvergenceMaps (I := I) (X.atZero (I := I)) P subseq) :
     PointedCGHMaps (I := I) X P subseq where
   partialDiffeomorph := rmaps.partialDiffeomorph
   source_exhausts := rmaps.source_exhausts

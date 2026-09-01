@@ -2830,7 +2830,9 @@ import DifferentialGeometry.Analysis.Calculus.SmoothMapCompactness
 import DifferentialGeometry.Geometry.Metric.Convergence.C1Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.SelfCovariantDerivative
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.MetricSource
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CurvatureOperatorBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.MetricCompleteness

@@ -400,7 +400,7 @@ noncomputable def chainAmbientMaps
     (g : ∀ j, SmoothRiemannianMetric I (M j))
     (gInf : ∀ n, SmoothRiemannianMetric I (U n))
     (hgInf : S.MetricCocycle gInf) :
-    PointedRiemannianCGMaps (I := I)
+    PointedRiemannianConvergenceMaps (I := I)
       (chainAmbientSeq (I := I) j₀ U S O₀ g)
       (limitPointedCoc S O₀ gInf hgInf) id where
   partialDiffeomorph n := by

@@ -48,7 +48,7 @@ def ambientCGConverges
         metricDerivNormSupOn (I := I) K p
           ((g (j₀ + k)).restrictOpen (I := I) (U k))
           (gInf k) (gInf k) < ε) :
-    PointedRiemannianCGConverges (I := I)
+    PointedRiemannianConverges (I := I)
       (chainAmbientSeq (I := I) j₀ U S O₀ g)
       (limitPointedCoc S O₀ gInf hgInf) id
       (chainAmbientMaps (I := I) j₀ U S O₀ g gInf hgInf) := by
@@ -83,24 +83,24 @@ def ambientCGConverges
     exact Geometry.isSigmaCompact_of_isOpen I (Φ.target_open k)
   let refMetric : ∀ k : ℕ,
       letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
-        metricSourceDomTop (I := I) Φ k
+        metricSourceDomainTopology (I := I) Φ k
       letI : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
-        metricSourceDomCharted (I := I) Φ k
+        metricSourceDomainChartedSpace (I := I) Φ k
       letI : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
-        metricSourceDomSmooth (I := I) Φ k
+        metric_source_domain_smooth (I := I) Φ k
       SmoothRiemannianMetric I (MetricSourceDomain (I := I) Φ k) := fun k => by
     letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
-      metricSourceDomTop (I := I) Φ k
+      metricSourceDomainTopology (I := I) Φ k
     letI : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
-      metricSourceDomCharted (I := I) Φ k
+      metricSourceDomainChartedSpace (I := I) Φ k
     letI : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
-      metricSourceDomSmooth (I := I) Φ k
+      metric_source_domain_smooth (I := I) Φ k
     letI : SigmaCompactSpace (MetricSourceDomain (I := I) Φ k) :=
-      metricSourceDomSigmaOf (I := I) Φ k (hσsrc k)
+      metric_source_domain_sigma_compact (I := I) Φ k (hσsrc k)
     letI : T2Space (MetricSourceDomain (I := I) Φ k) :=
-      metricSourceDomT2 (I := I) Φ k
-    exact (S.limitMetric gInf hgInf).restrictOpen (I := I) (metricSourceOpen (I := I) Φ k)
-  refine PointedRiemannianCGConverges.ofRestrictPullback (I := I)
+      metric_source_domain_t2 (I := I) Φ k
+    exact (S.limitMetric gInf hgInf).restrictOpen (I := I) (metricSourceOpenSubset (I := I) Φ k)
+  refine PointedRiemannianConverges.ofRestrictPullback (I := I)
     Φ hσsrc refMetric ?_
   intro K hK p ε hε
   obtain ⟨kSrc, hkSrc⟩ := Φ.source_subset hK
@@ -119,28 +119,28 @@ def ambientCGConverges
       ((chainAmbientSeq (I := I) j₀ U S O₀ g).obj (id k)).M :=
     ((chainAmbientSeq (I := I) j₀ U S O₀ g).obj (id k)).charted
   let _ : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
-    metricSourceDomTop (I := I) Φ k
+    metricSourceDomainTopology (I := I) Φ k
   let _ : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
-    metricSourceDomCharted (I := I) Φ k
+    metricSourceDomainChartedSpace (I := I) Φ k
   let _ : T2Space (MetricSourceDomain (I := I) Φ k) :=
-    metricSourceDomT2 (I := I) Φ k
+    metric_source_domain_t2 (I := I) Φ k
   let _ : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
-    metricSourceDomSmooth (I := I) Φ k
+    metric_source_domain_smooth (I := I) Φ k
   let _ : SigmaCompactSpace (MetricSourceDomain (I := I) Φ k) :=
-    metricSourceDomSigmaOf (I := I) Φ k (hσsrc k)
+    metric_source_domain_sigma_compact (I := I) Φ k (hσsrc k)
   let _ : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomTop (I := I) Φ k
+    metricTargetDomainTopology (I := I) Φ k
   let _ : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomCharted (I := I) Φ k
+    metricTargetDomainChartedSpace (I := I) Φ k
   let _ : T2Space (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomT2 (I := I) Φ k
+    metric_target_domain_t2 (I := I) Φ k
   let _ : IsManifold I ∞ (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomSmooth (I := I) Φ k
+    metric_target_domain_smooth (I := I) Φ k
   let _ : SigmaCompactSpace (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomSigmaOf (I := I) Φ k (hσtgt k)
-  let F := metricSourceTargetDiff (I := I) Φ k
+    metric_target_domain_sigma_compact (I := I) Φ k (hσtgt k)
+  let F := metricSourceTargetDiffeomorph (I := I) Φ k
   let sourceMetric : SmoothRiemannianMetric I (MetricSourceDomain (I := I) Φ k) :=
-    (S.limitMetric gInf hgInf).restrictOpen (I := I) (metricSourceOpen (I := I) Φ k)
+    (S.limitMetric gInf hgInf).restrictOpen (I := I) (metricSourceOpenSubset (I := I) Φ k)
   let targetSeq : SmoothRiemannianMetric I (MetricTargetDomain (I := I) Φ k) := by
     change SmoothRiemannianMetric I (U k)
     exact (g (j₀ + k)).restrictOpen (I := I) (U k)
@@ -178,8 +178,8 @@ def ambientCGConverges
       rfl
     rw [hsrc, htgt]
     rw [S.limitMetric_of_mem gInf hgInf k x.2]
-    rw [metricSourceTargetDiff_mfderiv (I := I) Φ k x v,
-      metricSourceTargetDiff_mfderiv (I := I) Φ k x w]
+    rw [metric_source_target_diffeomorph_mfderiv (I := I) Φ k x v,
+      metric_source_target_diffeomorph_mfderiv (I := I) Φ k x w]
     simp only [inclS, mfderiv_subtype_val_apply]
     let z : (limitPointedCoc S O₀ gInf hgInf).M := x
     have hxSource : z ∈ (S.inclPartialDiffeo k).source := by
@@ -189,7 +189,7 @@ def ambientCGConverges
       apply Subtype.ext
       have hmapPoint : Φ.map k z =
           ((Function.invFun (S.toSeqSystem.incl k) z : U k) : M (j₀ + k)) := rfl
-      exact (metricSourceTargetDiff_apply (I := I) Φ k x).trans hmapPoint
+      exact (metric_source_target_diffeomorph_apply (I := I) Φ k x).trans hmapPoint
     have hmapv : mfderiv I I (Φ.map k) z v =
         mfderiv I I
           (S.inclPartialDiffeo k : (limitPointedCoc S O₀ gInf hgInf).M → U k)
@@ -216,7 +216,7 @@ def ambientCGConverges
       sourceMetric sourceMetric < ε
   rw [hlim, metricDerivNormSupOn_pullback_image (I := I)]
   have hKsource : IsCompact (metricSourceCompactSet (I := I) Φ k K) :=
-    metricSourceCompactSet_isCompact (I := I) Φ k hK (hkSrc k hkS)
+    metric_source_compact_set_is_compact (I := I) Φ k hK (hkSrc k hkS)
   have hKtarget : IsCompact (F '' metricSourceCompactSet (I := I) Φ k K) :=
     hKsource.image F.continuous
   with_unfolding_all
@@ -257,7 +257,7 @@ def chainCGConverges
       chainPullbackSeq (I := I) Ψ g (U n) (hU n) 0
     let hgInf : S.MetricCocycle gInf :=
       chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
-    PointedRiemannianCGConverges (I := I)
+    PointedRiemannianConverges (I := I)
       (factorSeq S O₀ gSeq) (limitPointedCoc S O₀ gInf hgInf) id
       (limitCGMapsOf S O₀ gSeq gInf hgInf) := by
   let S := chainBallSystem (I := I) j₀ U Ψ hU hmap
@@ -305,7 +305,7 @@ def chainAmbientConv
     let S := chainBallSystem (I := I) j₀ U Ψ hU hmap
     let hgInf : S.MetricCocycle gInf :=
       chain_metric_cocycle (I := I) j₀ U Ψ hU hmap gInf hstep
-    PointedRiemannianCGConverges (I := I)
+    PointedRiemannianConverges (I := I)
       (chainAmbientSeq (I := I) j₀ U S O₀ g)
       (limitPointedCoc S O₀ gInf hgInf) id
       (chainAmbientMaps (I := I) j₀ U S O₀ g gInf hgInf) := by
@@ -376,7 +376,7 @@ def tailAmbientConv
     let gTail := tailMetric (I := I) b j₀ gInf
     let hgTail : S.MetricCocycle gTail :=
       tail_ball_system_metric_cocycle (I := I) b Ψ hbase g hnorm j₀ D₀ hU hmap gInf hstep
-    PointedRiemannianCGConverges (I := I)
+    PointedRiemannianConverges (I := I)
       (chainAmbientSeq (I := I) j₀ (tailBallOpen b j₀) S (tailCenter b j₀ 0) g)
       (limitPointedCoc S (tailCenter b j₀ 0) gTail hgTail) id
       (chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S

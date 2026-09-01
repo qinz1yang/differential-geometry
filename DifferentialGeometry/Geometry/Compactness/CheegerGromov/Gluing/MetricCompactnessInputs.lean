@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering

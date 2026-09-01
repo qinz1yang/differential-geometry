@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
 
 open DifferentialGeometry.Geometry.Curvature
 
@@ -20,15 +20,15 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-namespace PointedRiemannianCGMaps
+namespace PointedRiemannianConvergenceMaps
 
 def compSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
-    (Φ : PointedRiemannianCGMaps (I := I) X L subseq)
+    (Φ : PointedRiemannianConvergenceMaps (I := I) X L subseq)
     (φ : Nat -> Nat) (hφ : StrictMono φ) :
-    PointedRiemannianCGMaps (I := I) X L (subseq ∘ φ) where
+    PointedRiemannianConvergenceMaps (I := I) X L (subseq ∘ φ) where
   partialDiffeomorph k := Φ.partialDiffeomorph (φ k)
   source_exhausts := by
     let : TopologicalSpace L.M := L.topology
@@ -42,8 +42,8 @@ def ofSeqSubseq
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {inner : Nat -> Nat}
-    (Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L inner) :
-    PointedRiemannianCGMaps (I := I) X L (f ∘ inner) where
+    (Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L inner) :
+    PointedRiemannianConvergenceMaps (I := I) X L (f ∘ inner) where
   partialDiffeomorph := Φ.partialDiffeomorph
   source_exhausts := Φ.source_exhausts
   base_mem := Φ.base_mem
@@ -53,8 +53,8 @@ def ofSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
-    (Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L id) :
-    PointedRiemannianCGMaps (I := I) X L f :=
+    (Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L id) :
+    PointedRiemannianConvergenceMaps (I := I) X L f :=
   Φ.ofSeqSubseq f
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
@@ -62,7 +62,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
-    (Φ : PointedRiemannianCGMaps (I := I) X L subseq)
+    (Φ : PointedRiemannianConvergenceMaps (I := I) X L subseq)
     (φ : Nat -> Nat) (hφ : StrictMono φ) (k : Nat) :
     (Φ.compSubseq φ hφ).source k = Φ.source (φ k) := rfl
 
@@ -73,7 +73,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {inner : Nat -> Nat}
-    (Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L inner)
+    (Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L inner)
     (k : Nat) :
     (Φ.ofSeqSubseq f).source k = Φ.source k := rfl
 
@@ -83,11 +83,11 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
-    (Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L id)
+    (Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L id)
     (k : Nat) :
     (Φ.ofSubseq f).source k = Φ.source k := rfl
 
-end PointedRiemannianCGMaps
+end PointedRiemannianConvergenceMaps
 
 namespace MetricSourceData
 
@@ -95,7 +95,7 @@ def compSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
-    {Φ : PointedRiemannianCGMaps (I := I) X L subseq}
+    {Φ : PointedRiemannianConvergenceMaps (I := I) X L subseq}
     (φ : Nat -> Nat) (hφ : StrictMono φ) (k : Nat)
     (D : MetricSourceData (I := I) Φ (φ k)) :
     MetricSourceData (I := I) (Φ.compSubseq φ hφ) k where
@@ -116,7 +116,7 @@ def ofSeqSubseq
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {inner : Nat -> Nat}
-    {Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L inner}
+    {Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L inner}
     (k : Nat) (D : MetricSourceData (I := I) Φ k) :
     MetricSourceData (I := I) (Φ.ofSeqSubseq f) k where
   topology := D.topology
@@ -135,7 +135,7 @@ def ofSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
-    {Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L id}
+    {Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L id}
     (k : Nat) (D : MetricSourceData (I := I) Φ k) :
     MetricSourceData (I := I) (Φ.ofSubseq f) k :=
   MetricSourceData.ofSeqSubseq (I := I) f k D
@@ -145,7 +145,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
-    {Φ : PointedRiemannianCGMaps (I := I) X L subseq}
+    {Φ : PointedRiemannianConvergenceMaps (I := I) X L subseq}
     (φ : Nat -> Nat) (hφ : StrictMono φ) (k : Nat)
     (D : MetricSourceData (I := I) Φ (φ k)) (K : Set L.M) (p : Nat) :
     (MetricSourceData.compSubseq (I := I) φ hφ k D).derivNormSupOn (I := I) K p =
@@ -157,7 +157,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {inner : Nat -> Nat}
-    {Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L inner}
+    {Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L inner}
     (k : Nat) (D : MetricSourceData (I := I) Φ k)
     (K : Set L.M) (p : Nat) :
     (MetricSourceData.ofSeqSubseq (I := I) f k D).derivNormSupOn (I := I) K p =
@@ -168,7 +168,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
-    {Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L id}
+    {Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L id}
     (k : Nat) (D : MetricSourceData (I := I) Φ k)
     (K : Set L.M) (p : Nat) :
     (MetricSourceData.ofSubseq (I := I) f k D).derivNormSupOn (I := I) K p =
@@ -176,16 +176,16 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 
 end MetricSourceData
 
-namespace MetricCGConvergenceData
+namespace MetricConvergenceData
 
 def compSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
-    {Φ : PointedRiemannianCGMaps (I := I) X L subseq}
-    (Cd : MetricCGConvergenceData (I := I) Φ)
+    {Φ : PointedRiemannianConvergenceMaps (I := I) X L subseq}
+    (Cd : MetricConvergenceData (I := I) Φ)
     (φ : Nat -> Nat) (hφ : StrictMono φ) :
-    MetricCGConvergenceData (I := I) (Φ.compSubseq φ hφ) where
+    MetricConvergenceData (I := I) (Φ.compSubseq φ hφ) where
   domain k := MetricSourceData.compSubseq (I := I) φ hφ k (Cd.domain (φ k))
   converges := by
     intro K hK p ε hε
@@ -197,36 +197,36 @@ def ofSeqSubseq
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {inner : Nat -> Nat}
-    {Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L inner}
-    (Cd : MetricCGConvergenceData (I := I) Φ) :
-    MetricCGConvergenceData (I := I) (Φ.ofSeqSubseq f) where
+    {Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L inner}
+    (Cd : MetricConvergenceData (I := I) Φ) :
+    MetricConvergenceData (I := I) (Φ.ofSeqSubseq f) where
   domain k := MetricSourceData.ofSeqSubseq (I := I) f k (Cd.domain k)
   converges := by
     intro K hK p ε hε
-    simpa only [PointedRiemannianCGMaps.ofSeqSubseq_source,
+    simpa only [PointedRiemannianConvergenceMaps.ofSeqSubseq_source,
       MetricSourceData.ofSeqSubseq_supOn] using Cd.converges K hK p ε hε
 
 def ofSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
-    {Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L id}
-    (Cd : MetricCGConvergenceData (I := I) Φ) :
-    MetricCGConvergenceData (I := I) (Φ.ofSubseq f) :=
+    {Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L id}
+    (Cd : MetricConvergenceData (I := I) Φ) :
+    MetricConvergenceData (I := I) (Φ.ofSubseq f) :=
   Cd.ofSeqSubseq f
 
-end MetricCGConvergenceData
+end MetricConvergenceData
 
-namespace PointedRiemannianCGConverges
+namespace PointedRiemannianConverges
 
 def compSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
-    {Φ : PointedRiemannianCGMaps (I := I) X L subseq}
-    (C : PointedRiemannianCGConverges (I := I) X L subseq Φ)
+    {Φ : PointedRiemannianConvergenceMaps (I := I) X L subseq}
+    (C : PointedRiemannianConverges (I := I) X L subseq Φ)
     (φ : Nat -> Nat) (hφ : StrictMono φ) :
-    PointedRiemannianCGConverges (I := I) X L (subseq ∘ φ) (Φ.compSubseq φ hφ) where
+    PointedRiemannianConverges (I := I) X L (subseq ∘ φ) (Φ.compSubseq φ hφ) where
   metrics := C.metrics.compSubseq φ hφ
 
 def ofSeqSubseq
@@ -234,21 +234,21 @@ def ofSeqSubseq
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {inner : Nat -> Nat}
-    {Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L inner}
-    (C : PointedRiemannianCGConverges (I := I) (X.subseq f) L inner Φ) :
-    PointedRiemannianCGConverges (I := I) X L (f ∘ inner) (Φ.ofSeqSubseq f) where
+    {Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L inner}
+    (C : PointedRiemannianConverges (I := I) (X.subseq f) L inner Φ) :
+    PointedRiemannianConverges (I := I) X L (f ∘ inner) (Φ.ofSeqSubseq f) where
   metrics := C.metrics.ofSeqSubseq f
 
 def ofSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (f : Nat -> Nat)
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
-    {Φ : PointedRiemannianCGMaps (I := I) (X.subseq f) L id}
-    (C : PointedRiemannianCGConverges (I := I) (X.subseq f) L id Φ) :
-    PointedRiemannianCGConverges (I := I) X L f (Φ.ofSubseq f) :=
+    {Φ : PointedRiemannianConvergenceMaps (I := I) (X.subseq f) L id}
+    (C : PointedRiemannianConverges (I := I) (X.subseq f) L id Φ) :
+    PointedRiemannianConverges (I := I) X L f (Φ.ofSubseq f) :=
   C.ofSeqSubseq f
 
-end PointedRiemannianCGConverges
+end PointedRiemannianConverges
 
 namespace MetricCompactnessConclusion
 

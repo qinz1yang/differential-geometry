@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.DirectLimit.Defs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
 import DifferentialGeometry.Topology.Exhaustion
 
 set_option autoImplicit false
@@ -73,7 +73,7 @@ theorem range_exhausts (S : SmoothSeqSystem I A) :
 
 noncomputable def limitCGMapsOf (S : SmoothSeqSystem I A) (O₀ : A 0)
     (gSeq gLim : ∀ k, SmoothRiemannianMetric I (A k)) (hgLim : S.MetricCocycle gLim) :
-    PointedRiemannianCGMaps.{u, uE, uH} (I := I)
+    PointedRiemannianConvergenceMaps.{u, uE, uH} (I := I)
       (X := factorSeq S O₀ gSeq)
       (L := (limitPointedCoc S O₀ gLim hgLim :
         PointedRiemannianManifold.{u, uE, uH} (I := I)))
@@ -85,7 +85,7 @@ noncomputable def limitCGMapsOf (S : SmoothSeqSystem I A) (O₀ : A 0)
 
 noncomputable def limitCGMaps (S : SmoothSeqSystem I A) (O₀ : A 0)
     (g : ∀ k, SmoothRiemannianMetric I (A k)) (hg : S.MetricCocycle g) :
-    PointedRiemannianCGMaps.{u, uE, uH} (I := I)
+    PointedRiemannianConvergenceMaps.{u, uE, uH} (I := I)
       (X := factorSeq S O₀ g)
       (L := (limitPointedCoc S O₀ g hg : PointedRiemannianManifold.{u, uE, uH} (I := I)))
       (subseq := id) :=

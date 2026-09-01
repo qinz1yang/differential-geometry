@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Defs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
 import DifferentialGeometry.Topology.SigmaCompactOpen
@@ -33,7 +34,7 @@ def limitCGConverges
     (hstage : ∀ ε : ℝ, 0 < ε → ∀ p : ℕ, ∃ k₀ : ℕ, ∀ k : ℕ, k₀ ≤ k →
       ∀ K : Set (A k), IsCompact K →
         metricDerivNormSupOn (I := I) K p (gSeq k) (gLim k) (gLim k) < ε) :
-    PointedRiemannianCGConverges (I := I)
+    PointedRiemannianConverges (I := I)
       (factorSeq S O₀ gSeq) (limitPointedCoc S O₀ gLim hgLim) id
       (limitCGMapsOf S O₀ gSeq gLim hgLim) := by
   let Φ := limitCGMapsOf S O₀ gSeq gLim hgLim
@@ -63,24 +64,24 @@ def limitCGConverges
     exact Geometry.isSigmaCompact_of_isOpen I (Φ.target_open k)
   let refMetric : ∀ k : ℕ,
       letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
-        metricSourceDomTop (I := I) Φ k
+        metricSourceDomainTopology (I := I) Φ k
       letI : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
-        metricSourceDomCharted (I := I) Φ k
+        metricSourceDomainChartedSpace (I := I) Φ k
       letI : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
-        metricSourceDomSmooth (I := I) Φ k
+        metric_source_domain_smooth (I := I) Φ k
       SmoothRiemannianMetric I (MetricSourceDomain (I := I) Φ k) := fun k => by
     letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
-      metricSourceDomTop (I := I) Φ k
+      metricSourceDomainTopology (I := I) Φ k
     letI : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
-      metricSourceDomCharted (I := I) Φ k
+      metricSourceDomainChartedSpace (I := I) Φ k
     letI : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
-      metricSourceDomSmooth (I := I) Φ k
+      metric_source_domain_smooth (I := I) Φ k
     letI : SigmaCompactSpace (MetricSourceDomain (I := I) Φ k) :=
-      metricSourceDomSigmaOf (I := I) Φ k (hσsrc k)
+      metric_source_domain_sigma_compact (I := I) Φ k (hσsrc k)
     letI : T2Space (MetricSourceDomain (I := I) Φ k) :=
-      metricSourceDomT2 (I := I) Φ k
-    exact (S.limitMetric gLim hgLim).restrictOpen (I := I) (metricSourceOpen (I := I) Φ k)
-  refine PointedRiemannianCGConverges.ofRestrictPullback (I := I)
+      metric_source_domain_t2 (I := I) Φ k
+    exact (S.limitMetric gLim hgLim).restrictOpen (I := I) (metricSourceOpenSubset (I := I) Φ k)
+  refine PointedRiemannianConverges.ofRestrictPullback (I := I)
     Φ hσsrc refMetric ?_
   intro K hK p ε hε
   obtain ⟨kSrc, hkSrc⟩ := Φ.source_subset hK
@@ -97,38 +98,38 @@ def limitCGConverges
   let : ChartedSpace H ((factorSeq S O₀ gSeq).obj (id k)).M :=
     ((factorSeq S O₀ gSeq).obj (id k)).charted
   let : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
-    metricSourceDomTop (I := I) Φ k
+    metricSourceDomainTopology (I := I) Φ k
   let : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
-    metricSourceDomCharted (I := I) Φ k
+    metricSourceDomainChartedSpace (I := I) Φ k
   let : T2Space (MetricSourceDomain (I := I) Φ k) :=
-    metricSourceDomT2 (I := I) Φ k
+    metric_source_domain_t2 (I := I) Φ k
   let : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
-    metricSourceDomSmooth (I := I) Φ k
+    metric_source_domain_smooth (I := I) Φ k
   let : SigmaCompactSpace (MetricSourceDomain (I := I) Φ k) :=
-    metricSourceDomSigmaOf (I := I) Φ k (hσsrc k)
+    metric_source_domain_sigma_compact (I := I) Φ k (hσsrc k)
   let : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomTop (I := I) Φ k
+    metricTargetDomainTopology (I := I) Φ k
   let : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomCharted (I := I) Φ k
+    metricTargetDomainChartedSpace (I := I) Φ k
   let : T2Space (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomT2 (I := I) Φ k
+    metric_target_domain_t2 (I := I) Φ k
   let : IsManifold I ∞ (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomSmooth (I := I) Φ k
+    metric_target_domain_smooth (I := I) Φ k
   let : SigmaCompactSpace (MetricTargetDomain (I := I) Φ k) :=
-    metricTargetDomSigmaOf (I := I) Φ k (hσtgt k)
-  let F := metricSourceTargetDiff (I := I) Φ k
-  let targetSigma : SigmaCompactSpace (metricTargetOpen (I := I) Φ k) := by
+    metric_target_domain_sigma_compact (I := I) Φ k (hσtgt k)
+  let F := metricSourceTargetDiffeomorph (I := I) Φ k
+  let targetSigma : SigmaCompactSpace (metricTargetOpenSubset (I := I) Φ k) := by
     change SigmaCompactSpace (MetricTargetDomain (I := I) Φ k)
-    exact metricTargetDomSigmaOf (I := I) Φ k (hσtgt k)
-  let targetT2 : T2Space (metricTargetOpen (I := I) Φ k) := by
+    exact metric_target_domain_sigma_compact (I := I) Φ k (hσtgt k)
+  let targetT2 : T2Space (metricTargetOpenSubset (I := I) Φ k) := by
     change T2Space (MetricTargetDomain (I := I) Φ k)
-    exact metricTargetDomT2 (I := I) Φ k
+    exact metric_target_domain_t2 (I := I) Φ k
   let sourceMetric : SmoothRiemannianMetric I (MetricSourceDomain (I := I) Φ k) :=
-    (S.limitMetric gLim hgLim).restrictOpen (I := I) (metricSourceOpen (I := I) Φ k)
+    (S.limitMetric gLim hgLim).restrictOpen (I := I) (metricSourceOpenSubset (I := I) Φ k)
   let targetSeq : SmoothRiemannianMetric I (MetricTargetDomain (I := I) Φ k) :=
-    (gSeq k).restrictOpen (I := I) (metricTargetOpen (I := I) Φ k)
+    (gSeq k).restrictOpen (I := I) (metricTargetOpenSubset (I := I) Φ k)
   let targetLim : SmoothRiemannianMetric I (MetricTargetDomain (I := I) Φ k) :=
-    (gLim k).restrictOpen (I := I) (metricTargetOpen (I := I) Φ k)
+    (gLim k).restrictOpen (I := I) (metricTargetOpenSubset (I := I) Φ k)
   have hlim : sourceMetric = Diffeomorph.pullbackMetric (I := I) targetLim F := by
     have metric_ext : ∀ (g₁ g₂ : SmoothRiemannianMetric I
         (MetricSourceDomain (I := I) Φ k)),
@@ -161,15 +162,15 @@ def limitCGConverges
         SmoothRiemannianMetric.restrictOpen_inner]
     rw [hsrc, htgt]
     rw [S.limitMetric_of_mem gLim hgLim k x.2]
-    rw [metricSourceTargetDiff_mfderiv (I := I) Φ k x v,
-      metricSourceTargetDiff_mfderiv (I := I) Φ k x w]
+    rw [metric_source_target_diffeomorph_mfderiv (I := I) Φ k x v,
+      metric_source_target_diffeomorph_mfderiv (I := I) Φ k x w]
     simp only [inclS, mfderiv_subtype_val_apply]
     let z : (limitPointedCoc S O₀ gLim hgLim).M := x
     have hFx : (F x).1 =
         Function.invFun (S.toSeqSystem.incl k) z := by
       calc
         (F x).1 = Φ.map k z :=
-          metricSourceTargetDiff_apply (I := I) Φ k x
+          metric_source_target_diffeomorph_apply (I := I) Φ k x
         _ = Function.invFun (S.toSeqSystem.incl k) z := rfl
     have hmapv : mfderiv I I (Φ.map k) z v =
         mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) z v := by
@@ -184,7 +185,7 @@ def limitCGConverges
       sourceMetric sourceMetric < ε
   rw [hlim, metricDerivNormSupOn_pullback_image (I := I)]
   have hKsource : IsCompact (metricSourceCompactSet (I := I) Φ k K) :=
-    metricSourceCompactSet_isCompact (I := I) Φ k hK (hkSrc k hkS)
+    metric_source_compact_set_is_compact (I := I) Φ k hK (hkSrc k hkS)
   have hKtarget : IsCompact (F '' metricSourceCompactSet (I := I) Φ k K) :=
     hKsource.image F.continuous
   let stageVal : MetricTargetDomain (I := I) Φ k → A k := by
@@ -205,7 +206,7 @@ def limitCGConverges
           exact @metricDerivNormSupOn_restrictOpen E inferInstance inferInstance
             inferInstance inferInstance H inferInstance I
             (A k) inferInstance inferInstance inferInstance inferInstance
-            (gSeq k) (gLim k) (gLim k) (metricTargetOpen (I := I) Φ k)
+            (gSeq k) (gLim k) (gLim k) (metricTargetOpenSubset (I := I) Φ k)
             targetSigma targetT2 (F '' metricSourceCompactSet (I := I) Φ k K) p
     _ < ε := hkConv k hkC stageSet hKstage
 
