@@ -423,7 +423,6 @@ theorem riemannianEDistOf_prod_right
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem RiemannianMetricComplete.prod
-    [CompleteSpace E] [CompleteSpace F]
     [T2Space M] [T2Space N] [SigmaCompactSpace M] [SigmaCompactSpace N]
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric J N}
     (hg : RiemannianMetricComplete (I := I) g)
@@ -603,7 +602,6 @@ theorem RiemannianMetricComplete.snd_of_prod
     continuous_snd.continuousAt.tendsto.comp hp
 
 theorem RiemannianMetricComplete.prod_iff
-    [CompleteSpace E] [CompleteSpace F]
     [T2Space M] [T2Space N] [SigmaCompactSpace M] [SigmaCompactSpace N]
     [Nonempty M] [Nonempty N]
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric J N} :

@@ -114,7 +114,6 @@ theorem normalizedGradientRicciSoliton_hamilton_normalized
     normalizedGradientRicciSoliton_potential_equation (I := I) h x
 
 theorem normalizedGradientRicciSoliton_weightedLaplacian_potential
-    [NeZero (Module.finrank Real E)]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f) (x : M) :
     weightedLaplacian (I := I) g f f x =
@@ -157,7 +156,7 @@ theorem normalizedGradientRicciSoliton_add_const_unique
   linarith
 
 theorem gradientRicciSoliton_exists_normalized
-    [NeZero (Module.finrank Real E)] [ConnectedSpace M]
+    [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {sigma : Real}
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (hsol : gradientRicciSoliton (I := I) g f sigma)
