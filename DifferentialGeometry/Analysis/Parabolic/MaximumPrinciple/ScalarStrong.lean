@@ -1029,7 +1029,7 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
   apply scalar_strong_maximum_principle_fixed_metric_with_drift_of_compact_sublevel_barrier
     (I := I)
     g hT X u hu_cont hu_nonneg hu_time hu_space hu_super hrho hrho_nonneg
-    hR hdelta heta hlocal hcompact
+    hdelta heta hlocal
     (m := m) (B := B) (kappa := kappa) (alpha := alpha)
   · intro x hxr hxR
     exact hgrad_lower x ⟨hxr, hxR⟩
@@ -1040,6 +1040,7 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
   · exact htime
   · exact halpha
   · exact hdom
+  · exact hcompact
   · exact hy
 
 theorem scalar_strong_maximum_principle_fixed_metric_with_locally_bounded_drift_spatial

@@ -806,6 +806,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotentialBou
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotentialHopf
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotentialStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Hopf
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelTimeConstancy
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.LocalStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.MetricFamilyStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelCone
@@ -813,6 +814,10 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelDualCone
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelConeStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelTensorNullDistribution
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ProperCone
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.FirstContact
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelRigidity
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Reaction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ScalarStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SemilinearConvex
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
@@ -2084,6 +2089,7 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.Musical
 import DifferentialGeometry.Geometry.Connection.Laplacian.RankZero
 import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacian
 import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacianChart
+import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.ChristoffelCorrectionBasepoint
 import DifferentialGeometry.Geometry.Connection.LeviCivita.ChristoffelDiffKoszulDeriv
@@ -2133,6 +2139,10 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInne
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetricCompatible
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorRSMetricCompatible
+import DifferentialGeometry.Geometry.Connection.NormalSection
+import DifferentialGeometry.Geometry.Connection.ParallelLine
+import DifferentialGeometry.Geometry.Connection.ParallelLineSplitting
+import DifferentialGeometry.Geometry.Connection.Subbundle
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlgebraicCurvatureOperatorCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlgebraicSectionalNonnegativeCone
@@ -2303,6 +2313,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciComm
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorThirdOrderWeitzenbock
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.AlgebraicCurvatureOperatorMetric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureAlgebra
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorNormalization
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorBasis
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRank
@@ -2603,6 +2614,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CutoffData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicciReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.TimeShift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.ProductLeibniz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.Residual
@@ -3194,6 +3206,7 @@ import DifferentialGeometry.Tensor.Alternating.Basis
 import DifferentialGeometry.Tensor.Alternating.Bundle
 import DifferentialGeometry.Tensor.Alternating.Comp
 import DifferentialGeometry.Tensor.Alternating.Congr
+import DifferentialGeometry.Tensor.Alternating.ContractionSubbundle
 import DifferentialGeometry.Tensor.Alternating.Curry
 import DifferentialGeometry.Tensor.Alternating.FDeriv
 import DifferentialGeometry.Tensor.Alternating.Flip
@@ -3320,6 +3333,7 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.TotalNabla0SLinear
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.TotalNabla0STimeDeriv
 import DifferentialGeometry.Tensor.RSTensor.NormSqProduct
 import DifferentialGeometry.Tensor.RSTensor.ProductNablaLeibniz
+import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.ContractionKernelSubbundle
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.ContinuousEvaluation
 import DifferentialGeometry.Tensor.RSTensor.Pullback
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Nullspace
@@ -3970,3 +3984,22 @@ import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
 import DifferentialGeometry.Topology.CurveChartCover
 import DifferentialGeometry.Topology.CurveChartHead
 import DifferentialGeometry.Topology.FiniteSubdivision
+import DifferentialGeometry.Analysis.Spectral.LowerKyFan
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Galerkin
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MetricComparison
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Energy
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinWeakIdentity
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinSequence
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinTimeL2
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakCompactness
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Counterexamples
+import DifferentialGeometry.Bundle.SmoothSubbundle.Defs
+import DifferentialGeometry.Bundle.SmoothSubbundle.Basic
+import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
+import DifferentialGeometry.Bundle.SmoothSubbundle.KernelAPI
+import DifferentialGeometry.Bundle.SmoothSubbundle.KernelMotion
+import DifferentialGeometry.Bundle.SmoothSubbundle.Range
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Kernel
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionAlgebra
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankRigidity
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureImageLine
