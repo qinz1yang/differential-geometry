@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
-import DifferentialGeometry.Analysis.Calculus.RingInverseDeriv
+import DifferentialGeometry.Analysis.Calculus.RingInverseBounds
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 open DifferentialGeometry.Geometry.Curvature
@@ -17,6 +17,7 @@ open scoped Manifold ContDiff Topology Bundle
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 open DifferentialGeometry.Geometry.Riemannian.Exponential
+open DifferentialGeometry.Analysis
 
 variable {E F : Type*}
   [NormedAddCommGroup E] [NormedSpace Real E]
@@ -552,7 +553,7 @@ private theorem gram_inv_deriv_le
       ‖iteratedFDeriv Real i (fun y => gramCLM (B y)) x‖ ≤ D ^ i := by
     intro i hi him
     exact (gram_deriv_le B x hB him).trans (hD i hi him)
-  have h := norm_iteratedFDeriv_invComp_le
+  have h := norm_iteratedFDeriv_inverse_comp_le
     (E := E0) (A := fun y => gramCLM (B y)) x m
     (gramInvBound (E0 := E0)) D
     (by

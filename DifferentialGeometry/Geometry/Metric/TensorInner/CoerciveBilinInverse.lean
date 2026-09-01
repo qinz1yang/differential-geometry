@@ -1,5 +1,4 @@
 import Mathlib.Analysis.InnerProductSpace.LaxMilgram
-import DifferentialGeometry.Analysis.Calculus.RingInverseDeriv
 
 set_option autoImplicit false
 

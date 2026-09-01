@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
 import DifferentialGeometry.Analysis.Calculus.PiDeriv
-import DifferentialGeometry.Analysis.Calculus.RingInverseDeriv
+import DifferentialGeometry.Analysis.Calculus.RingInverseBounds
 import Mathlib.Analysis.Calculus.ContDiff.FaaDiBruno
 import Mathlib.Topology.MetricSpace.Thickening
 
@@ -9,6 +9,7 @@ set_option autoImplicit false
 namespace DifferentialGeometry
 namespace HCGCompactness
 
+open Analysis
 open Filter Topology
 open scoped ContDiff
 

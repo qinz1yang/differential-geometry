@@ -171,6 +171,7 @@ theorem metricSpray_eq
       (z.2, -koszulVec hg (fderiv Real g z.1) z.2 z.2) := by
   rw [metricSpray, raisedKoszulOp_eq hg]
 
+open DifferentialGeometry.Analysis
 open DifferentialGeometry.HCGCompactness
 open scoped ContDiff
 

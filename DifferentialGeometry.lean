@@ -33,7 +33,7 @@ import DifferentialGeometry.Analysis.Calculus.PartialDerivative
 import DifferentialGeometry.Analysis.Calculus.PiDeriv
 import DifferentialGeometry.Analysis.Calculus.RatioMonotonicity
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
-import DifferentialGeometry.Analysis.Calculus.RingInverseDeriv
+import DifferentialGeometry.Analysis.Calculus.RingInverseBounds
 import DifferentialGeometry.Analysis.Calculus.SectionCompD2
 import DifferentialGeometry.Analysis.Calculus.SmoothClamp
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine
@@ -2739,7 +2739,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Conv
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Averaging
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Existence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterExtension
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.HigherDerivativeBounds
+import DifferentialGeometry.Analysis.Calculus.ImplicitDerivativeBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.DerivativeBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterEquationSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance

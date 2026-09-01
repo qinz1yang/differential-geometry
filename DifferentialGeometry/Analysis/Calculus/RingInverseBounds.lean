@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace Analysis
 
 open scoped Topology
 open ContinuousLinearMap Ring Set
@@ -104,7 +104,7 @@ theorem norm_iteratedFDeriv_ringInverse_le (i : ℕ) (x : Rˣ) :
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-theorem norm_iteratedFDeriv_invComp_le
+theorem norm_iteratedFDeriv_inverse_comp_le
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace E]
     (A : P → (E →L[ℝ] E)) (x : P) (m : ℕ) (Lambda D : ℝ)
     (hA : ContDiffAt ℝ (m : WithTop ℕ∞) A x)
@@ -158,5 +158,5 @@ theorem norm_iteratedFDeriv_invComp_le
       Units.isOpen.uniqueDiffOn hs_open.uniqueDiffOn hmaps hxs hC hD'
   rwa [iteratedFDerivWithin_of_isOpen m hs_open hxs] at hcomp
 
-end HCGCompactness
+end Analysis
 end DifferentialGeometry
