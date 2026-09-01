@@ -442,6 +442,33 @@ theorem contractionAnnihilator [I.Boundaryless]
 
 end IsParallelContinuousAlternatingSubmoduleFamily
 
+theorem exists_smooth_parallel_contractionAnnihilator [I.Boundaryless]
+    (hE : Module.finrank ℝ E = 3)
+    (g : SmoothRiemannianMetric I M)
+    (K : ContMDiffVectorSubbundle
+      (I := I) (F := E [⋀^Fin 2]→L[ℝ] ℝ)
+      (V := fun x => TangentSpace I x [⋀^Fin 2]→L[ℝ] ℝ)
+      (n := (∞ : WithTop ℕ∞)))
+    (hK : K.rank = 1)
+    (hparallel : IsParallelContinuousAlternatingSubmoduleFamily g K.fiber) :
+    ∃ S : ContMDiffVectorSubbundle
+        (I := I) (F := E) (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)),
+      S.rank = 1 ∧
+      (∀ x, S.fiber x =
+        ContinuousAlternatingMap.contractionAnnihilator (K.fiber x)) ∧
+      IsParallelSubmoduleFamily g S.fiber := by
+  obtain ⟨S, hSrank, hSfiber⟩ :=
+    ContinuousAlternatingMap.exists_smooth_contractionAnnihilator
+      (I := I) (M := M) (F := E) (V := TangentSpace I)
+      (fiberBundle := tangentFiberBundle (I := I) (M := M))
+      (vectorBundle := tangentVectorBundle (I := I) (M := M))
+      (smoothVectorBundle := tangentSmoothVectorBundle (I := I) (M := M))
+      hE K hK
+  refine ⟨S, hSrank, hSfiber, ?_⟩
+  intro γ hγ a b hab
+  rw [hSfiber (γ a), hSfiber (γ b)]
+  exact hparallel.contractionAnnihilator γ hγ hab
+
 theorem exists_smooth_parallel_contractionAnnihilator_range [I.Boundaryless]
     (hE : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M)
@@ -467,19 +494,14 @@ theorem exists_smooth_parallel_contractionAnnihilator_range [I.Boundaryless]
     (ContinuousAlternatingMap.elementaryCovectorBasis (k := 2) basis)
       |>.finiteDimensional_of_finite
   let R := ContMDiffVectorSubbundle.range A hA 1 hrange
-  obtain ⟨S, hSrank, hSfiber⟩ :=
-    ContinuousAlternatingMap.exists_smooth_contractionAnnihilator
-      (I := I) (M := M) (F := E) (V := TangentSpace I)
-      (fiberBundle := tangentFiberBundle (I := I) (M := M))
-      (vectorBundle := tangentVectorBundle (I := I) (M := M))
-      (smoothVectorBundle := tangentSmoothVectorBundle (I := I) (M := M))
-      hE R rfl
-  refine ⟨S, hSrank, ?_, ?_⟩
-  · intro x
-    simpa [R] using hSfiber x
-  · intro γ hγ a b hab
-    rw [hSfiber (γ a), hSfiber (γ b)]
-    simpa [R] using hparallel.contractionAnnihilator γ hγ hab
+  apply exists_smooth_parallel_contractionAnnihilator hE g R rfl
+  intro γ hγ a b hab
+  change Submodule.map
+      (((Riemannian.Variation.parallelTransportLinearEquivBetween
+        (I := I) g γ hγ hab).toContinuousLinearEquiv
+          |>.continuousAlternatingMapCongrLeft (ι := Fin 2)).toLinearMap)
+      (A (γ a)).range = (A (γ b)).range
+  exact hparallel γ hγ hab
 
 end LeviCivitaParallel
 
