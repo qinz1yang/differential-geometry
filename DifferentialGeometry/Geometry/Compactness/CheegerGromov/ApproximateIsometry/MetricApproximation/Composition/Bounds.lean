@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PartialDiffeomorphMetricApproximationCompositionReverse
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Composition.ReverseBounds
 
 
 
@@ -13,6 +13,7 @@ namespace HCGCompactness
 
 open Bundle
 open scoped Manifold ContDiff
+
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -24,7 +25,7 @@ section PartialDataComp
 
 open TopologicalSpace
 
-theorem partialData_comp {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
+noncomputable def sepDataComp {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
     [T2Space N] [SigmaCompactSpace N] [T2Space P] [SigmaCompactSpace P]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
@@ -35,8 +36,19 @@ theorem partialData_comp {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [I
     {K₂ : Opens N} (hK₂ : (K₂ : Set N) ⊆ Φ'.source)
     (himg : (Φ : M → N) '' (U₁ : Set M) ⊆ (K₂ : Set N))
     {K : Set M} (hK : IsCompact K) (hKU : K ⊆ (U₁ : Set M))
-    {ε ε' : ℝ} {p : ℕ} (hε2 : ε ≤ 1 / 2) (hε'2 : ε' ≤ 1 / 2)
-    (C : ℝ) (hC0 : 0 ≤ C)
+    {c0 cov c0' cov' qF eF qR eR c0'' cov'' : Real} {p : Nat}
+    (hc0_half : c0 ≤ 1 / 2) (hc0'_half : c0' ≤ 1 / 2)
+    (hqF0 : 0 ≤ qF) (hqF1 : qF ≤ 1)
+    (hqF_c0 : c0 / (1 - c0) ≤ qF) (hqF_cov : cov ≤ qF)
+    (heF0 : 0 ≤ eF) (heF_c0 : c0' ≤ eF) (heF_cov : cov' ≤ eF)
+    (hqR0 : 0 ≤ qR) (hqR1 : qR ≤ 1)
+    (hqR_c0 : c0' / (1 - c0') ≤ qR) (hqR_cov : cov' ≤ qR)
+    (heR0 : 0 ≤ eR) (heR_c0 : c0 ≤ eR) (heR_cov : cov ≤ eR)
+    (C : Real) (hC0 : 0 ≤ C)
+    (hc0F_out : c0 + c0' * (1 + qF) ≤ c0'')
+    (hcovF_out : qF + eF * C ≤ cov'')
+    (hc0R_out : c0' + c0 * (1 + qR) ≤ c0'')
+    (hcovR_out : qR + eR * C ≤ cov'')
     (hC : ∀ {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
       [T2Space M'] [IsManifold I ∞ M'] [SigmaCompactSpace M']
       [IsManifold I 1 M'] [IsManifold I 2 M']
@@ -61,26 +73,24 @@ theorem partialData_comp {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [I
             (iterCov (I := I) g₁ 2 δ₁ k x)) ≤ eps1) →
         ∀ x ∈ u, ∀ r, 0 < r → r ≤ p →
           Real.sqrt (Tensor0SBundle.normSq0S (I := I) g₀ x (2 + r)
-            (iterCov (I := I) g₀ 2 (δ₀ + δ₁) r x)) ≤ eps0 + eps1 * C)
+            (iterCov (I := I) g₀ 2
+              (δ₀ + δ₁ : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
+                (I := I) (M := M') (n := (∞ : WithTop ℕ∞)) 2) r x)) ≤ eps0 + eps1 * C)
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
     (h' : SmoothRiemannianMetric I P)
-    (D₁ : PartialDiffeomorphMetricApproximation (I := I) (U₁ : Set M) ε p Φ g h)
-    (D₂ : PartialDiffeomorphMetricApproximation (I := I) (K₂ : Set N) ε' p Φ' h h') :
-    ∀ ε'' : ℝ,
-      ε / (1 - ε) + ε' * max C 2 ≤ ε'' →
-      ε' / (1 - ε') + ε * max C 2 ≤ ε'' →
-      ε'' < 1 →
-      Nonempty (PartialDiffeomorphMetricApproximation (I := I) K ε'' p
-        (_root_.PartialDiffeomorph.trans (I := I) Φ Φ') g h') := by
-  intro ε'' hlb1 hlb2 hub
-  obtain ⟨Dforward⟩ := partialData_comp_forward (I := I) Φ Φ' hU₁ hK₂ himg
-    hK hKU hε2 C hC0 hC g h h' D₁ D₂ ε'' hlb1 hub
-  obtain ⟨Dreverse⟩ := partialData_comp_reverse (I := I) Φ Φ' hU₁ hK₂ himg
-    hK hKU hε'2 C hC0 hC g h h' D₁ D₂ ε'' hlb2 hub
-  have hsource : K ⊆ (_root_.PartialDiffeomorph.trans (I := I) Φ Φ').source := by
+    (D₁ : PartialDiffeomorphMetricApproximationBounds (I := I) (U₁ : Set M) c0 cov p Φ g h)
+    (D₂ : PartialDiffeomorphMetricApproximationBounds (I := I) (K₂ : Set N) c0' cov' p Φ' h h') :
+    PartialDiffeomorphMetricApproximationBounds (I := I) K c0'' cov'' p
+      (_root_.PartialDiffeomorph.trans (I := I) Φ Φ') g h' where
+  source_sub := by
     intro y hy
     exact ⟨hU₁ (hKU hy), hK₂ (himg (Set.mem_image_of_mem _ (hKU hy)))⟩
-  exact ⟨⟨hsource, Dforward, Dreverse⟩⟩
+  forward := compSepFwd (I := I) Φ Φ' hU₁ hK₂ himg hK hKU hc0_half
+    hqF0 hqF1 hqF_c0 hqF_cov heF0 heF_c0 heF_cov C hC0 hc0F_out hcovF_out hC
+    g h h' D₁ D₂
+  reverse := compSepRev (I := I) Φ Φ' hU₁ hK₂ himg hK hKU hc0'_half
+    hqR0 hqR1 hqR_c0 hqR_cov heR0 heR_c0 heR_cov C hC0 hc0R_out hcovR_out hC
+    g h h' D₁ D₂
 
 end PartialDataComp
 
