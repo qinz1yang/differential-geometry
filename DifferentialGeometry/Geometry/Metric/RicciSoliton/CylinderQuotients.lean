@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.FreeOrthogonalAction
 import DifferentialGeometry.Geometry.Metric.Sphere.IsometryRepresentation
 import DifferentialGeometry.Geometry.Metric.Sphere.OrthogonalAction
 import DifferentialGeometry.Topology.ProperlyDiscontinuousAction
-import DifferentialGeometry.Topology.ProjectiveSpace.Real
+import DifferentialGeometry.Topology.ProjectiveSpace.PuncturedThree
 import Mathlib.Geometry.Manifold.Instances.Quotient
 import Mathlib.GroupTheory.OrderOfElement
 
@@ -744,6 +744,99 @@ theorem cylinderDiagonalQuotientMap_eq_iff
     · rw [h]
       refine ⟨cylinderDiagonalGroupGenerator, ?_⟩
       exact cylinderDiagonalGroupGenerator_smul y
+
+private theorem cylinderDiagonalOrbitRel_iff_threeSphereAwayFromRealProjectivePunctureOrbitRel
+    (x y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
+    MulAction.orbitRel cylinderDiagonalGroup _ x y ↔
+      MulAction.orbitRel
+        (realProjectiveSpaceAntipodalGroup
+          (EuclideanSpace Real (Fin 4)))
+        threeSphereAwayFromRealProjectivePuncture
+        (twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture x)
+        (twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture y) := by
+  have hsource : MulAction.orbitRel cylinderDiagonalGroup _ x y ↔
+      cylinderDiagonalQuotientMap x = cylinderDiagonalQuotientMap y :=
+    ⟨Quotient.sound, Quotient.exact⟩
+  have htarget :
+      MulAction.orbitRel
+          (realProjectiveSpaceAntipodalGroup
+            (EuclideanSpace Real (Fin 4)))
+          threeSphereAwayFromRealProjectivePuncture
+          (twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture x)
+          (twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture y) ↔
+        realProjectiveSpaceQuotientMap
+            ((twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture x :
+              threeSphereAwayFromRealProjectivePuncture) :
+                Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1) =
+          realProjectiveSpaceQuotientMap
+            ((twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture y :
+              threeSphereAwayFromRealProjectivePuncture) :
+                Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1) := by
+    rw [SubMulAction.orbitRel_of_subMul]
+    change MulAction.orbitRel
+        (realProjectiveSpaceAntipodalGroup
+          (EuclideanSpace Real (Fin 4)))
+        (Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1)
+        ((twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture x :
+          threeSphereAwayFromRealProjectivePuncture) :
+            Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1)
+        ((twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture y :
+          threeSphereAwayFromRealProjectivePuncture) :
+            Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1) ↔ _
+    exact ⟨Quotient.sound, Quotient.exact⟩
+  rw [hsource, htarget, cylinderDiagonalQuotientMap_eq_iff,
+    realProjectiveSpaceQuotientMap_eq_iff]
+  constructor
+  · rintro (rfl | hxy)
+    · exact Or.inl rfl
+    · right
+      rw [hxy, cylinderDiagonalDiffeomorph_apply]
+      exact congrArg Subtype.val
+        (twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture_diagonal y)
+  · rintro (hxy | hxy)
+    · left
+      apply twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture.injective
+      exact Subtype.ext hxy
+    · right
+      apply twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture.injective
+      apply Subtype.ext
+      apply Subtype.ext
+      rw [cylinderDiagonalDiffeomorph_apply, cylinderDiagonal_apply,
+        twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture_diagonal]
+      exact hxy
+
+private noncomputable def cylinderDiagonalQuotientHomeomorphThreeSphereAwayFromRealProjectivePunctureQuotient :
+    CylinderDiagonalQuotient ≃ₜ
+      ThreeSphereAwayFromRealProjectivePunctureQuotient :=
+  Homeomorph.Quotient.congr
+    twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture
+    cylinderDiagonalOrbitRel_iff_threeSphereAwayFromRealProjectivePunctureOrbitRel
+
+noncomputable def cylinderDiagonalQuotientHomeomorph :
+    CylinderDiagonalQuotient ≃ₜ PuncturedRealProjectiveThreeSpace :=
+  cylinderDiagonalQuotientHomeomorphThreeSphereAwayFromRealProjectivePunctureQuotient.trans
+    threeSphereAwayFromRealProjectivePunctureQuotientHomeomorph
+
+theorem cylinderDiagonalQuotientHomeomorph_apply
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
+    cylinderDiagonalQuotientHomeomorph (cylinderDiagonalQuotientMap x) =
+      ⟨realProjectiveSpaceQuotientMap
+          ((twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture x :
+            threeSphereAwayFromRealProjectivePuncture) :
+              Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1),
+        (twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture x).2⟩ :=
+  rfl
+
+theorem cylinderDiagonalQuotientHomeomorph_symm_apply
+    (z : threeSphereAwayFromRealProjectivePuncture) :
+    cylinderDiagonalQuotientHomeomorph.symm
+        ⟨realProjectiveSpaceQuotientMap z.1, z.2⟩ =
+      cylinderDiagonalQuotientMap
+        (twoSphereProdRealHomeomorphThreeSphereAwayFromRealProjectivePuncture.symm z) := by
+  apply cylinderDiagonalQuotientHomeomorph.injective
+  rw [Homeomorph.apply_symm_apply,
+    cylinderDiagonalQuotientHomeomorph_apply,
+    Homeomorph.apply_symm_apply]
 
 theorem cylinderAntipodalQuotientMap_lift_unique {Y : Type*}
     (F : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → Y)
