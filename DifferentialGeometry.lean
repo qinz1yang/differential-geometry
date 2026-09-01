@@ -2210,6 +2210,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOn
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.Quotient
 import DifferentialGeometry.Topology.Manifold.TangentPartialDiffeomorph
 import DifferentialGeometry.Geometry.Coordinates.Tensor
 import DifferentialGeometry.Geometry.Curvature.AlgebraicForm
