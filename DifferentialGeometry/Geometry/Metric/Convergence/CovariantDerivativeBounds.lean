@@ -154,6 +154,12 @@ noncomputable def metricCovDerivNorm
     (Tensor0SBundle.normSq0S (I := I) gRef x (a + 2)
       (metricCovDeriv (I := I) h gRef a x))
 
+noncomputable def metricCovDerivNormWith
+    (a : Nat) (h cov norm : SmoothRiemannianMetric I M) (x : M) : Real :=
+  Real.sqrt
+    (Tensor0SBundle.normSq0S (I := I) norm x (a + 2)
+      (metricCovDeriv (I := I) h cov a x))
+
 noncomputable def metricCovDerivNormSupOn
     (K : Set M) (p : Nat)
     (h gRef : SmoothRiemannianMetric I M) : Real :=

@@ -2788,6 +2788,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.ConnectionComparison
 import DifferentialGeometry.Geometry.Metric.Convergence.ComponentSubsequence
 import DifferentialGeometry.Geometry.Metric.Convergence.ComponentCompactness
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivativeBound
+import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.CanonicalCompatibility
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Completeness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Conclusion
@@ -2841,6 +2842,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 import DifferentialGeometry.Geometry.Metric.Convergence.MetricTowerConvergence
+import DifferentialGeometry.Geometry.Metric.Convergence.MetricCloseness
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeRestriction
 import DifferentialGeometry.Geometry.Metric.Convergence.PullbackCross
