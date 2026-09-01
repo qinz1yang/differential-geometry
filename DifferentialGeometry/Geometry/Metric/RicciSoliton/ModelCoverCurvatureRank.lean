@@ -44,7 +44,6 @@ theorem not_solitonModelCovering_gaussian_and_roundThreeSphere
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     {gaussianCover : EuclideanSpace Real (Fin 3) → M}
     {sphereCover : Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1 → M}
-    (hdim : Module.finrank Real E = 3)
     (hGaussian : solitonModelCovering
       (euclideanMetric (E := EuclideanSpace Real (Fin 3)))
       (gaussianPotential (E := EuclideanSpace Real (Fin 3))) g f gaussianCover)
@@ -56,8 +55,7 @@ theorem not_solitonModelCovering_gaussian_and_roundThreeSphere
   obtain ⟨xSphere, hxSphere⟩ :=
     solitonModelCovering_surjective hSphere (gaussianCover xGaussian)
   have hdimAt (y : M) : Module.finrank Real (TangentSpace I y) = 3 := by
-    change Module.finrank Real E = 3
-    exact hdim
+    exact solitonModelCovering_target_tangent_finrank_eq hGaussian (by simp) y
   have hGaussianRank :=
     solitonModelCovering_metricCurvatureOperatorRankAt_eq hGaussian xGaussian
       (by change Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3; simp)
@@ -84,7 +82,6 @@ theorem not_solitonModelCovering_gaussian_and_roundThreeCylinder
     {gaussianCover : EuclideanSpace Real (Fin 3) → M}
     {cylinderCover :
       Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → M}
-    (hdim : Module.finrank Real E = 3)
     (hGaussian : solitonModelCovering
       (euclideanMetric (E := EuclideanSpace Real (Fin 3)))
       (gaussianPotential (E := EuclideanSpace Real (Fin 3))) g f gaussianCover)
@@ -96,8 +93,7 @@ theorem not_solitonModelCovering_gaussian_and_roundThreeCylinder
   obtain ⟨xCylinder, hxCylinder⟩ :=
     solitonModelCovering_surjective hCylinder (gaussianCover xGaussian)
   have hdimAt (y : M) : Module.finrank Real (TangentSpace I y) = 3 := by
-    change Module.finrank Real E = 3
-    exact hdim
+    exact solitonModelCovering_target_tangent_finrank_eq hGaussian (by simp) y
   have hGaussianRank :=
     solitonModelCovering_metricCurvatureOperatorRankAt_eq hGaussian xGaussian
       (by change Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3; simp)
@@ -135,7 +131,6 @@ theorem not_solitonModelCovering_roundThreeSphere_and_roundThreeCylinder
     {sphereCover : Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1 → M}
     {cylinderCover :
       Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → M}
-    (hdim : Module.finrank Real E = 3)
     (hSphere : solitonModelCovering roundThreeSphereShrinkerMetric
       roundThreeSphereShrinkerPotential g f sphereCover)
     (hCylinder : solitonModelCovering roundThreeCylinderShrinkerMetric
@@ -147,8 +142,7 @@ theorem not_solitonModelCovering_roundThreeSphere_and_roundThreeCylinder
   obtain ⟨xCylinder, hxCylinder⟩ :=
     solitonModelCovering_surjective hCylinder (sphereCover xSphere)
   have hdimAt (y : M) : Module.finrank Real (TangentSpace I y) = 3 := by
-    change Module.finrank Real E = 3
-    exact hdim
+    exact solitonModelCovering_target_tangent_finrank_eq hSphere (by simp) y
   have hSphereRank :=
     solitonModelCovering_metricCurvatureOperatorRankAt_eq hSphere xSphere
       (by change Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3; simp)

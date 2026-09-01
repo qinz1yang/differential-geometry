@@ -87,6 +87,21 @@ theorem compactSpace_of_solitonModelCovering
   rw [← Set.range_eq_univ.mpr (solitonModelCovering_surjective hπ)]
   exact isCompact_range (solitonModelCovering_contMDiff hπ).continuous
 
+theorem solitonModelCovering_target_tangent_finrank_eq
+    {n : Nat}
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover)
+    (hdim : Module.finrank Real F = n) (y : M) :
+    Module.finrank Real (TangentSpace I y) = n := by
+  obtain ⟨x, rfl⟩ := solitonModelCovering_surjective hπ y
+  have hfinrank :=
+    ((solitonModelCovering_isLocalDiffeomorph hπ).mfderivToContinuousLinearEquiv
+      (by simp) x).toLinearEquiv.finrank_eq
+  rw [← hfinrank]
+  change Module.finrank Real F = n
+  exact hdim
+
 theorem solitonModelCovering_isCoveringMap
     {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {cover : N → M}
