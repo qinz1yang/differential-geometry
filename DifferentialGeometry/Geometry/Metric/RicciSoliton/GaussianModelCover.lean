@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverGaussian
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.GaussianRigidity
 
 set_option autoImplicit false
 
@@ -101,5 +102,19 @@ theorem exists_solitonModelCovering_of_isGaussianGradientRicciSoliton
     change f (Ψ.symm x) + b = gaussianPotential (Ψ (Ψ.symm x)) at hx
     rw [Ψ.apply_symm_apply, hb, add_zero] at hx
     exact hx.symm
+
+theorem exists_solitonModelCovering_of_normalizedGradientRicciSoliton_of_scalar_eq_zero
+    [NeZero (Module.finrank Real E)]
+    [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : metricScalarAt (I := I) g x = 0) :
+    ∃ cover : E → M,
+      solitonModelCovering (euclideanMetric (E := E))
+        (gaussianPotential (E := E)) g f cover := by
+  apply exists_solitonModelCovering_of_isGaussianGradientRicciSoliton
+    (I := I) h
+  exact normalizedGradientRicciSoliton_isGaussian_of_scalar_eq_zero
+    (I := I) h hx
 
 end DifferentialGeometry.Geometry
