@@ -1,7 +1,9 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationDefs
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeRestriction
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
-
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.OpensRestrict
 
 open DifferentialGeometry.Geometry.Curvature
 

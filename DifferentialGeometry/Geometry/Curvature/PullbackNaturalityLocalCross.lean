@@ -48,7 +48,7 @@ theorem rm04_localPull
   let V : Opens N :=
     ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hU⟩
   let Ψ : Diffeomorph I J U V ∞ :=
-    DifferentialGeometry.PartialDiffeomorph.toOpensDiffeoCross Φ hU
+    DifferentialGeometry.PartialDiffeomorph.toOpensDiffeo Φ hU
   let xu : U := ⟨x, hxΦ⟩
   let toU (v : TangentSpace I x) : TangentSpace I xu :=
     (tangentSpaceModelContinuousLinearEquiv (I := I) xu).symm
@@ -77,7 +77,7 @@ theorem rm04_localPull
       mfderiv I J (Ψ : U → V) y v =
         mfderiv I J (Φ : M → N) (y : M) v := by
     simpa only [Ψ] using
-      DifferentialGeometry.PartialDiffeomorph.mfderiv_toOpensDiffeoCross Φ hU y v
+      DifferentialGeometry.PartialDiffeomorph.mfderiv_toOpensDiffeo Φ hU y v
   have hΨdAmbient (y : U) (v : TangentSpace I y) :
       mfderiv J J (Subtype.val : V → N) (Ψ y)
           (mfderiv I J (Ψ : U → V) y v) =

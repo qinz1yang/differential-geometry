@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PullbackTowerBounds
-
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PullbackFieldConstruction
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

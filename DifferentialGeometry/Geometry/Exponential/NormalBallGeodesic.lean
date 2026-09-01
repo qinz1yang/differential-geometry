@@ -46,7 +46,7 @@ noncomputable def innerDiffeo {p : M}
     apply Opens.ext
     rfl
   rw [← hV]
-  exact PartialDiffeomorph.toOpensDiffeoCross c.restrictBall hsub
+  exact PartialDiffeomorph.toOpensDiffeo c.restrictBall hsub
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
   [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -82,7 +82,7 @@ private theorem innerDiffeo_mfd {p : M}
         (c.innerDiffeo : c.inner → c.innerImage) z v =
       mfderiv (modelWithCornersSelf Real E) I
         (fun u : E => c.hom u) (z : E) v := by
-  have h := PartialDiffeomorph.mfderiv_toOpensDiffeoCross c.restrictBall
+  have h := PartialDiffeomorph.mfderiv_toOpensDiffeo c.restrictBall
     (by
       convert! c.inner_subset using 1) z v
   convert! h using 1

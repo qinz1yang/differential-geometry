@@ -60,7 +60,7 @@ noncomputable def ballDiffeo {p : M}
     change c.restrictBall '' c.restrictBall.source = c.restrictBall.target
     exact c.restrictBall.toPartialEquiv.image_source_eq_target
   rw [← hV]
-  exact PartialDiffeomorph.toOpensDiffeoCross c.restrictBall hsub
+  exact PartialDiffeomorph.toOpensDiffeo c.restrictBall hsub
 
 omit [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in

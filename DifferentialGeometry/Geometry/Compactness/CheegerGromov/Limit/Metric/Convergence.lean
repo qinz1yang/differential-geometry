@@ -303,7 +303,7 @@ def ambientCGConverges
       change mfderiv I I
         (PartialDiffeomorph.liftTargetOpen (S.inclPartialDiffeo k) rfl :
           (limitPointedCoc S O₀ gInf hgInf).M → M (j₀ + k)) z v = _
-      exact PartialDiffeomorph.liftOpen_mfderiv
+      exact PartialDiffeomorph.mfderiv_liftTargetOpen
         (S.inclPartialDiffeo k) rfl hxSource v
     have hmapw : mfderiv I I (Φ.map k) z w =
         mfderiv I I
@@ -312,7 +312,7 @@ def ambientCGConverges
       change mfderiv I I
         (PartialDiffeomorph.liftTargetOpen (S.inclPartialDiffeo k) rfl :
           (limitPointedCoc S O₀ gInf hgInf).M → M (j₀ + k)) z w = _
-      exact PartialDiffeomorph.liftOpen_mfderiv
+      exact PartialDiffeomorph.mfderiv_liftTargetOpen
         (S.inclPartialDiffeo k) rfl hxSource w
     rw [hFx, hmapv, hmapw]
     rfl

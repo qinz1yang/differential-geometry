@@ -75,7 +75,7 @@ theorem geoEq_map_localIso
   let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen J V.isOpen)
   let Ψ : Diffeomorph I J U V ∞ :=
-    PartialDiffeomorph.toOpensDiffeoCross Φ hUΦ
+    PartialDiffeomorph.toOpensDiffeo Φ hUΦ
   let γtU : U := ⟨γ t, htΦ⟩
   let γU : ℝ → U := fun s =>
     if hs : γ s ∈ (U : Set M) then ⟨γ s, hs⟩ else γtU
@@ -125,8 +125,8 @@ theorem geoEq_map_localIso
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       Diffeomorph.pullbackMetricCross_inner,
       SmoothRiemannianMetric.restrictOpen_inner,
-      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
-      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
+      PartialDiffeomorph.mfderiv_toOpensDiffeo,
+      PartialDiffeomorph.mfderiv_toOpensDiffeo,
       hΦmfd x]
     change g.inner (x : M) v w =
       g'.inner ((Ψ x : V) : N)
@@ -204,7 +204,7 @@ theorem geoEq_of_map_localIso
   let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen J V.isOpen)
   let Ψ : Diffeomorph I J U V ∞ :=
-    PartialDiffeomorph.toOpensDiffeoCross Φ hUΦ
+    PartialDiffeomorph.toOpensDiffeo Φ hUΦ
   let γtU : U := ⟨γ t, htΦ⟩
   let γU : ℝ → U := fun s =>
     if hs : γ s ∈ (U : Set M) then ⟨γ s, hs⟩ else γtU
@@ -241,8 +241,8 @@ theorem geoEq_of_map_localIso
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       Diffeomorph.pullbackMetricCross_inner,
       SmoothRiemannianMetric.restrictOpen_inner,
-      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
-      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
+      PartialDiffeomorph.mfderiv_toOpensDiffeo,
+      PartialDiffeomorph.mfderiv_toOpensDiffeo,
       hΦmfd x]
     change g.inner (x : M) v w =
       g'.inner ((Ψ x : V) : N)

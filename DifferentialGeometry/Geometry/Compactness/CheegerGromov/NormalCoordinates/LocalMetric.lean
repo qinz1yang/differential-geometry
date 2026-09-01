@@ -87,7 +87,7 @@ noncomputable def normalQuarterDiffeo
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   unfold normalQuarterImage
-  exact PartialDiffeomorph.toOpensDiffeoCross (normalExpPD (I := I) Y x)
+  exact PartialDiffeomorph.toOpensDiffeo (normalExpPD (I := I) Y x)
     (normalQuarter_sub (I := I) Y x)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -162,7 +162,7 @@ theorem quarterDiffeo_mfd
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  have h := PartialDiffeomorph.mfderiv_toOpensDiffeoCross
+  have h := PartialDiffeomorph.mfderiv_toOpensDiffeo
     (normalExpPD (I := I) Y x) (normalQuarter_sub (I := I) Y x) z
       ((tangentSpaceModelContinuousLinearEquiv
         (I := modelWithCornersSelf Real E) z).symm v)

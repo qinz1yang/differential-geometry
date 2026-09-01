@@ -202,7 +202,8 @@ def ballSystem
       (Ψ j) (hsrc j) (hmap j))
     (fun j => PartialDiffeomorph.opensMap_contMDiff (I := I) (M := M j) (N := M (j + 1))
       (Ψ j) (hsrc j) (hmap j))
-    (fun j => PartialDiffeomorph.opensMap_inv_mdiff (I := I) (M := M j) (N := M (j + 1))
+    (fun j => PartialDiffeomorph.opensMap_invFun_contMDiffOn
+      (I := I) (M := M j) (N := M (j + 1))
       (Ψ j) (hsrc j) (hmap j))
 
 def ballPullbackMetric {j l : ℕ}
@@ -231,8 +232,8 @@ theorem ballPullback_inner {j l : ℕ}
     PartialDiffeomorph.toOpensDiffeo Φ hU
   rw [ballPullbackMetric, Diffeomorph.pullbackMetric_inner,
     SmoothRiemannianMetric.restrictOpen_inner]
-  rw [PartialDiffeomorph.opensDiffeo_mfderiv Φ hU x v,
-    PartialDiffeomorph.opensDiffeo_mfderiv Φ hU x w]
+  rw [PartialDiffeomorph.mfderiv_toOpensDiffeo Φ hU x v,
+    PartialDiffeomorph.mfderiv_toOpensDiffeo Φ hU x w]
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [∀ j, SigmaCompactSpace (M j)]
@@ -288,8 +289,8 @@ theorem ballPullback_trans {j l m : ℕ}
   change _ = (Diffeomorph.pullbackMetric (I := I)
     (ballPullbackMetric Θ W hnext g) F).inner x v w
   rw [Diffeomorph.pullbackMetric_inner, ballPullback_inner,
-    PartialDiffeomorph.opensDiffeo_mfderiv,
-    PartialDiffeomorph.opensDiffeo_mfderiv]
+    PartialDiffeomorph.mfderiv_toOpensDiffeo,
+    PartialDiffeomorph.mfderiv_toOpensDiffeo]
   have hΦd : MDifferentiableAt I I (Φ : M j → M l) (x : M j) :=
     (Φ.contMDiffOn_toFun.contMDiffAt
       (Φ.open_source.mem_nhds (hU x.2))).mdifferentiableAt (by decide)
@@ -453,8 +454,8 @@ theorem chainPullback_step
           (mfderiv I I F x v) (mfderiv I I F x w)
       unfold nestedBallPullback
       rw [Diffeomorph.pullbackMetric_inner, ballPullback_inner, ballPullback_inner,
-        PartialDiffeomorph.opensDiffeo_mfderiv,
-        PartialDiffeomorph.opensDiffeo_mfderiv,
+        PartialDiffeomorph.mfderiv_toOpensDiffeo,
+        PartialDiffeomorph.mfderiv_toOpensDiffeo,
         PartialDiffeomorph.opensMap_mfderiv (hU := hU 1),
         PartialDiffeomorph.opensMap_mfderiv (hU := hU 1)]
       rfl
@@ -477,7 +478,7 @@ noncomputable def chainBallSystem
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1) (hU n 1) (hmap n))
     (fun n => PartialDiffeomorph.opensMap_contMDiff
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1) (hU n 1) (hmap n))
-    (fun n => PartialDiffeomorph.opensMap_inv_mdiff
+    (fun n => PartialDiffeomorph.opensMap_invFun_contMDiffOn
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1) (hU n 1) (hmap n))
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [∀ (j : ℕ), SigmaCompactSpace (M j)]

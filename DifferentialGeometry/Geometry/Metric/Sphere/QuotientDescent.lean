@@ -152,7 +152,7 @@ noncomputable def ofLocal
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen (𝓡 n) W.2)
   let e : V ≃ₘ⟮𝓡 n, 𝓡 n⟯ W :=
-    PartialDiffeomorph.toOpensDiffeoCross Φ (by exact Subset.rfl)
+    PartialDiffeomorph.toOpensDiffeo Φ (by exact Subset.rfl)
   refine
     { W := W
       V := V

@@ -175,7 +175,7 @@ noncomputable def normalBallDiffeo
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   unfold normalImage
-  exact PartialDiffeomorph.toOpensDiffeoCross (normalExpPD (I := I) Y x)
+  exact PartialDiffeomorph.toOpensDiffeo (normalExpPD (I := I) Y x)
     (normalBall_sub (I := I) Y x)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -247,7 +247,7 @@ private theorem ballDiffeo_mfd
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  have h := PartialDiffeomorph.mfderiv_toOpensDiffeoCross
+  have h := PartialDiffeomorph.mfderiv_toOpensDiffeo
     (normalExpPD (I := I) Y x) (normalBall_sub (I := I) Y x) z
       ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v)
   rw [show (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) =
