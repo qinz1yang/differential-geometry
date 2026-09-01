@@ -221,6 +221,17 @@ theorem Diffeomorph.pullbackMetricCross_inner
       = g.inner (Φ x) (mfderiv I J Φ x v) (mfderiv I J Φ x w) :=
   pullbackInnerCross_eval g Φ x v w
 
+theorem Diffeomorph.pullbackMetricCross_eq_pullbackMetric
+    {P : Type*} [TopologicalSpace P] [ChartedSpace H P]
+    [IsManifold I ∞ P] [T2Space M]
+    (g : SmoothRiemannianMetric I P) (Φ : M ≃ₘ⟮I, I⟯ P) :
+    Diffeomorph.pullbackMetricCross g Φ =
+      Diffeomorph.pullbackMetric g Φ := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [Diffeomorph.pullbackMetricCross_inner,
+    Diffeomorph.pullbackMetric_inner]
+
 theorem Diffeomorph.pullbackMetricCross_refl
     [T2Space M]
     (g : SmoothRiemannianMetric I M) :
