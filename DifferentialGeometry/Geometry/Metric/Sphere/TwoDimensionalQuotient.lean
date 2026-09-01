@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.FreeOrthogonalAction
+import DifferentialGeometry.Geometry.Metric.Sphere.PositiveSpaceForm
 import DifferentialGeometry.Geometry.Metric.Sphere.QuotientDescent
 import DifferentialGeometry.Topology.ProjectiveSpace.Real
 
@@ -7,8 +8,11 @@ set_option autoImplicit false
 noncomputable section
 
 open Bundle Metric
+open scoped ContDiff Manifold
 
 namespace DifferentialGeometry.Geometry
+
+open Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -207,5 +211,34 @@ theorem RoundQuotientData.homeomorphic_two_sphere_or_real_projective_plane
     obtain ⟨e, he⟩ := hprojective
     exact ⟨e, fun x => by
       simpa only [realProjectivePlaneQuotientMap] using he x⟩
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
+  [FiniteDimensional Real F]
+variable {G : Type*} [TopologicalSpace G]
+variable {J : ModelWithCorners Real F G}
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+variable [SigmaCompactSpace N] [T2Space N]
+
+theorem homeomorphic_two_sphere_or_real_projective_plane_of_constant_positive_sectional_curvature
+    (hcompact : CompactSpace N) (hconn : ConnectedSpace N)
+    (hbdry : J.Boundaryless) (hdim : Module.finrank Real F = 2)
+    (g : SmoothRiemannianMetric J N) (c : Real) (hc : 0 < c)
+    (hsec : ∀ x : N, ∀ v w : TangentSpace J x,
+      metricRm04StdAt (I := J) (M := N) g x v w w v =
+        c * (g.inner x v v * g.inner x w w -
+          g.inner x v w * g.inner x v w)) :
+    Nonempty (sphere
+        (0 : EuclideanSpace Real (Fin 3)) 1 ≃ₜ N) ∨
+      Nonempty (RealProjectivePlane ≃ₜ N) := by
+  let q := constPosQuotientOfFinrank
+    (I := J) (M := N) (n := 2) (by omega)
+    hcompact hconn hbdry hdim g c hc hsec
+  rcases q.1.homeomorphic_two_sphere_or_real_projective_plane with hsphere | hprojective
+  · left
+    obtain ⟨e, _he⟩ := hsphere
+    exact ⟨e.trans q.2.symm.toHomeomorph⟩
+  · right
+    obtain ⟨e, _he⟩ := hprojective
+    exact ⟨e.trans q.2.symm.toHomeomorph⟩
 
 end DifferentialGeometry.Geometry
