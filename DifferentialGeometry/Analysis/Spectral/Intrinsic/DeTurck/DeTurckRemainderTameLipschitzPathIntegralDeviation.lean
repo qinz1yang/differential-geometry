@@ -47,7 +47,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieArmChartValue
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckLieThreeArmDerivative
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrectionTameBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzMetricPrincipalDefectTotalCurvatureFold
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.CurvatureFold
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.Deviation
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.InverseMetricDifference
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -119,177 +121,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
-
-private lemma convexCombination_le_fw {a b c t : ℝ} (ha : a ≤ c) (hb : b ≤ c)
-    (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
-    (1 - t) * a + t * b ≤ c := by
-  nlinarith
-
-private lemma convexCombination_nonneg_fw {a b t : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
-    (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
-    0 ≤ (1 - t) * a + t * b := by
-  exact add_nonneg (mul_nonneg (sub_nonneg.mpr ht1) ha) (mul_nonneg ht0 hb)
-
-omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
-private theorem metricPerturbationPath_inverseMetricDifferenceSlotCoefficient_riemannianFiberNormSq_le_fw
-    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (hδ₀_nn : 0 ≤ δ₀)
-    (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_le : δ ≤ δ₀)
-    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_le : δ' ≤ δ₀)
-    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ T') δ')
-    {βT βT' : ℝ} (hβT_nn : 0 ≤ βT) (hβT'_nn : 0 ≤ βT')
-    (hβT : metricCauchySchwarzBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ T) βT)
-    (hβT' : metricCauchySchwarzBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ T') βT')
-    (t : ℝ) (ht : t ∈ Set.Icc (0 : ℝ) 1) (x : M) :
-    riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((inverseMetricDifferenceSlotCoefficient (I := I) g₀
-          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t)).toSection x) ≤
-      ((Module.finrank ℝ E : ℝ) * (max βT βT' / (1 - δ₀))) ^ 2 := by
-  set g₁ := metricPerturbationPath (I := I) g₀ T T' hδ hδ' t with hg₁_def
-  set δc : ℝ := min ((1 - t) * βT' + t * βT) δ₀ with hδc_def
-  have hβconv : metricCauchySchwarzBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' t))
-      ((1 - t) * βT' + t * βT) :=
-    convexPerturbation_gFibreOpBound (I := I) g₀ T T' hβT hβT' ht.1 ht.2
-  have hδconv : metricCauchySchwarzBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' t))
-      ((1 - t) * δ' + t * δ) :=
-    convexPerturbation_gFibreOpBound (I := I) g₀ T T' hδ hδ' ht.1 ht.2
-  have hδ₀b : metricCauchySchwarzBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' t)) δ₀ :=
-    metricCauchySchwarzBound_mono (I := I) (M := M) g₀ _
-      (convexCombination_le_fw hδ'_le hδ_le ht.1 ht.2) hδconv
-  have hmin : metricCauchySchwarzBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' t)) δc :=
-    metricCauchySchwarzBound_min (I := I) (M := M) g₀ _ hβconv hδ₀b
-  have hδc_nn : 0 ≤ δc :=
-    le_min (convexCombination_nonneg_fw hβT'_nn hβT_nn ht.1 ht.2) hδ₀_nn
-  have hδc_lt : δc < 1 := lt_of_le_of_lt (min_le_right _ _) hδ₀
-  have htmem : t ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
-    Icc_subset_metricPerturbationPathDomain (lt_of_le_of_lt hδ_le hδ₀)
-      (lt_of_le_of_lt hδ'_le hδ₀) ht
-  have htie : ∀ (y : M) (v w : TangentSpace I y),
-      g₁.inner y v w = g₀.inner y v w +
-        ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' t) y v w := by
-    intro y v w
-    rw [hg₁_def]
-    exact metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' htmem y v w
-  have hendo :=
-    DifferentialGeometry.Analysis.Sobolev.TensorHilbert.riemannianFiberNormSq_gInvDiffSlotEndo_le
-      (I := I) (M := M) g₀ g₁ _ htie hδc_lt hδc_nn hmin x
-  have hslot : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-      ((inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x) ≤
-      ((Module.finrank ℝ E : ℝ) * (δc / (1 - δc))) ^ 2 := by
-    rw [show (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x =
-        (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM
-          (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.metricComparisonDifferenceSlotEndo
-            (I := I) g₀ g₁ x)) from rfl]
-    exact hendo
-  have hmaxβ_nn : 0 ≤ max βT βT' := le_trans hβT_nn (le_max_left _ _)
-  have hδc_le : δc ≤ max βT βT' :=
-    (min_le_left _ _).trans
-      (convexCombination_le_fw (le_max_right _ _) (le_max_left _ _) ht.1 ht.2)
-  have hdenom : 1 - δ₀ ≤ 1 - δc := sub_le_sub_left (min_le_right _ _) 1
-  have hratio : δc / (1 - δc) ≤ max βT βT' / (1 - δ₀) :=
-    div_le_div₀ hmaxβ_nn hδc_le (sub_pos.mpr hδ₀) hdenom
-  refine hslot.trans (pow_le_pow_left₀
-    (mul_nonneg (Nat.cast_nonneg _) (div_nonneg hδc_nn (sub_nonneg.mpr hδc_lt.le)))
-    (mul_le_mul_of_nonneg_left hratio (Nat.cast_nonneg _)) 2)
-
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-omit [I.Boundaryless] in
-private theorem deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient_fw
-    (g₀ g₁ : SmoothRiemannianMetric I M) (CTH CR : ℝ) (x : M)
-    (hTH : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-        ((traceHessianCoeff (I := I) (M := M) g₀ g₁
-          - traceHessianCoeff (I := I) (M := M) g₀ g₀).toSection x) ≤
-      CTH * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x))
-    (hR : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-        ((ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
-          - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀).toSection x) ≤
-      CR * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x)) :
-    riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-        ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁
-          - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x) ≤
-      (8 * CTH + 8 * CR) * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x) := by
-  set ρA : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
-  set ρAT : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT
-  set DTHs : SmoothCcTensor g₀ 4 2 :=
-    traceHessianCoeff (I := I) (M := M) g₀ g₁
-      - traceHessianCoeff (I := I) (M := M) g₀ g₀
-  set DRs : SmoothCcTensor g₀ 4 2 :=
-    ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
-      - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀
-  have hdev : deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁
-        - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT
-        - (DRs + DRs) := by
-    rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₁,
-      deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
-      reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρA,
-      reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρAT]
-    dsimp [ρA, ρAT, DTHs, DRs]
-    abel
-  have h0 : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-        ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁
-          - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x) ≤
-      4 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-          ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x)
-        + 4 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-          ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
-        + 8 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DRs.toSection x) := by
-    have hsection :
-        ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-            + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT
-            - (DRs + DRs)).toSection x) =
-          (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-              + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x
-            - (DRs + DRs).toSection x := by
-      rw [SmoothCcTensor.toSection_sub]
-      rfl
-    rw [hdev, hsection]
-    have h1 := riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 4 2 x
-      ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
-      ((DRs + DRs).toSection x)
-    have h2 := lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 4 2
-      (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA)
-      (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT) x
-    have h3 := lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 4 2 DRs DRs x
-    linarith
-  have hAr : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-      ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x) =
-      riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DTHs.toSection x) := by
-    rw [reindexCoeffGen_toSection]
-    exact
-      Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_reindexCoeffFibGen
-      (I := I) (M := M) g₀ 4 2 x ρA
-      (show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-        DTHs.toSection x)
-  have hATr : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-      ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x) =
-      riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DTHs.toSection x) := by
-    rw [reindexCoeffGen_toSection]
-    exact
-      Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_reindexCoeffFibGen
-      (I := I) (M := M) g₀ 4 2 x ρAT
-      (show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-        DTHs.toSection x)
-  rw [hAr, hATr] at h0
-  change riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DTHs.toSection x) ≤ _ at hTH
-  change riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DRs.toSection x) ≤ _ at hR
-  linarith
 
 theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -525,9 +356,9 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
             ((inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x) := by
         have h := hCR g₁ 0 x
         simpa using h
-      have hdev := deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient_fw
+      have hdev := deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
         (I := I) (M := M) g₀ g₁ (CTH 0) (CR 0) x hTH0 hR0
-      have hslot := metricPerturbationPath_inverseMetricDifferenceSlotCoefficient_riemannianFiberNormSq_le_fw
+      have hslot := metricPerturbationPath_inverseMetricDifferenceSlotCoefficient_riemannianFiberNormSq_le
         (I := I) (M := M) g₀ hδ₀ hδ₀_nn T T' hδ_le hδ hδ'_le hδ'
           hβT_nn hβT'_nn hβT hβT' t ht x
       have hdev' : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
