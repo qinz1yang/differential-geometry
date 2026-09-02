@@ -123,6 +123,15 @@ theorem normalizedGradientRicciSoliton_potential_equation
         g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x) = f x := by
   simpa only [normGradSqFun_def] using h.2.2 x
 
+theorem normalizedGradientRicciSoliton_potential_eq_metricScalarAt_of_gradient_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f) (x : M)
+    (hgrad : gradFun (I := I) g f x = 0) :
+    f x = metricScalarAt (I := I) g x := by
+  have hpotential := normalizedGradientRicciSoliton_potential_equation (I := I) h x
+  rw [hgrad] at hpotential
+  simpa using hpotential.symm
+
 theorem normalizedGradientRicciSoliton_scalar_nonneg
     [NeZero (Module.finrank Real E)] [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}

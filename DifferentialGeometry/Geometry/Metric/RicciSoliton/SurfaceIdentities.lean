@@ -208,6 +208,41 @@ theorem normalizedGradientRicciSoliton_exists_scalar_eq_const_mul_exp_of_finrank
   exact normalizedGradientRicciSoliton_gradient_scalar_of_finrank_eq_two
     (I := I) h hdim x
 
+theorem normalizedGradientRicciSoliton_metricScalarAt_mul_exp_neg_eq_of_finrank_eq_two_of_gradient_eq_zero
+    [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2) (x y : M)
+    (hgradx : gradFun (I := I) g f x = 0)
+    (hgrady : gradFun (I := I) g f y = 0) :
+    metricScalarAt (I := I) (M := M) g x *
+        Real.exp (-metricScalarAt (I := I) (M := M) g x) =
+      metricScalarAt (I := I) (M := M) g y *
+        Real.exp (-metricScalarAt (I := I) (M := M) g y) := by
+  obtain ⟨a, ha⟩ :=
+    normalizedGradientRicciSoliton_exists_scalar_eq_const_mul_exp_of_finrank_eq_two
+      (I := I) h hdim
+  have hfx :=
+    normalizedGradientRicciSoliton_potential_eq_metricScalarAt_of_gradient_eq_zero
+      (I := I) h x hgradx
+  have hfy :=
+    normalizedGradientRicciSoliton_potential_eq_metricScalarAt_of_gradient_eq_zero
+      (I := I) h y hgrady
+  calc
+    metricScalarAt (I := I) (M := M) g x *
+          Real.exp (-metricScalarAt (I := I) (M := M) g x) =
+        metricScalarAt (I := I) (M := M) g x * Real.exp (-(f x)) := by
+      rw [hfx]
+    _ = a := by
+      rw [ha x, Real.exp_neg]
+      field_simp
+    _ = metricScalarAt (I := I) (M := M) g y * Real.exp (-(f y)) := by
+      rw [ha y, Real.exp_neg]
+      field_simp
+    _ = metricScalarAt (I := I) (M := M) g y *
+          Real.exp (-metricScalarAt (I := I) (M := M) g y) := by
+      rw [hfy]
+
 theorem normalizedGradientRicciSoliton_potential_eq_one_of_finrank_eq_two_of_scalar_eq_one_of_gradient_eq_zero
     [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
