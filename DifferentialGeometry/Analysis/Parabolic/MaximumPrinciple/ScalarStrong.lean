@@ -1669,6 +1669,343 @@ private theorem time_dependent_metric_strong_maximum_principle_of_barrier
   · exact hdom
   · exact hy
 
+theorem exists_spatial_barrier_positive_at
+    [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T : Real} (hT : 0 < T)
+    (X : Real → (x : M) → TangentSpace I x)
+    (hgrad_cont : ∀ (rho : M → Real),
+      ContMDiff I 𝓘(Real, Real) ∞ rho →
+      ContinuousOn (fun p : Real × M =>
+        (G.metric p.1).inner p.2
+          (gradientFun (I := I) (G.metric p.1) rho p.2)
+          (gradientFun (I := I) (G.metric p.1) rho p.2))
+        (spacetimeSlab (M := M) T))
+    (hheat_cont : ∀ (rho : M → Real),
+      ContMDiff I 𝓘(Real, Real) ∞ rho →
+      ContinuousOn (fun p : Real × M =>
+        heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2)
+        (spacetimeSlab (M := M) T))
+    {c : M} {V : Set M} (hV : V ∈ nhds c)
+    {epsilon : Real} (hepsilon : 0 < epsilon) :
+    ∃ b : M → Real, ∃ C : Real,
+      ContMDiff I 𝓘(Real, Real) ∞ b ∧
+      0 < b c ∧
+      (∀ x : M, b x < epsilon) ∧
+      (∀ x : M, 0 < b x → x ∈ V) ∧
+      0 ≤ C ∧
+      ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 < b x →
+        -C * b x ≤ heatOperatorWithDrift (I := I) G t (X t) b x := by
+  let bump : SmoothBumpFunction I c := Classical.choice inferInstance
+  let chartBound : Real :=
+    ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖ + 1
+  have hchartBound : 0 < chartBound := by
+    dsimp [chartBound]
+    linarith [norm_nonneg
+      (toEuclidean (E := E)).symm.toContinuousLinearMap]
+  let s : Real := bump.rIn / (2 * chartBound)
+  have hs : 0 < s := by
+    dsimp [s]
+    exact div_pos bump.rIn_pos (mul_pos (by norm_num) hchartBound)
+  let Q : Real := s ^ 2
+  have hQ : 0 < Q := sq_pos_of_pos hs
+  have hcsource : c ∈ (chartAt H c).source := mem_chart_source H c
+  obtain ⟨R0, hR0, hR0V⟩ :=
+    exists_strongPropagationRadius_sublevel_subset (I := I)
+      bump hcsource hQ hV
+  let R : Real := min R0 (Q / 2)
+  have hR : 0 < R := lt_min hR0 (half_pos hQ)
+  have hRR0 : R ≤ R0 := min_le_left _ _
+  have hRQ : R < Q :=
+    (min_le_right R0 (Q / 2)).trans_lt (half_lt_self hQ)
+  let rho : M → Real := strongPropagationRadius (I := I) bump c Q
+  have hrho : ContMDiff I 𝓘(Real, Real) ∞ rho :=
+    strongPropagationRadius_contMDiff (I := I) bump Q
+  have hrho_nonneg : ∀ x : M, 0 ≤ rho x :=
+    strongPropagationRadius_nonneg (I := I) bump hQ.le
+  have hrhoc : rho c = 0 := by
+    simp [rho, strongPropagationRadius, strongChartRadiusSq]
+  have hsublevel : ∀ x : M, rho x < R → x ∈ V := by
+    intro x hx
+    exact hR0V (hx.trans_le hRR0)
+  let K : Set M := {x : M | R / 2 ≤ rho x ∧ rho x ≤ R}
+  have hKcompact : IsCompact K := by
+    have hclosed : IsClosed (rho ⁻¹' Set.Icc (R / 2) R) :=
+      isClosed_Icc.preimage hrho.continuous
+    change IsCompact (rho ⁻¹' Set.Icc (R / 2) R)
+    exact hclosed.isCompact
+  have hgrad_ne : ∀ t ∈ Set.Icc 0 T, ∀ x ∈ K,
+      gradientFun (I := I) (G.metric t) rho x ≠ 0 := by
+    intro t ht x hx
+    have hmidR : R < (R + Q) / 2 := by linarith
+    have hmidQ : (R + Q) / 2 < Q := by linarith
+    have hrad := strongPropagationRadius_lt_imp (I := I) bump hmidQ
+      (hx.2.trans_lt hmidR)
+    have hbumpx : bump x ≠ 0 := ne_of_gt hrad.1
+    have hxsource : x ∈ (chartAt H c).source := by
+      apply bump.support_subset_source
+      simpa [Function.mem_support] using hbumpx
+    have hc_dist :
+        dist (extChartAt I c c) (extChartAt I c c) < bump.rIn := by
+      simpa using bump.rIn_pos
+    have hxcore :
+        dist (extChartAt I c x) (extChartAt I c c) < bump.rIn := by
+      apply strongChartRadiusSq_lt_imp_mem_core (I := I) bump hc_dist
+      simpa [Q, s, chartBound] using hrad.2
+    have hxc : x ≠ c := by
+      intro heq
+      subst x
+      change R / 2 ≤ rho c ∧ rho c ≤ R at hx
+      rw [hrhoc] at hx
+      linarith
+    exact strongPropagationRadius_gradient_ne_zero (I := I) (G.metric t)
+      bump hcsource hxsource hxcore hxc Q
+  let q : Real × M → Real := fun p =>
+    (G.metric p.1).inner p.2
+      (gradientFun (I := I) (G.metric p.1) rho p.2)
+      (gradientFun (I := I) (G.metric p.1) rho p.2)
+  let Souter : Set (Real × M) := Set.Icc 0 T ×ˢ K
+  have hSouter_compact : IsCompact Souter := isCompact_Icc.prod hKcompact
+  have hq_cont : ContinuousOn q Souter := by
+    exact (hgrad_cont rho hrho).mono
+      (fun p hp => ⟨hp.1, Set.mem_univ p.2⟩)
+  obtain ⟨m, hm, hq_lower⟩ :
+      ∃ m : Real, 0 < m ∧ ∀ p ∈ Souter, m ≤ q p := by
+    by_cases hKne : K.Nonempty
+    · have hSne : Souter.Nonempty := by
+        obtain ⟨x, hx⟩ := hKne
+        refine ⟨(0, x), ?_⟩
+        change 0 ∈ Set.Icc (0 : Real) T ∧ x ∈ K
+        exact ⟨⟨le_rfl, hT.le⟩, hx⟩
+      obtain ⟨pm, hpm, hpmin⟩ :=
+        hSouter_compact.exists_isMinOn hSne hq_cont
+      have hqm : 0 < q pm := by
+        exact (G.metric pm.1).pos pm.2 _
+          (hgrad_ne pm.1 hpm.1 pm.2 hpm.2)
+      exact ⟨q pm, hqm, hpmin⟩
+    · refine ⟨1, by positivity, ?_⟩
+      intro p hp
+      exact (hKne ⟨p.2, hp.2⟩).elim
+  let ell : Real × M → Real := fun p =>
+    |heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2|
+  have hslab_compact : IsCompact (spacetimeSlab (M := M) T) := by
+    rw [spacetimeSlab]
+    exact isCompact_Icc.prod isCompact_univ
+  have hslab_nonempty : (spacetimeSlab (M := M) T).Nonempty :=
+    ⟨(0, c), ⟨⟨le_rfl, hT.le⟩, Set.mem_univ c⟩⟩
+  have hell_cont : ContinuousOn ell (spacetimeSlab (M := M) T) :=
+    (hheat_cont rho hrho).abs
+  obtain ⟨pB, hpB, hpBmax⟩ :=
+    hslab_compact.exists_isMaxOn hslab_nonempty hell_cont
+  let B : Real := ell pB
+  have hB : 0 ≤ B := by
+    dsimp [B, ell]
+    exact abs_nonneg _
+  have hheat_abs : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
+      |heatOperatorWithDrift (I := I) G t (X t) rho x| ≤ B := by
+    intro t ht x
+    change ell (t, x) ≤ ell pB
+    apply hpBmax
+    exact ⟨ht, Set.mem_univ x⟩
+  let alpha : Real := B / m + 1
+  have halpha : 0 < alpha := by
+    dsimp [alpha]
+    have hdiv := div_nonneg hB hm.le
+    linarith
+  have hBalpha : B ≤ alpha * m := by
+    calc
+      B = B / m * m := (div_mul_cancel₀ B hm.ne').symm
+      _ ≤ (B / m + 1) * m := by nlinarith
+      _ = alpha * m := by rfl
+  let phi : Real → Real := fun z =>
+    epsilon * (Real.exp (-alpha * z) - Real.exp (-alpha * R))
+  have hphi : Differentiable Real phi := by
+    intro z
+    dsimp [phi]
+    fun_prop
+  have hphi_deriv : ∀ z : Real,
+      deriv phi z = -epsilon * alpha * Real.exp (-alpha * z) := by
+    intro z
+    have hlinear : HasDerivAt (fun y : Real => -alpha * y) (-alpha) z := by
+      simpa using (hasDerivAt_id z).const_mul (-alpha)
+    have hderiv := (((Real.hasDerivAt_exp (-alpha * z)).comp z hlinear).sub_const
+      (Real.exp (-alpha * R))).const_mul epsilon
+    have hev : phi =ᶠ[nhds z] fun y : Real =>
+        epsilon * ((Real.exp ∘ HMul.hMul (-alpha)) y - Real.exp (-alpha * R)) :=
+      Filter.Eventually.of_forall fun _ => rfl
+    exact ((hderiv.congr_of_eventuallyEq hev).congr_deriv (by ring)).deriv
+  have hphi_deriv_eq : deriv phi = fun z : Real =>
+      -epsilon * alpha * Real.exp (-alpha * z) :=
+    funext hphi_deriv
+  have hphi_second : ∀ z : Real,
+      deriv (deriv phi) z =
+        epsilon * alpha ^ 2 * Real.exp (-alpha * z) := by
+    intro z
+    rw [hphi_deriv_eq]
+    have hlinear : HasDerivAt (fun y : Real => -alpha * y) (-alpha) z := by
+      simpa using (hasDerivAt_id z).const_mul (-alpha)
+    have hderiv := ((Real.hasDerivAt_exp (-alpha * z)).comp z hlinear).const_mul
+      (-epsilon * alpha)
+    have hev : (fun y : Real => -epsilon * alpha * Real.exp (-alpha * y)) =ᶠ[nhds z]
+        fun y : Real => -epsilon * alpha * (Real.exp ∘ HMul.hMul (-alpha)) y :=
+      Filter.Eventually.of_forall fun _ => rfl
+    exact ((hderiv.congr_of_eventuallyEq hev).congr_deriv (by ring)).deriv
+  let b : M → Real := fun x => phi (rho x)
+  have hb : ContMDiff I 𝓘(Real, Real) ∞ b := by
+    have harg : ContMDiff I 𝓘(Real, Real) ∞
+        (fun x : M => -alpha * rho x) := contMDiff_const.mul hrho
+    change ContMDiff I 𝓘(Real, Real) ∞
+      (fun x : M => epsilon *
+        (Real.exp (-alpha * rho x) - Real.exp (-alpha * R)))
+    exact contMDiff_const.mul
+      ((Real.contDiff_exp.contMDiff.comp harg).sub contMDiff_const)
+  have hbc : 0 < b c := by
+    have harg : -alpha * R < 0 := by nlinarith
+    have hexp : Real.exp (-alpha * R) < 1 :=
+      (Real.exp_lt_one_iff).mpr harg
+    change 0 < epsilon *
+      (Real.exp (-alpha * rho c) - Real.exp (-alpha * R))
+    rw [hrhoc, mul_zero, Real.exp_zero]
+    exact mul_pos hepsilon (sub_pos.mpr hexp)
+  have hb_lt : ∀ x : M, b x < epsilon := by
+    intro x
+    have hexp_le : Real.exp (-alpha * rho x) ≤ 1 := by
+      rw [Real.exp_le_one_iff]
+      exact mul_nonpos_of_nonpos_of_nonneg
+        (neg_nonpos.mpr halpha.le) (hrho_nonneg x)
+    have hexpR : 0 < Real.exp (-alpha * R) := Real.exp_pos _
+    change epsilon *
+      (Real.exp (-alpha * rho x) - Real.exp (-alpha * R)) < epsilon
+    have hdiff : Real.exp (-alpha * rho x) - Real.exp (-alpha * R) < 1 := by
+      linarith
+    nlinarith [mul_pos hepsilon (sub_pos.mpr hdiff)]
+  have hb_pos_imp : ∀ x : M, 0 < b x → rho x < R := by
+    intro x hbx
+    have hdiff : 0 < Real.exp (-alpha * rho x) - Real.exp (-alpha * R) := by
+      change 0 < epsilon *
+        (Real.exp (-alpha * rho x) - Real.exp (-alpha * R)) at hbx
+      rcases mul_pos_iff.mp hbx with h | h
+      · exact h.2
+      · exact (not_lt_of_ge hepsilon.le h.1).elim
+    have harg := Real.exp_lt_exp.mp (sub_pos.mp hdiff)
+    have hscaled : alpha * rho x < alpha * R := by
+      simpa [neg_mul] using neg_lt_neg harg
+    exact lt_of_mul_lt_mul_left hscaled halpha.le
+  have hb_pos_mem : ∀ x : M, 0 < b x → x ∈ V := by
+    intro x hbx
+    exact hsublevel x (hb_pos_imp x hbx)
+  let d : Real := epsilon *
+    (Real.exp (-alpha * (R / 2)) - Real.exp (-alpha * R))
+  have hd : 0 < d := by
+    have harg : -alpha * R < -alpha * (R / 2) := by nlinarith
+    exact mul_pos hepsilon (sub_pos.mpr (Real.exp_lt_exp.mpr harg))
+  let C : Real := epsilon * alpha * B / d
+  have hC : 0 ≤ C := by
+    dsimp [C]
+    positivity
+  have hCd : C * d = epsilon * alpha * B := by
+    dsimp [C]
+    field_simp
+  have hheat_formula : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
+      heatOperatorWithDrift (I := I) G t (X t) b x =
+        epsilon * Real.exp (-alpha * rho x) *
+          (-alpha * heatOperatorWithDrift (I := I) G t (X t) rho x +
+            alpha ^ 2 * q (t, x)) := by
+    intro t ht x
+    have hphi' : DifferentiableAt Real (deriv phi) (rho x) := by
+      rw [hphi_deriv_eq]
+      fun_prop
+    have hchain := heatDrift_comp (I := I) G t (X t)
+      hphi hphi'
+      (fun y => hrho.mdifferentiable (by simp) y)
+      (gradientFun_mdiffAt (I := I) (G.metric t) hrho x)
+    change heatOperatorWithDrift (I := I) G t (X t) b x = _
+    change heatOperatorWithDrift (I := I) G t (X t)
+        (fun y : M => phi (rho y)) x = _ at hchain
+    rw [hchain, hphi_deriv, hphi_second]
+    unfold gradientAt
+    dsimp only [q]
+    ring
+  have hheat_lower : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 < b x →
+      -C * b x ≤ heatOperatorWithDrift (I := I) G t (X t) b x := by
+    intro t ht x hbx
+    have hrhoR := hb_pos_imp x hbx
+    have hheat_le :
+        heatOperatorWithDrift (I := I) G t (X t) rho x ≤ B :=
+      (le_abs_self _).trans (hheat_abs t ht x)
+    rw [hheat_formula t ht x]
+    by_cases hinner : rho x ≤ R / 2
+    · have hexp_mono : Real.exp (-alpha * (R / 2)) ≤
+          Real.exp (-alpha * rho x) := by
+        apply Real.exp_le_exp.mpr
+        nlinarith
+      have hb_lower : d ≤ b x := by
+        change epsilon *
+            (Real.exp (-alpha * (R / 2)) - Real.exp (-alpha * R)) ≤
+          epsilon * (Real.exp (-alpha * rho x) - Real.exp (-alpha * R))
+        exact mul_le_mul_of_nonneg_left
+          (sub_le_sub_right hexp_mono _) hepsilon.le
+      have hCb : C * d ≤ C * b x :=
+        mul_le_mul_of_nonneg_left hb_lower hC
+      have hleft : -C * b x ≤ -(epsilon * alpha * B) := by
+        rw [← hCd]
+        linarith
+      have hexp_le : Real.exp (-alpha * rho x) ≤ 1 := by
+        rw [Real.exp_le_one_iff]
+        exact mul_nonpos_of_nonpos_of_nonneg
+          (neg_nonpos.mpr halpha.le) (hrho_nonneg x)
+      have hneg : -alpha * B ≤ 0 :=
+        calc
+          -alpha * B = -(alpha * B) := by ring
+          _ ≤ 0 := neg_nonpos.mpr (mul_nonneg halpha.le hB)
+      have hscaled_exp : -alpha * B ≤
+          Real.exp (-alpha * rho x) * (-alpha * B) := by
+        simpa only [one_mul] using mul_le_mul_of_nonpos_right hexp_le hneg
+      have hq_nonneg : 0 ≤ q (t, x) := by
+        change 0 ≤ (G.metric t).inner x
+          (gradientFun (I := I) (G.metric t) rho x)
+          (gradientFun (I := I) (G.metric t) rho x)
+        by_cases hzero : gradientFun (I := I) (G.metric t) rho x = 0
+        · rw [hzero]
+          simp
+        · exact ((G.metric t).pos x _ hzero).le
+      have hbracket : -alpha * B ≤
+          -alpha * heatOperatorWithDrift (I := I) G t (X t) rho x +
+            alpha ^ 2 * q (t, x) := by
+        nlinarith [sq_nonneg alpha]
+      have hfactor_nonneg :
+          0 ≤ epsilon * Real.exp (-alpha * rho x) :=
+        mul_nonneg hepsilon.le (Real.exp_pos _).le
+      have hproduct : epsilon * Real.exp (-alpha * rho x) * (-alpha * B) ≤
+          epsilon * Real.exp (-alpha * rho x) *
+            (-alpha * heatOperatorWithDrift (I := I) G t (X t) rho x +
+              alpha ^ 2 * q (t, x)) :=
+        mul_le_mul_of_nonneg_left hbracket hfactor_nonneg
+      calc
+        -C * b x ≤ -(epsilon * alpha * B) := hleft
+        _ = epsilon * (-alpha * B) := by ring
+        _ ≤ epsilon *
+            (Real.exp (-alpha * rho x) * (-alpha * B)) :=
+          mul_le_mul_of_nonneg_left hscaled_exp hepsilon.le
+        _ = epsilon * Real.exp (-alpha * rho x) * (-alpha * B) := by ring
+        _ ≤ epsilon * Real.exp (-alpha * rho x) *
+            (-alpha * heatOperatorWithDrift (I := I) G t (X t) rho x +
+              alpha ^ 2 * q (t, x)) := hproduct
+    · have hxK : x ∈ K := ⟨le_of_not_ge hinner, hrhoR.le⟩
+      have hq_m : m ≤ q (t, x) := hq_lower (t, x) ⟨ht, hxK⟩
+      have hbracket : 0 ≤
+          -alpha * heatOperatorWithDrift (I := I) G t (X t) rho x +
+            alpha ^ 2 * q (t, x) := by
+        nlinarith [sq_nonneg alpha]
+      have hheat_nonneg : 0 ≤ epsilon * Real.exp (-alpha * rho x) *
+          (-alpha * heatOperatorWithDrift (I := I) G t (X t) rho x +
+            alpha ^ 2 * q (t, x)) :=
+        mul_nonneg (mul_nonneg hepsilon.le (Real.exp_pos _).le) hbracket
+      exact (mul_nonpos_of_nonpos_of_nonneg
+        (neg_nonpos.mpr hC) hbx.le).trans hheat_nonneg
+  exact ⟨b, C, hb, hbc, hb_lt, hb_pos_mem, hC, hheat_lower⟩
+
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial_interior_region
     [T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
