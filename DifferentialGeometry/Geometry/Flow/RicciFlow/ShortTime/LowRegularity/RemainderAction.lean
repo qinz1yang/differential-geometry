@@ -2704,7 +2704,7 @@ private theorem rhs_self_decomposition
       (iteratedCovGrad (I := I) g 0 2 2 P)
       (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
       (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 T
-  have hsymm : symmS (I := I) (M := M) g T = T :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g T = T :=
     symm_eq_self (I := I) (M := M) g T hT
   have hpal :
       ricciDecomposition2 (I := I) (M := M) g T hδ hδZ s =
@@ -2716,7 +2716,8 @@ private theorem rhs_self_decomposition
             (Equiv.swap (0 : Fin 4) 2 *
               Equiv.swap (1 : Fin 4) 3) 1 := by
     rw [ricciDecomposition2,
-      riemannC2_eq_kernel (I := I) (M := M) g T hδ hδZ
+      riemannPalatiniDecompositionC2Family_eq_symmS_kernel
+        (I := I) (M := M) g T hδ hδZ
         ricciDecompositionQA ricciDecompositionQB (fun _ => rfl) s,
       hsymm, smul_smul]
     rfl

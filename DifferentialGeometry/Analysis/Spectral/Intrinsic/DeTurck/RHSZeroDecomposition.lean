@@ -1,4 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DecompositionPairingCore
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.RicciFoldKernel
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingDecomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSLowCoeff
 
 noncomputable section
@@ -158,10 +159,11 @@ private lemma ricciDecomposition2_eq
         (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g T)
         (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
         (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 := by
-  have hsymm : symmS (I := I) (M := M) g T = T :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g T = T :=
     symmS_eq_self (I := I) (M := M) g T hT
   rw [ricciDecomposition2,
-    riemannC2_eq_kernel (I := I) (M := M) g T hδ hδZ
+    riemannPalatiniDecompositionC2Family_eq_symmS_kernel
+      (I := I) (M := M) g T hδ hδZ
       ricciDecompositionQA ricciDecompositionQB (fun _ => rfl) s,
     hsymm, smul_smul]
   rfl

@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperato
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.TopOrderSeparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RemainderAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderAction
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCoefficientIdentity
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCometricExtraction
 
 noncomputable section
 
@@ -3951,7 +3951,8 @@ private theorem metricPrincipalDefect_diff_eq
             (Equiv.swap (0 : Fin 2) 1) PT) koszulSlotPerm -
         PT := by
     simpa only [RT, R0, PT] using
-      ricci2_pcc_eq (I := I) (M := M) g gT
+      ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
+        (I := I) (M := M) g gT
   have hRU0 : (RU - R0) + (RU - R0) =
       reindexCoeffGen (I := I) (M := M) g 4 2 PU koszulSlotPerm +
         reindexCoeffGen (I := I) (M := M) g 4 2
@@ -3959,7 +3960,8 @@ private theorem metricPrincipalDefect_diff_eq
             (Equiv.swap (0 : Fin 2) 1) PU) koszulSlotPerm -
         PU := by
     simpa only [RU, R0, PU] using
-      ricci2_pcc_eq (I := I) (M := M) g gU
+      ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
+        (I := I) (M := M) g gU
   have hR : (RT + RT) - (RU + RU) =
       ricci2Diff (I := I) (M := M) g gT gU := by
     rw [pair_base_alg RT RU R0,

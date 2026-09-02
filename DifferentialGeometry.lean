@@ -3404,7 +3404,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.ArmJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.ProductBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.LieCorrectionJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.Marked
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCoefficientIdentity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRHSRepresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.FirstOrderCommutator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.FirstOrderLowerScalePairing
@@ -3454,7 +3453,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSDecomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSDecompositionPathIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSDecompositionSecondOrderTameBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSZeroDecomposition
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DecompositionPairingCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciTopOrderCoefficientBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SelfActionBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSLowCoeff

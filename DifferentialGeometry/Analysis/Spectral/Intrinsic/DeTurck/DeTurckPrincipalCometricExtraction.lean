@@ -752,7 +752,7 @@ private lemma combinedTrace42Model_apply_symbolic
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindexSum
+theorem ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
           - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)
@@ -810,7 +810,8 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_ricciDeTurckPrincipalCoeffic
     - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀ with hA
   have hid : A + A = R1 + R2 - R3 := by
     rw [hA, hR1, hR2, hR3]
-    exact ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindexSum (I := I) (M := M) g₀ g₁
+    exact ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
+      (I := I) (M := M) g₀ g₁
   have hiter : iteratedCovGrad (I := I) g₀ 4 2 i A + iteratedCovGrad (I := I) g₀ 4 2 i A =
       iteratedCovGrad (I := I) g₀ 4 2 i R1 + iteratedCovGrad (I := I) g₀ 4 2 i R2
         - iteratedCovGrad (I := I) g₀ 4 2 i R3 := by
