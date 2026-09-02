@@ -289,8 +289,8 @@ theorem metricPrincipalDefect_cap
       reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρA +
         reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρAT - (DR + DR) := by
     dsimp only [Dev, DTH, DR]
-    rw [metricPrincipalDefect_reindex (I := I) (M := M) g gm,
-      metricPrincipalDefect_reindex (I := I) (M := M) g g,
+    rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g gm,
+      deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g,
       reindex_sub g _ _ _ _ ρA, reindex_sub g _ _ _ _ ρAT]
     abel
   let S : ℝ := riemannianFiberNormSq (I := I) (M := M) g 2 2 x
@@ -569,8 +569,8 @@ theorem phi_dev_h2
         reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT -
           (DRs + DRs) := by
     dsimp [Dev, DTHs, DRs]
-    rw [metricPrincipalDefect_reindex (I := I) (M := M) g₀ g₁,
-      metricPrincipalDefect_reindex (I := I) (M := M) g₀ g₀,
+    rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₁,
+      deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
       reindex_sub g₀ _ _ _ _ ρA,
       reindex_sub g₀ _ _ _ _ ρAT]
     abel

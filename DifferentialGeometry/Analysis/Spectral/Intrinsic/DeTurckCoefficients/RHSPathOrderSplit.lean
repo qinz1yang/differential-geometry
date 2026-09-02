@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPathChartLieDerivative
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPathChartRicciDerivative
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnectionDifferenceCoefficients
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckTopCoeff
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieTopReanchor
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -688,7 +688,7 @@ theorem rhsTop_eq_raw
     hδ_lt hδ hδ'_lt hδ' x v w s
   rw [hsymmS] at hLie
   unfold rhsTopTerm
-  rw [phi_realized_eq (I := I) (M := M) g₀ T T' hδ hδ' s,
+  rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq (I := I) (M := M) g₀ T T' hδ hδ' s,
     operatorFieldApplication_sub_left, operatorFieldApplication_add_left, unitModel_sub_app, unitModel_add_app,
     ← hLie]
   ring

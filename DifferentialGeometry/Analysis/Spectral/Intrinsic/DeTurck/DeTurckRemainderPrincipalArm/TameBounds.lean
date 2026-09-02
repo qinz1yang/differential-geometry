@@ -4402,8 +4402,8 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                 - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)
               + (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
                 - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)) := by
-        rw [deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g₁,
-          deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g₀,
+        rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₁,
+          deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
           reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _
             (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA),
           reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _

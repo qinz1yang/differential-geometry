@@ -200,8 +200,8 @@ theorem phi_dev_h3_uniform
         reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρAT -
           (DRs + DRs) := by
     dsimp [Dev, DTHs, DRs]
-    rw [metricPrincipalDefect_reindex (I := I) (M := M) g g₁,
-      metricPrincipalDefect_reindex (I := I) (M := M) g g,
+    rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g₁,
+      deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g,
       reindex_sub g _ _ _ _ ρA,
       reindex_sub g _ _ _ _ ρAT]
     abel

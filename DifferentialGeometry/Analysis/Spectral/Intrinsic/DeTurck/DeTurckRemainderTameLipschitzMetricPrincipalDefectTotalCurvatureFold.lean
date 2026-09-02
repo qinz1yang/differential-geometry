@@ -42,7 +42,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieArmChartValue
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrectionTameBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmDiffL2TameBallUniformYoungHolderPathIntegral
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckTopCoeff
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -229,32 +229,6 @@ theorem deTurckMetricPrincipalDefectTotal_background_operatorFieldApplication_eq
   rw [hswapA, hswapB]
   ring
 
-omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private lemma deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_lieArm2PrincipalCoeff_sub_twoLichnerowicz
-    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
-      δ')
-    (s : ℝ) :
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff
-          (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-        - (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
-            + linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) := by
-  rw [deTurckMetricPrincipalDefectTotal, linearizedRicciArm2FieldLichnerowicz]
-  set X : SmoothCcTensor g₀ 4 2 :=
-    ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hX
-  set Y : SmoothCcTensor g₀ 4 2 :=
-    traceHessianCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hY
-  have hhalf : (1 / 2 : ℝ) • Y + (1 / 2 : ℝ) • Y = Y := by
-    rw [← add_smul]
-    norm_num
-  have hgrp : (X - (1 / 2 : ℝ) • Y) + (X - (1 / 2 : ℝ) • Y) =
-      (X + X) - ((1 / 2 : ℝ) • Y + (1 / 2 : ℝ) • Y) := by abel
-  rw [hgrp, hhalf]
-  abel
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem jointTotalSpaceRS_sub_fw {r s : ℕ} {S : Set ℝ}
@@ -360,7 +334,7 @@ theorem deTurckMetricPrincipalDefectTotal_metricPerturbationPath_jointSmooth
   beta_reduce
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) p.1 t) ?_
-  rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_lieArm2PrincipalCoeff_sub_twoLichnerowicz (I := I) (M := M)
+  rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq (I := I) (M := M)
     g₀ T T' hδ hδ' p.2,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
@@ -471,7 +445,7 @@ lemma deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_neg_two_smul_f
       (-2 : ℝ) • linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
         + deTurckLieArm2PrincipalCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) := by
-  rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_lieArm2PrincipalCoeff_sub_twoLichnerowicz (I := I) (M := M)
+  rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq (I := I) (M := M)
     g₀ T T' hδ hδ' s]
   rw [show (-2 : ℝ) • linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s =
       -(linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
@@ -1321,45 +1295,7 @@ theorem exists_deTurckMetricPrincipalDefectTotal_background_curvatureFold_of_sym
       rw [iteratedCovGrad_zero]
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
-  deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib
-  domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieArm2DivSlotPermA
-  deTurckLieArm2DivSlotPermAT traceHessianCoeff_toSection)
-
-private theorem traceHessianSlotPerm_inv_mul_apply_eq (σ : Equiv.Perm (Fin 4)) (j : Fin 4) :
-    traceHessianSlotPerm ((traceHessianSlotPerm⁻¹ * σ) j) = σ j := by
-  rw [Equiv.Perm.mul_apply, Equiv.Perm.inv_def, Equiv.apply_symm_apply]
-
-omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-omit [I.Boundaryless] in
-theorem lieTrace_eq_reindex_fw (g₀ g₁ : SmoothRiemannianMetric I M)
-    (σ ρ : Equiv.Perm (Fin 4))
-    (hcomp : ∀ j : Fin 4, traceHessianSlotPerm (ρ j) = σ j) :
-    deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
-        (traceHessianCoeff (I := I) (M := M) g₀ g₁) ρ := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [deTurckLieTraceCoeff_toSection, reindexCoeffGen_toSection, traceHessianCoeff_toSection]
-  apply ContinuousLinearMap.ext
-  intro D
-  rw [reindexCoeffFibGen_apply, deTurckLieTraceFib, traceHessianFib,
-    ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-    domDomCongrFibPerm_apply, domDomCongrFib_apply,
-    Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
-  have harg : ContinuousMultilinearMap.domDomCongr σ
-      (Tensor0SBundle.Tensor0SSpace.toModel D) =
-      ContinuousMultilinearMap.domDomCongr traceHessianSlotPerm
-        (ContinuousMultilinearMap.domDomCongr ρ
-          (Tensor0SBundle.Tensor0SSpace.toModel D)) := by
-    apply ContinuousMultilinearMap.ext
-    intro v
-    simp only [ContinuousMultilinearMap.domDomCongr_apply]
-    refine congrArg _ (funext fun j => ?_)
-    rw [hcomp j]
-  rw [harg]
+  (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -1449,36 +1385,6 @@ theorem gFibreOpBound_min_fw (g₀ : SmoothRiemannianMetric I M)
     exact h₁ x v w
   · rw [min_eq_right hle]
     exact h₂ x v w
-
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-omit [BoundarylessManifold I M] in
-omit [I.Boundaryless] in
-theorem deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw
-    (g₀ g : SmoothRiemannianMetric I M) :
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
-          (traceHessianCoeff (I := I) (M := M) g₀ g)
-          (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2
-          (traceHessianCoeff (I := I) (M := M) g₀ g)
-          (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)
-        - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g
-            + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g) := by
-  have hPhi : deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g =
-      (deTurckLieTraceCoeff (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermA
-        + deTurckLieTraceCoeff (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermAT
-        - traceHessianCoeff (I := I) (M := M) g₀ g)
-      + traceHessianCoeff (I := I) (M := M) g₀ g
-      - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g
-          + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g) := rfl
-  rw [hPhi,
-    lieTrace_eq_reindex_fw (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermA
-      (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)
-      (traceHessianSlotPerm_inv_mul_apply_eq deTurckLieArm2DivSlotPermA),
-    lieTrace_eq_reindex_fw (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermAT
-      (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)
-      (traceHessianSlotPerm_inv_mul_apply_eq deTurckLieArm2DivSlotPermAT)]
-  abel
 
 end DifferentialGeometry.Analysis.Spectral
 

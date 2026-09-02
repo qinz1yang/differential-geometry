@@ -3981,8 +3981,8 @@ private theorem metricPrincipalDefect_diff_eq
           reindexCoeffGen (I := I) (M := M) g 4 2 HU
             (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)) -
         ((RT + RT) - (RU + RU)) := by
-      rw [metricPrincipalDefect_reindex (I := I) (M := M) g gT,
-        metricPrincipalDefect_reindex (I := I) (M := M) g gU]
+      rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g gT,
+        deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g gU]
       dsimp only [HT, HU, RT, RU]
       exact tri_sub_alg _ _ _ _ _ _
     _ =

@@ -228,8 +228,8 @@ private theorem deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormS
       reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
         + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT
         - (DRs + DRs) := by
-    rw [deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g₁,
-      deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g₀,
+    rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₁,
+      deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
       reindexCoeffGen_sub_fw (I := I) (M := M) g₀ _ _ ρA,
       reindexCoeffGen_sub_fw (I := I) (M := M) g₀ _ _ ρAT]
     dsimp [ρA, ρAT, DTHs, DRs]
@@ -362,9 +362,9 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
             - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)) := by
     intro s
     simp only [hΨdev_def]
-    rw [deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀
+    rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s),
-      deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g₀,
+      deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
       reindexCoeffGen_sub_fw (I := I) (M := M) g₀ _ _ ρA,
       reindexCoeffGen_sub_fw (I := I) (M := M) g₀ _ _ ρAT]
     abel

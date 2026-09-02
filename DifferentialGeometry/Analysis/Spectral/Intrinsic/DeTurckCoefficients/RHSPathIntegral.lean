@@ -112,7 +112,7 @@ theorem rhs_top_path_joint
   beta_reduce
   refine congrArg (fun t => TotalSpace.mk' (TensorRSModel 4 2 ℝ E)
     (E := fun z : M => TensorRSSpace 4 2 I z) p.1 t) ?_
-  rw [phi_realized_eq (I := I) (M := M) g₀ T T' hδ hδ' p.2,
+  rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq (I := I) (M := M) g₀ T T' hδ hδ' p.2,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
 

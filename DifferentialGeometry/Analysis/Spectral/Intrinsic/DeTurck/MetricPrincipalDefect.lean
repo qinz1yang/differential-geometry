@@ -3,7 +3,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
 
@@ -68,7 +67,7 @@ private theorem lieTrace_reindex (g₀ g₁ : SmoothRiemannianMetric I M)
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
-theorem metricPrincipalDefect_reindex (g₀ g : SmoothRiemannianMetric I M) :
+theorem deTurckMetricPrincipalDefectTotal_eq_reindex (g₀ g : SmoothRiemannianMetric I M) :
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g =
       reindexCoeffGen (I := I) (M := M) g₀ 4 2
           (traceHessianCoeff (I := I) (M := M) g₀ g)
@@ -97,7 +96,7 @@ theorem metricPrincipalDefect_reindex (g₀ g : SmoothRiemannianMetric I M) :
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem phi_realized_eq
+theorem deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ T) δ)

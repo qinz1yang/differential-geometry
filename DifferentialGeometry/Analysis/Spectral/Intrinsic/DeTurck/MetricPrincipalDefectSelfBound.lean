@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckTopCoeff
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CometricTraceSelfBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 
@@ -302,7 +302,7 @@ theorem phiSelf_grid
         (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g -
           cometricDoubleTraceCoefficient (I := I) (M := M) g g)).toSection x =
         A + B - (R + R) - P := by
-    rw [metricPrincipalDefect_reindex (I := I) (M := M) g g,
+    rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g,
       iteratedCovGrad_sub, iteratedCovGrad_sub,
       iteratedCovGrad_add, iteratedCovGrad_add,
       SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_sub,

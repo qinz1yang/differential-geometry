@@ -895,8 +895,8 @@ private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
     refine le_trans (Real.sqrt_le_sqrt hdev_riemannianFiberNormSq) ?_
     rw [hsqrt_n3 _ (div_nonneg (mul_nonneg (sub_nonneg.mpr ht1) hδ0)
       (le_of_lt (mul_pos h1tδ h1δ)))]
-  have hdec_t := deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g_t
-  have hdec_0 := deTurckMetricPrincipalDefectTotal_eq_reindex_decomp_fw (I := I) (M := M) g₀ g₀
+  have hdec_t := deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g_t
+  have hdec_0 := deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀
   set ρA : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
     with hρA_def
   set ρAT : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT

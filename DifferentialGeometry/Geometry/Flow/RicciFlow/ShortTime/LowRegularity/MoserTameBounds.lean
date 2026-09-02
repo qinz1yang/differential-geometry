@@ -954,8 +954,8 @@ theorem HasMoserTameBounds.deTurckMetricPrincipalDefectDifference
           ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g) +
         (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g₁ -
           ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g)) := by
-    rw [metricPrincipalDefect_reindex (I := I) (M := M) g g₁,
-      metricPrincipalDefect_reindex (I := I) (M := M) g g,
+    rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g₁,
+      deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g,
       reindexCoeffGen_sub (I := I) (M := M) (r := 4) (s := 2) g _ _ ρA,
       reindexCoeffGen_sub (I := I) (M := M) (r := 4) (s := 2) g _ _ ρAT]
     abel
