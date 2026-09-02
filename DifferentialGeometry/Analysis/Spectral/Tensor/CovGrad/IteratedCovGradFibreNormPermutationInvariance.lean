@@ -112,6 +112,19 @@ theorem riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen_toSection,
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_reindexCoeffFibGen]
 
+omit [NeZero (Module.finrank ℝ E)] in
+theorem norm_sq_iteratedCovGrad_reindexCoeffGen_eq
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (R : SmoothCcTensor g r s) (σ : Equiv.Perm (Fin r)) (i : ℕ) :
+    ‖iteratedCovGrad (I := I) g r s i
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen
+          (I := I) (M := M) g r s R σ)‖ ^ 2 =
+      ‖iteratedCovGrad (I := I) g r s i R‖ ^ 2 := by
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.iteratedCovGrad_reindexCoeffGen
+      (I := I) (M := M) g r s R σ i,
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.norm_reindexCoeffGen_eq
+      (I := I) (M := M) g r (s + i)]
+
 end Spectral
 end Analysis
 end DifferentialGeometry

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
@@ -2677,7 +2678,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
           rw [SmoothCcTensor.toSection_smul]; rfl]
         rw [riemannianFiberNormSq_smul_value_tame]
         norm_num
-      have hArm0 := sq_bound_of_sqrt_le_fw
+      have hArm0 := le_sq_of_sqrt_le
         (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 2 x _)
         ((hC0r T₀ (0 : SmoothCcTensor g₀ 0 2) hδ_le hδT hδ_le hδZ hTball hZball t ht x).1)
       have hRm := hsupRm t ht x
@@ -3092,7 +3093,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
           rw [SmoothCcTensor.toSection_smul]; rfl]
         rw [riemannianFiberNormSq_smul_value_tame]
         norm_num
-      have hRb := sq_bound_of_sqrt_le_fw
+      have hRb := le_sq_of_sqrt_le
         (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 3 2 x _)
         ((hC0r T₀ (0 : SmoothCcTensor g₀ 0 2) hδ_le hδT hδ_le hδZ hTball hZball
           t ht x).2.1)

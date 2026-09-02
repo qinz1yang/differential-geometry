@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCometricExtraction
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalArmSpectralGarding
@@ -4018,22 +4019,6 @@ private lemma riemannianFiberNormSq_toSection_smul (g : SmoothRiemannianMetric I
     tensorInnerPointwise_smul_right]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem normSq_iteratedCovGrad_reindexCoeffGen_eq (g₀ : SmoothRiemannianMetric I M)
-    (R : SmoothCcTensor g₀ 4 2) (ρ : Equiv.Perm (Fin 4)) (i : ℕ) :
-    ‖iteratedCovGrad (I := I) g₀ 4 2 i
-        (reindexCoeffGen (I := I) (M := M) g₀ 4 2 R ρ)‖ ^ 2 =
-      ‖iteratedCovGrad (I := I) g₀ 4 2 i R‖ ^ 2 := by
-  have h1 := tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M)
-    g₀ 4 (2 + i)
-    (iteratedCovGrad (I := I) g₀ 4 2 i (reindexCoeffGen (I := I) (M := M) g₀ 4 2 R ρ))
-  have h2 := tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M)
-    g₀ 4 (2 + i) (iteratedCovGrad (I := I) g₀ 4 2 i R)
-  rw [← SmoothCcTensor.norm_def] at h1 h2
-  rw [h1, h2]
-  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 R ρ i x
-
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization in
 open DifferentialGeometry.Integral.Measure in
 theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
@@ -4409,11 +4394,11 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
           reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _
             (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)]
         abel
-      have hreiA := normSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀
+      have hreiA := norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2
         (traceHessianCoeff (I := I) (M := M) g₀ g₁
           - traceHessianCoeff (I := I) (M := M) g₀ g₀)
         (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA) i
-      have hreiB := normSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀
+      have hreiB := norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2
         (traceHessianCoeff (I := I) (M := M) g₀ g₁
           - traceHessianCoeff (I := I) (M := M) g₀ g₀)
         (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT) i

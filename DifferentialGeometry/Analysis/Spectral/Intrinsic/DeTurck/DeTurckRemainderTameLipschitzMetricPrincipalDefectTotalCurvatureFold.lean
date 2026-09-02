@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
@@ -294,10 +295,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckLieArm2PrincipalCoeff deTurckLieArm1Coeff deTurckLieCoeffField
   deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth
   deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
-
-lemma sq_bound_of_sqrt_le_fw {r Λv : ℝ} (hr : 0 ≤ r) (h : Real.sqrt r ≤ Λv) :
-    r ≤ Λv ^ 2 := by
-  simpa [Real.sq_sqrt hr] using pow_le_pow_left₀ (Real.sqrt_nonneg r) h 2
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -819,7 +816,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
           rw [SmoothCcTensor.toSection_smul]; rfl]
         rw [riemannianFiberNormSq_smul_value_tame]
         norm_num
-      have hR := sq_bound_of_sqrt_le_fw
+      have hR := le_sq_of_sqrt_le
         (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 2 x _)
         ((hC0r T T' hδ_le hδ hδ'_le hδ' hTball hT'ball t ht x).1)
       have haddL := lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2
@@ -856,7 +853,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
           rw [SmoothCcTensor.toSection_smul]; rfl]
         rw [riemannianFiberNormSq_smul_value_tame]
         norm_num
-      have hR := sq_bound_of_sqrt_le_fw
+      have hR := le_sq_of_sqrt_le
         (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 3 2 x _)
         ((hC0r T T' hδ_le hδ hδ'_le hδ' hTball hT'ball t ht x).2.1)
       have hL1 := hL1r T T' hδ_le hδ hδ'_le hδ' hTball hT'ball t ht x
@@ -1212,49 +1209,6 @@ theorem exists_deTurckMetricPrincipalDefectTotal_background_curvatureFold_of_sym
         ((1/2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2 Φd C24)
         (iteratedCovGrad (I := I) g₀ 0 2 0 S) := by
       rw [iteratedCovGrad_zero]
-
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection)
-
-omit [CompactSpace M] in
-omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
-theorem normSq_iteratedCovGrad_sub_le_fw (g : SmoothRiemannianMetric I M) (r s q : ℕ)
-    (A B : SmoothCcTensor g r s) :
-    ‖iteratedCovGrad (I := I) g r s q (A - B)‖ ^ 2 ≤
-      2 * ‖iteratedCovGrad (I := I) g r s q A‖ ^ 2 +
-        2 * ‖iteratedCovGrad (I := I) g r s q B‖ ^ 2 := by
-  have htri : ‖iteratedCovGrad (I := I) g r s q (A - B)‖ ≤
-      ‖iteratedCovGrad (I := I) g r s q A‖ + ‖iteratedCovGrad (I := I) g r s q B‖ := by
-    rw [iteratedCovGrad_sub]
-    exact norm_sub_le _ _
-  nlinarith only [htri, norm_nonneg (iteratedCovGrad (I := I) g r s q (A - B)),
-    norm_nonneg (iteratedCovGrad (I := I) g r s q A),
-    norm_nonneg (iteratedCovGrad (I := I) g r s q B),
-    sq_nonneg (‖iteratedCovGrad (I := I) g r s q A‖ - ‖iteratedCovGrad (I := I) g r s q B‖)]
-
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-theorem riemannianFiberNormSq_toSection_sub_le_fw (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (A B : SmoothCcTensor g r s) (x : M) :
-    riemannianFiberNormSq (I := I) (M := M) g r s x ((A - B).toSection x) ≤
-      2 * riemannianFiberNormSq (I := I) (M := M) g r s x (A.toSection x) +
-        2 * riemannianFiberNormSq (I := I) (M := M) g r s x (B.toSection x) := by
-  rw [show (A - B).toSection x = A.toSection x - B.toSection x from by
-    rw [SmoothCcTensor.toSection_sub]; rfl]
-  exact riemannianFiberNormSq_sub_le (I := I) (M := M) g r s x _ _
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem normSq_iteratedCovGrad_reindex_eq_fw (g₀ : SmoothRiemannianMetric I M)
-    (R : SmoothCcTensor g₀ 4 2) (ρ : Equiv.Perm (Fin 4)) (i : ℕ) :
-    ‖iteratedCovGrad (I := I) g₀ 4 2 i
-        (reindexCoeffGen (I := I) (M := M) g₀ 4 2 R ρ)‖ ^ 2 =
-      ‖iteratedCovGrad (I := I) g₀ 4 2 i R‖ ^ 2 := by
-  rw [lieCorrectionZerob_normSq_eq_integral (I := I) (M := M) g₀ 4 (2 + i),
-    lieCorrectionZerob_normSq_eq_integral (I := I) (M := M) g₀ 4 (2 + i)]
-  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 R ρ i x
 
 end DifferentialGeometry.Analysis.Spectral
 

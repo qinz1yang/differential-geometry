@@ -77,23 +77,6 @@ private theorem deTurckLieTraceCoeff_eq_reindex_traceHessianCoeff
     rw [hcomp j]
   rw [harg]
 
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem normSq_iteratedCovGrad_reindexCoeffGen_eq
-    (g₀ : SmoothRiemannianMetric I M) (R : SmoothCcTensor g₀ 4 2)
-    (ρ : Equiv.Perm (Fin 4)) (i : ℕ) :
-    ‖iteratedCovGrad (I := I) g₀ 4 2 i
-        (reindexCoeffGen (I := I) (M := M) g₀ 4 2 R ρ)‖ ^ 2 =
-      ‖iteratedCovGrad (I := I) g₀ 4 2 i R‖ ^ 2 := by
-  rw [SmoothCcTensor.norm_def (I := I) (M := M)
-      (iteratedCovGrad (I := I) g₀ 4 2 i (reindexCoeffGen (I := I) (M := M) g₀ 4 2 R ρ)),
-    SmoothCcTensor.norm_def (I := I) (M := M) (iteratedCovGrad (I := I) g₀ 4 2 i R),
-    tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g₀ 4 (2 + i)
-      (iteratedCovGrad (I := I) g₀ 4 2 i (reindexCoeffGen (I := I) (M := M) g₀ 4 2 R ρ)),
-    tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g₀ 4 (2 + i)
-      (iteratedCovGrad (I := I) g₀ 4 2 i R)]
-  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 R ρ i x
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem riemannianFiberNormSq_toSection_reindexCoeffGen_eq
@@ -152,14 +135,14 @@ theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jetL2_perOrder_ballU
     rw [deTurckLieTraceCoeff_eq_reindex_traceHessianCoeff (I := I) (M := M) g₀ g₁
         deTurckLieArm2DivSlotPermA (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)
         (traceHessianSlotPerm_inv_mul_apply deTurckLieArm2DivSlotPermA),
-      normSq_iteratedCovGrad_reindexCoeffGen_eq]
+      norm_sq_iteratedCovGrad_reindexCoeffGen_eq]
     exact hH
   have hAT : ‖iteratedCovGrad (I := I) g₀ 4 2 i
       (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ deTurckLieArm2DivSlotPermAT)‖ ^ 2 ≤ Q i := by
     rw [deTurckLieTraceCoeff_eq_reindex_traceHessianCoeff (I := I) (M := M) g₀ g₁
         deTurckLieArm2DivSlotPermAT (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)
         (traceHessianSlotPerm_inv_mul_apply deTurckLieArm2DivSlotPermAT),
-      normSq_iteratedCovGrad_reindexCoeffGen_eq]
+      norm_sq_iteratedCovGrad_reindexCoeffGen_eq]
     exact hH
   have hdecomp : iteratedCovGrad (I := I) g₀ 4 2 i
       (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁)

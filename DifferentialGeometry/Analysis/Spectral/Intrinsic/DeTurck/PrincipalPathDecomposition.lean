@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefectSymmetry
+import DifferentialGeometry.Analysis.Estimates.ProductBounds
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSZeroDecomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSPathIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3Principal
@@ -75,62 +78,6 @@ theorem phi_dev_joint
   refine congrArg (fun t => TotalSpace.mk' (TensorRSModel 4 2 ℝ E)
     (E := fun z : M => TensorRSSpace 4 2 I z) p.1 t) ?_
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] in
-theorem norm_sq_add_le
-    (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
-    (A B : SmoothCcTensor g₀ r s) :
-    ‖A + B‖ ^ 2 ≤ 2 * ‖A‖ ^ 2 + 2 * ‖B‖ ^ 2 := by
-  have h := norm_add_le A B
-  have hA : 0 ≤ ‖A‖ := norm_nonneg _
-  have hB : 0 ≤ ‖B‖ := norm_nonneg _
-  have hAB : 0 ≤ ‖A + B‖ := norm_nonneg _
-  nlinarith [sq_nonneg (‖A‖ - ‖B‖)]
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] in
-theorem norm_sq_sub_le
-    (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
-    (A B : SmoothCcTensor g₀ r s) :
-    ‖A - B‖ ^ 2 ≤ 2 * ‖A‖ ^ 2 + 2 * ‖B‖ ^ 2 := by
-  have h := norm_sub_le A B
-  have hA : 0 ≤ ‖A‖ := norm_nonneg _
-  have hB : 0 ≤ ‖B‖ := norm_nonneg _
-  have hAB : 0 ≤ ‖A - B‖ := norm_nonneg _
-  nlinarith [sq_nonneg (‖A‖ - ‖B‖)]
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem reindex_norm_sq
-    (g₀ : SmoothRiemannianMetric I M) (r s i : ℕ)
-    (A : SmoothCcTensor g₀ r s) (ρ : Equiv.Perm (Fin r)) :
-    ‖iteratedCovGrad (I := I) g₀ r s i
-        (reindexCoeffGen (I := I) (M := M) g₀ r s A ρ)‖ ^ 2 =
-      ‖iteratedCovGrad (I := I) g₀ r s i A‖ ^ 2 := by
-  rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M) g₀ r s A ρ i,
-    norm_reindexCoeffGen_eq (I := I) (M := M) g₀ r (s + i)]
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-theorem reindex_sub
-    (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
-    (A B : SmoothCcTensor g₀ r s) (ρ : Equiv.Perm (Fin r)) :
-    reindexCoeffGen (I := I) (M := M) g₀ r s (A - B) ρ =
-      reindexCoeffGen (I := I) (M := M) g₀ r s A ρ -
-        reindexCoeffGen (I := I) (M := M) g₀ r s B ρ := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((reindexCoeffGen (I := I) (M := M) g₀ r s A ρ -
-        reindexCoeffGen (I := I) (M := M) g₀ r s B ρ).toSection x) =
-      (reindexCoeffGen (I := I) (M := M) g₀ r s A ρ).toSection x -
-        (reindexCoeffGen (I := I) (M := M) g₀ r s B ρ).toSection x from by
-    rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [reindexCoeffGen_toSection, reindexCoeffGen_toSection, reindexCoeffGen_toSection]
-  rw [show (A - B).toSection x = A.toSection x - B.toSection x from by
-    rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [reindexCoeffFibGen, reindexCoeffFibGen, reindexCoeffFibGen]
-  exact ContinuousLinearMap.sub_comp _ _ _
 
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
@@ -291,7 +238,7 @@ theorem metricPrincipalDefect_cap
     dsimp only [Dev, DTH, DR]
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g gm,
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g,
-      reindex_sub g _ _ _ _ ρA, reindex_sub g _ _ _ _ ρAT]
+      reindexCoeffGen_sub g _ _ ρA, reindexCoeffGen_sub g _ _ ρAT]
     abel
   let S : ℝ := riemannianFiberNormSq (I := I) (M := M) g 2 2 x
     ((inverseMetricDifferenceSlotCoefficient (I := I) g gm).toSection x)
@@ -571,8 +518,8 @@ theorem phi_dev_h2
     dsimp [Dev, DTHs, DRs]
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₁,
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
-      reindex_sub g₀ _ _ _ _ ρA,
-      reindex_sub g₀ _ _ _ _ ρAT]
+      reindexCoeffGen_sub g₀ _ _ ρA,
+      reindexCoeffGen_sub g₀ _ _ ρAT]
     abel
   have htarget : (C * R) ^ 2 = K * (Cinv * R) ^ 2 := by
     dsimp [C]
@@ -714,7 +661,7 @@ theorem phi_dev_h2
                     apply Finset.sum_le_sum
                     intro i hi
                     rw [hdev_eq, iteratedCovGrad_sub]
-                    exact norm_sq_sub_le (I := I) (M := M) g₀ 4 (2 + i) _ _
+                    exact norm_sq_sub_le _ _
           _ = 2 * (∑ i ∈ Finset.range 3,
                 ‖iteratedCovGrad (I := I) g₀ 4 2 i
                   (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA +
@@ -737,13 +684,13 @@ theorem phi_dev_h2
                   apply Finset.sum_le_sum
                   intro i hi
                   rw [iteratedCovGrad_add]
-                  exact norm_sq_add_le (I := I) (M := M) g₀ 4 (2 + i) _ _
+                  exact norm_sq_add_le _ _
           _ = 4 * (∑ i ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g₀ 4 2 i DTHs‖ ^ 2) := by
                 rw [Finset.mul_sum]
                 apply Finset.sum_congr rfl
                 intro i hi
-                simp only [reindex_norm_sq (I := I) (M := M) g₀ 4 2]
+                simp only [norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2]
                 ring
       have hCC : (∑ i ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g₀ 4 2 i (DRs + DRs)‖ ^ 2) ≤
@@ -756,7 +703,7 @@ theorem phi_dev_h2
                   apply Finset.sum_le_sum
                   intro i hi
                   rw [iteratedCovGrad_add]
-                  exact norm_sq_add_le (I := I) (M := M) g₀ 4 (2 + i) _ _
+                  exact norm_sq_add_le _ _
           _ = 4 * (∑ i ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g₀ 4 2 i DRs‖ ^ 2) := by
                 rw [Finset.mul_sum]

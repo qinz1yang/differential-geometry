@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPathDecomposition
+import DifferentialGeometry.Analysis.Estimates.ProductBounds
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Coefficient.DimensionBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.InverseCoefficientSecondOrderBounds
 
@@ -21,6 +24,7 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis (norm_sq_add_le norm_sq_sub_le)
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -187,8 +191,8 @@ theorem phi_dev_h2_uniform
     dsimp [Dev, DTHs, DRs]
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g₁,
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g,
-      reindex_sub g _ _ _ _ ρA,
-      reindex_sub g _ _ _ _ ρAT]
+      reindexCoeffGen_sub g _ _ ρA,
+      reindexCoeffGen_sub g _ _ ρAT]
     abel
   have htarget : (C * R) ^ 2 = K * (Cinv * R) ^ 2 := by
     dsimp [C]
@@ -330,7 +334,7 @@ theorem phi_dev_h2_uniform
                     apply Finset.sum_le_sum
                     intro i hi
                     rw [hdev_eq, iteratedCovGrad_sub]
-                    exact norm_sq_sub_le (I := I) (M := M) g 4 (2 + i) _ _
+                    exact norm_sq_sub_le _ _
           _ = 2 * (∑ i ∈ Finset.range 3,
                 ‖iteratedCovGrad (I := I) g 4 2 i
                   (reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρA +
@@ -353,13 +357,13 @@ theorem phi_dev_h2_uniform
                   apply Finset.sum_le_sum
                   intro i hi
                   rw [iteratedCovGrad_add]
-                  exact norm_sq_add_le (I := I) (M := M) g 4 (2 + i) _ _
+                  exact norm_sq_add_le _ _
           _ = 4 * (∑ i ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g 4 2 i DTHs‖ ^ 2) := by
                 rw [Finset.mul_sum]
                 apply Finset.sum_congr rfl
                 intro i hi
-                simp only [reindex_norm_sq (I := I) (M := M) g 4 2]
+                simp only [norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g 4 2]
                 ring
       have hCC : (∑ i ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 4 2 i (DRs + DRs)‖ ^ 2) ≤
@@ -372,7 +376,7 @@ theorem phi_dev_h2_uniform
                   apply Finset.sum_le_sum
                   intro i hi
                   rw [iteratedCovGrad_add]
-                  exact norm_sq_add_le (I := I) (M := M) g 4 (2 + i) _ _
+                  exact norm_sq_add_le _ _
           _ = 4 * (∑ i ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g 4 2 i DRs‖ ^ 2) := by
                 rw [Finset.mul_sum]

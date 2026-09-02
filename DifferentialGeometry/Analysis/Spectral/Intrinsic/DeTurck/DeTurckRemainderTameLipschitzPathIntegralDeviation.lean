@@ -1,8 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
@@ -246,10 +248,20 @@ private theorem deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormS
         + 4 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
           ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
         + 8 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DRs.toSection x) := by
-    rw [hdev]
-    have h1 := riemannianFiberNormSq_toSection_sub_le_fw (I := I) (M := M) g₀ 4 2
-      (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT) (DRs + DRs) x
+    have hsection :
+        ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
+            + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT
+            - (DRs + DRs)).toSection x) =
+          (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
+              + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x
+            - (DRs + DRs).toSection x := by
+      rw [SmoothCcTensor.toSection_sub]
+      rfl
+    rw [hdev, hsection]
+    have h1 := riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 4 2 x
+      ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
+        + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
+      ((DRs + DRs).toSection x)
     have h2 := lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 4 2
       (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA)
       (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT) x
@@ -570,8 +582,8 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
                 + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2
             + 2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i (DRs + DRs)‖ ^ 2)
           (s := Finset.range (a + 1)) (fun i _ => by
-            rw [hdev_eq s]
-            exact normSq_iteratedCovGrad_sub_le_fw (I := I) (M := M) g₀ 4 2 i _ _)
+            rw [hdev_eq s, iteratedCovGrad_sub]
+            exact norm_sq_sub_le _ _)
         calc (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i (Ψdev s)‖ ^ 2)
             ≤ ∑ i ∈ Finset.range (a + 1),
               (2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
@@ -591,11 +603,11 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
       have hAeq : (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i
           (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA)‖ ^ 2) =
           ∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i DTHs‖ ^ 2 :=
-        Finset.sum_congr rfl (fun i _ => normSq_iteratedCovGrad_reindex_eq_fw (I := I) (M := M) g₀ DTHs ρA i)
+        Finset.sum_congr rfl (fun i _ => norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 DTHs ρA i)
       have hATeq : (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i
           (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) =
           ∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i DTHs‖ ^ 2 :=
-        Finset.sum_congr rfl (fun i _ => normSq_iteratedCovGrad_reindex_eq_fw (I := I) (M := M) g₀ DTHs ρAT i)
+        Finset.sum_congr rfl (fun i _ => norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 DTHs ρAT i)
       have hDTHsum : (∑ i ∈ Finset.range (a + 1),
           ‖iteratedCovGrad (I := I) g₀ 4 2 i DTHs‖ ^ 2) ≤
           ∑ i ∈ Finset.range (a + 1), DTH i :=

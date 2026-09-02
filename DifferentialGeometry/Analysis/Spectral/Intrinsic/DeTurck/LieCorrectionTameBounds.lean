@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
@@ -4900,28 +4901,6 @@ lemma lieCorrectionZerob_riemannianFiberNormSq_toSection_sub_le (g : SmoothRiema
   rw [lieCorrectionZerob_riemannianFiberNormSq_neg (I := I) (M := M) g r s x (B.toSection x)]
 
 omit [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma lieCorrectionZerob_riemannianFiberNormSq_iteratedCovGrad_reindex_eq (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
-    (R : SmoothCcTensor g₀ r s) (σ : Equiv.Perm (Fin r)) (q : ℕ) (x : M) :
-    riemannianFiberNormSq (I := I) (M := M) g₀ r (s + q) x
-        ((iteratedCovGrad (I := I) g₀ r s q
-          (reindexCoeffGen (I := I) (M := M) g₀ r s R σ)).toSection x) =
-      riemannianFiberNormSq (I := I) (M := M) g₀ r (s + q) x
-        ((iteratedCovGrad (I := I) g₀ r s q R).toSection x) := by
-  rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M) g₀ r s R σ q]
-  rw [reindexCoeffGen_toSection]
-  exact riemannianFiberNormSq_reindexCoeffFibGen (I := I) (M := M) g₀ r (s + q) x σ _
-
-omit [NeZero (Module.finrank ℝ E)] in
-lemma lieCorrectionZerob_normSq_iteratedCovGrad_reindex_eq (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
-    (R : SmoothCcTensor g₀ r s) (σ : Equiv.Perm (Fin r)) (q : ℕ) :
-    ‖iteratedCovGrad (I := I) g₀ r s q (reindexCoeffGen (I := I) (M := M) g₀ r s R σ)‖ ^ 2 =
-      ‖iteratedCovGrad (I := I) g₀ r s q R‖ ^ 2 := by
-  rw [lieCorrectionZerob_normSq_eq_integral, lieCorrectionZerob_normSq_eq_integral]
-  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  exact lieCorrectionZerob_riemannianFiberNormSq_iteratedCovGrad_reindex_eq (I := I) (M := M) g₀ r s R σ q x
-
-omit [SigmaCompactSpace M] in
 lemma lieCorrectionZerob_riemannianFiberNormSq_iteratedCovGrad_slotExtendIter_le (g₀ : SmoothRiemannianMetric I M)
     (b₀ s₀ : ℕ) (w : ℕ) (K : SmoothCcTensor g₀ b₀ s₀) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ (b₀ + w) ((s₀ + w) + q) x
@@ -5200,12 +5179,12 @@ theorem lieCorrectionZerob_reindex_feed_transfer (g₀ : SmoothRiemannianMetric 
           (reindexCoeffGen (I := I) (M := M) g₀ r s R σ)‖ ^ 2 ≤ F i) := by
   constructor
   · intro x
-    have h := lieCorrectionZerob_riemannianFiberNormSq_iteratedCovGrad_reindex_eq (I := I) (M := M) g₀ r s R σ 0 x
+    have h := riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r s R σ 0 x
     simp only [iteratedCovGrad_zero] at h
     exact le_of_eq_of_le h (h0 x)
   · intro i hi
     refine le_trans (le_of_eq (Finset.sum_congr rfl fun q _ =>
-      lieCorrectionZerob_normSq_iteratedCovGrad_reindex_eq (I := I) (M := M) g₀ r s R σ q)) (hF i hi)
+      norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r s R σ q)) (hF i hi)
 
 theorem lieCorrectionZerob_slotExtendIter_feed_transfer (g₀ : SmoothRiemannianMetric I M)
     (b₀ s₀ w : ℕ) (K : SmoothCcTensor g₀ b₀ s₀) (Λ : ℝ) (F : ℕ → ℝ) (amax : ℕ)
