@@ -144,7 +144,10 @@ theorem lowerKyFanSum_first_contact_impossible
     {k : Nat} (hkpos : 0 < k) (hk : k ≤ Module.finrank Real F)
     (a : Real → M → Real)
     (ha_time : DifferentiableAt Real (fun q ↦ a q x) t)
-    (ha_space : ContMDiff I 𝓘(Real, Real) ∞ (a t))
+    (ha_space : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) (a t) y)
+    (ha_grad : MDiffAt (T% fun y : M ↦
+      gradientFun (I := I) (G.metric t) (a t) y) x)
     {c f : Real} (hc : (K : Real) < c) (hf : 0 < f)
     (ha_lt : -a t x < f)
     (hscalar : c * f ≤
@@ -223,21 +226,40 @@ theorem lowerKyFanSum_first_contact_impossible
     exact ContMDiff.sum (fun i _ ↦
       (ContMDiff.clm_bundle_apply (b := id) (A t).contMDiff
         (v i).contMDiff).inner_bundle (v i).contMDiff)
-  have hpsi_smooth : ContMDiff I 𝓘(Real, Real) ∞ (psi t) := by
-    dsimp only [psi]
-    have hscaled : ContMDiff I 𝓘(Real, Real) ∞
-        (fun y ↦ (k : Real) * a t y) :=
-      contMDiff_const.mul ha_space
-    exact htrace_smooth.add hscaled
+  have htrace_space_at (y : M) :
+      MDifferentiableAt I 𝓘(Real, Real) (trace t) y :=
+    htrace_smooth.mdifferentiableAt (by simp)
+  have hpsi_space_near : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) (psi t) y := by
+    filter_upwards [ha_space] with y hy
+    exact (htrace_space_at y).add (hy.const_smul (k : Real))
+  have htrace_grad : MDiffAt
+      (T% fun y : M ↦ gradientFun (I := I) (G.metric t) (trace t) y) x :=
+    (gradientFun_smooth (I := I) (G.metric t) htrace_smooth).mdifferentiableAt
+      (by simp)
+  have hpsi_grad : MDiffAt
+      (T% fun y : M ↦ gradientFun (I := I) (G.metric t) (psi t) y) x := by
+    have hgrad_eq :
+        (T% fun y : M ↦ gradientFun (I := I) (G.metric t) (psi t) y) =ᶠ[𝓝 x]
+          (T% fun y : M ↦
+            gradientFun (I := I) (G.metric t) (trace t) y +
+              (k : Real) • gradientFun (I := I) (G.metric t) (a t) y) := by
+      filter_upwards [ha_space] with y hy
+      apply congrArg (fun z ↦
+        (⟨y, z⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+      dsimp only [psi]
+      change gradientFun (I := I) (G.metric t)
+          (fun z ↦ trace t z + ((k : Real) • a t) z) y = _
+      rw [gradientFun_add (I := I) (G.metric t)
+          (htrace_space_at y) (hy.const_smul (k : Real)),
+        gradientFun_const_smul (I := I) (G.metric t) (k : Real) hy]
+    exact (mdifferentiableAt_add_section htrace_grad
+      (ha_grad.smul_const_section (a := (k : Real)))).congr_of_eventuallyEq hgrad_eq
   have hcontact_local :=
     derivWithin_sub_heatOperatorWithDrift_nonpos_of_lower_support
       (I := I) G X hst htheta_nonneg hsupport hpsi_eq htheta_zero
       hx
-      (hpsi_smooth.mdifferentiableAt (by simp))
-      (Filter.Eventually.of_forall fun y ↦
-        hpsi_smooth.mdifferentiableAt (by simp))
-      ((gradientFun_smooth (I := I) (G.metric t) hpsi_smooth).mdifferentiableAt
-        (by simp))
+      hpsi_space_near.self_of_nhds hpsi_space_near hpsi_grad
   have htrace_time : DifferentiableAt Real (fun q ↦ trace q x) t := by
     dsimp only [trace]
     exact DifferentiableAt.fun_sum fun i _ ↦
@@ -261,47 +283,45 @@ theorem lowerKyFanSum_first_contact_impossible
     unfold parabolicOperatorWithDrift
     rw [hglobal_deriv, ← hlocal_deriv]
     exact hcontact_local
-  have ha_space_at (y : M) :
-      MDifferentiableAt I 𝓘(Real, Real) (a t) y :=
-    ha_space.mdifferentiableAt (by simp)
-  have ha_grad (y : M) : MDiffAt
-      (T% fun z : M ↦ gradientFun (I := I) (G.metric t) (a t) z) y :=
-    (gradientFun_smooth (I := I) (G.metric t) ha_space).mdifferentiableAt
-      (by simp)
-  have htrace_space_at (y : M) :
-      MDifferentiableAt I 𝓘(Real, Real) (trace t) y :=
-    htrace_smooth.mdifferentiableAt (by simp)
-  have htrace_grad : MDiffAt
-      (T% fun z : M ↦ gradientFun (I := I) (G.metric t) (trace t) z) x :=
-    (gradientFun_smooth (I := I) (G.metric t) htrace_smooth).mdifferentiableAt
-      (by simp)
-  have hscale := parabolic_smul (I := I) G T X (k : Real) a t x
-    ha_time.differentiableWithinAt ha_space_at (ha_grad x)
-  have hadd := parabolic_add (I := I) G T X trace
-    (fun q y ↦ (k : Real) * a q y) t x
+  let negScaled : Real → M → Real := fun q y ↦ -(k : Real) * a q y
+  have hnegScaled_space : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) (negScaled t) y := by
+    filter_upwards [ha_space] with y hy
+    exact hy.const_smul (-(k : Real))
+  have hnegScaled_grad : MDiffAt
+      (T% fun y : M ↦
+        gradientFun (I := I) (G.metric t) (negScaled t) y) x := by
+    have hgrad_eq :
+        (T% fun y : M ↦
+          gradientFun (I := I) (G.metric t) (negScaled t) y) =ᶠ[𝓝 x]
+          (T% fun y : M ↦ -(k : Real) •
+            gradientFun (I := I) (G.metric t) (a t) y) := by
+      filter_upwards [ha_space] with y hy
+      apply congrArg (fun z ↦
+        (⟨y, z⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+      exact gradientFun_const_smul (I := I) (G.metric t) (-(k : Real)) hy
+    exact (ha_grad.smul_const_section (a := -(k : Real))).congr_of_eventuallyEq
+      hgrad_eq
+  have hscale := parabolic_smul_at (I := I) G T X (-(k : Real)) a t x
+    ha_time.differentiableWithinAt ha_space ha_grad
+  change parabolicOperatorWithDrift (I := I) G T X negScaled t x =
+    -(k : Real) * parabolicOperatorWithDrift (I := I) G T X a t x at hscale
+  have hadd := parabolic_sub_at (I := I) G T X trace negScaled t x
     htrace_time.differentiableWithinAt
-    (ha_time.const_mul (k : Real)).differentiableWithinAt
-    htrace_space_at
-    (fun y ↦ (ha_space_at y).const_smul (k : Real))
-    htrace_grad
-    (by
-      have heq :
-          (T% fun y ↦ gradientFun (I := I) (G.metric t)
-            (fun z ↦ (k : Real) * a t z) y) =
-            (T% fun y ↦ (k : Real) •
-              gradientFun (I := I) (G.metric t) (a t) y) := by
-        funext y
-        apply congrArg (fun z ↦ (⟨y, z⟩ : TotalSpace E (TangentSpace I)))
-        exact gradientFun_const_smul (I := I) (G.metric t) (k : Real)
-          (ha_space.mdifferentiableAt (by simp))
-      rw [heq]
-      exact mdifferentiableAt_const.smul_section (ha_grad x))
+    (ha_time.const_mul (-(k : Real))).differentiableWithinAt
+    (Filter.Eventually.of_forall htrace_space_at) hnegScaled_space
+    htrace_grad hnegScaled_grad
+  have hpsi_fun : (fun q y ↦ trace q y - negScaled q y) = psi := by
+    funext q y
+    dsimp only [psi, negScaled]
+    ring
+  rw [hpsi_fun] at hadd
   have hpsi_operator :
       parabolicOperatorWithDrift (I := I) G T X psi t x =
         parabolicOperatorWithDrift (I := I) G T X trace t x +
           (k : Real) * parabolicOperatorWithDrift (I := I) G T X a t x := by
-    rw [← hscale]
-    exact hadd
+    rw [hadd, hscale]
+    ring
   have htrace_operator :=
     parabolicOperatorWithDrift_sum_inner_endomorphism_apply_of_normal_eigenframe
       (I := I) G cov hcov hT htmem A v x hx X eigenvalue hGconn hAt
@@ -395,8 +415,11 @@ theorem lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
     (hfPos : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset, 0 < f q y)
     (hfTime : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
       DifferentiableAt Real (fun r ↦ f r y) q)
-    (hfSpace : ∀ q ∈ Ioc s t,
-      ContMDiff I 𝓘(Real, Real) ∞ (f q))
+    (hfSpace : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      MDifferentiableAt I 𝓘(Real, Real) (f q) y)
+    (hfGrad : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      MDiffAt (T% fun z : M ↦
+        gradientFun (I := I) (G.metric q) (f q) z) y)
     {c epsilon : Real} (hc : (Klip : Real) < c) (hepsilon : 0 < epsilon)
     (hfEquation : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
       parabolicOperatorWithDrift (I := I) G T X f q y = -c * f q y)
@@ -455,13 +478,14 @@ theorem lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
   have hqIcc : q ∈ Icc s t := ⟨hq.1.le, hq.2⟩
   have hyK : y ∈ Kset := interior_subset hy
   have hqT : q ≤ T := hq.2.trans ht
-  have hfq := hfSpace q hq
   have haTime : DifferentiableAt Real (fun r ↦ a r y) q := by
     dsimp only [a]
     fun_prop
-  have haSpace : ContMDiff I 𝓘(Real, Real) ∞ (a q) := by
-    dsimp only [a]
-    exact contMDiff_const.sub hfq
+  have hfSpaceNear : ∀ᶠ z in 𝓝 y,
+      MDifferentiableAt I 𝓘(Real, Real) (f q) z := by
+    filter_upwards [isOpen_interior.mem_nhds hy] with z hz
+    exact hfSpace q hq z hz
+  have hfGradAt := hfGrad q hq y hy
   have haLt : -a q y < f q y := by
     dsimp only [a]
     nlinarith [mul_pos hepsilon (Real.exp_pos (c * (q - s)))]
@@ -489,12 +513,23 @@ theorem lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
     exact mdifferentiableAt_zeroSection
       (𝕜 := Real) (F := E) (E := (TangentSpace I : M → Type _))
       (IB := I) (x := y)
-  have hfSpaceAt : ∀ z : M,
-      MDifferentiableAt I 𝓘(Real, Real) (f q) z := fun z ↦
-    hfq.mdifferentiable (by simp) z
-  have hfGrad : MDiffAt (T% fun z : M ↦
-      gradientFun (I := I) (G.metric q) (f q) z) y :=
-    (gradientFun_smooth (I := I) (G.metric q) hfq).mdifferentiableAt (by simp)
+  have haSpace : ∀ᶠ z in 𝓝 y,
+      MDifferentiableAt I 𝓘(Real, Real) (a q) z := by
+    filter_upwards [hfSpaceNear] with z hz
+    exact mdifferentiableAt_const.sub hz
+  have haGrad : MDiffAt (T% fun z : M ↦
+      gradientFun (I := I) (G.metric q) (a q) z) y := by
+    have hgrad_eq :
+        (T% fun z : M ↦ gradientFun (I := I) (G.metric q) (a q) z) =ᶠ[𝓝 y]
+          (T% fun z : M ↦
+            gradientFun (I := I) (G.metric q) (e q) z -
+              gradientFun (I := I) (G.metric q) (f q) z) := by
+      filter_upwards [hfSpaceNear] with z hz
+      apply congrArg (fun v ↦
+        (⟨z, v⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+      exact gradientFun_sub (I := I) (G.metric q) (heSpace z) hz
+    exact (mdifferentiableAt_sub_section heGrad hfGradAt).congr_of_eventuallyEq
+      hgrad_eq
   have heDerivAt : HasDerivAt (fun r ↦ e r y) (c * e q y) q := by
     have hlinear : HasDerivAt (fun r : Real ↦ c * (r - s)) c q := by
       simpa using ((hasDerivAt_id q).sub_const s).const_mul c
@@ -513,9 +548,9 @@ theorem lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
   have haOperator :
       parabolicOperatorWithDrift (I := I) G T X a q y =
         c * (epsilon * Real.exp (c * (q - s)) + f q y) := by
-    have hsub := parabolic_sub (I := I) G T X e f q y
+    have hsub := parabolic_sub_at (I := I) G T X e f q y
       heTime (hfTime q hq y hy).differentiableWithinAt
-      heSpace hfSpaceAt heGrad hfGrad
+      (Filter.Eventually.of_forall heSpace) hfSpaceNear heGrad hfGradAt
     change parabolicOperatorWithDrift (I := I) G T X a q y = _ at hsub
     rw [hsub, heOperator, hfEquation q hq y hy]
     dsimp only [e]
@@ -524,7 +559,7 @@ theorem lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
     (I := I) G (cov q) (hcov q) hT hs hq.1 hqT A hAsymm y
       (hKsetInterior hy) X (reaction q y) (hreactionNull q y)
       (hApos q hqIcc y hyK) (hR q hqIcc y hyK)
-      (hreactionLip q hq y hy) hkpos hk a haTime haSpace hc
+      (hreactionLip q hq y hy) hkpos hk a haTime haSpace haGrad hc
       (hfPos q hq y hy) haLt
       (by rw [haOperator]; nlinarith [mul_pos hepsilon (Real.exp_pos (c * (q - s)))])
       (hGconn q hq) (hAt q hq y hy) (hevolution q hq y hy)
@@ -569,8 +604,11 @@ theorem lowerKyFanSum_pos_on_compact_set_of_dirichlet_solution
     (hfPos : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset, 0 < f q y)
     (hfTime : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
       DifferentiableAt Real (fun r ↦ f r y) q)
-    (hfSpace : ∀ q ∈ Ioc s t,
-      ContMDiff I 𝓘(Real, Real) ∞ (f q))
+    (hfSpace : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      MDifferentiableAt I 𝓘(Real, Real) (f q) y)
+    (hfGrad : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      MDiffAt (T% fun z : M ↦
+        gradientFun (I := I) (G.metric q) (f q) z) y)
     {c : Real} (hc : (Klip : Real) < c)
     (hfEquation : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
       parabolicOperatorWithDrift (I := I) G T X f q y = -c * f q y)
@@ -600,7 +638,7 @@ theorem lowerKyFanSum_pos_on_compact_set_of_dirichlet_solution
     have hbarrier := lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
       (I := I) G cov hcov hT hs ht hkpos hk hKset hKsetInterior
         A hAsymm hApos hphiCont hR X reaction hreactionNull hreactionLip
-        f hfCont hfInitial hfBoundary hfPos hfTime hfSpace hc hepsilon
+        f hfCont hfInitial hfBoundary hfPos hfTime hfSpace hfGrad hc hepsilon
         hfEquation hGconn hAt hevolution q ⟨hq.1.le, hq.2⟩ y (interior_subset hy)
     have hepsilonEq :
         (k : Real) * (epsilon * Real.exp (c * (q - s))) = delta := by
