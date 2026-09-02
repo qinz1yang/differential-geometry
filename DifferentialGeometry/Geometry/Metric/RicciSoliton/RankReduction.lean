@@ -89,7 +89,6 @@ theorem normalizedGradientRicciSoliton_metricCurvatureOperatorRankAt_eq_one_or_t
   · exact Or.inr hthree
 
 theorem normalizedGradientRicciSoliton_metricCurvatureOperatorRankAt_eq_zero_of_isGaussian
-    [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f)
     (hdim : Module.finrank Real E = 3)
