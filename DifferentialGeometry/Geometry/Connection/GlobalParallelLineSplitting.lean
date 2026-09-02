@@ -4,6 +4,8 @@ import DifferentialGeometry.Analysis.ODE.LinearGrowthComplete
 import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Topology.Morse.RegularSublevel
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Flow
+import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
+import DifferentialGeometry.Geometry.Metric.ProductSlice
 import Mathlib.Analysis.Convex.Contractible
 
 set_option autoImplicit false
@@ -466,7 +468,6 @@ private theorem mfderiv_globalIntegralCurve_product_apply
     {H' : Type*} [TopologicalSpace H']
     {J : ModelWithCorners ℝ E' H'}
     {N : Type*} [TopologicalSpace N] [ChartedSpace H' N]
-    [IsManifold J ∞ N]
     (X : Cₛ^∞⟮I; E, TangentSpace I⟯)
     (hcomplete : ∀ x : M, ∃ gamma : ℝ → M,
       And (gamma 0 = x) (IsMIntegralCurve gamma X))
@@ -589,7 +590,7 @@ private theorem globalIntegralCurve_metric_pairing_eq
     _ = mvfderiv (I := I) f x v := hrhs
     _ = g.inner x (X x) v := hdf x v
 
-theorem exists_global_product_diffeomorph_from_parallel_unit_section
+theorem exists_global_product_diffeomorph_with_potential_from_parallel_unit_section
     {m : ℕ}
     {H : Type} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
@@ -616,11 +617,20 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
           (DifferentialGeometry.Topology.Morse.MorseModel m)
           (DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0),
         let _ := hcs
-        And
-          (IsManifold (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m))
+        ∃ hmanifold : IsManifold
+            (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m))
             (↑(⊤ : ℕ∞) : WithTop ℕ∞)
-            (DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0))
-          (∃ F : Diffeomorph
+            (DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0),
+          let _ := hmanifold
+          ∃ hσ : SigmaCompactSpace
+              (DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0),
+            let _ := hσ
+            ∃ h : SmoothRiemannianMetric
+                (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m))
+                (DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0),
+              And (RiemannianMetricComplete
+                (I := 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) h)
+              (∃ F : Diffeomorph
               ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod 𝓘(ℝ, ℝ)) I
               (DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 × ℝ) M
               (↑(⊤ : ℕ∞) : WithTop ℕ∞),
@@ -674,17 +684,7 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
                             (show TangentSpace
                               ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
                                 𝓘(ℝ, ℝ)) (y, t) from (v, q))) =
-                        g.inner y.1
-                          ((mfderiv
-                            (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) I
-                            (fun z :
-                              DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 =>
-                                z.1) y) u)
-                          ((mfderiv
-                            (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) I
-                            (fun z :
-                              DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 =>
-                                z.1) y) v) + r * q))))) := by
+                        h.inner y u v + r * q))))) := by
   obtain ⟨f0, hf0, hdf0⟩ :=
     exists_global_gradient_potential_of_parallel_section g X hparallel
   let p0 : M := Classical.arbitrary M
@@ -716,7 +716,13 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
     DifferentialGeometry.Topology.Morse.manifoldLevelSetIsManifold
       I f 0 hf hreg
   let _ := hmanifold
-  refine ⟨f, hf, hdf, hreg, hcs, hmanifold, ?_⟩
+  have hclosed : IsClosed {x : M | f x = 0} :=
+    isClosed_eq hf.continuous continuous_const
+  let hσ : SigmaCompactSpace
+      (DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0) :=
+    hclosed.sigmaCompactSpace
+  let _ := hσ
+  refine ⟨f, hf, hdf, hreg, hcs, hmanifold, hσ, ?_⟩
   let hcomplete := exists_globalIntegralCurve_of_unit_section g hg X hunit
   let forward :
       DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 × ℝ → M :=
@@ -817,7 +823,15 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
     { toEquiv := e
       contMDiff_toFun := hforward
       contMDiff_invFun := hbackward }
-  refine ⟨F, ?_, ?_, ?_, ?_, ?_⟩
+  let G := Diffeomorph.pullbackMetricCross g F
+  let h := G.sliceFst 0
+  have hGcomplete : RiemannianMetricComplete
+      (I := (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod 𝓘(ℝ, ℝ)) G :=
+    RiemannianMetricComplete.pullbackCross g F hg
+  have hhcomplete : RiemannianMetricComplete
+      (I := 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) h :=
+    RiemannianMetricComplete.sliceFst G 0 hGcomplete
+  refine ⟨h, hhcomplete, F, ?_, ?_, ?_, ?_, ?_⟩
   · intro y t
     rfl
   · intro y t r
@@ -927,7 +941,7 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
         (show TangentSpace (J.prod 𝓘(ℝ, ℝ)) (y, t) from (u, r)))
       ((mfderiv (J.prod 𝓘(ℝ, ℝ)) I forward (y, t))
         (show TangentSpace (J.prod 𝓘(ℝ, ℝ)) (y, t) from (v, q))) =
-      g.inner y.1 du dv + r * q
+      h.inner y u v + r * q
     rw [hdu, hdv]
     change g.inner (DifferentialGeometry.Analysis.ODE.curveAt X hcomplete y.1 t)
       (r • z + A) (q • z + B) = _
@@ -944,7 +958,222 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
               (DifferentialGeometry.Analysis.ODE.curveAt X hcomplete y.1 t) A B := by
       simp [smul_eq_mul]
       ring
-    rw [hexpand, hunitFlow, hzB, hAz, hpair]
+    have hh : h.inner y u v = g.inner y.1 du dv := by
+      have hflowZero :
+          (fun w : M =>
+            DifferentialGeometry.Analysis.ODE.curveAt X hcomplete w 0) = id := by
+        funext w
+        exact DifferentialGeometry.Analysis.ODE.curveAt_zero X hcomplete w
+      have hduZero := mfderiv_globalIntegralCurve_product_apply
+        X hcomplete inclusion hinclusion y 0 u 0
+      have hdvZero := mfderiv_globalIntegralCurve_product_apply
+        X hcomplete inclusion hinclusion y 0 v 0
+      calc
+        h.inner y u v =
+            G.inner (y, 0)
+              (show TangentSpace (J.prod 𝓘(ℝ, ℝ)) (y, 0) from (u, 0))
+              (show TangentSpace (J.prod 𝓘(ℝ, ℝ)) (y, 0) from (v, 0)) := by
+          exact SmoothRiemannianMetric.sliceFst_inner G 0 y u v
+        _ = g.inner (F (y, 0))
+            ((mfderiv (J.prod 𝓘(ℝ, ℝ)) I (fun w => F w) (y, 0))
+              (show TangentSpace (J.prod 𝓘(ℝ, ℝ)) (y, 0) from (u, 0)))
+            ((mfderiv (J.prod 𝓘(ℝ, ℝ)) I (fun w => F w) (y, 0))
+              (show TangentSpace (J.prod 𝓘(ℝ, ℝ)) (y, 0) from (v, 0))) := by
+          exact Diffeomorph.pullbackMetricCross_inner g F (y, 0)
+            (show TangentSpace (J.prod 𝓘(ℝ, ℝ)) (y, 0) from (u, 0))
+            (show TangentSpace (J.prod 𝓘(ℝ, ℝ)) (y, 0) from (v, 0))
+        _ = g.inner y.1 du dv := by
+          change g.inner
+            (DifferentialGeometry.Analysis.ODE.curveAt X hcomplete y.1 0)
+            ((mfderiv (J.prod 𝓘(ℝ, ℝ)) I forward (y, 0))
+              (show TangentSpace (J.prod 𝓘(ℝ, ℝ)) (y, 0) from (u, 0)))
+            ((mfderiv (J.prod 𝓘(ℝ, ℝ)) I forward (y, 0))
+              (show TangentSpace (J.prod 𝓘(ℝ, ℝ)) (y, 0) from (v, 0))) =
+              g.inner y.1 du dv
+          rw [hduZero, hdvZero, hflowZero, mfderiv_id]
+          simp only [zero_smul, zero_add]
+          rw [DifferentialGeometry.Analysis.ODE.curveAt_zero]
+          rfl
+    rw [hexpand, hunitFlow, hzB, hAz, hpair, hh]
     ring
+
+theorem exists_global_product_diffeomorph_from_parallel_unit_section
+    {m : ℕ}
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ
+      (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
+    [I.Boundaryless]
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
+    [ConnectedSpace M] [SimplyConnectedSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (hg : RiemannianMetricComplete (I := I) g)
+    (X : Cₛ^∞⟮I; DifferentialGeometry.Topology.Morse.MorseModel (m + 1),
+      TangentSpace I⟯)
+    (hunit : ∀ x, g.inner x (X x) (X x) = 1)
+    (hparallel : ∀ x, ∀ v : TangentSpace I x,
+      (LeviCivita (I := I) g) X x v = 0) :
+    ∃ (N : Type) (_ : TopologicalSpace N)
+      (hcs : ChartedSpace
+        (DifferentialGeometry.Topology.Morse.MorseModel m) N),
+      let _ := hcs
+      ∃ hmanifold : IsManifold
+          (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m))
+          (↑(⊤ : ℕ∞) : WithTop ℕ∞) N,
+        let _ := hmanifold
+        ∃ ht2 : T2Space N,
+          let _ := ht2
+          ∃ hσ : SigmaCompactSpace N,
+            let _ := hσ
+            ∃ h : SmoothRiemannianMetric
+                (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) N,
+              And (ConnectedSpace N)
+              (And (SimplyConnectedSpace N)
+              (And (RiemannianMetricComplete
+                (I := 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) h)
+              (∃ F : Diffeomorph
+                  ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                    𝓘(ℝ, ℝ)) I (N × ℝ) M
+                  (↑(⊤ : ℕ∞) : WithTop ℕ∞),
+                And
+                  (∀ (y : N) (t r : ℝ),
+                    (mfderiv
+                      ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                        𝓘(ℝ, ℝ)) I
+                      (fun z : N × ℝ => F z) (y, t))
+                      (show TangentSpace
+                        ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                          𝓘(ℝ, ℝ)) (y, t) from (0, r)) =
+                        r • X (F (y, t)))
+                  (∀ (y : N) (t : ℝ)
+                      (u v : TangentSpace
+                        (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) y)
+                      (r q : ℝ),
+                    g.inner (F (y, t))
+                        ((mfderiv
+                          ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                            𝓘(ℝ, ℝ)) I
+                          (fun z : N × ℝ => F z) (y, t))
+                          (show TangentSpace
+                            ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                              𝓘(ℝ, ℝ)) (y, t) from (u, r)))
+                        ((mfderiv
+                          ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                            𝓘(ℝ, ℝ)) I
+                          (fun z : N × ℝ => F z) (y, t))
+                          (show TangentSpace
+                            ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                              𝓘(ℝ, ℝ)) (y, t) from (v, q))) =
+                      h.inner y u v + r * q)))) := by
+  obtain ⟨f, hf, hdf, hreg, hcs, hmanifold, hσ, h, hhcomplete,
+      F, hF, hdirection, hconnected, hsimplyConnected, hmetric⟩ :=
+    exists_global_product_diffeomorph_with_potential_from_parallel_unit_section
+      g hg X hunit hparallel
+  let _ := hcs
+  let _ := hmanifold
+  let _ := hσ
+  exact ⟨DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0,
+    inferInstance, hcs, hmanifold, inferInstance, hσ, h,
+    hconnected, hsimplyConnected, hhcomplete, F, hdirection, hmetric⟩
+
+theorem ContMDiffVectorSubbundle.exists_global_product_diffeomorph_of_rank_eq_one
+    {m : ℕ}
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ
+      (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
+    [I.Boundaryless]
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
+    [ConnectedSpace M] [SimplyConnectedSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (hg : RiemannianMetricComplete (I := I) g)
+    (S : ContMDiffVectorSubbundle
+      (I := I) (F := DifferentialGeometry.Topology.Morse.MorseModel (m + 1))
+      (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)))
+    (hSrank : S.rank = 1)
+    (hS : IsCovariantlyInvariantSubmoduleFamily
+      (LeviCivita (I := I) g) S.fiber) :
+    ∃ (N : Type) (_ : TopologicalSpace N)
+      (hcs : ChartedSpace
+        (DifferentialGeometry.Topology.Morse.MorseModel m) N),
+      let _ := hcs
+      ∃ hmanifold : IsManifold
+          (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m))
+          (↑(⊤ : ℕ∞) : WithTop ℕ∞) N,
+        let _ := hmanifold
+        ∃ ht2 : T2Space N,
+          let _ := ht2
+          ∃ hσ : SigmaCompactSpace N,
+            let _ := hσ
+            ∃ h : SmoothRiemannianMetric
+                (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) N,
+              And (ConnectedSpace N)
+              (And (SimplyConnectedSpace N)
+              (And (RiemannianMetricComplete
+                (I := 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) h)
+              (∃ F : Diffeomorph
+                  ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                    𝓘(ℝ, ℝ)) I (N × ℝ) M
+                  (↑(⊤ : ℕ∞) : WithTop ℕ∞),
+                And
+                  (∀ (y : N) (t : ℝ),
+                    S.fiber (F (y, t)) =
+                      ℝ ∙
+                        ((mfderiv
+                          ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                            𝓘(ℝ, ℝ)) I
+                          (fun z : N × ℝ => F z) (y, t))
+                          (show TangentSpace
+                            ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                              𝓘(ℝ, ℝ)) (y, t) from (0, 1))))
+                  (∀ (y : N) (t : ℝ)
+                      (u v : TangentSpace
+                        (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) y)
+                      (r q : ℝ),
+                    g.inner (F (y, t))
+                        ((mfderiv
+                          ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                            𝓘(ℝ, ℝ)) I
+                          (fun z : N × ℝ => F z) (y, t))
+                          (show TangentSpace
+                            ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                              𝓘(ℝ, ℝ)) (y, t) from (u, r)))
+                        ((mfderiv
+                          ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                            𝓘(ℝ, ℝ)) I
+                          (fun z : N × ℝ => F z) (y, t))
+                          (show TangentSpace
+                            ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                              𝓘(ℝ, ℝ)) (y, t) from (v, q))) =
+                      h.inner y u v + r * q)))) := by
+  obtain ⟨X, hXmem, hunit, hparallel⟩ :=
+    DifferentialGeometry.Geometry.Connection.ContMDiffVectorSubbundle.exists_global_parallel_unit_section_of_rank_eq_one
+      g S hSrank hS
+  obtain ⟨N, topologyN, hcs, hmanifold, ht2, hσ, h,
+      hconnected, hsimplyConnected, hhcomplete, F, hdirection, hmetric⟩ :=
+    exists_global_product_diffeomorph_from_parallel_unit_section
+      g hg X hunit hparallel
+  let _ := topologyN
+  let _ := hcs
+  let _ := hmanifold
+  let _ := ht2
+  let _ := hσ
+  refine ⟨N, topologyN, hcs, hmanifold, ht2, hσ, h,
+    hconnected, hsimplyConnected, hhcomplete, F, ?_, hmetric⟩
+  intro y t
+  have hfin : Module.finrank ℝ (S.fiber (F (y, t))) = 1 := by
+    rw [S.finrank_fiber, hSrank]
+  have hXne : X (F (y, t)) ≠ 0 := by
+    intro hzero
+    have hx := hunit (F (y, t))
+    rw [hzero] at hx
+    simp at hx
+  have hspan : S.fiber (F (y, t)) = ℝ ∙ X (F (y, t)) :=
+    eq_span_singleton_of_mem_of_finrank_eq_one
+      hfin (hXmem (F (y, t))) hXne
+  rw [hdirection y t 1, one_smul]
+  exact hspan
 
 end DifferentialGeometry.Geometry.Connection
