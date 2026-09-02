@@ -1082,6 +1082,16 @@ theorem canonicalMetric_complete
     (RiemannianMetricComplete.scaleMetric hcomplete
       (1 - sigma * t) (mem_canonicalTimeDomain_iff.mp ht))
 
+theorem canonicalMetricFamily_complete
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) :
+    RiemannianMetricComplete (I := I)
+      (canonicalMetricFamily (I := I) g f sigma hcomplete hsol t) := by
+  rw [canonicalMetricFamily_eq (I := I) g f sigma hcomplete hsol ht]
+  exact canonicalMetric_complete (I := I) g f sigma hcomplete hsol ht
+
 omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M] in
 private theorem pullbackMetric_family_hasDerivAt
