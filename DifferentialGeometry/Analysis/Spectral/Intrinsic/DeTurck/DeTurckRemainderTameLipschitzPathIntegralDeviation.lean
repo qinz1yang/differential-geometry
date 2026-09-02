@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
@@ -230,8 +233,8 @@ private theorem deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormS
         - (DRs + DRs) := by
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₁,
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
-      reindexCoeffGen_sub_fw (I := I) (M := M) g₀ _ _ ρA,
-      reindexCoeffGen_sub_fw (I := I) (M := M) g₀ _ _ ρAT]
+      reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρA,
+      reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρAT]
     dsimp [ρA, ρAT, DTHs, DRs]
     abel
   have h0 : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
@@ -365,8 +368,8 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s),
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
-      reindexCoeffGen_sub_fw (I := I) (M := M) g₀ _ _ ρA,
-      reindexCoeffGen_sub_fw (I := I) (M := M) g₀ _ _ ρAT]
+      reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρA,
+      reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρAT]
     abel
   have hj2 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
       (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
@@ -392,7 +395,7 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
       have h := hj2
       rw [linearizedRicciThreeArmHjoint] at h
       exact h
-    have hsub := jointTotalSpaceRS_sub_fw (I := I) (r := 4) (s := 2)
+    have hsub := jointTotalSpaceRS_sub (I := I) (r := 4) (s := 2)
       (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
       (fun p : M × ℝ => (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
@@ -683,7 +686,7 @@ theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_fibreWeighted_ballUnif
       smoothCcTensorBilinForm (I := I) g₀ (T - T') x v w = smoothCcTensorBilinForm (I := I) g₀
         (T - T') x w v := by
     intro x v w
-    rw [ccTensorBilin_sub_fw, ccTensorBilin_sub_fw, hTsymm x v w, hT'symm x v w]
+    rw [ccTensorBilin_sub, ccTensorBilin_sub, hTsymm x v w, hT'symm x v w]
   have hKfold := hK₀fold (T - T') hSsymm
   have hKfold' : operatorFieldApply (I := I) (M := M) g₀ 4 2
         (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)
@@ -770,7 +773,7 @@ lemma ccTensorBilin_zero_symm_fw (g₀ : SmoothRiemannianMetric I M)
   have h0 : ∀ (u₁ u₂ : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x u₁ u₂ = 0 := by
     intro u₁ u₂
-    have hs := ccTensorBilin_sub_fw (I := I) (M := M) g₀
+    have hs := ccTensorBilin_sub (I := I) (M := M) g₀
       (0 : SmoothCcTensor g₀ 0 2) (0 : SmoothCcTensor g₀ 0 2) x u₁ u₂
     rw [sub_zero] at hs
     linarith
@@ -864,8 +867,8 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
       smoothCcTensorBilinForm (I := I) g₀ (T - T') x v w = smoothCcTensorBilinForm (I := I) g₀
         (T - T') x w v := by
     intro x v w
-    rw [ccTensorBilin_sub_fw (I := I) (M := M) g₀ T T' x v w,
-      ccTensorBilin_sub_fw (I := I) (M := M) g₀ T T' x w v, hTsymm x v w, hT'symm x v w]
+    rw [ccTensorBilin_sub (I := I) (M := M) g₀ T T' x v w,
+      ccTensorBilin_sub (I := I) (M := M) g₀ T T' x w v, hTsymm x v w, hT'symm x v w]
   have hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ') := by
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt

@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
@@ -229,78 +232,6 @@ theorem deTurckMetricPrincipalDefectTotal_background_operatorFieldApplication_eq
   rw [hswapA, hswapB]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem jointTotalSpaceRS_sub_fw {r s : ℕ} {S : Set ℝ}
-    (A B : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
-    (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p))
-          ((Set.univ : Set M) ×ˢ S))
-    (hB : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (B p))
-          ((Set.univ : Set M) ×ˢ S)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p - B p))
-      ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
-  intro p₀ hp₀
-  rw [Bundle.contMDiffWithinAt_totalSpace]
-  refine ⟨contMDiffWithinAt_fst, ?_⟩
-  set x₀ := p₀.1 with hx₀
-  set e := trivializationAt (Tensor0SBundle.TensorRSModel r s ℝ E)
-    (fun z : M => Tensor0SBundle.TensorRSSpace r s I z) x₀ with he
-  have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SBundle.TensorRSModel r s ℝ E)
-    (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z)).mp (hA p₀ hp₀)
-  have hB' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SBundle.TensorRSModel r s ℝ E)
-    (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z)).mp (hB p₀ hp₀)
-  refine (hA'.2.sub hB'.2).congr_of_eventuallyEq ?_ ?_
-  · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e.baseSet :=
-      (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
-        (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
-    filter_upwards [hbase] with p hx
-    exact (e.linear ℝ hx).map_sub (A p) (B p)
-  · exact (e.linear ℝ (by rw [he, ← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)).map_sub
-      (A p₀) (B p₀)
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem jointTotalSpaceRS_add_fw {r s : ℕ} {S : Set ℝ}
-    (A B : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
-    (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p))
-          ((Set.univ : Set M) ×ˢ S))
-    (hB : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (B p))
-          ((Set.univ : Set M) ×ˢ S)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p + B p))
-      ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
-  intro p₀ hp₀
-  rw [Bundle.contMDiffWithinAt_totalSpace]
-  refine ⟨contMDiffWithinAt_fst, ?_⟩
-  set x₀ := p₀.1 with hx₀
-  set e := trivializationAt (Tensor0SBundle.TensorRSModel r s ℝ E)
-    (fun z : M => Tensor0SBundle.TensorRSSpace r s I z) x₀ with he
-  have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SBundle.TensorRSModel r s ℝ E)
-    (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z)).mp (hA p₀ hp₀)
-  have hB' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SBundle.TensorRSModel r s ℝ E)
-    (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z)).mp (hB p₀ hp₀)
-  refine (hA'.2.add hB'.2).congr_of_eventuallyEq ?_ ?_
-  · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e.baseSet :=
-      (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
-        (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
-    filter_upwards [hbase] with p hx
-    exact (e.linear ℝ hx).map_add (A p) (B p)
-  · exact (e.linear ℝ (by rw [he, ← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)).map_add
-      (A p₀) (B p₀)
-
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deTurckMetricPrincipalDefectTotal_metricPerturbationPath_jointSmooth
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -314,14 +245,14 @@ theorem deTurckMetricPrincipalDefectTotal_metricPerturbationPath_jointSmooth
     Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth
       (I := I) g₀ T T' hδ hδ'
   have hLich := linearizedRicci_arm2FieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ'
-  have hadd := jointTotalSpaceRS_add_fw (I := I) (r := 4) (s := 2)
+  have hadd := jointTotalSpaceRS_add (I := I) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ =>
       (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
     (fun p : M × ℝ =>
       (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
     hLich hLich
-  have hsub := jointTotalSpaceRS_sub_fw (I := I) (r := 4) (s := 2)
+  have hsub := jointTotalSpaceRS_sub (I := I) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ =>
       (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff
@@ -356,18 +287,6 @@ def deTurckPhiTotPathIntegral (g₀ : SmoothRiemannianMetric I M)
         (I := I) (M := M) g₀ T T' hδ hδ'
       rw [linearizedRicciThreeArmHjoint] at h
       exact h)
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma ccTensorBilin_sub_fw (g₀ : SmoothRiemannianMetric I M)
-    (T T' : SmoothCcTensor g₀ 0 2) (x : M) (v w : TangentSpace I x) :
-    smoothCcTensorBilinForm (I := I) g₀ (T - T') x v w =
-      smoothCcTensorBilinForm (I := I) g₀ T x v w - smoothCcTensorBilinForm (I := I) g₀ T' x v
-        w := by
-  rw [← unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ (T - T') x v w,
-    ← unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ T x v w,
-    ← unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ T' x v w,
-    unitModel_sub_local, sub_apply]
 
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope)
@@ -422,7 +341,7 @@ theorem threeArmHjoint_neg_two_smul_add_fw (g₀ : SmoothRiemannianMetric I M) (
   have hsmul := lieArm_jointRS_const_smul_local (I := I) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) (-2 : ℝ)
     (fun p : M × ℝ => (A p.2).toSection p.1) hA
-  have hadd := jointTotalSpaceRS_add_fw (I := I) (r := r) (s := 2)
+  have hadd := jointTotalSpaceRS_add (I := I) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (-2 : ℝ) • (A p.2).toSection p.1)
     (fun p : M × ℝ => (B p.2).toSection p.1)
@@ -621,8 +540,8 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
       smoothCcTensorBilinForm (I := I) g₀ (T - T') x v w = smoothCcTensorBilinForm (I := I) g₀
         (T - T') x w v := by
     intro x v w
-    rw [ccTensorBilin_sub_fw (I := I) (M := M) g₀ T T' x v w,
-      ccTensorBilin_sub_fw (I := I) (M := M) g₀ T T' x w v, hTsymm x v w, hT'symm x v w]
+    rw [ccTensorBilin_sub (I := I) (M := M) g₀ T T' x v w,
+      ccTensorBilin_sub (I := I) (M := M) g₀ T T' x w v, hTsymm x v w, hT'symm x v w]
   have hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ') := by
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt
@@ -1296,24 +1215,6 @@ theorem exists_deTurckMetricPrincipalDefectTotal_background_curvatureFold_of_sym
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection)
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-theorem reindexCoeffGen_sub_fw (g₀ : SmoothRiemannianMetric I M)
-    (A B : SmoothCcTensor g₀ 4 2) (ρ : Equiv.Perm (Fin 4)) :
-    reindexCoeffGen (I := I) (M := M) g₀ 4 2 (A - B) ρ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2 A ρ -
-        reindexCoeffGen (I := I) (M := M) g₀ 4 2 B ρ := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    reindexCoeffGen_toSection, reindexCoeffGen_toSection, reindexCoeffGen_toSection,
-    SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
-  apply ContinuousLinearMap.ext
-  intro D
-  rw [sub_apply, reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
-    reindexCoeffFibGen_apply, sub_apply]
 
 omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in

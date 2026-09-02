@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzKernelDecompositionTopOrderSeparatedBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzBackgroundBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzMetricPrincipalDefectTotalCurvatureFold
+import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -723,7 +724,7 @@ theorem linearizedRicciThreeArmHjoint_add (g₀ : SmoothRiemannianMetric I M) (r
     (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
       (fun s => A s + B s) (δ := δ) (δ' := δ') := by
-  have hadd := jointTotalSpaceRS_add_fw (I := I) (r := r) (s := 2)
+  have hadd := jointTotalSpaceRS_add (I := I) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (A p.2).toSection p.1)
     (fun p : M × ℝ => (B p.2).toSection p.1)
@@ -744,7 +745,7 @@ theorem linearizedRicciThreeArmHjoint_add_smul (g₀ : SmoothRiemannianMetric I 
   have hsmul := lieArm_jointRS_const_smul_local (I := I) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) c
     (fun p : M × ℝ => (B p.2).toSection p.1) hB
-  have hadd := jointTotalSpaceRS_add_fw (I := I) (r := r) (s := 2)
+  have hadd := jointTotalSpaceRS_add (I := I) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (A p.2).toSection p.1)
     (fun p : M × ℝ => c • (B p.2).toSection p.1)

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
@@ -1746,7 +1747,7 @@ private theorem exists_lieDerivativeCorrectionPlusEndoArm_order0_data
     have hjB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
         (fun u => deTurckLieEndoArmField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ u) g₀) (δ := δ) (δ' := δ) := by
-      have hsub := jointTotalSpaceRS_sub_fw (I := I) (r := 2) (s := 2)
+      have hsub := jointTotalSpaceRS_sub (I := I) (r := 2) (s := 2)
         (S := metricPerturbationPathDomain (δ := δ) (δ' := δ))
         (fun p : M × ℝ => (deTurckLieCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g₀).toSection p.1)
