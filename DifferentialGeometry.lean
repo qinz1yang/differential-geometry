@@ -3964,6 +3964,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TailLocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TraceDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TraceIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.WeakBarrier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.SingularityModel.CompactParabolicLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.RicciBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.DerivativeNorm
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
