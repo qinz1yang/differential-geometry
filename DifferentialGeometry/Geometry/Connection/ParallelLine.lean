@@ -24,6 +24,51 @@ attribute [local instance] DifferentialGeometry.seminormedAddCommGroupTangentSpa
 attribute [local instance] DifferentialGeometry.normedAddCommGroupTangentSpace
 attribute [local instance] DifferentialGeometry.normedSpaceTangentSpace
 
+theorem exists_local_gradient_potential_of_parallel_section
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) {U : Set M} (hUopen : IsOpen U)
+    {x : M} (hxU : x ∈ U)
+    (s : Cₛ^∞⟮I; E, TangentSpace I⟯)
+    (hparallel : ∀ y ∈ U, ∀ v : TangentSpace I y,
+      (LeviCivita (I := I) g) s y v = 0) :
+    ∃ (V : Set M) (f : M → ℝ),
+      And (IsOpen V) (And (x ∈ V) (And (V ⊆ U)
+        (And (f x = 0) (And (ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f V)
+          (∀ y ∈ V, ∀ v : TangentSpace I y,
+            mvfderiv (I := I) f y v = g.inner y (s y) v))))) := by
+  let theta := metricFlat g fun y => s y
+  have htheta : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ)) ∞
+      (fun y : M => TotalSpace.mk' (E →L[ℝ] ℝ)
+        (E := fun z : M => TangentSpace I z →L[ℝ] ℝ) y (theta y)) := by
+    exact ContMDiff.clm_bundle_apply (b := id) g.contMDiff s.contMDiff
+  let alpha : DifferentialGeometry.DifferentialForm I M 1 :=
+    DifferentialGeometry.DifferentialForm.ofCotangent theta htheta
+  have halpha : ∀ y ∈ U, DifferentialGeometry.DifferentialForm.exteriorDerivative alpha y = 0 := by
+    intro y hy
+    apply ContinuousAlternatingMap.ext
+    intro q
+    have hq : q = ![q 0, q 1] := by
+      funext i
+      fin_cases i <;> rfl
+    rw [hq]
+    rw [DifferentialGeometry.DifferentialForm.exteriorDerivative_ofCotangent_apply
+      (LeviCivita (I := I) g) theta htheta y (q 0) (q 1)]
+    rw [cotangentCov_metricDuality g
+      (s.contMDiff.mdifferentiableAt (by simp)) (q 0) (q 1)]
+    rw [cotangentCov_metricDuality g
+      (s.contMDiff.mdifferentiableAt (by simp)) (q 1) (q 0)]
+    rw [hparallel y hy (q 0), hparallel y hy (q 1)]
+    rw [LeviCivita_torsion_eq_zero (I := I) g]
+    simp [theta]
+  obtain ⟨V, f, hVopen, hxV, hVU, hfx, hf, hdf⟩ :=
+    DifferentialGeometry.DifferentialForm.exists_local_potential_of_exteriorDerivative_eq_zero_on
+      alpha U hUopen halpha hxU
+  refine ⟨V, f, hVopen, hxV, hVU, hfx, hf, ?_⟩
+  intro y hy v
+  rw [hdf y hy v]
+  rw [DifferentialGeometry.DifferentialForm.ofCotangent_apply]
+  rfl
+
 theorem ContMDiffVectorSubbundle.exists_local_unit_gradient_section_of_rank_eq_one
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
@@ -44,33 +89,8 @@ theorem ContMDiffVectorSubbundle.exists_local_unit_gradient_section_of_rank_eq_o
   obtain ⟨V, s, hVopen, hxV, hs_mem, hs_unit, hs_parallel⟩ :=
     ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
       g S hSrank hS x
-  let theta := metricFlat g fun y => s y
-  have htheta : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ)) ∞
-      (fun y : M => TotalSpace.mk' (E →L[ℝ] ℝ)
-        (E := fun z : M => TangentSpace I z →L[ℝ] ℝ) y (theta y)) := by
-    exact ContMDiff.clm_bundle_apply (b := id) g.contMDiff s.contMDiff
-  let alpha : DifferentialGeometry.DifferentialForm I M 1 :=
-    DifferentialGeometry.DifferentialForm.ofCotangent theta htheta
-  have halpha : ∀ y ∈ V, DifferentialGeometry.DifferentialForm.exteriorDerivative alpha y = 0 := by
-    intro y hy
-    apply ContinuousAlternatingMap.ext
-    intro q
-    have hq : q = ![q 0, q 1] := by
-      funext i
-      fin_cases i <;> rfl
-    rw [hq]
-    rw [DifferentialGeometry.DifferentialForm.exteriorDerivative_ofCotangent_apply
-      (LeviCivita (I := I) g) theta htheta y (q 0) (q 1)]
-    rw [cotangentCov_metricDuality g
-      (s.contMDiff.mdifferentiableAt (by simp)) (q 0) (q 1)]
-    rw [cotangentCov_metricDuality g
-      (s.contMDiff.mdifferentiableAt (by simp)) (q 1) (q 0)]
-    rw [hs_parallel y hy (q 0), hs_parallel y hy (q 1)]
-    rw [LeviCivita_torsion_eq_zero (I := I) g]
-    simp [theta]
   obtain ⟨U, f, hUopen, hxU, hUsub, hfx, hf, hdf⟩ :=
-    DifferentialGeometry.DifferentialForm.exists_local_potential_of_exteriorDerivative_eq_zero_on
-      alpha V hVopen halpha hxV
+    exists_local_gradient_potential_of_parallel_section g hVopen hxV s hs_parallel
   refine ⟨U, s, f, hUopen, hxU, ?_, ?_, ?_, hfx, hf, ?_⟩
   · intro y hy
     exact hs_mem y (hUsub hy)
@@ -79,8 +99,6 @@ theorem ContMDiffVectorSubbundle.exists_local_unit_gradient_section_of_rank_eq_o
   · intro y hy v
     exact hs_parallel y (hUsub hy) v
   · intro y hy v
-    rw [hdf y hy v]
-    rw [DifferentialGeometry.DifferentialForm.ofCotangent_apply]
-    rfl
+    exact hdf y hy v
 
 end DifferentialGeometry.Geometry.Connection
