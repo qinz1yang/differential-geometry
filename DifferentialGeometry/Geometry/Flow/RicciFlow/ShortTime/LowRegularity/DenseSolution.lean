@@ -144,14 +144,14 @@ theorem deTurckRemainderOnSmoothCore_outer_bound
         deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ₀_lt
           (realizeOfLE (I := I) (M := M) g₀ hRQ hrealQ) x := by
     unfold deTurckRemainderOnSmoothCore
-    apply smoothN_wd (I := I) (M := M) g₀ g_bg (1 : ℕ)
+    apply deTurckSmoothRemainderTensorHs_eq_of_smoothCcToTensorHs_eq (I := I) (M := M) g₀ g_bg (1 : ℕ)
     rw [hxrep]
   have hyN :
       deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ₀_lt hrealQ yQ =
         deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ₀_lt
           (realizeOfLE (I := I) (M := M) g₀ hRQ hrealQ) y := by
     unfold deTurckRemainderOnSmoothCore
-    apply smoothN_wd (I := I) (M := M) g₀ g_bg (1 : ℕ)
+    apply deTurckSmoothRemainderTensorHs_eq_of_smoothCcToTensorHs_eq (I := I) (M := M) g₀ g_bg (1 : ℕ)
     rw [hyrep]
   have hbound := hcore hQ hQρ hrealQ xQ yQ
   rw [hxN, hyN] at hbound

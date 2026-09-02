@@ -99,14 +99,14 @@ theorem coreN_outer_uniform
         deTurckRemainderOnSmoothCore (I := I) (M := M) g gBase hδ₀_lt
           (realizeOfLE (I := I) (M := M) g hRQ hrealQ) x := by
     unfold deTurckRemainderOnSmoothCore
-    apply smoothN_wd (I := I) (M := M) g gBase 1
+    apply deTurckSmoothRemainderTensorHs_eq_of_smoothCcToTensorHs_eq (I := I) (M := M) g gBase 1
     rw [hxrep]
   have hyN :
       deTurckRemainderOnSmoothCore (I := I) (M := M) g gBase hδ₀_lt hrealQ yQ =
         deTurckRemainderOnSmoothCore (I := I) (M := M) g gBase hδ₀_lt
           (realizeOfLE (I := I) (M := M) g hRQ hrealQ) y := by
     unfold deTurckRemainderOnSmoothCore
-    apply smoothN_wd (I := I) (M := M) g gBase 1
+    apply deTurckSmoothRemainderTensorHs_eq_of_smoothCcToTensorHs_eq (I := I) (M := M) g gBase 1
     rw [hyrep]
   have hbound := hcore g hEq hjet hQ hQρ hrealQ xQ yQ
   rw [hxN, hyN] at hbound

@@ -38,7 +38,7 @@ theorem smoothHs_inj (g : SmoothRiemannianMetric I M) (σ : ℝ) :
   have hi := congrArg (fun u => u.coeff i) hST
   simpa only [ccTensorToHs_coeff, smoothCcToTensorHs_coeff] using hi
 
-theorem smoothN_wd
+theorem deTurckSmoothRemainderTensorHs_eq_of_smoothCcToTensorHs_eq
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

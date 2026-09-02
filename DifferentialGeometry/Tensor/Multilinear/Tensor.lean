@@ -574,7 +574,7 @@ noncomputable def modelToTensorCLM (s q : ℕ) :
   LinearMap.toContinuousLinearMap
     (modelFromTensorEquiv (𝕜 := 𝕜) (F := F) (Module.finBasis 𝕜 F) s q).symm.toLinearMap
 
-theorem triv_fwdEquiv_eq (s q : ℕ) (x₀ x : B)
+theorem trivializationAt_multilinearTensorFiberwiseEquiv_eq (s q : ℕ) (x₀ x : B)
     (hx : x ∈ (trivializationAt F E x₀).baseSet)
     (α : Bundle.continuousMultilinearMap 𝕜 (s + q) F E x) :
     (trivializationAt ((MLF s) ⊗[𝕜] (MLF q))
@@ -630,7 +630,7 @@ theorem multilinearTensorFiberwiseEquiv_smooth
         (FiberBundle.continuous_proj _ _)).mem_nhds
         (mem_baseSet_trivializationAt F E p₀.proj)
     ] with p hp
-    exact triv_fwdEquiv_eq s q p₀.proj p.proj hp p.snd
+    exact trivializationAt_multilinearTensorFiberwiseEquiv_eq s q p₀.proj p.proj hp p.snd
 
 omit [ContMDiffVectorBundle n F E IB] in
 theorem multilinearTensorFiberwiseEquiv_symm_smooth

@@ -948,7 +948,7 @@ private theorem direct_force_coeff
         deTurckSmoothN (I := I) (M := M) g g_bg 1
           (symmS (I := I) (M := M) g (F t)) hδ'_lt
           (gFibreOpBound_symmS (I := I) (M := M) g (F t) (hδ' t)) := by
-      apply smoothN_wd (I := I) (M := M)
+      apply deTurckSmoothRemainderTensorHs_eq_of_smoothCcToTensorHs_eq (I := I) (M := M)
       rw [hcut]
     calc fc i t = (fLo t).coeff i := (hpin_t).symm
       _ = (deTurckSmoothN (I := I) (M := M) g g_bg 1

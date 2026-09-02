@@ -367,43 +367,43 @@ private theorem derivShuffleLeft_expanded_summand_eq
         (Quotient.mk'' σ) ((k.removeNth v) ∘ ⇑finSumFinEquiv)) =
       uncurryFinLeftExpandedSummand f g' h
         ((v ∘ ⇑Fin.finAddFlipAssoc) ∘ ⇑finSumFinEquiv)
-        (derivShuffleLeftFwdRanked k σ) (derivShuffleRank k σ) := by
+        (derivShuffleLeftInsertRankedRepresentative k σ) (derivShuffleRank k σ) := by
   rw [uncurrySum_summand_eval]
   unfold uncurryFinLeftExpandedSummand
-  rw [derivShuffleLeftFwdRanked_sign]
+  rw [derivShuffleLeftInsertRankedRepresentative_sign]
   simp only [ContinuousLinearMap.compContinuousAlternatingMap₂_apply]
-  rw [derivShuffleLeftFwdRanked_inl_j]
+  rw [derivShuffleLeftInsertRankedRepresentative_inl_j]
   simp only [Function.comp_apply]
   have hleft :
       (fun i : Fin m =>
           ((v ∘ ⇑Fin.finAddFlipAssoc) ∘ ⇑finSumFinEquiv)
-            (derivShuffleLeftFwdRanked k σ (Sum.inl ((derivShuffleRank k σ).succAbove i)))) =
+            (derivShuffleLeftInsertRankedRepresentative k σ (Sum.inl ((derivShuffleRank k σ).succAbove i)))) =
         fun i : Fin m => ((k.removeNth v) ∘ ⇑finSumFinEquiv) (σ (Sum.inl i)) := by
     funext i
-    rw [derivShuffleLeftFwdRanked_inl_succAbove]
+    rw [derivShuffleLeftInsertRankedRepresentative_inl_succAbove]
     simp only [Equiv.symm_trans, Equiv.permCongr_apply, finSumFinEquiv_symm_apply_castAdd,
       Equiv.trans_apply, Function.comp_apply, Equiv.apply_symm_apply]
     rw [Fin.removeNth_apply]
   have hright :
       (fun i : Fin n =>
           ((v ∘ ⇑Fin.finAddFlipAssoc) ∘ ⇑finSumFinEquiv)
-            (derivShuffleLeftFwdRanked k σ (Sum.inr i))) =
+            (derivShuffleLeftInsertRankedRepresentative k σ (Sum.inr i))) =
         fun i : Fin n => ((k.removeNth v) ∘ ⇑finSumFinEquiv) (σ (Sum.inr i)) := by
     funext i
-    rw [derivShuffleLeftFwdRanked_inr]
+    rw [derivShuffleLeftInsertRankedRepresentative_inr]
     simp only [Equiv.symm_trans, Equiv.permCongr_apply, finSumFinEquiv_symm_apply_natAdd,
       Equiv.trans_apply, Function.comp_apply, Equiv.apply_symm_apply]
     rw [Fin.removeNth_apply]
   have hleft_remove :
       (derivShuffleRank k σ).removeNth
           (fun i : Fin (m + 1) =>
-            v (Fin.finAddFlipAssoc (finSumFinEquiv (derivShuffleLeftFwdRanked k σ (Sum.inl i))))) =
+            v (Fin.finAddFlipAssoc (finSumFinEquiv (derivShuffleLeftInsertRankedRepresentative k σ (Sum.inl i))))) =
         fun i : Fin m => v (k.succAbove (finSumFinEquiv (σ (Sum.inl i)))) := by
     funext i
     simpa [Function.comp_apply, Fin.removeNth_apply] using congr_fun hleft i
   have hright_eval :
       (fun i : Fin n =>
-          v (Fin.finAddFlipAssoc (finSumFinEquiv (derivShuffleLeftFwdRanked k σ (Sum.inr i))))) =
+          v (Fin.finAddFlipAssoc (finSumFinEquiv (derivShuffleLeftInsertRankedRepresentative k σ (Sum.inr i))))) =
         fun i : Fin n => v (k.succAbove (finSumFinEquiv (σ (Sum.inr i)))) := by
     funext i
     simpa [Function.comp_apply, Fin.removeNth_apply] using congr_fun hright i
@@ -452,15 +452,15 @@ private lemma card_filter_comp_perm_local {n : ℕ} (e : Equiv.Perm (Fin n))
 
 private lemma derivShuffleRank_of_coset
     (k : Fin (m + n + 1)) (σ₁ σ₂ : Equiv.Perm (Fin m ⊕ Fin n))
-    (h : (Quotient.mk'' (derivShuffleLeftFwd k σ₁) :
+    (h : (Quotient.mk'' (derivShuffleLeftInsertRepresentative k σ₁) :
         Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n)) =
-      Quotient.mk'' (derivShuffleLeftFwd k σ₂)) :
+      Quotient.mk'' (derivShuffleLeftInsertRepresentative k σ₂)) :
     derivShuffleRank k σ₁ = derivShuffleRank k σ₂ := by
   have hrel : QuotientGroup.leftRel (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin n)).range
-      (derivShuffleLeftFwd k σ₁) (derivShuffleLeftFwd k σ₂) := by
+      (derivShuffleLeftInsertRepresentative k σ₁) (derivShuffleLeftInsertRepresentative k σ₂) := by
     rwa [← Quotient.eq]
   have hσrel : QuotientGroup.leftRel (Equiv.Perm.sumCongrHom (Fin m) (Fin n)).range σ₁ σ₂ :=
-    derivShuffleLeftFwd_coset_injective k σ₁ σ₂ hrel
+    derivShuffleLeftInsertRepresentative_leftRel_injective k σ₁ σ₂ hrel
   rw [QuotientGroup.leftRel_apply] at hσrel
   obtain ⟨⟨τl, τr⟩, hblock⟩ := hσrel
   have hσ₂ : σ₂ = σ₁ * Equiv.Perm.sumCongr τl τr := by
@@ -519,11 +519,11 @@ private lemma preimage_k_injective (τ' : Equiv.Perm.ModSumCongr (Fin (m + 1)) (
   have hrank₂ : derivShuffleRank k σ₂ = j₂ := by
     have h₂ := congrArg Prod.snd hpre₂
     simpa using h₂
-  have hcoset₁ : (Quotient.mk'' (derivShuffleLeftFwd k σ₁) :
+  have hcoset₁ : (Quotient.mk'' (derivShuffleLeftInsertRepresentative k σ₁) :
       Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n)) = τ' := by
     have h₁ := congrArg Prod.fst hpre₁
     simpa using h₁
-  have hcoset₂ : (Quotient.mk'' (derivShuffleLeftFwd k σ₂) :
+  have hcoset₂ : (Quotient.mk'' (derivShuffleLeftInsertRepresentative k σ₂) :
       Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n)) = τ' := by
     have h₂ := congrArg Prod.fst hpre₂
     simpa using h₂
@@ -1338,17 +1338,17 @@ private theorem uncurryFin_wedge_productL_precompL_fiber
     (w : Fin (m + 1) ⊕ Fin n → M)
     (τ' : Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n)) :
     (∑ j : Fin (m + 1), uncurryFinLeftExpandedSummand f g' h w
-        (derivShuffleLeftFwdRanked (derivShuffleEquivLeft.symm (τ', j)).1
+        (derivShuffleLeftInsertRankedRepresentative (derivShuffleEquivLeft.symm (τ', j)).1
           (Quot.out (derivShuffleEquivLeft.symm (τ', j)).2)) j) =
       ∑ j : Fin (m + 1), uncurryFinLeftExpandedSummand f g' h w (Quot.out τ') j := by
   let τ₀ : Equiv.Perm (Fin (m + 1) ⊕ Fin n) := Quot.out τ'
   let ρ : Fin (m + 1) → Equiv.Perm (Fin (m + 1) ⊕ Fin n) := fun j =>
-    derivShuffleLeftFwdRanked (derivShuffleEquivLeft.symm (τ', j)).1
+    derivShuffleLeftInsertRankedRepresentative (derivShuffleEquivLeft.symm (τ', j)).1
       (Quot.out (derivShuffleEquivLeft.symm (τ', j)).2)
   let k : Fin (m + 1) → Fin (m + n + 1) := fun j =>
     (derivShuffleEquivLeft.symm (τ', j)).1
   have hρ_coset : ∀ j : Fin (m + 1),
-      (Quotient.mk'' (derivShuffleLeftFwdRanked (derivShuffleEquivLeft.symm (τ', j)).1
+      (Quotient.mk'' (derivShuffleLeftInsertRankedRepresentative (derivShuffleEquivLeft.symm (τ', j)).1
         (Quot.out (derivShuffleEquivLeft.symm (τ', j)).2)) :
           Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n)) = τ' := by
     intro j
@@ -1382,7 +1382,7 @@ private theorem uncurryFin_wedge_productL_precompL_fiber
     have h₁ : ρ j (Sum.inl (derivShuffleRank (k j) (Quot.out (derivShuffleEquivLeft.symm (τ',
       j)).2))) =
         finSuccSumEquiv.symm (k j) := by
-      simp [ρ, k, derivShuffleLeftFwdRanked_inl_j]
+      simp [ρ, k, derivShuffleLeftInsertRankedRepresentative_inl_j]
     have hslot : (Sum.inl j : Fin (m + 1) ⊕ Fin n) = Sum.inl (derivShuffleRank (k j) (Quot.out
       (derivShuffleEquivLeft.symm (τ', j)).2)) := by
       exact congrArg (Sum.inl : Fin (m + 1) → Fin (m + 1) ⊕ Fin n) hrank.symm
@@ -1498,7 +1498,7 @@ theorem uncurryFin_wedge_productL_precompL_eq_domDomCongr
           rw [uncurrySum_apply]
           simp [Finset.smul_sum]
     _ = ∑ k : Fin (m + n + 1), ∑ σ : Equiv.Perm.ModSumCongr (Fin m) (Fin n),
-            uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftFwdRanked k (Quot.out σ))
+            uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftInsertRankedRepresentative k (Quot.out σ))
               (derivShuffleRank k (Quot.out σ)) := by
           refine Finset.sum_congr rfl ?_
           intro k hk
@@ -1516,21 +1516,21 @@ theorem uncurryFin_wedge_productL_precompL_eq_domDomCongr
           rw [hcong]
           exact hstep
     _ = ∑ q : Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n) × Fin (m + 1),
-            uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftFwdRanked
+            uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftInsertRankedRepresentative
               (derivShuffleEquivLeft.symm q).1
               (Quot.out (derivShuffleEquivLeft.symm q).2)) q.2 := by
           have hconv : (∑ k : Fin (m + n + 1), ∑ σ : Equiv.Perm.ModSumCongr (Fin m) (Fin n),
-                uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftFwdRanked k (Quot.out σ))
+                uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftInsertRankedRepresentative k (Quot.out σ))
                   (derivShuffleRank k (Quot.out σ))) =
               ∑ p : (Fin (m + n + 1) × Equiv.Perm.ModSumCongr (Fin m) (Fin n)),
-                uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftFwdRanked p.1
+                uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftInsertRankedRepresentative p.1
                   (Quot.out p.2))
                   (derivShuffleRank p.1 (Quot.out p.2)) := by
             simpa [Finset.univ_product_univ] using
               (Finset.sum_product (s := (Finset.univ : Finset (Fin (m + n + 1))))
                 (t := (Finset.univ : Finset (Equiv.Perm.ModSumCongr (Fin m) (Fin n))))
                 (f := fun p : (Fin (m + n + 1) × Equiv.Perm.ModSumCongr (Fin m) (Fin n)) =>
-                  uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftFwdRanked p.1
+                  uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftInsertRankedRepresentative p.1
                     (Quot.out p.2))
                     (derivShuffleRank p.1 (Quot.out p.2)))).symm
           rw [hconv]
@@ -1555,7 +1555,7 @@ theorem uncurryFin_wedge_productL_precompL_eq_domDomCongr
               rw [h]
             rw [h2]
     _ = ∑ τ' : Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n), ∑ j : Fin (m + 1),
-            uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftFwdRanked
+            uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftInsertRankedRepresentative
               (derivShuffleEquivLeft.symm (τ', j)).1
               (Quot.out (derivShuffleEquivLeft.symm (τ', j)).2)) j := by
           simpa [Finset.univ_product_univ] using
@@ -1563,7 +1563,7 @@ theorem uncurryFin_wedge_productL_precompL_eq_domDomCongr
               (m + 1)) (Fin n))))
               (t := (Finset.univ : Finset (Fin (m + 1))))
               (f := fun p : (Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n) × Fin (m + 1)) =>
-                uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftFwdRanked
+                uncurryFinLeftExpandedSummand f g' h w (derivShuffleLeftInsertRankedRepresentative
                   (derivShuffleEquivLeft.symm p).1
                   (Quot.out (derivShuffleEquivLeft.symm p).2)) p.2))
     _ = ∑ τ' : Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n), ∑ j : Fin (m + 1),

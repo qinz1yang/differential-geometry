@@ -558,7 +558,7 @@ local instance dualOfMultilinearInstNormedSpace :
     NormedSpace 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜) :=
   inferInstance
 
-noncomputable def Bundle.continuousMultilinearMap.modelDualInvCLM (𝕜 : Type*)
+noncomputable def Bundle.continuousMultilinearMap.modelDualLiftCLM (𝕜 : Type*)
     [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
     (F : Type*) [NormedAddCommGroup F] [NormedSpace 𝕜 F] [FiniteDimensional 𝕜 F]
     (r : ℕ) :
@@ -586,7 +586,7 @@ theorem dualLiftFiber_triv_eq {r : ℕ} (x₀ x : B)
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜)
         (fun x => Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜] 𝕜) x₀
         ⟨x, Bundle.continuousMultilinearMap.dualLiftFiber (F := F) r x a⟩).2 =
-    Bundle.continuousMultilinearMap.modelDualInvCLM 𝕜 F r
+    Bundle.continuousMultilinearMap.modelDualLiftCLM 𝕜 F r
       ((trivializationAt
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
         (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x) x₀
@@ -595,7 +595,7 @@ theorem dualLiftFiber_triv_eq {r : ℕ} (x₀ x : B)
   apply (ContinuousMultilinearMap.dualMultilinearEquivMultilinearOfDual
     (𝕜 := 𝕜) (F := F) r).injective
   rw [show (ContinuousMultilinearMap.dualMultilinearEquivMultilinearOfDual (𝕜 := 𝕜) (F := F) r)
-        ((Bundle.continuousMultilinearMap.modelDualInvCLM 𝕜 F r) _) = _ from
+        ((Bundle.continuousMultilinearMap.modelDualLiftCLM 𝕜 F r) _) = _ from
       (ContinuousMultilinearMap.dualMultilinearEquivMultilinearOfDual
         (𝕜 := 𝕜) (F := F) r).apply_symm_apply _]
   apply ContinuousMultilinearMap.ext
@@ -681,7 +681,7 @@ theorem dualLiftFiber_triv_eq {r : ℕ} (x₀ x : B)
   rw [(trivializationAt F E x).symmL_continuousLinearMapAt
     (mem_baseSet_trivializationAt F E x)]
 
-noncomputable def Bundle.continuousMultilinearMap.modelDualFwdCLM (𝕜 : Type*)
+noncomputable def Bundle.continuousMultilinearMap.modelDualUnliftCLM (𝕜 : Type*)
     [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
     (F : Type*) [NormedAddCommGroup F] [NormedSpace 𝕜 F] [FiniteDimensional 𝕜 F]
     (r : ℕ) :
@@ -713,7 +713,7 @@ theorem dualUnliftFiber_triv_eq {r : ℕ} (x₀ x : B)
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
         (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x) x₀
         ⟨x, Bundle.continuousMultilinearMap.dualUnliftFiber (F := F) r x ψ⟩).2 =
-    Bundle.continuousMultilinearMap.modelDualFwdCLM 𝕜 F r
+    Bundle.continuousMultilinearMap.modelDualUnliftCLM 𝕜 F r
       ((trivializationAt
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜] 𝕜)
         (fun x => Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜] 𝕜) x₀
@@ -809,7 +809,7 @@ theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
         p₀ :=
       (contMDiffAt_totalSpace.mp contMDiffAt_id).2
     refine ((contMDiffAt_const
-      (c := Bundle.continuousMultilinearMap.modelDualFwdCLM 𝕜 F r)).clm_apply
+      (c := Bundle.continuousMultilinearMap.modelDualUnliftCLM 𝕜 F r)).clm_apply
         h_fiber).congr_of_eventuallyEq ?_
     filter_upwards [
       ((trivializationAt F E p₀.proj).open_baseSet.preimage
@@ -855,7 +855,7 @@ theorem dualMultilinearFiberwiseEquiv_symm_smooth (r : ℕ)
             (Bundle.dual 𝕜 E) x) q₀.proj q).2) q₀ :=
       (contMDiffAt_totalSpace.mp contMDiffAt_id).2
     refine ((contMDiffAt_const
-      (c := Bundle.continuousMultilinearMap.modelDualInvCLM 𝕜 F r)).clm_apply
+      (c := Bundle.continuousMultilinearMap.modelDualLiftCLM 𝕜 F r)).clm_apply
         h_fiber).congr_of_eventuallyEq ?_
     filter_upwards [
       ((trivializationAt F E q₀.proj).open_baseSet.preimage

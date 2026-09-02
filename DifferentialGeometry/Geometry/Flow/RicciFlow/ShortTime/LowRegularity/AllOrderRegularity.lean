@@ -270,7 +270,7 @@ private theorem coord_eq_smoothN
       (smoothCcToTensorHs (I := I) (M := M) g (3 : ℝ) (F t))).coeff i = _
   rw [← hAff, tensorHsCongr_coeff,
     deTurckRemainderOnLowerState_on_smooth (I := I) (M := M) g g hR hδlt hreal hcoreN (F t) hS,
-    smoothN_wd (I := I) (M := M) g g 1
+    deTurckSmoothRemainderTensorHs_eq_of_smoothCcToTensorHs_eq (I := I) (M := M) g g 1
       (symmS (I := I) (M := M) g (F t)) (symmS (I := I) (M := M) g (F t))
       hδlt (hreal _ (symm_h2_of_state (I := I) (M := M) g (F t) hS))
       hδ_lt (gFibreOpBound_symmS (I := I) (M := M) g (F t) (hδ' t)) rfl,
@@ -373,7 +373,7 @@ private theorem liftN_smoothN_coeff
         (((1 : ℕ) : ℝ) + 2) S, hS⟩
   rw [h1, ← hAff, tensorHsCongr_coeff,
     deTurckRemainderOnLowerState_on_smooth (I := I) (M := M) g g hR hδlt hreal hcoreN S hS,
-    smoothN_wd (I := I) (M := M) g g 1
+    deTurckSmoothRemainderTensorHs_eq_of_smoothCcToTensorHs_eq (I := I) (M := M) g g 1
       (symmS (I := I) (M := M) g S) (symmS (I := I) (M := M) g S)
       hδlt (hreal _ (symm_h2_of_state (I := I) (M := M) g S hS))
       hδ_lt (gFibreOpBound_symmS (I := I) (M := M) g S hδ') rfl]

@@ -209,7 +209,7 @@ theorem deTurckRemainderOnLowerState_zero_eq_deTurckRHS (g₀ g_bg : SmoothRiema
             ⟨⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le⟩, hmem⟩)) := rfl
     _ = deTurckSmoothN (I := I) (M := M) g₀ g_bg 1
           (0 : SmoothCcTensor g₀ 0 2) hδ hb0 :=
-        smoothN_wd (I := I) (M := M) g₀ g_bg 1 _ _ hδ _ hδ hb0 hsymm
+        deTurckSmoothRemainderTensorHs_eq_of_smoothCcToTensorHs_eq (I := I) (M := M) g₀ g_bg 1 _ _ hδ _ hδ hb0 hsymm
     _ = smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
           (deTurckRHSSection (I := I) g_bg g₀) :=
         deTurckSmoothN_zero (I := I) (M := M) g₀ g_bg 1 hδ hb0
