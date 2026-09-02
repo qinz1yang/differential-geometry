@@ -1092,6 +1092,71 @@ theorem canonicalMetricFamily_complete
   rw [canonicalMetricFamily_eq (I := I) g f sigma hcomplete hsol ht]
   exact canonicalMetric_complete (I := I) g f sigma hcomplete hsol ht
 
+theorem canonicalMetricFamily_gradientRicciSoliton
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) :
+    gradientRicciSoliton (I := I)
+      (canonicalMetricFamily (I := I) g f sigma hcomplete hsol t)
+      (canonicalPotential (I := I) g f sigma hcomplete hsol t)
+      (sigma / (1 - sigma * t)) := by
+  rw [canonicalMetricFamily_eq (I := I) g f sigma hcomplete hsol ht]
+  exact canonicalMetric_gradientRicciSoliton (I := I) g f sigma hcomplete hsol ht
+
+theorem canonicalMetricFamily_potential_evolution
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) (x : M) :
+    HasDerivAt
+      (fun s : Real => canonicalPotential (I := I) g f sigma hcomplete hsol s x)
+      (normGradSqFun (I := I)
+        (canonicalMetricFamily (I := I) g f sigma hcomplete hsol t)
+        (canonicalPotential (I := I) g f sigma hcomplete hsol t) x) t := by
+  rw [canonicalMetricFamily_eq (I := I) g f sigma hcomplete hsol ht]
+  exact canonicalPotential_evolution_slice (I := I) g f sigma hcomplete hsol ht x
+
+theorem canonicalMetricFamily_exists_hamilton_constant_scaled
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) :
+    ∃ C : Real,
+      (∀ y : M,
+        metricScalarAt (I := I) g y +
+            g.inner y (gradFun (I := I) g f y) (gradFun (I := I) g f y) -
+          sigma * f y = C) ∧
+      ∀ x : M,
+        metricScalarAt (I := I)
+            (canonicalMetricFamily (I := I) g f sigma hcomplete hsol t) x +
+          normGradSqFun (I := I)
+            (canonicalMetricFamily (I := I) g f sigma hcomplete hsol t)
+            (canonicalPotential (I := I) g f sigma hcomplete hsol t) x -
+          (sigma / (1 - sigma * t)) *
+            canonicalPotential (I := I) g f sigma hcomplete hsol t x =
+        C / (1 - sigma * t) := by
+  rw [canonicalMetricFamily_eq (I := I) g f sigma hcomplete hsol ht]
+  exact canonicalMetric_exists_hamilton_constant_scaled
+    (I := I) g f sigma hcomplete hsol ht
+
+theorem canonicalMetricFamily_metricRm04
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) (x : M)
+    (slots : Fin 4 → TangentSpace I x) :
+    metricRm04 (I := I)
+        (canonicalMetricFamily (I := I) g f sigma hcomplete hsol t) x slots =
+      (1 - sigma * t) • metricRm04 (I := I) g
+        (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+          (canonicalFlowParameter sigma t) x)
+        (fun i => mfderiv I I
+          (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+            (canonicalFlowParameter sigma t) : M → M) x (slots i)) := by
+  rw [canonicalMetricFamily_eq (I := I) g f sigma hcomplete hsol ht]
+  exact canonicalMetric_metricRm04 (I := I) g f sigma hcomplete hsol ht x slots
+
 omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M] in
 private theorem pullbackMetric_family_hasDerivAt
