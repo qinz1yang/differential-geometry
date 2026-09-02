@@ -28,13 +28,14 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [IsContMDiffRiemannianBundle I ∞ F V]
 
 theorem derivWithin_sub_heatOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvector
-    [NeZero (Module.finrank Real E)] [I.Boundaryless]
+    [NeZero (Module.finrank Real E)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
     {T : Real} (hT : 0 < T) {t : Real} (ht : t ∈ Icc 0 T)
     (A : Real → Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
     (v : Cₛ^∞⟮I; F, V⟯) (x : M)
+    (hx : I.IsInteriorPoint x)
     (X : Real → (y : M) → TangentSpace I y)
     {eigenvalue : Real}
     (hGconn : G.connection t = LeviCivita (I := I) (G.metric t))
@@ -79,9 +80,10 @@ theorem derivWithin_sub_heatOperatorWithDrift_inner_endomorphism_apply_of_normal
             (fun y ↦ A t y) x (v x))
           (v x) := by
     change laplacianAt (I := I) G t q x = _
-    rw [laplacianAt_eq_delta (I := I) G t q.contMDiff hGconn x]
+    unfold laplacianAt
+    rw [hGconn]
     exact laplacian_inner_endomorphism_apply_of_normal_eigenvector
-      (I := I) (G.metric t) cov hcov (A t) v x hA heigen hv hunit
+      (I := I) (G.metric t) cov hcov (A t) v x hx hA heigen hv hunit
   have hdrift :
       driftTerm (I := I) G t (X t)
           (fun y ↦ inner Real (A t y (v y)) (v y)) x =
@@ -102,13 +104,14 @@ theorem derivWithin_sub_heatOperatorWithDrift_inner_endomorphism_apply_of_normal
   ring
 
 theorem parabolicOperatorWithDrift_sum_inner_endomorphism_apply_of_normal_eigenframe
-    [NeZero (Module.finrank Real E)] [I.Boundaryless]
+    [NeZero (Module.finrank Real E)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
     {T : Real} (hT : 0 < T) {t : Real} (ht : t ∈ Icc 0 T)
     (A : Real → Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
     {k : Nat} (v : Fin k → Cₛ^∞⟮I; F, V⟯) (x : M)
+    (hx : I.IsInteriorPoint x)
     (X : Real → (y : M) → TangentSpace I y)
     (eigenvalue : Fin k → Real)
     (hGconn : G.connection t = LeviCivita (I := I) (G.metric t))
@@ -150,7 +153,7 @@ theorem parabolicOperatorWithDrift_sum_inner_endomorphism_apply_of_normal_eigenf
   apply Finset.sum_congr rfl
   intro i hi
   exact derivWithin_sub_heatOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvector
-    (I := I) G cov hcov hT ht A (v i) x X hGconn hAt hA
+    (I := I) G cov hcov hT ht A (v i) x hx X hGconn hAt hA
       (heigen i) (hv i) (hunit i)
 
 end DifferentialGeometry.Analysis.Parabolic

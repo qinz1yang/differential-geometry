@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
-import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
-import DifferentialGeometry.Geometry.Operator.LaplacianBridge
+import DifferentialGeometry.Geometry.Operator.GradientRegularity
+import DifferentialGeometry.Tensor.RSTensor.TangentMetric
 
 set_option autoImplicit false
 
@@ -99,9 +99,122 @@ private theorem abstractHessian_inner_bundle_apply
   simp only [covApply_apply, inner_sub_left, inner_sub_right]
   abel_nf
 
+private theorem abstractHessian_eq_inner_cov_gradient
+    (g : SmoothRiemannianMetric I M)
+    {f : M → Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
+    (x : M) (hx : I.IsInteriorPoint x) (v w : TangentSpace I x) :
+    g.inner x
+        ((LeviCivita (I := I) g)
+          (fun y ↦ gradientFun (I := I) g f y) x v)
+        w =
+      abstractHessian (I := I) g f x v w := by
+  classical
+  let W : (y : M) → TangentSpace I y := FiberBundle.extend E w
+  have hWx : W x = w := by simp [W]
+  have hWat : MDiffAt (T% W) x := FiberBundle.mdifferentiableAt_extend ..
+  let cov := LeviCivita (I := I) g
+  let theta : (y : M) → TangentSpace I y →L[Real] Real :=
+    mvfderiv (I := I) f
+  have hgrad : MDiffAt
+      (T% fun y : M ↦ gradientFun (I := I) g f y) x :=
+    (gradientFun_smooth (I := I) g hf).mdifferentiableAt (by simp)
+  have htheta : MDiffAtCotangent theta x :=
+    ((cotangentCov_mvfderiv_smooth (I := I) hf) x).mdifferentiableAt (by simp)
+  have hpair := cotangentCov_dualPairing cov htheta hWat v
+  have hfun : (fun y : M ↦ theta y (W y)) =
+      fun y ↦ g.inner y (gradientFun (I := I) g f y) (W y) := by
+    funext y
+    exact (inner_gradientFun (I := I) g f y (W y)).symm
+  have hxgood : x ∈ chartLeviCivitaGoodSet (I := I) x := by
+    refine mem_chartLeviCivitaGoodSet_iff.mpr ⟨mem_extChartAt_source x,
+      mem_baseSet_trivializationAt E (TangentSpace I) x, ?_⟩
+    exact I.isInteriorPoint_iff.mp hx
+  have hmetric := chartLeviCivita_isMetricCompatibleOn
+    (I := I) g x hgrad hWat hxgood v
+  rw [← LeviCivita_chart_apply (I := I) g x hxgood hgrad v,
+    ← LeviCivita_chart_apply (I := I) g x hxgood hWat v] at hmetric
+  have hmetric' :
+      mvfderiv (I := I)
+          (fun y ↦ g.inner y (gradientFun (I := I) g f y) (W y)) x v =
+        g.inner x
+            (cov (fun y ↦ gradientFun (I := I) g f y) x v)
+            (W x) +
+          g.inner x (gradientFun (I := I) g f x) (cov W x v) := by
+    rw [show mvfderiv (I := I)
+        (fun y ↦ g.inner y (gradientFun (I := I) g f y) (W y)) x v =
+      mfderiv I 𝓘(Real, Real)
+        (fun y ↦ g.inner y (gradientFun (I := I) g f y) (W y)) x v from rfl]
+    exact hmetric
+  rw [hfun] at hpair
+  have hgradInner :
+      g.inner x (gradientFun (I := I) g f x) (cov W x v) =
+        theta x (cov W x v) :=
+    inner_gradientFun (I := I) g f x (cov W x v)
+  rw [hgradInner] at hmetric'
+  have hkey :
+      g.inner x
+          (cov (fun y ↦ gradientFun (I := I) g f y) x v)
+          (W x) =
+        ((cotangentCov cov) theta x v) (W x) := by
+    linarith [hmetric'.symm.trans hpair]
+  rw [hWx] at hkey
+  rw [hkey]
+  rfl
+
+private theorem sum_abstractHessian_smoothOrthoFrame_eq_laplacian
+    [NeZero (Module.finrank Real E)]
+    (g : SmoothRiemannianMetric I M)
+    {f : M → Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
+    (x : M) (hx : I.IsInteriorPoint x) :
+    ∑ i : Fin (Module.finrank Real E),
+        abstractHessian (I := I) g f x
+          (smoothOrthoFrame (I := I) g x i x)
+          (smoothOrthoFrame (I := I) g x i x) =
+      laplacian (I := I) (LeviCivita (I := I) g) g f x := by
+  classical
+  let D := (DifferentialGeometry.Tensor0SBundle.tangentMetricDataGen
+    (I := I) g x).metric
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x)
+      _ _ _ D.toCore
+  let : InnerProductSpace Real (TangentSpace I x) :=
+    @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
+  let frame : Fin (Module.finrank Real E) → TangentSpace I x :=
+    fun i ↦ smoothOrthoFrame (I := I) g x i x
+  have hframe : Orthonormal Real frame := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    change g.inner x (frame i) (frame j) = if i = j then 1 else 0
+    exact smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
+  have hcard : Fintype.card (Fin (Module.finrank Real E)) =
+      Module.finrank Real (TangentSpace I x) := by
+    simpa using (show Module.finrank Real E =
+      Module.finrank Real (TangentSpace I x) from rfl)
+  have hspan : ⊤ ≤ Submodule.span Real (Set.range frame) := by
+    have hbasis := (basisOfOrthonormalOfCardEqFinrank hframe hcard).span_eq
+    rw [coe_basisOfOrthonormalOfCardEqFinrank] at hbasis
+    exact hbasis.ge
+  let basis : OrthonormalBasis (Fin (Module.finrank Real E)) Real
+      (TangentSpace I x) := OrthonormalBasis.mk hframe hspan
+  have hbasis (i : Fin (Module.finrank Real E)) : basis i = frame i := by
+    simp [basis]
+  unfold laplacian divergence
+  rw [LinearMap.trace_eq_sum_inner _ basis]
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [hbasis]
+  change abstractHessian (I := I) g f x (frame i) (frame i) =
+    g.inner x (frame i)
+      ((LeviCivita (I := I) g)
+        (fun y ↦ gradientFun (I := I) g f y) x (frame i))
+  rw [g.symm]
+  exact (abstractHessian_eq_inner_cov_gradient
+    (I := I) g hf x hx (frame i) (frame i)).symm
+
 theorem mvfderiv_inner_endomorphism_apply_of_cov_eq_zero
     (cov : CovariantDerivative I F V)
-    [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
+    (hcov : cov.IsMetricCompatible)
     (A : Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
     (v : Cₛ^∞⟮I; F, V⟯) (x : M) (X : TangentSpace I x)
     (hv : cov v x = 0) :
@@ -130,13 +243,11 @@ theorem mvfderiv_inner_endomorphism_apply_of_cov_eq_zero
 
 theorem laplacian_inner_bundle
     [NeZero (Module.finrank Real E)]
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
-    (u v : Cₛ^∞⟮I; F, V⟯) (x : M) :
-    ΔG (I := I) g
-        ⟨fun y ↦ inner Real (u y) (v y),
-          u.contMDiff.inner_bundle v.contMDiff⟩ x =
+    (u v : Cₛ^∞⟮I; F, V⟯) (x : M) (hx : I.IsInteriorPoint x) :
+    laplacian (I := I) (LeviCivita (I := I) g) g
+        (fun y ↦ inner Real (u y) (v y)) x =
       inner Real (rawBundleConnLap (I := I) g cov (fun y ↦ u y) x) (v x) +
         2 * ∑ i : Fin (Module.finrank Real E),
           inner Real
@@ -149,7 +260,7 @@ theorem laplacian_inner_bundle
       (fun y ↦ inner Real (u y) (v y)) :=
     u.contMDiff.inner_bundle v.contMDiff
   rw [← sum_abstractHessian_smoothOrthoFrame_eq_laplacian
-    (I := I) g hf x]
+    (I := I) g hf x hx]
   rw [rawBundleConnLap_def, rawBundleConnLap_def]
   have hdir (i : Fin (Module.finrank Real E)) :=
     abstractHessian_inner_bundle_apply
@@ -164,26 +275,25 @@ theorem laplacian_inner_bundle
 
 theorem laplacian_inner_bundle_of_cov_right_eq_zero
     [NeZero (Module.finrank Real E)]
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
     (u v : Cₛ^∞⟮I; F, V⟯) (x : M)
+    (hx : I.IsInteriorPoint x)
     (hv : cov (fun y ↦ v y) x = 0) :
-    ΔG (I := I) g
-        ⟨fun y ↦ inner Real (u y) (v y),
-          u.contMDiff.inner_bundle v.contMDiff⟩ x =
+    laplacian (I := I) (LeviCivita (I := I) g) g
+        (fun y ↦ inner Real (u y) (v y)) x =
       inner Real (rawBundleConnLap (I := I) g cov (fun y ↦ u y) x) (v x) +
         inner Real (u x)
           (rawBundleConnLap (I := I) g cov (fun y ↦ v y) x) := by
-  rw [laplacian_inner_bundle (I := I) g cov hcov u v x]
+  rw [laplacian_inner_bundle (I := I) g cov hcov u v x hx]
   simp [hv]
 
 theorem inner_rawBundleConnLap_self_eq_zero_of_eventually_unit
     [NeZero (Module.finrank Real E)]
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
     (v : Cₛ^∞⟮I; F, V⟯) (x : M)
+    (hx : I.IsInteriorPoint x)
     (hv : cov (fun y ↦ v y) x = 0)
     (hunit : ∀ᶠ y in 𝓝 x, inner Real (v y) (v y) = 1) :
     inner Real (v x)
@@ -191,50 +301,48 @@ theorem inner_rawBundleConnLap_self_eq_zero_of_eventually_unit
   have hvv : ContMDiff I 𝓘(Real, Real) ∞
       (fun y ↦ inner Real (v y) (v y)) :=
     v.contMDiff.inner_bundle v.contMDiff
-  have hone : ContMDiff I 𝓘(Real, Real) ∞ (fun _ : M ↦ (1 : Real)) :=
-    contMDiff_const
   have hlapZero :
-      ΔG (I := I) g ⟨fun y ↦ inner Real (v y) (v y), hvv⟩ x = 0 := by
+      laplacian (I := I) (LeviCivita (I := I) g) g
+        (fun y ↦ inner Real (v y) (v y)) x = 0 := by
     calc
-      _ = ΔG (I := I) g ⟨fun _ : M ↦ (1 : Real), hone⟩ x :=
-        Δ_g_congr_of_eventuallyEq (I := I) g hvv hone hunit
-      _ = 0 := Δ_g_const (I := I) g (1 : Real) x
+      _ = laplacian (I := I) (LeviCivita (I := I) g) g
+          (fun _ : M ↦ (1 : Real)) x :=
+        laplacian_congr_of_eventuallyEq (I := I)
+          (LeviCivita (I := I) g) g hvv.contMDiffAt
+            contMDiffAt_const hunit
+      _ = 0 := laplacian_const (I := I)
+        (LeviCivita (I := I) g) g (1 : Real) x
   have hlap := laplacian_inner_bundle_of_cov_right_eq_zero
-    (I := I) g cov hcov v v x hv
+    (I := I) g cov hcov v v x hx hv
   rw [hlapZero] at hlap
   rw [real_inner_comm] at hlap
   linarith
 
 theorem laplacian_inner_endomorphism_apply_of_normal_eigenvector
     [NeZero (Module.finrank Real E)]
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
     (A : Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
     (v : Cₛ^∞⟮I; F, V⟯) (x : M) {eigenvalue : Real}
+    (hx : I.IsInteriorPoint x)
     (hA : ((A x : V x →L[Real] V x) : V x →ₗ[Real] V x).IsSymmetric)
     (heigen : A x (v x) = eigenvalue • v x)
     (hv : cov (fun y ↦ v y) x = 0)
     (hunit : ∀ᶠ y in 𝓝 x, inner Real (v y) (v y) = 1) :
-    ΔG (I := I) g
-        ⟨fun y ↦ inner Real (A y (v y)) (v y),
-          (ContMDiff.clm_bundle_apply (b := id) A.contMDiff v.contMDiff).inner_bundle
-            v.contMDiff⟩ x =
+    laplacian (I := I) (LeviCivita (I := I) g) g
+        (fun y ↦ inner Real (A y (v y)) (v y)) x =
       inner Real
         (rawBundleEndomorphismConnLap (I := I) g cov (fun y ↦ A y) x (v x))
         (v x) := by
-  let q : C^∞⟮I, M; Real⟯ :=
-    ⟨fun y ↦ inner Real (A y (v y)) (v y),
-      (ContMDiff.clm_bundle_apply (b := id) A.contMDiff v.contMDiff).inner_bundle
-        v.contMDiff⟩
-  change ΔG (I := I) g q x = _
+  let q : M → Real := fun y ↦ inner Real (A y (v y)) (v y)
+  change laplacian (I := I) (LeviCivita (I := I) g) g q x = _
   let Av : Cₛ^∞⟮I; F, V⟯ :=
     ⟨fun y ↦ A y (v y),
       ContMDiff.clm_bundle_apply (b := id) A.contMDiff v.contMDiff⟩
   let lapv := rawBundleConnLap (I := I) g cov (fun y ↦ v y) x
   have hlapv : inner Real (v x) lapv = 0 :=
     inner_rawBundleConnLap_self_eq_zero_of_eventually_unit
-      (I := I) g cov hcov v x hv hunit
+      (I := I) g cov hcov v x hx hv hunit
   have happly := rawBundleEndomorphismConnLap_apply
     (I := I) g cov A v x
   have hnormal (i : Fin (Module.finrank Real E)) :
@@ -251,7 +359,7 @@ theorem laplacian_inner_endomorphism_apply_of_normal_eigenvector
     rw [happly]
     abel
   have hlap := laplacian_inner_bundle_of_cov_right_eq_zero
-    (I := I) g cov hcov Av v x hv
+    (I := I) g cov hcov Av v x hx hv
   have hAlapv : inner Real (A x lapv) (v x) = 0 := by
     calc
       inner Real (A x lapv) (v x) = inner Real lapv (A x (v x)) := hA _ _
@@ -262,13 +370,11 @@ theorem laplacian_inner_endomorphism_apply_of_normal_eigenvector
     change inner Real (A x (v x)) lapv = 0
     rw [heigen, inner_smul_left, conj_trivial, hlapv, mul_zero]
   have hlapq :
-      ΔG (I := I) g q x =
+      laplacian (I := I) (LeviCivita (I := I) g) g q x =
         inner Real (rawBundleConnLap (I := I) g cov (fun y ↦ Av y) x) (v x) +
           inner Real (Av x) lapv := by
-    have hq : q =
-        (⟨fun y ↦ inner Real (Av y) (v y),
-          Av.contMDiff.inner_bundle v.contMDiff⟩ : C^∞⟮I, M; Real⟯) := by
-      ext y
+    have hq : q = fun y ↦ inner Real (Av y) (v y) := by
+      funext y
       rfl
     rw [hq]
     simpa only [lapv] using hlap

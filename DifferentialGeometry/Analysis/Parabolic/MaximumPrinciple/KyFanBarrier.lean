@@ -31,7 +31,7 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [IsContMDiffRiemannianBundle I ∞ F V]
 
 theorem lowerKyFanSum_first_contact_impossible
-    [NeZero (Module.finrank Real E)] [I.Boundaryless]
+    [NeZero (Module.finrank Real E)]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -43,6 +43,7 @@ theorem lowerKyFanSum_first_contact_impossible
     (hAsymm : ∀ q y,
       ((A q y : V y →L[Real] V y) : V y →ₗ[Real] V y).IsSymmetric)
     (x : M)
+    (hx : I.IsInteriorPoint x)
     (X : Real → (y : M) → TangentSpace I y)
     (reaction : (V x →L[Real] V x) → V x →L[Real] V x)
     (hreactionNull : satisfiesNullEigenvectorCondition reaction)
@@ -141,7 +142,7 @@ theorem lowerKyFanSum_first_contact_impossible
   have hcontact_local :=
     derivWithin_sub_heatOperatorWithDrift_nonpos_of_lower_support
       (I := I) G X hst htheta_nonneg hsupport hpsi_eq htheta_zero
-      BoundarylessManifold.isInteriorPoint
+      hx
       (hpsi_smooth.mdifferentiableAt (by simp))
       (Filter.Eventually.of_forall fun y ↦
         hpsi_smooth.mdifferentiableAt (by simp))
@@ -213,7 +214,7 @@ theorem lowerKyFanSum_first_contact_impossible
     exact hadd
   have htrace_operator :=
     parabolicOperatorWithDrift_sum_inner_endomorphism_apply_of_normal_eigenframe
-      (I := I) G cov hcov hT htmem A v x X eigenvalue hGconn hAt
+      (I := I) G cov hcov hT htmem A v x hx X eigenvalue hGconn hAt
         (hAsymm t x) (fun i ↦ by
           rw [hvx i]
           change (A t x).toLinearMap (v₀ i) = _
