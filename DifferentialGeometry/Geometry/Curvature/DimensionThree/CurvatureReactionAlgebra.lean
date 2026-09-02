@@ -17,11 +17,13 @@ def curvatureOperatorReaction3
   A * A + A.adjugate
 
 def curvatureOperatorReactionEndomorphism3
-    {V : Type*} [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    {V : Type*} [AddCommGroup V] [Module Real V]
+    [finite : FiniteDimensional Real V]
     (A : V →ₗ[Real] V) : V →ₗ[Real] V :=
+  let _ := finite
   (2 : Real) • (A.comp A) - (LinearMap.trace Real V A) • A +
-    (((LinearMap.trace Real V A) ^ 2 - LinearMap.trace Real V (A.comp A)) / (2 : Real)) •
-      LinearMap.id
+      (((LinearMap.trace Real V A) ^ 2 - LinearMap.trace Real V (A.comp A)) / (2 : Real)) •
+        LinearMap.id
 
 private theorem curvatureOperatorReaction3_eq_trace_polynomial
     (A : Matrix (Fin 3) (Fin 3) Real) :

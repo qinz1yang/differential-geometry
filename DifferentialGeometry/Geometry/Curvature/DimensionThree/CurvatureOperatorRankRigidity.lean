@@ -460,8 +460,52 @@ theorem curvatureOperatorImageAt_finrank_trichotomy
       (I := I) g x A)
     hpositive hnull
 
+theorem curvatureOperatorImageAt_finrank_trichotomy_of_spatially_constant
+    [FiniteDimensional Real E] [Nonempty M]
+    (hDim : Module.finrank Real E = 3)
+    (g : SmoothRiemannianMetric I M)
+    (A : (x : M) ->
+      DifferentialGeometry.Geometry.Curvature.algebraicCurvatureTensorSubmodule
+        (I := I) (M := M) x)
+    (hpositive : forall x,
+      forall a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+        0 <= (DifferentialGeometry.Geometry.Curvature.twoFormMetricData
+          (I := I) g x).inner
+            (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+              (I := I) g x (A x) a) a)
+    (hnull : forall x,
+      forall a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+        DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+            (I := I) g x (A x) a = 0 ->
+          curvatureOperatorReactionEndomorphism3
+              (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+                (I := I) g x (A x)).toLinearMap a = 0)
+    (hrank : forall x y,
+      Module.finrank Real
+          (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+            (I := I) g x (A x)) =
+        Module.finrank Real
+          (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+            (I := I) g y (A y))) :
+    (forall x, Module.finrank Real
+        (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+          (I := I) g x (A x)) = 0) \/
+      (forall x, Module.finrank Real
+        (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+          (I := I) g x (A x)) = 1) \/
+      (forall x, Module.finrank Real
+        (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+          (I := I) g x (A x)) = 3) := by
+  let x0 : M := Classical.choice inferInstance
+  have htrichotomy := curvatureOperatorImageAt_finrank_trichotomy
+    hDim g x0 (A x0) (hpositive x0) (hnull x0)
+  rcases htrichotomy with hzero | hone | hthree
+  · exact Or.inl (fun x => (hrank x x0).trans hzero)
+  · exact Or.inr (Or.inl (fun x => (hrank x x0).trans hone))
+  · exact Or.inr (Or.inr (fun x => (hrank x x0).trans hthree))
+
 private theorem finrank_range_eq_matrix_rank_of_basis
-    {V : Type*} [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    {V : Type*} [AddCommGroup V] [Module Real V]
     (basis : Module.Basis (Fin 3) Real V) (L : V →ₗ[Real] V) :
     Module.finrank Real L.range = Matrix.rank ((LinearMap.toMatrix basis basis) L) := by
   rw [Matrix.rank_eq_finrank_range_toLin ((LinearMap.toMatrix basis basis) L) basis basis]
