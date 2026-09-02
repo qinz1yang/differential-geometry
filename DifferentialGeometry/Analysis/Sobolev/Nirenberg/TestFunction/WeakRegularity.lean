@@ -1,10 +1,11 @@
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.DiffQuotTestFunction
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Defs
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.TranslatedCutoffDiffQuot
 
 noncomputable section
 
 open MeasureTheory Metric Filter Topology Set Function
 open DifferentialGeometry.Analysis.Sobolev
-open DifferentialGeometry.Analysis.Sobolev.NirenbergDiffQuotTestFunction
+open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open scoped ENNReal NNReal Convolution Pointwise BigOperators
 
 namespace DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
@@ -13,9 +14,9 @@ variable {d : ℕ} [NeZero d]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin d)
 
-noncomputable def standardNirenbergTest
+noncomputable abbrev standardNirenbergTest
     (k : Fin d) (h : ℝ) (η u : EuclN → ℝ) : EuclN → ℝ :=
-  diffQuot k (-h) (fun x => (η x)^2 * diffQuot k h u x)
+  NirenbergTestFunction.nirenbergTestFunction k h η u
 
 omit [NeZero d] in
 theorem standardNirenbergTest_apply
@@ -24,7 +25,7 @@ theorem standardNirenbergTest_apply
       ((η (x + (-h) • EuclideanSpace.single k 1))^2 *
           diffQuot k h u (x + (-h) • EuclideanSpace.single k 1) -
         (η x)^2 * diffQuot k h u x) / (-h) := by
-  unfold standardNirenbergTest
+  change diffQuot k (-h) (fun y : EuclN => η y ^ 2 * diffQuot k h u y) x = _
   rw [diffQuot_apply_of_ne (d := d) k (neg_ne_zero.mpr hh)]
 
 omit [NeZero d] in
@@ -32,8 +33,8 @@ omit [NeZero d] in
     (k : Fin d) (η u : EuclN → ℝ) :
     standardNirenbergTest k 0 η u = 0 := by
   funext x
-  unfold standardNirenbergTest
-  simp [diffQuot]
+  change diffQuot k (-(0 : ℝ)) (fun y : EuclN => η y ^ 2 * diffQuot k 0 u y) x = 0
+  simp
 
 omit [NeZero d] in
 theorem standardNirenbergTest_support_subset
@@ -48,8 +49,8 @@ theorem standardNirenbergTest_support_subset
   · exfalso
     apply hx
     subst hh
-    unfold standardNirenbergTest
-    simp [diffQuot]
+    change diffQuot k (-(0 : ℝ)) (fun y : EuclN => η y ^ 2 * diffQuot k 0 u y) x = 0
+    simp
   · have h_apply := standardNirenbergTest_apply (d := d) k h η u x hh
     rw [h_apply] at hx
     have h_num_ne : (η (x + (-h) • EuclideanSpace.single k 1))^2 *

@@ -7,35 +7,35 @@ open MeasureTheory Metric Filter Topology Set Function
 open DifferentialGeometry.Analysis.Sobolev
 open scoped ENNReal NNReal Convolution Pointwise BigOperators
 
-namespace DifferentialGeometry.Analysis.Sobolev.NirenbergDiffQuotTestFunction
+namespace DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 
 variable {d : ℕ} [NeZero d]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin d)
 
-noncomputable def nirenbergTestFunction
+noncomputable def translatedCutoffSqDiffQuot
     (k : Fin d) (h : ℝ) (η u : EuclN → ℝ) : EuclN → ℝ :=
   translate k (-h) (fun x => (η x)^2 * diffQuot k h u x)
 
 omit [NeZero d] in
-@[simp] lemma nirenbergTestFunction_apply
+@[simp] lemma translatedCutoffSqDiffQuot_apply
     (k : Fin d) (h : ℝ) (η u : EuclN → ℝ) (x : EuclN) :
-    nirenbergTestFunction k h η u x =
+    translatedCutoffSqDiffQuot k h η u x =
       (η (x + (-h) • EuclideanSpace.single k 1))^2 *
         diffQuot k h u (x + (-h) • EuclideanSpace.single k 1) := rfl
 
 omit [NeZero d] in
-lemma nirenbergTestFunction_apply_sub
+lemma translatedCutoffSqDiffQuot_apply_sub
     (k : Fin d) (h : ℝ) (η u : EuclN → ℝ) (x : EuclN) :
-    nirenbergTestFunction k h η u x =
+    translatedCutoffSqDiffQuot k h η u x =
       (η (x - h • EuclideanSpace.single k 1))^2 *
         diffQuot k h u (x - h • EuclideanSpace.single k 1) := by
-  simp [nirenbergTestFunction, translate, sub_eq_add_neg, neg_smul]
+  simp [translatedCutoffSqDiffQuot, translate, sub_eq_add_neg, neg_smul]
 
 omit [NeZero d] in
-theorem nirenbergTestFunction_support_subset
+theorem translatedCutoffSqDiffQuot_support_subset
     (k : Fin d) (h : ℝ) (η u : EuclN → ℝ) :
-    Function.support (nirenbergTestFunction k h η u) ⊆
+    Function.support (translatedCutoffSqDiffQuot k h η u) ⊆
       {x | x + (-h) • EuclideanSpace.single k 1 ∈ Function.support η} := by
   intro x hx
   change (η (x + (-h) • EuclideanSpace.single k 1))^2 *
@@ -50,9 +50,9 @@ theorem nirenbergTestFunction_support_subset
   rw [hη_sq_zero, zero_mul]
 
 omit [NeZero d] in
-theorem nirenbergTestFunction_tsupport_subset
+theorem translatedCutoffSqDiffQuot_tsupport_subset
     (k : Fin d) (h : ℝ) (η u : EuclN → ℝ) :
-    tsupport (nirenbergTestFunction k h η u) ⊆
+    tsupport (translatedCutoffSqDiffQuot k h η u) ⊆
       {x | x + (-h) • EuclideanSpace.single k 1 ∈ tsupport η} := by
   have htrans_cont : Continuous
       (fun x : EuclN => x + (-h) • EuclideanSpace.single k 1) :=
@@ -63,19 +63,19 @@ theorem nirenbergTestFunction_tsupport_subset
   refine closure_minimal ?_ h_closed_pre
   intro x hx
   exact subset_tsupport η
-    (nirenbergTestFunction_support_subset (d := d) k h η u hx)
+    (translatedCutoffSqDiffQuot_support_subset (d := d) k h η u hx)
 
 omit [NeZero d] in
-theorem nirenbergTestFunction_hasCompactSupport
+theorem translatedCutoffSqDiffQuot_hasCompactSupport
     (k : Fin d) (h : ℝ) {η : EuclN → ℝ} (hη_cs : HasCompactSupport η)
     (u : EuclN → ℝ) :
-    HasCompactSupport (nirenbergTestFunction k h η u) := by
+    HasCompactSupport (translatedCutoffSqDiffQuot k h η u) := by
   set v : EuclN := (-h) • EuclideanSpace.single k 1 with hv_def
   set htrans_homeo : EuclN ≃ₜ EuclN :=
     Homeomorph.addRight v with htrans_def
-  have h_sub : tsupport (nirenbergTestFunction k h η u) ⊆
+  have h_sub : tsupport (translatedCutoffSqDiffQuot k h η u) ⊆
       {x : EuclN | x + v ∈ tsupport η} :=
-    nirenbergTestFunction_tsupport_subset (d := d) k h η u
+    translatedCutoffSqDiffQuot_tsupport_subset (d := d) k h η u
   have h_set_eq :
       {x : EuclN | x + v ∈ tsupport η} = htrans_homeo ⁻¹' (tsupport η) := by
     ext x
@@ -100,17 +100,17 @@ theorem nirenbergTestFunction_hasCompactSupport
   exact h_pre_compact.of_isClosed_subset (isClosed_tsupport _) h_sub
 
 omit [NeZero d] in
-theorem sq_nirenbergTestFunction_le
+theorem translatedCutoffSqDiffQuot_sq_le
     (k : Fin d) (h : ℝ) {η u : EuclN → ℝ}
     {M_η : ℝ} (hM_η : ∀ x, |η x| ≤ M_η) (x : EuclN) :
-    (nirenbergTestFunction k h η u x)^2 ≤
+    (translatedCutoffSqDiffQuot k h η u x)^2 ≤
       M_η^4 *
         (diffQuot k h u (x + (-h) • EuclideanSpace.single k 1))^2 := by
   set y : EuclN := x + (-h) • EuclideanSpace.single k 1 with hy_def
   have h_unfold :
-      (nirenbergTestFunction k h η u x)^2 =
+      (translatedCutoffSqDiffQuot k h η u x)^2 =
         ((η y)^2)^2 * (diffQuot k h u y)^2 := by
-    rw [nirenbergTestFunction_apply]
+    rw [translatedCutoffSqDiffQuot_apply]
     ring
   rw [h_unfold]
   have h_sq_le : (η y)^2 ≤ M_η^2 := by
@@ -128,11 +128,11 @@ theorem sq_nirenbergTestFunction_le
   exact mul_le_mul_of_nonneg_right h_quartic_le h_dq_sq_nn
 
 omit [NeZero d] in
-theorem aestronglyMeasurable_nirenbergTestFunction
+theorem aestronglyMeasurable_translatedCutoffSqDiffQuot
     (k : Fin d) (h : ℝ) {η u : EuclN → ℝ}
     (hη : AEStronglyMeasurable η (volume : Measure EuclN))
     (hu : AEStronglyMeasurable u (volume : Measure EuclN)) :
-    AEStronglyMeasurable (nirenbergTestFunction k h η u)
+    AEStronglyMeasurable (translatedCutoffSqDiffQuot k h η u)
       (volume : Measure EuclN) := by
   have hη_sq : AEStronglyMeasurable (fun y : EuclN => (η y)^2)
       (volume : Measure EuclN) := hη.pow 2
@@ -186,10 +186,10 @@ private lemma lintegral_translate_diffQuot_sq
   exact h_step
 
 omit [NeZero d] in
-theorem eLpNorm_nirenbergTestFunction_le
+theorem eLpNorm_translatedCutoffSqDiffQuot_le
     (k : Fin d) (h : ℝ) {η u : EuclN → ℝ}
     {M_η : ℝ} (hM_η : ∀ x, |η x| ≤ M_η) :
-    eLpNorm (nirenbergTestFunction k h η u) 2 (volume : Measure EuclN) ≤
+    eLpNorm (translatedCutoffSqDiffQuot k h η u) 2 (volume : Measure EuclN) ≤
       ENNReal.ofReal (M_η^2) *
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
   classical
@@ -200,16 +200,16 @@ theorem eLpNorm_nirenbergTestFunction_le
     intro a
     rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num, ENNReal.rpow_natCast]
   have h_pt_enorm : ∀ x : EuclN,
-      (‖nirenbergTestFunction k h η u x‖ₑ : ℝ≥0∞)^(2 : ℕ) ≤
+      (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞)^(2 : ℕ) ≤
         ENNReal.ofReal (M_η^4) *
           (‖diffQuot k h u (x + (-h) • EuclideanSpace.single k 1)‖ₑ
             : ℝ≥0∞)^(2 : ℕ) := by
     intro x
     have h_real :=
-      sq_nirenbergTestFunction_le (d := d) (u := u) k h hM_η x
+      translatedCutoffSqDiffQuot_sq_le (d := d) (u := u) k h hM_η x
     have h_lhs_eq :
-        (‖nirenbergTestFunction k h η u x‖ₑ : ℝ≥0∞)^(2 : ℕ) =
-          ENNReal.ofReal ((nirenbergTestFunction k h η u x)^2) := by
+        (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞)^(2 : ℕ) =
+          ENNReal.ofReal ((translatedCutoffSqDiffQuot k h η u x)^2) := by
       rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _) 2,
         sq_abs]
     have h_rhs_eq :
@@ -232,10 +232,10 @@ theorem eLpNorm_nirenbergTestFunction_le
   rw [h2_toReal]
   have h_lhs_pow_eq :
       (∫⁻ x : EuclN,
-          (‖nirenbergTestFunction k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℝ)
+          (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℝ)
           ∂(volume : Measure EuclN)) =
         ∫⁻ x : EuclN,
-          (‖nirenbergTestFunction k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℕ)
+          (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℕ)
           ∂(volume : Measure EuclN) := by
     refine lintegral_congr_ae ?_
     filter_upwards with x using h_pow_eq _
@@ -248,11 +248,11 @@ theorem eLpNorm_nirenbergTestFunction_le
     filter_upwards with y using h_pow_eq _
   rw [h_lhs_pow_eq, h_rhs_pow_eq]
   have h_lint_le :
-      ∫⁻ x : EuclN, (‖nirenbergTestFunction k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℕ) ≤
+      ∫⁻ x : EuclN, (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℕ) ≤
         ENNReal.ofReal (M_η^4) *
           ∫⁻ y : EuclN, (‖diffQuot k h u y‖ₑ : ℝ≥0∞) ^ (2 : ℕ) := by
     have h_step :
-        ∫⁻ x : EuclN, (‖nirenbergTestFunction k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℕ) ≤
+        ∫⁻ x : EuclN, (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℕ) ≤
           ∫⁻ x : EuclN,
             ENNReal.ofReal (M_η^4) *
               (‖diffQuot k h u (x + (-h) • EuclideanSpace.single k 1)‖ₑ
@@ -303,14 +303,14 @@ private lemma volume_compact_lt_top {K : Set EuclN} (hK : IsCompact K) :
     (volume : Measure EuclN) K < ∞ := hK.measure_lt_top
 
 omit [NeZero d] in
-theorem eLpNorm_nirenbergTestFunction_restrict_le
+theorem eLpNorm_translatedCutoffSqDiffQuot_restrict_le
     (k : Fin d) (h : ℝ) {η u : EuclN → ℝ}
     {M_η : ℝ} (hM_η : ∀ x, |η x| ≤ M_η)
     (Ω' : Set EuclN) :
-    eLpNorm (nirenbergTestFunction k h η u) 2 ((volume : Measure EuclN).restrict Ω') ≤
+    eLpNorm (translatedCutoffSqDiffQuot k h η u) 2 ((volume : Measure EuclN).restrict Ω') ≤
       ENNReal.ofReal (M_η^2) *
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
-  refine le_trans ?_ (eLpNorm_nirenbergTestFunction_le (d := d) k h hM_η)
+  refine le_trans ?_ (eLpNorm_translatedCutoffSqDiffQuot_le (d := d) k h hM_η)
   exact eLpNorm_mono_measure _ Measure.restrict_le_self
 
 omit [NeZero d] in
@@ -844,7 +844,7 @@ theorem hasWeakPartialDeriv_eta_sq_diffQuot
     h_wp_dq h_eta_sq_smooth h_dq_u_locInt h_dq_g_locInt
 
 omit [NeZero d] in
-theorem hasWeakPartialDeriv_nirenbergTestFunction
+theorem hasWeakPartialDeriv_translatedCutoffSqDiffQuot
     (k j : Fin d) (h : ℝ) {η u g_j : EuclN → ℝ}
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hu_locInt :
@@ -857,15 +857,15 @@ theorem hasWeakPartialDeriv_nirenbergTestFunction
         (fun y => (η y)^2 * diffQuot k h g_j y +
           ((fderiv ℝ (fun z => (η z)^2) y) (EuclideanSpace.single j 1)) *
             diffQuot k h u y))
-      (nirenbergTestFunction k h η u) Set.univ := by
+      (translatedCutoffSqDiffQuot k h η u) Set.univ := by
   have h_inner_wp :=
     hasWeakPartialDeriv_eta_sq_diffQuot (d := d) k j h hη
       hu_locInt hg_j_locInt hwp
-  unfold nirenbergTestFunction
+  unfold translatedCutoffSqDiffQuot
   exact hasWeakPartialDeriv_translate (d := d) k j h h_inner_wp
 
 omit [NeZero d] in
-theorem hasWeakPartialDeriv_nirenbergTestFunction_expanded
+theorem hasWeakPartialDeriv_translatedCutoffSqDiffQuot_expanded
     (k j : Fin d) (h : ℝ) {η u g_j : EuclN → ℝ}
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hu_locInt :
@@ -879,9 +879,9 @@ theorem hasWeakPartialDeriv_nirenbergTestFunction_expanded
           (η y)^2 * diffQuot k h g_j y +
           2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1) *
             diffQuot k h u y))
-      (nirenbergTestFunction k h η u) Set.univ := by
+      (translatedCutoffSqDiffQuot k h η u) Set.univ := by
   have h_general :=
-    hasWeakPartialDeriv_nirenbergTestFunction (d := d) k j h hη
+    hasWeakPartialDeriv_translatedCutoffSqDiffQuot (d := d) k j h hη
       hu_locInt hg_j_locInt hwp
   have h_eq :
       (fun y : EuclN =>
@@ -897,10 +897,4 @@ theorem hasWeakPartialDeriv_nirenbergTestFunction_expanded
   rw [h_eq] at h_general
   exact h_general
 
-omit [NeZero d] in
-example (k : Fin d) (η u : EuclN → ℝ) :
-    nirenbergTestFunction k 0 η u = 0 := by
-  funext x
-  simp [nirenbergTestFunction, translate, diffQuot]
-
-end DifferentialGeometry.Analysis.Sobolev.NirenbergDiffQuotTestFunction
+end DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot

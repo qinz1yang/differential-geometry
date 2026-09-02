@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1Compl_H1_0
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.StandardNirenbergTest
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.WeakRegularity
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
 import DifferentialGeometry.Analysis.Sobolev.Solutions.Mollification
 
@@ -28,7 +28,7 @@ open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
-open DifferentialGeometry.Analysis.Sobolev.NirenbergDiffQuotTestFunction
+open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩

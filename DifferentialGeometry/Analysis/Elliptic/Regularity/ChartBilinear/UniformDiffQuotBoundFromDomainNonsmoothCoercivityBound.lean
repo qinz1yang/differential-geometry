@@ -29,7 +29,7 @@ open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBound
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
 open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
-open DifferentialGeometry.Analysis.Sobolev.NirenbergDiffQuotTestFunction
+open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeSmoothApprox
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeAssembly
@@ -716,10 +716,7 @@ theorem chartBilinear_master_nonsmooth_discharge
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               (d := Module.finrank ℝ E) k h η D.uChart x
           ∂(volume : Measure EuclN)) := by
-      refine setIntegral_congr_fun h_cthick_h_K_0_meas ?_
-      intro x _hx
-      simp only
-      rw [h_test_eq]
+      rfl
     rw [h_step_a]
     rw [setIntegral_eq_integral_of_forall_compl_eq_zero h_F_zero_off,
         ← MeasureTheory.setIntegral_univ]

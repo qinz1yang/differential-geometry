@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1Compl_H1_0
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.StandardNirenbergTest
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.WeakRegularity
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.SubstitutionNonSmooth
 
 
@@ -26,7 +26,7 @@ open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
-open DifferentialGeometry.Analysis.Sobolev.NirenbergDiffQuotTestFunction
+open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -621,69 +621,12 @@ lemma standardNirenbergTest_smooth_admissible
       (d := Module.finrank ℝ E) k h η D.uChart) ⊆
         chartTargetEuclid (I := I) (M := M) α := by
   refine ⟨?_, ?_, ?_⟩
-  · unfold standardNirenbergTest
-    by_cases hh : (-h) = 0
-    · have h_zero : DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k (-h)
-          (fun y : EuclN => (η y) ^ 2 *
-            DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h D.uChart y) = 0 := by
-        funext x
-        simp [DifferentialGeometry.Analysis.Sobolev.diffQuot, hh]
-      rw [h_zero]
+  · by_cases hh : h = 0
+    · subst h
+      rw [standardNirenbergTest_zero_h]
       exact contDiff_const
-    · have h_inner_smooth : ContDiff ℝ (⊤ : ℕ∞)
-          (fun y : EuclN => (η y) ^ 2 *
-            DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h D.uChart y) := by
-        refine ContDiff.mul (hη.pow 2) ?_
-        by_cases hh' : h = 0
-        · have h_zero : DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h D.uChart = 0 := by
-            funext x
-            simp [DifferentialGeometry.Analysis.Sobolev.diffQuot, hh']
-          rw [h_zero]
-          exact contDiff_const
-        · have h_eq : DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h D.uChart =
-              fun x => (D.uChart (x + h • EuclideanSpace.single k 1) -
-                D.uChart x) / h := by
-            funext x
-            simp [DifferentialGeometry.Analysis.Sobolev.diffQuot, hh']
-          rw [h_eq]
-          have h_translate_smooth : ContDiff ℝ (⊤ : ℕ∞)
-              (fun x : EuclN => D.uChart (x + h • EuclideanSpace.single k 1)) := by
-            have h_add_smooth : ContDiff ℝ (⊤ : ℕ∞)
-                (fun x : EuclN => x + h • EuclideanSpace.single k 1) :=
-              contDiff_id.add contDiff_const
-            exact hu_chart_smooth.comp h_add_smooth
-          exact (h_translate_smooth.sub hu_chart_smooth).div_const h
-      have h_diffQuot_eq :
-          DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k (-h)
-            (fun y : EuclN => (η y) ^ 2 *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.uChart y) =
-          fun x => ((fun y => (η y) ^ 2 *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.uChart y)
-              (x + (-h) • EuclideanSpace.single k 1) -
-            ((fun y => (η y) ^ 2 *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.uChart y) x)) / (-h) := by
-        funext x
-        simp [DifferentialGeometry.Analysis.Sobolev.diffQuot, hh]
-      rw [h_diffQuot_eq]
-      have h_translate_inner_smooth : ContDiff ℝ (⊤ : ℕ∞)
-          (fun x : EuclN => (fun y => (η y) ^ 2 *
-            DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h D.uChart y)
-            (x + (-h) • EuclideanSpace.single k 1)) := by
-        have h_add_smooth : ContDiff ℝ (⊤ : ℕ∞)
-            (fun x : EuclN => x + (-h) • EuclideanSpace.single k 1) :=
-          contDiff_id.add contDiff_const
-        exact h_inner_smooth.comp h_add_smooth
-      exact (h_translate_inner_smooth.sub h_inner_smooth).div_const (-h)
+    · exact NirenbergTestFunction.contDiff_nirenbergTestFunction
+        (d := Module.finrank ℝ E) hη hu_chart_smooth k hh
   · exact standardNirenbergTest_hasCompactSupport
       (d := Module.finrank ℝ E) k h hη_supp D.uChart
   · exact standardNirenbergTest_tsupport_in_chartTarget (E := E) (I := I) (M := M)

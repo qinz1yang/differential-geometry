@@ -28,7 +28,7 @@ open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
-open DifferentialGeometry.Analysis.Sobolev.NirenbergDiffQuotTestFunction
+open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 
 private local instance : MeasurableSpace E := borel E
@@ -923,7 +923,7 @@ private lemma standardNirenbergTest_sub
     (standardNirenbergTest (d := Module.finrank ℝ E) k h η u₁) -
         (standardNirenbergTest (d := Module.finrank ℝ E) k h η u₂) =
       standardNirenbergTest (d := Module.finrank ℝ E) k h η (u₁ - u₂) := by
-  unfold standardNirenbergTest
+  unfold standardNirenbergTest NirenbergTestFunction.nirenbergTestFunction
   have h_inner_sub :
       (fun y => (η y)^2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -976,7 +976,7 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
     funext x
     by_cases hh0 : h = 0
     · subst hh0
-      simp [standardNirenbergTest, DifferentialGeometry.Analysis.Sobolev.diffQuot]
+      simp [standardNirenbergTest]
     have h_test_eq_pointwise : ∀ v : EuclN → ℝ,
         standardNirenbergTest (d := Module.finrank ℝ E) k h η v x =
         ((η (x + (-h) • EuclideanSpace.single k 1))^2 *

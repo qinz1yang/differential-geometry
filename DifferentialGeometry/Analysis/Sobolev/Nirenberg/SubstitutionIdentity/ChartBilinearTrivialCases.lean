@@ -25,7 +25,7 @@ open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
-open DifferentialGeometry.Analysis.Sobolev.NirenbergDiffQuotTestFunction
+open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeSmoothApprox
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeIBPExpand
@@ -243,8 +243,19 @@ private lemma chartBilinear_substitution_identity_K_0_empty
       (d := Module.finrank ℝ E) k h η D.uChart = 0 := by
     rw [hη_zero]
     funext x
-    unfold standardNirenbergTest
-    simp [DifferentialGeometry.Analysis.Sobolev.diffQuot]
+    change DifferentialGeometry.Analysis.Sobolev.diffQuot
+      (d := Module.finrank ℝ E) k (-h)
+        (fun y : EuclN => (0 : ℝ) ^ 2 *
+          DifferentialGeometry.Analysis.Sobolev.diffQuot
+            (d := Module.finrank ℝ E) k h D.uChart y) x = 0
+    have h_inner :
+        (fun y : EuclN => (0 : ℝ) ^ 2 *
+          DifferentialGeometry.Analysis.Sobolev.diffQuot
+            (d := Module.finrank ℝ E) k h D.uChart y) = 0 := by
+      funext y
+      simp
+    rw [h_inner, DifferentialGeometry.Analysis.Sobolev.diffQuot_zero]
+    rfl
   unfold chartBilinearLHS chartBilinearRHS
   unfold principalTermChartBilinear cross1TermChartBilinear
     cross2TermChartBilinear cross3TermChartBilinear

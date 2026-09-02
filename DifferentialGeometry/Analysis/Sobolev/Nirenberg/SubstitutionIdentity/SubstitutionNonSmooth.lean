@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.MasterInequalityNonSmooth
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.StandardNirenbergTest
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.WeakRegularity
 import DifferentialGeometry.Analysis.Sobolev.Solutions.WeakSolution
 
 noncomputable section
@@ -554,9 +554,7 @@ theorem nirenberg_master_inequality_nonsmooth
           (f := fun x => B.c x * u x *
             (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
               k h η u) x) h_zero_compl
-      rw [← h_eq_int]
-      apply integral_congr_ae
-      filter_upwards with x using by rw [h_test_eq]
+      exact h_eq_int.symm
     have h_R_to_Ω :
         ∫ x, f x *
           (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
@@ -590,9 +588,7 @@ theorem nirenberg_master_inequality_nonsmooth
           (f := fun x => f x *
             (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
               k h η u) x) h_zero_compl
-      rw [← h_eq_int]
-      apply integral_congr_ae
-      filter_upwards with x using by rw [h_test_eq]
+      exact h_eq_int.symm
     have h_triangle : R - C1 - C2 - C3 - Q ≤ |R| + |C1| + |C2| + |C3| + |Q| := by
       have h1 : R ≤ |R| := le_abs_self R
       have h2 : -C1 ≤ |C1| := by
