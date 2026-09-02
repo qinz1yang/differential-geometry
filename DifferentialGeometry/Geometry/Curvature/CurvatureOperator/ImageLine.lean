@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Kernel
+import DifferentialGeometry.Geometry.Connection.ParallelLineSplitting
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.EndomorphismNaturality
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Smoothness
 
@@ -106,10 +107,11 @@ theorem exists_smooth_parallel_curvatureOperatorImageLine
       (fun x => curvatureOperatorKernelAt (I := I) g x ⟨A x, hA x⟩)) :
     ∃ S : ContMDiffVectorSubbundle
         (I := I) (F := E) (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)),
-      S.rank = 1 ∧
-      (∀ x, S.fiber x =
-        curvatureOperatorImageAnnihilatorAt (I := I) g x ⟨A x, hA x⟩) ∧
-      IsParallelSubmoduleFamily g S.fiber := by
+      And (S.rank = 1)
+        (And
+          (∀ x, S.fiber x =
+            curvatureOperatorImageAnnihilatorAt (I := I) g x ⟨A x, hA x⟩)
+          (IsParallelSubmoduleFamily g S.fiber)) := by
   let K := curvatureOperatorImageSubbundle (I := I) g A hA 1 hrank
   apply exists_smooth_parallel_contractionAnnihilator hE g K rfl
   intro gamma hgamma a b hab
@@ -123,5 +125,29 @@ theorem exists_smooth_parallel_curvatureOperatorImageLine
       ⟨A (gamma b), hA (gamma b)⟩
   exact curvatureOperatorImage_isParallel_of_kernel_isParallel
     (I := I) g A hA hkernel gamma hgamma hab
+
+omit [CompleteSpace E] in
+theorem exists_local_product_of_curvatureOperatorImage_rank_eq_one
+    [I.Boundaryless]
+    (hE : Module.finrank Real E = 3)
+    (g : SmoothRiemannianMetric I M)
+    (A : Tensor0SField (I := I) (M := M) (∞ : WithTop ℕ∞) 4)
+    (hA : ∀ x, A x ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (hrank : ∀ x, Module.finrank Real
+      (curvatureOperatorImageAt (I := I) g x ⟨A x, hA x⟩) = 1)
+    (hkernel : IsParallelContinuousAlternatingSubmoduleFamily g
+      (fun x => curvatureOperatorKernelAt (I := I) g x ⟨A x, hA x⟩))
+    (x : M) :
+    ∃ e : TangentSpace I x,
+      And
+        (e ∈ curvatureOperatorImageAnnihilatorAt (I := I) g x ⟨A x, hA x⟩)
+        (And
+          (g.inner x e e = 1)
+          (Connection.HasLocalRiemannianProductAt (I := I) g x e)) := by
+  obtain ⟨S, hSrank, hSfiber, hSparallel⟩ :=
+    exists_smooth_parallel_curvatureOperatorImageLine hE g A hA hrank hkernel
+  obtain ⟨U, s, hUopen, hxU, hs_mem, hs_unit, hs_parallel, hproduct⟩ :=
+    S.exists_local_product_of_rank_eq_one g hSrank hSparallel x
+  exact ⟨s x, hSfiber x ▸ hs_mem x hxU, hs_unit x hxU, hproduct⟩
 
 end DifferentialGeometry.Geometry.Curvature

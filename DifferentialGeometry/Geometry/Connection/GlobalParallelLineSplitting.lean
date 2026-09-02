@@ -1093,8 +1093,7 @@ theorem ContMDiffVectorSubbundle.exists_global_product_diffeomorph_of_rank_eq_on
       (I := I) (F := DifferentialGeometry.Topology.Morse.MorseModel (m + 1))
       (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)))
     (hSrank : S.rank = 1)
-    (hS : IsCovariantlyInvariantSubmoduleFamily
-      (LeviCivita (I := I) g) S.fiber) :
+    (hS : IsParallelSubmoduleFamily g S.fiber) :
     ∃ (N : Type) (_ : TopologicalSpace N)
       (hcs : ChartedSpace
         (DifferentialGeometry.Topology.Morse.MorseModel m) N),
