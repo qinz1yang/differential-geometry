@@ -857,6 +857,61 @@ private lemma choleskyGradientCoordinates_norm_sq
         exact Finset.sum_congr rfl fun i _ => by rw [hc i], hgrad]
   rfl
 
+theorem exists_openPartialHomeomorph_norm_sq_eq_normGradSqFun_of_hessFun_eq_smul_metric_of_finrank_eq_two
+    (hdim : Module.finrank Real E = 2)
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯) (p : M)
+    (hcrit : IsCriticalPointAt I f p) {c : Real} (hc : c ≠ 0)
+    (hhess : ∀ v w : TangentSpace I p,
+      hessFun (I := I) g f p v w = c * g.inner p v w) :
+    ∃ e : OpenPartialHomeomorph M (EuclideanSpace Real (Fin 2)),
+      p ∈ e.source ∧ e p = 0 ∧
+      ∀ x ∈ e.source, ‖e x‖ ^ 2 = normGradSqFun (I := I) g f x := by
+  let L := modelToPlane (E := E) hdim
+  obtain ⟨φ, hφfun, hzsource, hφz⟩ :=
+    exists_choleskyGradientCoordinates_openPartialHomeomorph
+      (I := I) hdim g f p hcrit hc hhess
+  let χ : OpenPartialHomeomorph M E :=
+    { toPartialEquiv := extChartAt I p
+      open_source := isOpen_extChartAt_source p
+      open_target := isOpen_extChartAt_target p
+      continuousOn_toFun := continuousOn_extChartAt p
+      continuousOn_invFun := continuousOn_extChartAt_symm p }
+  let η : OpenPartialHomeomorph E Plane :=
+    L.toHomeomorph.toOpenPartialHomeomorph
+  let e : OpenPartialHomeomorph M Plane :=
+    χ.trans (η.trans φ)
+  have hpsource : p ∈ (extChartAt I p).source := mem_extChartAt_source p
+  have hpe : p ∈ e.source := by
+    change p ∈ (χ.trans (η.trans φ)).source
+    rw [OpenPartialHomeomorph.trans_source]
+    refine ⟨hpsource, ?_⟩
+    rw [OpenPartialHomeomorph.trans_source]
+    refine ⟨?_, ?_⟩
+    · simp only [η, Homeomorph.toOpenPartialHomeomorph_source, mem_univ]
+    · change L (extChartAt I p p) ∈ φ.source
+      exact hzsource
+  refine ⟨e, hpe, ?_, ?_⟩
+  · change φ (L (extChartAt I p p)) = 0
+    exact hφz
+  · intro x hx
+    have hxsource : x ∈ (extChartAt I p).source := by
+      change x ∈ (χ.trans (η.trans φ)).source at hx
+      rw [OpenPartialHomeomorph.trans_source] at hx
+      exact hx.1
+    have hxtarget : L.symm (L (extChartAt I p x)) ∈
+        (extChartAt I p).target := by
+      simpa only [ContinuousLinearEquiv.symm_apply_apply] using
+        (extChartAt I p).map_source hxsource
+    have hnorm := choleskyGradientCoordinates_norm_sq
+      (I := I) hdim g p f.contMDiff hxtarget
+    dsimp only [L] at hnorm
+    rw [ContinuousLinearEquiv.symm_apply_apply,
+      (extChartAt I p).left_inv hxsource] at hnorm
+    change ‖φ (L (extChartAt I p x))‖ ^ 2 =
+      normGradSqFun (I := I) g f x
+    rw [hφfun]
+    simpa only [L, ContinuousLinearEquiv.symm_apply_apply] using hnorm
+
 omit [I.Boundaryless] in
 private lemma planeGram_det
     (hdim : Module.finrank Real E = 2)
