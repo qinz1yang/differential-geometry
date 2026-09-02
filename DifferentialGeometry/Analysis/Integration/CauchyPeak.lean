@@ -3,6 +3,7 @@ import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.MeasureTheory.Integral.PeakFunction
+import Mathlib.MeasureTheory.Function.Jacobian
 
 set_option autoImplicit false
 
@@ -240,10 +241,10 @@ theorem tendsto_integral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_z
     rw [sq_abs, Real.sq_sqrt hε.le]
   rw [hscale]
 
-theorem tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_zero
+theorem tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhdsGT_zero
     {a : Real} (ha : a ≠ 0) {s : Set Complex}
     (hs : MeasurableSet s) (h0 : s ∈ 𝓝 (0 : Complex))
-    {g : Complex → Real} (hg : Integrable g) (hcont : ContinuousAt g 0) :
+    {g : Complex → Real} (hg : IntegrableOn g s) (hcont : ContinuousAt g 0) :
     Tendsto
       (fun ε : Real => ∫ z in s,
         ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2)
@@ -254,7 +255,7 @@ theorem tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrable_nhdsG
     rw [indicator_of_mem hz]
   have hbase :=
     tendsto_integral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_zero
-      ha (hg.indicator hs) (hcont.congr_of_eventuallyEq hindicator)
+      ha (hg.integrable_indicator hs) (hcont.congr_of_eventuallyEq hindicator)
   rw [indicator_of_mem h0s] at hbase
   apply hbase.congr'
   filter_upwards with ε
@@ -264,5 +265,29 @@ theorem tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrable_nhdsG
   by_cases hz : z ∈ s
   · simp only [indicator_of_mem hz]
   · simp only [indicator_of_notMem hz, mul_zero, zero_mul]
+
+theorem tendsto_setIntegral_regularized_quadratic_kernel_comp_mul_abs_det_fderiv_of_integrableOn_nhdsGT_zero
+    {a : Real} (ha : a ≠ 0) {s : Set Complex} (hs : MeasurableSet s)
+    {φ : Complex → Complex} {φ' : Complex → Complex →L[Real] Complex}
+    (hφ' : ∀ z ∈ s, HasFDerivWithinAt φ (φ' z) s z)
+    (hφ : InjOn φ s) (h0 : φ '' s ∈ 𝓝 (0 : Complex))
+    {g : Complex → Real} (hg : IntegrableOn g (φ '' s))
+    (hcont : ContinuousAt g 0) :
+    Tendsto
+      (fun ε : Real => ∫ z in s,
+        |(φ' z).det| *
+          (ε * g (φ z) * (a ^ 2 * ‖φ z‖ ^ 2 + ε)⁻¹ ^ 2))
+      (𝓝[>] 0) (𝓝 (Real.pi / a ^ 2 * g 0)) := by
+  have himage : MeasurableSet (φ '' s) :=
+    measurable_image_of_fderivWithin hs hφ' hφ
+  have hbase :=
+    tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhdsGT_zero
+      ha himage h0 hg hcont
+  apply hbase.congr'
+  filter_upwards with ε
+  simpa only [smul_eq_mul] using
+    (integral_image_eq_integral_abs_det_fderiv_smul volume hs hφ' hφ
+      (fun z : Complex =>
+        ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2))
 
 end DifferentialGeometry.Analysis.Integration
