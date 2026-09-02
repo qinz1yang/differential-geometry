@@ -15,7 +15,7 @@ variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensiona
 variable {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
 variable {I : ModelWithCorners ℝ E H}
 
-theorem no_critical_value_transport [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+theorem no_critical_value_transport [I.Boundaryless] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (hcompact : IsCompact (f ⁻¹' Set.Icc a b))
@@ -184,7 +184,7 @@ theorem no_critical_value_transport [I.Boundaryless] [IsManifold I (⊤ : WithTo
     simpa [flow] using htransport
   · exact htie
 
-theorem no_critical_values [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+theorem no_critical_values [I.Boundaryless] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (hcompact : IsCompact (f ⁻¹' Set.Icc a b))
@@ -198,7 +198,7 @@ theorem reverseFlow_value_on_levelSet {E : Type} [NormedAddCommGroup E] [NormedS
     [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ E H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ}
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -276,7 +276,7 @@ theorem reverseFlow_value_on_levelSet {E : Type} [NormedAddCommGroup E] [NormedS
     exact hmain
   linarith
 
-noncomputable def noCriticalValueSublevelHomeomorph [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+noncomputable def noCriticalValueSublevelHomeomorph [I.Boundaryless] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (hcompact : IsCompact (f ⁻¹' Set.Icc a b))
@@ -339,7 +339,7 @@ noncomputable def levelSetTransportHomeomorph {E : Type} [NormedAddCommGroup E]
     [NormedSpace ℝ E] [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ E H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -431,7 +431,7 @@ theorem frontier_sublevel_eq_levelSet {E : Type} [NormedAddCommGroup E] [NormedS
     [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ E H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a < b)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -524,7 +524,7 @@ noncomputable def levelSetCollarHomeomorph {E : Type} [NormedAddCommGroup E]
     [NormedSpace ℝ E] [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ E H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ}
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞

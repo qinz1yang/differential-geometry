@@ -26,7 +26,7 @@ private theorem exists_vector_of_fderiv_ne_zero (g : E → ℝ) (y : E)
 
 omit [FiniteDimensional ℝ E] in
 private theorem chartRep_contDiffOn (I : ModelWithCorners ℝ E H)
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (x₀ : M) :
     ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : E => f ((extChartAt I x₀).symm y))
       (extChartAt I x₀).target := by
@@ -50,7 +50,7 @@ private theorem chartRep_contDiffOn (I : ModelWithCorners ℝ E H)
 
 omit [FiniteDimensional ℝ E] in
 theorem tangentTrivializationAt_apply (I : ModelWithCorners ℝ E H)
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (x₀ x : M)
+    [IsManifold I ∞ M] (x₀ x : M)
     (hx : x ∈ (extChartAt I x₀).source) (v : TangentSpace I x) :
     (trivializationAt E (TangentSpace I) x₀ ⟨x, v⟩).2 =
       tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E))
@@ -79,7 +79,7 @@ theorem tangentTrivializationAt_apply (I : ModelWithCorners ℝ E H)
 
 omit [FiniteDimensional ℝ E] in
 theorem localUnitSpeedVectorField_at_noncritical (I : ModelWithCorners ℝ E H)
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [I.Boundaryless] [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     {x₀ : M} (hcrit : ¬ IsCriticalPointAt I f x₀) :
     ∃ v₀ : E,
@@ -124,7 +124,8 @@ theorem localUnitSpeedVectorField_at_noncritical (I : ModelWithCorners ℝ E H)
     (by norm_num : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)
   have hxsrc : x ∈ (chartAt H x₀).source := by
     rwa [extChartAt_source (I := I) (x := x₀)] at hx
-  have hmdchart := (contMDiffAt_extChartAt' (I := I) (n := (⊤ : WithTop ℕ∞)) (x := x₀) hxsrc).mdifferentiableAt (by norm_num)
+  have hmdchart := (contMDiffAt_extChartAt' (I := I)
+    (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞)) (x := x₀) hxsrc).mdifferentiableAt (by norm_num)
   have hcomp := mfderiv_comp (x := x) (g := g) (f := e) (hg := hmdg.mdifferentiableAt) (hf := hmdchart)
   have hfuneq : (fun y : M => f y) =ᶠ[nhds x] (fun y : M => g (e y)) := by
     have hsrcopen : IsOpen e.source := isOpen_extChartAt_source x₀
@@ -233,7 +234,7 @@ theorem localUnitSpeedVectorField_at_noncritical (I : ModelWithCorners ℝ E H)
 
 omit [FiniteDimensional ℝ E] in
 theorem exists_open_unitSpeedVectorField_at_noncritical (I : ModelWithCorners ℝ E H)
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [I.Boundaryless] [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     {x₀ : M} (hcrit : ¬ IsCriticalPointAt I f x₀) :
     ∃ (U : Set M), x₀ ∈ U ∧ IsOpen U ∧
@@ -257,7 +258,8 @@ theorem exists_open_unitSpeedVectorField_at_noncritical (I : ModelWithCorners �
         (extChartAt I x₀).target := hfd.continuousOn
     have hconte : ContinuousOn (extChartAt I x₀) (extChartAt I x₀).source := by
       simpa [extChartAt_source (I := I) (x := x₀)] using
-        (contMDiffOn_extChartAt (I := I) (n := (⊤ : WithTop ℕ∞)) (x := x₀)).continuousOn
+        (contMDiffOn_extChartAt (I := I) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))
+          (x := x₀)).continuousOn
     have hcomp' : ContinuousOn (fun x : M =>
         (fderiv ℝ (fun y : E => f ((extChartAt I x₀).symm y))) (extChartAt I x₀ x))
         (extChartAt I x₀).source :=
@@ -379,7 +381,7 @@ theorem exists_open_unitSpeedVectorField_at_noncritical (I : ModelWithCorners �
     exact hmd'.contMDiffWithinAt (s := U)
 
 theorem exists_unitSpeedVectorField_on_compact (I : ModelWithCorners ℝ E H)
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (K : Set M)
     (hcompact : IsCompact K)
     (hregular : ∀ x ∈ K, ¬ IsCriticalPointAt I f x) :
@@ -518,7 +520,7 @@ theorem exists_unitSpeedVectorField_on_compact (I : ModelWithCorners ℝ E H)
     constructor <;> linarith
 
 theorem exists_unitSpeedVectorField_on_strip (I : ModelWithCorners ℝ E H)
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (a b : ℝ)
     (hcompact : IsCompact (f ⁻¹' Set.Icc a b))
     (hregular : ∀ x ∈ f ⁻¹' Set.Icc a b, ¬ IsCriticalPointAt I f x) :
