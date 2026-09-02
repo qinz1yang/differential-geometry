@@ -415,37 +415,6 @@ private theorem jointTotalSpaceRS_add_local {r s : ℕ} {S : Set ℝ}
   · exact (e.linear ℝ (by rw [he, ← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)).map_add
       (A p₀) (B p₀)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private theorem jointTotalSpaceRS_const_smul_local {r s : ℕ} {S : Set ℝ} (a : ℝ)
-    (A : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
-    (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p))
-          ((Set.univ : Set M) ×ˢ S)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (a • A p))
-      ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
-  intro p₀ hp₀
-  rw [Bundle.contMDiffWithinAt_totalSpace]
-  refine ⟨contMDiffWithinAt_fst, ?_⟩
-  set x₀ := p₀.1 with hx₀
-  set e := trivializationAt (Tensor0SBundle.TensorRSModel r s ℝ E)
-    (fun z : M => Tensor0SBundle.TensorRSSpace r s I z) x₀ with he
-  have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SBundle.TensorRSModel r s ℝ E)
-    (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z)).mp (hA p₀ hp₀)
-  refine ((contMDiffWithinAt_const (c := a)).smul (I := 𝓘(ℝ, ℝ))
-    hA'.2).congr_of_eventuallyEq ?_ ?_
-  · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e.baseSet :=
-      (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
-        (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
-    filter_upwards [hbase] with p hx
-    exact (e.linear ℝ hx).map_smul a (A p)
-  · exact (e.linear ℝ (by rw [he, ← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)).map_smul
-      a (A p₀)
-
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1405,7 +1374,7 @@ theorem linearizedRicci_arm2FieldLichnerowicz_jointSmooth (g₀ : SmoothRiemanni
       (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
   have hPrin := ricciDeTurckPrincipalCoefficient_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
   have hTH := traceHessianCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
-  have hsmul := jointTotalSpaceRS_const_smul_local (I := I) (r := 4) (s := 2) (1 / 2 : ℝ)
+  have hsmul := jointTotalSpaceRS_const_smul (I := I) (r := 4) (s := 2) (1 / 2 : ℝ)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (traceHessianCoeff (I := I) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)

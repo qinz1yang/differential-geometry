@@ -22,7 +22,7 @@ open DifferentialGeometry.Analysis.Spectral
     exists_smoothCcPath_realizing_coeff gFibreOpBound_symmS
     perModeConv_allOrder_timeDeriv_spectralMass_le
     perModeConv_finiteOrder_timeJet_spectralMass_gain smoothCcToTensorHs
-    smoothCcToTensorHs_coeff smoothCcToTensorHs_smul symmCoeffPath
+    smoothCcToTensorHs_coeff smoothCcToTensorHs_smul smoothCcToTensorHs_zero symmCoeffPath
     symmCoeffPath_contDiff symmCoeffPath_realizes symmCoeffPath_spectralMass
     tensorResolventL2_isCompactOperator)
 

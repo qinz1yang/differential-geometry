@@ -2039,8 +2039,8 @@ theorem ricciConnectionDifferenceTopOrderCoefficient_h3_uniform
       g.inner y v w = g.inner y v w +
         ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2) y v w := by
     intro y v w
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   obtain ⟨hpairPt, hpairJetRaw⟩ := hpair g hEq hjet
     (0 : SmoothCcTensor g 0 2) g hdelta_le hdelta0 hdeltaZ hzero2 htie0

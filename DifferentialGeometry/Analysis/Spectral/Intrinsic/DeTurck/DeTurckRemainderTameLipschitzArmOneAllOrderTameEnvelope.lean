@@ -976,7 +976,7 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_allOrder_tameEnvelope
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ σ' ρ (connectionDifferenceSection (I := I) g₁ g₀))‖ ≤
         Real.sqrt (Pc i) * Sw := by
     intro σ' ρ
-    have h := lieArm1_norm_le_sqrt_fw
+    have h := Real.le_sqrt_of_sq_le
       (hPc T T' hδ_le hδ hδ'_le hδ' hTball hT'ball σ' ρ i s hs)
     rw [Real.sqrt_mul (hPc_nn i)] at h
     exact h
@@ -986,7 +986,7 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_allOrder_tameEnvelope
           (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg))‖ ≤
         Real.sqrt (Pbg i) * Sw := by
     intro σ' ρ
-    have h := lieArm1_norm_le_sqrt_fw
+    have h := Real.le_sqrt_of_sq_le
       (hPbg T T' hδ_le hδ hδ'_le hδ' hTball hT'ball σ' ρ i s hs)
     rw [Real.sqrt_mul (hPbg_nn i)] at h
     exact h
@@ -996,7 +996,7 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_allOrder_tameEnvelope
           (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg))‖ ≤
         Real.sqrt (Pb i) * Sw := by
     intro σ' ρ
-    have h := lieArm1_norm_le_sqrt_fw
+    have h := Real.le_sqrt_of_sq_le
       (hPb T T' hδ_le hδ hδ'_le hδ' hTball hT'ball σ' ρ i s hs)
     rw [Real.sqrt_mul (hPb_nn i)] at h
     exact h

@@ -73,7 +73,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
-  linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero
+  linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero linearizedRicciThreeArmHjoint_smul_add
   exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
   linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
   linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
@@ -327,48 +327,6 @@ private lemma symmS_eq_self_of_symm_fw (g₀ : SmoothRiemannianMetric I M)
   rw [ccTensor02Symm, hswap, ← two_smul ℝ S, smul_smul,
     show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem threeArmHjoint_neg_two_smul_add_fw (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
-    (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
-      (fun s => (-2 : ℝ) • A s + B s) (δ := δ) (δ' := δ') := by
-  have hsmul := lieArm_jointRS_const_smul_local (I := I) (r := r) (s := 2)
-    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) (-2 : ℝ)
-    (fun p : M × ℝ => (A p.2).toSection p.1) hA
-  have hadd := jointTotalSpaceRS_add (I := I) (r := r) (s := 2)
-    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (fun p : M × ℝ => (-2 : ℝ) • (A p.2).toSection p.1)
-    (fun p : M × ℝ => (B p.2).toSection p.1)
-    hsmul hB
-  refine hadd.congr (fun p _ => ?_)
-  refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
-    (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1 t) ?_
-  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
-
-omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-lemma deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_neg_two_smul_fw
-    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
-      δ')
-    (s : ℝ) :
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) =
-      (-2 : ℝ) • linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
-        + deTurckLieArm2PrincipalCoeff (I := I) g₀
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) := by
-  rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq (I := I) (M := M)
-    g₀ T T' hδ hδ' s]
-  rw [show (-2 : ℝ) • linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s =
-      -(linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
-        + linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) from by
-    rw [show (-2 : ℝ) = -(2 : ℝ) by norm_num, neg_smul, two_smul]]
-  abel
-
 omit [SigmaCompactSpace M] in
 theorem linearizedDeTurckLieAt_eq_threeArm_plain_of_symm_fw
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -558,13 +516,13 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hΨ₂def
   have hj0 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Ψ₀ (δ := δ) (δ' := δ') := by
     rw [hΨ₀def]
-    exact threeArmHjoint_neg_two_smul_add_fw (I := I) (M := M) g₀ 2 _ _
+    exact linearizedRicciThreeArmHjoint_smul_add (I := I) (M := M) g₀ 2 (-2 : ℝ) _ _
       (linearizedRicci_arm0Field_jointSmooth (I := I) g₀ T T' hδ hδ')
       (deTurckLieCoeffField_add_deTurckLieRemainderField_metricPerturbationPath_jointSmooth (I := I) g₀ T T' hδ
         hδ' g_bg)
   have hj1 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Ψ₁ (δ := δ) (δ' := δ') := by
     rw [hΨ₁def]
-    exact threeArmHjoint_neg_two_smul_add_fw (I := I) (M := M) g₀ 3 _ _
+    exact linearizedRicciThreeArmHjoint_smul_add (I := I) (M := M) g₀ 3 (-2 : ℝ) _ _
       (linearizedRicci_arm1Field_jointSmooth (I := I) g₀ T T' hδ hδ')
       (deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth (I := I) g₀ T T' hδ hδ' g_bg)
   have hj2 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Ψ₂ (δ := δ) (δ' := δ') := by
@@ -757,7 +715,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
         simp only [hΨ₂def]
-        rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_neg_two_smul_fw (I := I) (M := M)
+        rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_neg_two_smul (I := I) (M := M)
           g₀ T T' hδ hδ' s]
         rw [operatorFieldApplication_add_left, unitModel_add_local, add_apply,
           operatorFieldApplication_smul_left,

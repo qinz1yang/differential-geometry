@@ -70,6 +70,21 @@ def smoothCcToTensorHs (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
         (SmoothCcTensor.toL2 T) i :=
   rfl
 
+@[simp] theorem smoothCcToTensorHs_zero (g₀ : SmoothRiemannianMetric I M) (σ : ℝ) :
+    smoothCcToTensorHs (I := I) (M := M) g₀ σ (0 : SmoothCcTensor g₀ 0 2) = 0 := by
+  refine DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorHs.ext ?_
+  funext i
+  rw [smoothCcToTensorHs_coeff]
+  rw [show SmoothCcTensor.toL2 (0 : SmoothCcTensor g₀ 0 2) = 0 from map_zero _]
+  rw [tensorL2Coeff_eq_inner, inner_zero_right]
+  rfl
+
+theorem norm_smoothCcToTensorHs_zero_le (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
+    {R : ℝ} (hR : 0 ≤ R) :
+    ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ (0 : SmoothCcTensor g₀ 0 2)‖ ≤ R := by
+  rw [smoothCcToTensorHs_zero, norm_zero]
+  exact hR
+
 theorem finiteEigenComboHs_eq (g₀ : SmoothRiemannianMetric I M)
     (F : Finset (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
       (I := I) (M := M) g₀ 0 2))

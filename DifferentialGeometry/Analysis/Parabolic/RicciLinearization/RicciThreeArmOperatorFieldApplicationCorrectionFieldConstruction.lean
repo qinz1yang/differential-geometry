@@ -83,31 +83,6 @@ lemma operatorFieldApplication_zero_left_local (g : SmoothRiemannianMetric I M) 
     =
       (0 : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x) from rfl]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma linearizedRicciThreeArmHjoint_zero (g₀ : SmoothRiemannianMetric I M)
-    {δ δ' : ℝ} :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
-      (fun _ : ℝ => (0 : SmoothCcTensor g₀ 3 2)) (δ := δ) (δ' := δ') := by
-  rw [linearizedRicciThreeArmHjoint]
-  have heq : (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
-      (E := fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z) p.1
-        (((fun _ : ℝ => (0 : SmoothCcTensor g₀ 3 2)) p.2).toSection p.1)) =
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z) p.1
-          (0 : Tensor0SBundle.TensorRSSpace 3 2 I p.1)) := by
-    funext p
-    refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
-      (E := fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z) p.1 t) ?_
-    rw [show ((0 : SmoothCcTensor g₀ 3 2).toSection : ContMDiffSection I _ ∞ _) = 0 from rfl]
-    rfl
-  rw [heq]
-  have hzero : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 3 2 ℝ E)) ∞
-      (Bundle.zeroSection (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
-        (fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z)) :=
-    Bundle.contMDiff_zeroSection ℝ (fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z)
-  exact (hzero.comp contMDiff_fst).contMDiffOn
-
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in

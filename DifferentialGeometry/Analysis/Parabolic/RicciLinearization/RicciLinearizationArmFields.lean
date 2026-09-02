@@ -7,6 +7,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCovari
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Geometry.Metric.InverseMetricField
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
+import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -53,6 +54,85 @@ def linearizedRicciThreeArmHjoint (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
       (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1 ((Φ p.2).toSection p.1))
     ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+theorem linearizedRicciThreeArmHjoint_zero (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+    {δ δ' : ℝ} :
+    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+      (fun _ : ℝ => (0 : SmoothCcTensor g₀ r 2)) (δ := δ) (δ' := δ') := by
+  rw [linearizedRicciThreeArmHjoint]
+  have heq : (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
+      (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1
+        (((fun _ : ℝ => (0 : SmoothCcTensor g₀ r 2)) p.2).toSection p.1)) =
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
+        (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1
+          (0 : Tensor0SBundle.TensorRSSpace r 2 I p.1)) := by
+    funext p
+    refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
+      (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1 t) ?_
+    rw [show ((0 : SmoothCcTensor g₀ r 2).toSection : ContMDiffSection I _ ∞ _) = 0 from rfl]
+    rfl
+  rw [heq]
+  have hzero : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r 2 ℝ E)) ∞
+      (Bundle.zeroSection (Tensor0SBundle.TensorRSModel r 2 ℝ E)
+        (fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z)) :=
+    Bundle.contMDiff_zeroSection ℝ (fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z)
+  exact (hzero.comp contMDiff_fst).contMDiffOn
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+theorem linearizedRicciThreeArmHjoint_add (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+    (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
+    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
+    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
+    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+      (fun t => A t + B t) (δ := δ) (δ' := δ') := by
+  have hadd := jointTotalSpaceRS_add (I := I) (r := r) (s := 2)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (fun p : M × ℝ => (A p.2).toSection p.1)
+    (fun p : M × ℝ => (B p.2).toSection p.1) hA hB
+  refine hadd.congr (fun p _ => ?_)
+  refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
+    (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1 t) ?_
+  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+theorem linearizedRicciThreeArmHjoint_smul (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+    (c : ℝ) (A : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
+    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ')) :
+    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+      (fun t => c • A t) (δ := δ) (δ' := δ') := by
+  have hsmul := jointTotalSpaceRS_const_smul (I := I) (r := r) (s := 2)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) c
+    (fun p : M × ℝ => (A p.2).toSection p.1) hA
+  refine hsmul.congr (fun p _ => ?_)
+  refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
+    (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1 t) ?_
+  rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+theorem linearizedRicciThreeArmHjoint_add_smul (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+    (c : ℝ) (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
+    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
+    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
+    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+      (fun t => A t + c • B t) (δ := δ) (δ' := δ') :=
+  linearizedRicciThreeArmHjoint_add (I := I) (M := M) g₀ r A (fun t => c • B t) hA
+    (linearizedRicciThreeArmHjoint_smul (I := I) (M := M) g₀ r c B hB)
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+theorem linearizedRicciThreeArmHjoint_smul_add (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+    (c : ℝ) (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
+    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
+    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
+    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+      (fun t => c • A t + B t) (δ := δ) (δ' := δ') :=
+  linearizedRicciThreeArmHjoint_add (I := I) (M := M) g₀ r (fun t => c • A t) B
+    (linearizedRicciThreeArmHjoint_smul (I := I) (M := M) g₀ r c A hA) hB
 
 end NormedSpaceModel
 

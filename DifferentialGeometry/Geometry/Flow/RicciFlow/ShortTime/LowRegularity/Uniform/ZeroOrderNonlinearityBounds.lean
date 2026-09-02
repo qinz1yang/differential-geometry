@@ -91,12 +91,6 @@ theorem volReal_cross_le (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
   rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _)] at htoReal
   exact htoReal
 
-theorem smoothCcToTensorHs_zero (g₀ : SmoothRiemannianMetric I M) (σ : ℝ) :
-    smoothCcToTensorHs (I := I) (M := M) g₀ σ (0 : SmoothCcTensor g₀ 0 2) = 0 := by
-  have h := smoothCcToTensorHs_sub (I := I) (M := M) g₀ σ
-    (0 : SmoothCcTensor g₀ 0 2) (0 : SmoothCcTensor g₀ 0 2)
-  rwa [sub_self, sub_self] at h
-
 theorem zero_mem_smoothCore (g₀ : SmoothRiemannianMetric I M) {R : ℝ} (hR : 0 ≤ R) :
     (⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR⟩ :
         lowerState (I := I) (M := M) g₀ 1 R) ∈
@@ -114,7 +108,7 @@ theorem realizeMetric_zero (g₀ : SmoothRiemannianMetric I M) {δ : ℝ} (hδ :
     tensorSectionRealizeMetric (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) hδ hb = g₀ := by
   refine SmoothRiemannianMetric.ext_inner (fun x v w => ?_)
   rw [tensorSectionRealizeMetric_inner, ccTensorBilinSymm_apply,
-    ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    ccTensorBilin_zero, ccTensorBilin_zero]
   ring
 
 omit [SigmaCompactSpace M] in

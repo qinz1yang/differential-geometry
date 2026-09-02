@@ -1203,7 +1203,7 @@ private lemma foldHtie_zero (g₀ : SmoothRiemannianMetric I M) :
       g₀.inner y v w = g₀.inner y v w +
         ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) y v w := by
   intro y v w
-  rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+  rw [ccTensorBilinSymm_apply, ccTensorBilin_zero, ccTensorBilin_zero]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -1213,7 +1213,7 @@ private lemma foldPsymm_zero (g₀ : SmoothRiemannianMetric I M) :
       smoothCcTensorBilinForm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x v w =
         smoothCcTensorBilinForm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x w v := by
   intro x v w
-  rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+  rw [ccTensorBilin_zero, ccTensorBilin_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -1793,7 +1793,7 @@ theorem ricciArmOrder0RiemannHalfBackgroundDiff_operatorFieldApplication_eq_resi
                   (riemannOp (LeviCivita (I := I) g₀) x v0T p v1T)
                 + smoothCcTensorBilinForm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x
                     (riemannOp (LeviCivita (I := I) g₀) x v0T p q) v1T) = 0
-          rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+          rw [ccTensorBilin_zero, ccTensorBilin_zero]
           ring)
     rw [h, hz, add_zero]
   have hrowsum0 := Finset.sum_congr rfl

@@ -160,7 +160,7 @@ theorem threeArmHjoint_const_smul_local (g₀ : SmoothRiemannianMetric I M) {r :
     (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ')) :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
       (fun s => c • A s) (δ := δ) (δ' := δ') := by
-  have hsm := jointTotalSpaceRS_const_smul_local (I := I) (M := M) (r := r) (s := 2)
+  have hsm := jointTotalSpaceRS_const_smul (I := I) (M := M) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) c
     (fun p : M × ℝ => (A p.2).toSection p.1) hA
   refine hsm.congr (fun p _ => ?_)

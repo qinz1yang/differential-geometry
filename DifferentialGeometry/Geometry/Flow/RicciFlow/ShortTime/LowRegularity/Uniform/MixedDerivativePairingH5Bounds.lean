@@ -686,8 +686,8 @@ theorem mixed_derivative_action_h1_uniform_bound
         ccTensorBilinSymm (I := I) g
           (0 : SmoothCcTensor g 0 2) p u v := by
     intro p u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   have hTrpure : Tr = pureTrace (I := I) (M := M) g g 2 := by
     apply SmoothCcTensor.ext

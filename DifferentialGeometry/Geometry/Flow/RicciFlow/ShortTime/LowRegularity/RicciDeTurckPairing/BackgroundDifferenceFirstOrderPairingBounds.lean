@@ -507,14 +507,14 @@ private theorem exists_metricComparisonEndomorphism_third_slot_covariantJetNormS
       ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x u v =
         ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x v u := by
     intro x u v
-    rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    rw [ccTensorBilin_zero, ccTensorBilin_zero]
   have hzeroTie : ∀ (x : M) (u v : TangentSpace I x),
       g.inner x u v = g.inner x u v +
         ccTensorBilinSymm (I := I) g
           (0 : SmoothCcTensor g 0 2) x u v := by
     intro x u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   let A : SmoothCcTensor g 4 4 :=
     slotInsertEndoCc (I := I) (M := M) g 3
@@ -912,22 +912,22 @@ private theorem exists_deTurckLieBackgroundDifferenceLoweredCoefficient_first_or
       ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x u v =
         ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x v u := by
     intro x u v
-    rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    rw [ccTensorBilin_zero, ccTensorBilin_zero]
   have hzeroTie : ∀ (x : M) (u v : TangentSpace I x),
       g.inner x u v = g.inner x u v +
         ccTensorBilinSymm (I := I) g
           (0 : SmoothCcTensor g 0 2) x u v := by
     intro x u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   have hT2 : covariantJetNormSq (I := I) (M := M) g 2 T ≤ A ^ 2 :=
     (covariantJetNormSq_mono (I := I) (M := M) g (by omega) T).trans hT3
   have hzeroOp : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) 0 := by
     intro x v w
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     norm_num
   have hpair0 : covariantJetNormSq (I := I) (M := M) g 1
       (deTurckLieBackgroundDifferenceLoweredCoefficient (I := I) (M := M) g gT g_bg -
@@ -1343,21 +1343,21 @@ private theorem exists_deTurckLieBackgroundDifferenceCoefficient_first_order_bou
       ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x u v =
         ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x v u := by
     intro x u v
-    rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    rw [ccTensorBilin_zero, ccTensorBilin_zero]
   have hzeroTie : ∀ (x : M) (u v : TangentSpace I x),
       g.inner x u v = g.inner x u v +
         ccTensorBilinSymm (I := I) g
           (0 : SmoothCcTensor g 0 2) x u v := by
     intro x u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   have hzeroOp : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g
         (0 : SmoothCcTensor g 0 2)) 0 := by
     intro x v w
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     norm_num
   have hT2 : covariantJetNormSq (I := I) (M := M) g 2 T ≤ A ^ 2 :=
     (covariantJetNormSq_mono (I := I) (M := M) g (by omega) T).trans hT3

@@ -44,23 +44,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma ccTensorBilin_zero_weight (g : SmoothRiemannianMetric I M) (x : M)
-    (v w : TangentSpace I x) :
-    smoothCcTensorBilinForm (I := I) g (0 : SmoothCcTensor g 0 2) x v w = 0 := by
-  rw [ccTensorBilin_apply, ccTensorModel]
-  rw [show (ccTensorMultilinear (I := I) g (0 : SmoothCcTensor g 0 2) x :
-      Tensor0SSpace 2 I x) =
-    (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (0 : SmoothCcTensor g 0 2).toSection x)
-      (ContinuousMultilinearMap.constOfIsEmpty ℝ
-        (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)) from rfl]
-  rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (0 : SmoothCcTensor g 0 2).toSection x) = 0 from rfl]
-  with_unfolding_all
-    rfl
-
 def ricciFoldKernelBilin (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (x : M) (p q : TangentSpace I x) :
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
@@ -495,7 +478,7 @@ theorem ricciArmRicciFoldRemainderField_zero_weight (g₀ g₁ : SmoothRiemannia
         have hk : ricciFoldKernelBilin (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x
             p q v0 v1 = 0 := by
           rw [ricciFoldKernelBilin_apply,
-            ccTensorBilin_zero_weight, ccTensorBilin_zero_weight,
+            ccTensorBilin_zero, ccTensorBilin_zero,
             zero_add, mul_zero]
         with_unfolding_all
           change (Tensor0SSpace.toModel D

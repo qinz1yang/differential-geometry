@@ -1118,7 +1118,8 @@ theorem de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale
                 hδ_lt hp =
               deTurckSmoothRemainder (I := I) g₀ g_bg (0 : SmoothCcTensor g₀ 0 2) hδ_lt hp0 := by
         rw [hscale0]; intro hp hp0; rfl
-      rw [hembed0, htie (0 : SmoothCcTensor g₀ 0 2), deTurckSmoothN_coeff,
+      conv_lhs => rw [hembed0]
+      rw [htie (0 : SmoothCcTensor g₀ 0 2), deTurckSmoothN_coeff,
         smoothCcToTensorHs_coeff, hRemEq]
     rw [hNT, hN0]
   have hRHS_scale : ∀ (τ : ℝ) (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2),

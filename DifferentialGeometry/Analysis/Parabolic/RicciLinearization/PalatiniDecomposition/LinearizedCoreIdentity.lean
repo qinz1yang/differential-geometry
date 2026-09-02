@@ -165,7 +165,7 @@ private lemma linearizedDecompositionMetricPerturbationPath_zero (g₀ : SmoothR
     rw [metricPerturbationPath_inner_of_mem (I := I) g₀ T 0 hδ hδZ hmem b v w,
       convexPerturbation_zero]
     have hz : ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) b v w = 0 := by
-      rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+      rw [ccTensorBilinSymm_apply, ccTensorBilin_zero, ccTensorBilin_zero]
       ring
     rw [hz, add_zero]
   · rw [metricPerturbationPath, dif_neg h]

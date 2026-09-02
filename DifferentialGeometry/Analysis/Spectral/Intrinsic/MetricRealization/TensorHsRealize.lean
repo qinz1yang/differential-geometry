@@ -83,6 +83,23 @@ theorem ccTensorBilin_apply (g : SmoothRiemannianMetric I M)
       ccTensorModel (I := I) g T x ![v, w] :=
   DifferentialGeometry.Tensor.Multilinear.biForm₂ToModel_symm_apply E (ccTensorModel (I := I) g T x) v w
 
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] in
+@[simp] theorem ccTensorBilin_zero (g : SmoothRiemannianMetric I M) (x : M)
+    (v w : TangentSpace I x) :
+    smoothCcTensorBilinForm (I := I) g (0 : SmoothCcTensor g 0 2) x v w = 0 := by
+  rw [ccTensorBilin_apply, ccTensorModel]
+  rw [show (ccTensorMultilinear (I := I) g (0 : SmoothCcTensor g 0 2) x :
+      Tensor0SSpace 2 I x) =
+    (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
+      (0 : SmoothCcTensor g 0 2).toSection x)
+      (ContinuousMultilinearMap.constOfIsEmpty ℝ
+        (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)) from rfl]
+  rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
+      (0 : SmoothCcTensor g 0 2).toSection x) = 0 from rfl]
+  with_unfolding_all
+    rfl
+
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]

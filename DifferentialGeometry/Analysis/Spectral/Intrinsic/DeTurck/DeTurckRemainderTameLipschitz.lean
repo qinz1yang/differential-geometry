@@ -71,7 +71,8 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
-  linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero
+  linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero linearizedRicciThreeArmHjoint_add
+  linearizedRicciThreeArmHjoint_add_smul linearizedRicciThreeArmHjoint_smul_add
   exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
   linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
   linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
@@ -2314,7 +2315,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                 (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-                  (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)))
+                  (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)))
               (iteratedCovGrad (I := I) g₀ 0 2 0 T₀) =
             operatorFieldApply (I := I) (M := M) g₀ 2 2 C₀ (iteratedCovGrad (I := I) g₀ 0 2 0 T₀) +
               operatorFieldApply (I := I) (M := M) g₀ 4 2 C₂r (iteratedCovGrad (I := I) g₀ 0 2 2 T₀)
@@ -2381,7 +2382,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
   have hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ :=
     hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-      (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)
+      (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)
   have hiteratedCovGrad0 : ∀ j : ℕ,
       iteratedCovGrad (I := I) g₀ 0 2 j (0 : SmoothCcTensor g₀ 0 2) = 0 := by
     intro j
@@ -2426,7 +2427,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     with hΨ₀def
   have hj0 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Ψ₀ (δ := δ) (δ' := δ) := by
     rw [hΨ₀def]
-    exact deTurckPhiZero_jointSmooth_fw (I := I) (M := M) g₀ g_bg T₀
+    exact deTurckPhiZero_jointSmooth (I := I) (M := M) g₀ g_bg T₀
       (0 : SmoothCcTensor g₀ 0 2) hδT hδZ
   have hc0 : ∀ x : M, ContinuousOn (fun t : ℝ =>
       Tensor0SBundle.TensorRSSpace.toModel ((Ψ₀ t).toSection x))
@@ -2447,7 +2448,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
   have hjΦ₀ : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Φ₀
       (δ := δ) (δ' := δ) := by
     rw [hΦ₀def]
-    exact threeArmHjoint_neg_two_smul_add_fw (I := I) (M := M) g₀ 2 _ _ hjCombo hjC0
+    exact linearizedRicciThreeArmHjoint_smul_add (I := I) (M := M) g₀ 2 (-2 : ℝ) _ _ hjCombo hjC0
   have hcΦ : ∀ x : M, ContinuousOn (fun t : ℝ =>
       Tensor0SBundle.TensorRSSpace.toModel ((Φ₀ t).toSection x))
       (metricPerturbationPathDomain (δ := δ) (δ' := δ)) := fun x =>
@@ -2463,7 +2464,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
       (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-        (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)) =
+        (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)) =
       pathIntegralCoeffField (I := I) (M := M) g₀ 2 2 Ψ₀
         (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hj0 := by
     unfold deTurckPhiZeroPathIntegral
@@ -2963,7 +2964,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                 (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-                  (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀
+                  (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀
                     ((a : ℝ) + 2) hR₀))).toSection x) ≤ Λ₁' ^ 2) ∧
           (∀ i : ℕ,
             ‖iteratedCovGrad (I := I) g₀ 3 2 i
@@ -2972,7 +2973,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                 (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-                  (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀
+                  (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀
                     ((a : ℝ) + 2) hR₀)))‖ ^ 2 ≤
               K₁c i * (1 + ∑ j ∈ Finset.range (i + 2),
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2)) := by
@@ -3010,7 +3011,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
   have hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ :=
     hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-      (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)
+      (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)
   have hiteratedCovGrad0 : ∀ j : ℕ,
       iteratedCovGrad (I := I) g₀ 0 2 j (0 : SmoothCcTensor g₀ 0 2) = 0 := by
     intro j
@@ -3051,7 +3052,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
     with hΨ₁def
   have hj1 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Ψ₁ (δ := δ) (δ' := δ) := by
     rw [hΨ₁def]
-    exact deTurckPhiOne_jointSmooth_fw (I := I) (M := M) g₀ g_bg T₀
+    exact deTurckPhiOne_jointSmooth (I := I) (M := M) g₀ g_bg T₀
       (0 : SmoothCcTensor g₀ 0 2) hδT hδZ
   have hc1 : ∀ x : M, ContinuousOn (fun t : ℝ =>
       Tensor0SBundle.TensorRSSpace.toModel ((Ψ₁ t).toSection x))
@@ -3063,7 +3064,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
       (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-        (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)) =
+        (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)) =
       pathIntegralCoeffField (I := I) (M := M) g₀ 3 2 Ψ₁
         (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hj1 := rfl
   rw [hPi1]
@@ -3261,7 +3262,7 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffS
               deTurckRHSArmG0 (I := I) g₀ g_bg (0 : SmoothCcTensor g₀ 0 2)
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                 (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-                  (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀))) =
+                  (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀))) =
             operatorFieldApply (I := I) (M := M) g₀ (2 + 0) 2 C₀
               (iteratedCovGrad (I := I) g₀ 0 2 0 T₀) +
               operatorFieldApply (I := I) (M := M) g₀ (2 + 1) 2 C₁
@@ -3272,7 +3273,7 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffS
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                   (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-                    (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)))
+                    (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)))
                 (iteratedCovGrad (I := I) g₀ 0 2 2 T₀) +
               operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂r
                 (iteratedCovGrad (I := I) g₀ 0 2 2 T₀) ∧
@@ -3315,8 +3316,9 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffS
   · intro T₀ hT₀symm hball
     have hzsymm : ∀ (x : M) (v w : TangentSpace I x),
         smoothCcTensorBilinForm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x v w =
-          smoothCcTensorBilinForm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x w v :=
-      ccTensorBilin_zero_symm_fw (I := I) (M := M) g₀
+          smoothCcTensorBilinForm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x w v := by
+      intro x v w
+      rw [ccTensorBilin_zero, ccTensorBilin_zero]
     obtain ⟨C₀dd, C₂r, hdecomposition, hC₀sup, hC₂rsup, hC₀env, hC₂renv⟩ := hN2 T₀ hT₀symm hball
     obtain ⟨hC₁sup, hC₁env⟩ := hN3 T₀ hT₀symm hball
     have hN1 := deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm (I := I) (M := M)
@@ -3324,7 +3326,7 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffS
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
       (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-        (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀))
+        (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀))
       hT₀symm hzsymm
     rw [sub_zero] at hN1
     rw [hdecomposition] at hN1
@@ -3333,7 +3335,7 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffS
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
         (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
-          (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)),
+          (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)),
       C₂r, ?_, ?_, ?_, hC₂rsup, ?_, ?_, ?_⟩
     · rw [hN1]
       abel

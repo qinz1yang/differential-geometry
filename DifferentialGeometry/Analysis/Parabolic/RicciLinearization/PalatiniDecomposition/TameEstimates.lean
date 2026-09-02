@@ -852,9 +852,9 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
       have hadd := jointTotalSpaceRS_add_local (I := I) (M := M) (r := 4) (s := 2)
         (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) _ _ (hmono (q i))
         (hmono ((q i).trans (Equiv.swap (0 : Fin 4) 1)))
-      have hhalf := jointTotalSpaceRS_const_smul_local (I := I) (M := M) (r := 4) (s := 2)
+      have hhalf := jointTotalSpaceRS_const_smul (I := I) (M := M) (r := 4) (s := 2)
         (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) (1 / 2 : ℝ) _ hadd
-      exact jointTotalSpaceRS_const_smul_local (I := I) (M := M) (r := 4) (s := 2)
+      exact jointTotalSpaceRS_const_smul (I := I) (M := M) (r := 4) (s := 2)
         (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) (ε i) _ hhalf
     have hsum01 := jointTotalSpaceRS_add_local (I := I) (M := M) (r := 4) (s := 2)
       (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) _ _ (hpair 0) (hpair 1)

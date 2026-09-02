@@ -979,21 +979,21 @@ private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_secondOrder_bou
         ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x u v =
           ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x v u := by
       intro x u v
-      rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+      rw [ccTensorBilin_zero, ccTensorBilin_zero]
     have hzeroTie : ∀ (x : M) (u v : TangentSpace I x),
         g.inner x u v = g.inner x u v +
           ccTensorBilinSymm (I := I) g
             (0 : SmoothCcTensor g 0 2) x u v := by
       intro x u v
-      rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-        ccTensorBilin_zero_weight]
+      rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+        ccTensorBilin_zero]
       ring
     have hzeroOp : gFibreOpBound (I := I) (M := M) g
         (ccTensorBilinSymm (I := I) g
           (0 : SmoothCcTensor g 0 2)) δ := by
       intro x v w
-      rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-        ccTensorBilin_zero_weight]
+      rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+        ccTensorBilin_zero]
       simpa only [zero_add, mul_zero, abs_zero] using
         (mul_nonneg (mul_nonneg hδ0 (Real.sqrt_nonneg (g.inner x v v)))
           (Real.sqrt_nonneg (g.inner x w w)))
@@ -1109,14 +1109,14 @@ private theorem reindexedThirdSlot_secondOrder_bound
       ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x u v =
         ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x v u := by
     intro x u v
-    rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    rw [ccTensorBilin_zero, ccTensorBilin_zero]
   have hzeroTie : ∀ (x : M) (u v : TangentSpace I x),
       g.inner x u v = g.inner x u v +
         ccTensorBilinSymm (I := I) g
           (0 : SmoothCcTensor g 0 2) x u v := by
     intro x u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   let A : SmoothCcTensor g 4 4 :=
     slotInsertEndoCc (I := I) (M := M) g 3
@@ -1372,21 +1372,21 @@ private theorem deTurckLieBackgroundDifferenceCoefficient_secondOrder_bound
         ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x u v =
           ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x v u := by
       intro x u v
-      rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+      rw [ccTensorBilin_zero, ccTensorBilin_zero]
     have hzeroTie : ∀ (x : M) (u v : TangentSpace I x),
         g.inner x u v = g.inner x u v +
           ccTensorBilinSymm (I := I) g
             (0 : SmoothCcTensor g 0 2) x u v := by
       intro x u v
-      rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-        ccTensorBilin_zero_weight]
+      rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+        ccTensorBilin_zero]
       ring
     have hzeroOp : gFibreOpBound (I := I) (M := M) g
         (ccTensorBilinSymm (I := I) g
           (0 : SmoothCcTensor g 0 2)) δ := by
       intro x v w
-      rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-        ccTensorBilin_zero_weight]
+      rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+        ccTensorBilin_zero]
       simpa only [zero_add, mul_zero, abs_zero] using
         (mul_nonneg (mul_nonneg hδ0 (Real.sqrt_nonneg (g.inner x v v)))
           (Real.sqrt_nonneg (g.inner x w w)))

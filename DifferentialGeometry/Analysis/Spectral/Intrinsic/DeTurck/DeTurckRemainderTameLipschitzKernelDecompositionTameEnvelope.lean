@@ -716,61 +716,6 @@ theorem linearizedRicciArm0CorrField_allOrder_tameEnvelope_interface
       mul_nonneg (hKle_nn i) (by linarith)
     linarith
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem linearizedRicciThreeArmHjoint_add (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
-    (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
-      (fun s => A s + B s) (δ := δ) (δ' := δ') := by
-  have hadd := jointTotalSpaceRS_add (I := I) (r := r) (s := 2)
-    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (fun p : M × ℝ => (A p.2).toSection p.1)
-    (fun p : M × ℝ => (B p.2).toSection p.1)
-    hA hB
-  refine hadd.congr (fun p _ => ?_)
-  refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
-    (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1 t) ?_
-  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem linearizedRicciThreeArmHjoint_add_smul (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
-    (c : ℝ) (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
-      (fun s => A s + c • B s) (δ := δ) (δ' := δ') := by
-  have hsmul := lieArm_jointRS_const_smul_local (I := I) (r := r) (s := 2)
-    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) c
-    (fun p : M × ℝ => (B p.2).toSection p.1) hB
-  have hadd := jointTotalSpaceRS_add (I := I) (r := r) (s := 2)
-    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (fun p : M × ℝ => (A p.2).toSection p.1)
-    (fun p : M × ℝ => c • (B p.2).toSection p.1)
-    hA hsmul
-  refine hadd.congr (fun p _ => ?_)
-  refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
-    (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1 t) ?_
-  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private theorem threeArmHjoint_const_smul_fw (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
-    (c : ℝ) (B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
-      (fun s => c • B s) (δ := δ) (δ' := δ') := by
-  have hsmul := lieArm_jointRS_const_smul_local (I := I) (r := r) (s := 2)
-    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) c
-    (fun p : M × ℝ => (B p.2).toSection p.1) hB
-  refine hsmul.congr (fun p _ => ?_)
-  refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
-    (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1 t) ?_
-  rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
-
 theorem exists_riemannPalatini_curvatureDecomposition_data
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -843,7 +788,7 @@ theorem exists_riemannPalatini_curvatureDecomposition_data
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.riemannPalatiniDecompositionC2Family
           (I := I) (M := M) g₀ T hδ hδZ qA qB s,
       hjC0,
-      threeArmHjoint_const_smul_fw (I := I) (M := M) g₀ 4 (2 : ℝ) _
+      linearizedRicciThreeArmHjoint_smul (I := I) (M := M) g₀ 4 (2 : ℝ) _
         (Analysis.Parabolic.TensorSpectral.riemannPalatiniDecompositionC2Family_threeArmHjoint
           (I := I) (M := M) g₀ T hδ hδZ qA qB),
       hidRA, ?_, ?_,

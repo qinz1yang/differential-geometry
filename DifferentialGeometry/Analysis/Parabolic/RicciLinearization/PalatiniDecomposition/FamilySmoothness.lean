@@ -415,39 +415,6 @@ theorem jointTotalSpaceRS_sub_local {r s : ℕ} {S : Set ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem jointTotalSpaceRS_const_smul_local {r s : ℕ} {S : Set ℝ} (a : ℝ)
-    (A : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
-    (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p))
-      ((Set.univ : Set M) ×ˢ S)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (a • A p))
-      ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
-  intro p₀ hp₀
-  rw [Bundle.contMDiffWithinAt_totalSpace]
-  refine ⟨contMDiffWithinAt_fst, ?_⟩
-  set x₀ := p₀.1 with hx₀
-  set e := trivializationAt (Tensor0SBundle.TensorRSModel r s ℝ E)
-    (fun z : M => Tensor0SBundle.TensorRSSpace r s I z) x₀ with he
-  have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SBundle.TensorRSModel r s ℝ E)
-    (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z)).mp (hA p₀ hp₀)
-  have ha : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
-      (fun _ : M × ℝ ↦ a) ((Set.univ : Set M) ×ˢ S) p₀ :=
-    contMDiffWithinAt_const
-  refine (ha.smul hA'.2).congr_of_eventuallyEq ?_ ?_
-  · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e.baseSet :=
-      (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
-        (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
-    filter_upwards [hbase] with p hx
-    exact (e.linear ℝ hx).map_smul a (A p)
-  · exact (e.linear ℝ (by rw [he, ← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)).map_smul
-      a (A p₀)
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
 theorem jointTotalSpaceRS_smulFun_local {r s : ℕ} {S : Set ℝ}
     {f : ℝ → ℝ} (hf : ContDiff ℝ ∞ f)
     (A : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
@@ -1012,7 +979,7 @@ theorem riemannPalatiniDecompositionC2Family_threeArmHjoint
       (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) _ _ hadd (hmono (q 2))
     have hsub2 := jointTotalSpaceRS_sub_local (I := I) (M := M) (r := 4) (s := 2)
       (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) _ _ hsub1 (hmono (q 3))
-    have hhalf := jointTotalSpaceRS_const_smul_local (I := I) (M := M) (r := 4) (s := 2)
+    have hhalf := jointTotalSpaceRS_const_smul (I := I) (M := M) (r := 4) (s := 2)
       (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) (1 / 2 : ℝ) _ hsub2
     refine hhalf.congr (fun p _ => ?_)
     refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
@@ -1024,7 +991,7 @@ theorem riemannPalatiniDecompositionC2Family_threeArmHjoint
       ContMDiffSection.coe_add, Pi.add_apply]
   have hsum := jointTotalSpaceRS_add_local (I := I) (M := M) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) _ _ (hker qA) (hker qB)
-  have hhalf := jointTotalSpaceRS_const_smul_local (I := I) (M := M) (r := 4) (s := 2)
+  have hhalf := jointTotalSpaceRS_const_smul (I := I) (M := M) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) (1 / 2 : ℝ) _ hsum
   have hfam := jointTotalSpaceRS_smulFun_local (I := I) (M := M) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) (f := fun t => t) contDiff_id _ hhalf

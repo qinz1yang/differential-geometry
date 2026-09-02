@@ -125,4 +125,27 @@ theorem deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq
   rw [hgroup, hhalf]
   abel
 
+omit [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_neg_two_smul
+    (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
+      (ccTensorBilinSymm (I := I) g₀ T) δ)
+    {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀
+      (ccTensorBilinSymm (I := I) g₀ T') δ')
+    (s : ℝ) :
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) =
+      (-2 : ℝ) • linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
+        + deTurckLieArm2PrincipalCoeff (I := I) g₀
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) := by
+  rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq (I := I) (M := M)
+    g₀ T T' hδ hδ' s]
+  rw [show (-2 : ℝ) • linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s =
+      -(linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
+        + linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) from by
+    rw [show (-2 : ℝ) = -(2 : ℝ) by norm_num, neg_smul, two_smul]]
+  abel
+
 end DifferentialGeometry.Analysis.Spectral

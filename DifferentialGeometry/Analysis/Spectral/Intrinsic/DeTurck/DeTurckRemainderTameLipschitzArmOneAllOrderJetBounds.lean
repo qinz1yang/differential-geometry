@@ -149,12 +149,6 @@ theorem lieArm1_norm_block6_le'_fw {V : Type*} [SeminormedAddCommGroup V]
         linarith
     _ = ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by ring
 
-theorem lieArm1_norm_le_sqrt_fw {V : Type*} [SeminormedAddCommGroup V]
-    {v : V} {P : ℝ} (h : ‖v‖ ^ 2 ≤ P) : ‖v‖ ≤ Real.sqrt P := by
-  have h1 : ‖v‖ = Real.sqrt (‖v‖ ^ 2) := (Real.sqrt_sq (norm_nonneg v)).symm
-  rw [h1]
-  exact Real.sqrt_le_sqrt h
-
 lemma pAO_range_subset {m n : ℕ} (h : m ≤ n) :
     Finset.range m ⊆ Finset.range n := by
   intro x hx

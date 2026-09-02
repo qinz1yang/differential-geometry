@@ -1338,15 +1338,15 @@ theorem metricCorr_pair_h3
       ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x u v =
         ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x v u := by
     intro x u v
-    rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    rw [ccTensorBilin_zero, ccTensorBilin_zero]
   have hZtie : ∀ (x : M) (u v : TangentSpace I x),
       g.inner x u v =
         g.inner x u v +
           ccTensorBilinSymm (I := I) g
             (0 : SmoothCcTensor g 0 2) x u v := by
     intro x u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   have hJT : 0 ≤ JT := jet_nonneg_lip (I := I) (M := M) g T
   have hJU : 0 ≤ JU := jet_nonneg_lip (I := I) (M := M) g U
@@ -1501,15 +1501,15 @@ private theorem wXi_self_tame
         ccTensorBilin (I := I) g
           (0 : SmoothCcTensor g 0 2) x v u := by
     intro x u v
-    rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    rw [ccTensorBilin_zero, ccTensorBilin_zero]
   have hZtie : ∀ (x : M) (u v : TangentSpace I x),
       g.inner x u v =
         g.inner x u v +
           ccTensorBilinSymm (I := I) g
             (0 : SmoothCcTensor g 0 2) x u v := by
     intro x u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   have hraw := hw gT g g T (0 : SmoothCcTensor g 0 2)
     hT hZsymm hTtie hZtie
@@ -1668,15 +1668,15 @@ theorem deTurck_lie_arm_two_coefficient_sobolev_two_bound
         ccTensorBilin (I := I) g
           (0 : SmoothCcTensor g 0 2) x v u := by
     intro x u v
-    rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    rw [ccTensorBilin_zero, ccTensorBilin_zero]
   have hZtie : ∀ (x : M) (u v : TangentSpace I x),
       g.inner x u v =
         g.inner x u v +
           ccTensorBilinSymm (I := I) g
             (0 : SmoothCcTensor g 0 2) x u v := by
     intro x u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   have hdiff :
       covariantJetNormSq (I := I) (M := M) g 2

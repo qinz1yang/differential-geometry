@@ -3700,15 +3700,15 @@ theorem exists_linearizedRicciConnectionDifferenceOrderOneCoefficient_pairing_se
         ccTensorBilin (I := I) g
           (0 : SmoothCcTensor g 0 2) x v u := by
     intro x u v
-    rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    rw [ccTensorBilin_zero, ccTensorBilin_zero]
   have hZtie : ∀ (x : M) (u v : TangentSpace I x),
       g.inner x u v =
         g.inner x u v +
           ccTensorBilinSymm (I := I) g
             (0 : SmoothCcTensor g 0 2) x u v := by
     intro x u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   have hzero2 :
       covariantJetNormSq (I := I) (M := M) g 2
@@ -4681,7 +4681,7 @@ theorem reverse_slot_sobolev_two_bound
           ccTensorBilin (I := I) g
             (0 : SmoothCcTensor g 0 2) x v u := by
     intro x u v
-    rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    rw [ccTensorBilin_zero, ccTensorBilin_zero]
   have hzeroTie :
       ∀ (x : M) (u v : TangentSpace I x),
         g.inner x u v =
@@ -4689,8 +4689,8 @@ theorem reverse_slot_sobolev_two_bound
             ccTensorBilinSymm (I := I) g
               (0 : SmoothCcTensor g 0 2) x u v := by
     intro x u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   let A : SmoothCcTensor g 3 3 :=
     endoSlotZeroCcTensor (I := I) (M := M) g 2
