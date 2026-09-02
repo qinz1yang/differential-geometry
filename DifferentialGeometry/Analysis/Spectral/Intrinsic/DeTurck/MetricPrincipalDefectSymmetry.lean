@@ -27,52 +27,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-private lemma unitModel_sub (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (S S' : SmoothCcTensor g 0 s) (x : M) :
-    unitModel (I := I) (M := M) g s (S - S') x =
-      unitModel (I := I) (M := M) g s S x - unitModel (I := I) (M := M) g s S' x := by
-  rw [unitModel, unitModel, unitModel]
-  have hsec : (S - S').toSection x = S.toSection x - S'.toSection x := by
-    rw [SmoothCcTensor.toSection_sub]
-    rfl
-  rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from (S - S').toSection x)
-        (unitTensor (I := I) (M := M) x)) =
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S.toSection x)
-          (unitTensor (I := I) (M := M) x) -
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S'.toSection x)
-          (unitTensor (I := I) (M := M) x) from by
-    rw [hsec]
-    rfl]
-  rw [Tensor0SSpace.toModel_sub]
-
-private lemma unitModel_add (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (S S' : SmoothCcTensor g 0 s) (x : M) :
-    unitModel (I := I) (M := M) g s (S + S') x =
-      unitModel (I := I) (M := M) g s S x + unitModel (I := I) (M := M) g s S' x := by
-  rw [unitModel, unitModel, unitModel]
-  have hsec : (S + S').toSection x = S.toSection x + S'.toSection x := by
-    rw [SmoothCcTensor.toSection_add]
-    rfl
-  rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from (S + S').toSection x)
-        (unitTensor (I := I) (M := M) x)) =
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S.toSection x)
-          (unitTensor (I := I) (M := M) x) +
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S'.toSection x)
-          (unitTensor (I := I) (M := M) x) from by
-    rw [hsec]
-    rfl]
-  rw [Tensor0SSpace.toModel_add]
-
-private lemma unitModel_zero (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
-    unitModel (I := I) (M := M) g s (0 : SmoothCcTensor g 0 s) x = 0 := by
-  have h := unitModel_sub (I := I) g s 0 0 x
-  rw [sub_zero] at h
-  calc
-    unitModel (I := I) (M := M) g s (0 : SmoothCcTensor g 0 s) x =
-        unitModel (I := I) (M := M) g s (0 : SmoothCcTensor g 0 s) x -
-          unitModel (I := I) (M := M) g s (0 : SmoothCcTensor g 0 s) x := h
-    _ = 0 := sub_self _
-
 variable [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
@@ -94,9 +48,9 @@ theorem metricPrincipalDefect_symm_zero
   intro x
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [unitModel_zero, zero_apply]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_zero, zero_apply]
   rw [deTurckMetricPrincipalDefectTotal, operatorFieldApplication_sub_left, operatorFieldApplication_sub_left, operatorFieldApplication_add_left, operatorFieldApplication_add_left]
-  rw [unitModel_sub, unitModel_sub, unitModel_add, unitModel_add,
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add,
     sub_apply, sub_apply, add_apply, add_apply]
   have hLie :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff_apply_eq
@@ -269,7 +223,7 @@ theorem metricPrincipalDefect_curv_fold
       intro a b
       funext i
       fin_cases i <;> rfl
-    rw [unitModel_add (I := I) g₀ 4 W Wsw x,
+    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 4 W Wsw x,
       add_apply, add_apply,
       hWsw_def,
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel

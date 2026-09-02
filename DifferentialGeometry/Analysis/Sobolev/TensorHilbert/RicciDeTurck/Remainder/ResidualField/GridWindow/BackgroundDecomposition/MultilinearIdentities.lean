@@ -46,48 +46,6 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma unitModel_add_pt (s : ℕ) (A B : SmoothCcTensor g₀ 0 s) (x : M) :
-    unitModel (I := I) (M := M) g₀ s (A + B) x =
-      unitModel (I := I) (M := M) g₀ s A x + unitModel (I := I) (M := M) g₀ s B x := by
-  rw [unitModel, unitModel, unitModel,
-    show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from (A + B).toSection x) =
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from A.toSection x) +
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from B.toSection x) from by
-      rw [SmoothCcTensor.toSection_add]; rfl]
-  rw [add_apply, Tensor0SSpace.toModel_add]
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_smul_pt (s : ℕ) (c : ℝ) (A : SmoothCcTensor g₀ 0 s) (x : M) :
-    unitModel (I := I) (M := M) g₀ s (c • A) x =
-      c • unitModel (I := I) (M := M) g₀ s A x := by
-  have h : ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from (c • A).toSection x)
-      (unitTensor (I := I) (M := M) x)) =
-      c • ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from A.toSection x)
-        (unitTensor (I := I) (M := M) x)) := by
-    rw [show ((c • A).toSection x) = c • (A.toSection x) from by
-      rw [SmoothCcTensor.toSection_smul]; rfl]
-    rfl
-  rw [unitModel, unitModel, h, Tensor0SSpace.toModel_smul]
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma unitModel_sub_pt (s : ℕ) (A B : SmoothCcTensor g₀ 0 s) (x : M) :
-    unitModel (I := I) (M := M) g₀ s (A - B) x =
-      unitModel (I := I) (M := M) g₀ s A x - unitModel (I := I) (M := M) g₀ s B x := by
-  have h : ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from (A - B).toSection x)
-      (unitTensor (I := I) (M := M) x)) =
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from A.toSection x)
-          (unitTensor (I := I) (M := M) x) -
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from B.toSection x)
-          (unitTensor (I := I) (M := M) x) := by
-    rw [show ((A - B).toSection x) = A.toSection x - B.toSection x from by
-      rw [SmoothCcTensor.toSection_sub]; rfl]
-    rfl
-  rw [unitModel, unitModel, unitModel, h, Tensor0SSpace.toModel_sub]
-
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
 lemma toModel_cons_sum_smul {n : ℕ}

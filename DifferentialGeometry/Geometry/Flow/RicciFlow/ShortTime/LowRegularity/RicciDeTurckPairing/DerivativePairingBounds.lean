@@ -1913,7 +1913,8 @@ theorem lowerScalePathIntegral_apply_decomposition
   rw [pathIntegralCoeffField_operatorFieldApplication_eq
       (I := I) (M := M) g 2 2 Ψ T S
       metricPerturbationPathDomain_isOpen hSI hjΨ hcΨ x v]
-  rw [unitModel_add (I := I) (M := M) g]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+    (I := I) (M := M) g, add_apply]
   rw [pathIntegralCoeffField_operatorFieldApplication_eq
       (I := I) (M := M) g 2 2 L T S
       metricPerturbationPathDomain_isOpen hSI hjL hcL x v]
@@ -1944,8 +1945,8 @@ theorem lowerScalePathIntegral_apply_decomposition
           (operatorFieldApply (I := I) (M := M) g 3 2
             (lowOrderFirstDerivativeCoefficientPath (I := I) (M := M) g T hδ hδZ s)
             (iteratedCovGrad (I := I) g 0 2 1 T)) x v
-  rw [hone, unitModel_add (I := I) (M := M) g,
-    iteratedCovGrad_succ, iteratedCovGrad_zero]
+  rw [hone, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+    (I := I) (M := M) g, add_apply, iteratedCovGrad_succ, iteratedCovGrad_zero]
 
 omit [SigmaCompactSpace M] in
 theorem lowerScalePathIntegral_apply_affine_decomposition
@@ -2026,7 +2027,8 @@ theorem lowerScalePathIntegral_apply_affine_decomposition
   rw [pathIntegralCoeffField_operatorFieldApplication_eq
       (I := I) (M := M) g 2 2 Ψ T S
       metricPerturbationPathDomain_isOpen hSI hjΨ hcΨ x v]
-  rw [unitModel_add (I := I) (M := M) g]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+    (I := I) (M := M) g, add_apply]
   rw [pathIntegralCoeffField_operatorFieldApplication_eq
       (I := I) (M := M) g 2 2 L T S
       metricPerturbationPathDomain_isOpen hSI hjL hcL x v]
@@ -2057,8 +2059,8 @@ theorem lowerScalePathIntegral_apply_affine_decomposition
           (operatorFieldApply (I := I) (M := M) g 3 2
             (affineLowOrderFirstDerivativeCoefficientPath (I := I) (M := M) g T hδ hδZ s)
             (iteratedCovGrad (I := I) g 0 2 1 T)) x v
-  rw [hone, unitModel_add (I := I) (M := M) g,
-    iteratedCovGrad_succ, iteratedCovGrad_zero]
+  rw [hone, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+    (I := I) (M := M) g, add_apply, iteratedCovGrad_succ, iteratedCovGrad_zero]
 
 end RicciDeTurckPairing
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

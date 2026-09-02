@@ -65,16 +65,6 @@ private lemma cons_cons_comp_decomposeFin_double {α : Type*} {s : ℕ}
       simp only [Equiv.refl_apply, Fin.cons_succ]
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_add (s : ℕ) (S S' : SmoothCcTensor g 0 s) (x : M) :
-    unitModel (I := I) (M := M) g s (S + S') x =
-      unitModel (I := I) (M := M) g s S x + unitModel (I := I) (M := M) g s S' x := by
-  classical
-  simp only [unitModel]
-  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    add_apply, Tensor0SSpace.toModel_add]
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma domDomCongrSection_add {s : ℕ} (σ : Equiv.Perm (Fin s))
@@ -83,8 +73,8 @@ private lemma domDomCongrSection_add {s : ℕ} (σ : Equiv.Perm (Fin s))
       domDomCongrSection (I := I) g σ A + domDomCongrSection (I := I) g σ B := by
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g (fun x => ?_)
   rw [domDomCongrSection_unitModel (I := I) g σ (A + B) x,
-    unitModel_add (I := I) (M := M) g s A B x,
-    unitModel_add (I := I) (M := M) g s
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g s A B x,
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g s
       (domDomCongrSection (I := I) g σ A) (domDomCongrSection (I := I) g σ B) x,
     domDomCongrSection_unitModel (I := I) g σ A x,
     domDomCongrSection_unitModel (I := I) g σ B x]

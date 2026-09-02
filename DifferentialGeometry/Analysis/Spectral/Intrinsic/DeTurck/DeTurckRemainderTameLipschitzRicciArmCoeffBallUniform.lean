@@ -96,42 +96,6 @@ private local instance tensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
   Tensor0SBundle.tensorRSModelNormedSpace r s
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma unitModel_sub_local (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (S S' : SmoothCcTensor g 0 s) (x : M) :
-    unitModel (I := I) (M := M) g s (S - S') x =
-      unitModel (I := I) (M := M) g s S x - unitModel (I := I) (M := M) g s S' x := by
-  rw [unitModel, unitModel, unitModel]
-  have hsec : (S - S').toSection x = S.toSection x - S'.toSection x := by
-    rw [SmoothCcTensor.toSection_sub]; rfl
-  rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from (S - S').toSection x)
-        (unitTensor (I := I) (M := M) x)) =
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S.toSection x)
-          (unitTensor (I := I) (M := M) x) -
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S'.toSection x)
-          (unitTensor (I := I) (M := M) x) from by
-    rw [hsec]; rfl]
-  rw [Tensor0SSpace.toModel_sub]
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma unitModel_add_local (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (S S' : SmoothCcTensor g 0 s) (x : M) :
-    unitModel (I := I) (M := M) g s (S + S') x =
-      unitModel (I := I) (M := M) g s S x + unitModel (I := I) (M := M) g s S' x := by
-  rw [unitModel, unitModel, unitModel]
-  have hsec : (S + S').toSection x = S.toSection x + S'.toSection x := by
-    rw [SmoothCcTensor.toSection_add]; rfl
-  rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from (S + S').toSection x)
-        (unitTensor (I := I) (M := M) x)) =
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S.toSection x)
-          (unitTensor (I := I) (M := M) x) +
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S'.toSection x)
-          (unitTensor (I := I) (M := M) x) from by
-    rw [hsec]; rfl]
-  rw [Tensor0SSpace.toModel_add]
-
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -233,7 +197,7 @@ lemma unitModel_add2_apply_tame (g₀ : SmoothRiemannianMetric I M)
           (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) +
         unitModel (I := I) (M := M) g₀ 2 S' x
           (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i))
-    rw [unitModel_add_local, add_apply]
+    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in

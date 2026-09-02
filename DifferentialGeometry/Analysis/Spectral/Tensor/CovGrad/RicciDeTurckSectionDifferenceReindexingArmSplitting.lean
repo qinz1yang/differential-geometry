@@ -132,8 +132,8 @@ theorem symmAbsorbedPrincipalCoeff_operatorFieldApplication_eq
         ((1 / 2 : ℝ) • R₂ + (1 / 2 : ℝ) • reindexCoeff (I := I) (M := M) g₀ R₂ σ')
         (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x v =
       (1 / 2 : ℝ) * uR + (1 / 2 : ℝ) * uRein := by
-    rw [operatorFieldApplication_add_left, operatorFieldApplication_smul_left, operatorFieldApplication_smul_left, unitModel_add2,
-      unitModel_smul, unitModel_smul, add_apply,
+    rw [operatorFieldApplication_add_left, operatorFieldApplication_smul_left, operatorFieldApplication_smul_left, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, add_apply,
       smul_apply, smul_apply]
     rw [huR, huRein]
     simp only [smul_eq_mul]
@@ -152,8 +152,8 @@ theorem symmAbsorbedPrincipalCoeff_operatorFieldApplication_eq
       (operatorFieldApply (I := I) (M := M) g₀ 4 2 R₂
         (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ S))) x v =
       (1 / 2 : ℝ) * uR + (1 / 2 : ℝ) * uRein := by
-    rw [hsymm, operatorFieldApplication_add_right, operatorFieldApplication_smul_right, operatorFieldApplication_smul_right, unitModel_add2,
-      unitModel_smul, unitModel_smul, add_apply,
+    rw [hsymm, operatorFieldApplication_add_right, operatorFieldApplication_smul_right, operatorFieldApplication_smul_right, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, add_apply,
       smul_apply, smul_apply]
     rw [huR, hSwap]
     simp only [smul_eq_mul]
@@ -297,8 +297,8 @@ theorem symmAbsorbedCoeff_operatorFieldApplication_eq (g₀ : SmoothRiemannianMe
         ((1 / 2 : ℝ) • R + (1 / 2 : ℝ) • reindexCoeffGen (I := I) (M := M) g₀ (2 + i) 2 R σ')
         (iteratedCovGrad (I := I) g₀ 0 2 i S)) x v =
       (1 / 2 : ℝ) * uR + (1 / 2 : ℝ) * uRein := by
-    rw [operatorFieldApplication_add_left, operatorFieldApplication_smul_left_normed, operatorFieldApplication_smul_left_normed, unitModel_add2,
-      unitModel_smul, unitModel_smul, add_apply,
+    rw [operatorFieldApplication_add_left, operatorFieldApplication_smul_left_normed, operatorFieldApplication_smul_left_normed, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, add_apply,
       smul_apply, smul_apply]
     rw [huR, huRein]
     simp only [smul_eq_mul]
@@ -317,8 +317,8 @@ theorem symmAbsorbedCoeff_operatorFieldApplication_eq (g₀ : SmoothRiemannianMe
       (operatorFieldApply (I := I) (M := M) g₀ (2 + i) 2 R
         (iteratedCovGrad (I := I) g₀ 0 2 i (ccTensor02Symm (I := I) (M := M) g₀ S))) x v =
       (1 / 2 : ℝ) * uR + (1 / 2 : ℝ) * uRein := by
-    rw [hsymm, operatorFieldApplication_add_right, operatorFieldApplication_smul_right, operatorFieldApplication_smul_right, unitModel_add2,
-      unitModel_smul, unitModel_smul, add_apply,
+    rw [hsymm, operatorFieldApplication_add_right, operatorFieldApplication_smul_right, operatorFieldApplication_smul_right, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, add_apply,
       smul_apply, smul_apply]
     rw [huR, hSwap]
     simp only [smul_eq_mul]
@@ -992,7 +992,7 @@ theorem combinedLowerArm_extension_free
         ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
           + (-1 : ℝ) • ricciDeTurckPrincipalCoefficientZSlot (I := I) (M := M) g₀ g₁ from by
       rw [neg_one_smul]; abel]
-    rw [operatorFieldApplication_add_left, operatorFieldApplication_smul_left, unitModel_add2, unitModel_smul,
+    rw [operatorFieldApplication_add_left, operatorFieldApplication_smul_left, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul,
       add_apply, smul_apply]
     simp only [smul_eq_mul]
     ring
@@ -1629,7 +1629,7 @@ theorem ricciArmSubleadingCoeff_operatorFieldApplication_eq
             v := by
     intro A B
     rw [show A - B = A + (-1 : ℝ) • B from by rw [neg_one_smul]; abel,
-      operatorFieldApplication_add_left, operatorFieldApplication_smul_left, unitModel_add2, unitModel_smul,
+      operatorFieldApplication_add_left, operatorFieldApplication_smul_left, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul,
       add_apply, smul_apply, neg_one_smul]
     rw [← sub_eq_add_neg]
   have hZ :=

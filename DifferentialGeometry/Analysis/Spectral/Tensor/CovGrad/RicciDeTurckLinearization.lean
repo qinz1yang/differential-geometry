@@ -86,17 +86,6 @@ theorem smoothCcTensor_ext_of_unitModel (g : SmoothRiemannianMetric I M) {s : �
     simpa [unitModel] using this
   exact tensor0s_clm_ext_unit (I := I) (M := M) hval
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
-private theorem unitModel_add (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (S S' : SmoothCcTensor g 0 s) (x : M) :
-    unitModel (I := I) (M := M) g s (S + S') x =
-      unitModel (I := I) (M := M) g s S x + unitModel (I := I) (M := M) g s S' x := by
-  classical
-  simp only [unitModel]
-  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    add_apply, Tensor0SSpace.toModel_add]
-
 end NormedSpaceModel
 
 section NormedSpacePermutation

@@ -148,7 +148,7 @@ private lemma unitModel_add_model_apply (g₀ : SmoothRiemannianMetric I M)
     unitModel (I := I) (M := M) g₀ 2 (S + S') x v =
       unitModel (I := I) (M := M) g₀ 2 S x v +
         unitModel (I := I) (M := M) g₀ 2 S' x v := by
-  rw [unitModel_add_local, add_apply]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in

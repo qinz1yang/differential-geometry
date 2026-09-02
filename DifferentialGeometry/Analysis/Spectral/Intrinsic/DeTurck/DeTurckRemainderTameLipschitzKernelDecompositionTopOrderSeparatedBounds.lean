@@ -134,32 +134,6 @@ private lemma sqrt_riemannianFiberNormSq_sub_le (g : SmoothRiemannianMetric I M)
   refine le_trans (DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x a (-b)) ?_
   rw [riemannianFiberNormSq_neg (I := I) (M := M) g r s x b]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_add (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (A B : SmoothCcTensor g 0 s) (x : M) :
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M) g s
-        (A + B) x =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M) g s
-          A x +
-        DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M) g s
-          B x := by
-  simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel]
-  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    add_apply, Tensor0SBundle.Tensor0SSpace.toModel_add]
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_smul (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (c : ℝ) (A : SmoothCcTensor g 0 s) (x : M) :
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M) g s
-        (c • A) x =
-      c • DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M)
-        g s A x := by
-  simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel]
-  rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-    smul_apply, Tensor0SBundle.Tensor0SSpace.toModel_smul]
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma domDomCongr_add {d : ℕ} (σ : Equiv.Perm (Fin d))
     (f g : ContinuousMultilinearMap ℝ (fun _ : Fin d => E) ℝ) :
@@ -190,8 +164,8 @@ private lemma domDomCongrSection_add (g : SmoothRiemannianMetric I M) {s : ℕ}
   apply smoothCcTensor_ext_of_unitModel (I := I) (M := M) g
   intro x
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel,
-    unitModel_add (I := I) (M := M) g s A B x, domDomCongr_add,
-    unitModel_add (I := I) (M := M) g s
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g s A B x, domDomCongr_add,
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g s
       (domDomCongrSection (I := I) g σ A) (domDomCongrSection (I := I) g σ B) x,
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel,
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel]
@@ -205,8 +179,8 @@ private lemma domDomCongrSection_smul (g : SmoothRiemannianMetric I M) {s : ℕ}
   apply smoothCcTensor_ext_of_unitModel (I := I) (M := M) g
   intro x
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel,
-    unitModel_smul (I := I) (M := M) g s c A x, domDomCongr_smul,
-    unitModel_smul (I := I) (M := M) g s c (domDomCongrSection (I := I) g σ A) x,
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul (I := I) (M := M) g s c A x, domDomCongr_smul,
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul (I := I) (M := M) g s c (domDomCongrSection (I := I) g σ A) x,
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in

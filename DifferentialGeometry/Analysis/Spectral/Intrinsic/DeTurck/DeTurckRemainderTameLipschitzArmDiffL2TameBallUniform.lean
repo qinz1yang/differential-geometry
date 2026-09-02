@@ -662,8 +662,8 @@ private theorem exists_lieArmCoeff_ballUniform_C0_sup
       have hsIoo : s ∈ Set.Ioo (0 : ℝ) 1 :=
         ⟨hsmem.1, lt_of_le_of_ne hsmem.2 hne⟩
       exact hsneq (by
-        rw [hid s hsIoo x v, unitModel_add_local, add_apply,
-          unitModel_add_local, add_apply])
+        rw [hid s hsIoo x v, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,
+          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply])
     rw [intervalIntegral.integral_congr_ae hintegrand]
     have hI0 : IntervalIntegrable
         (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
@@ -691,8 +691,8 @@ private theorem exists_lieArmCoeff_ballUniform_C0_sup
     rw [← hP₀] at he0
     rw [← hP₁] at he1
     rw [← hP₂] at he2
-    rw [← he0, ← he1, ← he2, unitModel_add_local, add_apply,
-      unitModel_add_local, add_apply]
+    rw [← he0, ← he1, ← he2, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
   · intro x
     rw [hP₀]
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 2 2 Φ₀
@@ -814,7 +814,7 @@ private theorem deTurckRHSArmDiff_threeArm_unitModel_ballUniform
     set g₁' := tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ' with hg₁'
     let vt : Fin 2 → TangentSpace I x := fun i =>
       (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)
-    rw [unitModel_sub_local (I := I) g₀ 2 _ _ x, sub_apply]
+    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) g₀ 2 _ _ x, sub_apply]
     rw [show (unitModel (I := I) (M := M) g₀ 2 (deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ) x) v =
           deTurckRicciRHS (I := I) g_bg g₁ x (vt 0) (vt 1) from
       unitModel_of_deTurckRHSSection_realize (I := I) g₀ g_bg T hδ_lt hδ
@@ -888,7 +888,7 @@ private theorem deTurckRHSArmDiff_threeArm_unitModel_ballUniform
         operatorFieldApplication_add_left (I := I) (M := M) g₀ 3 2 R₁ L₁,
         operatorFieldApplication_add_left (I := I) (M := M) g₀ 4 2 R₂ L₂, hRblk, hLblk]
       abel
-    rw [hcoeffSum, unitModel_add_local (I := I) g₀ 2 Rblk Lblk x,
+    rw [hcoeffSum, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 2 Rblk Lblk x,
       add_apply]
   · exact fun x => threeArmCoeffSum_riemannianFiberNormSq_le (I := I) g₀ R₀ L₀ ΛR ΛL x (hR₀ x) (hL₀ x)
   · exact fun x => threeArmCoeffSum_riemannianFiberNormSq_le (I := I) g₀ R₁ L₁ ΛR ΛL x (hR₁ x) (hL₁ x)
@@ -1354,8 +1354,8 @@ private theorem deTurckLieArm_operatorFieldApplication_graded_jetL2_ballUniform
       have hsIoo : s ∈ Set.Ioo (0 : ℝ) 1 :=
         ⟨hsmem.1, lt_of_le_of_ne hsmem.2 hne⟩
       exact hsneq (by
-        rw [hid s hsIoo x v, unitModel_add_local, add_apply,
-          unitModel_add_local, add_apply])
+        rw [hid s hsIoo x v, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,
+          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply])
     rw [intervalIntegral.integral_congr_ae hintegrand]
     have hI0 : IntervalIntegrable
         (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
@@ -1383,8 +1383,8 @@ private theorem deTurckLieArm_operatorFieldApplication_graded_jetL2_ballUniform
     rw [← hP₀] at he0
     rw [← hP₁] at he1
     rw [← hP₂] at he2
-    rw [← he0, ← he1, ← he2, unitModel_add_local, add_apply,
-      unitModel_add_local, add_apply]
+    rw [← he0, ← he1, ← he2, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
   · intro x
     rw [hP₀]
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 2 2 Φ₀
@@ -1480,7 +1480,7 @@ private theorem deTurckRHSArmDiff_threeArm_coeffC0_jetL2_ballUniform
     set g₁' := tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ' with hg₁'
     let vt : Fin 2 → TangentSpace I x := fun i =>
       (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)
-    rw [unitModel_sub_local (I := I) g₀ 2 _ _ x, sub_apply]
+    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) g₀ 2 _ _ x, sub_apply]
     rw [show (unitModel (I := I) (M := M) g₀ 2 (deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ) x) v =
           deTurckRicciRHS (I := I) g_bg g₁ x (vt 0) (vt 1) from
       unitModel_of_deTurckRHSSection_realize (I := I) g₀ g_bg T hδ_lt hδ
@@ -1554,7 +1554,7 @@ private theorem deTurckRHSArmDiff_threeArm_coeffC0_jetL2_ballUniform
         operatorFieldApplication_add_left (I := I) (M := M) g₀ 3 2 R₁ L₁,
         operatorFieldApplication_add_left (I := I) (M := M) g₀ 4 2 R₂ L₂, hRblk, hLblk]
       abel
-    rw [hcoeffSum, unitModel_add_local (I := I) g₀ 2 Rblk Lblk x,
+    rw [hcoeffSum, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 2 Rblk Lblk x,
       add_apply]
   · exact fun x => threeArmCoeffSum_riemannianFiberNormSq_le (I := I) g₀ R₀ L₀ ΛR ΛL x (hR₀ x) (hL₀ x)
   · exact fun x => threeArmCoeffSum_riemannianFiberNormSq_le (I := I) g₀ R₁ L₁ ΛR ΛL x (hR₁ x) (hL₁ x)

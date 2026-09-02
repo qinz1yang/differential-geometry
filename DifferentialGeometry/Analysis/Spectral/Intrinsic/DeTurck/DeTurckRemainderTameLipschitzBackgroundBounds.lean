@@ -179,20 +179,6 @@ lemma background_coefficient_le_deTurckArmFibreConst_polynomial (n : ℕ) (hn : 
       sq_nonneg (f - 2 * Real.sqrt 2)]
   nlinarith only [hcore, hf0, mul_nonneg hc0 hf0, hfge, hs2lb, hs2]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_sub (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (A B : SmoothCcTensor g 0 s) (x : M) :
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M) g s
-        (A - B) x =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M) g s
-          A x -
-        DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M) g s
-          B x := by
-  simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel]
-  rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    sub_apply, Tensor0SBundle.Tensor0SSpace.toModel_sub]
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem operatorFieldApplication_sub_left_ext (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -303,7 +289,7 @@ private theorem eq_metricDifferenceCcTensor_of_inner_add (g₀ g₁ : SmoothRiem
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricCcTensor (I := I)
           (M := M) g₀ g₀
         from rfl]
-    rw [unitModel_sub (I := I) (M := M) g₀ 2
+    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) (M := M) g₀ 2
       (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricCcTensor (I := I)
         (M := M) g₀ g₁)
       (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricCcTensor (I := I)

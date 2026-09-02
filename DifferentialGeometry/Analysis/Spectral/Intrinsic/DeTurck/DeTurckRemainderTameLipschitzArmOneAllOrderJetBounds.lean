@@ -508,9 +508,9 @@ private lemma pAO_lieArm1Kappa_eq_neg_lieCorrectionZeroKappa (g₀ g₁ g_bg : S
   intro x
   apply ContinuousMultilinearMap.ext
   intro m
-  rw [unitModel_sub_local (I := I) (M := M) g₀ 3 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg)
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) (M := M) g₀ 3 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg)
       (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg + lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg) x,
-    unitModel_add_local (I := I) (M := M) g₀ 3 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg)
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g₀ 3 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg)
       (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg) x]
   rw [sub_apply, add_apply]
   rw [pAO_lieArm1Kappa_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x m,

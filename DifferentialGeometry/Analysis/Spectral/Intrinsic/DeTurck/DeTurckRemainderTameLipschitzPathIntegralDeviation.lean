@@ -918,7 +918,7 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)
   set g₁ := tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ with hg₁
   set g₁' := tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ' with hg₁'
-  rw [unitModel_sub_local (I := I) g₀ 2 _ _ x, sub_apply]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) g₀ 2 _ _ x, sub_apply]
   rw [show (unitModel (I := I) (M := M) g₀ 2
         (deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ) x) v =
       deTurckRicciRHS (I := I) g_bg g₁ x (vt 0) (vt 1) from
@@ -1014,7 +1014,7 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
           + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2
             (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
-      rw [hRid, unitModel_add_local, add_apply, unitModel_add_local, add_apply]
+      rw [hRid, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
     have hLid' : linearizedDeTurckLieAt (I := I) g₀ g_bg T T'
           hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) s =
         unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2
@@ -1031,7 +1031,7 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
             (deTurckLieArm2PrincipalCoeff (I := I) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
-      rw [hLid, unitModel_add_local, add_apply, unitModel_add_local, add_apply]
+      rw [hLid, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
     have e0 : unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Ψ₀ s)
           (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))) x v =
         (-2 : ℝ) * unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2
@@ -1044,7 +1044,7 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))) x v := by
       simp only [hΨ₀def]
-      rw [operatorFieldApplication_add_left, unitModel_add_local, add_apply,
+      rw [operatorFieldApplication_add_left, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,
         operatorFieldApplication_smul_left,
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, smul_apply,
         smul_eq_mul]
@@ -1058,7 +1058,7 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x v := by
       simp only [hΨ₁def]
-      rw [operatorFieldApplication_add_left, unitModel_add_local, add_apply,
+      rw [operatorFieldApplication_add_left, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,
         operatorFieldApplication_smul_left,
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, smul_apply,
         smul_eq_mul]
@@ -1074,7 +1074,7 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
       simp only [hΨ₂def]
       rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_neg_two_smul (I := I) (M := M)
         g₀ T T' hδ hδ' s]
-      rw [operatorFieldApplication_add_left, unitModel_add_local, add_apply,
+      rw [operatorFieldApplication_add_left, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,
         operatorFieldApplication_smul_left,
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, smul_apply,
         smul_eq_mul]
@@ -1106,7 +1106,7 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
   have he2 := pathIntegralCoeffField_operatorFieldApplication_eq (I := I) (M := M) g₀ 4 2 Ψ₂
     (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))
     (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 hc2 x v
-  rw [unitModel_add_local, add_apply, unitModel_add_local, add_apply, he0, he1, he2]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply, he0, he1, he2]
 
 
 end DifferentialGeometry.Analysis.Spectral

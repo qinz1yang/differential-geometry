@@ -28,28 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
   [BoundarylessManifold I M]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
-    [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
-private theorem unitModel_add_local
-    (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (S S' : SmoothCcTensor g 0 s) (x : M) :
-    unitModel (I := I) (M := M) g s (S + S') x =
-      unitModel (I := I) (M := M) g s S x +
-        unitModel (I := I) (M := M) g s S' x := by
-  rw [unitModel, unitModel, unitModel]
-  have hsec : (S + S').toSection x = S.toSection x + S'.toSection x := by
-    rw [SmoothCcTensor.toSection_add]
-    rfl
-  rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-        (S + S').toSection x) (unitTensor (I := I) (M := M) x)) =
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S.toSection x)
-          (unitTensor (I := I) (M := M) x) +
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S'.toSection x)
-          (unitTensor (I := I) (M := M) x) from by
-    rw [hsec]
-    rfl]
-  rw [Tensor0SSpace.toModel_add]
-
 omit [SigmaCompactSpace M] in
 theorem lieSlope_eq_arms
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -92,7 +70,7 @@ theorem lieSlope_eq_arms
     hδ_lt hδ hδ'_lt hδ' (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j
   rw [lieTopTail] at h2
   refine hsplit.trans ?_
-  rw [unitModel_add_local (I := I) g₀ 2, unitModel_add_local (I := I) g₀ 2,
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 2, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 2,
     add_apply, add_apply]
   linear_combination -h0 - h1 - h2
 

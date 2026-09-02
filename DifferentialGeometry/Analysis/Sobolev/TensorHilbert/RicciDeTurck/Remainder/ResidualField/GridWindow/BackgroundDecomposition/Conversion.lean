@@ -59,7 +59,7 @@ lemma metricDifferenceCcTensor_eq_symmS (P : SmoothCcTensor g₀ 0 2)
   intro m
   rw [show metricDifferenceCcTensor (I := I) (M := M) g₀ g₁ =
       metricCcTensor (I := I) (M := M) g₀ g₁ - metricCcTensor (I := I) (M := M) g₀ g₀ from rfl]
-  rw [unitModel_sub_pt (I := I) (M := M) g₀ 2
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) (M := M) g₀ 2
     (metricCcTensor (I := I) (M := M) g₀ g₁) (metricCcTensor (I := I) (M := M) g₀ g₀) x]
   rw [sub_apply]
   rw [metricCcTensor_unitModel_apply (I := I) (M := M) g₀ g₁ x m,
@@ -205,7 +205,7 @@ private lemma ricciFoldWeights_unitModel_eq_kernel (S : SmoothCcTensor g₀ 0 2)
         smoothCcTensorBilinForm (I := I) g₀ S x q
           (riemannOp (LeviCivita (I := I) g₀) x v0 p v1) := by
   classical
-  rw [unitModel_add_pt (I := I) (M := M) g₀ 4
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g₀ 4
     (ricciFoldWeightA (I := I) (M := M) g₀ S) (ricciFoldWeightB (I := I) (M := M) g₀ S) x,
     add_apply]
   have hA : unitModel (I := I) (M := M) g₀ 4 (ricciFoldWeightA (I := I) (M := M) g₀ S) x
@@ -1335,15 +1335,15 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
         (smoothOrthoFrame (I := I) g₀ x e x))
       (fun e => ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E))
       ((v0 : TangentSpace I x) : E) ((v1 : TangentSpace I x) : E)
-  rw [unitModel_sub_pt (I := I) (M := M) g₀ 4
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) (M := M) g₀ 4
     (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
       koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)
     (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
       koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x]
-  rw [unitModel_add_pt (I := I) (M := M) g₀ 4
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g₀ 4
     (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P)
     (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) x]
-  rw [unitModel_add_pt (I := I) (M := M) g₀ 4
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g₀ 4
     (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P)
     (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x]
   rw [sub_apply, add_apply,

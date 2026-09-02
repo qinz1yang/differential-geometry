@@ -53,16 +53,6 @@ abbrev symmS (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
     SmoothCcTensor g₀ 0 2 :=
   ccTensor02Symm (I := I) (M := M) g₀ T
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma unitModel_add2 (g₀ : SmoothRiemannianMetric I M)
-    (S S' : SmoothCcTensor g₀ 0 2) (x : M) :
-    unitModel (I := I) (M := M) g₀ 2 (S + S') x =
-      unitModel (I := I) (M := M) g₀ 2 S x + unitModel (I := I) (M := M) g₀ 2 S' x := by
-  simp only [unitModel]
-  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    add_apply, Tensor0SSpace.toModel_add]
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma unitModel_eq_ccTensorBilin (g₀ : SmoothRiemannianMetric I M)
@@ -102,7 +92,8 @@ lemma ccTensorBilin_add (g₀ : SmoothRiemannianMetric I M)
   rw [← unitModel_eq_ccTensorBilin (I := I) (M := M) g₀ (S + T) b u w,
       ← unitModel_eq_ccTensorBilin (I := I) (M := M) g₀ S b u w,
       ← unitModel_eq_ccTensorBilin (I := I) (M := M) g₀ T b u w]
-  rw [unitModel_add2 (I := I) (M := M) g₀ S T b, add_apply]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+    (I := I) (M := M) g₀ 2 S T b, add_apply]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -146,7 +137,7 @@ private lemma unitModel_domDomCongrSection_swap_add (g₀ : SmoothRiemannianMetr
         unitModel (I := I) (M := M) g₀ 2
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T') x := by
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel, domDomCongrSection_unitModel,
-    unitModel_add2]
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add]
   apply ContinuousMultilinearMap.ext
   intro m
   rw [ContinuousMultilinearMap.domDomCongr_apply, add_apply,
@@ -173,16 +164,6 @@ private lemma unitModel_domDomCongrSection_swap_smul (g₀ : SmoothRiemannianMet
   rw [ContinuousMultilinearMap.domDomCongr_apply, smul_apply,
     smul_apply, ContinuousMultilinearMap.domDomCongr_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma unitModel_smul (g₀ : SmoothRiemannianMetric I M)
-    (c : ℝ) (T : SmoothCcTensor g₀ 0 2) (x : M) :
-    unitModel (I := I) (M := M) g₀ 2 (c • T) x =
-      c • unitModel (I := I) (M := M) g₀ 2 T x := by
-  simp only [unitModel]
-  rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-    smul_apply, Tensor0SSpace.toModel_smul]
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem symmS_add (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2) :
@@ -190,7 +171,7 @@ theorem symmS_add (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g�
       ccTensor02Symm (I := I) (M := M) g₀ T + ccTensor02Symm (I := I) (M := M) g₀ T' := by
   apply smoothCcTensor_ext_of_unitModel
   intro x
-  simp only [ccTensor02Symm, unitModel_smul, unitModel_add2, unitModel_domDomCongrSection_swap_add]
+  simp only [ccTensor02Symm, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, unitModel_domDomCongrSection_swap_add]
   module
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -199,7 +180,7 @@ theorem symmS_smul (g₀ : SmoothRiemannianMetric I M) (c : ℝ) (T : SmoothCcTe
     ccTensor02Symm (I := I) (M := M) g₀ (c • T) = c • ccTensor02Symm (I := I) (M := M) g₀ T := by
   apply smoothCcTensor_ext_of_unitModel
   intro x
-  simp only [ccTensor02Symm, unitModel_smul, unitModel_add2, unitModel_domDomCongrSection_swap_smul]
+  simp only [ccTensor02Symm, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, unitModel_domDomCongrSection_swap_smul]
   module
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -638,7 +619,7 @@ theorem palatini_tracedPrincipalDiff_covector_eq_combinedTrace
             (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (![Z x, Y x] i)) := by
     intro a b
     rw [show a - b = a + (-1 : ℝ) • b from by rw [neg_one_smul]; abel,
-        unitModel_add2, unitModel_smul]
+        DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul]
     rw [add_apply, smul_apply]
     simp only [smul_eq_mul]
     ring
@@ -843,7 +824,7 @@ theorem palatini_tracedPrincipalDiff_Zslot_eq_combinedTrace
             (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (![V x, W x] i)) := by
     intro a b
     rw [show a - b = a + (-1 : ℝ) • b from by rw [neg_one_smul]; abel,
-        unitModel_add2, unitModel_smul]
+        DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul]
     rw [add_apply, smul_apply]
     simp only [smul_eq_mul]
     ring

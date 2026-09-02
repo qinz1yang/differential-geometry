@@ -220,7 +220,7 @@ private theorem edge_unit_smul
     (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2 (c • A) x v =
       c * unitModel (I := I) (M := M) g 2 A x v := by
-  rw [unitModel_smul, smul_apply, smul_eq_mul]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, smul_apply, smul_eq_mul]
 
 omit [SigmaCompactSpace M] in
 private theorem edge_lap_smul

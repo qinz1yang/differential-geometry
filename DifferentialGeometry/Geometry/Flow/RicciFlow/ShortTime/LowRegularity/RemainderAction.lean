@@ -2753,19 +2753,6 @@ private theorem rhs_self_decomposition
       module
     _ = 0 := by rw [hLie, sub_self]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem unitModel_add
-    (g : SmoothRiemannianMetric I M)
-    (A B : SmoothCcTensor g 0 2) (x : M) (v : Fin 2 → E) :
-    unitModel (I := I) (M := M) g 2 (A + B) x v =
-      unitModel (I := I) (M := M) g 2 A x v +
-        unitModel (I := I) (M := M) g 2 B x v := by
-  simp only [unitModel]
-  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add,
-    Pi.add_apply, add_apply,
-    Tensor0SSpace.toModel_add, add_apply]
-
 private def selfLowInt
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -2884,7 +2871,8 @@ private theorem zero_order_decomposition_self
       (I := I) (M := M) g 2 2 Ψ T
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       metricPerturbationPathDomain_isOpen hSI hjΨ hcΨ x v]
-  rw [unitModel_add (I := I) (M := M) g]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+    (I := I) (M := M) g, add_apply]
   rw [pathIntegralCoeffField_operatorFieldApplication_eq
       (I := I) (M := M) g 2 2 L T
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
@@ -2909,7 +2897,9 @@ private theorem zero_order_decomposition_self
   have hmodel := congrArg
     (fun Z : SmoothCcTensor g 0 2 =>
       unitModel (I := I) (M := M) g 2 Z x v) hdecomposition
-  simpa only [Ψ, L, Q, unitModel_add (I := I) (M := M) g] using hmodel
+  simpa only [Ψ, L, Q,
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+      (I := I) (M := M) g, add_apply] using hmodel
 private theorem secondOrderCoefficient_fibre_bound
     (g : SmoothRiemannianMetric I M) :
     ∃ K : ℝ, 0 ≤ K ∧

@@ -206,28 +206,6 @@ private theorem unit_sub
   rw [Tensor0SSpace.toModel_sub]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
-private theorem unitModel_add
-    (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (S T : SmoothCcTensor g 0 s) (x : M) :
-    unitModel (I := I) (M := M) g s (S + T) x =
-      unitModel (I := I) (M := M) g s S x +
-        unitModel (I := I) (M := M) g s T x := by
-  rw [unitModel, unitModel, unitModel]
-  have hsec : (S + T).toSection x = S.toSection x + T.toSection x := by
-    rw [SmoothCcTensor.toSection_add]
-    rfl
-  rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-        (S + T).toSection x) (unitTensor (I := I) (M := M) x)) =
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-        S.toSection x) (unitTensor (I := I) (M := M) x) +
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-        T.toSection x) (unitTensor (I := I) (M := M) x) from by
-        rw [hsec]
-        rfl]
-  rw [Tensor0SSpace.toModel_add]
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
 private theorem conn_self_zero
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -607,7 +585,7 @@ private theorem lie_kappa_eq
   intro x
   apply ContinuousMultilinearMap.ext
   intro m
-  rw [unit_sub (I := I) (M := M) g₀ 3, unitModel_add (I := I) (M := M) g₀ 3]
+  rw [unit_sub (I := I) (M := M) g₀ 3, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g₀ 3]
   rw [sub_apply, add_apply]
   rw [lie_kappa_unit (I := I) (M := M) g₀ g₁ gB x m,
     lieCorrectionZeroKappa_unitModel_apply (I := I) (M := M) g₀ g₁ gB x m]

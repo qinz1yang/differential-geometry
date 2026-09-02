@@ -2597,19 +2597,6 @@ private lemma unitTensor_toModel_apply (x : M) (m : Fin 0 → E) :
   rw [unitTensor, Tensor0SSpace.toModel_ofModel]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem unitModel_add
-    (g : SmoothRiemannianMetric I M)
-    (A B : SmoothCcTensor g 0 2) (x : M) (v : Fin 2 → E) :
-    unitModel (I := I) (M := M) g 2 (A + B) x v =
-      unitModel (I := I) (M := M) g 2 A x v +
-        unitModel (I := I) (M := M) g 2 B x v := by
-  simp only [unitModel]
-  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add,
-    Pi.add_apply, add_apply,
-    Tensor0SSpace.toModel_add, add_apply]
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma tensor0S_curry_zero_eq_smul_unitTensor
     (x : M) (D : Tensor0SSpace 1 I x) (v₀ : E) :

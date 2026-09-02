@@ -63,28 +63,6 @@ private theorem unit_sub
     rfl]
   rw [Tensor0SSpace.toModel_sub]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem unitModel_add
-    (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (S V : SmoothCcTensor g 0 s) (x : M) :
-    unitModel (I := I) (M := M) g s (S + V) x =
-      unitModel (I := I) (M := M) g s S x +
-        unitModel (I := I) (M := M) g s V x := by
-  rw [unitModel, unitModel, unitModel]
-  have hsec : (S + V).toSection x = S.toSection x + V.toSection x := by
-    rw [SmoothCcTensor.toSection_add]
-    rfl
-  rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          (S + V).toSection x) (unitTensor (I := I) (M := M) x)) =
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          S.toSection x) (unitTensor (I := I) (M := M) x) +
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          V.toSection x) (unitTensor (I := I) (M := M) x) from by
-    rw [hsec]
-    rfl]
-  rw [Tensor0SSpace.toModel_add]
-
 private noncomputable def fullSlot3
     (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 3 3 :=
   endoSlotZeroCcTensor (I := I) (M := M) g 2
@@ -131,7 +109,7 @@ private theorem kappa_split
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g fun x => ?_
   refine ContinuousMultilinearMap.ext fun v => ?_
   rw [kappa_unit (I := I) (M := M)]
-  rw [unitModel_add (I := I) (M := M), add_apply]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M), add_apply]
   have hlower := connectionDifferenceLoweredCc_unitModel_apply'
     (I := I) (M := M) g gm x
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))

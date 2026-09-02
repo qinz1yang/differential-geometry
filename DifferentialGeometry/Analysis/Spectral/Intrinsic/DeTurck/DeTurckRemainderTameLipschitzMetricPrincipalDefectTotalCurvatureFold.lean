@@ -106,14 +106,6 @@ private local instance instCompleteSpaceE_tame : CompleteSpace E :=
 
 open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_zero_fw (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
-    unitModel (I := I) (M := M) g s (0 : SmoothCcTensor g 0 s) x = 0 := by
-  have h := unitModel_sub_local (I := I) g s 0 0 x
-  rw [sub_zero] at h
-  rw [h, sub_self]
-
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
@@ -132,9 +124,9 @@ theorem deTurckMetricPrincipalDefectTotal_background_operatorFieldApplication_eq
   intro x
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [unitModel_zero_fw, zero_apply]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_zero, zero_apply]
   rw [deTurckMetricPrincipalDefectTotal, operatorFieldApplication_sub_left, operatorFieldApplication_sub_left, operatorFieldApplication_add_left, operatorFieldApplication_add_left]
-  rw [unitModel_sub_local, unitModel_sub_local, unitModel_add_local, unitModel_add_local,
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add,
     sub_apply, sub_apply, add_apply, add_apply]
   have hLie :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff_apply_eq
@@ -430,7 +422,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
     rw [hPitop]
     set g₁ := tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ with hg₁
     set g₁' := tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ' with hg₁'
-    rw [unitModel_sub_local (I := I) g₀ 2 _ _ x, sub_apply]
+    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) g₀ 2 _ _ x, sub_apply]
     rw [show (unitModel (I := I) (M := M) g₀ 2
           (deTurckRHSArmG0 (I := I) g₀ g_bg T (lt_of_le_of_lt hδ_le hδ₀) hδ) x) v =
         deTurckRicciRHS (I := I) g_bg g₁ x (vt 0) (vt 1) from
@@ -526,7 +518,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
             + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2
               (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
               (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
-        rw [hRid, unitModel_add_local, add_apply, unitModel_add_local, add_apply]
+        rw [hRid, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
       have hLid' : linearizedDeTurckLieAt (I := I) g₀ g_bg T T'
             hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) s =
           unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2
@@ -543,7 +535,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
               (deTurckLieArm2PrincipalCoeff (I := I) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
-        rw [hLid, unitModel_add_local, add_apply, unitModel_add_local, add_apply]
+        rw [hLid, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
       have e0 : unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Ψ₀ s)
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))) x v =
           (-2 : ℝ) * unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2
@@ -556,7 +548,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))) x v := by
         simp only [hΨ₀def]
-        rw [operatorFieldApplication_add_left, unitModel_add_local, add_apply,
+        rw [operatorFieldApplication_add_left, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,
           operatorFieldApplication_smul_left,
           DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, smul_apply,
           smul_eq_mul]
@@ -570,7 +562,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x v := by
         simp only [hΨ₁def]
-        rw [operatorFieldApplication_add_left, unitModel_add_local, add_apply,
+        rw [operatorFieldApplication_add_left, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,
           operatorFieldApplication_smul_left,
           DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, smul_apply,
           smul_eq_mul]
@@ -586,7 +578,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
         simp only [hΨ₂def]
         rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_neg_two_smul (I := I) (M := M)
           g₀ T T' hδ hδ' s]
-        rw [operatorFieldApplication_add_left, unitModel_add_local, add_apply,
+        rw [operatorFieldApplication_add_left, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,
           operatorFieldApplication_smul_left,
           DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, smul_apply,
           smul_eq_mul]
@@ -620,7 +612,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 hc2 x v
     rw [← hC₀def] at he0
     rw [← hC₁def] at he1
-    rw [unitModel_add_local, add_apply, unitModel_add_local, add_apply, he0, he1, he2]
+    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply, he0, he1, he2]
   · intro x
     have hsup : ∀ t ∈ Set.Icc (0 : ℝ) 1,
         Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x ((Ψ₀ t).toSection x)) ≤
@@ -804,7 +796,7 @@ theorem exists_iteratedCovGradTwo_gradSlotAntisym_curvatureCoeff
   intro x
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [unitModel_sub_local (I := I) g₀ 4 _ _ x, sub_apply,
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) g₀ 4 _ _ x, sub_apply,
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel (I := I)
       g₀ (Equiv.swap (0 : Fin 4) 1) (iteratedCovGrad (I := I) g₀ 0 2 2 S) x,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -922,37 +914,6 @@ theorem exists_iteratedCovGradTwo_gradSlotAntisym_curvatureCoeff
     operatorFieldComposition_toSection, ContinuousLinearMap.comp_apply]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_operatorFieldComposition_assoc_fw (g₀ : SmoothRiemannianMetric I M)
-    (Φ : SmoothCcTensor g₀ 4 2) (C : SmoothCcTensor g₀ 2 4) (S : SmoothCcTensor g₀ 0 2) :
-    operatorFieldApply (I := I) (M := M) g₀ 4 2 Φ
-      (ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 4 C S) =
-      operatorFieldApply (I := I) (M := M) g₀ 2 2
-        (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2 Φ C) S := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection, operatorFieldComposition_toSection, operatorFieldComposition_toSection,
-    ContinuousLinearMap.comp_assoc]
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_smul_left_fw (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (c : ℝ)
-    (Φ : SmoothCcTensor g₀ r s) (W : SmoothCcTensor g₀ 0 r) :
-    operatorFieldApply (I := I) (M := M) g₀ r s (c • Φ) W = c • operatorFieldApply (I := I) (M := M)
-      g₀ r s Φ W := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((c • operatorFieldApply (I := I) (M := M) g₀ r s Φ W).toSection x) =
-      c • (operatorFieldApply (I := I) (M := M) g₀ r s Φ W).toSection x from by
-    rw [SmoothCcTensor.toSection_smul]; rfl]
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection]
-  rw [show ((c • Φ).toSection x : Tensor0SBundle.TensorRSSpace r s I x) = c • Φ.toSection x from by
-    rw [SmoothCcTensor.toSection_smul]; rfl]
-  rw [ContinuousLinearMap.smul_comp]
-
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_deTurckMetricPrincipalDefectTotal_background_curvatureFold_of_symm
@@ -1001,7 +962,7 @@ theorem exists_deTurckMetricPrincipalDefectTotal_background_curvatureFold_of_sym
       intro a b
       funext i
       fin_cases i <;> rfl
-    rw [unitModel_add_local (I := I) (M := M) g₀ 4 W Wsw x,
+    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g₀ 4 W Wsw x,
       add_apply, add_apply,
       hWsw_def,
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel
@@ -1028,10 +989,11 @@ theorem exists_deTurckMetricPrincipalDefectTotal_background_curvatureFold_of_sym
       rw [hW_def, hWsw_def, hW_def, hC24 S]
     _ = (1/2 : ℝ) • operatorFieldApply (I := I) (M := M) g₀ 2 2
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2 Φd C24) S := by
-      rw [operatorFieldApplication_operatorFieldComposition_assoc_fw (I := I) (M := M) g₀ Φd C24 S]
+      rw [operatorFieldComposition_zero_eq_operatorFieldApply,
+        operatorFieldApply_assoc]
     _ = operatorFieldApply (I := I) (M := M) g₀ 2 2
         ((1/2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2 Φd C24) S := by
-      rw [operatorFieldApplication_smul_left_fw (I := I) (M := M) g₀ 2 2 (1/2 : ℝ) _ S]
+      rw [operatorFieldApplication_smul_left (I := I) (M := M) g₀ 2 2 (1/2 : ℝ) _ S]
     _ = operatorFieldApply (I := I) (M := M) g₀ 2 2
         ((1/2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2 Φd C24)
         (iteratedCovGrad (I := I) g₀ 0 2 0 S) := by

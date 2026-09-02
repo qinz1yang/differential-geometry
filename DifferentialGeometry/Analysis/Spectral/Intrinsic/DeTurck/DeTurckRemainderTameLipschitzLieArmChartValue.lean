@@ -5057,7 +5057,7 @@ lemma lieArm_chartSlope_center_value_eq_threeArm
   have h2 := lieArm_arm2_value_eq_principal_add_tail (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j
   refine hsplit.trans ?_
-  rw [unitModel_add_local (I := I) g₀ 2 _ _ x, unitModel_add_local (I := I) g₀ 2 _ _ x,
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 2 _ _ x, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 2 _ _ x,
     add_apply, add_apply]
   linear_combination -h0 - h1 - h2
 
@@ -5210,8 +5210,8 @@ theorem realizedDeTurckLie_threeArm_symmAbsorbed_perm_data
     (deTurckLieArm2PrincipalCoeff (I := I) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)) σ'₂ hσ'₂ x v
   rw [hWbase]
-  rw [unitModel_add_local (I := I) g₀ 2 _ _ x, unitModel_add_local (I := I) g₀ 2 _ _ x,
-    unitModel_add_local (I := I) g₀ 2 _ _ x, unitModel_add_local (I := I) g₀ 2 _ _ x,
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 2 _ _ x, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 2 _ _ x,
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 2 _ _ x, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) g₀ 2 _ _ x,
     add_apply, add_apply, add_apply, add_apply]
   rw [habs0, habs1, habs2]
 

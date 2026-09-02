@@ -1396,7 +1396,7 @@ private lemma qCommFoldWeights_unitModel_eq_kernel (P : SmoothCcTensor g₀ 0 2)
         (smoothOrthoFrame (I := I) g₀ x e x))
       (fun e => ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E))
       ((v1 : TangentSpace I x) : E) ((p : TangentSpace I x) : E)
-  rw [unitModel_sub_pt (I := I) (M := M) g₀ 4
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) (M := M) g₀ 4
     (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)
     (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x]
   rw [sub_apply]

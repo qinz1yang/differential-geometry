@@ -29,28 +29,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
-omit [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem unitModel_sub
-    (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (S S' : SmoothCcTensor g 0 s) (x : M) :
-    unitModel (I := I) (M := M) g s (S - S') x =
-      unitModel (I := I) (M := M) g s S x -
-        unitModel (I := I) (M := M) g s S' x := by
-  rw [unitModel, unitModel, unitModel]
-  have hsec : (S - S').toSection x = S.toSection x - S'.toSection x := by
-    rw [SmoothCcTensor.toSection_sub]
-    rfl
-  rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          (S - S').toSection x) (unitTensor (I := I) (M := M) x)) =
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S.toSection x)
-            (unitTensor (I := I) (M := M) x) -
-          (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from S'.toSection x)
-            (unitTensor (I := I) (M := M) x) from by
-      rw [hsec]
-      rfl]
-  rw [Tensor0SSpace.toModel_sub]
-
 noncomputable def gradSlotCurvCoeff
     (g₀ : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 2 4 where
   toSection :=
@@ -148,7 +126,7 @@ theorem gradSlotCurv_spec
   intro x
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [unitModel_sub (I := I) g₀ 4 _ _ x, sub_apply,
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) g₀ 4 _ _ x, sub_apply,
     domDomCongrSection_unitModel (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
       (iteratedCovGrad (I := I) g₀ 0 2 2 S) x,
     ContinuousMultilinearMap.domDomCongr_apply]
