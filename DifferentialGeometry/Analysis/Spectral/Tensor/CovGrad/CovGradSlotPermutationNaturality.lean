@@ -449,7 +449,7 @@ lemma tensor0SCovariantDerivative_succ_domDomCongr
     have hXi_at := DifferentialGeometry.Geometry.Connection.chartBasisVec_alpha_mdifferentiableAt
         (I := I) x i hx_good
     rw [←
-      DifferentialGeometry.Geometry.Connection.chartTensor0SCovariantDerivative_eq_abstract_succ_aux
+      DifferentialGeometry.Geometry.Connection.chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
       (I := I) (M := M) g x s ŝ'
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i)
       hx_good hŝ' hXi_at]
@@ -458,7 +458,7 @@ lemma tensor0SCovariantDerivative_succ_domDomCongr
     rw [chartTensor0SCovariantDerivative_succ_domDomCongr (I := I) s g σ x ŝ
       (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i) hx_good]
     rw
-      [chartTensor0SCovariantDerivative_eq_abstract_succ_aux
+      [chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
       (I := I) (M := M) g x s ŝ
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i)
       hx_good hŝ hXi_at]

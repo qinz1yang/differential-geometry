@@ -82,7 +82,7 @@ theorem tensorHeatMildSolutionHsDeriv_coeff
               g r s σ T₀ F t).coeff i + (F t).coeff i) := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorHeatMildSolutionHs_hasDerivAt_of_hasDerivAt_aux
+theorem tensorHeatMildSolutionHs_hasDerivAt_tensorHeatMildSolutionHsDeriv
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
     (T₀ : TensorHs (I := I) (M := M) g r s σ)
     {F F' : ℝ → TensorHs (I := I) (M := M) g r s σ}
@@ -169,7 +169,7 @@ theorem tensorHeatMildSolutionHs_hasDerivAt_of_hasDerivAt
       (tensorScaleLaplacian (I := I) (M := M) σ
           (tensorHeatMildSolutionHsLiftOfHasDerivAt (I := I) (M := M)
             g r s σ T₀ F F' hF hF' t ht) + F t) t := by
-  have haux := tensorHeatMildSolutionHs_hasDerivAt_of_hasDerivAt_aux
+  have haux := tensorHeatMildSolutionHs_hasDerivAt_tensorHeatMildSolutionHsDeriv
     (I := I) (M := M) g r s σ T₀ hF hF' ht
   apply haux.congr_deriv
   apply TensorHs.ext

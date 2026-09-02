@@ -42,7 +42,8 @@ theorem exists_isVariationalFlowProjection_one_of_C2
   have ht₀_a_Ioo : t₀ ∈ Ioo (t₀ - ε_aug) (t₀ + ε_aug) :=
     ⟨by linarith, by linarith⟩
   obtain ⟨T_help, ρ_help, hT_help_pos, hρ_help_pos, h_help⟩ :=
-    fderiv_Phi_eq_coprod_fromAugFlow_aux (Φ := Φ) hΦ hf_C1 ht₀_Ioo hr_pos haΦ ht₀_a_Ioo hR_aug_R
+    exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
+      (Φ := Φ) hΦ hf_C1 ht₀_Ioo hr_pos haΦ ht₀_a_Ioo hR_aug_R
   set T_eff : ℝ := min T_final T_help with hT_eff_def
   have hT_eff_pos : 0 < T_eff := lt_min hT_final_pos hT_help_pos
   have hT_eff_le_final : T_eff ≤ T_final := min_le_left _ _

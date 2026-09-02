@@ -28,6 +28,16 @@ def boundaryHyperplane : Set E := {y : E | y 0 = 0}
 @[simp] lemma closedHalfSpace_def :
     closedHalfSpace (d := d) = {y : E | 0 ≤ y 0} := rfl
 
+omit [NeZero d] in
+theorem measurableSet_closedHalfSpace [NeZero d] :
+    MeasurableSet (closedHalfSpace (d := d)) := by
+  have hcont : Continuous (fun y : E => y 0) :=
+    PiLp.continuous_apply 2 _ 0
+  have heq : closedHalfSpace (d := d) =
+      (fun y : E => y 0) ⁻¹' Set.Ici 0 := rfl
+  rw [heq]
+  exact hcont.measurable measurableSet_Ici
+
 @[simp] lemma openHalfSpace_def :
     openHalfSpace (d := d) = {y : E | 0 < y 0} := rfl
 

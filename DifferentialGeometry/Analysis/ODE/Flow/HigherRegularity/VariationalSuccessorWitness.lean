@@ -249,7 +249,8 @@ theorem exists_isVariationalFlowProjection_succ_C_step
     contDiffOn_fromAugFlow (k := ((n : ℕ∞) + 1)) (Ω := U_a) (U := U_E)
       h_aug_Cn_plus_1' hmap
   obtain ⟨T_help, ρ_help, hT_help_pos, hρ_help_pos, h_help⟩ :=
-    fderiv_Phi_eq_coprod_fromAugFlow_aux (Φ := Φ) hΦ hf_C1 ht₀_Ioo hr_pos haΦ ht₀_a_Ioo hR_aug_pos
+    exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
+      (Φ := Φ) hΦ hf_C1 ht₀_Ioo hr_pos haΦ ht₀_a_Ioo hR_aug_pos
   set T_eff : ℝ := min T_a T_help with hT_eff_def
   have hT_eff_pos : 0 < T_eff := lt_min hT_a_pos hT_help_pos
   have hT_eff_le_T_a : T_eff ≤ T_a := min_le_left _ _

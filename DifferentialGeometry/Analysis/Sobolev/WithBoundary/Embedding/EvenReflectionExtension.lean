@@ -575,18 +575,6 @@ lemma norm_evenReflectGrad_apply_le
     rw [h_unit, mul_one] at h_op
     exact h_op
 
-lemma measurableSet_closedHalfSpace_aux {n : ℕ} [NeZero n] :
-    MeasurableSet
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.closedHalfSpace
-        (d := n)) := by
-  classical
-  have hcont : Continuous (fun y : EuclideanSpace ℝ (Fin n) => y 0) :=
-    PiLp.continuous_apply 2 _ 0
-  have heq : DifferentialGeometry.Analysis.Sobolev.Euclidean.closedHalfSpace
-      (d := n) = (fun y : EuclideanSpace ℝ (Fin n) => y 0) ⁻¹' Set.Ici 0 := rfl
-  rw [heq]
-  exact hcont.measurable measurableSet_Ici
-
 theorem aestronglyMeasurable_evenReflectGrad_component_of_contDiff
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ} (hf : ContDiff ℝ (⊤ : ℕ∞) f) (i : Fin n) :
@@ -622,7 +610,7 @@ theorem aestronglyMeasurable_evenReflectGrad_component_of_contDiff
         rw [evenReflectGrad_apply_lower_component_zero f hlt]
     rw [h_eq]
     refine AEStronglyMeasurable.piecewise (μ := volume)
-      measurableSet_closedHalfSpace_aux ?_ ?_
+      Euclidean.measurableSet_closedHalfSpace ?_ ?_
     · exact h_uppercont.aestronglyMeasurable.restrict
     · exact h_lowercont.aestronglyMeasurable.restrict
   · exact (continuous_evenReflectGrad_component_of_contDiff_ne_zero hf hi).aestronglyMeasurable

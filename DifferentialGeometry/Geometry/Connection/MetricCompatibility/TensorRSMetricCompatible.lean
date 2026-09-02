@@ -170,7 +170,7 @@ theorem tensorInnerPointwise_hasMFDerivAt_metricCompatible'
     exact tensorInnerPointwise_eq_liftedTensorSection_inner
       (I := I) (M := M) g r s W S y
   rw [hfun]
-  exact tensorInnerPointwise_0s_hasMFDerivAt_metricCompatible_aux
+  exact tensorInnerPointwise_0s_hasMFDerivAt_metricCompatible
     (I := I) (M := M) g (r + s)
     (liftedTensorSection (I := I) (M := M) g r s W)
     (liftedTensorSection (I := I) (M := M) g r s S)

@@ -82,7 +82,7 @@ private lemma LeviCivita_chartParallelExtend_eq_parallelCLM
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
+theorem chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∀ (s : ℕ) (T : Π b' : M, Tensor0SSpace (s + 1) I b')
       (X : Π b' : M, TangentSpace I b')
@@ -467,7 +467,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ
         (fun b' : M => TotalSpace.mk' E
           (E := fun x : M => TangentSpace I x) b' (X.toFun b')) b :=
     X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  exact chartTensor0SCovariantDerivative_eq_abstract_succ_aux
+  exact chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
     (I := I) (M := M) g α s T.toFun X.toFun hb hT_at hX_at
 
 end Connection

@@ -61,7 +61,7 @@ private theorem fderiv_along_continuousOn
     continuousOn_id.prodMk hγ
   exact hf.continuousOn.comp hpair (fun _ _ => mem_univ _)
 
-theorem fderiv_Phi_eq_coprod_fromAugFlow_aux
+theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
     [FiniteDimensional ℝ E]
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
     (hf_C1 : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)))

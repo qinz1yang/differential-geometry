@@ -97,16 +97,6 @@ theorem chartPushed_memWkp_two_k_of_chartSideBridge
         (I := I) (M := M) α) :=
   h_bridge α
 
-omit [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-theorem laplacianDomainPow_le_of_le_aux
-    (g : SmoothRiemannianMetric I M) {k j : ℕ} (hjk : j ≤ k)
-    {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g k) :
-    u_h ∈ laplacianDomainPow (I := I) (M := M) g j :=
-  laplacianDomainPow_le_of_le
-    (I := I) (M := M) g hjk hu_h
-
 theorem chartSideH2kBridge_min_two
     (g : SmoothRiemannianMetric I M) (k : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}

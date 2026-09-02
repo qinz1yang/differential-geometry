@@ -960,7 +960,8 @@ private lemma chartTensor0SCovariantDerivative_eq_abstract_gen
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x := self_mem_chartLeviCivitaGoodSet x
   cases n with
   | succ m =>
-      exact chartTensor0SCovariantDerivative_eq_abstract_succ_aux (I := I) (M := M) g x m Y X
+      exact chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
+        (I := I) (M := M) g x m Y X
         hx_good hY hX_at
   | zero =>
       exact chartTensor0SCovariantDerivative_eq_abstract_zero (I := I) (M := M) g x Y X
@@ -979,7 +980,8 @@ private lemma toModel_tensor0SCovariantDerivative_factorUnitEval_frame
         (chartTensor0SCovariantDerivative (I := I) (s + 1) g x (factorUnitEval (I := I) g W) X
           x) := by
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x := self_mem_chartLeviCivitaGoodSet x
-  rw [chartTensor0SCovariantDerivative_eq_abstract_succ_aux (I := I) (M := M) g x s
+  rw [chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
+    (I := I) (M := M) g x s
     (factorUnitEval (I := I) g W) X hx_good
     (factorUnitEval_tensorSectionMDiffAt (I := I) g W x) hX_at]
 
@@ -1015,7 +1017,8 @@ private lemma covDerivUnitModel_prodUnitEval_frame (g : SmoothRiemannianMetric I
   have hprodaux : chartTensor0SCovariantDerivative (I := I) ((p' + 1) + (q' + 1)) g x P Xf x =
       Tensor0SNabla.tensor0SCovariantDerivative I M ((p' + 1) + (q' + 1)) (LeviCivita (I := I) g)
         P x (Xf x) :=
-    chartTensor0SCovariantDerivative_eq_abstract_succ_aux (I := I) (M := M) g x
+    chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
+      (I := I) (M := M) g x
       (p' + 1 + q') P Xf (b := x) hx_good hP_mdiff hX_at
   rw [hP] at hprodaux
   rw [← hprodaux]

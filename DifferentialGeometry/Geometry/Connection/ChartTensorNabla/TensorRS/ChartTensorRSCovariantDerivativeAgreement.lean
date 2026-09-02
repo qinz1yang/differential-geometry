@@ -298,7 +298,7 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
     rcases s with _ | n
     · exact (chartTensor0SCovariantDerivative_eq_abstract_zero (I := I) g α
             (tensorPartialEval (I := I) (M := M) r 0 T.toFun w) X.toFun (b := b)).symm
-    · exact (chartTensor0SCovariantDerivative_eq_abstract_succ_aux
+    · exact (chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
             (I := I) (M := M) g α n
             (tensorPartialEval (I := I) (M := M) r (n + 1) T.toFun w)
             X.toFun hb hPartialEval_at hX_at).symm
@@ -313,7 +313,7 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
     · have hw_at_n : TensorSectionMDiffAt (I := I) (n + 1) w b := by
         unfold TensorSectionMDiffAt
         exact hw_at
-      exact (chartTensor0SCovariantDerivative_eq_abstract_succ_aux
+      exact (chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
             (I := I) (M := M) g α n w X.toFun hb hw_at_n hX_at).symm
   rw [hLayerB_second]
   rw [chartTensor0SCovariantDerivative_chartTensor0SParallelExtend

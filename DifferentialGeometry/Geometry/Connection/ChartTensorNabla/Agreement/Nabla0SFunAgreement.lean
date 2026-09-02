@@ -106,7 +106,7 @@ private lemma cmlm_cons_eq_curry (s : ℕ) {x : M}
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem abstractDerivEval_aux
+theorem tensor0SCovariantDerivative_eval
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [CovariantDerivative.ContMDiffCovariantDerivative cov ∞] :
     ∀ (s : ℕ) (T : Π b : M, Tensor0SSpace s I b)
@@ -358,7 +358,7 @@ theorem nabla0SFun_eq_tensor0SCovariantDerivative
           funext p
           exact (Tensor0SSpace.eval_eq _ _).symm]
         congr 1
-  have ha := abstractDerivEval_aux
+  have ha := tensor0SCovariantDerivative_eval
     (I := I) (M := M) (LeviCivita (I := I) g) s
     (fun y : M => α y) (fun a => (V a : Π b : M, TangentSpace I b)) X
     α.contMDiff (fun a => (V a).contMDiff) X.contMDiff x

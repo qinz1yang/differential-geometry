@@ -827,7 +827,7 @@ theorem standardNirenbergTest_smooth_seq
   classical
   intro n
   refine ⟨?_, ?_⟩
-  · exact contDiff_nirenbergTestFunction_aux (d := Module.finrank ℝ E)
+  · exact contDiff_nirenbergTestFunction (d := Module.finrank ℝ E)
       hη (hu_seq_smooth n) k hh
   · exact standardNirenbergTest_hasCompactSupport
       (d := Module.finrank ℝ E) k h hη_supp (uSeq n)

@@ -1045,7 +1045,7 @@ private lemma tensorMetricCompatDiff_succ_eq_sum
 
 open DifferentialGeometry.Tensor0SNabla in
 omit [CompleteSpace E] in
-theorem tensorInnerPointwise_0s_hasMFDerivAt_metricCompatible_aux
+theorem tensorInnerPointwise_0s_hasMFDerivAt_metricCompatible
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ∀ (W T : Π x : M, Tensor0SSpace s I x) {x : M},
       TensorSectionMDiffAt (I := I) s W x → TensorSectionMDiffAt (I := I) s T x →
@@ -1141,7 +1141,7 @@ theorem tensorInnerPointwise_0s_mfderiv_metricCompatible
           (Tensor0SSpace.toModel (W x))
           (Tensor0SSpace.toModel
             (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g) T x v)) := by
-  have hmf := (tensorInnerPointwise_0s_hasMFDerivAt_metricCompatible_aux
+  have hmf := (tensorInnerPointwise_0s_hasMFDerivAt_metricCompatible
     (I := I) (M := M) g s W T hW hT).mfderiv
   rw [hmf]
   exact tensorMetricCompatDiff_apply (I := I) (M := M) g s W T x v

@@ -306,24 +306,6 @@ instance instT2Space :
     rintro z ⟨hzU, hzV⟩
     exact hUVdisj ⟨hzU, hzV⟩
 
-theorem fundamentalGroup_isCountablyGenerated_aux
-    (X : Type*) [TopologicalSpace X]
-    [SecondCountableTopology X]
-    [ConnectedSpace X] [LocallyPathConnectedSpace X]
-    [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
-    (x : X)
-    (B : ℕ → Set X)
-    (hBopen : ∀ n, IsOpen (B n))
-    (hBpc : ∀ n, IsPathConnected (B n))
-    (hBnull : ∀ n, ∀ (y : X) (_ : y ∈ B n) (γ : _root_.Path y y),
-      Set.range γ.toContinuousMap ⊆ B n →
-        (⟦γ⟧ : _root_.Path.Homotopic.Quotient y y) = ⟦_root_.Path.refl y⟧)
-    (hBbasis : TopologicalSpace.IsTopologicalBasis (Set.range B)) :
-    ∃ (S : Type) (_ : Countable S) (f : S → FundamentalGroup X x),
-      Function.Surjective f :=
-  fundamentalGroup_countable_surjection_of_nullHomotopic_basis
-    X x B hBopen hBpc hBnull hBbasis
-
 theorem fundamentalGroup_countable_of_secondCountable
     (X : Type*) [TopologicalSpace X]
     [SecondCountableTopology X]
@@ -339,7 +321,8 @@ theorem fundamentalGroup_countable_of_secondCountable
     (hBbasis : TopologicalSpace.IsTopologicalBasis (Set.range B)) :
     Countable (FundamentalGroup X x) := by
   obtain ⟨S, hS, f, hf⟩ :=
-    fundamentalGroup_isCountablyGenerated_aux X x B hBopen hBpc hBnull hBbasis
+    fundamentalGroup_countable_surjection_of_nullHomotopic_basis
+      X x B hBopen hBpc hBnull hBbasis
   exact Function.Surjective.countable hf
 
 omit [T2Space M] [SigmaCompactSpace M] in

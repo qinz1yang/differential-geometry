@@ -417,7 +417,7 @@ lemma fHLeibnizResidualSmoothRep_tsupport_subset
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem memW1p_fChartResidual_smooth_aux
+theorem memW1p_chartPushedRaw_fHLeibnizResidualSmoothRep
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
       (chartPushedRaw (I := I) (M := M) α
@@ -582,7 +582,8 @@ theorem memW1p_fChartResidual_smoothToH1Compl
         chartPushedRaw (I := I) (M := M) α
           (fHLeibnizResidualSmoothRep (I := I) (M := M) g α v) :=
     h_vol_abs_weighted.ae_le h_fChart_smooth_ae
-  have h_smooth_w1p := memW1p_fChartResidual_smooth_aux (I := I) (M := M) g α v
+  have h_smooth_w1p :=
+    memW1p_chartPushedRaw_fHLeibnizResidualSmoothRep (I := I) (M := M) g α v
   exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemW1p_congr_ae
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     h_fChart_smooth_ae_vol.symm).mp h_smooth_w1p

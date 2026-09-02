@@ -1254,7 +1254,7 @@ section NeighbourhoodReconciliation
 variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax : ℝ} {Φ : E × ℝ → E}
 
 omit [NormedSpace ℝ E] [CompleteSpace E] in
-theorem exists_basic_nhds_subset_aux {U : Set (E × ℝ)}
+theorem exists_ball_prod_Ioo_subset_of_mem_open {U : Set (E × ℝ)}
     (hU_open : IsOpen U) (hU_mem : (x₀, t₀) ∈ U) :
     ∃ ρ₁ > 0, ∃ T₁ > 0, ball x₀ ρ₁ ×ˢ Ioo (t₀ - T₁) (t₀ + T₁) ⊆ U := by
   have hU_nhds : U ∈ 𝓝 ((x₀, t₀) : E × ℝ) := hU_open.mem_nhds hU_mem
@@ -1269,7 +1269,7 @@ theorem exists_basic_nhds_subset_aux {U : Set (E × ℝ)}
   exact ⟨by linarith [hp2.1], by linarith [hp2.2]⟩
 
 omit [CompleteSpace E] in
-theorem exists_embed_caps_aux
+theorem exists_ball_prod_Ioo_mapsTo_insert_id_of_mem_open
     {Ω : Set ((E × (E →L[ℝ] E)) × ℝ)} (hΩ_open : IsOpen Ω)
     (hΩ_mem : ((x₀, ContinuousLinearMap.id ℝ E), t₀) ∈ Ω) :
     ∃ ρ_a > 0, ∃ T_a > 0, ∀ (ρ T : ℝ), ρ ≤ ρ_a → T ≤ T_a →
@@ -1416,8 +1416,10 @@ theorem exists_contDiffOn_flow_succ_driver
       exact_mod_cast this
     simpa using hf_succ.of_le h_le
   obtain ⟨U, hU_open, hU_mem, hU_Ck⟩ := hΦ_prev
-  obtain ⟨ρ_p, hρ_p_pos, T_p, hT_p_pos, hbox_p⟩ := exists_basic_nhds_subset_aux hU_open hU_mem
-  obtain ⟨ρ_a, hρ_a_pos, T_a, hT_a_pos, hembed⟩ := exists_embed_caps_aux hΩ_open hΩ_mem
+  obtain ⟨ρ_p, hρ_p_pos, T_p, hT_p_pos, hbox_p⟩ :=
+    exists_ball_prod_Ioo_subset_of_mem_open hU_open hU_mem
+  obtain ⟨ρ_a, hρ_a_pos, T_a, hT_a_pos, hembed⟩ :=
+    exists_ball_prod_Ioo_mapsTo_insert_id_of_mem_open hΩ_open hΩ_mem
   have hΦ_cont_box : ContinuousOn Φ (closedBall x₀ (r : ℝ) ×ˢ Icc tmin tmax) := hΦ.continuousOn
   have hΦ_init : ∀ x ∈ closedBall x₀ (r : ℝ), Φ (x, t₀) = x := hΦ.apply_initial
   obtain ⟨ρ_c2, hρ_c2_pos, T_c2, hT_c2_pos, hρ_c2_le, hsub_c2, hcontain_Φ⟩ :=

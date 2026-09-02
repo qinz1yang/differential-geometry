@@ -46,14 +46,18 @@ theorem contDiff_diffQuot_of_contDiff
   rw [heq_fun]
   exact h_div
 
+noncomputable def nirenbergTestFunction
+    (k : Fin d) (h : ℝ) (η u : E → ℝ) : E → ℝ :=
+  DifferentialGeometry.Analysis.Sobolev.diffQuot k (-h)
+    (fun y : E => η y ^ 2 *
+      DifferentialGeometry.Analysis.Sobolev.diffQuot k h u y)
+
 omit [NeZero d] in
-theorem contDiff_nirenbergTestFunction_aux
+theorem contDiff_nirenbergTestFunction
     {η u : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hu : ContDiff ℝ (⊤ : ℕ∞) u)
     (k : Fin d) {h : ℝ} (hh : h ≠ 0) :
-    ContDiff ℝ (⊤ : ℕ∞)
-      (DifferentialGeometry.Analysis.Sobolev.diffQuot k (-h)
-        (fun y : E => η y ^ 2 *
-          DifferentialGeometry.Analysis.Sobolev.diffQuot k h u y)) := by
+    ContDiff ℝ (⊤ : ℕ∞) (nirenbergTestFunction k h η u) := by
+  unfold nirenbergTestFunction
   have hnh : (-h) ≠ 0 := neg_ne_zero.mpr hh
   have h_eta_sq : ContDiff ℝ (⊤ : ℕ∞) (fun y : E => η y ^ 2) := hη.pow 2
   have h_diffQuot_u :
@@ -109,20 +113,6 @@ theorem hasCompactSupport_diffQuot_of_hasCompactSupport
           (DifferentialGeometry.Analysis.Sobolev.translate k h v - v) :=
       h_translate.sub hv
     exact h_diff.smul_left
-
-noncomputable def nirenbergTestFunction
-    (k : Fin d) (h : ℝ) (η u : E → ℝ) : E → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.diffQuot k (-h)
-    (fun y : E => η y ^ 2 *
-      DifferentialGeometry.Analysis.Sobolev.diffQuot k h u y)
-
-omit [NeZero d] in
-theorem contDiff_nirenbergTestFunction
-    {η u : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hu : ContDiff ℝ (⊤ : ℕ∞) u)
-    (k : Fin d) {h : ℝ} (hh : h ≠ 0) :
-    ContDiff ℝ (⊤ : ℕ∞) (nirenbergTestFunction k h η u) := by
-  unfold nirenbergTestFunction
-  exact contDiff_nirenbergTestFunction_aux (d := d) hη hu k hh
 
 omit [NeZero d] in
 theorem hasCompactSupport_nirenbergTestFunction

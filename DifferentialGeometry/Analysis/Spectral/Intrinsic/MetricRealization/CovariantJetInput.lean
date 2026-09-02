@@ -638,7 +638,7 @@ attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
-theorem euclidPartial2_chartPushedRaw_abs_le_aux
+theorem euclidPartial2_chartPushedRaw_abs_le_covariantJet_terms
     (g_bg : SmoothRiemannianMetric I M) (α : M)
     {K_eucl : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))}
     (hKsub : K_eucl ⊆ chartTargetEuclid (I := I) (M := M) α)
@@ -981,7 +981,8 @@ theorem euclidPartial2_chartPushedRaw_abs_le_jetSum
     rw [hN2_def, hR_def]
     exact iteratedCovGrad_norm_le_jetSum (I := I) g_bg S b₀ 2 (by norm_num)
   have hR_nn : 0 ≤ R := le_trans hN0_nn hN0_le
-  have haux := euclidPartial2_chartPushedRaw_abs_le_aux (I := I) g_bg α hKsub
+  have haux := euclidPartial2_chartPushedRaw_abs_le_covariantJet_terms
+    (I := I) g_bg α hKsub
     Craw4 hCraw4_bd Craw3 hCraw3_nn hCraw3_bd Craw2 hCraw2_bd CLO3 hCLO3_bd CLO2 hCLO2_nn hCLO2_bd
     Cval hCval_nn hCval_bd Cgrd hCgrd_nn hCgrd_bd S c a Jdx hy'
   rw [← hN0_def, ← hN1_def, ← hN2_def] at haux
