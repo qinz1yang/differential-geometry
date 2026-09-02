@@ -1273,8 +1273,8 @@ import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.SmoothRegularity
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.Support
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakDerivative
-import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientWeakLimit
-import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientWeakLimitLoc
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakLimit
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.LocalWeakLimit
 import DifferentialGeometry.Analysis.Sobolev.Tools.FrechetKolmogorov
 import DifferentialGeometry.Analysis.Sobolev.Tools.Mollifier
 import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport

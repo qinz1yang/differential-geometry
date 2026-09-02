@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Solutions.WeakSolution
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.SmoothWeakSolutionH2
-import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientWeakLimit
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakLimit
 
 noncomputable section
 

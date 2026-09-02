@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBound
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotGTotalBound
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.ChartBilinearVariationalIdentity
@@ -64,13 +65,14 @@ theorem exists_cutoff_around_tsupport
   obtain ⟨δ, hδ_pos, hδ_in_chart⟩ :=
     h_cthick_1_compact.exists_cthickening_subset_open h_chart_open
       h_cthick_1_in_chart
-  obtain ⟨χ, hχ_smooth, hχ_cs, hχ_range, hχ_one, hχ_tsupp⟩ :=
-    SmoothEllipticBilinearForm.exists_cutoff
-      (d := Module.finrank ℝ E)
+  obtain ⟨χ, hχ_smooth, hχ_cs, hχ_one_nhds, hχ_tsupp, hχ_range⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact
       h_cthick_1_compact
       (Metric.isOpen_thickening (δ := δ)
         (E := Metric.cthickening 1 (tsupport η)))
       (Metric.self_subset_thickening hδ_pos _)
+  have hχ_one : ∀ x ∈ Metric.cthickening 1 (tsupport η), χ x = 1 := fun _ hx =>
+    hχ_one_nhds.self_of_nhdsSet hx
   have hχ_tsupp_in_chart : tsupport χ ⊆
       chartTargetEuclid (I := I) (M := M) α := by
     intro x hx

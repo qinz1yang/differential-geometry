@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBound
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotGTotalBound
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.ChartBilinearVariationalIdentity
@@ -100,12 +101,13 @@ theorem chartBilinearFK_diffQuot_u_discharge
         ← cthickening_cthickening hδ_le hR0_le]
     rw [h_eq] at hx'
     exact hδ_in_chart hx'
-  obtain ⟨χ, hχ_smooth, hχ_cs, hχ_range, hχ_one, hχ_tsupp⟩ :=
-    SmoothEllipticBilinearForm.exists_cutoff
-      (d := Module.finrank ℝ E)
+  obtain ⟨χ, hχ_smooth, hχ_cs, hχ_one_nhds, hχ_tsupp, hχ_range⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact
       (K := Metric.cthickening r (tsupport η))
-      (Ω' := chartTargetEuclid (I := I) (M := M) α)
+      (U := chartTargetEuclid (I := I) (M := M) α)
       h_cthick_r_compact h_chart_open h_cthick_r_in_chart
+  have hχ_one : ∀ x ∈ Metric.cthickening r (tsupport η), χ x = 1 := fun _ hx =>
+    hχ_one_nhds.self_of_nhdsSet hx
   have hχ_nn : ∀ x : EuclN, 0 ≤ χ x ∧ χ x ≤ 1 := by
     intro x
     have hx_range : χ x ∈ Set.range χ := Set.mem_range_self x

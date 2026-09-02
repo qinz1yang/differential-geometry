@@ -1,5 +1,6 @@
+import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.CrossBounds
-import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientWeakLimit
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakLimit
 
 noncomputable section
 
@@ -181,11 +182,13 @@ theorem loc_smooth_solution
     Metric.self_subset_thickening (by norm_num) K
   have h_thick34_open : IsOpen (Metric.thickening (3/4 : ℝ) K) :=
     Metric.isOpen_thickening
-  obtain ⟨η, hη_smooth, hη_compact, hη_range, hη_one_on_K, hη_tsupport_in,
+  obtain ⟨η, hη_smooth, hη_compact, hη_one_nhds, hη_tsupport_in, hη_range,
       N, hN_nn, h_fderiv_eta⟩ :=
-    SmoothEllipticBilinearForm.exists_cutoff_with_fderiv_bound (d := d)
-      (K := K) (Ω' := Metric.thickening (3/4) K)
+    DifferentialGeometry.Analysis.exists_bump_compact_with_fderiv_bound
+      (K := K) (U := Metric.thickening (3/4) K)
       hK_compact h_thick34_open h_K_in_thick34
+  have hη_one_on_K : ∀ x ∈ K, η x = 1 := fun _ hx =>
+    hη_one_nhds.self_of_nhdsSet hx
   set Ω' : Set E := Metric.thickening 2 K with hΩ'_def
   have hΩ'_open : IsOpen Ω' := Metric.isOpen_thickening
   have hΩ'_K_subset : K ⊆ Ω' := by

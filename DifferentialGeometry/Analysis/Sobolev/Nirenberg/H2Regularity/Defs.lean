@@ -88,62 +88,6 @@ theorem capLam_pos {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) :
 theorem capLam_nonneg {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) :
     0 ≤ B.capLam := B.capLam_pos.le
 
-omit [NeZero d] in
-theorem exists_cutoff
-    {K Ω' : Set E} (hK : IsCompact K) (hΩ' : IsOpen Ω') (hKΩ' : K ⊆ Ω') :
-    ∃ η : E → ℝ,
-      ContDiff ℝ (⊤ : ℕ∞) η ∧
-      HasCompactSupport η ∧
-      Set.range η ⊆ Set.Icc (0 : ℝ) 1 ∧
-      (∀ x ∈ K, η x = 1) ∧
-      tsupport η ⊆ Ω' := by
-  obtain ⟨δ, hδ_pos, hδΩ⟩ := hK.exists_cthickening_subset_open hΩ' hKΩ'
-  rcases exists_contMDiff_support_eq_eq_one_iff
-      (I := modelWithCornersSelf ℝ E) (s := Metric.thickening δ K) (t := K)
-      isOpen_thickening hK.isClosed (self_subset_thickening hδ_pos K) with
-    ⟨η, hη_smooth, hη_range, hη_support, hη_one_iff⟩
-  refine ⟨η, contMDiff_iff_contDiff.mp hη_smooth, ?_, hη_range, ?_, ?_⟩
-  · apply HasCompactSupport.intro' (K := Metric.cthickening δ K)
-    · exact hK.cthickening (r := δ)
-    · simpa using (isClosed_cthickening : IsClosed (Metric.cthickening δ K))
-    · intro x hx
-      have hxt : x ∉ tsupport η := by
-        intro hxt
-        have hx_closure : x ∈ closure (Metric.thickening δ K) := by
-          rw [tsupport, hη_support] at hxt
-          exact hxt
-        exact hx ((Metric.closure_thickening_subset_cthickening δ K) hx_closure)
-      exact image_eq_zero_of_notMem_tsupport hxt
-  · intro x hx
-    exact (hη_one_iff x).1 hx
-  · rw [tsupport, hη_support]
-    exact (Metric.closure_thickening_subset_cthickening δ K).trans hδΩ
-
-omit [NeZero d] in
-theorem exists_cutoff_with_fderiv_bound
-    {K Ω' : Set E} (hK : IsCompact K) (hΩ' : IsOpen Ω') (hKΩ' : K ⊆ Ω') :
-    ∃ η : E → ℝ,
-      ContDiff ℝ (⊤ : ℕ∞) η ∧
-      HasCompactSupport η ∧
-      Set.range η ⊆ Set.Icc (0 : ℝ) 1 ∧
-      (∀ x ∈ K, η x = 1) ∧
-      tsupport η ⊆ Ω' ∧
-      ∃ N : ℝ, 0 ≤ N ∧ ∀ x : E, ‖fderiv ℝ η x‖ ≤ N := by
-  obtain ⟨η, hη_cd, hη_supp, hη_range, hη_one, hη_tsupp⟩ :=
-    exists_cutoff hK hΩ' hKΩ'
-  refine ⟨η, hη_cd, hη_supp, hη_range, hη_one, hη_tsupp, ?_⟩
-  have h_fderiv_cont : Continuous (fderiv ℝ η) :=
-    hη_cd.continuous_fderiv (by simp)
-  have h_norm_cont : Continuous (fun x : E => ‖fderiv ℝ η x‖) := h_fderiv_cont.norm
-  have h_fderiv_cs : HasCompactSupport (fderiv ℝ η) := hη_supp.fderiv ℝ
-  have h_norm_cs : HasCompactSupport (fun x : E => ‖fderiv ℝ η x‖) := by
-    apply h_fderiv_cs.comp_left
-    simp
-  obtain ⟨N₀, hN₀⟩ := h_norm_cont.bddAbove_range_of_hasCompactSupport h_norm_cs
-  refine ⟨max N₀ 0, le_max_right _ _, fun x => ?_⟩
-  have h_le : ‖fderiv ℝ η x‖ ≤ N₀ := hN₀ ⟨x, rfl⟩
-  exact h_le.trans (le_max_left _ _)
-
 theorem bounded_a_on_compact {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {K : Set E} (hK : IsCompact K) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ i j : Fin d, ∀ x ∈ K, |B.a x i j| ≤ M := by

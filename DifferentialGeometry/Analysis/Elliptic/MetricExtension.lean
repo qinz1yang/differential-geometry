@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.Defs
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Family
 import DifferentialGeometry.Geometry.Operator.Hessian
@@ -879,10 +880,11 @@ theorem exists_smooth_metric_extension
     hK'_compact.of_isClosed_subset isClosed_closure h_closure_Ω'_in_K'
   have h_closure_in_chart : closure Ω' ⊆ chartTargetEuclid (I := I) (M := M) α :=
     h_closure_Ω'_in_K'.trans h_K'_in_chart
-  obtain ⟨χ, hχ_smooth, hχ_supp, hχ_range, hχ_one, hχ_tsupp⟩ :=
-    SmoothEllipticBilinearForm.exists_cutoff
-      (d := Module.finrank ℝ E)
-      (K := K) (Ω' := Ω') hK hΩ'_open h_K_in_Ω'
+  obtain ⟨χ, hχ_smooth, hχ_supp, hχ_one_nhds, hχ_tsupp, hχ_range⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact
+      (K := K) (U := Ω') hK hΩ'_open h_K_in_Ω'
+  have hχ_one : ∀ x ∈ K, χ x = 1 := fun _ hx =>
+    hχ_one_nhds.self_of_nhdsSet hx
   have hχ_tsupp_chart : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α := by
     intro y hy
     have h1 : y ∈ Ω' := hχ_tsupp hy

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBound
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotGTotalBound
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.ChartBilinearVariationalIdentity
@@ -114,10 +115,11 @@ private theorem exists_smooth_metric_extension_with_density
   have h_K_in_Ω' : K ⊆ Ω' := Metric.self_subset_thickening δ_pos K
   have h_Ω'_in_K' : Ω' ⊆ K' := Metric.thickening_subset_cthickening δ K
   have h_K'_in_chart : K' ⊆ chartTargetEuclid (I := I) (M := M) α := hδ_subset
-  obtain ⟨χ, hχ_smooth, hχ_supp, hχ_range, hχ_one, hχ_tsupp⟩ :=
-    SmoothEllipticBilinearForm.exists_cutoff
-      (d := Module.finrank ℝ E)
-      (K := K) (Ω' := Ω') hK hΩ'_open h_K_in_Ω'
+  obtain ⟨χ, hχ_smooth, hχ_supp, hχ_one_nhds, hχ_tsupp, hχ_range⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact
+      (K := K) (U := Ω') hK hΩ'_open h_K_in_Ω'
+  have hχ_one : ∀ x ∈ K, χ x = 1 := fun _ hx =>
+    hχ_one_nhds.self_of_nhdsSet hx
   have hχ_tsupp_chart : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α := by
     intro y hy
     have h1 : y ∈ Ω' := hχ_tsupp hy
@@ -264,12 +266,13 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
       Metric.thickening δ (closure Ω') ⊆ chartTargetEuclid (I := I) (M := M) α := by
     intro x hx
     exact hδ_in_chart (Metric.thickening_subset_cthickening _ _ hx)
-  obtain ⟨χ, hχ_smooth, hχ_cs, hχ_range, hχ_one, hχ_tsupp⟩ :=
-    SmoothEllipticBilinearForm.exists_cutoff
-      (d := Module.finrank ℝ E)
+  obtain ⟨χ, hχ_smooth, hχ_cs, hχ_one_nhds, hχ_tsupp, hχ_range⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact
       (K := K_χ)
-      (Ω' := Metric.thickening δ (closure Ω'))
+      (U := Metric.thickening δ (closure Ω'))
       hK_χ_compact Metric.isOpen_thickening hK_χ_in_thick_δ
+  have hχ_one : ∀ x ∈ K_χ, χ x = 1 := fun _ hx =>
+    hχ_one_nhds.self_of_nhdsSet hx
   have hχ_tsupp_in_chart :
       tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α := by
     intro x hx

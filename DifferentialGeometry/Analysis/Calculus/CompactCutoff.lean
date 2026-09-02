@@ -42,6 +42,34 @@ theorem exists_bump_compact
         exact hx (hχzero x hxL))
       hL.isClosed).trans hLU
 
+theorem exists_bump_compact_with_fderiv_bound
+    {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K U : Set E}
+    (hK : IsCompact K)
+    (hU : IsOpen U)
+    (hKU : K ⊆ U) :
+    ∃ χ : E → ℝ,
+      ContDiff ℝ ∞ χ ∧
+      HasCompactSupport χ ∧
+      χ =ᶠ[nhdsSet K] 1 ∧
+      tsupport χ ⊆ U ∧
+      Set.range χ ⊆ Set.Icc 0 1 ∧
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ x : E, ‖fderiv ℝ χ x‖ ≤ C := by
+  obtain ⟨χ, hχ_smooth, hχ_compact, hχ_one, hχ_support, hχ_range⟩ :=
+    exists_bump_compact hK hU hKU
+  refine ⟨χ, hχ_smooth, hχ_compact, hχ_one, hχ_support, hχ_range, ?_⟩
+  have h_fderiv_cont : Continuous (fderiv ℝ χ) :=
+    hχ_smooth.continuous_fderiv (by simp)
+  have h_norm_cont : Continuous (fun x : E => ‖fderiv ℝ χ x‖) := h_fderiv_cont.norm
+  have h_fderiv_compact : HasCompactSupport (fderiv ℝ χ) := hχ_compact.fderiv ℝ
+  have h_norm_compact : HasCompactSupport (fun x : E => ‖fderiv ℝ χ x‖) := by
+    apply h_fderiv_compact.comp_left
+    simp
+  obtain ⟨C₀, hC₀⟩ := h_norm_cont.bddAbove_range_of_hasCompactSupport h_norm_compact
+  refine ⟨max C₀ 0, le_max_right _ _, fun x => ?_⟩
+  exact (hC₀ ⟨x, rfl⟩).trans (le_max_left _ _)
+
 theorem exists_bump_nhds
     {E H M : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

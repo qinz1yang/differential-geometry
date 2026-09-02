@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1Compl
-import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientWeakLimitLoc
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.LocalWeakLimit
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.SmoothWeakSolutionH2
 
 noncomputable section
@@ -108,7 +108,7 @@ theorem exists_weak_second_partial_of_uniform_diffQuot_bound
   obtain ⟨g_ik, hg_ik_memLp, hg_ik_partial, hg_ik_norm⟩ :=
     hasWeakPartialDeriv_of_diffQuot_uniform_bound_loc
       (d := Module.finrank ℝ E)
-      hΩ_open hΩ''_open hΩ''_compact_closure h_closureΩ''_in_Ω
+      hΩ_open hΩ''_open hΩ''_compact_closure
       hh₀ h_room_Ω h_wp_memLp_Ω k (hM_nn i k) h_bdd
   exact ⟨g_ik, hg_ik_memLp, hg_ik_partial, hg_ik_norm⟩
 

@@ -1,4 +1,9 @@
-import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientWeakLimit
+import DifferentialGeometry.Analysis.Calculus.CompactCutoff
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
+import Mathlib.Analysis.InnerProductSpace.Dual
+import Mathlib.Analysis.Normed.Lp.SmoothApprox
+import Mathlib.Analysis.Normed.Operator.Extend
+import Mathlib.MeasureTheory.Function.L2Space
 
 
 noncomputable section
@@ -16,7 +21,7 @@ variable {d : ℕ} [NeZero d]
 local notation "E" => EuclideanSpace ℝ (Fin d)
 
 omit [NeZero d] in
-private lemma smoothCSSupportedIn_zero_mem (Ω'' : Set E) :
+private lemma smoothCompactlySupportedIn_zero_mem (Ω'' : Set E) :
     ContDiff ℝ (⊤ : ℕ∞) (0 : E → ℝ) ∧
       HasCompactSupport (0 : E → ℝ) ∧
       tsupport (0 : E → ℝ) ⊆ Ω'' := by
@@ -27,7 +32,7 @@ private lemma smoothCSSupportedIn_zero_mem (Ω'' : Set E) :
   exact empty_subset _
 
 omit [NeZero d] in
-private lemma smoothCSSupportedIn_add_mem
+private lemma smoothCompactlySupportedIn_add_mem
     {Ω'' : Set E}
     {φ ψ : E → ℝ}
     (hφ : ContDiff ℝ (⊤ : ℕ∞) φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ Ω'')
@@ -40,7 +45,7 @@ private lemma smoothCSSupportedIn_add_mem
   exact union_subset hφ.2.2 hψ.2.2
 
 omit [NeZero d] in
-private lemma smoothCSSupportedIn_smul_mem
+private lemma smoothCompactlySupportedIn_smul_mem
     {Ω'' : Set E}
     (c : ℝ) {φ : E → ℝ}
     (hφ : ContDiff ℝ (⊤ : ℕ∞) φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ Ω'') :
@@ -58,57 +63,57 @@ private lemma smoothCSSupportedIn_smul_mem
     rw [hφx]; simp
   exact closure_mono hsubset
 
-def smoothCSSupportedInSubmodule (Ω'' : Set E) : Submodule ℝ (E → ℝ) where
+private def smoothCompactlySupportedInSubmodule (Ω'' : Set E) : Submodule ℝ (E → ℝ) where
   carrier := {φ | ContDiff ℝ (⊤ : ℕ∞) φ ∧ HasCompactSupport φ ∧
     tsupport φ ⊆ Ω''}
-  add_mem' := fun hφ hψ => smoothCSSupportedIn_add_mem (Ω'' := Ω'') hφ hψ
-  zero_mem' := smoothCSSupportedIn_zero_mem (Ω'' := Ω'')
-  smul_mem' := fun c _ hφ => smoothCSSupportedIn_smul_mem (Ω'' := Ω'') c hφ
+  add_mem' := fun hφ hψ => smoothCompactlySupportedIn_add_mem (Ω'' := Ω'') hφ hψ
+  zero_mem' := smoothCompactlySupportedIn_zero_mem (Ω'' := Ω'')
+  smul_mem' := fun c _ hφ => smoothCompactlySupportedIn_smul_mem (Ω'' := Ω'') c hφ
 
 omit [NeZero d] in
-@[simp] lemma mem_smoothCSSupportedInSubmodule {Ω'' : Set E} {φ : E → ℝ} :
-    φ ∈ (smoothCSSupportedInSubmodule (d := d) Ω'') ↔
+@[simp] private lemma mem_smoothCompactlySupportedInSubmodule {Ω'' : Set E} {φ : E → ℝ} :
+    φ ∈ (smoothCompactlySupportedInSubmodule (d := d) Ω'') ↔
       ContDiff ℝ (⊤ : ℕ∞) φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ Ω'' :=
   Iff.rfl
 
 omit [NeZero d] in
-private lemma memLp_two_restrict_of_smoothCS
+private lemma memLp_two_restrict_of_smoothCompactlySupported
     {Ω'' : Set E}
     {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφ_supp : HasCompactSupport φ) :
     MemLp φ 2 ((volume : Measure E).restrict Ω'') :=
   (hφ.continuous.memLp_of_hasCompactSupport hφ_supp).restrict _
 
-def smoothCSSupportedInToLp (Ω'' : Set E) :
-    smoothCSSupportedInSubmodule (d := d) Ω'' →ₗ[ℝ]
+private def smoothCompactlySupportedInToLp (Ω'' : Set E) :
+    smoothCompactlySupportedInSubmodule (d := d) Ω'' →ₗ[ℝ]
       Lp ℝ 2 ((volume : Measure E).restrict Ω'') where
   toFun φ :=
-    (memLp_two_restrict_of_smoothCS (d := d) (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1
+    (memLp_two_restrict_of_smoothCompactlySupported (d := d) (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1
   map_add' φ ψ := by
     refine Lp.ext ?_
-    have h1 : ⇑((memLp_two_restrict_of_smoothCS (d := d)
+    have h1 : ⇑((memLp_two_restrict_of_smoothCompactlySupported (d := d)
         (Ω'' := Ω'') (φ + ψ).2.1 (φ + ψ).2.2.1).toLp ((φ + ψ).1)) =ᵐ[
           (volume : Measure E).restrict Ω''] (φ + ψ).1 :=
       MemLp.coeFn_toLp _
-    have h2 : ⇑((memLp_two_restrict_of_smoothCS (d := d)
+    have h2 : ⇑((memLp_two_restrict_of_smoothCompactlySupported (d := d)
         (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1 +
-        (memLp_two_restrict_of_smoothCS (d := d)
+        (memLp_two_restrict_of_smoothCompactlySupported (d := d)
           (Ω'' := Ω'') ψ.2.1 ψ.2.2.1).toLp ψ.1) =ᵐ[
           (volume : Measure E).restrict Ω'']
-          ⇑((memLp_two_restrict_of_smoothCS (d := d)
+          ⇑((memLp_two_restrict_of_smoothCompactlySupported (d := d)
               (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1) +
-            ⇑((memLp_two_restrict_of_smoothCS (d := d)
+            ⇑((memLp_two_restrict_of_smoothCompactlySupported (d := d)
               (Ω'' := Ω'') ψ.2.1 ψ.2.2.1).toLp ψ.1) :=
       Lp.coeFn_add _ _
-    have h3 : ⇑((memLp_two_restrict_of_smoothCS (d := d)
+    have h3 : ⇑((memLp_two_restrict_of_smoothCompactlySupported (d := d)
         (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1) =ᵐ[
           (volume : Measure E).restrict Ω''] φ.1 :=
       MemLp.coeFn_toLp _
-    have h4 : ⇑((memLp_two_restrict_of_smoothCS (d := d)
+    have h4 : ⇑((memLp_two_restrict_of_smoothCompactlySupported (d := d)
         (Ω'' := Ω'') ψ.2.1 ψ.2.2.1).toLp ψ.1) =ᵐ[
           (volume : Measure E).restrict Ω''] ψ.1 :=
       MemLp.coeFn_toLp _
     have h_add_coe : ((φ + ψ :
-        (smoothCSSupportedInSubmodule (d := d) Ω'')).1 : E → ℝ) =
+        (smoothCompactlySupportedInSubmodule (d := d) Ω'')).1 : E → ℝ) =
         φ.1 + ψ.1 := rfl
     refine h1.trans ?_
     refine (h2.trans ?_).symm
@@ -118,51 +123,51 @@ def smoothCSSupportedInToLp (Ω'' : Set E) :
     rw [hx3, hx4]
   map_smul' c φ := by
     refine Lp.ext ?_
-    have h1 : ⇑((memLp_two_restrict_of_smoothCS (d := d)
+    have h1 : ⇑((memLp_two_restrict_of_smoothCompactlySupported (d := d)
         (Ω'' := Ω'') (c • φ).2.1 (c • φ).2.2.1).toLp
           ((c • φ).1)) =ᵐ[(volume : Measure E).restrict Ω''] (c • φ).1 :=
       MemLp.coeFn_toLp _
-    have h2 : ⇑(c • (memLp_two_restrict_of_smoothCS (d := d)
+    have h2 : ⇑(c • (memLp_two_restrict_of_smoothCompactlySupported (d := d)
         (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1)
         =ᵐ[(volume : Measure E).restrict Ω'']
-          c • ⇑((memLp_two_restrict_of_smoothCS (d := d)
+          c • ⇑((memLp_two_restrict_of_smoothCompactlySupported (d := d)
             (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1) :=
       Lp.coeFn_smul c _
-    have h3 : ⇑((memLp_two_restrict_of_smoothCS (d := d)
+    have h3 : ⇑((memLp_two_restrict_of_smoothCompactlySupported (d := d)
         (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1) =ᵐ[
           (volume : Measure E).restrict Ω''] φ.1 :=
       MemLp.coeFn_toLp _
     have h_smul_coe : ((c • φ :
-        (smoothCSSupportedInSubmodule (d := d) Ω'')).1 : E → ℝ) =
+        (smoothCompactlySupportedInSubmodule (d := d) Ω'')).1 : E → ℝ) =
         c • φ.1 := rfl
     refine h1.trans ?_
     rw [h_smul_coe]
     have h_id_eq :
-        (RingHom.id ℝ) c • (memLp_two_restrict_of_smoothCS (d := d)
+        (RingHom.id ℝ) c • (memLp_two_restrict_of_smoothCompactlySupported (d := d)
             (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1
-          = c • (memLp_two_restrict_of_smoothCS (d := d)
+          = c • (memLp_two_restrict_of_smoothCompactlySupported (d := d)
             (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1 := rfl
     rw [show ⇑((RingHom.id ℝ) c •
-        (memLp_two_restrict_of_smoothCS (d := d)
+        (memLp_two_restrict_of_smoothCompactlySupported (d := d)
           (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1) =
-        ⇑(c • (memLp_two_restrict_of_smoothCS (d := d)
+        ⇑(c • (memLp_two_restrict_of_smoothCompactlySupported (d := d)
           (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1) from by
       rw [h_id_eq]]
     filter_upwards [h2, h3] with x hx2 hx3
     rw [hx2, Pi.smul_apply, Pi.smul_apply, hx3]
 
 omit [NeZero d] in
-@[simp] lemma smoothCSSupportedInToLp_apply
-    (Ω'' : Set E) (φ : smoothCSSupportedInSubmodule (d := d) Ω'') :
-    smoothCSSupportedInToLp (d := d) Ω'' φ =
-      (memLp_two_restrict_of_smoothCS (d := d)
+@[simp] private lemma smoothCompactlySupportedInToLp_apply
+    (Ω'' : Set E) (φ : smoothCompactlySupportedInSubmodule (d := d) Ω'') :
+    smoothCompactlySupportedInToLp (d := d) Ω'' φ =
+      (memLp_two_restrict_of_smoothCompactlySupported (d := d)
         (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp φ.1 := rfl
 
 omit [NeZero d] in
-lemma denseRange_smoothCSSupportedInToLp
+private lemma denseRange_smoothCompactlySupportedInToLp
     {Ω'' : Set E} (hΩ''_open : IsOpen Ω'')
     (hΩ''_compact_closure : IsCompact (closure Ω'')) :
-    DenseRange (smoothCSSupportedInToLp (d := d) Ω'') := by
+    DenseRange (smoothCompactlySupportedInToLp (d := d) Ω'') := by
   classical
   have hΩ''_meas : MeasurableSet Ω'' := hΩ''_open.measurableSet
   have : IsFiniteMeasure ((volume : Measure E).restrict Ω'') := by
@@ -231,9 +236,10 @@ lemma denseRange_smoothCSSupportedInToLp
       h_le_K_plus_delta
     exact (ENNReal.add_lt_add_iff_left hK_le).mp h_eq |>.le
   obtain ⟨K, hK_compact, hK_sub, hK_meas_diff⟩ := hK_exists
-  obtain ⟨η, hη_smooth, hη_cs, hη_range, hη_one_on_K, hη_tsupp_in⟩ :=
-    NirenbergEuclidean.SmoothEllipticBilinearForm.exists_cutoff
-      (d := d) (K := K) (Ω' := Ω'') hK_compact hΩ''_open hK_sub
+  obtain ⟨η, hη_smooth, hη_cs, hη_one_nhds, hη_tsupp_in, hη_range⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact hK_compact hΩ''_open hK_sub
+  have hη_one_on_K : ∀ x ∈ K, η x = 1 := fun x hx =>
+    hη_one_nhds.self_of_nhdsSet hx
   set g : E → ℝ := fun x => η x * g₀ x with hg_def
   have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) g := hη_smooth.mul hg₀_smooth
   have hg_cs : HasCompactSupport g := hη_cs.mul_right
@@ -322,23 +328,23 @@ lemma denseRange_smoothCSSupportedInToLp
         le_antisymm hx h_norm_nn
       rw [h_lhs_eq]
       simp
-  refine ⟨smoothCSSupportedInToLp (d := d) Ω''
+  refine ⟨smoothCompactlySupportedInToLp (d := d) Ω''
     ⟨g, hg_smooth, hg_cs, hg_tsupp_in_Ω''⟩, ?_, ?_⟩
   · exact ⟨⟨g, hg_smooth, hg_cs, hg_tsupp_in_Ω''⟩, rfl⟩
   · rw [dist_comm, Lp.dist_def]
-    have h_g_eq_ae : ⇑(smoothCSSupportedInToLp (d := d) Ω''
+    have h_g_eq_ae : ⇑(smoothCompactlySupportedInToLp (d := d) Ω''
         ⟨g, hg_smooth, hg_cs, hg_tsupp_in_Ω''⟩) =ᵐ[
           (volume : Measure E).restrict Ω''] g := by
-      simp only [smoothCSSupportedInToLp_apply]
+      simp only [smoothCompactlySupportedInToLp_apply]
       exact MemLp.coeFn_toLp _
     have h_eLpNorm_eq :
-        eLpNorm (⇑(smoothCSSupportedInToLp (d := d) Ω''
+        eLpNorm (⇑(smoothCompactlySupportedInToLp (d := d) Ω''
             ⟨g, hg_smooth, hg_cs, hg_tsupp_in_Ω''⟩) - ⇑f) 2
           ((volume : Measure E).restrict Ω'') =
         eLpNorm ((g : E → ℝ) - ⇑f) 2 ((volume : Measure E).restrict Ω'') := by
       refine eLpNorm_congr_ae ?_
       filter_upwards [h_g_eq_ae] with x hx
-      change (⇑(smoothCSSupportedInToLp (d := d) Ω''
+      change (⇑(smoothCompactlySupportedInToLp (d := d) Ω''
           ⟨g, hg_smooth, hg_cs, hg_tsupp_in_Ω''⟩)) x - (⇑f) x =
         g x - (⇑f) x
       rw [hx]
@@ -453,18 +459,18 @@ private lemma integrable_w_partial_phi_loc
     (h_partial_cont.memLp_of_hasCompactSupport h_partial_supp).restrict _
   exact MemLp.integrable_mul hw_l2 h_partial_memLp
 
-def smoothTestFunctionalLoc
+private def smoothTestFunctionalLoc
     {Ω Ω'' : Set E} {w : E → ℝ}
     (hw_l2 : MemLp w 2 ((volume : Measure E).restrict Ω))
     (k : Fin d) :
-    smoothCSSupportedInSubmodule (d := d) Ω'' →ₗ[ℝ] ℝ where
+    smoothCompactlySupportedInSubmodule (d := d) Ω'' →ₗ[ℝ] ℝ where
   toFun φ :=
     -∫ x in Ω, w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)
       ∂(volume : Measure E)
   map_add' φ ψ := by
     change
       -∫ x in Ω, w x *
-        (fderiv ℝ ((φ + ψ : smoothCSSupportedInSubmodule (d := d) Ω'').1) x)
+        (fderiv ℝ ((φ + ψ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1) x)
           (EuclideanSpace.single k 1) ∂(volume : Measure E) =
       (-∫ x in Ω, w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)
           ∂(volume : Measure E)) +
@@ -473,19 +479,19 @@ def smoothTestFunctionalLoc
     have hφ_diff : Differentiable ℝ φ.1 := φ.2.1.differentiable (by simp)
     have hψ_diff : Differentiable ℝ ψ.1 := ψ.2.1.differentiable (by simp)
     have h_fderiv_sum : ∀ x : E,
-        (fderiv ℝ ((φ + ψ : smoothCSSupportedInSubmodule (d := d) Ω'').1) x)
+        (fderiv ℝ ((φ + ψ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1) x)
             (EuclideanSpace.single k 1) =
           (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1) +
             (fderiv ℝ ψ.1 x) (EuclideanSpace.single k 1) := by
       intro x
-      have hcoe : ((φ + ψ : smoothCSSupportedInSubmodule (d := d) Ω'').1 : E → ℝ) =
+      have hcoe : ((φ + ψ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1 : E → ℝ) =
           φ.1 + ψ.1 := rfl
       rw [hcoe]
       rw [show (φ.1 + ψ.1 : E → ℝ) = fun y => φ.1 y + ψ.1 y from rfl]
       rw [fderiv_fun_add (hφ_diff.differentiableAt) (hψ_diff.differentiableAt)]
       simp
     have hint_sum : ∀ x : E,
-        w x * (fderiv ℝ ((φ + ψ : smoothCSSupportedInSubmodule (d := d) Ω'').1) x)
+        w x * (fderiv ℝ ((φ + ψ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1) x)
               (EuclideanSpace.single k 1) =
           w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1) +
             w x * (fderiv ℝ ψ.1 x) (EuclideanSpace.single k 1) := by
@@ -494,14 +500,14 @@ def smoothTestFunctionalLoc
     have hψ_int := integrable_w_partial_phi_loc (d := d) hw_l2 ψ.2.1 ψ.2.2.1 k
     have h_int_eq :
         ∫ x in Ω, w x *
-            (fderiv ℝ ((φ + ψ : smoothCSSupportedInSubmodule (d := d) Ω'').1) x)
+            (fderiv ℝ ((φ + ψ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1) x)
               (EuclideanSpace.single k 1) ∂(volume : Measure E) =
           (∫ x in Ω, w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)
               ∂(volume : Measure E)) +
             ∫ x in Ω, w x * (fderiv ℝ ψ.1 x) (EuclideanSpace.single k 1)
               ∂(volume : Measure E) := by
       rw [show (fun x => w x *
-          (fderiv ℝ ((φ + ψ : smoothCSSupportedInSubmodule (d := d) Ω'').1) x)
+          (fderiv ℝ ((φ + ψ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1) x)
             (EuclideanSpace.single k 1)) =
         (fun x =>
             w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1) +
@@ -512,17 +518,17 @@ def smoothTestFunctionalLoc
   map_smul' c φ := by
     change
       -∫ x in Ω, w x *
-        (fderiv ℝ ((c • φ : smoothCSSupportedInSubmodule (d := d) Ω'').1) x)
+        (fderiv ℝ ((c • φ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1) x)
           (EuclideanSpace.single k 1) ∂(volume : Measure E) =
       c • (-∫ x in Ω, w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)
             ∂(volume : Measure E))
     have hφ_diff : Differentiable ℝ φ.1 := φ.2.1.differentiable (by simp)
     have h_fderiv_smul : ∀ x : E,
-        (fderiv ℝ ((c • φ : smoothCSSupportedInSubmodule (d := d) Ω'').1) x)
+        (fderiv ℝ ((c • φ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1) x)
             (EuclideanSpace.single k 1) =
           c * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1) := by
       intro x
-      have hcoe : ((c • φ : smoothCSSupportedInSubmodule (d := d) Ω'').1
+      have hcoe : ((c • φ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1
           : E → ℝ) = c • φ.1 := rfl
       rw [hcoe]
       have heq2 : (c • φ.1 : E → ℝ) = fun y => c * φ.1 y := by ext y; rfl
@@ -530,18 +536,18 @@ def smoothTestFunctionalLoc
       rw [fderiv_const_mul (hφ_diff.differentiableAt) c]
       simp
     have hint_smul : ∀ x : E,
-        w x * (fderiv ℝ ((c • φ : smoothCSSupportedInSubmodule (d := d) Ω'').1) x)
+        w x * (fderiv ℝ ((c • φ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1) x)
               (EuclideanSpace.single k 1) =
           c * (w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)) := by
       intro x; rw [h_fderiv_smul x]; ring
     have h_int_eq :
-        ∫ x in Ω, w x * (fderiv ℝ ((c • φ : smoothCSSupportedInSubmodule
+        ∫ x in Ω, w x * (fderiv ℝ ((c • φ : smoothCompactlySupportedInSubmodule
             (d := d) Ω'').1) x)
               (EuclideanSpace.single k 1) ∂(volume : Measure E) =
           c * ∫ x in Ω, w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)
             ∂(volume : Measure E) := by
       rw [show (fun x => w x *
-          (fderiv ℝ ((c • φ : smoothCSSupportedInSubmodule (d := d) Ω'').1) x)
+          (fderiv ℝ ((c • φ : smoothCompactlySupportedInSubmodule (d := d) Ω'').1) x)
             (EuclideanSpace.single k 1)) =
         (fun x => c * (w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)))
           from by ext x; exact hint_smul x]
@@ -550,10 +556,10 @@ def smoothTestFunctionalLoc
     rw [smul_eq_mul]; ring
 
 omit [NeZero d] in
-@[simp] lemma smoothTestFunctional_loc_apply
+@[simp] private lemma smoothTestFunctional_loc_apply
     {Ω Ω'' : Set E} {w : E → ℝ}
     (hw_l2 : MemLp w 2 ((volume : Measure E).restrict Ω))
-    (k : Fin d) (φ : smoothCSSupportedInSubmodule (d := d) Ω'') :
+    (k : Fin d) (φ : smoothCompactlySupportedInSubmodule (d := d) Ω'') :
     smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ =
       -∫ x in Ω, w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)
         ∂(volume : Measure E) := rfl
@@ -805,7 +811,7 @@ private lemma abs_smoothTestFunctional_loc_le
     (h_bdd : ∀ h : ℝ, 0 < |h| → |h| ≤ h₀ →
       eLpNorm (diffQuot k h w) 2 ((volume : Measure E).restrict Ω'')
         ≤ ENNReal.ofReal M)
-    (φ : smoothCSSupportedInSubmodule (d := d) Ω'') :
+    (φ : smoothCompactlySupportedInSubmodule (d := d) Ω'') :
     |smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ| ≤
       M * (eLpNorm φ.1 2 ((volume : Measure E).restrict Ω'')).toReal := by
   let _ := hΩ_open
@@ -839,7 +845,7 @@ private lemma abs_smoothTestFunctional_loc_le
     have hmul := hh0.const_mul h₀
     simpa using hmul
   have hφ_memLp : MemLp φ.1 2 ((volume : Measure E).restrict Ω'') :=
-    memLp_two_restrict_of_smoothCS (d := d) (Ω'' := Ω'') φ.2.1 φ.2.2.1
+    memLp_two_restrict_of_smoothCompactlySupported (d := d) (Ω'' := Ω'') φ.2.1 φ.2.2.1
   have hφ_memLp_global : MemLp φ.1 2 (volume : Measure E) :=
     φ.2.1.continuous.memLp_of_hasCompactSupport φ.2.2.1
   have h_conv : Tendsto (fun n =>
@@ -1103,30 +1109,30 @@ private lemma abs_smoothTestFunctional_loc_le_lpNorm
     (h_bdd : ∀ h : ℝ, 0 < |h| → |h| ≤ h₀ →
       eLpNorm (diffQuot k h w) 2 ((volume : Measure E).restrict Ω'')
         ≤ ENNReal.ofReal M)
-    (φ : smoothCSSupportedInSubmodule (d := d) Ω'') :
+    (φ : smoothCompactlySupportedInSubmodule (d := d) Ω'') :
     |smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ| ≤
-      M * ‖smoothCSSupportedInToLp (d := d) Ω'' φ‖ := by
+      M * ‖smoothCompactlySupportedInToLp (d := d) Ω'' φ‖ := by
   have h := abs_smoothTestFunctional_loc_le (d := d) hΩ_open hΩ''_open
     hΩ''_compact_closure hh₀ h_room hw_l2 k hM_nn h_bdd φ
   have h_norm_eq :
-      ‖smoothCSSupportedInToLp (d := d) Ω'' φ‖ =
+      ‖smoothCompactlySupportedInToLp (d := d) Ω'' φ‖ =
         (eLpNorm φ.1 2 ((volume : Measure E).restrict Ω'')).toReal := by
-    rw [show (smoothCSSupportedInToLp (d := d) Ω'' φ :
+    rw [show (smoothCompactlySupportedInToLp (d := d) Ω'' φ :
         Lp ℝ 2 ((volume : Measure E).restrict Ω'')) =
-      (memLp_two_restrict_of_smoothCS (d := d) (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp
+      (memLp_two_restrict_of_smoothCompactlySupported (d := d) (Ω'' := Ω'') φ.2.1 φ.2.2.1).toLp
         φ.1 from rfl]
     exact Lp.norm_toLp _ _
   rw [h_norm_eq]
   exact h
 
-def smoothTestFunctionalLocExt
+private def smoothTestFunctionalLocExt
     {Ω Ω'' : Set E}
     {w : E → ℝ}
     (hw_l2 : MemLp w 2 ((volume : Measure E).restrict Ω))
     (k : Fin d) :
     Lp ℝ 2 ((volume : Measure E).restrict Ω'') →L[ℝ] ℝ :=
   (smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k).extendOfNorm
-    (smoothCSSupportedInToLp (d := d) Ω'')
+    (smoothCompactlySupportedInToLp (d := d) Ω'')
 
 omit [NeZero d] in
 private lemma opNorm_smoothTestFunctional_loc_ext_le
@@ -1144,7 +1150,7 @@ private lemma opNorm_smoothTestFunctional_loc_ext_le
     ‖smoothTestFunctionalLocExt (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k‖ ≤ M := by
   unfold smoothTestFunctionalLocExt
   refine LinearMap.opNorm_extendOfNorm_le
-    (denseRange_smoothCSSupportedInToLp (d := d) hΩ''_open hΩ''_compact_closure)
+    (denseRange_smoothCompactlySupportedInToLp (d := d) hΩ''_open hΩ''_compact_closure)
     hM_nn ?_
   intro φ
   exact abs_smoothTestFunctional_loc_le_lpNorm (d := d) hΩ_open hΩ''_open
@@ -1163,19 +1169,19 @@ private lemma smoothTestFunctional_loc_ext_apply
     (h_bdd : ∀ h : ℝ, 0 < |h| → |h| ≤ h₀ →
       eLpNorm (diffQuot k h w) 2 ((volume : Measure E).restrict Ω'')
         ≤ ENNReal.ofReal M)
-    (φ : smoothCSSupportedInSubmodule (d := d) Ω'') :
+    (φ : smoothCompactlySupportedInSubmodule (d := d) Ω'') :
     smoothTestFunctionalLocExt (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k
-        (smoothCSSupportedInToLp (d := d) Ω'' φ) =
+        (smoothCompactlySupportedInToLp (d := d) Ω'' φ) =
       smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ := by
   unfold smoothTestFunctionalLocExt
   refine LinearMap.extendOfNorm_eq
-    (denseRange_smoothCSSupportedInToLp (d := d) hΩ''_open hΩ''_compact_closure)
+    (denseRange_smoothCompactlySupportedInToLp (d := d) hΩ''_open hΩ''_compact_closure)
     ⟨M, ?_⟩ φ
   intro ψ
   exact abs_smoothTestFunctional_loc_le_lpNorm (d := d) hΩ_open hΩ''_open
     hΩ''_compact_closure hh₀ h_room hw_l2 k hM_nn h_bdd ψ
 
-def smoothTestFunctionalLocRiesz
+private def smoothTestFunctionalLocRiesz
     {Ω Ω'' : Set E}
     {w : E → ℝ}
     (hw_l2 : MemLp w 2 ((volume : Measure E).restrict Ω))
@@ -1214,7 +1220,6 @@ theorem hasWeakPartialDeriv_of_diffQuot_uniform_bound_loc
     {Ω : Set E} (hΩ_open : IsOpen Ω)
     {Ω'' : Set E} (hΩ''_open : IsOpen Ω'')
     (hΩ''_compact_closure : IsCompact (closure Ω''))
-    (_hΩ''_in_Ω : closure Ω'' ⊆ Ω)
     {h₀ : ℝ} (hh₀ : 0 < h₀)
     (h_room : Metric.cthickening h₀ (closure Ω'') ⊆ Ω)
     {w : E → ℝ}
@@ -1227,46 +1232,51 @@ theorem hasWeakPartialDeriv_of_diffQuot_uniform_bound_loc
       MemLp g 2 ((volume : Measure E).restrict Ω'') ∧
       DeGiorgi.HasWeakPartialDeriv (d := d) k g w Ω'' ∧
       eLpNorm g 2 ((volume : Measure E).restrict Ω'') ≤ ENNReal.ofReal M := by
+  have h_closure_in_room :
+      closure Ω'' ⊆ Metric.cthickening h₀ (closure Ω'') := by
+    intro x hx
+    exact Metric.self_subset_cthickening (δ := h₀) (closure Ω'') hx
+  have hΩ''_in_Ω : closure Ω'' ⊆ Ω := h_closure_in_room.trans h_room
   set g_lp : Lp ℝ 2 ((volume : Measure E).restrict Ω'') :=
     smoothTestFunctionalLocRiesz (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k with hg_lp_def
   refine ⟨⇑g_lp, ?_, ?_, ?_⟩
   · exact Lp.memLp g_lp
   · intro φ hφ_smooth hφ_supp hφ_supp_in
-    set φ_cs : smoothCSSupportedInSubmodule (d := d) Ω'' :=
+    set φ_cs : smoothCompactlySupportedInSubmodule (d := d) Ω'' :=
       ⟨φ, hφ_smooth, hφ_supp, hφ_supp_in⟩ with hφ_cs_def
     have h_ext_apply :=
       smoothTestFunctional_loc_ext_apply (d := d) hΩ_open hΩ''_open
         hΩ''_compact_closure hh₀ h_room hw_l2 k hM_nn h_bdd φ_cs
     have h_ext_inner :=
       smoothTestFunctional_loc_ext_eq_inner (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k
-        (smoothCSSupportedInToLp (d := d) Ω'' φ_cs)
+        (smoothCompactlySupportedInToLp (d := d) Ω'' φ_cs)
     have h_func_val :
         smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ_cs =
           -∫ x in Ω, w x * (fderiv ℝ φ x) (EuclideanSpace.single k 1)
             ∂(volume : Measure E) := by
       rw [smoothTestFunctional_loc_apply]
     have h_inner_def := L2.inner_def (𝕜 := ℝ) g_lp
-      (smoothCSSupportedInToLp (d := d) Ω'' φ_cs)
+      (smoothCompactlySupportedInToLp (d := d) Ω'' φ_cs)
     have h_coeFn_phi :
-        ⇑(smoothCSSupportedInToLp (d := d) Ω'' φ_cs) =ᵐ[
+        ⇑(smoothCompactlySupportedInToLp (d := d) Ω'' φ_cs) =ᵐ[
           (volume : Measure E).restrict Ω''] φ := by
-      simp only [smoothCSSupportedInToLp_apply]
+      simp only [smoothCompactlySupportedInToLp_apply]
       exact MemLp.coeFn_toLp _
     have h_int_eq :
-        ∫ x, ⟪g_lp x, (smoothCSSupportedInToLp (d := d) Ω'' φ_cs) x⟫_ℝ
+        ∫ x, ⟪g_lp x, (smoothCompactlySupportedInToLp (d := d) Ω'' φ_cs) x⟫_ℝ
           ∂((volume : Measure E).restrict Ω'') =
           ∫ x in Ω'', g_lp x * φ x ∂(volume : Measure E) := by
       have h_eq : ∫ x, ⟪g_lp x,
-            (smoothCSSupportedInToLp (d := d) Ω'' φ_cs) x⟫_ℝ
+            (smoothCompactlySupportedInToLp (d := d) Ω'' φ_cs) x⟫_ℝ
           ∂((volume : Measure E).restrict Ω'') =
           ∫ x, g_lp x * φ x ∂((volume : Measure E).restrict Ω'') := by
         refine integral_congr_ae ?_
         filter_upwards [h_coeFn_phi] with x hx
         have h_inner_eq :
-            ⟪(g_lp x : ℝ), (smoothCSSupportedInToLp (d := d) Ω'' φ_cs) x⟫_ℝ =
-              (smoothCSSupportedInToLp (d := d) Ω'' φ_cs) x * (g_lp x : ℝ) :=
+            ⟪(g_lp x : ℝ), (smoothCompactlySupportedInToLp (d := d) Ω'' φ_cs) x⟫_ℝ =
+              (smoothCompactlySupportedInToLp (d := d) Ω'' φ_cs) x * (g_lp x : ℝ) :=
           RCLike.inner_apply (𝕜 := ℝ) (g_lp x)
-            ((smoothCSSupportedInToLp (d := d) Ω'' φ_cs) x)
+            ((smoothCompactlySupportedInToLp (d := d) Ω'' φ_cs) x)
         rw [h_inner_eq, hx]; ring
       rw [h_eq]
     have h_chain :
@@ -1323,7 +1333,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_uniform_bound_loc
         refine Filter.Eventually.of_forall ?_
         intro x
         by_cases hx_Ω'' : x ∈ Ω''
-        · have hx_Ω : x ∈ Ω := _hΩ''_in_Ω (subset_closure hx_Ω'')
+        · have hx_Ω : x ∈ Ω := hΩ''_in_Ω (subset_closure hx_Ω'')
           rw [Set.indicator_of_mem hx_Ω, Set.indicator_of_mem hx_Ω'']
         · rw [Set.indicator_of_notMem hx_Ω'']
           by_cases hx_Ω : x ∈ Ω

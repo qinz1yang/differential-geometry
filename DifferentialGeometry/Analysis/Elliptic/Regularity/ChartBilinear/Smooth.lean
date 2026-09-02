@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import DifferentialGeometry.Analysis.Elliptic.Operator.ChartLocalLaplacian
 import DifferentialGeometry.Analysis.Elliptic.Operator.ChartMeasureEquiv
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
@@ -955,11 +956,12 @@ private theorem bilinear_identity_of_smooth
   have hKmain_in_U : K_main ⊆ U := Metric.self_subset_thickening hδ_pos K_main
   have hU_in_K1 : U ⊆ K1 := Metric.thickening_subset_cthickening δ K_main
   have hK1_in_chart : K1 ⊆ chartTargetEuclid (I := I) (M := M) α := hδ
-  obtain ⟨ρ, hρ_smooth, hρ_cs, _hρ_range, hρ_one, hρ_tsupp⟩ :=
-    SmoothEllipticBilinearForm.exists_cutoff
-      (d := Module.finrank ℝ E)
-      (K := K1) (Ω' := chartTargetEuclid (I := I) (M := M) α)
+  obtain ⟨ρ, hρ_smooth, hρ_cs, hρ_one_nhds, hρ_tsupp, _hρ_range⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact
+      (K := K1) (U := chartTargetEuclid (I := I) (M := M) α)
       hK1_compact hOmega_open hK1_in_chart
+  have hρ_one : ∀ x ∈ K1, ρ x = 1 := fun _ hx =>
+    hρ_one_nhds.self_of_nhdsSet hx
   have hρ_one_on_Kmain : ∀ y ∈ K_main, ρ y = 1 := fun y hy =>
     hρ_one y (hU_in_K1 (hKmain_in_U hy))
   have hρ_one_on_U : ∀ y ∈ U, ρ y = 1 := fun y hy =>
