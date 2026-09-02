@@ -342,23 +342,6 @@ theorem sqrt_metric_inner_sub_le (g : SmoothRiemannianMetric I M) (x : M)
   rw [hneg] at h
   exact h
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem gFibreOpBound_mono_of_le (g₀ : SmoothRiemannianMetric I M)
-    (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
-    {δ δ' : ℝ} (hle : δ ≤ δ')
-    (hb : metricCauchySchwarzBound (I := I) (M := M) g₀ h δ) :
-    metricCauchySchwarzBound (I := I) (M := M) g₀ h δ' := by
-  intro y a b
-  refine le_trans (hb y a b) ?_
-  have hnn : 0 ≤ Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b) :=
-    mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
-  calc δ * Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b)
-      = δ * (Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b)) := by ring
-    _ ≤ δ' * (Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b)) :=
-        mul_le_mul_of_nonneg_right hle hnn
-    _ = δ' * Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b) := by ring
-
 end DifferentialGeometry.Analysis.Sobolev
 
 end

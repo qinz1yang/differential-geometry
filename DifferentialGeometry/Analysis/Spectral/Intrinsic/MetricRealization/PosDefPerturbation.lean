@@ -33,6 +33,33 @@ def metricCauchySchwarzBound
   ∀ (x : M) (v w : TangentSpace I x),
     |h x v w| ≤ δ * Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w)
 
+omit [Module.Finite ℝ E] in
+theorem metricCauchySchwarzBound_mono
+    (g : SmoothRiemannianMetric I M)
+    (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
+    {δ δ' : ℝ} (hle : δ ≤ δ') (hb : metricCauchySchwarzBound g h δ) :
+    metricCauchySchwarzBound g h δ' := by
+  intro x v w
+  refine (hb x v w).trans ?_
+  have hnonneg : 0 ≤ Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) :=
+    mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+  calc δ * Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w)
+      = δ * (Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w)) := by ring
+    _ ≤ δ' * (Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w)) :=
+      mul_le_mul_of_nonneg_right hle hnonneg
+    _ = δ' * Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) := by ring
+
+omit [Module.Finite ℝ E] in
+theorem metricCauchySchwarzBound_min
+    (g : SmoothRiemannianMetric I M)
+    (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
+    {δ δ' : ℝ} (hδ : metricCauchySchwarzBound g h δ)
+    (hδ' : metricCauchySchwarzBound g h δ') :
+    metricCauchySchwarzBound g h (min δ δ') := by
+  rcases le_total δ δ' with hle | hle
+  · simpa [min_eq_left hle] using hδ
+  · simpa [min_eq_right hle] using hδ'
+
 abbrev gFibreOpBound
     (g : SmoothRiemannianMetric I M)
     (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)

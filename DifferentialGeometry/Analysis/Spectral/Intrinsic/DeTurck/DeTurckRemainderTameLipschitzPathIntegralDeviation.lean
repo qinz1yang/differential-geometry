@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
@@ -160,11 +161,11 @@ private theorem metricPerturbationPath_inverseMetricDifferenceSlotCoefficient_ri
     convexPerturbation_gFibreOpBound (I := I) g₀ T T' hδ hδ' ht.1 ht.2
   have hδ₀b : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' t)) δ₀ :=
-    gFibreOpBound_mono_fw (I := I) (M := M) g₀ _
+    metricCauchySchwarzBound_mono (I := I) (M := M) g₀ _
       (convexCombination_le_fw hδ'_le hδ_le ht.1 ht.2) hδconv
   have hmin : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' t)) δc :=
-    gFibreOpBound_min_fw (I := I) (M := M) g₀ _ hβconv hδ₀b
+    metricCauchySchwarzBound_min (I := I) (M := M) g₀ _ hβconv hδ₀b
   have hδc_nn : 0 ≤ δc :=
     le_min (convexCombination_nonneg_fw hβT'_nn hβT_nn ht.1 ht.2) hδ₀_nn
   have hδc_lt : δc < 1 := lt_of_le_of_lt (min_le_right _ _) hδ₀

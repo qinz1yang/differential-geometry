@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.UniformSolutionBounds
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
 
 set_option autoImplicit false
 
@@ -74,7 +75,7 @@ private theorem exists_lowRealize_at
         _ ≤ delta / 2 * 2 :=
           mul_le_mul_of_nonneg_left hCP2 (by positivity)
         _ = delta := by ring
-    exact gFibreOpBound_mono_of_le (I := I) (M := M) g _ hcoeff (hlin T)
+    exact metricCauchySchwarzBound_mono (I := I) (M := M) g _ hcoeff (hlin T)
   · rfl
   · simpa only [D] using hradiuscap
 

@@ -1256,37 +1256,6 @@ theorem normSq_iteratedCovGrad_reindex_eq_fw (g₀ : SmoothRiemannianMetric I M)
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 R ρ i x
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem gFibreOpBound_mono_fw (g₀ : SmoothRiemannianMetric I M)
-    (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
-    {δ δ' : ℝ} (hle : δ ≤ δ')
-    (hb : metricCauchySchwarzBound (I := I) (M := M) g₀ h δ) :
-    metricCauchySchwarzBound (I := I) (M := M) g₀ h δ' := by
-  intro y a b
-  refine le_trans (hb y a b) ?_
-  have hnn : 0 ≤ Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b) :=
-    mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
-  calc δ * Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b)
-      = δ * (Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b)) := by ring
-    _ ≤ δ' * (Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b)) :=
-        mul_le_mul_of_nonneg_right hle hnn
-    _ = δ' * Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b) := by ring
-
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem gFibreOpBound_min_fw (g₀ : SmoothRiemannianMetric I M)
-    (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
-    {δ₁ δ₂ : ℝ} (h₁ : metricCauchySchwarzBound (I := I) (M := M) g₀ h δ₁)
-    (h₂ : metricCauchySchwarzBound (I := I) (M := M) g₀ h δ₂) :
-    metricCauchySchwarzBound (I := I) (M := M) g₀ h (min δ₁ δ₂) := by
-  intro x v w
-  rcases le_total δ₁ δ₂ with hle | hle
-  · rw [min_eq_left hle]
-    exact h₁ x v w
-  · rw [min_eq_right hle]
-    exact h₂ x v w
-
 end DifferentialGeometry.Analysis.Spectral
 
 end

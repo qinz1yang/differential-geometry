@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.Pointwise
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 
@@ -103,7 +104,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_rie
   have hδP_nn : 0 ≤ δP := le_max_right _ _
   have hδP_bound : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ P)
     δP :=
-    gFibreOpBound_mono_of_le (I := I) (M := M) g₀ _ (le_max_left _ _) hδs_raw
+    metricCauchySchwarzBound_mono (I := I) (M := M) g₀ _ (le_max_left _ _) hδs_raw
   have hδP_le : δP ≤ δ₁ := by
     refine max_le ?_ hδ₁_nn
     rw [abs_of_nonneg (by linarith : (0:ℝ) ≤ 1 - s), abs_of_nonneg hs0]
