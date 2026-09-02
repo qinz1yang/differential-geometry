@@ -3050,6 +3050,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverRoundTwoSpher
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCurvatureRank
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelQuotient
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PositiveModelCover
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.PositiveModelCoverRankThree
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialGrowth
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialIntegralCurve
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialSplitting
