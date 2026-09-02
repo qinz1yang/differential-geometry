@@ -25,7 +25,7 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
+open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergSubstitution
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionNonSmoothChartBilinear

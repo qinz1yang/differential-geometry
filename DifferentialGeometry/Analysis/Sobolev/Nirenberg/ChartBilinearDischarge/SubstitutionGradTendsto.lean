@@ -23,7 +23,6 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 
@@ -35,11 +34,11 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma fderiv_standardNirenbergTest_apply
+private lemma fderiv_nirenbergTestFunction_apply
     {η u : EuclN → ℝ}
     (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hu : ContDiff ℝ (⊤ : ℕ∞) u)
     (k j : Fin (Module.finrank ℝ E)) {h : ℝ} (hh : h ≠ 0) (x : EuclN) :
-    (fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E) k h η u) x)
+    (fderiv ℝ (nirenbergTestFunction (d := Module.finrank ℝ E) k h η u) x)
         (EuclideanSpace.single j 1) =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k (-h)
@@ -52,15 +51,6 @@ private lemma fderiv_standardNirenbergTest_apply
               (d := Module.finrank ℝ E) k h
               (fun z : EuclN =>
                 (fderiv ℝ u z) (EuclideanSpace.single j 1)) y) x := by
-  have h_eq :
-      standardNirenbergTest (d := Module.finrank ℝ E) k h η u =
-      NirenbergTestFunction.nirenbergTestFunction
-        (d := Module.finrank ℝ E) k h η u := by
-    funext y
-    unfold standardNirenbergTest
-      NirenbergTestFunction.nirenbergTestFunction
-    rfl
-  rw [h_eq]
   exact NirenbergTestFunction.fderiv_nirenbergTestFunction_apply
     (d := Module.finrank ℝ E) hη hu k j hh x
 
@@ -371,7 +361,7 @@ private lemma eLpNorm_mul_bounded
   rw [h_sqrt_M2]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
+theorem nirenbergTestFunction_seq_grad_tendsto_eLpNorm
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -401,7 +391,7 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     (j : Fin (Module.finrank ℝ E)) :
     Tendsto (fun n => eLpNorm
       (fun y =>
-        (fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E)
+        (fderiv ℝ (nirenbergTestFunction (d := Module.finrank ℝ E)
           k h η (uSeq n)) y) (EuclideanSpace.single j 1) -
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k (-h)
@@ -427,12 +417,12 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
         (fun z' => (fderiv ℝ (uSeq n) z') (EuclideanSpace.single j 1)) z
     with hF_n_def
   have h_fderiv_expansion : ∀ n y,
-      (fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E)
+      (fderiv ℝ (nirenbergTestFunction (d := Module.finrank ℝ E)
         k h η (uSeq n)) y) (EuclideanSpace.single j 1) =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k (-h) (F_n n) y := by
     intro n y
-    exact fderiv_standardNirenbergTest_apply (j := j) hη (hu_seq_smooth n)
+    exact fderiv_nirenbergTestFunction_apply (j := j) hη (hu_seq_smooth n)
       k hh y
   set B : EuclN → ℝ := fun z =>
     (η z)^2 *
@@ -443,7 +433,7 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
         (d := Module.finrank ℝ E) k h D.uChart z
     with hB_def
   have h_diff_eq : ∀ n y,
-      ((fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E)
+      ((fderiv ℝ (nirenbergTestFunction (d := Module.finrank ℝ E)
         k h η (uSeq n)) y) (EuclideanSpace.single j 1) -
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k (-h) B y) =
@@ -1029,7 +1019,7 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
         Measure.restrict_le_self
   have h_goal_eq : ∀ n,
       (fun y =>
-        (fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E)
+        (fderiv ℝ (nirenbergTestFunction (d := Module.finrank ℝ E)
           k h η (uSeq n)) y) (EuclideanSpace.single j 1) -
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k (-h)
@@ -1047,7 +1037,7 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     exact h_diff_eq n y
   rw [show (fun n => eLpNorm
         (fun y =>
-          (fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E)
+          (fderiv ℝ (nirenbergTestFunction (d := Module.finrank ℝ E)
             k h η (uSeq n)) y) (EuclideanSpace.single j 1) -
           DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k (-h)

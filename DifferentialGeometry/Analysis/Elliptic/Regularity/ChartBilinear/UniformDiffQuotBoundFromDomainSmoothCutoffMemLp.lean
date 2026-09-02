@@ -28,7 +28,6 @@ open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBound
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeSmoothApprox

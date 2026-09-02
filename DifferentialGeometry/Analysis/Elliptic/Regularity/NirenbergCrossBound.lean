@@ -27,7 +27,7 @@ open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Sobolev
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
+open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 
 private local instance : MeasurableSpace E := borel E

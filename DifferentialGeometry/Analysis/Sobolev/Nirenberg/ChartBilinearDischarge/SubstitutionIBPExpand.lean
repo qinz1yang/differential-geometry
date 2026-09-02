@@ -23,7 +23,6 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeSmoothApprox
@@ -57,17 +56,17 @@ theorem chart_bilinear_identity_h1_0_smooth_seq
               weightedInvGramOnEuclid (I := I) g α i j y *
                 D.weakPartial i y *
                 (fderiv ℝ
-                  (standardNirenbergTest (d := Module.finrank ℝ E) k h η
+                  (nirenbergTestFunction (d := Module.finrank ℝ E) k h η
                     (uSeq n)) y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN)) +
         (∫ y in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α y * D.uChart y *
-            standardNirenbergTest (d := Module.finrank ℝ E) k h η
+            nirenbergTestFunction (d := Module.finrank ℝ E) k h η
               (uSeq n) y
           ∂(volume : Measure EuclN)) =
       ∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.fChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η
             (uSeq n) y
         ∂(volume : Measure EuclN) := by
   classical
@@ -75,12 +74,12 @@ theorem chart_bilinear_identity_h1_0_smooth_seq
     cthickening_K_0_isCompact (E := E) hK_0_compact
   intro n
   obtain ⟨h_v_smooth, h_v_cs⟩ :=
-    standardNirenbergTest_smooth_seq hη hη_supp k hh hu_seq_smooth n
-  have h_v_supp : tsupport (standardNirenbergTest (d := Module.finrank ℝ E)
+    nirenbergTestFunction_smooth_seq hη hη_supp k hh hu_seq_smooth n
+  have h_v_supp : tsupport (nirenbergTestFunction (d := Module.finrank ℝ E)
       k h η (uSeq n)) ⊆ Metric.cthickening |h| K_0 :=
-    standardNirenbergTest_tsupport_in_thickening (E := E) k h
+    nirenbergTestFunction_tsupport_in_thickening (E := E) k h
       hη_supp_in_K_0 (uSeq n)
-  set ψ : EuclN → ℝ := standardNirenbergTest (d := Module.finrank ℝ E)
+  set ψ : EuclN → ℝ := nirenbergTestFunction (d := Module.finrank ℝ E)
     k h η (uSeq n) with hψ_def
   set weak_partial_ψ : Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun j x => (fderiv ℝ ψ x) (EuclideanSpace.single j 1) with hwp_def
@@ -161,7 +160,7 @@ theorem variational_identity_at_v_h
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (weak_partial_v_h : Fin (Module.finrank ℝ E) → EuclN → ℝ)
-    (hv_h_lp : MemLp (standardNirenbergTest (d := Module.finrank ℝ E)
+    (hv_h_lp : MemLp (nirenbergTestFunction (d := Module.finrank ℝ E)
         k h η D.uChart) 2
       ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)))
     (hv_h_grad_lp : ∀ j : Fin (Module.finrank ℝ E),
@@ -170,18 +169,18 @@ theorem variational_identity_at_v_h
     (uSeq : ℕ → EuclN → ℝ)
     (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n))
     (h_v_seq_supp : ∀ n,
-      tsupport (standardNirenbergTest (d := Module.finrank ℝ E)
+      tsupport (nirenbergTestFunction (d := Module.finrank ℝ E)
         k h η (uSeq n)) ⊆ Metric.cthickening |h| K_0)
     (h_v_seq_l2 :
       Tendsto (fun n => eLpNorm (fun x =>
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) 2
+        nirenbergTestFunction (d := Module.finrank ℝ E) k h η (uSeq n) x -
+        nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart x) 2
         ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)))
         atTop (𝓝 0))
     (h_v_seq_grad_l2 : ∀ j : Fin (Module.finrank ℝ E),
       Tendsto (fun n => eLpNorm
         (fun x => (fderiv ℝ
-          (standardNirenbergTest (d := Module.finrank ℝ E) k h η
+          (nirenbergTestFunction (d := Module.finrank ℝ E) k h η
             (uSeq n)) x) (EuclideanSpace.single j 1) -
           weak_partial_v_h j x) 2
         ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)))
@@ -195,24 +194,24 @@ theorem variational_identity_at_v_h
         ∂(volume : Measure EuclN)) +
       (∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.uChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN)) =
       ∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.fChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN) := by
   classical
   have h_thick_compact : IsCompact (Metric.cthickening |h| K_0) :=
     cthickening_K_0_isCompact (E := E) hK_0_compact
-  set v_h : EuclN → ℝ := standardNirenbergTest (d := Module.finrank ℝ E)
+  set v_h : EuclN → ℝ := nirenbergTestFunction (d := Module.finrank ℝ E)
     k h η D.uChart with hvh_def
   set v_h_seq : ℕ → EuclN → ℝ := fun n =>
-    standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n)
+    nirenbergTestFunction (d := Module.finrank ℝ E) k h η (uSeq n)
     with hvhseq_def
   have h_v_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (v_h_seq n) := fun n =>
-    (standardNirenbergTest_smooth_seq hη hη_supp k hh hu_seq_smooth n).1
+    (nirenbergTestFunction_smooth_seq hη hη_supp k hh hu_seq_smooth n).1
   have h_v_seq_cs : ∀ n, HasCompactSupport (v_h_seq n) := fun n =>
-    (standardNirenbergTest_smooth_seq hη hη_supp k hh hu_seq_smooth n).2
+    (nirenbergTestFunction_smooth_seq hη hη_supp k hh hu_seq_smooth n).2
   exact chart_bilinear_identity_h1_0 (I := I) (M := M) D
     h_thick_compact h_thick v_h weak_partial_v_h hv_h_lp hv_h_grad_lp
     v_h_seq h_v_seq_smooth h_v_seq_cs h_v_seq_supp h_v_seq_l2
@@ -239,12 +238,12 @@ theorem variational_identity_v_h_expanded
           ∂(volume : Measure EuclN)) +
         (∫ y in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α y * D.uChart y *
-            standardNirenbergTest (d := Module.finrank ℝ E) k h η
+            nirenbergTestFunction (d := Module.finrank ℝ E) k h η
               D.uChart y
           ∂(volume : Measure EuclN)) =
         ∫ y in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α y * D.fChart y *
-            standardNirenbergTest (d := Module.finrank ℝ E) k h η
+            nirenbergTestFunction (d := Module.finrank ℝ E) k h η
               D.uChart y
           ∂(volume : Measure EuclN))
     (h_weak_partial_eq : ∀ j : Fin (Module.finrank ℝ E), ∀ᵐ y
@@ -274,11 +273,11 @@ theorem variational_identity_v_h_expanded
         ∂(volume : Measure EuclN)) +
       (∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.uChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN)) =
       ∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.fChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN) := by
   classical
   have h_principal_eq :
@@ -363,12 +362,12 @@ theorem variational_identity_after_ibp
           ∂(volume : Measure EuclN)) +
         (∫ y in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α y * D.uChart y *
-            standardNirenbergTest (d := Module.finrank ℝ E) k h η
+            nirenbergTestFunction (d := Module.finrank ℝ E) k h η
               D.uChart y
           ∂(volume : Measure EuclN)) =
         ∫ y in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α y * D.fChart y *
-            standardNirenbergTest (d := Module.finrank ℝ E) k h η
+            nirenbergTestFunction (d := Module.finrank ℝ E) k h η
               D.uChart y
           ∂(volume : Measure EuclN))
     (h_ibp_per_ij : ∀ i j : Fin (Module.finrank ℝ E),
@@ -438,11 +437,11 @@ theorem variational_identity_after_ibp
         ∂(volume : Measure EuclN)) +
       (∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.uChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN)) =
       ∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.fChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN) := by
   classical
   have h_int_swap_before :
@@ -581,11 +580,11 @@ theorem variational_identity_after_product_rule
           ∂(volume : Measure EuclN)) +
         (∫ y in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α y * D.uChart y *
-            standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+            nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
           ∂(volume : Measure EuclN)) =
         ∫ y in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α y * D.fChart y *
-            standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+            nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
           ∂(volume : Measure EuclN))
     (h_principal_in_K_0_eq :
       ∫ y in Metric.cthickening |h| K_0,
@@ -609,13 +608,13 @@ theorem variational_identity_after_product_rule
     (h_c_term_eq :
       ∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.uChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
       ∂(volume : Measure EuclN) =
       cTermChartBilinear (I := I) (M := M) D K_0 η k h)
     (h_f_term_eq :
       ∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.fChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
       ∂(volume : Measure EuclN) =
       fTermChartBilinear (I := I) (M := M) D K_0 η k h) :
     principalTermChartBilinear (I := I) (M := M) D K_0 η k h

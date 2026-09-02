@@ -1156,7 +1156,9 @@ import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.Char
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.Substitution
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.SubstitutionNonSmooth
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.SubstitutionNonSmoothChartBilinear
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Basic
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Defs
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.SmoothRegularity
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.TranslatedCutoffDiffQuot
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.WeakRegularity
 import DifferentialGeometry.Analysis.Sobolev.Solutions.FriedrichsCommutator
@@ -1267,6 +1269,8 @@ import DifferentialGeometry.Analysis.Sobolev.Tools.ArzelaAscoli
 import DifferentialGeometry.Analysis.Sobolev.Tools.Convolution
 import DifferentialGeometry.Analysis.Sobolev.Tools.DiffQuotFKNonSmooth
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.SmoothRegularity
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.Support
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientWeakLimit
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientWeakLimitLoc
 import DifferentialGeometry.Analysis.Sobolev.Tools.FrechetKolmogorov

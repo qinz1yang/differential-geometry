@@ -1,4 +1,6 @@
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Defs
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.Defs
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Basic
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.SmoothRegularity
 
 noncomputable section
 

@@ -23,7 +23,6 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeSmoothApprox
@@ -1100,12 +1099,12 @@ theorem variational_identity_after_ibp_of_compact_support
           ∂(volume : Measure EuclN)) +
         (∫ y in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α y * D.uChart y *
-            standardNirenbergTest (d := Module.finrank ℝ E) k h η
+            nirenbergTestFunction (d := Module.finrank ℝ E) k h η
               D.uChart y
           ∂(volume : Measure EuclN)) =
         ∫ y in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α y * D.fChart y *
-            standardNirenbergTest (d := Module.finrank ℝ E) k h η
+            nirenbergTestFunction (d := Module.finrank ℝ E) k h η
               D.uChart y
           ∂(volume : Measure EuclN)) :
     -(∫ y in Metric.cthickening |h| K_0,
@@ -1124,11 +1123,11 @@ theorem variational_identity_after_ibp_of_compact_support
         ∂(volume : Measure EuclN)) +
       (∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.uChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN)) =
       ∫ y in Metric.cthickening |h| K_0,
         densityOnEuclid (I := I) g α y * D.fChart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN) := by
   have h_ibp_per_ij : ∀ i j : Fin (Module.finrank ℝ E),
       ∫ y in Metric.cthickening |h| K_0,

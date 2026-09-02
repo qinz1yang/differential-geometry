@@ -28,7 +28,6 @@ open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBound
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeSmoothApprox
@@ -631,11 +630,6 @@ theorem chartBilinear_master_nonsmooth_discharge
             (d := Module.finrank ℝ E) k h η D.uChart) ⊆
         Metric.cthickening |h| K_0 := by
       rw [hK_0_def]; exact h_test_supp_in_cthick_h
-    have h_test_eq :
-        (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
-          (d := Module.finrank ℝ E) k h η D.uChart) =
-        (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-          (d := Module.finrank ℝ E) k h η D.uChart) := rfl
     have h_cthick_h_K_0_subset_cthick1 :
         Metric.cthickening |h| K_0 ⊆ Metric.cthickening R₀ (tsupport η) := by
       rw [hK_0_def]; exact h_cthick_h_subset_cthickR0
@@ -658,7 +652,7 @@ theorem chartBilinear_master_nonsmooth_discharge
     have h_step_a :
         (∫ x in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α x * D.uChart x *
-            DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+            DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               (d := Module.finrank ℝ E) k h η D.uChart x
             ∂(volume : Measure EuclN)) =
         (∫ x in Metric.cthickening |h| K_0,
@@ -669,7 +663,7 @@ theorem chartBilinear_master_nonsmooth_discharge
       refine setIntegral_congr_fun h_cthick_h_K_0_meas ?_
       intro x hx
       simp only
-      rw [← h_Bc_match_on_supp x hx, h_test_eq]
+      rw [← h_Bc_match_on_supp x hx]
     rw [h_step_a]
     rw [setIntegral_eq_integral_of_forall_compl_eq_zero h_F_zero_off,
         ← MeasureTheory.setIntegral_univ]
@@ -687,11 +681,6 @@ theorem chartBilinear_master_nonsmooth_discharge
             (d := Module.finrank ℝ E) k h η D.uChart) ⊆
         Metric.cthickening |h| K_0 := by
       rw [hK_0_def]; exact h_test_supp_in_cthick_h
-    have h_test_eq :
-        (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
-          (d := Module.finrank ℝ E) k h η D.uChart) =
-        (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-          (d := Module.finrank ℝ E) k h η D.uChart) := rfl
     have h_cthick_h_K_0_meas : MeasurableSet (Metric.cthickening |h| K_0) :=
       Metric.isClosed_cthickening.measurableSet
     have h_F_zero_off : ∀ x ∉ Metric.cthickening |h| K_0,
@@ -708,7 +697,7 @@ theorem chartBilinear_master_nonsmooth_discharge
     have h_step_a :
         (∫ x in Metric.cthickening |h| K_0,
           densityOnEuclid (I := I) g α x * D.fChart x *
-            DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+            DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               (d := Module.finrank ℝ E) k h η D.uChart x
           ∂(volume : Measure EuclN)) =
         (∫ x in Metric.cthickening |h| K_0,

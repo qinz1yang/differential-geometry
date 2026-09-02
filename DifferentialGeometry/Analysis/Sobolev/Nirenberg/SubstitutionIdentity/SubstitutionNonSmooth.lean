@@ -9,7 +9,6 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
 open DifferentialGeometry.Analysis.Sobolev.NirenbergCrossBounds
 open DifferentialGeometry.Analysis.Sobolev.NirenbergCrossBoundsNonSmooth
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 open scoped ENNReal NNReal Convolution Pointwise BigOperators InnerProductSpace
   RealInnerProductSpace
@@ -413,11 +412,11 @@ theorem nirenberg_master_inequality_nonsmooth
           DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
         ∂(volume : Measure EuclN)
       + ∫ x, B.c x * u x *
-          (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+          (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             k h η u) x
         ∂(volume : Measure EuclN)
       = ∫ x, f x *
-          (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+          (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             k h η u) x
         ∂(volume : Measure EuclN)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -500,22 +499,17 @@ theorem nirenberg_master_inequality_nonsmooth
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
       ∂(volume : Measure EuclN) with hC3_def
     set Q : ℝ := ∫ x, B.c x * u x *
-        (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+        (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
           k h η u) x
       ∂(volume : Measure EuclN) with hQ_def
     set R : ℝ := ∫ x, f x *
-        (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+        (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
           k h η u) x
       ∂(volume : Measure EuclN) with hR_def
     have h_sub_eq : P + C1 + C2 + C3 + Q = R := h_sub
     have h_principal_le : B.lam * I ≤ P := h_principal
     have hP_alt : P = R - C1 - C2 - C3 - Q := by linarith
     rw [hP_alt] at h_principal_le
-    have h_test_eq : ∀ x : EuclN,
-        DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
-          k h η u x =
-        DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-          k h η u x := fun _ => rfl
     have h_v_supp : tsupport
         (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
           k h η u) ⊆ Ω :=
@@ -523,70 +517,68 @@ theorem nirenberg_master_inequality_nonsmooth
         (d := d) η u k h)).trans h_thick
     have h_Q_to_Ω :
         ∫ x, B.c x * u x *
-          (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+          (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             k h η u) x ∂(volume : Measure EuclN) =
           ∫ x in Ω, B.c x * u x *
             (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u) x ∂(volume : Measure EuclN) := by
       have h_zero_compl : ∀ x ∉ Ω,
           B.c x * u x *
-            (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+            (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u) x = 0 := by
         intro x hx
         have hx_not :
             x ∉ tsupport
               (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
                 k h η u) := fun hin => hx (h_v_supp hin)
-        rw [h_test_eq]
         have h_zero :
           (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             k h η u) x = 0 := image_eq_zero_of_notMem_tsupport hx_not
         rw [h_zero]; ring
       have h_eq_int :
           ∫ x in Ω, B.c x * u x *
-              (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+              (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
                 k h η u) x ∂(volume : Measure EuclN) =
             ∫ x, B.c x * u x *
-              (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+              (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
                 k h η u) x ∂(volume : Measure EuclN) :=
         setIntegral_eq_integral_of_forall_compl_eq_zero
           (μ := (volume : Measure EuclN)) (s := Ω)
           (f := fun x => B.c x * u x *
-            (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+            (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u) x) h_zero_compl
       exact h_eq_int.symm
     have h_R_to_Ω :
         ∫ x, f x *
-          (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+          (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             k h η u) x ∂(volume : Measure EuclN) =
           ∫ x in Ω, f x *
             (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u) x ∂(volume : Measure EuclN) := by
       have h_zero_compl : ∀ x ∉ Ω,
           f x *
-            (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+            (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u) x = 0 := by
         intro x hx
         have hx_not :
             x ∉ tsupport
               (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
                 k h η u) := fun hin => hx (h_v_supp hin)
-        rw [h_test_eq]
         have h_zero :
           (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             k h η u) x = 0 := image_eq_zero_of_notMem_tsupport hx_not
         rw [h_zero]; ring
       have h_eq_int :
           ∫ x in Ω, f x *
-              (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+              (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
                 k h η u) x ∂(volume : Measure EuclN) =
             ∫ x, f x *
-              (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+              (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
                 k h η u) x ∂(volume : Measure EuclN) :=
         setIntegral_eq_integral_of_forall_compl_eq_zero
           (μ := (volume : Measure EuclN)) (s := Ω)
           (f := fun x => f x *
-            (DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest.standardNirenbergTest
+            (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u) x) h_zero_compl
       exact h_eq_int.symm
     have h_triangle : R - C1 - C2 - C3 - Q ≤ |R| + |C1| + |C2| + |C3| + |Q| := by

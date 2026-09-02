@@ -24,7 +24,6 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeSmoothApprox
@@ -168,12 +167,12 @@ private lemma c_term_chartBilinear_zero_h
   unfold cTermChartBilinear
   have h_eq : (fun x : EuclN =>
       densityOnEuclid (I := I) g α x * D.uChart x *
-        standardNirenbergTest
+        nirenbergTestFunction
           (d := Module.finrank ℝ E) k 0 η D.uChart x) = (fun _ => (0 : ℝ)) := by
     funext x
-    have h_test : standardNirenbergTest
+    have h_test : nirenbergTestFunction
         (d := Module.finrank ℝ E) k 0 η D.uChart x = 0 := by
-      have := standardNirenbergTest_zero_h
+      have := nirenbergTestFunction_zero_h
         (d := Module.finrank ℝ E) k η D.uChart
       exact congrArg (fun f : EuclN → ℝ => f x) this
     rw [h_test]; ring
@@ -191,12 +190,12 @@ private lemma f_term_chartBilinear_zero_h
   unfold fTermChartBilinear
   have h_eq : (fun x : EuclN =>
       densityOnEuclid (I := I) g α x * D.fChart x *
-        standardNirenbergTest
+        nirenbergTestFunction
           (d := Module.finrank ℝ E) k 0 η D.uChart x) = (fun _ => (0 : ℝ)) := by
     funext x
-    have h_test : standardNirenbergTest
+    have h_test : nirenbergTestFunction
         (d := Module.finrank ℝ E) k 0 η D.uChart x = 0 := by
-      have := standardNirenbergTest_zero_h
+      have := nirenbergTestFunction_zero_h
         (d := Module.finrank ℝ E) k η D.uChart
       exact congrArg (fun f : EuclN → ℝ => f x) this
     rw [h_test]; ring
@@ -239,7 +238,7 @@ private lemma chartBilinear_substitution_identity_K_0_empty
     have hx_in_supp : x ∈ tsupport η := subset_tsupport η hηx
     rw [h_supp_empty] at hx_in_supp
     exact hx_in_supp
-  have h_test_zero : standardNirenbergTest
+  have h_test_zero : nirenbergTestFunction
       (d := Module.finrank ℝ E) k h η D.uChart = 0 := by
     rw [hη_zero]
     funext x

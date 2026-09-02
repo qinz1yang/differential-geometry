@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.SubstitutionNonSmoothChartBilinear
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Defs
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.SmoothRegularity
 import DifferentialGeometry.Analysis.Sobolev.Solutions.Mollification
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Approximation
@@ -27,7 +27,6 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 
@@ -812,7 +811,7 @@ theorem exists_smooth_uChart_approx
     exact hu_grad_tendsto i
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-theorem standardNirenbergTest_smooth_seq
+theorem nirenbergTestFunction_smooth_seq
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ} (hh : h ≠ 0)
@@ -820,17 +819,17 @@ theorem standardNirenbergTest_smooth_seq
     (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n))
     :
     ∀ n, ContDiff ℝ (⊤ : ℕ∞)
-      (standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n)) ∧
+      (nirenbergTestFunction (d := Module.finrank ℝ E) k h η (uSeq n)) ∧
         HasCompactSupport
-          (standardNirenbergTest (d := Module.finrank ℝ E) k h η
+          (nirenbergTestFunction (d := Module.finrank ℝ E) k h η
             (uSeq n)) := by
   classical
   intro n
   refine ⟨?_, ?_⟩
   · exact contDiff_nirenbergTestFunction (d := Module.finrank ℝ E)
       hη (hu_seq_smooth n) k hh
-  · exact standardNirenbergTest_hasCompactSupport
-      (d := Module.finrank ℝ E) k h hη_supp (uSeq n)
+  · exact hasCompactSupport_nirenbergTestFunction
+      (d := Module.finrank ℝ E) hη_supp k h
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma eLpNorm_translate_eq_local (k : Fin (Module.finrank ℝ E)) (h : ℝ)
@@ -918,12 +917,12 @@ private lemma eLpNorm_diffQuot_le_local
         rw [ENNReal.div_eq_inv_mul]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma standardNirenbergTest_sub
+private lemma nirenbergTestFunction_sub
     (k : Fin (Module.finrank ℝ E)) (h : ℝ) (η u₁ u₂ : EuclN → ℝ) :
-    (standardNirenbergTest (d := Module.finrank ℝ E) k h η u₁) -
-        (standardNirenbergTest (d := Module.finrank ℝ E) k h η u₂) =
-      standardNirenbergTest (d := Module.finrank ℝ E) k h η (u₁ - u₂) := by
-  unfold standardNirenbergTest NirenbergTestFunction.nirenbergTestFunction
+    (nirenbergTestFunction (d := Module.finrank ℝ E) k h η u₁) -
+        (nirenbergTestFunction (d := Module.finrank ℝ E) k h η u₂) =
+      nirenbergTestFunction (d := Module.finrank ℝ E) k h η (u₁ - u₂) := by
+  unfold nirenbergTestFunction
   have h_inner_sub :
       (fun y => (η y)^2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -944,7 +943,7 @@ private lemma standardNirenbergTest_sub
     (d := Module.finrank ℝ E) k (-h)]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem standardNirenbergTest_seq_tendsto_eLpNorm
+theorem nirenbergTestFunction_seq_tendsto_eLpNorm
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -965,20 +964,20 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
       (fun x => uSeq n x - χ x * D.uChart x) 2
       (volume : Measure EuclN)) atTop (𝓝 0)) :
     Tendsto (fun n => eLpNorm
-      (fun x => standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) 2
+      (fun x => nirenbergTestFunction (d := Module.finrank ℝ E) k h η (uSeq n) x -
+        nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart x) 2
       ((volume : Measure EuclN).restrict
         (Metric.cthickening |h| K_0))) atTop (𝓝 0) := by
   classical
-  have h_test_eq : standardNirenbergTest (d := Module.finrank ℝ E) k h η
+  have h_test_eq : nirenbergTestFunction (d := Module.finrank ℝ E) k h η
       (fun x => χ x * D.uChart x) =
-      standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart := by
+      nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart := by
     funext x
     by_cases hh0 : h = 0
     · subst hh0
-      simp [standardNirenbergTest]
+      simp [nirenbergTestFunction]
     have h_test_eq_pointwise : ∀ v : EuclN → ℝ,
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η v x =
+        nirenbergTestFunction (d := Module.finrank ℝ E) k h η v x =
         ((η (x + (-h) • EuclideanSpace.single k 1))^2 *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h v
@@ -986,7 +985,7 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
           (η x)^2 * DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h v x) / (-h) := by
       intro v
-      exact standardNirenbergTest_apply (d := Module.finrank ℝ E) k h η v x hh0
+      exact nirenbergTestFunction_apply (d := Module.finrank ℝ E) k h η v x hh0
     rw [h_test_eq_pointwise (fun x => χ x * D.uChart x),
       h_test_eq_pointwise D.uChart]
     have h_diff_apply : ∀ v y,
@@ -1044,13 +1043,13 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
           rw [hηx_shift_zero]; ring]
       simp
   have h_diff_eq : ∀ n,
-      (fun x => standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) =
-      standardNirenbergTest (d := Module.finrank ℝ E) k h η
+      (fun x => nirenbergTestFunction (d := Module.finrank ℝ E) k h η (uSeq n) x -
+        nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart x) =
+      nirenbergTestFunction (d := Module.finrank ℝ E) k h η
         (uSeq n - fun x => χ x * D.uChart x) := by
     intro n
     rw [← h_test_eq]
-    exact standardNirenbergTest_sub k h η (uSeq n)
+    exact nirenbergTestFunction_sub k h η (uSeq n)
       (fun x => χ x * D.uChart x)
   have hη_cont : Continuous η := hη_smooth.continuous
   have hη_abs_cont : Continuous (fun x => |η x|) := hη_cont.abs
@@ -1072,15 +1071,15 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
         rw [hηx, abs_zero]
   have h_univ_tendsto :
       Tendsto (fun n => eLpNorm
-        (fun x => standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) 2
+        (fun x => nirenbergTestFunction (d := Module.finrank ℝ E) k h η (uSeq n) x -
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart x) 2
         (volume : Measure EuclN)) atTop (𝓝 0) := by
     have h_eLp_eq : ∀ n,
         eLpNorm (fun x =>
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) 2
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η (uSeq n) x -
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart x) 2
         (volume : Measure EuclN) =
-        eLpNorm (standardNirenbergTest (d := Module.finrank ℝ E) k h η
+        eLpNorm (nirenbergTestFunction (d := Module.finrank ℝ E) k h η
           (uSeq n - fun x => χ x * D.uChart x)) 2
         (volume : Measure EuclN) := by
       intro n
@@ -1105,7 +1104,7 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
         (hu_seq_smooth n).continuous.memLp_of_hasCompactSupport (hu_seq_cs n)
       exact h_uSeq_lp.sub h_χu_lp
     have h_bound : ∀ n,
-        eLpNorm (standardNirenbergTest (d := Module.finrank ℝ E) k h η
+        eLpNorm (nirenbergTestFunction (d := Module.finrank ℝ E) k h η
           (uSeq n - fun x => χ x * D.uChart x)) 2
         (volume : Measure EuclN) ≤
         (2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
@@ -1114,12 +1113,12 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
               (volume : Measure EuclN)) := by
       intro n
       have h_test_bound :=
-        eLpNorm_standardNirenbergTest_le (d := Module.finrank ℝ E)
+        eLpNorm_nirenbergTestFunction_le (d := Module.finrank ℝ E)
           k hh hη_cont (h_aesm_diff n) hM_η_nn hM_η_bd
       have h_dq_bound :=
         eLpNorm_diffQuot_le_local k hh (h_aesm_diff n)
       have h_step1 :
-          eLpNorm (standardNirenbergTest (d := Module.finrank ℝ E) k h η
+          eLpNorm (nirenbergTestFunction (d := Module.finrank ℝ E) k h η
             (uSeq n - fun x => χ x * D.uChart x)) 2
             (volume : Measure EuclN) ≤
           (2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
@@ -1185,8 +1184,8 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
             (2 / ENNReal.ofReal |h|)) hu_seq_l2_tendsto' (Or.inr h_const_ne_top)
       simpa using h
     rw [show (fun n => eLpNorm (fun x =>
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) 2
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η (uSeq n) x -
+          nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart x) 2
         (volume : Measure EuclN)) = _ from funext h_eLp_eq]
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_const_tendsto
       ?_ ?_
@@ -1200,8 +1199,8 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
   · refine Filter.Eventually.of_forall (fun n => ?_)
     exact MeasureTheory.eLpNorm_mono_measure
       (fun x =>
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x)
+        nirenbergTestFunction (d := Module.finrank ℝ E) k h η (uSeq n) x -
+        nirenbergTestFunction (d := Module.finrank ℝ E) k h η D.uChart x)
       Measure.restrict_le_self
 
 end SubstitutionDischargeSmoothApprox

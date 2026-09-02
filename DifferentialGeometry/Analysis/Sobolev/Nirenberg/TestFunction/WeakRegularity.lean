@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Defs
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Basic
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.TranslatedCutoffDiffQuot
 
 noncomputable section
@@ -8,126 +8,11 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open scoped ENNReal NNReal Convolution Pointwise BigOperators
 
-namespace DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
+namespace DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 
 variable {d : ℕ} [NeZero d]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin d)
-
-noncomputable abbrev standardNirenbergTest
-    (k : Fin d) (h : ℝ) (η u : EuclN → ℝ) : EuclN → ℝ :=
-  NirenbergTestFunction.nirenbergTestFunction k h η u
-
-omit [NeZero d] in
-theorem standardNirenbergTest_apply
-    (k : Fin d) (h : ℝ) (η u : EuclN → ℝ) (x : EuclN) (hh : h ≠ 0) :
-    standardNirenbergTest k h η u x =
-      ((η (x + (-h) • EuclideanSpace.single k 1))^2 *
-          diffQuot k h u (x + (-h) • EuclideanSpace.single k 1) -
-        (η x)^2 * diffQuot k h u x) / (-h) := by
-  change diffQuot k (-h) (fun y : EuclN => η y ^ 2 * diffQuot k h u y) x = _
-  rw [diffQuot_apply_of_ne (d := d) k (neg_ne_zero.mpr hh)]
-
-omit [NeZero d] in
-@[simp] lemma standardNirenbergTest_zero_h
-    (k : Fin d) (η u : EuclN → ℝ) :
-    standardNirenbergTest k 0 η u = 0 := by
-  funext x
-  change diffQuot k (-(0 : ℝ)) (fun y : EuclN => η y ^ 2 * diffQuot k 0 u y) x = 0
-  simp
-
-omit [NeZero d] in
-theorem standardNirenbergTest_support_subset
-    (k : Fin d) (h : ℝ) {η : EuclN → ℝ}
-    (u : EuclN → ℝ) :
-    Function.support (standardNirenbergTest k h η u) ⊆
-      tsupport η ∪
-        {x | x + (-h) • EuclideanSpace.single k 1 ∈ tsupport η} := by
-  intro x hx
-  rw [Function.mem_support] at hx
-  by_cases hh : h = 0
-  · exfalso
-    apply hx
-    subst hh
-    change diffQuot k (-(0 : ℝ)) (fun y : EuclN => η y ^ 2 * diffQuot k 0 u y) x = 0
-    simp
-  · have h_apply := standardNirenbergTest_apply (d := d) k h η u x hh
-    rw [h_apply] at hx
-    have h_num_ne : (η (x + (-h) • EuclideanSpace.single k 1))^2 *
-        diffQuot k h u (x + (-h) • EuclideanSpace.single k 1) -
-        (η x)^2 * diffQuot k h u x ≠ 0 := by
-      intro h_zero
-      apply hx
-      rw [h_zero, zero_div]
-    by_cases hηx : η x = 0
-    · right
-      have hFx_zero : (η x)^2 * diffQuot k h u x = 0 := by
-        rw [show (η x)^2 = 0 from by rw [hηx]; ring, zero_mul]
-      rw [hFx_zero, sub_zero] at h_num_ne
-      have hηy_ne : η (x + (-h) • EuclideanSpace.single k 1) ≠ 0 := by
-        intro h_zero
-        apply h_num_ne
-        rw [show (η (x + (-h) • EuclideanSpace.single k 1))^2 = 0 from by
-          rw [h_zero]; ring, zero_mul]
-      exact subset_tsupport η hηy_ne
-    · left
-      exact subset_tsupport η hηx
-
-omit [NeZero d] in
-theorem standardNirenbergTest_tsupport_subset
-    (k : Fin d) (h : ℝ) {η : EuclN → ℝ}
-    (u : EuclN → ℝ) :
-    tsupport (standardNirenbergTest k h η u) ⊆
-      tsupport η ∪
-        {x | x + (-h) • EuclideanSpace.single k 1 ∈ tsupport η} := by
-  have htrans_cont : Continuous
-      (fun x : EuclN => x + (-h) • EuclideanSpace.single k 1) :=
-    continuous_id.add continuous_const
-  have h_pre_closed : IsClosed
-      {x : EuclN | x + (-h) • EuclideanSpace.single k 1 ∈ tsupport η} :=
-    (isClosed_tsupport η).preimage htrans_cont
-  have h_rhs_closed : IsClosed
-      (tsupport η ∪
-        {x : EuclN | x + (-h) • EuclideanSpace.single k 1 ∈ tsupport η}) :=
-    (isClosed_tsupport η).union h_pre_closed
-  refine closure_minimal ?_ h_rhs_closed
-  exact standardNirenbergTest_support_subset (d := d) k h u
-
-omit [NeZero d] in
-theorem standardNirenbergTest_hasCompactSupport
-    (k : Fin d) (h : ℝ) {η : EuclN → ℝ} (hη_cs : HasCompactSupport η)
-    (u : EuclN → ℝ) :
-    HasCompactSupport (standardNirenbergTest k h η u) := by
-  set v : EuclN := (-h) • EuclideanSpace.single k 1 with hv_def
-  set htrans_homeo : EuclN ≃ₜ EuclN := Homeomorph.addRight v with htrans_def
-  have h_set_eq :
-      {x : EuclN | x + v ∈ tsupport η} = htrans_homeo ⁻¹' (tsupport η) := by
-    ext x
-    simp [htrans_homeo]
-  have h_pre_eq :
-      htrans_homeo ⁻¹' (tsupport η) = htrans_homeo.symm '' (tsupport η) := by
-    ext x
-    constructor
-    · intro hx
-      refine ⟨htrans_homeo x, hx, ?_⟩
-      exact htrans_homeo.symm_apply_apply x
-    · intro hx
-      obtain ⟨y, hy, hyx⟩ := hx
-      have hxy : htrans_homeo x = y := by
-        rw [← hyx, htrans_homeo.apply_symm_apply]
-      rw [Set.mem_preimage, hxy]
-      exact hy
-  have h_translated_compact : IsCompact (htrans_homeo ⁻¹' (tsupport η)) := by
-    rw [h_pre_eq]
-    exact hη_cs.image htrans_homeo.symm.continuous
-  have h_union_compact : IsCompact (tsupport η ∪
-      {x : EuclN | x + v ∈ tsupport η}) := by
-    rw [h_set_eq]
-    exact hη_cs.union h_translated_compact
-  have h_sub : tsupport (standardNirenbergTest k h η u) ⊆
-      tsupport η ∪ {x : EuclN | x + v ∈ tsupport η} :=
-    standardNirenbergTest_tsupport_subset (d := d) k h u
-  exact h_union_compact.of_isClosed_subset (isClosed_tsupport _) h_sub
 
 omit [NeZero d] in
 private lemma locallyIntegrable_diffQuot
@@ -205,7 +90,7 @@ private lemma locallyIntegrable_to_restrict_univ
   rwa [Measure.restrict_univ]
 
 omit [NeZero d] in
-theorem hasWeakPartialDeriv_standardNirenbergTest
+theorem hasWeakPartialDeriv_nirenbergTestFunction
     (k j : Fin d) (h : ℝ) {η u g_j : EuclN → ℝ}
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hu_locInt :
@@ -219,7 +104,7 @@ theorem hasWeakPartialDeriv_standardNirenbergTest
           (η y)^2 * diffQuot k h g_j y +
           2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1) *
             diffQuot k h u y))
-      (standardNirenbergTest k h η u) Set.univ := by
+      (nirenbergTestFunction k h η u) Set.univ := by
   have hη_cont : Continuous η := hη.continuous
   have hη_sq_cont : Continuous (fun y : EuclN => (η y)^2) := hη_cont.pow 2
   have hη_diff : Differentiable ℝ η := hη.differentiable (by simp)
@@ -292,7 +177,7 @@ theorem hasWeakPartialDeriv_standardNirenbergTest
       rw [two_smul]; ring
     rw [h_two, smul_eq_mul]
   rw [h_eq] at h_inner_wp
-  unfold standardNirenbergTest
+  unfold nirenbergTestFunction
   exact hasWeakPartialDeriv_diffQuot (d := d) k j (-h)
     h_F_locInt_restrict h_partial_locInt_restrict h_inner_wp
 
@@ -490,13 +375,13 @@ private lemma eLpNorm_eta_sq_diffQuot_le
   rw [h_sqrt_M4]
 
 omit [NeZero d] in
-theorem eLpNorm_standardNirenbergTest_le
+theorem eLpNorm_nirenbergTestFunction_le
     (k : Fin d) {h : ℝ} (hh : h ≠ 0)
     {η u : EuclN → ℝ}
     (hη_cont : Continuous η)
     (hu_aesm : AEStronglyMeasurable u (volume : Measure EuclN))
     {M_η : ℝ} (hM_η_nn : 0 ≤ M_η) (hM_η : ∀ x, |η x| ≤ M_η) :
-    eLpNorm (standardNirenbergTest k h η u) 2 (volume : Measure EuclN) ≤
+    eLpNorm (nirenbergTestFunction k h η u) 2 (volume : Measure EuclN) ≤
       (2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
   set F : EuclN → ℝ := fun y => (η y)^2 * diffQuot k h u y with hF_def
@@ -516,7 +401,7 @@ theorem eLpNorm_standardNirenbergTest_le
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
     rw [hF_def]
     exact eLpNorm_eta_sq_diffQuot_le (d := d) k h hM_η_nn hM_η
-  have h_lhs_unfold : standardNirenbergTest k h η u = diffQuot k (-h) F := rfl
+  have h_lhs_unfold : nirenbergTestFunction k h η u = diffQuot k (-h) F := rfl
   rw [h_lhs_unfold]
   calc eLpNorm (diffQuot k (-h) F) 2 (volume : Measure EuclN)
       ≤ (2 / ENNReal.ofReal |h|) * eLpNorm F 2 (volume : Measure EuclN) := h_step_A
@@ -528,4 +413,4 @@ theorem eLpNorm_standardNirenbergTest_le
           eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
         rw [mul_assoc]
 
-end DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
+end DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
