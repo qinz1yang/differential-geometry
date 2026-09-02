@@ -999,4 +999,51 @@ end Parabolic
 end Analysis
 end DifferentialGeometry
 
+namespace DifferentialGeometry.Analysis.Spectral
+
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Integral.L2
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+  [T2Space M] [SigmaCompactSpace M]
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+theorem symmS_eq_self_of_ccTensorBilin_symm (g₀ : SmoothRiemannianMetric I M)
+    (S : SmoothCcTensor g₀ 0 2)
+    (hsymm : ∀ (x : M) (u w : TangentSpace I x),
+      smoothCcTensorBilinForm (I := I) g₀ S x u w =
+        smoothCcTensorBilinForm (I := I) g₀ S x w u) :
+    ccTensor02Symm (I := I) (M := M) g₀ S = S := by
+  have hswap : domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S = S := by
+    refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
+    rw [domDomCongrSection_unitModel]
+    refine ContinuousMultilinearMap.ext (fun v => ?_)
+    rw [ContinuousMultilinearMap.domDomCongr_apply]
+    have hv : ∀ u w : TangentSpace I x,
+        unitModel (I := I) (M := M) g₀ 2 S x ![u, w] =
+          unitModel (I := I) (M := M) g₀ 2 S x ![w, u] := by
+      intro u w
+      rw [unitModel_eq_ccTensorBilin (I := I) (M := M) g₀ S x u w,
+        unitModel_eq_ccTensorBilin (I := I) (M := M) g₀ S x w u]
+      exact hsymm x u w
+    have hveta : (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) = ![v 1, v 0] := by
+      funext i
+      fin_cases i <;> rfl
+    have hveta' : v = ![v 0, v 1] := by
+      funext i
+      fin_cases i <;> rfl
+    rw [hveta]
+    conv_rhs => rw [hveta']
+    exact hv (v 1) (v 0)
+  rw [ccTensor02Symm, hswap, ← two_smul ℝ S, smul_smul,
+    show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
+
+end DifferentialGeometry.Analysis.Spectral
+
 end

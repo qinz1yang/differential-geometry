@@ -44,6 +44,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzRicciArmCoeffBallUniform
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLiePathValueDerivative
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieArmChartValue
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckLieThreeArmDerivative
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrectionTameBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmDiffL2TameBallUniformYoungHolderPathIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect
@@ -296,138 +297,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth
   deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma symmS_eq_self_of_symm_fw (g₀ : SmoothRiemannianMetric I M)
-    (S : SmoothCcTensor g₀ 0 2)
-    (hsymm : ∀ (x : M) (u w : TangentSpace I x),
-      smoothCcTensorBilinForm (I := I) g₀ S x u w = smoothCcTensorBilinForm (I := I) g₀ S x w u) :
-    ccTensor02Symm (I := I) (M := M) g₀ S = S := by
-  have hswap : domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S = S := by
-    refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
-    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel]
-    refine ContinuousMultilinearMap.ext (fun v => ?_)
-    rw [ContinuousMultilinearMap.domDomCongr_apply]
-    have hv : ∀ u w : TangentSpace I x,
-        unitModel (I := I) (M := M) g₀ 2 S x ![u, w] =
-          unitModel (I := I) (M := M) g₀ 2 S x ![w, u] := by
-      intro u w
-      rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ S x u w,
-        unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ S x w u]
-      exact hsymm x u w
-    have hveta : (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) = ![v 1, v 0] := by
-      funext i
-      fin_cases i <;> rfl
-    have hveta' : v = ![v 0, v 1] := by
-      funext i
-      fin_cases i <;> rfl
-    rw [hveta]
-    conv_rhs => rw [hveta']
-    exact hv (v 1) (v 0)
-  rw [ccTensor02Symm, hswap, ← two_smul ℝ S, smul_smul,
-    show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
-
-omit [SigmaCompactSpace M] in
-theorem linearizedDeTurckLieAt_eq_threeArm_plain_of_symm_fw
-    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
-    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
-    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
-    (hSsymm : ∀ (x : M) (v w : TangentSpace I x),
-      smoothCcTensorBilinForm (I := I) g₀ (T - T') x v w = smoothCcTensorBilinForm (I := I) g₀
-        (T - T') x w v)
-    {s : ℝ} (hs : s ∈ Set.Ioo (0 : ℝ) 1) (x : M) (v : Fin 2 → E) :
-    linearizedDeTurckLieAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x
-      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
-      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) s =
-      unitModel (I := I) (M := M) g₀ 2
-        (operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (deTurckLieCoeffField (I := I) (M := M) g₀
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
-              + lieCorrectionZeroField (I := I) (M := M) g₀
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
-            (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))
-          + operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (deTurckLieArm1Coeff (I := I) (M := M) g₀
-              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
-            (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
-          + operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (deTurckLieArm2PrincipalCoeff (I := I) g₀
-              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
-            (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
-  let vt : Fin 2 → TangentSpace I x := fun i =>
-    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)
-  have hSsymmS : ccTensor02Symm (I := I) (M := M) g₀ (T - T') = T - T' :=
-    symmS_eq_self_of_symm_fw (I := I) (M := M) g₀ (T - T') hSsymm
-  rw [linearizedDeTurckLieAt_eq_deriv_chartSum_on_Ioo (I := I) g₀ g_bg T T'
-    hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) hs]
-  rw [(hasDerivAt_realizedDeTurckLieChartSum_general (I := I) g₀ g_bg T T'
-    hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) hs).deriv]
-  simp only [vt, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
-    ContinuousLinearEquiv.apply_symm_apply]
-  have hcomp : ∀ i j : Fin (Module.finrank ℝ E),
-      deriv (fun s : ℝ =>
-        DeTurckCoefficients.chartLieDeTurckComp (I := I)
-          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s =
-      unitModel (I := I) (M := M) g₀ 2
-        (operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (deTurckLieCoeffField (I := I) (M := M) g₀
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
-              + lieCorrectionZeroField (I := I) (M := M) g₀
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
-            (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))
-          + operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (deTurckLieArm1Coeff (I := I) (M := M) g₀
-              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
-            (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
-          + operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (deTurckLieArm2PrincipalCoeff (I := I) g₀
-              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
-            (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
-        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] := by
-    intro i j
-    rw [deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope (I := I) g₀ T T'
-      hδ_lt hδ hδ'_lt hδ' g_bg x i j hs]
-    have h := lieArm_chartSlope_center_value_eq_threeArm (I := I) g₀ g_bg T T'
-      hδ_lt hδ hδ'_lt hδ' s x i j
-    rw [hSsymmS] at h
-    exact h
-  set Wbase : SmoothCcTensor g₀ 0 2 :=
-    operatorFieldApply (I := I) (M := M) g₀ 2 2
-        (deTurckLieCoeffField (I := I) (M := M) g₀
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
-          + lieCorrectionZeroField (I := I) (M := M) g₀
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
-        (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))
-      + operatorFieldApply (I := I) (M := M) g₀ 3 2
-        (deTurckLieArm1Coeff (I := I) (M := M) g₀
-          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
-        (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
-      + operatorFieldApply (I := I) (M := M) g₀ 4 2
-        (deTurckLieArm2PrincipalCoeff (I := I) g₀
-          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
-        (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T')) with hWbase
-  calc (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
-        deriv (fun s : ℝ =>
-          DeTurckCoefficients.chartLieDeTurckComp (I := I)
-            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s)
-      = ∑ j : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
-          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
-            deriv (fun s : ℝ =>
-              DeTurckCoefficients.chartLieDeTurckComp (I := I)
-                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s :=
-        Finset.sum_comm
-    _ = ∑ j : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
-          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
-            unitModel (I := I) (M := M) g₀ 2 Wbase x
-              ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] := by
-        refine Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun i _ => ?_))
-        rw [hcomp i j]
-    _ = unitModel (I := I) (M := M) g₀ 2 Wbase x v :=
-        unitModel_basis_expand_two (I := I) (M := M) g₀ Wbase x v
-
 theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -645,7 +514,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_arm0_arm1_corrField_data
             (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
         exact hident hTsymm hT'symm s hsIoo x v hδ_lt hδ'_lt
-      have hLid := linearizedDeTurckLieAt_eq_threeArm_plain_of_symm_fw (I := I) (M := M)
+      have hLid := linearizedDeTurckLieAt_eq_threeArm_of_symm (I := I) (M := M)
         g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' hSsymm hsIoo x v
       have hRid' : linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) s =
           unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2

@@ -45,6 +45,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzRicciArmCoeffBallUniform
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLiePathValueDerivative
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieArmChartValue
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckLieThreeArmDerivative
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrectionTameBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzMetricPrincipalDefectTotalCurvatureFold
 open DifferentialGeometry.Analysis.Sobolev
@@ -1001,7 +1002,7 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_arm0_arm1_corrField_data
           (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
       exact hident hTsymm hT'symm s hsIoo x v hδ_lt hδ'_lt
-    have hLid := linearizedDeTurckLieAt_eq_threeArm_plain_of_symm_fw (I := I) (M := M)
+    have hLid := linearizedDeTurckLieAt_eq_threeArm_of_symm (I := I) (M := M)
       g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' hSsymm hsIoo x v
     have hRid' : linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) s =
         unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2

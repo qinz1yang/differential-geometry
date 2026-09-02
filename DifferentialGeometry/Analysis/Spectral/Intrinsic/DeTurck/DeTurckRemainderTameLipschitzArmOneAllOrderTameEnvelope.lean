@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmOneAllOrderJetBounds
+import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
@@ -1005,7 +1006,7 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_allOrder_tameEnvelope
   refine norm_sq_le_of_norm_le_mul_sqrt hSw_sq (by positivity) ?_
   have hsqrtPc_nn : 0 ≤ Real.sqrt (Pc i) := Real.sqrt_nonneg _
   have hsqrtPb_nn : 0 ≤ Real.sqrt (Pb i) := Real.sqrt_nonneg _
-  have hblock1 := lieArm1_norm_block6_le'_fw
+  have hblock1 := DifferentialGeometry.Analysis.norm_add_sub_sub_sub_sub_le
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
         (connectionDifferenceSection (I := I) g₁ g₀)))
@@ -1024,7 +1025,7 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_allOrder_tameEnvelope
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaF (Equiv.refl (Fin 3))
         (connectionDifferenceSection (I := I) g₁ g₀)))
-  have hblock2 := lieArm1_norm_block6_le'_fw
+  have hblock2 := DifferentialGeometry.Analysis.norm_add_sub_sub_sub_sub_le
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap (Equiv.refl (Fin 3))
         (connectionDifferenceSection (I := I) g₁ g₀)))

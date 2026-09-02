@@ -111,44 +111,6 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
 
 
-private theorem lieArm1_norm_block6_le_fw {V : Type*} [SeminormedAddCommGroup V]
-    (b1 b2 b3 b4 b5 b6 : V) :
-    ‖b1 - b2 - b3 - b4 - b5 - b6‖ ≤ ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by
-  calc ‖b1 - b2 - b3 - b4 - b5 - b6‖
-      ≤ ‖b1 - b2 - b3 - b4 - b5‖ + ‖b6‖ := norm_sub_le _ _
-    _ ≤ (‖b1 - b2 - b3 - b4‖ + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 - b2 - b3 - b4) b5
-        linarith
-    _ ≤ ((‖b1 - b2 - b3‖ + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 - b2 - b3) b4
-        linarith
-    _ ≤ (((‖b1 - b2‖ + ‖b3‖) + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 - b2) b3
-        linarith
-    _ ≤ ((((‖b1‖ + ‖b2‖) + ‖b3‖) + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le b1 b2
-        linarith
-    _ = ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by ring
-
-theorem lieArm1_norm_block6_le'_fw {V : Type*} [SeminormedAddCommGroup V]
-    (b1 b2 b3 b4 b5 b6 : V) :
-    ‖b1 + b2 - b3 - b4 - b5 - b6‖ ≤ ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by
-  calc ‖b1 + b2 - b3 - b4 - b5 - b6‖
-      ≤ ‖b1 + b2 - b3 - b4 - b5‖ + ‖b6‖ := norm_sub_le _ _
-    _ ≤ (‖b1 + b2 - b3 - b4‖ + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 + b2 - b3 - b4) b5
-        linarith
-    _ ≤ ((‖b1 + b2 - b3‖ + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 + b2 - b3) b4
-        linarith
-    _ ≤ (((‖b1 + b2‖ + ‖b3‖) + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 + b2) b3
-        linarith
-    _ ≤ ((((‖b1‖ + ‖b2‖) + ‖b3‖) + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_add_le b1 b2
-        linarith
-    _ = ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by ring
-
 lemma pAO_range_subset {m n : ℕ} (h : m ≤ n) :
     Finset.range m ⊆ Finset.range n := by
   intro x hx

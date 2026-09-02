@@ -14,6 +14,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricLoweredConnec
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ArmOne.ConnectionDifferenceFeed
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ArmOne.KappaPsiBFeed
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ArmOne.PointwiseIdentity
+import DifferentialGeometry.Analysis.Estimates.ProductBounds
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -683,44 +684,6 @@ theorem lieArm1Piece_psiB_metricPerturbationPath_riemannianFiberNormSq_order0_ba
     exact ⟨0, le_rfl, fun T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ s hs x =>
       (hIsE.false x).elim⟩
 
-private theorem lieArm1_norm_block6_le {V : Type*} [SeminormedAddCommGroup V]
-    (b1 b2 b3 b4 b5 b6 : V) :
-    ‖b1 - b2 - b3 - b4 - b5 - b6‖ ≤ ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by
-  calc ‖b1 - b2 - b3 - b4 - b5 - b6‖
-      ≤ ‖b1 - b2 - b3 - b4 - b5‖ + ‖b6‖ := norm_sub_le _ _
-    _ ≤ (‖b1 - b2 - b3 - b4‖ + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 - b2 - b3 - b4) b5
-        linarith
-    _ ≤ ((‖b1 - b2 - b3‖ + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 - b2 - b3) b4
-        linarith
-    _ ≤ (((‖b1 - b2‖ + ‖b3‖) + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 - b2) b3
-        linarith
-    _ ≤ ((((‖b1‖ + ‖b2‖) + ‖b3‖) + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le b1 b2
-        linarith
-    _ = ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by ring
-
-private theorem lieArm1_norm_block6_le' {V : Type*} [SeminormedAddCommGroup V]
-    (b1 b2 b3 b4 b5 b6 : V) :
-    ‖b1 + b2 - b3 - b4 - b5 - b6‖ ≤ ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by
-  calc ‖b1 + b2 - b3 - b4 - b5 - b6‖
-      ≤ ‖b1 + b2 - b3 - b4 - b5‖ + ‖b6‖ := norm_sub_le _ _
-    _ ≤ (‖b1 + b2 - b3 - b4‖ + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 + b2 - b3 - b4) b5
-        linarith
-    _ ≤ ((‖b1 + b2 - b3‖ + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 + b2 - b3) b4
-        linarith
-    _ ≤ (((‖b1 + b2‖ + ‖b3‖) + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_sub_le (b1 + b2) b3
-        linarith
-    _ ≤ ((((‖b1‖ + ‖b2‖) + ‖b3‖) + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
-        have := norm_add_le b1 b2
-        linarith
-    _ = ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by ring
-
 private theorem lieArm1_norm_sq_le_of_norm_le {V : Type*} [SeminormedAddCommGroup V]
     {v : V} {S : ℝ} (h : ‖v‖ ≤ S) : ‖v‖ ^ 2 ≤ S ^ 2 :=
   pow_le_pow_left₀ (norm_nonneg v) h 2
@@ -782,7 +745,7 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_jetL2_perOrder_ballUniform
   refine lieArm1_norm_sq_le_of_norm_le ?_
   have hsqrtPc_nn : 0 ≤ Real.sqrt (Pc i) := Real.sqrt_nonneg _
   have hsqrtPb_nn : 0 ≤ Real.sqrt (Pb i) := Real.sqrt_nonneg _
-  have hblock1 := lieArm1_norm_block6_le'
+  have hblock1 := DifferentialGeometry.Analysis.norm_add_sub_sub_sub_sub_le
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
         (connectionDifferenceSection (I := I) g₁ g₀)))
@@ -801,7 +764,7 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_jetL2_perOrder_ballUniform
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaF (Equiv.refl (Fin 3))
         (connectionDifferenceSection (I := I) g₁ g₀)))
-  have hblock2 := lieArm1_norm_block6_le'
+  have hblock2 := DifferentialGeometry.Analysis.norm_add_sub_sub_sub_sub_le
     (iteratedCovGrad (I := I) g₀ 3 2 i
       (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap (Equiv.refl (Fin 3))
         (connectionDifferenceSection (I := I) g₁ g₀)))

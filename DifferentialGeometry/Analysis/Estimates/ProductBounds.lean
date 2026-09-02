@@ -27,6 +27,27 @@ theorem norm_sq_sub_le {V : Type*} [SeminormedAddCommGroup V] (a b : V) :
   nlinarith only [hab, norm_nonneg a, norm_nonneg b, norm_nonneg (a - b),
     sq_nonneg (‖a‖ - ‖b‖)]
 
+theorem norm_add_sub_sub_sub_sub_le {V : Type*} [SeminormedAddCommGroup V]
+    (b1 b2 b3 b4 b5 b6 : V) :
+    ‖b1 + b2 - b3 - b4 - b5 - b6‖ ≤
+      ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by
+  calc
+    ‖b1 + b2 - b3 - b4 - b5 - b6‖
+        ≤ ‖b1 + b2 - b3 - b4 - b5‖ + ‖b6‖ := norm_sub_le _ _
+    _ ≤ (‖b1 + b2 - b3 - b4‖ + ‖b5‖) + ‖b6‖ := by
+      have := norm_sub_le (b1 + b2 - b3 - b4) b5
+      linarith
+    _ ≤ ((‖b1 + b2 - b3‖ + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
+      have := norm_sub_le (b1 + b2 - b3) b4
+      linarith
+    _ ≤ (((‖b1 + b2‖ + ‖b3‖) + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
+      have := norm_sub_le (b1 + b2) b3
+      linarith
+    _ ≤ ((((‖b1‖ + ‖b2‖) + ‖b3‖) + ‖b4‖) + ‖b5‖) + ‖b6‖ := by
+      have := norm_add_le b1 b2
+      linarith
+    _ = ‖b1‖ + ‖b2‖ + ‖b3‖ + ‖b4‖ + ‖b5‖ + ‖b6‖ := by ring
+
 theorem le_sq_of_sqrt_le {r c : ℝ} (hr : 0 ≤ r) (h : Real.sqrt r ≤ c) :
     r ≤ c ^ 2 := by
   simpa [Real.sq_sqrt hr] using pow_le_pow_left₀ (Real.sqrt_nonneg r) h 2
