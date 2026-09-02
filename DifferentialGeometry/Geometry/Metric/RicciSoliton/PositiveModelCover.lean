@@ -224,4 +224,25 @@ theorem exists_roundTwoSphere_solitonModelQuotientCovering_with_target_homeomorp
     solitonModelCovering_target_homeomorphic_two_sphere_or_real_projective_plane_of_isQuotientCoveringMap
       hcover hquotient⟩
 
+theorem exists_roundTwoSphere_solitonModelQuotientCovering_with_target_homeomorphism_of_compact_of_finrank_eq_two_of_scalar_eq_one
+    [CompactSpace M] [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2)
+    (hscalar : ∀ x : M, metricScalarAt (I := I) (M := M) g x = 1) :
+    ∃ cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 → M,
+      solitonModelCovering roundTwoSphereShrinkerMetric
+          roundTwoSphereShrinkerPotential g f cover ∧
+        IsQuotientCoveringMap cover (coveringDeckGroup cover) ∧
+        ((∃ e : Metric.sphere
+            (0 : EuclideanSpace Real (Fin 3)) 1 ≃ₜ M,
+            ∀ x, e x = cover x) ∨
+          (∃ e : RealProjectivePlane ≃ₜ M,
+            ∀ x, e (realProjectivePlaneQuotientMap x) = cover x)) := by
+  apply exists_roundTwoSphere_solitonModelQuotientCovering_with_target_homeomorphism_of_compact_of_finrank_eq_two_of_constant_sectional_curvature
+    (I := I) (M := M) h hdim
+  intro x v w
+  rw [Curvature.metricRm04StdAt_eq_scalar_div_two_of_finrank_eq_two
+    (I := I) g hdim x v w w v, hscalar x, g.symm x w v]
+
 end DifferentialGeometry.Geometry
