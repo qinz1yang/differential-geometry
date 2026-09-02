@@ -241,21 +241,61 @@ theorem tendsto_integral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_z
     rw [sq_abs, Real.sq_sqrt hε.le]
   rw [hscale]
 
-theorem tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhdsGT_zero
-    {a : Real} (ha : a ≠ 0) {s : Set Complex}
-    (hs : MeasurableSet s) (h0 : s ∈ 𝓝 (0 : Complex))
-    {g : Complex → Real} (hg : IntegrableOn g s) (hcont : ContinuousAt g 0) :
+theorem tendsto_integral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_zero_of_finrank_eq_two
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace Real F]
+    [FiniteDimensional Real F] [MeasurableSpace F] [BorelSpace F]
+    (hdim : Module.finrank Real F = 2)
+    {a : Real} (ha : a ≠ 0) {g : F → Real}
+    (hg : Integrable g volume) (hcont : ContinuousAt g 0) :
+    Tendsto
+      (fun ε : Real => ∫ z : F,
+        ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2 ∂volume)
+      (𝓝[>] 0) (𝓝 (Real.pi / a ^ 2 * g 0)) := by
+  let v : OrthonormalBasis (Fin 2) Real F :=
+    (stdOrthonormalBasis Real F).reindex (finCongr hdim)
+  let e : Complex ≃ₗᵢ[Real] F := Complex.isometryOfOrthonormal v
+  have he_pres : MeasurePreserving e volume volume := e.measurePreserving
+  have he_emb : MeasurableEmbedding e := e.toHomeomorph.measurableEmbedding
+  have hge : Integrable (g ∘ e) :=
+    he_pres.integrable_comp_emb he_emb |>.mpr hg
+  have hconte : ContinuousAt (g ∘ e) 0 := by
+    have he_cont : ContinuousAt (e : Complex → F) (0 : Complex) := e.continuousAt
+    have hcont' : ContinuousAt g (e 0) := by
+      simpa only [map_zero] using hcont
+    exact hcont'.comp (x := (0 : Complex)) he_cont
+  have hbase :=
+    tendsto_integral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_zero
+      ha hge hconte
+  have heq :
+      (fun ε : Real => ∫ z : Complex,
+        ε * (g ∘ e) z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2) =
+      (fun ε : Real => ∫ z : F,
+        ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2 ∂volume) := by
+    funext ε
+    simpa only [Function.comp_apply, LinearIsometryEquiv.norm_map] using
+      he_pres.integral_comp he_emb
+        (fun z : F => ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2)
+  rw [heq] at hbase
+  simpa only [Function.comp_apply, map_zero] using hbase
+
+theorem tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhdsGT_zero_of_finrank_eq_two
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace Real F]
+    [FiniteDimensional Real F] [MeasurableSpace F] [BorelSpace F]
+    (hdim : Module.finrank Real F = 2)
+    {a : Real} (ha : a ≠ 0) {s : Set F}
+    (hs : MeasurableSet s) (h0 : s ∈ 𝓝 (0 : F))
+    {g : F → Real} (hg : IntegrableOn g s volume) (hcont : ContinuousAt g 0) :
     Tendsto
       (fun ε : Real => ∫ z in s,
-        ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2)
+        ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2 ∂volume)
       (𝓝[>] 0) (𝓝 (Real.pi / a ^ 2 * g 0)) := by
-  have h0s : (0 : Complex) ∈ s := mem_of_mem_nhds h0
-  have hindicator : s.indicator g =ᶠ[𝓝 (0 : Complex)] g := by
+  have h0s : (0 : F) ∈ s := mem_of_mem_nhds h0
+  have hindicator : s.indicator g =ᶠ[𝓝 (0 : F)] g := by
     filter_upwards [h0] with z hz
     rw [indicator_of_mem hz]
   have hbase :=
-    tendsto_integral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_zero
-      ha (hg.integrable_indicator hs) (hcont.congr_of_eventuallyEq hindicator)
+    tendsto_integral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_zero_of_finrank_eq_two
+      hdim ha (hg.integrable_indicator hs) (hcont.congr_of_eventuallyEq hindicator)
   rw [indicator_of_mem h0s] at hbase
   apply hbase.congr'
   filter_upwards with ε
@@ -265,6 +305,45 @@ theorem tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhd
   by_cases hz : z ∈ s
   · simp only [indicator_of_mem hz]
   · simp only [indicator_of_notMem hz, mul_zero, zero_mul]
+
+theorem tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhdsGT_zero
+    {a : Real} (ha : a ≠ 0) {s : Set Complex}
+    (hs : MeasurableSet s) (h0 : s ∈ 𝓝 (0 : Complex))
+    {g : Complex → Real} (hg : IntegrableOn g s) (hcont : ContinuousAt g 0) :
+    Tendsto
+      (fun ε : Real => ∫ z in s,
+        ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2)
+      (𝓝[>] 0) (𝓝 (Real.pi / a ^ 2 * g 0)) := by
+  exact
+    tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhdsGT_zero_of_finrank_eq_two
+      Complex.finrank_real_complex ha hs h0 hg hcont
+
+theorem tendsto_setIntegral_regularized_quadratic_kernel_comp_mul_abs_det_fderiv_of_integrableOn_nhdsGT_zero_of_finrank_eq_two
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace Real F]
+    [FiniteDimensional Real F] [MeasurableSpace F] [BorelSpace F]
+    (hdim : Module.finrank Real F = 2)
+    {a : Real} (ha : a ≠ 0) {s : Set F} (hs : MeasurableSet s)
+    {φ : F → F} {φ' : F → F →L[Real] F}
+    (hφ' : ∀ z ∈ s, HasFDerivWithinAt φ (φ' z) s z)
+    (hφ : InjOn φ s) (h0 : φ '' s ∈ 𝓝 (0 : F))
+    {g : F → Real} (hg : IntegrableOn g (φ '' s) volume)
+    (hcont : ContinuousAt g 0) :
+    Tendsto
+      (fun ε : Real => ∫ z in s,
+        |(φ' z).det| *
+          (ε * g (φ z) * (a ^ 2 * ‖φ z‖ ^ 2 + ε)⁻¹ ^ 2) ∂volume)
+      (𝓝[>] 0) (𝓝 (Real.pi / a ^ 2 * g 0)) := by
+  have himage : MeasurableSet (φ '' s) :=
+    measurable_image_of_fderivWithin hs hφ' hφ
+  have hbase :=
+    tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhdsGT_zero_of_finrank_eq_two
+      hdim ha himage h0 hg hcont
+  apply hbase.congr'
+  filter_upwards with ε
+  simpa only [smul_eq_mul] using
+    (integral_image_eq_integral_abs_det_fderiv_smul volume hs hφ' hφ
+      (fun z : F =>
+        ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2))
 
 theorem tendsto_setIntegral_regularized_quadratic_kernel_comp_mul_abs_det_fderiv_of_integrableOn_nhdsGT_zero
     {a : Real} (ha : a ≠ 0) {s : Set Complex} (hs : MeasurableSet s)
@@ -278,16 +357,8 @@ theorem tendsto_setIntegral_regularized_quadratic_kernel_comp_mul_abs_det_fderiv
         |(φ' z).det| *
           (ε * g (φ z) * (a ^ 2 * ‖φ z‖ ^ 2 + ε)⁻¹ ^ 2))
       (𝓝[>] 0) (𝓝 (Real.pi / a ^ 2 * g 0)) := by
-  have himage : MeasurableSet (φ '' s) :=
-    measurable_image_of_fderivWithin hs hφ' hφ
-  have hbase :=
-    tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhdsGT_zero
-      ha himage h0 hg hcont
-  apply hbase.congr'
-  filter_upwards with ε
-  simpa only [smul_eq_mul] using
-    (integral_image_eq_integral_abs_det_fderiv_smul volume hs hφ' hφ
-      (fun z : Complex =>
-        ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2))
+  exact
+    tendsto_setIntegral_regularized_quadratic_kernel_comp_mul_abs_det_fderiv_of_integrableOn_nhdsGT_zero_of_finrank_eq_two
+      Complex.finrank_real_complex ha hs hφ' hφ h0 hg hcont
 
 end DifferentialGeometry.Analysis.Integration
