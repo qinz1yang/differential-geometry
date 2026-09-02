@@ -6,13 +6,14 @@ set_option autoImplicit false
 
 noncomputable section
 
-open Bundle Manifold Set
+open Bundle Manifold Set MeasureTheory
 open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Geometry
 
 open Curvature Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -172,5 +173,48 @@ theorem normalizedGradientRicciSoliton_regularized_gradient_divergence
   dsimp [d, U]
   field_simp [hd_ne x]
   ring
+
+omit [ConnectedSpace M] in
+theorem normalizedGradientRicciSoliton_regularized_gradient_integral_eq_zero
+    [CompactSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2) (ε : Real) (hε : 0 < ε) :
+    ∫ y, ε * (1 - metricScalarAt (I := I) (M := M) g y) *
+        (normGradSqFun (I := I) g f y + ε)⁻¹ ^ 2
+      ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
+  let U : M → Real := normGradSqFun (I := I) g (f : M → Real)
+  let d : M → Real := fun y => U y + ε
+  have hU_smooth : ContMDiff I 𝓘(Real, Real) ∞ U := by
+    exact normGradSqFun_contMDiff (I := I) g f.contMDiff
+  have hd_smooth : ContMDiff I 𝓘(Real, Real) ∞ d := by
+    exact hU_smooth.add contMDiff_const
+  have hd_ne : ∀ y : M, d y ≠ 0 := by
+    intro y
+    have hnonneg := normGradSqFun_nonneg (I := I) g (f : M → Real) y
+    have hpos : 0 < normGradSqFun (I := I) g (f : M → Real) y + ε :=
+      add_pos_of_nonneg_of_pos hnonneg hε
+    exact ne_of_gt (by simpa [d, U] using hpos)
+  have hphi_smooth : ContMDiff I 𝓘(Real, Real) ∞ (fun y : M => (d y)⁻¹) := by
+    exact hd_smooth.inv₀ hd_ne
+  let X := smoothSmul (I := I) (fun y : M => (d y)⁻¹)
+    hphi_smooth (gradG (I := I) g f)
+  have hzero := integral_divergence_eq_zero_of_compact (I := I) g X
+  have hpoint : ∀ y : M,
+      divergenceG (I := I) g X y =
+        ε * (1 - metricScalarAt (I := I) (M := M) g y) *
+          (normGradSqFun (I := I) g f y + ε)⁻¹ ^ 2 := by
+    intro y
+    dsimp [X, d, U]
+    exact normalizedGradientRicciSoliton_regularized_gradient_divergence
+      (I := I) h hdim ε hε y
+  calc
+    ∫ y, ε * (1 - metricScalarAt (I := I) (M := M) g y) *
+          (normGradSqFun (I := I) g f y + ε)⁻¹ ^ 2
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+      ∫ y, divergenceG (I := I) g X y
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
+      integral_congr_ae (Filter.Eventually.of_forall fun y => (hpoint y).symm)
+    _ = 0 := hzero
 
 end DifferentialGeometry.Geometry
