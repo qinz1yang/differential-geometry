@@ -68,11 +68,12 @@ private theorem tangentFieldModelInChart_sum_tangentConst_model
     _ = F y := b.sum_repr (F y)
 
 omit [I.Boundaryless] in
-theorem exists_cov_zero_at
+theorem exists_cov_eq_at
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (x₀ : M) (v : TangentSpace I x₀) :
+    (x₀ : M) (v : TangentSpace I x₀)
+    (B₀ : TangentSpace I x₀ →L[Real] TangentSpace I x₀) :
     ∃ V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
-      V x₀ = v ∧ cov (fun x => V x) x₀ = 0 := by
+      V x₀ = v ∧ cov (fun x => V x) x₀ = B₀ := by
   classical
   let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
   let b := Module.finBasis Real E
@@ -81,7 +82,8 @@ theorem exists_cov_zero_at
   let Γ : E →L[Real] E →L[Real] E :=
     connectionEndomorphismInChartL (𝕜 := Real) (I := I) cov x₀ y₀
   let A : E →L[Real] E := (ContinuousLinearMap.apply Real E v₀).comp Γ
-  let z : E → E := fun y => v₀ - A (y - y₀)
+  let B : E →L[Real] E := B₀
+  let z : E → E := fun y => v₀ + (B - A) (y - y₀)
   let Vloc : (x : M) -> TangentSpace I x :=
     fun x =>
       ∑ i : Fin (Module.finrank Real E),
@@ -91,7 +93,7 @@ theorem exists_cov_zero_at
     fun i x => b.coord i (z (extChartAt I x₀ x))
   have hz_contDiff : ContDiff Real (∞ : WithTop ℕ∞) z := by
     unfold z
-    exact contDiff_const.sub (A.contDiff.comp (contDiff_id.sub contDiff_const))
+    exact contDiff_const.add ((B - A).contDiff.comp (contDiff_id.sub contDiff_const))
   have hcoeff : ∀ i : Fin (Module.finrank Real E),
       ContMDiffOn I 𝓘(Real, Real) (∞ : WithTop ℕ∞) (coeff i) e.baseSet := by
     have : CompleteSpace E := FiniteDimensional.complete Real E
@@ -224,7 +226,7 @@ theorem exists_cov_zero_at
   have hcov_congr : cov (fun x : M => V x) x₀ = cov Vloc x₀ :=
     cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
       hV_mdiff hVloc_mdiff (by simp) hV_ev
-  have hcovVloc : cov Vloc x₀ = 0 := by
+  have hcovVloc : cov Vloc x₀ = B₀ := by
     ext W
     let W₀ : E := W
     obtain ⟨Xsec, hXsec⟩ :=
@@ -271,24 +273,24 @@ theorem exists_cov_zero_at
       have h := hVloc_model (mem_extChartAt_target (I := I) x₀)
       simpa [z, y₀] using h
     have hfd :
-        fderivWithin Real z (Set.range I) y₀ W₀ = - A W₀ := by
-      have hhas : HasFDerivAt z (-A) y₀ := by
+        fderivWithin Real z (Set.range I) y₀ W₀ = (B - A) W₀ := by
+      have hhas : HasFDerivAt z (B - A) y₀ := by
         have hid : HasFDerivAt (fun y : E => y) (1 : E →L[Real] E) y₀ := by
           let h : HasFDerivAt (fun y : E => y) (1 : E →L[Real] E) y₀ :=
             hasFDerivAt_id y₀
           exact h
         have hsub : HasFDerivAt (fun y : E => y - y₀) (1 : E →L[Real] E) y₀ := by
           simpa using hid.sub_const y₀
-        have hA' :
-            HasFDerivAt (fun y : E => A (y - y₀)) (A.comp (1 : E →L[Real] E)) y₀ :=
-          A.hasFDerivAt.comp y₀ hsub
-        have hA : HasFDerivAt (fun y : E => A (y - y₀)) A y₀ := by
-          let h : HasFDerivAt (fun y : E => A (y - y₀)) A y₀ := hA'
+        have hBA' : HasFDerivAt (fun y : E => (B - A) (y - y₀))
+            ((B - A).comp (1 : E →L[Real] E)) y₀ :=
+          (B - A).hasFDerivAt.comp y₀ hsub
+        have hBA : HasFDerivAt (fun y : E => (B - A) (y - y₀)) (B - A) y₀ := by
+          let h : HasFDerivAt (fun y : E => (B - A) (y - y₀)) (B - A) y₀ := hBA'
           exact h
         have hconst : HasFDerivAt (fun _ : E => v₀) (0 : E →L[Real] E) y₀ := by
           exact hasFDerivAt_const (x := y₀) (c := v₀)
-        have hsub := hconst.sub hA
-        refine (hsub.congr_fderiv (zero_sub A)).congr_of_eventuallyEq ?_
+        have hadd := hconst.add hBA
+        refine (hadd.congr_fderiv (zero_add (B - A))).congr_of_eventuallyEq ?_
         exact Filter.Eventually.of_forall fun _ => rfl
       have huniq : UniqueDiffWithinAt Real (Set.range I) y₀ :=
         I.uniqueDiffOn y₀ hzRange
@@ -297,7 +299,7 @@ theorem exists_cov_zero_at
     have hderiv :
         fderivWithin Real
             (tangentFieldModelInChart (𝕜 := Real) (I := I) x₀ Vloc)
-            (Set.range I) y₀ W₀ = - A W₀ := by
+            (Set.range I) y₀ W₀ = (B - A) W₀ := by
       have hfd_eq :
           fderivWithin Real
               (tangentFieldModelInChart (𝕜 := Real) (I := I) x₀ Vloc)
@@ -320,7 +322,7 @@ theorem exists_cov_zero_at
       exact h.symm
     have hmodel_cov :
         tangentFieldModelInChart (𝕜 := Real) (I := I) x₀
-            (fun p : M => (cov Vloc p) (X p)) y₀ = 0 := by
+            (fun p : M => (cov Vloc p) (X p)) y₀ = B W₀ := by
       calc
         tangentFieldModelInChart (𝕜 := Real) (I := I) x₀
             (fun p : M => (cov Vloc p) (X p)) y₀
@@ -338,12 +340,12 @@ theorem exists_cov_zero_at
               connectionEndomorphismInChart (𝕜 := Real) (I := I) cov X x₀ y₀
                 (tangentFieldModelInChart (𝕜 := Real) (I := I) x₀ Vloc y₀) := by
                 rw [hXpull']
-        _ = (- A W₀) + Γ W₀ v₀ := by
+        _ = (B - A) W₀ + Γ W₀ v₀ := by
                 rw [hderiv, hconn]
-        _ = 0 := by
+        _ = B W₀ := by
                 simp [A, Γ]
     have hvec :
-        (cov Vloc x₀) W = 0 := by
+        (cov Vloc x₀) W = B₀ W := by
       have h := hmodel_cov
       unfold tangentFieldModelInChart at h
       rw [extChartAt_to_inv] at h
@@ -353,11 +355,20 @@ theorem exists_cov_zero_at
         (I := I) (x₀ := x₀) (x := x₀) (mem_chart_source H x₀)] at h
       rw [mfderiv_extChartAt_self] at h
       simp only [hX0] at h
-      let h' : (cov Vloc x₀) W = 0 := h
-      exact h'
+      change (cov Vloc x₀) W = B₀ W at h
+      exact h
     exact hvec
   refine ⟨V, hV_val, ?_⟩
   rw [hcov_congr, hcovVloc]
+
+omit [I.Boundaryless] in
+theorem exists_cov_zero_at
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (x₀ : M) (v : TangentSpace I x₀) :
+    ∃ V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
+      V x₀ = v ∧ cov (fun x => V x) x₀ = 0 := by
+  simpa using exists_cov_eq_at (I := I) cov x₀ v
+    (0 : TangentSpace I x₀ →L[Real] TangentSpace I x₀)
 
 omit [I.Boundaryless] in
 theorem exists_cov_zero_at_apply

@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.CoordinateIdentities
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.IntrinsicDerivation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.RicciTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.PIdentities
 
 set_option autoImplicit false
@@ -10,6 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -660,6 +663,259 @@ theorem hamiltonMAt_apply_basis
       basis gInv hinv (basis a) (basis b),
     hamiltonCurvatureRicciAt_apply (I := I)
       (S.family.metric clock.time) basis gInv hinv (basis a) (basis b)]
+
+omit [SigmaCompactSpace M] in
+theorem hamiltonMAt_metricTrace_eq
+    [I.Boundaryless]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular) (x : M) :
+    metricTracePair0SAt (I := I) (S.family.metric clock.time)
+        (hamiltonMAt (I := I) clock (S.family.metric clock.time) x) =
+      (1 / 2 : Real) *
+        (deriv (fun s : Real => S.scalar s x) clock.time +
+          S.scalar clock.time x / clock.elapsed) := by
+  classical
+  let basis := coordinateFrameAtToBasis (I := I) x
+  let gInv : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
+    fun i j => coordInv (I := I) S x clock.time x i j
+  have hinv : MetricInverseInBasisGen (I := I) (M := M)
+      (S.family.metric clock.time) x basis gInv := by
+    simpa [basis, gInv] using coordInvReal (I := I) S x clock.time
+  have hrough :
+      metricTracePair0SAt (I := I) (S.family.metric clock.time)
+          (roughLap0STensor (I := I) (S.family.metric clock.time)
+            (metricNabla2Ric (I := I) (M := M) (S.family.metric clock.time) x)) =
+        scalarLaplacianTraceInFrame (M := M) (coordInv (I := I) S x)
+          (coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x))
+          clock.time x := by
+    rw [metricTracePair0SAt_eq_sum_basis (I := I)
+      (S.family.metric clock.time) basis gInv hinv]
+    unfold scalarLaplacianTraceInFrame coordRoughRic
+    refine Finset.sum_congr rfl fun a _ => ?_
+    refine Finset.sum_congr rfl fun b _ => ?_
+    rw [roughLap0STensor_apply,
+      metricTraceFirstTwo0SAt_eq_sum_basis (I := I)
+        (S.family.metric clock.time) basis gInv hinv]
+    unfold metricTrace0S2InBasis
+    simp only [gInv, basis, coordinateFrameAt_toBasis_apply]
+    congr 1
+    refine Finset.sum_congr rfl fun i _ => ?_
+    refine Finset.sum_congr rfl fun j _ => ?_
+    congr 1
+    have hinput :
+        metricTraceInput (I := I)
+            (coordinateFrameAt (I := I) x i x)
+            (coordinateFrameAt (I := I) x j x)
+            (vec2
+              (coordinateFrameAt (I := I) x a x)
+              (coordinateFrameAt (I := I) x b x)) =
+          vec4
+            (coordinateFrameAt (I := I) x i x)
+            (coordinateFrameAt (I := I) x j x)
+            (coordinateFrameAt (I := I) x a x)
+            (coordinateFrameAt (I := I) x b x) := by
+      funext q
+      fin_cases q <;> rfl
+    rw [hinput, metricNabla2Ric_coordinateFrameAt (I := I) S clock.time x]
+  have hhess :
+      metricTracePair0SAt (I := I) (S.family.metric clock.time)
+          (hamiltonScalarHessianAt (I := I) (S.family.metric clock.time) x) =
+        scalarLaplacianTraceInFrame (M := M) (coordInv (I := I) S x)
+          (coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x))
+          clock.time x := by
+    rw [metricTracePair0SAt_eq_sum_basis (I := I)
+      (S.family.metric clock.time) basis gInv hinv]
+    calc
+      (∑ a, ∑ b, gInv a b *
+          hamiltonScalarHessianAt (I := I) (S.family.metric clock.time) x
+            (vec2 (basis a) (basis b))) =
+          ∑ a, ∑ b, coordInv (I := I) S x clock.time x a b *
+            scalarHessianFromNabla2RicInFrame (M := M)
+              (coordInv (I := I) S x) (coordNab2Ric (I := I) S x)
+              clock.time x a b := by
+        refine Finset.sum_congr rfl fun a _ => ?_
+        refine Finset.sum_congr rfl fun b _ => ?_
+        rw [hamiltonScalarHessianAt_apply (I := I)
+          (S.family.metric clock.time) basis gInv hinv (basis a) (basis b)]
+        unfold scalarHessianFromNabla2RicInFrame
+        simp only [gInv, basis, coordinateFrameAt_toBasis_apply]
+        congr 1
+        refine Finset.sum_congr rfl fun i _ => ?_
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [metricNabla2Ric_coordinateFrameAt (I := I) S clock.time x]
+      _ = scalarLaplacianTraceInFrame (M := M) (coordInv (I := I) S x)
+          (roughLapRicInFrame (M := M) (coordInv (I := I) S x)
+            (coordNab2Ric (I := I) S x)) clock.time x :=
+        scalarHessianFromNabla2Ric_trace_eq_roughLapRic_trace
+          (M := M) (coordInv (I := I) S x) (coordNab2Ric (I := I) S x)
+            clock.time x
+      _ = scalarLaplacianTraceInFrame (M := M) (coordInv (I := I) S x)
+          (coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x))
+          clock.time x := by rfl
+  have hnorm :
+      ricciNormSqInFrame (I := I) S (coordInv (I := I) S x)
+          (coordinateFrameAt (I := I) x) clock.time x =
+        normSq0S (I := I) (S.family.metric clock.time) x 2
+          (S.ricci clock.time x) := by
+    exact ricciNormSq_basis (I := I) S (coordInv (I := I) S x)
+      (coordinateFrameAt (I := I) x) basis hinv
+      (by intro i; simp [basis, coordinateFrameAt_toBasis_apply])
+  have hInvSym : ∀ i j : CoordinateIdx (𝕜 := Real) E,
+      coordInv (I := I) S x clock.time x i j =
+        coordInv (I := I) S x clock.time x j i :=
+    invMetric_symm (I := I) (M := M) (S.family.metric clock.time) x
+      basis gInv hinv
+  have hRicSym : ∀ i j : CoordinateIdx (𝕜 := Real) E,
+      ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x)
+          clock.time x i j =
+        ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x)
+          clock.time x j i := by
+    intro i j
+    have h := metricRicciSymm (I := I) (M := M)
+      (S.family.metric clock.time) basis gInv hinv i j
+    simpa [ricciCompInFrame, SolutionOn.ricciAt, SolutionFamily.ricciAt,
+      basis, coordinateFrameAt_toBasis_apply] using h
+  have hsquareComp : ∀ a b : CoordinateIdx (𝕜 := Real) E,
+      hamiltonRicciSquareAt (I := I) (S.family.metric clock.time) x
+          (vec2 (basis a) (basis b)) =
+        ricciQuadraticCompInFrame (I := I) S (coordInv (I := I) S x)
+          (coordinateFrameAt (I := I) x) clock.time x a b := by
+    intro a b
+    rw [hamiltonRicciSquareAt_apply (I := I) (S.family.metric clock.time)
+      basis gInv hinv (basis a) (basis b)]
+    simp only [ricciQuadraticCompInFrame, ricciOneUpCompInFrame,
+      ricciCompInFrame, gInv, basis, Finset.sum_mul,
+      coordinateFrameAt_toBasis_apply, SolutionOn.ricciAt, SolutionFamily.ricciAt]
+    calc
+      (∑ i, ∑ j,
+          coordInv (I := I) S x clock.time x i j *
+            (metricRicciAt (I := I) (M := M) (S.base.metric clock.time) x
+                (vec2 (coordinateFrameAt (I := I) x a x)
+                  (coordinateFrameAt (I := I) x i x)) *
+              metricRicciAt (I := I) (M := M) (S.base.metric clock.time) x
+                (vec2 (coordinateFrameAt (I := I) x j x)
+                  (coordinateFrameAt (I := I) x b x)))) =
+        ∑ j, ∑ i,
+          coordInv (I := I) S x clock.time x i j *
+            (metricRicciAt (I := I) (M := M) (S.base.metric clock.time) x
+                (vec2 (coordinateFrameAt (I := I) x a x)
+                  (coordinateFrameAt (I := I) x i x)) *
+              metricRicciAt (I := I) (M := M) (S.base.metric clock.time) x
+                (vec2 (coordinateFrameAt (I := I) x j x)
+                  (coordinateFrameAt (I := I) x b x))) := by rw [Finset.sum_comm]
+      _ = ∑ i, ∑ j,
+          coordInv (I := I) S x clock.time x i j *
+              metricRicciAt (I := I) (M := M) (S.base.metric clock.time) x
+                (vec2 (coordinateFrameAt (I := I) x a x)
+                  (coordinateFrameAt (I := I) x j x)) *
+            metricRicciAt (I := I) (M := M) (S.base.metric clock.time) x
+              (vec2 (coordinateFrameAt (I := I) x i x)
+                (coordinateFrameAt (I := I) x b x)) := by
+        refine Finset.sum_congr rfl fun i _ => ?_
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [hInvSym j i]
+        ring
+  have hsquare :
+      metricTracePair0SAt (I := I) (S.family.metric clock.time)
+          (hamiltonRicciSquareAt (I := I) (S.family.metric clock.time) x) =
+        normSq0S (I := I) (S.family.metric clock.time) x 2
+          (S.ricci clock.time x) := by
+    rw [metricTracePair0SAt_eq_sum_basis (I := I)
+      (S.family.metric clock.time) basis gInv hinv]
+    simp_rw [hsquareComp]
+    rw [scalarTrace_ricciQuadraticTerm_eq_ricciNormSq_at
+      (I := I) S (coordInv (I := I) S x) (coordinateFrameAt (I := I) x)
+        clock.time x hInvSym hRicSym]
+    exact hnorm
+  have hcurv :
+      metricTracePair0SAt (I := I) (S.family.metric clock.time)
+          (hamiltonCurvatureRicciAt (I := I) (S.family.metric clock.time) x) =
+        normSq0S (I := I) (S.family.metric clock.time) x 2
+          (S.ricci clock.time x) := by
+    let K := metricCurvData (I := I) (M := M) (S.family.metric clock.time)
+    have hLower : Rm04LowersRm13At (I := I) (S.family.metric clock.time) x
+        (metricRm13 (I := I) (M := M) (S.family.metric clock.time) x)
+        (metricRm04 (I := I) (M := M) (S.family.metric clock.time) x) :=
+      rm04LowersRm13At_of_realizes (I := I) (S.family.metric clock.time)
+        (metricCov (I := I) (M := M) (S.family.metric clock.time))
+        (metricRm13 (I := I) (M := M) (S.family.metric clock.time))
+        (metricRm04 (I := I) (M := M) (S.family.metric clock.time))
+        K.rm13Realizes K.rm04Realizes x
+    have hTrace : RicciRealizesRm04FirstTraceAt (I := I)
+        (metricRicci (I := I) (M := M) (S.family.metric clock.time) x)
+        (metricRm04 (I := I) (M := M) (S.family.metric clock.time) x)
+        gInv basis := by
+      exact ricciFirstTraceAt_of_rm13_section (I := I)
+        (S.family.metric clock.time) basis gInv hinv
+        (metricRicci (I := I) (M := M) (S.family.metric clock.time))
+        (metricRm13 (I := I) (M := M) (S.family.metric clock.time))
+        (metricRm04 (I := I) (M := M) (S.family.metric clock.time))
+        K.ricciRealizes hLower
+    have hOutput : Rm04OutputSkewAt (I := I)
+        (metricRm04 (I := I) (M := M) (S.family.metric clock.time) x) := by
+      exact DifferentialGeometry.Geometry.Connection.rm04OutputSkewAt_of_leviCivita_realizes
+        (I := I) (S.family.metric clock.time)
+        (metricRm04 (I := I) (M := M) (S.family.metric clock.time))
+        K.rm04Realizes
+    have hmain := metricTrace_rm04RicciContractionAt_eq_neg_inner
+      (I := I) basis
+      (metricRm04 (I := I) (M := M) (S.family.metric clock.time) x)
+      gInv (metricRicci (I := I) (M := M) (S.family.metric clock.time) x)
+      hTrace hOutput
+    have hmain' :
+        (∑ a, ∑ b, gInv a b *
+          rm04RicciContractionAt (I := I) basis
+            (metricRm04 (I := I) (M := M) (S.family.metric clock.time) x)
+            gInv (metricRicci (I := I) (M := M) (S.family.metric clock.time) x)
+            a b) =
+          -ricciNormSqInFrame (I := I) S (coordInv (I := I) S x)
+            (coordinateFrameAt (I := I) x) clock.time x := by
+      simpa [gInv, basis, raised02CompAt, raisedRicciCompInFrame,
+        DifferentialGeometry.Geometry.Curvature.raisedRicciComponentsInFrame,
+        ricciNormSqInFrame, ricciCompInFrame, ricciTwoTensorField,
+        SolutionOn.ricciAt, SolutionFamily.ricciAt,
+        coordinateFrameAt_toBasis_apply] using hmain
+    rw [metricTracePair0SAt_eq_sum_basis (I := I)
+      (S.family.metric clock.time) basis gInv hinv]
+    calc
+      (∑ a, ∑ b, gInv a b *
+          hamiltonCurvatureRicciAt (I := I) (S.family.metric clock.time) x
+            (vec2 (basis a) (basis b))) =
+        -(∑ a, ∑ b, gInv a b *
+          rm04RicciContractionAt (I := I) basis
+            (metricRm04 (I := I) (M := M) (S.family.metric clock.time) x)
+            gInv (metricRicci (I := I) (M := M) (S.family.metric clock.time) x)
+            a b) := by
+          simp_rw [hamiltonCurvatureRicciAt_eq_neg_rm04RicciContractionAt
+            (I := I) (S.family.metric clock.time) basis gInv hinv]
+          simp only [mul_neg, Finset.sum_neg_distrib]
+      _ = ricciNormSqInFrame (I := I) S (coordInv (I := I) S x)
+          (coordinateFrameAt (I := I) x) clock.time x := by rw [hmain']; ring
+      _ = normSq0S (I := I) (S.family.metric clock.time) x 2
+          (S.ricci clock.time x) := hnorm
+  have hlap := scalarLaplacianTraceInFrame_coord_eq_laplacianAt
+    (I := I) S x (⟨clock.time, ht⟩)
+  have hevolWithin := scalarEvolution_of_isSolution (I := I) S hS
+    (flowG (I := I) S) (fun _ => rfl) (fun _ => rfl) ⟨clock.time, ht⟩ x
+  have hevol := hevolWithin.hasDerivAt (D.regular_mem_nhds ht)
+  have hderiv :
+      deriv (fun s : Real => S.scalar s x) clock.time =
+        laplacianAt (I := I) (flowG (I := I) S) clock.time
+            (S.scalar clock.time) x +
+          2 * normSq0S (I := I) (S.family.metric clock.time) x 2
+            (S.ricci clock.time x) := hevol.deriv
+  have hric :
+      metricRicci (I := I) (M := M) (S.family.metric clock.time) x =
+        S.ricciAt clock.time x := by
+    rfl
+  unfold hamiltonMAt hamiltonMbarAt
+  simp only [two_smul, metricTracePair0SAt_add, metricTracePair0SAt_sub,
+    metricTracePair0SAt_smul]
+  rw [hrough, hhess, hcurv, hsquare, hlap, hderiv, hric,
+    SolutionOn.scalar_eq_metricTrace]
+  ring
 
 omit [SigmaCompactSpace M] in
 private theorem hamiltonRicciSquareAt_symm

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockReaction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ExactBlockEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.CurvatureBlock
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TraceHarnackAlgebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.AncientLimit
@@ -75,6 +76,30 @@ theorem hamiltonBlockPSD_iff_hamiltonQuadratic_nonneg
   · intro h U W
     rw [hamiltonBlockQuadratic_eq_hamiltonQuadraticForm K P M U W]
     exact h U W
+
+theorem hamiltonBlockPSD_iff_exists_gram_factorization
+    {K : Idx -> Idx -> Idx -> Idx -> Real}
+    {P : Idx -> Idx -> Idx -> Real}
+    {M : Idx -> Idx -> Real}
+    (hKPair : ∀ a b c d, K a b c d = K c d a b)
+    (hKSkew : ∀ a b c d, K a b c d = -K b a c d)
+    (hPSkew : ∀ a b c, P a b c = -P b a c)
+    (hMSymm : ∀ a b, M a b = M b a) :
+    hamiltonBlockPSD K P M ↔
+      ∃ (m : Nat) (Y : Fin m -> Idx -> Idx -> Real)
+          (X : Fin m -> Idx -> Real),
+        (∀ r a b, Y r a b = -Y r b a) ∧
+        K = hamiltonGramK Y ∧
+        P = hamiltonGramP Y X ∧
+        M = hamiltonGramM X := by
+  constructor
+  · intro hPSD
+    apply exists_hamiltonGram_factorization K P M hKPair hKSkew hPSkew hMSymm
+    intro U W
+    rw [← hamiltonBlockQuadratic_eq_hamiltonQuadraticForm K P M U W]
+    exact hPSD U W
+  · rintro ⟨m, Y, X, hY, rfl, rfl, rfl⟩
+    exact hamiltonBlockPSD_of_gram Y X
 
 theorem hamilton_trace_from_quadratic_nonneg
     {ι : Type*} [Fintype ι]
@@ -160,6 +185,26 @@ theorem hamiltonBlockJ_nonneg_of_gram_quadratic_eq_zero
     Y X U W]
   exact hzero
 
+theorem hamiltonBlockJ_nonneg_of_psd_quadratic_eq_zero
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M : Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real)
+    (hKPair : forall a b c d, K a b c d = K c d a b)
+    (hKSkew : forall a b c d, K a b c d = -K b a c d)
+    (hPSkew : forall a b c, P a b c = -P b a c)
+    (hMSymm : forall a b, M a b = M b a)
+    (hPSD : hamiltonBlockPSD K P M)
+    (hU : forall a b, U a b = -U b a)
+    (hzero : hamiltonBlockQuadratic K P M U W = 0) :
+    0 <= hamiltonBlockJ K P M U W := by
+  obtain ⟨m, Y, X, hY, hK, hP, hM⟩ :=
+    (hamiltonBlockPSD_iff_exists_gram_factorization
+      (K := K) (P := P) (M := M) hKPair hKSkew hPSkew hMSymm).mp hPSD
+  rw [hK, hP, hM] at hzero ⊢
+  exact hamiltonBlockJ_nonneg_of_gram_quadratic_eq_zero
+    Y X U W hY hU hzero
+
 theorem hamiltonBlock_exact_evolution_eq_pre_square
     (K : Idx -> Idx -> Idx -> Idx -> Real)
     (P : Idx -> Idx -> Idx -> Real)
@@ -178,36 +223,6 @@ theorem hamiltonBlock_exact_evolution_eq_j_add_sigma_square
       hamiltonBlockJ K P M U W + hamiltonBlockSigmaSquare K P U W := by
   unfold hamiltonBlockExactEvolution
   exact hamiltonBlock_pre_square_eq_j_add_sigma_square K P M U W
-
-theorem hamiltonBlock_heat_product_eq_pre_square_of_producer_equations
-    (K : Idx -> Idx -> Idx -> Idx -> Real)
-    (P : Idx -> Idx -> Idx -> Real)
-    (M : Idx -> Idx -> Real)
-    (LK : Idx -> Idx -> Idx -> Idx -> Real)
-    (LP : Idx -> Idx -> Idx -> Real)
-    (LM : Idx -> Idx -> Real)
-    (DK : Idx -> Idx -> Idx -> Idx -> Idx -> Real)
-    (DP : Idx -> Idx -> Idx -> Idx -> Real)
-    (DM : Idx -> Idx -> Idx -> Real)
-    (DU : Idx -> Idx -> Idx -> Real)
-    (DW : Idx -> Real)
-    (LU : Idx -> Idx -> Real)
-    (LW : Idx -> Real)
-    (U : Idx -> Idx -> Real)
-    (W : Idx -> Real)
-    (hDW : ∀ e, DW e = 0)
-    (hLU : ∀ a b, LU a b = 0)
-    (hMsym : ∀ a b, M a b = M b a)
-    (hK : hamiltonBlockRawKProduct K LK DK DU U =
-      hamiltonBlockPreSquareK K U)
-    (hP : hamiltonBlockRawPProduct P LP DP DU LW U W =
-      hamiltonBlockPreSquareP K P U W)
-    (hM : hamiltonBlockRawMProduct M LM LW W =
-      hamiltonBlockPreSquareM K P M W) :
-    hamiltonBlockHeatProduct K P M LK LP LM DK DP DM DU DW LU LW U W =
-      hamiltonBlockPreSquare K P M U W := by
-  rw [hamiltonBlock_heat_product_eq_split K P M LK LP LM DK DP DM DU DW LU LW U W
-    hDW hLU hMsym, hK, hP, hM, hamiltonBlockPreSquare_eq_split]
 
 theorem hamiltonBlockExactEvolution_eq_gram_reaction_add_sigma_square
     {ι κ : Type*} [Fintype ι] [Fintype κ]
@@ -238,6 +253,45 @@ theorem hamiltonBlock_exact_evolution_nonneg_of_gram
       (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W := by
   unfold hamiltonBlockExactEvolution
   exact hamiltonBlock_pre_square_nonneg_of_gram Y X U W hY hU
+
+theorem hamiltonBlock_exact_evolution_nonneg_of_psd
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M : Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real)
+    (hKPair : ∀ a b c d, K a b c d = K c d a b)
+    (hKSkew : ∀ a b c d, K a b c d = -K b a c d)
+    (hPSkew : ∀ a b c, P a b c = -P b a c)
+    (hMSymm : ∀ a b, M a b = M b a)
+    (hPSD : hamiltonBlockPSD K P M)
+    (hU : ∀ a b, U a b = -U b a) :
+    0 ≤ hamiltonBlockExactEvolution K P M U W := by
+  obtain ⟨m, Y, X, hY, hK, hP, hM⟩ :=
+    (hamiltonBlockPSD_iff_exists_gram_factorization
+      (K := K) (P := P) (M := M) hKPair hKSkew hPSkew hMSymm).mp hPSD
+  rw [hK, hP, hM]
+  exact hamiltonBlock_exact_evolution_nonneg_of_gram Y X U W hY hU
+
+theorem hamiltonBlockSigma_eq_zero_of_psd_quadratic_eq_zero
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M : Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real)
+    (hKPair : ∀ a b c d, K a b c d = K c d a b)
+    (hKSkew : ∀ a b c d, K a b c d = -K b a c d)
+    (hPSkew : ∀ a b c, P a b c = -P b a c)
+    (hMSymm : ∀ a b, M a b = M b a)
+    (hPSD : hamiltonBlockPSD K P M)
+    (hzero : hamiltonBlockQuadratic K P M U W = 0)
+    (a b : Idx) :
+    hamiltonBlockSigma K P U W a b = 0 := by
+  obtain ⟨m, Y, X, hY, hK, hP, hM⟩ :=
+    (hamiltonBlockPSD_iff_exists_gram_factorization
+      (K := K) (P := P) (M := M) hKPair hKSkew hPSkew hMSymm).mp hPSD
+  rw [hK, hP, hM] at hzero
+  rw [hK, hP]
+  exact hamiltonBlockSigma_eq_zero_of_gram_quadratic_eq_zero
+    Y X U W hzero a b
 
 def hamiltonShiftedM
     (clock : HarnackClock) (M Ric : Idx -> Idx -> Real) : Idx -> Idx -> Real :=
@@ -442,12 +496,134 @@ def hamiltonCoordinateTwoForm
     {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M]
     {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (U : HamiltonHarnackTwoForm (TangentSpace I x))
     (a b : Idx) : Real :=
   U (vec2 (I := I) (basis a) (basis b))
+
+private theorem sum_fin_three_fun {A : Type*} [Fintype A]
+    {B : Type*} [AddCommMonoid B] (F : (Fin 3 -> A) -> B) :
+    (∑ slots : Fin 3 -> A, F slots) =
+      ∑ a, ∑ b, ∑ c, F ![a, b, c] := by
+  rw [Tensor0SBundle.sum_fin_succ_fun 2]
+  apply Finset.sum_congr rfl
+  intro a _
+  rw [Tensor0SBundle.sum_fin_succ_fun 1]
+  apply Finset.sum_congr rfl
+  intro b _
+  rw [Tensor0SBundle.sum_fin_one_fun]
+  apply Finset.sum_congr rfl
+  intro c _
+  congr 1
+  funext i
+  fin_cases i <;> rfl
+
+private theorem sum_fin_two_fun {A : Type*} [Fintype A]
+    {B : Type*} [AddCommMonoid B] (F : (Fin 2 -> A) -> B) :
+    (∑ slots : Fin 2 -> A, F slots) =
+      ∑ a, ∑ b, F ![a, b] := by
+  rw [Tensor0SBundle.sum_fin_succ_fun 1]
+  apply Finset.sum_congr rfl
+  intro a _
+  rw [Tensor0SBundle.sum_fin_one_fun]
+  apply Finset.sum_congr rfl
+  intro b _
+  congr 1
+  funext i
+  fin_cases i <;> rfl
+
+private theorem sum_fin_four_fun {A : Type*} [Fintype A]
+    {B : Type*} [AddCommMonoid B] (F : (Fin 4 -> A) -> B) :
+    (∑ slots : Fin 4 -> A, F slots) =
+      ∑ a, ∑ b, ∑ c, ∑ d, F ![a, b, c, d] := by
+  rw [Tensor0SBundle.sum_fin_succ_fun 3]
+  apply Finset.sum_congr rfl
+  intro a _
+  rw [sum_fin_three_fun]
+  apply Finset.sum_congr rfl
+  intro b _
+  apply Finset.sum_congr rfl
+  intro c _
+  apply Finset.sum_congr rfl
+  intro d _
+  rfl
+
+theorem hamiltonQuadraticAt_eq_hamiltonBlockQuadratic
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    [FiniteDimensional Real E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners Real E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M]
+    {A : Type*} [Fintype A] [DecidableEq A]
+    {x : M} (g : SmoothRiemannianMetric I M)
+    (R : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (P : Tensor0SSpace 3 I x) (Mbar : Tensor0SSpace 2 I x)
+    (U : HamiltonHarnackTwoForm (TangentSpace I x))
+    (W : Tensor0SSpace 1 I x)
+    (basis : Module.Basis A Real (TangentSpace I x))
+    (hinv : MetricInverseInBasisGen (I := I) g x basis
+      (identityInvMetric (Idx := A))) :
+    hamiltonQuadraticAt g R P Mbar U W =
+      hamiltonBlockQuadratic
+        (fun a b c d => tensor04StdAt (I := I) (M := M)
+          (R : Tensor04At (I := I) (M := M) x)
+          (basis a) (basis b) (basis d) (basis c))
+        (fun a b c => P ![basis a, basis b, basis c])
+        (fun a b => Mbar ![basis a, basis b])
+        (fun a b => U ![basis a, basis b])
+        (fun a => W ![basis a]) := by
+  rw [hamiltonQuadraticAt, curvatureBlock_eq_sum g R U U basis hinv,
+    Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 3 basis hinv,
+    Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 2 basis hinv]
+  rw [sum_fin_four_fun]
+  rw [hamiltonBlockQuadratic_eq_hamiltonQuadraticForm]
+  unfold hamiltonQuadraticForm
+  simp only [component0S_apply]
+  rw [sum_fin_three_fun, sum_fin_two_fun]
+  have hPprod (a b c : A) :
+      (U.toTensor0S.product W) (fun i => basis (![a, b, c] i)) =
+        U ![basis a, basis b] * W ![basis c] := by
+    rw [Tensor0SSpace.product_apply,
+      HamiltonHarnackTwoForm.toTensor0S_apply]
+    congr 1
+    · congr 1
+      funext i
+      fin_cases i <;> rfl
+    · congr 1
+      funext i
+      fin_cases i
+      rfl
+  have hMprod (a b : A) :
+      (W.product W) (fun i => basis (![a, b] i)) =
+        W ![basis a] * W ![basis b] := by
+    rw [Tensor0SSpace.product_apply]
+    congr 1
+    · congr 1
+      funext i
+      fin_cases i
+      rfl
+    · congr 1
+      funext i
+      fin_cases i
+      rfl
+  have hvec2 (a b : A) :
+      (fun i => basis (![a, b] i)) = ![basis a, basis b] := by
+    funext i
+    fin_cases i <;> rfl
+  have hvec3 (a b c : A) :
+      (fun i => basis (![a, b, c] i)) = ![basis a, basis b, basis c] := by
+    funext i
+    fin_cases i <;> rfl
+  have hvec2' (a b : A) :
+      vec2 (I := I) (basis a) (basis b) = ![basis a, basis b] := by
+    funext i
+    fin_cases i <;> simp [vec2]
+  simp_rw [hPprod, hMprod]
+  simp_rw [hvec2, hvec3, hvec2']
+  simp
+  simp only [mul_assoc]
 
 theorem curvatureBlock_eq_hamiltonCoordinate_sum
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -456,7 +632,6 @@ theorem curvatureBlock_eq_hamiltonCoordinate_sum
     {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M]
-    [IsManifold I 1 M]
     {x : M} [DecidableEq Idx] (g : SmoothRiemannianMetric I M)
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (U V : HamiltonHarnackTwoForm (TangentSpace I x))

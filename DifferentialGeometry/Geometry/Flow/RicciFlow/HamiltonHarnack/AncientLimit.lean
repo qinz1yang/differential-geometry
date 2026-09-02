@@ -8,6 +8,38 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+theorem hamilton_finite_origin_matrix_limit
+    {q c t : Real} (ht : 0 < t)
+    (hshift : ∀ α : Real, α ∈ Set.Ioo 0 t →
+      0 ≤ q + c / (2 * (t - α))) :
+    0 ≤ q + c / (2 * t) := by
+  let alpha : Nat → Real := fun n => t / 2 * (1 / (n + 1 : Real))
+  have halpha : Filter.Tendsto alpha Filter.atTop (nhds 0) := by
+    simpa only [alpha, mul_zero] using
+      (tendsto_const_nhds.mul
+        (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := Real)))
+  have halphaMem (n : Nat) : alpha n ∈ Set.Ioo 0 t := by
+    have hn : 0 < (n + 1 : Real) := by positivity
+    have hone : 1 / (n + 1 : Real) ≤ 1 := by
+      exact (div_le_one hn).2 (by norm_num)
+    constructor
+    · dsimp only [alpha]
+      positivity
+    · dsimp only [alpha]
+      have hhalf : t / 2 < t := by linarith
+      exact (mul_le_of_le_one_right (by positivity : 0 ≤ t / 2) hone).trans_lt hhalf
+  have hden : Filter.Tendsto (fun n => 2 * (t - alpha n)) Filter.atTop
+      (nhds (2 * t)) := by
+    have hsub : Filter.Tendsto (fun n => t - alpha n) Filter.atTop
+        (nhds (t - 0)) := tendsto_const_nhds.sub halpha
+    simpa only [sub_zero] using tendsto_const_nhds.mul hsub
+  have hlimit : Filter.Tendsto (fun n => q + c / (2 * (t - alpha n)))
+      Filter.atTop (nhds (q + c / (2 * t))) := by
+    exact tendsto_const_nhds.add
+      (tendsto_const_nhds.div hden (by positivity : 2 * t ≠ 0))
+  exact ge_of_tendsto hlimit (Filter.Eventually.of_forall fun n =>
+    hshift (alpha n) (halphaMem n))
+
 theorem hamilton_ancient_matrix_limit
     {q c t : Real}
     (hshift : ∀ α : Real, α < t → 0 ≤ q + c / (2 * (t - α)))
@@ -39,6 +71,31 @@ theorem hamilton_ancient_matrix_limit
   rw [hclock] at hbad
   linarith
 
+theorem hamilton_ancient_matrix_limit_of_all_origins
+    {q c t : Real}
+    (hshift : ∀ alpha : Real, alpha < t →
+      0 ≤ q + c / (2 * (t - alpha))) :
+    0 ≤ q := by
+  have hc : 0 ≤ c := by
+    by_contra hc
+    have hcneg : c < 0 := lt_of_not_ge hc
+    let epsilon := -c / (4 * (abs q + 1))
+    have hepsilon : 0 < epsilon := by
+      dsimp only [epsilon]
+      exact div_pos (neg_pos.mpr hcneg) (by positivity)
+    have hbad := hshift (t - epsilon) (by linarith)
+    have habs : q ≤ abs q := le_abs_self q
+    change 0 ≤ q + c / (2 * (t - (t - epsilon))) at hbad
+    rw [show t - (t - epsilon) = epsilon by ring] at hbad
+    have heq : c / (2 * epsilon) = -2 * (abs q + 1) := by
+      dsimp only [epsilon]
+      field_simp [ne_of_lt hcneg,
+        ne_of_gt (show 0 < abs q + 1 by positivity)]
+      ring
+    rw [heq] at hbad
+    linarith [abs_nonneg q]
+  exact hamilton_ancient_matrix_limit hshift hc
+
 theorem hamilton_ancient_trace_limit
     {q c t : Real}
     (hshift : ∀ α : Real, α < t → 0 ≤ q + c / (t - α))
@@ -63,6 +120,54 @@ theorem hamilton_ancient_trace_expression_nonneg
     all_goals field_simp [sub_ne_zero.mpr (ne_of_gt (sub_pos.mpr hα))]
     all_goals ring
   · exact hR
+
+theorem hamilton_ancient_two_time_limit
+    {A B t₁ t₂ : Real} (htimes : t₁ < t₂)
+    (hshift : ∀ alpha : Real, alpha < t₁ →
+      (t₁ - alpha) / (t₂ - alpha) * A ≤ B) :
+    A ≤ B := by
+  let denominator : Nat → Real := fun n => (n : Real) + 1 + (t₂ - t₁)
+  have hdenominator : Filter.Tendsto denominator Filter.atTop Filter.atTop := by
+    have hconst : Filter.Tendsto (fun _ : Nat => 1 + (t₂ - t₁))
+        Filter.atTop (nhds (1 + (t₂ - t₁))) := tendsto_const_nhds
+    have h := hconst.add_atTop (tendsto_natCast_atTop_atTop (R := Real))
+    convert h using 1
+    ext n
+    dsimp only [denominator]
+    ring
+  have herror : Filter.Tendsto
+      (fun n : Nat => (t₂ - t₁) / denominator n)
+      Filter.atTop (nhds 0) :=
+    tendsto_const_nhds.div_atTop hdenominator
+  have hratio : Filter.Tendsto
+      (fun n : Nat => ((n : Real) + 1) / denominator n)
+      Filter.atTop (nhds 1) := by
+    have hone : Filter.Tendsto (fun _ : Nat => (1 : Real))
+        Filter.atTop (nhds 1) := tendsto_const_nhds
+    have hsub := hone.sub herror
+    convert hsub using 1
+    · ext n
+      dsimp only [denominator]
+      field_simp [ne_of_gt
+        (show 0 < (n : Real) + 1 + (t₂ - t₁) by positivity)]
+      ring
+    · simp
+  have hleft : Filter.Tendsto
+      (fun n : Nat => ((n : Real) + 1) / denominator n * A)
+      Filter.atTop (nhds A) := by
+    simpa using hratio.mul tendsto_const_nhds
+  apply le_of_tendsto hleft
+  filter_upwards [] with n
+  have h := hshift (t₁ - ((n : Real) + 1)) (by
+    have hn : 0 ≤ (n : Real) := Nat.cast_nonneg n
+    linarith)
+  have hdeneq : t₂ - (t₁ - ((n : Real) + 1)) = denominator n := by
+    dsimp only [denominator]
+    ring
+  have hnumeq : t₁ - (t₁ - ((n : Real) + 1)) = (n : Real) + 1 := by
+    ring
+  rw [hdeneq, hnumeq] at h
+  exact h
 
 theorem hamilton_shifted_scalar_hasDerivAt
     {R dR : Real → Real} {α t : Real}
@@ -115,7 +220,7 @@ theorem hamilton_shifted_scalar_two_time
     (t₁ - α) * R t₁ ≤ (t₂ - α) * R t₂ := by
   exact hmono ⟨le_rfl, ht⟩ ⟨ht, le_rfl⟩ ht
 
-theorem hamilton_ancient_scalar_monotoneOn
+theorem monotoneOn_of_hamilton_ancient_scalar_trace
     {R dR : Real → Real} {a b : Real}
     (hcont : ContinuousOn R (Set.Icc a b))
     (hderiv : ∀ s ∈ Set.Ioo a b, HasDerivAt R (dR s) s)
@@ -129,7 +234,7 @@ theorem hamilton_ancient_scalar_monotoneOn
       rw [(hderiv s hsi).deriv]
       exact htrace s hsi)
 
-theorem hamilton_ancient_scalar_two_time
+theorem hamilton_scalar_two_time_of_monotoneOn
     {R : Real → Real} {t₁ t₂ : Real}
     (ht : t₁ ≤ t₂)
     (hmono : MonotoneOn R (Set.Icc t₁ t₂)) :

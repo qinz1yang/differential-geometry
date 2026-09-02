@@ -129,6 +129,29 @@ theorem metricPDE_Icc
     have hraw := metricDerivAt (I := I) S hS τ x v w
     simpa [SolutionFamily.ricciAt, metricRicciAt_apply_eq_ricciTensor] using hraw.hasDerivWithinAt
 
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+theorem metric_inner_antitoneOn_of_ricci_nonnegative
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {a b : Real} (hab : a < b)
+    (hslab : Set.Icc a b ⊆ D.carrier)
+    (hreg : Set.Ioc a b ⊆ D.regular)
+    (hRic : ∀ t ∈ Set.Icc a b, ∀ x : M, ∀ v : TangentSpace I x,
+      0 ≤ ricciTensor (I := I) (S.base.metric t) x v v)
+    (x : M) (v : TangentSpace I x) :
+    AntitoneOn (fun t : Real ↦ (S.base.metric t).inner x v v)
+      (Set.Icc a b) := by
+  have hpde := metricPDE_Icc (I := I) S hS hab hslab hreg
+  apply antitoneOn_of_hasDerivWithinAt_nonpos (convex_Icc a b)
+  · intro t ht
+    exact (hpde t ht x v v).continuousWithinAt
+  · intro t ht
+    exact (hpde t (interior_subset ht) x v v).mono interior_subset
+  · intro t ht
+    have hnonneg := hRic t (interior_subset ht) x v
+    nlinarith
+
 theorem exp_bounds_log
     {fa fb R : Real} (hfa : 0 < fa) (hfb : 0 < fb)
     (hlog : |Real.log fb - Real.log fa| ≤ R) :

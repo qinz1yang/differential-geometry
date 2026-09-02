@@ -60,6 +60,32 @@ def hamiltonBlockPreSquareM
     P a c d * P b d c * W a * W b) +
   ∑ a, ∑ b, (∑ c, P a b c * W c) ^ 2
 
+theorem hamiltonBlockJ_add_blocks
+    (K dK : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M dM : Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real) :
+    hamiltonBlockJ (fun a b c d => K a b c d + dK a b c d) P
+        (fun a b => M a b + dM a b) U W =
+      hamiltonBlockJ K P M U W +
+        2 * (∑ a, ∑ b, ∑ c, ∑ d,
+          K a c b d * dM c d * W a * W b) +
+        2 * (∑ a, ∑ b, ∑ c, ∑ d,
+          dK a c b d * M c d * W a * W b) +
+        2 * (∑ a, ∑ b, ∑ c, ∑ d,
+          dK a c b d * dM c d * W a * W b) +
+        8 * (∑ a, ∑ b, ∑ c, ∑ d, ∑ e,
+          dK a d c e * P d b e * U a b * W c) +
+        4 * (∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ f,
+          K a e c f * dK b e d f * U a b * U c d) +
+        4 * (∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ f,
+          dK a e c f * K b e d f * U a b * U c d) +
+        4 * (∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ f,
+          dK a e c f * dK b e d f * U a b * U c d) := by
+  unfold hamiltonBlockJ
+  simp only [add_mul, mul_add, Finset.sum_add_distrib]
+  ring
+
 theorem hamiltonBlockPreSquare_eq_split
     (K : Idx -> Idx -> Idx -> Idx -> Real)
     (P : Idx -> Idx -> Idx -> Real)

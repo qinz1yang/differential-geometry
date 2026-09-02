@@ -84,6 +84,34 @@ noncomputable def intrinsicJacobi
       intrinsicGeodesic (I := I) g hEnorm p (u + r • w) s)
     0 1
 
+theorem intrinsicJacobi_smul
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (u w : TangentSpace I p) (c t : Real) :
+    (intrinsicJacobi (I := I) g hEnorm p (c • u) (c • w) t : E) =
+      intrinsicJacobi (I := I) g hEnorm p u w (c * t) := by
+  have hfun :
+      (fun r : Real =>
+        intrinsicGeodesic (I := I) g hEnorm p
+          ((c • u) + r • (c • w)) t) =
+        fun r : Real =>
+          intrinsicGeodesic (I := I) g hEnorm p
+            (u + r • w) (c * t) := by
+    funext r
+    have hvec : (c • u) + r • (c • w) = c • (u + r • w) := by
+      module
+    rw [hvec]
+    rw [← intrinsicGeodesic_smul (I := I) g hEnorm p
+      (c • (u + r • w)) t]
+    rw [← intrinsicGeodesic_smul (I := I) g hEnorm p
+      (u + r • w) (c * t)]
+    apply congrArg (fun v : TangentSpace I p =>
+      intrinsicGeodesic (I := I) g hEnorm p v 1)
+    module
+  unfold intrinsicJacobi
+  rw [hfun]
+  rfl
+
 @[simp] theorem intrinsicJacobi_zero
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)

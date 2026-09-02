@@ -109,6 +109,145 @@ def hamiltonQuadraticForm {ι : Type*} [Fintype ι]
     2 * (∑ a, ∑ b, ∑ c, P a b c * U a b * W c) +
     ∑ a, ∑ b, M a b * W a * W b
 
+theorem exists_hamiltonGram_factorization
+    {ι : Type*} [Fintype ι]
+    (K : ι → ι → ι → ι → Real)
+    (P : ι → ι → ι → Real)
+    (M : ι → ι → Real)
+    (hKPair : ∀ a b c d, K a b c d = K c d a b)
+    (hKSkew : ∀ a b c d, K a b c d = -K b a c d)
+    (hPSkew : ∀ a b c, P a b c = -P b a c)
+    (hMSymm : ∀ a b, M a b = M b a)
+    (hQ : ∀ (U : ι → ι → Real) (W : ι → Real),
+      0 ≤ hamiltonQuadraticForm K P M U W) :
+    ∃ (m : Nat) (Y : Fin m → ι → ι → Real) (X : Fin m → ι → Real),
+      (∀ r a b, Y r a b = -Y r b a) ∧
+      K = hamiltonGramK Y ∧
+      P = hamiltonGramP Y X ∧
+      M = hamiltonGramM X := by
+  classical
+  let B : Matrix ((ι × ι) ⊕ ι) ((ι × ι) ⊕ ι) Real := fun i j =>
+    match i, j with
+    | Sum.inl (a, b), Sum.inl (c, d) => K a b c d
+    | Sum.inl (a, b), Sum.inr c => P a b c
+    | Sum.inr c, Sum.inl (a, b) => P a b c
+    | Sum.inr a, Sum.inr b => M a b
+  have hB : B.PosSemidef := Matrix.PosSemidef.of_dotProduct_mulVec_nonneg (by
+      unfold Matrix.IsHermitian
+      ext i j
+      rcases i with i | i
+      · rcases i with ⟨a, b⟩
+        rcases j with j | j
+        · rcases j with ⟨c, d⟩
+          change K c d a b = K a b c d
+          exact hKPair c d a b
+        · change P a b j = P a b j
+          rfl
+      · rcases j with j | j
+        · rcases j with ⟨c, d⟩
+          change P c d i = P c d i
+          rfl
+        · change M j i = M i j
+          exact hMSymm j i)
+    (by
+      intro z
+      have hz := hQ (fun a b => z (Sum.inl (a, b))) (fun a => z (Sum.inr a))
+      simp only [dotProduct, Matrix.mulVec, B, Fintype.sum_sum_type, star_trivial]
+      simp_rw [Fintype.sum_prod_type]
+      simp_rw [mul_add]
+      simp only [Finset.sum_add_distrib]
+      simp_rw [Finset.mul_sum]
+      unfold hamiltonQuadraticForm at hz
+      rw [show (∑ x, ∑ a, ∑ b,
+          z (Sum.inr x) * (P a b x * z (Sum.inl (a, b)))) =
+          ∑ a, ∑ b, ∑ x,
+            z (Sum.inr x) * (P a b x * z (Sum.inl (a, b))) by
+        rw [Finset.sum_comm]
+        apply Finset.sum_congr rfl
+        intro a _
+        rw [Finset.sum_comm]]
+      have hKTerm (a b c d : ι) :
+          z (Sum.inl (a, b)) * (K a b c d * z (Sum.inl (c, d))) =
+            K a b c d * z (Sum.inl (a, b)) * z (Sum.inl (c, d)) := by
+        ring
+      have hPFirst (a b c : ι) :
+          z (Sum.inl (a, b)) * (P a b c * z (Sum.inr c)) =
+            P a b c * z (Sum.inl (a, b)) * z (Sum.inr c) := by
+        ring
+      have hPSecond (a b c : ι) :
+          z (Sum.inr c) * (P a b c * z (Sum.inl (a, b))) =
+            P a b c * z (Sum.inl (a, b)) * z (Sum.inr c) := by
+        ring
+      have hMTerm (a b : ι) :
+          z (Sum.inr a) * (M a b * z (Sum.inr b)) =
+            M a b * z (Sum.inr a) * z (Sum.inr b) := by
+        ring
+      simp_rw [hKTerm]
+      simp_rw [hPFirst]
+      simp_rw [hPSecond]
+      simp_rw [hMTerm]
+      simpa only [two_mul, add_assoc] using hz)
+  obtain ⟨m, v, hv⟩ := Matrix.posSemidef_iff_eq_sum_vecMulVec.mp hB
+  let Y₀ : Fin m → ι → ι → Real := fun r a b => v r (Sum.inl (a, b))
+  let X : Fin m → ι → Real := fun r a => v r (Sum.inr a)
+  let Y : Fin m → ι → ι → Real := fun r a b =>
+    (Y₀ r a b - Y₀ r b a) / 2
+  refine ⟨m, Y, X, ?_, ?_, ?_, ?_⟩
+  · intro r a b
+    simp only [Y]
+    ring
+  · funext a b c d
+    have habcd := congrFun (congrFun hv (Sum.inl (a, b))) (Sum.inl (c, d))
+    have habdc := congrFun (congrFun hv (Sum.inl (a, b))) (Sum.inl (d, c))
+    have hbacd := congrFun (congrFun hv (Sum.inl (b, a))) (Sum.inl (c, d))
+    have hbadc := congrFun (congrFun hv (Sum.inl (b, a))) (Sum.inl (d, c))
+    simp only [B, Matrix.sum_apply, Matrix.vecMulVec_apply, star_trivial] at habcd
+    simp only [B, Matrix.sum_apply, Matrix.vecMulVec_apply, star_trivial] at habdc
+    simp only [B, Matrix.sum_apply, Matrix.vecMulVec_apply, star_trivial] at hbacd
+    simp only [B, Matrix.sum_apply, Matrix.vecMulVec_apply, star_trivial] at hbadc
+    unfold hamiltonGramK
+    simp only [Y]
+    change K a b c d = ∑ x,
+      ((v x (Sum.inl (a, b)) - v x (Sum.inl (b, a))) / 2) *
+      ((v x (Sum.inl (c, d)) - v x (Sum.inl (d, c))) / 2)
+    have hexpand (x : Fin m) :
+        ((v x (Sum.inl (a, b)) - v x (Sum.inl (b, a))) / 2) *
+            ((v x (Sum.inl (c, d)) - v x (Sum.inl (d, c))) / 2) =
+          (v x (Sum.inl (a, b)) * v x (Sum.inl (c, d)) -
+            v x (Sum.inl (a, b)) * v x (Sum.inl (d, c)) -
+            v x (Sum.inl (b, a)) * v x (Sum.inl (c, d)) +
+            v x (Sum.inl (b, a)) * v x (Sum.inl (d, c))) / 4 := by
+      ring
+    simp_rw [hexpand]
+    rw [← Finset.sum_div, Finset.sum_add_distrib, Finset.sum_sub_distrib,
+      Finset.sum_sub_distrib]
+    rw [← habcd, ← habdc, ← hbacd, ← hbadc]
+    have hKLast (i j k l : ι) : K i j k l = -K i j l k := by
+      rw [hKPair, hKSkew, hKPair]
+    linarith [hKLast a b c d, hKSkew a b c d,
+      hKLast b a c d, hKSkew a b d c]
+  · funext a b c
+    have habc := congrFun (congrFun hv (Sum.inl (a, b))) (Sum.inr c)
+    have hbac := congrFun (congrFun hv (Sum.inl (b, a))) (Sum.inr c)
+    simp only [B, Matrix.sum_apply, Matrix.vecMulVec_apply, star_trivial] at habc hbac
+    unfold hamiltonGramP
+    change P a b c = ∑ x,
+      ((v x (Sum.inl (a, b)) - v x (Sum.inl (b, a))) / 2) * v x (Sum.inr c)
+    have hexpand (x : Fin m) :
+        ((v x (Sum.inl (a, b)) - v x (Sum.inl (b, a))) / 2) *
+            v x (Sum.inr c) =
+          (v x (Sum.inl (a, b)) * v x (Sum.inr c) -
+            v x (Sum.inl (b, a)) * v x (Sum.inr c)) / 2 := by
+      ring
+    simp_rw [hexpand]
+    rw [← Finset.sum_div, Finset.sum_sub_distrib]
+    rw [← habc, ← hbac]
+    linarith [hPSkew a b c]
+  · funext a b
+    have hab := congrFun (congrFun hv (Sum.inr a)) (Sum.inr b)
+    simpa only [B, Matrix.sum_apply, Matrix.vecMulVec_apply, star_trivial,
+      hamiltonGramM, X] using hab
+
 def hamiltonReactionPolynomial {ι : Type*} [Fintype ι]
     (K : ι → ι → ι → ι → Real) (P : ι → ι → ι → Real)
     (M : ι → ι → Real) (U : ι → ι → Real) (W : ι → Real) : Real :=

@@ -71,12 +71,76 @@ theorem toTensor0S_smul {x : M} (c : Real)
   rfl
 
 omit [FiniteDimensional Real E] in
+noncomputable def ofTensor0S {x : M}
+    (U : Tensor0SSpace (I := I) 2 x)
+    (hU : ∀ X Y : TangentSpace I x, U ![X, Y] = -U ![Y, X]) :
+    HamiltonHarnackTwoForm (TangentSpace I x) := by
+  refine ContinuousAlternatingMap.mk
+    ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x) U) ?_
+  intro v i j hv hij
+  change U v = 0
+  have hvslots : v = ![v 0, v 1] := by
+    funext a
+    fin_cases a <;> rfl
+  rw [hvslots]
+  fin_cases i <;> fin_cases j
+  · exact (hij rfl).elim
+  · have heq : v 0 = v 1 := hv
+    rw [heq]
+    have hskew := hU (v 1) (v 1)
+    linarith
+  · have heq : v 0 = v 1 := hv.symm
+    rw [heq]
+    have hskew := hU (v 1) (v 1)
+    linarith
+  · exact (hij rfl).elim
+
+omit [FiniteDimensional Real E] in
+@[simp] theorem toTensor0S_ofTensor0S {x : M}
+    (U : Tensor0SSpace (I := I) 2 x)
+    (hU : ∀ X Y : TangentSpace I x, U ![X, Y] = -U ![Y, X]) :
+    (ofTensor0S (I := I) U hU).toTensor0S = U := by
+  apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).injective
+  rfl
+
+omit [FiniteDimensional Real E] in
 theorem toTensor0S_injective {x : M} :
     Function.Injective
       (toTensor0S (I := I) (M := M) (x := x)) := by
   intro U V h
   apply ContinuousAlternatingMap.toContinuousMultilinearMap_injective
   exact (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm.injective h
+
+def component {Idx : Type*} {x : M}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (U : HamiltonHarnackTwoForm (TangentSpace I x))
+    (a b : Idx) : Real :=
+  component0S (I := I) basis U.toTensor0S ![a, b]
+
+omit [FiniteDimensional Real E] in
+theorem component_skew {Idx : Type*} {x : M}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (U : HamiltonHarnackTwoForm (TangentSpace I x))
+    (a b : Idx) :
+    component (I := I) basis U a b = -component (I := I) basis U b a := by
+  unfold component
+  simp only [component0S_apply, toTensor0S_apply]
+  have hswap := U.map_swap (v := ![basis b, basis a]) (i := (0 : Fin 2))
+    (j := (1 : Fin 2)) (by decide)
+  have hslots :
+      ![basis b, basis a] ∘ (Equiv.swap (0 : Fin 2) 1) =
+        ![basis a, basis b] := by
+    funext i
+    fin_cases i <;> rfl
+  rw [hslots] at hswap
+  have hab : (fun i => basis (![a, b] i)) = ![basis a, basis b] := by
+    funext i
+    fin_cases i <;> rfl
+  have hba : (fun i => basis (![b, a] i)) = ![basis b, basis a] := by
+    funext i
+    fin_cases i <;> rfl
+  rw [hab, hba]
+  exact hswap
 
 def rawInner (g : SmoothRiemannianMetric I M) {x : M}
     (U V : HamiltonHarnackTwoForm (TangentSpace I x)) : Real :=
@@ -205,6 +269,16 @@ def curvatureBlock {x : M}
   inner0S (I := I) g x 4
     ((A : Tensor0SSpace 4 I x).domDomCongr curvatureSlotSwap)
     (U.toTensor0S.product V.toTensor0S)
+
+def hamiltonQuadraticAt {x : M}
+    (g : SmoothRiemannianMetric I M)
+    (R : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (P : Tensor0SSpace 3 I x) (Mbar : Tensor0SSpace 2 I x)
+    (U : HamiltonHarnackTwoForm (TangentSpace I x))
+    (W : Tensor0SSpace 1 I x) : Real :=
+  curvatureBlock g R U U +
+    2 * inner0S (I := I) g x 3 P (U.toTensor0S.product W) +
+    inner0S (I := I) g x 2 Mbar (W.product W)
 
 theorem curvatureBlock_eq_sum {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (g : SmoothRiemannianMetric I M)

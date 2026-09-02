@@ -1,5 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
+import DifferentialGeometry.Tensor.RSTensor.Product
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Prod
@@ -366,6 +367,200 @@ section Intrinsic
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
+omit [FiniteDimensional Real E] in
+noncomputable def covariantEndomorphismAction0S
+    {s : Nat} {x : M} (A : Tensor0SSpace s I x)
+    (L : TangentSpace I x →L[Real] TangentSpace I x) :
+    Tensor0SSpace s I x :=
+  ∑ b : Fin s,
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x).symm
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x A).compContinuousLinearMap
+        (fun a => if a = b then L else ContinuousLinearMap.id Real _))
+
+omit [FiniteDimensional Real E] in
+@[simp] theorem covariantEndomorphismAction0S_apply
+    {s : Nat} {x : M} (A : Tensor0SSpace s I x)
+    (L : TangentSpace I x →L[Real] TangentSpace I x)
+    (v : Fin s → TangentSpace I x) :
+    covariantEndomorphismAction0S (I := I) A L v =
+      ∑ b : Fin s, A (Function.update v b (L (v b))) := by
+  classical
+  rw [covariantEndomorphismAction0S]
+  rw [Tensor0SSpace.sum_apply]
+  refine Finset.sum_congr rfl fun b _ => ?_
+  change
+    ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x A).compContinuousLinearMap
+      (fun a => if a = b then L else ContinuousLinearMap.id Real _)) v = _
+  rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+    tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
+  congr 1
+  funext a
+  by_cases hab : a = b
+  · subst hab
+    rw [if_pos rfl, Function.update_self]
+  · rw [if_neg hab, ContinuousLinearMap.id_apply,
+      Function.update_of_ne hab]
+
+omit [FiniteDimensional Real E] in
+theorem covariantEndomorphismAction0S_product
+    {p q : Nat} {x : M}
+    (A : Tensor0SSpace p I x) (B : Tensor0SSpace q I x)
+    (L : TangentSpace I x →L[Real] TangentSpace I x) :
+    covariantEndomorphismAction0S (I := I) (A.product B) L =
+      (covariantEndomorphismAction0S (I := I) A L).product B +
+        A.product (covariantEndomorphismAction0S (I := I) B L) := by
+  classical
+  apply tensor0SSpace_ext (I := I) (p + q) x
+  intro v
+  let vA : Fin p -> TangentSpace I x := v ∘ Fin.castAdd q
+  let vB : Fin q -> TangentSpace I x := v ∘ Fin.natAdd p
+  have hleft (i : Fin p) :
+      (Function.update v (Fin.castAdd q i) (L (v (Fin.castAdd q i)))) ∘
+          Fin.castAdd q =
+        Function.update vA i (L (vA i)) := by
+    funext a
+    by_cases hai : a = i
+    · subst hai
+      simp [vA]
+    · rw [Function.update_of_ne hai]
+      simp only [Function.comp_apply, vA]
+      rw [Function.update_of_ne]
+      exact fun h => hai (Fin.castAdd_injective _ _ h)
+  have hleftOther (i : Fin p) :
+      (Function.update v (Fin.castAdd q i) (L (v (Fin.castAdd q i)))) ∘
+          Fin.natAdd p = vB := by
+    funext b
+    simp only [Function.comp_apply, vB]
+    rw [Function.update_of_ne]
+    intro h
+    have hval := congrArg Fin.val h
+    simp only [Fin.val_natAdd, Fin.val_castAdd] at hval
+    omega
+  have hrightOther (j : Fin q) :
+      (Function.update v (Fin.natAdd p j) (L (v (Fin.natAdd p j)))) ∘
+          Fin.castAdd q = vA := by
+    funext a
+    simp only [Function.comp_apply, vA]
+    rw [Function.update_of_ne]
+    intro h
+    have hval := congrArg Fin.val h
+    simp only [Fin.val_castAdd, Fin.val_natAdd] at hval
+    omega
+  have hright (j : Fin q) :
+      (Function.update v (Fin.natAdd p j) (L (v (Fin.natAdd p j)))) ∘
+          Fin.natAdd p =
+        Function.update vB j (L (vB j)) := by
+    funext b
+    by_cases hbj : b = j
+    · subst hbj
+      simp [vB]
+    · rw [Function.update_of_ne hbj]
+      simp only [Function.comp_apply, vB]
+      rw [Function.update_of_ne]
+      exact fun h => hbj (Fin.natAdd_injective _ _ h)
+  rw [covariantEndomorphismAction0S_apply, Tensor0SSpace.add_apply,
+    Tensor0SSpace.product_apply, Tensor0SSpace.product_apply,
+    covariantEndomorphismAction0S_apply,
+    covariantEndomorphismAction0S_apply]
+  rw [Fin.sum_univ_add]
+  simp_rw [Tensor0SSpace.product_apply]
+  simp_rw [hleft, hleftOther, hrightOther, hright]
+  simp only [vA, vB, Finset.sum_mul, Finset.mul_sum]
+
+omit [FiniteDimensional Real E] [DecidableEq Idx] in
+theorem tensor0SComponent_covariantEndomorphismAction0S
+    {s : Nat} {x : M}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (A : Tensor0SSpace s I x)
+    (L : TangentSpace I x →L[Real] TangentSpace I x)
+    (slots : Fin s → Idx) :
+    tensor0SComponent (I := I)
+        (covariantEndomorphismAction0S (I := I) A L) basis slots =
+      ricStarArray
+        (fun i e => basis.repr (L (basis i)) e)
+        (fun slots' => tensor0SComponent (I := I) A basis slots') slots := by
+  classical
+  change
+    covariantEndomorphismAction0S (I := I) A L (fun a => basis (slots a)) = _
+  rw [covariantEndomorphismAction0S_apply]
+  unfold ricStarArray
+  refine Finset.sum_congr rfl fun b _ => ?_
+  change
+    A (Function.update (fun a => basis (slots a)) b (L (basis (slots b)))) =
+      ∑ e : Idx, basis.repr (L (basis (slots b))) e *
+        A (fun a => basis (Function.update slots b e a))
+  let base : Fin s → TangentSpace I x := fun a => basis (slots a)
+  let c : Idx → Real := fun e => basis.repr (L (basis (slots b))) e
+  have hrepr : L (basis (slots b)) = ∑ e : Idx, c e • basis e := by
+    exact (basis.sum_repr (L (basis (slots b)))).symm
+  let A' := tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x A
+  have hsum := A'.toMultilinearMap.map_update_sum
+    (Finset.univ : Finset Idx) b (fun e : Idx => c e • basis e) base
+  have hsumModel :
+      A' (Function.update base b (∑ e : Idx, c e • basis e)) =
+        ∑ e : Idx, c e * A' (Function.update base b (basis e)) := by
+    calc
+      A' (Function.update base b (∑ e : Idx, c e • basis e)) =
+          ∑ e : Idx, A' (Function.update base b (c e • basis e)) := hsum
+      _ = ∑ e : Idx, c e * A' (Function.update base b (basis e)) := by
+        refine Finset.sum_congr rfl fun e _ => ?_
+        simpa only [smul_eq_mul] using
+          (A'.map_update_smul base b (c e) (basis e))
+  have hsum' :
+      A (Function.update base b (∑ e : Idx, c e • basis e)) =
+        ∑ e : Idx, c e * A (Function.update base b (basis e)) := by
+    simpa only [A', tensor0SSpaceFiberContinuousLinearEquiv_apply_apply] using hsumModel
+  conv_lhs => rw [hrepr]
+  change A (Function.update base b (∑ e : Idx, c e • basis e)) = _
+  rw [hsum']
+  refine Finset.sum_congr rfl fun e _ => ?_
+  change c e * A (Function.update base b (basis e)) =
+    c e * A (fun a => basis (Function.update slots b e a))
+  congr 2
+  funext a
+  by_cases hab : a = b
+  · subst a
+    simp [base]
+  · simp [base, Function.update, hab]
+
+omit [FiniteDimensional Real E] in
+theorem covariantEndomorphismAction0S_two_skew
+    {x : M} (A : Tensor0SSpace 2 I x)
+    (L : TangentSpace I x →L[Real] TangentSpace I x)
+    (hA : ∀ X Y : TangentSpace I x, A ![X, Y] = -A ![Y, X])
+    (X Y : TangentSpace I x) :
+    covariantEndomorphismAction0S (I := I) A L ![X, Y] =
+      -covariantEndomorphismAction0S (I := I) A L ![Y, X] := by
+  rw [covariantEndomorphismAction0S_apply,
+    covariantEndomorphismAction0S_apply]
+  rw [Fin.sum_univ_two, Fin.sum_univ_two]
+  have h0XY : Function.update ![X, Y] 0 (L X) = ![L X, Y] := by
+    funext i
+    fin_cases i <;> simp [Function.update]
+  have h1XY : Function.update ![X, Y] 1 (L Y) = ![X, L Y] := by
+    funext i
+    fin_cases i <;> simp [Function.update]
+  have h0YX : Function.update ![Y, X] 0 (L Y) = ![L Y, X] := by
+    funext i
+    fin_cases i <;> simp [Function.update]
+  have h1YX : Function.update ![Y, X] 1 (L X) = ![Y, L X] := by
+    funext i
+    fin_cases i <;> simp [Function.update]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+  rw [h0XY, h1XY, h0YX, h1YX]
+  rw [hA (L X) Y, hA X (L Y)]
+  ring
+
+noncomputable def ricciReaction0S
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (Q : Tensor0SSpace 2 I x) (A B : Tensor0SSpace s I x) : Real :=
+  let basis := Module.finBasis Real (TangentSpace I x)
+  ricReactionContract
+    (basisInvMetric (I := I) g x basis)
+    (fun i j => Q (fun a : Fin 2 => if a = 0 then basis i else basis j))
+    (fun slots => tensor0SComponent (I := I) A basis slots)
+    (fun slots => tensor0SComponent (I := I) B basis slots)
+
 private noncomputable def bmat :
     (Idx → Idx → Real) →L[Real]
       ((Idx → Real) →L[Real] (Idx → Real)) :=
@@ -708,6 +903,219 @@ theorem hasDerivWithinAt_normSq0S_ricciFlow {s : Nat} {x : M}
       (fun J0 => tensor0SComponent (I := I) (T t) (fun i => basis i) J0) hflow]
     at hbase
   exact hbase
+
+theorem hasDerivWithinAt_inner0S_ricciFlow {s : Nat} {x : M}
+    {u : Set Real} {t : Real}
+    (g : Real -> SmoothMetric I M)
+    (gInv : Real -> Idx -> Idx -> Real)
+    (gInvDt ric : Idx -> Idx -> Real)
+    (A B : Real -> Tensor0SSpace s I x)
+    (Adt Bdt : (Fin s -> Idx) -> Real)
+    (Adot Bdot : Tensor0SSpace s I x)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinvAll : ∀ r : Real, MetricInverseInBasisGen (I := I) (g r) x basis (gInv r))
+    (hgInv : ∀ i j : Idx,
+      HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) u t)
+    (hA : ∀ slots : Fin s -> Idx,
+      HasDerivWithinAt
+        (fun r : Real => tensor0SComponent (I := I) (A r) basis slots)
+        (Adt slots) u t)
+    (hB : ∀ slots : Fin s -> Idx,
+      HasDerivWithinAt
+        (fun r : Real => tensor0SComponent (I := I) (B r) basis slots)
+        (Bdt slots) u t)
+    (hAdot : ∀ slots : Fin s -> Idx,
+      tensor0SComponent (I := I) Adot basis slots = Adt slots)
+    (hBdot : ∀ slots : Fin s -> Idx,
+      tensor0SComponent (I := I) Bdot basis slots = Bdt slots)
+    (hflow : ∀ i j : Idx,
+      gInvDt i j = 2 * (∑ p : Idx, ∑ q : Idx, gInv t i p * gInv t j q * ric p q)) :
+    HasDerivWithinAt
+      (fun r : Real => inner0S (I := I) (g r) x s (A r) (B r))
+      (ricReactionContract (gInv t) ric
+          (fun slots => tensor0SComponent (I := I) (A t) basis slots)
+          (fun slots => tensor0SComponent (I := I) (B t) basis slots) +
+        inner0S (I := I) (g t) x s Adot (B t) +
+        inner0S (I := I) (g t) x s (A t) Bdot)
+      u t := by
+  classical
+  have hderiv := hasDerivWithinAt_coordContract
+    (s := s) (u := u) (t := t) gInv gInvDt
+    (fun r slots => tensor0SComponent (I := I) (A r) basis slots)
+    (fun r slots => tensor0SComponent (I := I) (B r) basis slots)
+    Adt Bdt hgInv hA hB
+  rw [coordContractDt_eq_ricReactionContract (gInv t) gInvDt ric
+      (fun slots => tensor0SComponent (I := I) (A t) basis slots)
+      (fun slots => tensor0SComponent (I := I) (B t) basis slots) hflow]
+    at hderiv
+  have hfun : ∀ r : Real,
+      coordContract (gInv r)
+          (fun slots => tensor0SComponent (I := I) (A r) basis slots)
+          (fun slots => tensor0SComponent (I := I) (B r) basis slots) =
+        inner0S (I := I) (g r) x s (A r) (B r) := by
+    intro r
+    rw [coordContract_eq_coordInner0S (I := I) (gInv r) (A r) (B r) basis]
+    exact (inner0S_eq_coord (I := I) (g r) x s basis (gInv r)
+      (hinvAll r) (A r) (B r)).symm
+  have hleft :
+      coordContract (gInv t) Adt
+          (fun slots => tensor0SComponent (I := I) (B t) basis slots) =
+        inner0S (I := I) (g t) x s Adot (B t) := by
+    rw [← show (fun slots => tensor0SComponent (I := I) Adot basis slots) = Adt by
+      funext slots
+      exact hAdot slots]
+    rw [coordContract_eq_coordInner0S (I := I) (gInv t) Adot (B t) basis]
+    exact (inner0S_eq_coord (I := I) (g t) x s basis (gInv t)
+      (hinvAll t) Adot (B t)).symm
+  have hright :
+      coordContract (gInv t)
+          (fun slots => tensor0SComponent (I := I) (A t) basis slots) Bdt =
+        inner0S (I := I) (g t) x s (A t) Bdot := by
+    rw [← show (fun slots => tensor0SComponent (I := I) Bdot basis slots) = Bdt by
+      funext slots
+      exact hBdot slots]
+    rw [coordContract_eq_coordInner0S (I := I) (gInv t) (A t) Bdot basis]
+    exact (inner0S_eq_coord (I := I) (g t) x s basis (gInv t)
+      (hinvAll t) (A t) Bdot).symm
+  rw [hleft, hright] at hderiv
+  exact hderiv.congr (fun r _ => (hfun r).symm) (hfun t).symm
+
+omit [DecidableEq Idx] in
+theorem inner0S_moving_deriv_in_basis {s : Nat} {x : M} {t : Real}
+    (g : Real -> SmoothMetric I M)
+    (Q : Tensor0SSpace 2 I x)
+    (A B : Real -> Tensor0SSpace s I x)
+    (Adot Bdot : Tensor0SSpace s I x)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hg : ∀ X Y : TangentSpace I x,
+      HasDerivAt (fun r : Real => (g r).inner x X Y)
+        ((-2 : Real) * Q (fun a : Fin 2 => if a = 0 then X else Y)) t)
+    (hA : ∀ v : Fin s -> TangentSpace I x,
+      HasDerivAt (fun r : Real => A r v) (Adot v) t)
+    (hB : ∀ v : Fin s -> TangentSpace I x,
+      HasDerivAt (fun r : Real => B r v) (Bdot v) t) :
+    HasDerivAt (fun r : Real => inner0S (I := I) (g r) x s (A r) (B r))
+      (ricReactionContract
+          (basisInvMetric (I := I) (g t) x basis)
+          (fun i j => Q (fun a : Fin 2 => if a = 0 then basis i else basis j))
+          (fun slots => tensor0SComponent (I := I) (A t) basis slots)
+          (fun slots => tensor0SComponent (I := I) (B t) basis slots) +
+        inner0S (I := I) (g t) x s Adot (B t) +
+        inner0S (I := I) (g t) x s (A t) Bdot) t := by
+  classical
+  let gInv : Real -> Idx -> Idx -> Real := fun r =>
+    basisInvMetric (I := I) (g r) x basis
+  let ric : Idx -> Idx -> Real := fun i j =>
+    Q (fun a : Fin 2 => if a = 0 then basis i else basis j)
+  let gInvDt : Idx -> Idx -> Real := fun i j =>
+    -(∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j)
+  let Adt : (Fin s -> Idx) -> Real := fun slots =>
+    tensor0SComponent (I := I) Adot basis slots
+  let Bdt : (Fin s -> Idx) -> Real := fun slots =>
+    tensor0SComponent (I := I) Bdot basis slots
+  have hinvAll (r : Real) :
+      MetricInverseInBasisGen (I := I) (g r) x basis (gInv r) := by
+    simpa [gInv] using basisInvMetric_real (I := I) (g r) x basis
+  have hgInv (i j : Idx) :
+      HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by
+    simpa [gInv, gInvDt, ric] using
+      (basisInv_time (I := I) g (fun p q => (-2 : Real) * ric p q) basis
+        (fun p q => by simpa [ric] using hg (basis p) (basis q)) i j)
+  have hflow (i j : Idx) :
+      gInvDt i j = 2 * (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
+    have hterm :
+        (∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j) =
+          ∑ p, ∑ q, (-2 : Real) * (gInv t i p * gInv t j q * ric p q) := by
+      refine Finset.sum_congr rfl fun p _ => ?_
+      refine Finset.sum_congr rfl fun q _ => ?_
+      simp only [gInv]
+      rw [basisInvMetric_symm (I := I) (g t) x basis q j]
+      ring
+    have hfactor :
+        (∑ p, ∑ q, (-2 : Real) * (gInv t i p * gInv t j q * ric p q)) =
+          (-2 : Real) * (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun p _ => ?_
+      rw [Finset.mul_sum]
+    simp only [gInvDt]
+    rw [hterm, hfactor]
+    ring
+  have hmain := hasDerivWithinAt_inner0S_ricciFlow
+    (I := I) (u := Set.univ) g gInv gInvDt ric A B Adt Bdt Adot Bdot basis
+    hinvAll hgInv
+    (fun slots => (hA (fun a => basis (slots a))).hasDerivWithinAt)
+    (fun slots => (hB (fun a => basis (slots a))).hasDerivWithinAt)
+    (fun _ => rfl) (fun _ => rfl) hflow
+  simpa only [gInv, ric] using hmain.hasDerivAt (by simp)
+
+theorem inner0S_moving_deriv {s : Nat} {x : M} {t : Real}
+    (g : Real -> SmoothMetric I M)
+    (Q : Tensor0SSpace 2 I x)
+    (A B : Real -> Tensor0SSpace s I x)
+    (Adot Bdot : Tensor0SSpace s I x)
+    (hg : ∀ X Y : TangentSpace I x,
+      HasDerivAt (fun r : Real => (g r).inner x X Y)
+        ((-2 : Real) * Q (fun a : Fin 2 => if a = 0 then X else Y)) t)
+    (hA : ∀ v : Fin s -> TangentSpace I x,
+      HasDerivAt (fun r : Real => A r v) (Adot v) t)
+    (hB : ∀ v : Fin s -> TangentSpace I x,
+      HasDerivAt (fun r : Real => B r v) (Bdot v) t) :
+    HasDerivAt (fun r : Real => inner0S (I := I) (g r) x s (A r) (B r))
+      (ricciReaction0S (I := I) (g t) x s Q (A t) (B t) +
+        inner0S (I := I) (g t) x s Adot (B t) +
+        inner0S (I := I) (g t) x s (A t) Bdot) t := by
+  classical
+  let basis := Module.finBasis Real (TangentSpace I x)
+  let gInv : Real ->
+      Fin (Module.finrank Real (TangentSpace I x)) ->
+      Fin (Module.finrank Real (TangentSpace I x)) -> Real := fun r =>
+    basisInvMetric (I := I) (g r) x basis
+  let ric :
+      Fin (Module.finrank Real (TangentSpace I x)) ->
+      Fin (Module.finrank Real (TangentSpace I x)) -> Real := fun i j =>
+    Q (fun a : Fin 2 => if a = 0 then basis i else basis j)
+  let gInvDt :
+      Fin (Module.finrank Real (TangentSpace I x)) ->
+      Fin (Module.finrank Real (TangentSpace I x)) -> Real := fun i j =>
+    -(∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j)
+  let Adt : (Fin s -> Fin (Module.finrank Real (TangentSpace I x))) -> Real :=
+    fun slots => tensor0SComponent (I := I) Adot basis slots
+  let Bdt : (Fin s -> Fin (Module.finrank Real (TangentSpace I x))) -> Real :=
+    fun slots => tensor0SComponent (I := I) Bdot basis slots
+  have hinvAll (r : Real) :
+      MetricInverseInBasisGen (I := I) (g r) x basis (gInv r) := by
+    simpa [gInv] using basisInvMetric_real (I := I) (g r) x basis
+  have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by
+    simpa [gInv, gInvDt, ric] using
+      (basisInv_time (I := I) g (fun p q => (-2 : Real) * ric p q) basis
+        (fun p q => by simpa [ric] using hg (basis p) (basis q)) i j)
+  have hflow (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      gInvDt i j = 2 * (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
+    have hterm :
+        (∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j) =
+          ∑ p, ∑ q, (-2 : Real) * (gInv t i p * gInv t j q * ric p q) := by
+      refine Finset.sum_congr rfl fun p _ => ?_
+      refine Finset.sum_congr rfl fun q _ => ?_
+      simp only [gInv]
+      rw [basisInvMetric_symm (I := I) (g t) x basis q j]
+      ring
+    have hfactor :
+        (∑ p, ∑ q, (-2 : Real) * (gInv t i p * gInv t j q * ric p q)) =
+          (-2 : Real) * (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun p _ => ?_
+      rw [Finset.mul_sum]
+    simp only [gInvDt]
+    rw [hterm, hfactor]
+    ring
+  have hmain := hasDerivWithinAt_inner0S_ricciFlow
+    (I := I) (u := Set.univ) g gInv gInvDt ric A B Adt Bdt Adot Bdot basis
+    hinvAll hgInv
+    (fun slots => (hA (fun a => basis (slots a))).hasDerivWithinAt)
+    (fun slots => (hB (fun a => basis (slots a))).hasDerivWithinAt)
+    (fun _ => rfl) (fun _ => rfl) hflow
+  simpa only [ricciReaction0S, basis, gInv, ric] using hmain.hasDerivAt (by simp)
 
 end Intrinsic
 

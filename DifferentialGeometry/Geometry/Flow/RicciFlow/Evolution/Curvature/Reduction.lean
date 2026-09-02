@@ -23,6 +23,19 @@ structure Rm04Symm (Rm : ι → ι → ι → ι → Real) : Prop where
 
   bianchi : ∀ a b c d : ι, Rm a b c d + Rm b c a d + Rm c a b d = 0
 
+structure Rm04PairSymm (Rm : ι → ι → ι → ι → Real) : Prop where
+
+  swap12 : ∀ a b c d : ι, Rm a b c d = -Rm b a c d
+
+  swap34 : ∀ a b c d : ι, Rm a b c d = -Rm a b d c
+
+  pair : ∀ a b c d : ι, Rm a b c d = Rm c d a b
+
+omit [Fintype ι] [DecidableEq ι] in
+theorem Rm04Symm.pair_symm {Rm : ι → ι → ι → ι → Real}
+    (hRm : Rm04Symm Rm) : Rm04PairSymm Rm :=
+  ⟨hRm.swap12, hRm.swap34, hRm.pair⟩
+
 omit [DecidableEq ι] in
 private theorem sum4Swap (F : ι → ι → ι → ι → Real) :
     (∑ a : ι, ∑ b : ι, ∑ c : ι, ∑ d : ι, F a b c d)

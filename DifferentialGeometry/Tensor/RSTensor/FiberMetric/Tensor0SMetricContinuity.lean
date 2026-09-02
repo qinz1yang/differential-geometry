@@ -187,6 +187,191 @@ theorem normSq0S_cont {s : ℕ}
     Continuous (fun y : M => normSq0S (I := I) g y s (T y)) :=
   continuous_iff_continuousAt.2 fun x₀ => normSq0S_contAt (I := I) g T x₀
 
+theorem normSq0S_total_cont {s : ℕ} :
+    Continuous (fun p : Bundle.TotalSpace (Tensor0SModel s ℝ E)
+        (fun x : M => Tensor0SSpace s I x) =>
+      normSq0S (I := I) g p.proj s p.2) := by
+  classical
+  rw [continuous_iff_continuousAt]
+  intro p₀
+  let x₀ : M := p₀.proj
+  let e := trivializationAt E (TangentSpace I : M → Type _) x₀
+  let et := trivializationAt (Tensor0SModel s ℝ E)
+    (fun x : M => Tensor0SSpace s I x) x₀
+  let b := Module.finBasis ℝ E
+  have hx₀ : x₀ ∈ e.baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt' x₀
+  have hp₀ : p₀ ∈ et.source := by
+    rw [et.source_eq]
+    exact hx₀
+  let Gm : M → Matrix (Fin (Module.finrank ℝ E))
+      (Fin (Module.finrank ℝ E)) ℝ :=
+    fun y => Matrix.of fun i j =>
+      g.inner y (e.localFrame b i y) (e.localFrame b j y)
+  have hGmEnt : ∀ i j : Fin (Module.finrank ℝ E),
+      ContinuousAt (fun y : M =>
+        g.inner y (e.localFrame b i y) (e.localFrame b j y)) x₀ := by
+    intro i j
+    have h2 := tensor0SField_eval_cmdAt_slots (I := I) (M := M)
+      (α := metricTensorField (I := I) g)
+      (v := fun a y => e.localFrame b (![i, j] a) y)
+      (hv := fun a => contMDiffAt_localFrame_of_mem (I := I)
+        (n := (∞ : WithTop ℕ∞)) (e := e) (b := b)
+        (i := ![i, j] a) hx₀)
+    have heq : (fun y : M => metricTensorField (I := I) g y
+        (fun a : Fin 2 => e.localFrame b (![i, j] a) y)) =
+        fun y : M => g.inner y (e.localFrame b i y) (e.localFrame b j y) := by
+      funext y
+      rw [metricTensorField_apply]
+      simp
+    rw [heq] at h2
+    exact h2.continuousAt
+  have hGmc : ContinuousAt Gm x₀ :=
+    continuousAt_pi.2 fun i => continuousAt_pi.2 fun j => hGmEnt i j
+  have hdetne : ∀ y, y ∈ e.baseSet → (Gm y).det ≠ 0 := by
+    intro y hy hdet0
+    obtain ⟨c, hc0, hcv⟩ :=
+      (Matrix.exists_mulVec_eq_zero_iff (M := Gm y)).2 hdet0
+    set w : TangentSpace I y := ∑ i, c i • e.localFrame b i y with hw
+    have hrow0 : ∀ i, (g.inner y (e.localFrame b i y)) w = 0 := by
+      intro i
+      have h1 : (g.inner y (e.localFrame b i y)) w =
+          ∑ j, Gm y i j * c j := by
+        rw [hw, map_sum]
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [map_smul, smul_eq_mul, mul_comm]
+        rfl
+      have h2 : (∑ j, Gm y i j * c j) = 0 := by
+        simpa [Matrix.mulVec, dotProduct] using congrFun hcv i
+      rw [h1, h2]
+    have hinner : g.inner y w w = 0 := by
+      have hout : (g.inner y) w =
+          ∑ i, c i • ((g.inner y) (e.localFrame b i y)) := by
+        rw [hw, map_sum]
+        exact Finset.sum_congr rfl fun i _ => by rw [map_smul]
+      calc
+        g.inner y w w =
+            (∑ i, c i • ((g.inner y) (e.localFrame b i y))) w := by rw [hout]
+        _ = ∑ i, c i • ((g.inner y (e.localFrame b i y)) w) := by
+          rw [sum_apply]
+          exact Finset.sum_congr rfl fun i _ => by rw [smul_apply]
+        _ = 0 := by
+          refine Finset.sum_eq_zero fun i _ => ?_
+          rw [hrow0 i, smul_zero]
+    have hwne : w ≠ 0 := by
+      intro hw0
+      apply hc0
+      have hz : ∑ i, c i • e.basisAt b hy i = 0 := by
+        rw [← hw0, hw]
+        exact Finset.sum_congr rfl fun i _ => by
+          rw [e.localFrame_apply_of_mem_baseSet b hy]
+      have hall := Fintype.linearIndependent_iff.1
+        (e.basisAt b hy).linearIndependent c hz
+      funext i
+      exact hall i
+    exact absurd hinner (ne_of_gt (g.pos y w hwne))
+  have hGinvc : ContinuousAt (fun y => (Gm y)⁻¹) x₀ := by
+    have hdetc : ContinuousAt (fun y => (Gm y).det) x₀ :=
+      (continuous_id.matrix_det).continuousAt.comp hGmc
+    have hadjc : ContinuousAt (fun y => (Gm y).adjugate) x₀ :=
+      (continuous_id.matrix_adjugate).continuousAt.comp hGmc
+    have h1 : ContinuousAt
+        (fun y => ((Gm y).det)⁻¹ • (Gm y).adjugate) x₀ :=
+      (hdetc.inv₀ (hdetne x₀ hx₀)).smul hadjc
+    have hfun : (fun y => (Gm y)⁻¹) =
+        fun y => ((Gm y).det)⁻¹ • (Gm y).adjugate := by
+      funext y
+      rw [Matrix.inv_def, Ring.inverse_eq_inv]
+    rw [hfun]
+    exact h1
+  have hGinvEnt : ∀ i j : Fin (Module.finrank ℝ E),
+      ContinuousAt (fun y => (Gm y)⁻¹ i j) x₀ := fun i j =>
+    continuousAt_pi.1 (continuousAt_pi.1 hGinvc i) j
+  have hinvw : ∀ y (hy : y ∈ e.baseSet),
+      MetricInverseInBasis (I := I) g y (e.basisAt b hy)
+        (fun i j => (Gm y)⁻¹ i j) := by
+    intro y hy i j
+    have hunit : IsUnit (Gm y).det := isUnit_iff_ne_zero.2 (hdetne y hy)
+    have hGb : ∀ i' j' : Fin (Module.finrank ℝ E),
+        g.inner y (e.basisAt b hy i') (e.basisAt b hy j') = Gm y i' j' := by
+      intro i' j'
+      simp only [Gm, Matrix.of_apply]
+      rw [e.localFrame_apply_of_mem_baseSet b hy,
+        e.localFrame_apply_of_mem_baseSet b hy]
+    constructor
+    · have : (∑ k, (Gm y)⁻¹ i k * Gm y k j) =
+          ((Gm y)⁻¹ * Gm y) i j := (Matrix.mul_apply).symm
+      rw [Finset.sum_congr rfl fun k _ => by rw [hGb k j], this,
+        Matrix.nonsing_inv_mul (Gm y) hunit, Matrix.one_apply]
+    · have : (∑ k, Gm y i k * (Gm y)⁻¹ k j) =
+          (Gm y * (Gm y)⁻¹) i j := (Matrix.mul_apply).symm
+      rw [Finset.sum_congr rfl fun k _ => by rw [hGb i k], this,
+        Matrix.mul_nonsing_inv (Gm y) hunit, Matrix.one_apply]
+  have het : ContinuousAt et p₀ :=
+    et.continuousOn.continuousAt (et.open_source.mem_nhds hp₀)
+  have hcoord : ContinuousAt (fun p => (et p).2) p₀ :=
+    continuous_snd.continuousAt.comp het
+  have hcomponent : ∀ I₀ : Fin s → Fin (Module.finrank ℝ E),
+      ContinuousAt (fun p =>
+        (et p).2 (fun a => b (I₀ a))) p₀ := by
+    intro I₀
+    fun_prop
+  have hbase : ContinuousAt (fun p : Bundle.TotalSpace (Tensor0SModel s ℝ E)
+      (fun x : M => Tensor0SSpace s I x) => p.proj) p₀ :=
+    (FiberBundle.continuous_proj (Tensor0SModel s ℝ E)
+      (fun x : M => Tensor0SSpace s I x)).continuousAt
+  let F : Bundle.TotalSpace (Tensor0SModel s ℝ E)
+      (fun x : M => Tensor0SSpace s I x) → ℝ := fun p =>
+    ∑ I₀ : Fin s → Fin (Module.finrank ℝ E),
+      ∑ J₀ : Fin s → Fin (Module.finrank ℝ E),
+        (∏ a : Fin s, (Gm p.proj)⁻¹ (I₀ a) (J₀ a)) *
+          (et p).2 (fun a => b (I₀ a)) *
+          (et p).2 (fun a => b (J₀ a))
+  have hF : ContinuousAt F p₀ := by
+    refine tendsto_finsetSum _ fun I₀ _ => tendsto_finsetSum _ fun J₀ _ => ?_
+    have hprod : ContinuousAt
+        (fun p => ∏ a : Fin s, (Gm p.proj)⁻¹ (I₀ a) (J₀ a)) p₀ :=
+      tendsto_finsetProd _ fun a _ =>
+        (hGinvEnt (I₀ a) (J₀ a)).comp_of_eq hbase rfl
+    exact (hprod.mul (hcomponent I₀)).mul (hcomponent J₀)
+  have hev : Filter.EventuallyEq (nhds p₀)
+      (fun p : Bundle.TotalSpace (Tensor0SModel s ℝ E)
+        (fun x : M => Tensor0SSpace s I x) =>
+        normSq0S (I := I) g p.proj s p.2) F := by
+    filter_upwards [et.open_source.mem_nhds hp₀] with p hp
+    have hy : p.proj ∈ e.baseSet := by
+      have hpbase : p.proj ∈ et.baseSet := hp
+      change p.proj ∈ e.baseSet at hpbase
+      exact hpbase
+    rw [normSq0S_eq_coord (I := I) g p.proj s (e.basisAt b hy)
+      (fun i j => (Gm p.proj)⁻¹ i j) (hinvw p.proj hy) p.2]
+    unfold coordInner0S F
+    refine Finset.sum_congr rfl fun I₀ _ => Finset.sum_congr rfl fun J₀ _ => ?_
+    rw [tensor0SComponent_apply, tensor0SComponent_apply]
+    have hetApply := Bundle.Trivialization.continuousMultilinearMap_apply
+      (s := s) (e := e) (p := p)
+    change et p = _ at hetApply
+    have hI : p.2 (fun a => e.basisAt b hy (I₀ a)) =
+        (et p).2 (fun a => b (I₀ a)) := by
+      rw [hetApply]
+      simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+      congr 1
+      funext a
+      change (e.linearEquivAt (R := ℝ) p.proj hy).symm (b (I₀ a)) =
+        e.symmL ℝ p.proj (b (I₀ a))
+      rw [e.linearEquivAt_symm_apply p.proj hy, e.symmL_apply hy]
+    have hJ : p.2 (fun a => e.basisAt b hy (J₀ a)) =
+        (et p).2 (fun a => b (J₀ a)) := by
+      rw [hetApply]
+      simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+      congr 1
+      funext a
+      change (e.linearEquivAt (R := ℝ) p.proj hy).symm (b (J₀ a)) =
+        e.symmL ℝ p.proj (b (J₀ a))
+      rw [e.linearEquivAt_symm_apply p.proj hy, e.symmL_apply hy]
+    rw [hI, hJ]
+  exact hF.congr hev.symm
+
 end NormSqContinuity
 
 end

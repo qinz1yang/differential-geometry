@@ -283,7 +283,7 @@ variable [T2Space M] [SigmaCompactSpace M]
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [Bundle.RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
   [T2Space M] [SigmaCompactSpace M] in
-private lemma continuousOn_velocityWithin_totalSpace_C1
+theorem continuousOn_velocityWithin_totalSpace_of_contMDiffOn
     {η : ℝ → M} {a b : ℝ} (hab : a < b)
     (hη : ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Set.Icc a b)) :
     ContinuousOn
@@ -454,7 +454,7 @@ lemma speedSqrt_integrableOn_Icc_of_C1
   · subst hab_eq
     rw [Set.Icc_self, MeasureTheory.integrableOn_singleton_iff]
     exact Or.inr (by simp)
-  · have hVW := continuousOn_velocityWithin_totalSpace_C1 (I := I) (M := M)
+  · have hVW := continuousOn_velocityWithin_totalSpace_of_contMDiffOn (I := I) (M := M)
       hab_lt hη
     have hSpeedSq := continuousOn_g_speedSq_velocityWithin (I := I) (M := M) g hVW
     have hSqrtW : ContinuousOn
