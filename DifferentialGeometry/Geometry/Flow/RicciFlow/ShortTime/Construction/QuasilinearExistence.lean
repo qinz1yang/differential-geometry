@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShor
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckQuasilinearExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.MaxRegSolutionRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.MetricTensorIdentities
+import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
 open DifferentialGeometry.Analysis.Elliptic
 
@@ -167,7 +167,7 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
         hForceRepr_fam
   refine ⟨T₁, fun t : ℝ => tensorSectionRealizeMetric (I := I) g₀ (F_fam t) hδ_lt (hδ t),
     ⟨hT₁pos, ?_, ?_⟩, hF_joint⟩
-  · refine smoothRiemannianMetric_ext_inner (fun x v w => ?_)
+  · refine SmoothRiemannianMetric.ext_inner (fun x v w => ?_)
     rw [tensorSectionRealizeMetric_inner, hF_zero, ccTensorBilinSymm_zero_apply, add_zero]
   · intro t ht x v w
     have hcongr : (fun s : ℝ =>

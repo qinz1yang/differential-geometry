@@ -2959,7 +2959,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.InitialData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.InteriorTimeRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.MetricTensorIdentities
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRicciRHSSymmetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.DuhamelTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Spectral.GramBounds
@@ -3434,7 +3433,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Lowe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.CenteredPathPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.FirstOrderPerIndex
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderPerIndex
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.ZeroStateForcing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.ZeroStateRemainder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LowOrderCoefficientJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderCoefficientJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Dissipation

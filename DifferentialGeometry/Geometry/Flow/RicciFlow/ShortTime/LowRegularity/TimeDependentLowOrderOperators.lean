@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TameForcingFixedPoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LowerScaleActionSobolevExtensions
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.ZeroStateForcing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.ZeroStateRemainder
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothEmbedInj
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 

@@ -432,6 +432,24 @@ theorem ccTensorBilinSymm_smul (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
+theorem ccTensorBilinSymm_zero_apply (g : SmoothRiemannianMetric I M)
+    (x : M) (v w : TangentSpace I x) :
+    ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2) x v w = 0 := by
+  have h := ccTensorBilinSymm_smul
+    (I := I) g (0 : ℝ) (0 : SmoothCcTensor g 0 2) x v w
+  simpa only [zero_smul, zero_mul] using h
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] in
+theorem gFibreOpBound_ccTensorBilinSymm_zero (g : SmoothRiemannianMetric I M) :
+    metricCauchySchwarzBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) 0 := by
+  intro x v w
+  rw [ccTensorBilinSymm_zero_apply]
+  simp only [abs_zero, zero_mul, le_refl]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] in
 theorem gFibreOpBound_ccTensorBilinSymm_smul (g : SmoothRiemannianMetric I M)
     (c : ℝ) (T : SmoothCcTensor g 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g (ccTensorBilinSymm (I := I) g T) δ) :

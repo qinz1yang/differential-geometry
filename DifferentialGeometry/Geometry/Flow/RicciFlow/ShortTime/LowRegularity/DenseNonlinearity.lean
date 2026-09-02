@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothEmbedInj
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.PartialForcingFixedPoint
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.MetricTensorIdentities
+import DifferentialGeometry.Geometry.Metric.Basic
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
     DifferentialGeometry.Analysis.Spectral
@@ -57,7 +57,7 @@ theorem smoothN_wd
   have hg :
       tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ =
         tensorSectionRealizeMetric (I := I) g₀ T hδ'_lt hδ' := by
-    apply smoothRiemannianMetric_ext_inner
+    apply SmoothRiemannianMetric.ext_inner
     intro x v w
     rw [tensorSectionRealizeMetric_inner, tensorSectionRealizeMetric_inner]
   have hrem :

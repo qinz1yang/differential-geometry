@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.SolutionAllOrderMassBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRHSRepresentation
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapLinear
+import DifferentialGeometry.Geometry.Metric.Basic
 
 noncomputable section
 
@@ -196,7 +197,7 @@ theorem exists_jointly_smooth_ricciDeTurck_metric_solution_of_spectral_solution 
       C hC_pos hC hstate P.realize_bound P.force_coeff
   refine ⟨fun t : ℝ => tensorSectionRealizeMetric (I := I) g
       (F t) hδ_lt (hδ t), ⟨hT, ?_, ?_⟩, hJ⟩
-  · apply smoothRiemannianMetric_ext_inner
+  · apply SmoothRiemannianMetric.ext_inner
     intro x v w
     simp only [tensorSectionRealizeMetric_inner, hF0,
       ccTensorBilinSymm_zero_apply, add_zero]

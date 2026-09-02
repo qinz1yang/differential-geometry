@@ -23,7 +23,8 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
   (metricCauchySchwarzBound
-    ccTensorBilinSymm smoothCcTensorBilinForm ccTensorBilinSymm_smul ccTensorBilin_apply
+    ccTensorBilinSymm smoothCcTensorBilinForm ccTensorBilinSymm_smul
+      ccTensorBilinSymm_zero_apply ccTensorBilin_apply
       ccTensorModel
     ccTensorMultilinear)
 
@@ -317,16 +318,6 @@ lemma riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq
   rw [riemannianFiberNormSq_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ (s + i) x]
   rw [riemannianFiberNormSq_domDomCongrSection_eq]
   rw [riemannianFiberNormSq_castRankCc_rk]
-
-omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma ccTensorBilinSymm_zero_apply (g₀ : SmoothRiemannianMetric I M) (x : M)
-    (v w : TangentSpace I x) :
-    ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x v w = 0 := by
-  have key := ccTensorBilinSymm_smul (I := I) g₀ (0 : ℝ) (0 : SmoothCcTensor g₀ 0 2) x v w
-  rw [zero_smul, zero_mul] at key
-  exact key
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in

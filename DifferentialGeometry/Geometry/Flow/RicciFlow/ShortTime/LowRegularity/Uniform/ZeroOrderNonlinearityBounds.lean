@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2PointwiseUnif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.CovariantSumCross
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
+import DifferentialGeometry.Geometry.Metric.Basic
 
 noncomputable section
 
@@ -111,7 +112,7 @@ theorem realizeMetric_zero (g₀ : SmoothRiemannianMetric I M) {δ : ℝ} (hδ :
     (hb : gFibreOpBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ) :
     tensorSectionRealizeMetric (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) hδ hb = g₀ := by
-  refine smoothRiemannianMetric_ext_inner (fun x v w => ?_)
+  refine SmoothRiemannianMetric.ext_inner (fun x v w => ?_)
   rw [tensorSectionRealizeMetric_inner, ccTensorBilinSymm_apply,
     ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
   ring

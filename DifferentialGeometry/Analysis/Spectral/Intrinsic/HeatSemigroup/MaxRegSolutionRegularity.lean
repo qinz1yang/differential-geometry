@@ -3498,17 +3498,6 @@ private theorem tensorL2_ext_of_tensorL2Coeff_jsmooth
   have hT : (b.repr T) i = tensorL2Coeff (I := I) (M := M) h_compact T i := rfl
   rw [hS, hT, h i]
 
-omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private theorem ccTensorBilinSymm_zero_apply_jsmooth (g : SmoothRiemannianMetric I M)
-    (x : M) (v w : TangentSpace I x) :
-    ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2) x v w = 0 := by
-  have h0 : (0 : SmoothCcTensor g 0 2) = (0 : ℝ) • (0 : SmoothCcTensor g 0 2) :=
-    (zero_smul ℝ _).symm
-  rw [h0, ccTensorBilinSymm_smul]
-  ring
-
 private theorem realizedSolField_continuousOn_smoothCcToTensorHs
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {T₁ : ℝ} (_hT₁_pos : 0 < T₁)
     (F : ℝ → SmoothCcTensor g₀ 0 2)
@@ -4587,7 +4576,7 @@ theorem maxreg_solution_jointly_smooth_representative_of_nemytskii
         _ = (1 / 2 : ℝ) * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) := by ring
     · have hFt : F t = 0 := by simp only [hF_def, if_neg ht]
       intro x v w
-      rw [hFt, ccTensorBilinSymm_zero_apply_jsmooth]
+      rw [hFt, ccTensorBilinSymm_zero_apply]
       have hsv_nn : 0 ≤ Real.sqrt (g₀.inner x v v) := Real.sqrt_nonneg _
       have hsw_nn : 0 ≤ Real.sqrt (g₀.inner x w w) := Real.sqrt_nonneg _
       rw [abs_zero]
@@ -4861,7 +4850,7 @@ theorem maxreg_solution_jointly_smooth_representative_of_tame_nemytskii
         _ = (1 / 2 : ℝ) * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) := by ring
     · have hFt : F t = 0 := by simp only [hF_def, if_neg ht]
       intro x v w
-      rw [hFt, ccTensorBilinSymm_zero_apply_jsmooth]
+      rw [hFt, ccTensorBilinSymm_zero_apply]
       have hsv_nn : 0 ≤ Real.sqrt (g₀.inner x v v) := Real.sqrt_nonneg _
       have hsw_nn : 0 ≤ Real.sqrt (g₀.inner x w w) := Real.sqrt_nonneg _
       rw [abs_zero]
