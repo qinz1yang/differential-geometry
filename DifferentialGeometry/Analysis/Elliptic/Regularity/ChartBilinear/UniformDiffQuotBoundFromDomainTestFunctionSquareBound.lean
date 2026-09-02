@@ -312,7 +312,7 @@ theorem chartBilinear_v_test_sq_discharge
         (fun y => (η y)^2 *
             DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g y)
         Set.univ :=
-    hasWeakPartialDeriv_eta_sq_diffQuot
+    hasWeakPartialDeriv_cutoff_sq_mul_diffQuot
       (d := Module.finrank ℝ E) k k h hη hu_g_locInt (hG_locInt k) (hG_isWP k)
   have h_self_subset_cthick :
       tsupport η ⊆ Metric.cthickening |h| (tsupport η) :=

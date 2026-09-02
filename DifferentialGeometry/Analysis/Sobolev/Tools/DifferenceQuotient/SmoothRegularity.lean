@@ -133,5 +133,44 @@ theorem fderiv_diffQuot_apply_eq_diffQuot_partial
     (d := d) k hh _ x]
   rw [div_eq_inv_mul, smul_eq_mul]
 
+omit [NeZero d] in
+theorem contDiff_translate (k : Fin d) (h : ℝ) {φ : E → ℝ}
+    (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) : ContDiff ℝ (⊤ : ℕ∞) (translate k h φ) := by
+  unfold translate
+  have htrans_smooth : ContDiff ℝ (⊤ : ℕ∞)
+      (fun y : E => y + h • EuclideanSpace.single k 1) :=
+    contDiff_id.add contDiff_const
+  exact hφ.comp htrans_smooth
+
+omit [NeZero d] in
+theorem fderiv_translate_apply (k j : Fin d) (h : ℝ) {φ : E → ℝ}
+    (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (x : E) :
+    (fderiv ℝ (translate k h φ) x) (EuclideanSpace.single j 1) =
+      (fderiv ℝ φ (x + h • EuclideanSpace.single k 1))
+        (EuclideanSpace.single j 1) := by
+  have hφ_diff : Differentiable ℝ φ := hφ.differentiable (by simp)
+  have hφ_at : HasFDerivAt φ
+      (fderiv ℝ φ (x + h • EuclideanSpace.single k 1))
+      (x + h • EuclideanSpace.single k 1) :=
+    (hφ_diff (x + h • EuclideanSpace.single k 1)).hasFDerivAt
+  have h_translate_at : HasFDerivAt
+      (fun z : E => z + h • EuclideanSpace.single k 1)
+      (ContinuousLinearMap.id ℝ E) x :=
+    (hasFDerivAt_id x).add_const _
+  have h_comp_at : HasFDerivAt
+      (fun z : E => φ (z + h • EuclideanSpace.single k 1))
+      (fderiv ℝ φ (x + h • EuclideanSpace.single k 1)) x := by
+    have hcomp := hφ_at.comp x h_translate_at
+    have heq :
+        ((fderiv ℝ φ (x + h • EuclideanSpace.single k 1)).comp
+            (ContinuousLinearMap.id ℝ E)) =
+          fderiv ℝ φ (x + h • EuclideanSpace.single k 1) := by
+      ext z
+      rfl
+    rw [heq] at hcomp
+    exact hcomp
+  have h_at : HasFDerivAt (translate k h φ)
+      (fderiv ℝ φ (x + h • EuclideanSpace.single k 1)) x := h_comp_at
+  rw [h_at.fderiv]
 
 end DifferentialGeometry.Analysis.Sobolev

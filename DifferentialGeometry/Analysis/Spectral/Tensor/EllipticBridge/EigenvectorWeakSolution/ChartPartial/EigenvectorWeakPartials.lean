@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.ChartPartial.EigenvectorChartPartialL2
+import DifferentialGeometry.Analysis.Sobolev.Tools.WeakDerivative
 import DifferentialGeometry.Analysis.Sobolev.Tools.WeakPartialLimit
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -32,49 +33,6 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
-
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma hasWeakPartialDeriv_congr_ae
-    {k : Fin (Module.finrank ℝ E)} {g f g' f' : EuclN → ℝ} {Ω : Set EuclN}
-    (hf : f =ᵐ[(volume : Measure EuclN).restrict Ω] f')
-    (hg : g =ᵐ[(volume : Measure EuclN).restrict Ω] g')
-    (h : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g f Ω) :
-    DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g' f' Ω := by
-  intro φ hφ hφ_supp hφ_sub
-  have h_lhs :
-      ∫ x in Ω, f' x * (fderiv ℝ φ x) (EuclideanSpace.single k 1) =
-        ∫ x in Ω, f x * (fderiv ℝ φ x) (EuclideanSpace.single k 1) := by
-    refine integral_congr_ae ?_
-    filter_upwards [hf] with x hx
-    rw [hx]
-  have h_rhs :
-      ∫ x in Ω, g' x * φ x = ∫ x in Ω, g x * φ x := by
-    refine integral_congr_ae ?_
-    filter_upwards [hg] with x hx
-    rw [hx]
-  rw [h_lhs, h_rhs]
-  exact h φ hφ hφ_supp hφ_sub
-
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma hasWeakPartialDeriv_const_smul
-    {k : Fin (Module.finrank ℝ E)} {g f : EuclN → ℝ} {Ω : Set EuclN} (c : ℝ)
-    (h : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g f Ω) :
-    DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k
-      (fun x => c • g x) (fun x => c • f x) Ω := by
-  intro φ hφ hφ_supp hφ_sub
-  have h_base := h φ hφ hφ_supp hφ_sub
-  have h_lhs :
-      ∫ x in Ω, (c • f x) * (fderiv ℝ φ x) (EuclideanSpace.single k 1) =
-        c * ∫ x in Ω, f x * (fderiv ℝ φ x) (EuclideanSpace.single k 1) := by
-    rw [← integral_const_mul]
-    refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
-    simp only [smul_eq_mul]; ring
-  have h_rhs :
-      ∫ x in Ω, (c • g x) * φ x = c * ∫ x in Ω, g x * φ x := by
-    rw [← integral_const_mul]
-    refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
-    simp only [smul_eq_mul]; ring
-  rw [h_lhs, h_rhs, h_base, mul_neg]
 
 def eigenvectorChartWeakPartial
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -169,8 +127,8 @@ private lemma eigenvectorChartWeakPartial_approx_hasWeakPartialDeriv
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α P₀.1 P₀.2 y)
         (chartTargetEuclid (I := I) (M := M) α) :=
-    hasWeakPartialDeriv_const_smul (i.fst.val)⁻¹ h_weak
-  refine hasWeakPartialDeriv_congr_ae ?_ ?_ h_weak_smul
+    h_weak.const_smul (i.fst.val)⁻¹
+  refine h_weak_smul.congr_ae ?_ ?_
   · exact (eigenvectorChartComponentL2_approx_coeFn (I := I) (M := M)
       g r s i α P₀ n).symm
   · exact (eigenvectorChartPartialLp_approx_coeFn (I := I) (M := M)

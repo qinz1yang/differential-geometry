@@ -1,11 +1,10 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Basic
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.TranslatedCutoffDiffQuot
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.CutoffDiffQuot
 
 noncomputable section
 
 open MeasureTheory Metric Filter Topology Set Function
 open DifferentialGeometry.Analysis.Sobolev
-open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open scoped ENNReal NNReal Convolution Pointwise BigOperators
 
 namespace DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
@@ -13,58 +12,6 @@ namespace DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
 variable {d : ℕ} [NeZero d]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin d)
-
-omit [NeZero d] in
-private lemma locallyIntegrable_diffQuot
-    (k : Fin d) (h : ℝ) {u : EuclN → ℝ}
-    (hu_locInt : LocallyIntegrable u (volume : Measure EuclN)) :
-    LocallyIntegrable (diffQuot k h u) (volume : Measure EuclN) := by
-  by_cases hh : h = 0
-  · subst hh
-    rw [diffQuot_zero_h]
-    exact locallyIntegrable_const _
-  · have h_eq_dq : diffQuot k h u =
-        fun x => h⁻¹ * (translate k h u x) + (-h⁻¹) * u x := by
-      funext x
-      rw [diffQuot_apply_of_ne (d := d) k hh u x]
-      change (u (x + h • EuclideanSpace.single k 1) - u x) / h =
-        h⁻¹ * u (x + h • EuclideanSpace.single k 1) + (-h⁻¹) * u x
-      field_simp; ring
-    rw [h_eq_dq]
-    have hτ_locInt : LocallyIntegrable (translate k h u)
-        (volume : Measure EuclN) := by
-      have hMP : MeasurePreserving
-          (fun x : EuclN => x + h • EuclideanSpace.single k 1)
-          volume volume :=
-        measurePreserving_add_right volume _
-      let τ : EuclN ≃ₜ EuclN :=
-        Homeomorph.addRight (h • EuclideanSpace.single k 1)
-      have hτ_emb : MeasurableEmbedding τ := τ.measurableEmbedding
-      have hMP_τ : MeasurePreserving τ volume volume := by
-        rw [show (τ : EuclN → EuclN) =
-          fun x => x + h • EuclideanSpace.single k 1 from rfl]
-        exact hMP
-      intro x
-      obtain ⟨V, hV_mem, hf_int⟩ := hu_locInt (τ x)
-      refine ⟨τ ⁻¹' V, ?_, ?_⟩
-      · exact τ.continuous.continuousAt.preimage_mem_nhds hV_mem
-      · have h_eq : translate k h u = u ∘ (τ : EuclN → EuclN) := rfl
-        rw [h_eq]
-        exact (hMP_τ.integrableOn_comp_preimage hτ_emb (f := u) (s := V)).mpr hf_int
-    have h1 : LocallyIntegrable (fun x : EuclN => h⁻¹ * translate k h u x)
-        (volume : Measure EuclN) := by
-      have h_eq_smul : (fun x : EuclN => h⁻¹ * translate k h u x) =
-          h⁻¹ • translate k h u := by
-        funext x; rw [Pi.smul_apply, smul_eq_mul]
-      rw [h_eq_smul]
-      exact hτ_locInt.smul h⁻¹
-    have h2 : LocallyIntegrable (fun x : EuclN => (-h⁻¹) * u x)
-        (volume : Measure EuclN) := by
-      have h_eq_smul : (fun x : EuclN => (-h⁻¹) * u x) = (-h⁻¹) • u := by
-        funext x; rw [Pi.smul_apply, smul_eq_mul]
-      rw [h_eq_smul]
-      exact hu_locInt.smul (-h⁻¹)
-    exact h1.add h2
 
 omit [NeZero d] in
 private lemma locallyIntegrable_continuous_mul
@@ -157,7 +104,7 @@ theorem hasWeakPartialDeriv_nirenbergTestFunction
           ((fderiv ℝ (fun z => (η z)^2) y) (EuclideanSpace.single j 1)) *
             diffQuot k h u y)
         (fun y => (η y)^2 * diffQuot k h u y) Set.univ :=
-    hasWeakPartialDeriv_eta_sq_diffQuot (d := d) k j h hη
+    hasWeakPartialDeriv_cutoff_sq_mul_diffQuot (d := d) k j h hη
       hu_locInt hg_j_locInt hwp
   have h_eq :
       (fun y : EuclN =>
