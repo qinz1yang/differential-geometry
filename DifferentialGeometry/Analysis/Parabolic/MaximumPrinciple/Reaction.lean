@@ -163,6 +163,43 @@ theorem sum_inner_reaction_add_mul_pos_of_lowerKyFanSum_eq
     _ ≤ ∑ i, ⟪reaction A (e i), e i⟫_ℝ + (k : ℝ) * c * (q + f) :=
       by simpa [add_comm] using add_le_add_right htrace ((k : ℝ) * c * (q + f))
 
+theorem sum_inner_reaction_add_mul_pos_of_lowerKyFanSum_lt_mul
+    {reaction : (E →L[ℝ] E) → E →L[ℝ] E}
+    (hreactionNull : satisfiesNullEigenvectorCondition reaction)
+    {A : E →L[ℝ] E} (hA : A.IsPositive)
+    {R : ℝ} (hR : ‖A‖ ≤ R) {K : ℝ≥0}
+    (hreactionLip : LipschitzOnWith K reaction
+      {B : E →L[ℝ] E | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    {k : ℕ} {e : Fin k → E} {eigenvalue : Fin k → ℝ}
+    (he : Orthonormal ℝ e)
+    (heigen : ∀ i, A (e i) = eigenvalue i • e i)
+    (hsum : ∑ i, eigenvalue i =
+      hA.toLinearMap.isSymmetric.lowerKyFanSum k)
+    {c f : ℝ} (hk : 0 < k) (hc : (K : ℝ) < c) (hf : 0 < f)
+    (hphi : hA.toLinearMap.isSymmetric.lowerKyFanSum k < (k : ℝ) * f) :
+    0 < ∑ i, ⟪reaction A (e i), e i⟫_ℝ + (k : ℝ) * c * f := by
+  have htrace := sum_inner_reaction_ge_neg_mul_lowerKyFanSum
+    hreactionNull hA hR hreactionLip he heigen hsum
+  have hkReal : 0 < (k : ℝ) := by exact_mod_cast hk
+  have hmain :
+      0 < -(K : ℝ) * hA.toLinearMap.isSymmetric.lowerKyFanSum k +
+        (k : ℝ) * c * f := by
+    have hphiLe :
+        hA.toLinearMap.isSymmetric.lowerKyFanSum k ≤ (k : ℝ) * f := hphi.le
+    have hscaled :
+        -(K : ℝ) * ((k : ℝ) * f) ≤
+          -(K : ℝ) * hA.toLinearMap.isSymmetric.lowerKyFanSum k := by
+      exact mul_le_mul_of_nonpos_left hphiLe (neg_nonpos.mpr K.coe_nonneg)
+    have hpositive :
+        0 < -(K : ℝ) * ((k : ℝ) * f) + (k : ℝ) * c * f := by
+      rw [show -(K : ℝ) * ((k : ℝ) * f) + (k : ℝ) * c * f =
+        ((k : ℝ) * f) * (c - (K : ℝ)) by ring]
+      exact mul_pos (mul_pos hkReal hf) (sub_pos.mpr hc)
+    exact hpositive.trans_le (by
+      simpa [add_comm] using add_le_add_right hscaled ((k : ℝ) * c * f))
+  exact hmain.trans_le (by
+    simpa [add_comm] using add_le_add_right htrace ((k : ℝ) * c * f))
+
 theorem exists_frame_lowerKyFanSum_eq_and_reaction_trace_lower_bound
     {reaction : (E →L[ℝ] E) → E →L[ℝ] E}
     (hreactionNull : satisfiesNullEigenvectorCondition reaction)
