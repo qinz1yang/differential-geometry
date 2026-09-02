@@ -99,6 +99,35 @@ private theorem abstractHessian_inner_bundle_apply
   simp only [covApply_apply, inner_sub_left, inner_sub_right]
   abel_nf
 
+theorem mvfderiv_inner_endomorphism_apply_of_cov_eq_zero
+    (cov : CovariantDerivative I F V)
+    [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
+    (A : Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
+    (v : Cₛ^∞⟮I; F, V⟯) (x : M) (X : TangentSpace I x)
+    (hv : cov v x = 0) :
+    mvfderiv I (fun y ↦ inner Real (A y (v y)) (v y)) x X =
+      inner Real
+        ((HomConnectionGen.homBundleCovariantDerivativeGen
+          I M F V F V cov cov (fun y ↦ A y) x X) (v x))
+        (v x) := by
+  let Av : Cₛ^∞⟮I; F, V⟯ :=
+    ⟨fun y ↦ A y (v y),
+      ContMDiff.clm_bundle_apply (b := id) A.contMDiff v.contMDiff⟩
+  have hinner := hcov.mvfderiv_inner_eq (x := x)
+    (fun _ : M ↦ X) Av.mdifferentiableAt v.mdifferentiableAt
+  have happly := HomConnectionGen.homBundleCovariantDerivativeGen_apply
+    I M F V F V cov cov A v x X
+  have happly' :
+      (HomConnectionGen.homBundleCovariantDerivativeGen
+        I M F V F V cov cov A x X) (v x) =
+        cov Av x X - A x (cov v x X) := happly
+  change
+    mvfderiv I (fun y ↦ inner Real (Av y) (v y)) x X = _
+  rw [hinner]
+  have hcovv : cov v x X = 0 := by rw [hv]; rfl
+  rw [happly']
+  simp only [hcovv, map_zero, sub_zero, inner_zero_right, add_zero]
+
 theorem laplacian_inner_bundle
     [NeZero (Module.finrank Real E)]
     [I.Boundaryless]
