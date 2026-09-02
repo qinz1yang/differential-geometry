@@ -117,7 +117,7 @@ def dirichletBilinearFormToHs
         (B (dirichletHsOneEquivH1Compl g u)) :=
   rfl
 
-@[simp] theorem dirichletHsNegOneEquivH1Dual_bilinearFormToHs
+theorem dirichletHsNegOneEquivH1Dual_bilinearFormToHs
     (g : SmoothRiemannianMetric (I_half n) M)
     (B : H1ComplDirichlet g →L[ℝ] H1ComplDirichlet g →L[ℝ] ℝ)
     (u : dirichletHs g 1) :

@@ -35,7 +35,7 @@ private theorem extend_eq_symmL
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem mlieBracket_extend_extend_eq_zero
-    [CompleteSpace E] (x : M) (v w : TangentSpace I x) :
+    (x : M) (v w : TangentSpace I x) :
     VectorField.mlieBracket I (FiberBundle.extend E v) (FiberBundle.extend E w) x = 0 := by
   rw [← VectorField.mlieBracketWithin_univ, VectorField.mlieBracketWithin_apply]
   let e := trivializationAt E (TangentSpace I) x

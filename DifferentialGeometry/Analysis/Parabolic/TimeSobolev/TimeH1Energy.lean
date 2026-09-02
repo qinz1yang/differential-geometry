@@ -10,7 +10,7 @@ namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 noncomputable section
 
 private theorem intervalIntegral_absolutelyContinuousOnInterval
-    {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
+    {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     {f : ℝ → X} {a b c : ℝ} (h : IntervalIntegrable f volume a b)
     (hc : c ∈ uIcc a b) :
     AbsolutelyContinuousOnInterval (fun x ↦ ∫ v in c..x, f v) a b := by
@@ -107,6 +107,7 @@ section Normed
 
 variable [NormedSpace ℝ X]
 
+omit [CompleteSpace X] in
 theorem absolutelyContinuousOnInterval_toFun (u : timeH1 X T) (hT : 0 ≤ T) :
     AbsolutelyContinuousOnInterval u.toFun 0 T := by
   have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, hT⟩

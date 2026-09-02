@@ -72,7 +72,7 @@ private theorem exists_tendstoUniformlyOn_of_uniformCauchySeqOn
 
 private theorem intervalIntegrable_inner_timeL2
     {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
-    [CompleteSpace X] {T : ℝ} (f g : timeL2 X T)
+    {T : ℝ} (f g : timeL2 X T)
     {a b : ℝ} (ha : a ∈ Icc (0 : ℝ) T) (hb : b ∈ Icc (0 : ℝ) T) :
     IntervalIntegrable (fun t => inner ℝ (f t) (g t)) volume a b := by
   let ν : Measure ℝ := volume.restrict (uIoc a b)
@@ -98,7 +98,7 @@ private theorem intervalIntegrable_inner_timeL2
 
 private theorem dist_two_intervalIntegral_inner_le
     {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
-    [CompleteSpace X] {T : ℝ} (v u w : timeL2 X T)
+    {T : ℝ} (v u w : timeL2 X T)
     {a b : ℝ} (ha : a ∈ Icc (0 : ℝ) T) (hb : b ∈ Icc (0 : ℝ) T) :
     dist (∫ t in a..b, 2 * inner ℝ (v t) (w t))
         (∫ t in a..b, 2 * inner ℝ (u t) (w t)) ≤
