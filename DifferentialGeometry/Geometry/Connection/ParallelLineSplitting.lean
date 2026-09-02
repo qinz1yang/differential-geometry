@@ -1860,6 +1860,36 @@ private theorem globalFlow_mfderiv_time_apply
   rw [globalFlowDiffeomorph_apply]
   simp only [ContinuousLinearMap.smulRight_apply, one_apply_eq_self]
 
+def HasLocalRiemannianProductAt
+    (g : SmoothRiemannianMetric I M) (x : M) (e : TangentSpace I x) : Prop :=
+  ∃ (K : Set (perpSpace g x e)) (J : Set ℝ)
+      (phi : PartialDiffeomorph
+        ((perpModel g x e).prod 𝓘(ℝ, ℝ)) I
+        (perpSpace g x e × ℝ) M ∞),
+    And (IsOpen K)
+      (And ((0 : perpSpace g x e) ∈ K)
+        (And (IsOpen J)
+          (And ((0 : ℝ) ∈ J)
+            (And (phi.source = K ×ˢ J)
+              (And (phi (0, 0) = x)
+                (∀ (k : perpSpace g x e), k ∈ K → ∀ (t : ℝ), t ∈ J →
+                  ∀ (u v : TangentSpace (perpModel g x e) k), ∀ (r q : ℝ),
+                  g.inner (phi (k, t))
+                    ((mfderiv ((perpModel g x e).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace g x e × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel g x e).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (u, r)))
+                    ((mfderiv ((perpModel g x e).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace g x e × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel g x e).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (v, q))) =
+                    g.inner (phi (k, 0))
+                      ((mfderiv (perpModel g x e) I
+                        (fun z : perpSpace g x e => phi (z, 0)) k) u)
+                      ((mfderiv (perpModel g x e) I
+                        (fun z : perpSpace g x e => phi (z, 0)) k) v) +
+                    r * q))))))
+
 theorem exists_local_product_from_parallel_unit_section_of_gradient_potential
     (g : SmoothRiemannianMetric I M) (x : M) {U : Set M}
     (hUopen : IsOpen U) (hxU : x ∈ U)
@@ -1871,31 +1901,7 @@ theorem exists_local_product_from_parallel_unit_section_of_gradient_potential
     (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
     (hdf : ∀ y ∈ U, ∀ v : TangentSpace I y,
       mvfderiv (I := I) f y v = g.inner y (s y) v) :
-    ∃ (K : Set (perpSpace g x (s x))) (J : Set ℝ)
-      (phi : PartialDiffeomorph
-        ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-        (perpSpace g x (s x) × ℝ) M ∞),
-      And (IsOpen K)
-        (And ((0 : perpSpace g x (s x)) ∈ K)
-          (And (IsOpen J)
-            (And ((0 : ℝ) ∈ J)
-              (And (phi.source = K ×ˢ J)
-                (And (phi (0, 0) = x)
-                  (∀ (k : perpSpace g x (s x)), k ∈ K → ∀ (t : ℝ), t ∈ J →
-                    ∀ (u v : TangentSpace (perpModel g x (s x)) k), ∀ (r q : ℝ),
-                    g.inner (phi (k, t))
-                      ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-                        (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
-                        (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (u, r)))
-                      ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-                        (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
-                        (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (v, q))) =
-                      g.inner (phi (k, 0))
-                        ((mfderiv (perpModel g x (s x)) I
-                          (fun z : perpSpace g x (s x) => phi (z, 0)) k) u)
-                        ((mfderiv (perpModel g x (s x)) I
-                          (fun z : perpSpace g x (s x) => phi (z, 0)) k) v) +
-                      r * q)))))) := by
+    HasLocalRiemannianProductAt (I := I) g x (s x) := by
   obtain ⟨X, hX, hXcompact, hXeq⟩ :=
     exists_compactlySupported_extension_eq_eventually hUopen hxU s
   obtain ⟨W, A, B, delta, K, J, phi, hWopen, hxW, hWU, hWEq,
@@ -1999,31 +2005,7 @@ theorem exists_local_product_from_parallel_unit_section
       g.inner y (s y) (s y) = 1)
     (hparallel : ∀ y ∈ U, ∀ v : TangentSpace I y,
       (LeviCivita (I := I) g) s y v = 0) :
-    ∃ (K : Set (perpSpace g x (s x))) (J : Set ℝ)
-      (phi : PartialDiffeomorph
-        ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-        (perpSpace g x (s x) × ℝ) M ∞),
-      And (IsOpen K)
-        (And ((0 : perpSpace g x (s x)) ∈ K)
-          (And (IsOpen J)
-            (And ((0 : ℝ) ∈ J)
-              (And (phi.source = K ×ˢ J)
-                (And (phi (0, 0) = x)
-                  (∀ (k : perpSpace g x (s x)), k ∈ K → ∀ (t : ℝ), t ∈ J →
-                    ∀ (u v : TangentSpace (perpModel g x (s x)) k), ∀ (r q : ℝ),
-                    g.inner (phi (k, t))
-                      ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-                        (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
-                        (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (u, r)))
-                      ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-                        (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
-                        (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (v, q))) =
-                      g.inner (phi (k, 0))
-                        ((mfderiv (perpModel g x (s x)) I
-                          (fun z : perpSpace g x (s x) => phi (z, 0)) k) u)
-                        ((mfderiv (perpModel g x (s x)) I
-                          (fun z : perpSpace g x (s x) => phi (z, 0)) k) v) +
-                      r * q)))))) := by
+    HasLocalRiemannianProductAt (I := I) g x (s x) := by
   obtain ⟨V, f, hVopen, hxV, hVU, hfx, hf, hdf⟩ :=
     exists_local_gradient_potential_of_parallel_section g hUopen hxU s hparallel
   exact exists_local_product_from_parallel_unit_section_of_gradient_potential
@@ -2037,7 +2019,7 @@ theorem ContMDiffVectorSubbundle.exists_local_product_of_rank_eq_one
     (S : ContMDiffVectorSubbundle
       (I := I) (F := E) (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)))
     (hSrank : S.rank = 1)
-    (hS : IsCovariantlyInvariantSubmoduleFamily (LeviCivita (I := I) g) S.fiber)
+    (hS : IsParallelSubmoduleFamily g S.fiber)
     (x : M) :
     ∃ (U : Set M) (s : Cₛ^∞⟮I; E, TangentSpace I⟯),
       And (IsOpen U) <| And (x ∈ U) <|
@@ -2045,41 +2027,7 @@ theorem ContMDiffVectorSubbundle.exists_local_product_of_rank_eq_one
       And (∀ y ∈ U, g.inner y (s y) (s y) = 1) <|
       And (∀ y ∈ U, ∀ v : TangentSpace I y,
         (LeviCivita (I := I) g) s y v = 0) <|
-      ∃ (K : Set (perpSpace g x (s x))) (J : Set ℝ)
-                (phi : PartialDiffeomorph
-                  ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-                  (perpSpace g x (s x) × ℝ) M ∞),
-                And (IsOpen K)
-                  (And ((0 : perpSpace g x (s x)) ∈ K)
-                    (And (IsOpen J)
-                      (And ((0 : ℝ) ∈ J)
-                        (And (phi.source = K ×ˢ J)
-                          (And (phi (0, 0) = x)
-                            (∀ (k : perpSpace g x (s x)), k ∈ K →
-                              ∀ (t : ℝ), t ∈ J →
-                              ∀ (u v : TangentSpace (perpModel g x (s x)) k),
-                              ∀ (r q : ℝ),
-                              g.inner (phi (k, t))
-                                ((mfderiv
-                                  ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-                                  (fun z : perpSpace g x (s x) × ℝ => phi z)
-                                  (k, t))
-                                  (show TangentSpace
-                                    ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ))
-                                    (k, t) from (u, r)))
-                                ((mfderiv
-                                  ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-                                  (fun z : perpSpace g x (s x) × ℝ => phi z)
-                                  (k, t))
-                                  (show TangentSpace
-                                    ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ))
-                                    (k, t) from (v, q))) =
-                                g.inner (phi (k, 0))
-                                  ((mfderiv (perpModel g x (s x)) I
-                                    (fun z : perpSpace g x (s x) => phi (z, 0)) k) u)
-                                  ((mfderiv (perpModel g x (s x)) I
-                                    (fun z : perpSpace g x (s x) => phi (z, 0)) k) v) +
-                                r * q)))))) := by
+      HasLocalRiemannianProductAt (I := I) g x (s x) := by
   obtain ⟨U, s, hUopen, hxU, hs_mem, hs_unit, hs_parallel⟩ :=
     ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
       g S hSrank hS x

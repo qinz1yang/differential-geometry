@@ -409,6 +409,23 @@ theorem parallelTransportBetween_mem_iff [I.Boundaryless]
   rw [← h γ hγ hab]
   simp
 
+theorem parallelTransportSectionOnIcc_mem [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M}
+    {S : ∀ x : M, Submodule ℝ (TangentSpace I x)}
+    (h : IsParallelSubmoduleFamily g S)
+    (γ : ℝ → M) (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
+    {L : ℝ} (hL : 0 < L) {v : TangentSpace I (γ 0)} (hv : v ∈ S (γ 0))
+    {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) L) :
+    Riemannian.Variation.parallelTransportSectionOnIcc
+        (I := I) g γ hγ hL v t ∈ S (γ t) := by
+  rcases ht.1.eq_or_lt with rfl | ht_pos
+  · simpa using hv
+  · have hmem := (h.parallelTransportBetween_mem_iff hγ ht_pos).mpr hv
+    rw [Riemannian.Variation.parallelTransportLinearEquivBetween_zero_apply] at hmem
+    rw [Riemannian.Variation.parallelTransportSectionOnIcc_eq_of_mem
+      (I := I) g γ hγ ht_pos hL v (t := t) ⟨ht.1, le_rfl⟩ ht] at hmem
+    exact hmem
+
 theorem orthogonal [I.Boundaryless]
     {g : SmoothRiemannianMetric I M}
     {S : ∀ x : M, Submodule ℝ (TangentSpace I x)}

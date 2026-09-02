@@ -132,7 +132,7 @@ private theorem unitLine_isEvenlyCovered
     (x : M) :
     IsEvenlyCovered (unitLineProj g S) x Bool := by
   obtain ⟨U, s, hUopen, hxU, hsmem, hsunit, hsparallel⟩ :=
-    ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
+    ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one_of_covariantly_invariant
       g S hSrank hS x
   let a : unitLine g S → ℝ := fun p => g.inner p.1.1 p.1.2 (s p.1.1)
   let sign : unitLine g S → Bool := fun p => if 0 < a p then true else false
@@ -274,7 +274,7 @@ theorem ContMDiffVectorSubbundle.exists_global_parallel_unit_section_of_rank_eq_
     ChartedSpace.locallyPathConnectedSpace H M
   let x0 : M := Classical.arbitrary M
   obtain ⟨U0, s0, hU0open, hx0U0, hs0mem, hs0unit, hs0parallel⟩ :=
-    ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
+    ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one_of_covariantly_invariant
       g S hSrank hS x0
   let e0 : unitLine g S :=
     ⟨⟨x0, s0 x0⟩, hs0mem x0 hx0U0, hs0unit x0 hx0U0⟩
@@ -310,7 +310,7 @@ theorem ContMDiffVectorSubbundle.exists_global_parallel_unit_section_of_rank_eq_
         ∀ y ∈ U, ∀ v : TangentSpace I y,
           (LeviCivita (I := I) g) s y v = 0 := by
     obtain ⟨U, s, hUopen, hxU, hsmem, hsunit, hsparallel⟩ :=
-      ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
+      ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one_of_covariantly_invariant
         g S hSrank hS x
     have hcases : ∀ y ∈ U, X y = s y ∨ X y = -s y := by
       intro y hy

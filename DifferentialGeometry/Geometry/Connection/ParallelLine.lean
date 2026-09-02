@@ -87,7 +87,7 @@ theorem ContMDiffVectorSubbundle.exists_local_unit_gradient_section_of_rank_eq_o
                 (∀ y ∈ U, ∀ v : TangentSpace I y,
                   mvfderiv (I := I) f y v = g.inner y (s y) v))))))) := by
   obtain ⟨V, s, hVopen, hxV, hs_mem, hs_unit, hs_parallel⟩ :=
-    ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
+    ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one_of_covariantly_invariant
       g S hSrank hS x
   obtain ⟨U, f, hUopen, hxU, hUsub, hfx, hf, hdf⟩ :=
     exists_local_gradient_potential_of_parallel_section g hVopen hxV s hs_parallel

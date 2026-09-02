@@ -3,6 +3,8 @@ import DifferentialGeometry.Bundle.SmoothSubbundle.Basic
 import DifferentialGeometry.Geometry.Connection.Subbundle
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Kernel
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 
 set_option autoImplicit false
@@ -88,20 +90,165 @@ private theorem sectionAlongCurve_chartRepAt_differentiableAt
     rfl
   exact hcomp.congr_of_eventuallyEq heq.symm
 
-theorem ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
+private theorem local_unit_section_parallel_of_isParallelSubmoduleFamily
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (S : ContMDiffVectorSubbundle
       (I := I) (F := E) (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)))
     (hSrank : S.rank = 1)
-    (hS : IsCovariantlyInvariantSubmoduleFamily (LeviCivita (I := I) g) S.fiber)
+    (hS : IsParallelSubmoduleFamily g S.fiber)
+    (U : Set M) (hU : IsOpen U)
+    (s : Cₛ^∞⟮I; E, TangentSpace I⟯)
+    (hs_mem : ∀ y ∈ U, s y ∈ S.fiber y)
+    (hs_unit : ∀ y ∈ U, g.inner y (s y) (s y) = 1) :
+    ∀ y ∈ U, ∀ v : TangentSpace I y,
+      (LeviCivita (I := I) g) s y v = 0 := by
+  intro y hy v
+  obtain ⟨eta, heta, hetaU, heta0, hetaVel⟩ :=
+    Riemannian.Variation.exists_smooth_curve y v U hU hy
+  subst y
+  have heta2 : ContMDiff 𝓘(ℝ, ℝ) I 2 eta :=
+    heta.of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞)
+  have h02 : (0 : ℝ) < 2 := by norm_num
+  let V : ∀ t, TangentSpace I (eta t) :=
+    Riemannian.Variation.parallelTransportSectionOnIcc
+      (I := I) g eta heta2 h02 (s (eta 0))
+  have hV_mem : ∀ t ∈ Set.Icc (0 : ℝ) 2, V t ∈ S.fiber (eta t) := by
+    intro t ht
+    exact hS.parallelTransportSectionOnIcc_mem eta heta2 h02
+      (hs_mem (eta 0) (hetaU 0)) ht
+  have hV0 : V 0 = s (eta 0) := by
+    simp [V]
+  have hV_unit : ∀ t ∈ Set.Icc (0 : ℝ) 2,
+      g.inner (eta t) (V t) (V t) = 1 := by
+    intro t ht
+    have hinner := Riemannian.Variation.parallel_transport_preserves_inner_product
+      (I := I) g eta le_rfl heta2 V V
+      (fun r hr => Riemannian.Variation.parallelTransportSectionOnIcc_differentiableAt
+        (I := I) g eta heta2 h02 (s (eta 0)) hr)
+      (fun r hr => Riemannian.Variation.parallelTransportSectionOnIcc_differentiableAt
+        (I := I) g eta heta2 h02 (s (eta 0)) hr)
+      (fun r hr => Riemannian.Variation.parallelTransportSectionOnIcc_covDerivAlong
+        (I := I) g eta heta2 h02 (s (eta 0)) hr)
+      (fun r hr => Riemannian.Variation.parallelTransportSectionOnIcc_covDerivAlong
+        (I := I) g eta heta2 h02 (s (eta 0)) hr) t ht
+    simpa [V, hs_unit (eta 0) (hetaU 0)] using hinner
+  have hsAlongDiff : DifferentiableAt ℝ
+      (Riemannian.CovariantDerivativeAlong.chartRepAt
+        (I := I) eta (fun t => s (eta t)) 0) 0 :=
+    sectionAlongCurve_chartRepAt_differentiableAt
+      (I := I) eta (heta2.of_le (by norm_num)) s 0
+  have hVdiff : DifferentiableAt ℝ
+      (Riemannian.CovariantDerivativeAlong.chartRepAt (I := I) eta V 0) 0 :=
+    Riemannian.Variation.parallelTransportSectionOnIcc_differentiableAt
+      (I := I) g eta heta2 h02 (s (eta 0))
+      ⟨le_rfl, by norm_num⟩
+  have hinnerDeriv := Riemannian.Variation.inner_deriv_at
+    (I := I) (by norm_num : (1 : WithTop ℕ∞) ≤ 2) g eta
+    (fun t => s (eta t)) V 0 heta2.contMDiffAt hsAlongDiff hVdiff
+  have hinner0 : g.inner (eta 0) (s (eta 0)) (V 0) = 1 := by
+    rw [hV0]
+    exact hs_unit (eta 0) (hetaU 0)
+  have hinnerPositive : ∀ᶠ t in nhds (0 : ℝ),
+      0 < g.inner (eta t) (s (eta t)) (V t) := by
+    apply hinnerDeriv.continuousAt.preimage_mem_nhds
+    rw [hinner0]
+    exact Ioi_mem_nhds (by norm_num)
+  have hinnerPositiveWithin : ∀ᶠ t in nhdsWithin (0 : ℝ) (Set.Ici 0),
+      0 < g.inner (eta t) (s (eta t)) (V t) :=
+    hinnerPositive.filter_mono nhdsWithin_le_nhds
+  have hltTwo : ∀ᶠ t in nhdsWithin (0 : ℝ) (Set.Ici 0), t < 2 :=
+    (show ∀ᶠ t : ℝ in nhds 0, t < 2 from Iio_mem_nhds h02).filter_mono
+      nhdsWithin_le_nhds
+  have heqWithin : (fun t => s (eta t)) =ᶠ[nhdsWithin (0 : ℝ) (Set.Ici 0)] V := by
+    filter_upwards [hinnerPositiveWithin, hltTwo, self_mem_nhdsWithin]
+      with t htpos htlt htge
+    have ht : t ∈ Set.Icc (0 : ℝ) 2 := ⟨htge, htlt.le⟩
+    have hVunit := hV_unit t ht
+    have hsunit := hs_unit (eta t) (hetaU t)
+    have hVne : V t ≠ 0 := by
+      intro hzero
+      rw [hzero] at hVunit
+      simp at hVunit
+    have hfin : Module.finrank ℝ (S.fiber (eta t)) = 1 := by
+      rw [S.finrank_fiber, hSrank]
+    have hspan : S.fiber (eta t) = ℝ ∙ V t :=
+      eq_span_singleton_of_mem_of_finrank_eq_one hfin
+        (hV_mem t ht) hVne
+    have hsmem := hs_mem (eta t) (hetaU t)
+    rw [hspan, Submodule.mem_span_singleton] at hsmem
+    obtain ⟨a, ha⟩ := hsmem
+    have haInner : g.inner (eta t) (s (eta t)) (V t) = a := by
+      rw [← ha, map_smul, smul_apply, smul_eq_mul, hVunit, mul_one]
+    have haPos : 0 < a := by rwa [haInner] at htpos
+    have haSq : a * a = 1 := by
+      have hscaled : g.inner (eta t) (a • V t) (a • V t) = 1 := by
+        simpa only [ha] using hsunit
+      simpa only [map_smul, smul_apply, smul_eq_mul, hVunit, mul_one] using hscaled
+    have haOne : a = 1 := by nlinarith
+    rw [← ha, haOne, one_smul]
+  let sRep : ℝ → E := Riemannian.CovariantDerivativeAlong.chartRepAt
+    (I := I) eta (fun t => s (eta t)) 0
+  let VRep : ℝ → E := Riemannian.CovariantDerivativeAlong.chartRepAt
+    (I := I) eta V 0
+  have hrepWithin : sRep =ᶠ[nhdsWithin (0 : ℝ) (Set.Ici 0)] VRep := by
+    filter_upwards [heqWithin] with t ht
+    simp only [sRep, VRep]
+    rw [Riemannian.CovariantDerivativeAlong.chartRepAt_apply,
+      Riemannian.CovariantDerivativeAlong.chartRepAt_apply, ht]
+  have hrep0 : sRep 0 = VRep 0 := by
+    simp [sRep, VRep, hV0]
+  have hderivEq : deriv sRep 0 = deriv VRep 0 := by
+    calc
+      deriv sRep 0 = derivWithin sRep (Set.Ici 0) 0 :=
+        (hsAlongDiff.derivWithin (uniqueDiffWithinAt_Ici 0)).symm
+      _ = derivWithin VRep (Set.Ici 0) 0 :=
+        hrepWithin.derivWithin_eq hrep0
+      _ = deriv VRep 0 := hVdiff.derivWithin (uniqueDiffWithinAt_Ici 0)
+  have hcovEq : Riemannian.CovariantDerivativeAlong.covDerivAlong
+      (I := I) g eta (fun t => s (eta t)) 0 =
+      Riemannian.CovariantDerivativeAlong.covDerivAlong (I := I) g eta V 0 := by
+    rw [Riemannian.CovariantDerivativeAlong.covDerivAlong_def,
+      Riemannian.CovariantDerivativeAlong.covDerivAlong_def]
+    congr 1
+    rw [Riemannian.AlongCurve.chartCovDerivAlong_def,
+      Riemannian.AlongCurve.chartCovDerivAlong_def]
+    rw [show Riemannian.CovariantDerivativeAlong.chartRepAt
+        (I := I) eta (fun t => s (eta t)) 0 = sRep by rfl,
+      show Riemannian.CovariantDerivativeAlong.chartRepAt (I := I) eta V 0 = VRep by rfl,
+      hderivEq, hrep0]
+  have hbridge := Riemannian.CovariantDerivativeAlong.covDerivAlong_eq_leviCivita_of_eventuallyEq
+    (I := I) g eta 0 ((heta2.of_le (by norm_num)).contMDiffAt)
+    (s.contMDiff.mdifferentiableAt (by simp)) (hV := by rfl)
+  have hLC :
+      (LeviCivita (I := I) g) s (eta 0) v =
+        Riemannian.CovariantDerivativeAlong.covDerivAlong
+          (I := I) g eta (fun t => s (eta t)) 0 := by
+    calc
+      (LeviCivita (I := I) g) s (eta 0) v =
+          (LeviCivita (I := I) g) s (eta 0)
+            (mfderiv 𝓘(ℝ, ℝ) I eta 0 (1 : ℝ)) :=
+        congrArg ((LeviCivita (I := I) g) s (eta 0)) hetaVel.symm
+      _ = Riemannian.CovariantDerivativeAlong.covDerivAlong
+          (I := I) g eta (fun t => s (eta t)) 0 := hbridge.symm
+  calc
+    (LeviCivita (I := I) g) s (eta 0) v =
+        Riemannian.CovariantDerivativeAlong.covDerivAlong
+          (I := I) g eta (fun t => s (eta t)) 0 := hLC
+    _ = Riemannian.CovariantDerivativeAlong.covDerivAlong (I := I) g eta V 0 := hcovEq
+    _ = 0 := Riemannian.Variation.parallelTransportSectionOnIcc_covDerivAlong
+      (I := I) g eta heta2 h02 (s (eta 0)) ⟨le_rfl, by norm_num⟩
+
+private theorem exists_local_unit_section_of_rank_eq_one
+    (g : SmoothRiemannianMetric I M)
+    (S : ContMDiffVectorSubbundle
+      (I := I) (F := E) (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)))
+    (hSrank : S.rank = 1)
     (x : M) :
     ∃ (U : Set M) (s : Cₛ^∞⟮I; E, TangentSpace I⟯),
       IsOpen U ∧ x ∈ U ∧
       (∀ y ∈ U, s y ∈ S.fiber y) ∧
-      (∀ y ∈ U, g.inner y (s y) (s y) = 1) ∧
-      (∀ y ∈ U, ∀ v : TangentSpace I y,
-        (LeviCivita (I := I) g) s y v = 0) := by
+      (∀ y ∈ U, g.inner y (s y) (s y) = 1) := by
   obtain ⟨U, e, hU, hxU, he⟩ := S.exists_frame x
   let i : Fin S.rank := ⟨0, by omega⟩
   let q : M → ℝ := fun y => g.inner y (e i y) (e i y)
@@ -160,9 +307,27 @@ theorem ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_o
     intro y hy
     rw [hs_eq y hy]
     exact hu_unit y hy.2
-  refine ⟨N, s, hNopen, hxN, hs_mem, hs_unit, ?_⟩
+  exact ⟨N, s, hNopen, hxN, hs_mem, hs_unit⟩
+
+theorem ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one_of_covariantly_invariant
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M)
+    (S : ContMDiffVectorSubbundle
+      (I := I) (F := E) (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)))
+    (hSrank : S.rank = 1)
+    (hS : IsCovariantlyInvariantSubmoduleFamily (LeviCivita (I := I) g) S.fiber)
+    (x : M) :
+    ∃ (U : Set M) (s : Cₛ^∞⟮I; E, TangentSpace I⟯),
+      IsOpen U ∧ x ∈ U ∧
+      (∀ y ∈ U, s y ∈ S.fiber y) ∧
+      (∀ y ∈ U, g.inner y (s y) (s y) = 1) ∧
+      (∀ y ∈ U, ∀ v : TangentSpace I y,
+        (LeviCivita (I := I) g) s y v = 0) := by
+  obtain ⟨U, s, hUopen, hxU, hs_mem, hs_unit⟩ :=
+    exists_local_unit_section_of_rank_eq_one g S hSrank x
+  refine ⟨U, s, hUopen, hxU, hs_mem, hs_unit, ?_⟩
   intro y hy v
-  have hcov_mem := hS s N hNopen hs_mem y hy v
+  have hcov_mem := hS s U hUopen hs_mem y hy v
   have hfin : Module.finrank ℝ (S.fiber y) = 1 := by
     rw [S.finrank_fiber, hSrank]
   have hs_ne : s y ≠ 0 := by
@@ -178,7 +343,7 @@ theorem ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_o
     (s.contMDiff.mdifferentiableAt (by simp))
     (s.contMDiff.mdifferentiableAt (by simp)) v
   have hinner_local : (fun z => g.inner z (s z) (s z)) =ᶠ[𝓝 y] fun _ => (1 : ℝ) := by
-    filter_upwards [hNopen.mem_nhds hy] with z hz
+    filter_upwards [hUopen.mem_nhds hy] with z hz
     exact hs_unit z hz
   rw [hinner_local.mfderiv_eq, mfderiv_const] at hmetric
   rw [← hc] at hmetric
@@ -188,6 +353,26 @@ theorem ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_o
     simp at hmetric
     exact add_self_eq_zero.mp hmetric.symm
   rw [← hc, hc0, zero_smul]
+
+theorem ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M)
+    (S : ContMDiffVectorSubbundle
+      (I := I) (F := E) (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)))
+    (hSrank : S.rank = 1)
+    (hS : IsParallelSubmoduleFamily g S.fiber)
+    (x : M) :
+    ∃ (U : Set M) (s : Cₛ^∞⟮I; E, TangentSpace I⟯),
+      IsOpen U ∧ x ∈ U ∧
+      (∀ y ∈ U, s y ∈ S.fiber y) ∧
+      (∀ y ∈ U, g.inner y (s y) (s y) = 1) ∧
+      (∀ y ∈ U, ∀ v : TangentSpace I y,
+        (LeviCivita (I := I) g) s y v = 0) := by
+  obtain ⟨U, s, hUopen, hxU, hs_mem, hs_unit⟩ :=
+    exists_local_unit_section_of_rank_eq_one g S hSrank x
+  exact ⟨U, s, hUopen, hxU, hs_mem, hs_unit,
+    local_unit_section_parallel_of_isParallelSubmoduleFamily
+      (I := I) g S hSrank hS U hUopen s hs_mem hs_unit⟩
 
 theorem ContMDiffVectorSubbundle.isParallelSubmoduleFamily_of_rank_eq_one
     [I.Boundaryless]
@@ -224,7 +409,7 @@ theorem ContMDiffVectorSubbundle.isParallelSubmoduleFamily_of_rank_eq_one
         ∀ᶠ q in 𝓝 r, (P r ↔ P q) ∧ (P q ↔ P r) := by
       intro r
       obtain ⟨U, s, hU, hrU, hs_mem, hs_unit, hs_par⟩ :=
-        ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
+        ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one_of_covariantly_invariant
           (I := I) g S hSrank hS (δ r)
       have hpre : δ ⁻¹' U ∈ 𝓝 (r : ℝ) :=
         (hU.preimage hδ.continuous).mem_nhds hrU
