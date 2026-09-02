@@ -1,12 +1,14 @@
 import DifferentialGeometry.Topology.Morse.Defs
+import DifferentialGeometry.Analysis.Integration.CauchyPeak
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
+import DifferentialGeometry.Geometry.Operator.NormGradSq
 
 set_option autoImplicit false
 
 noncomputable section
 
-open Bundle Manifold Set
-open scoped Manifold ContDiff
+open Bundle Filter Manifold MeasureTheory Set
+open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry.Topology.Morse
 
@@ -22,6 +24,9 @@ variable {H : Type} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
+
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
 
 theorem isNondegenerateCriticalPointAt_of_hessFun_eq_smul_metric
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯) (x : M)
@@ -117,5 +122,41 @@ theorem isNondegenerateCriticalPointAt_of_hessFun_eq_smul_metric
     exact (ne_of_gt (g.pos x (e.symm u) hne)) hinner
   apply e.symm.injective
   simpa using htangent
+
+theorem tendsto_setIntegral_regularized_normGradSqFun_inv_sq_smul_of_compact_of_disjoint_criticalPoints
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
+    [T2Space M]
+    {μ : Measure M} {s : Set M} (hs : IsCompact s)
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (hdisjoint : Disjoint s (criticalPoints I f))
+    {b : M → V} (hb : IntegrableOn b s μ) :
+    Tendsto
+      (fun ε : Real => ∫ x in s,
+        (ε * (normGradSqFun (I := I) g f x + ε)⁻¹ ^ 2) • b x ∂μ)
+      (𝓝[>] 0) (𝓝 0) := by
+  by_cases hs_nonempty : s.Nonempty
+  · let U : M → Real := normGradSqFun (I := I) g (f : M → Real)
+    have hU_cont : Continuous U := normGradSqFun_continuous (I := I) g f.contMDiff
+    obtain ⟨x₀, hx₀, hmin⟩ := hs.exists_isMinOn hs_nonempty hU_cont.continuousOn
+    let δ : Real := U x₀
+    have hδ_nonneg : 0 ≤ δ := normGradSqFun_nonneg (I := I) g f x₀
+    have hδ_ne : δ ≠ 0 := by
+      intro hδ_zero
+      have hx₀_critical : x₀ ∈ criticalPoints I f := by
+        change mfderiv I 𝓘(Real, Real) f x₀ = 0
+        exact (normGradSqFun_eq_zero_iff (I := I)).mp hδ_zero
+      exact Set.disjoint_left.1 hdisjoint hx₀ hx₀_critical
+    have hδ_pos : 0 < δ := lt_of_le_of_ne hδ_nonneg hδ_ne.symm
+    have hU_meas : AEMeasurable U (μ.restrict s) :=
+      hU_cont.aemeasurable.mono_measure Measure.restrict_le_self
+    have hδ_le : ∀ᵐ x ∂(μ.restrict s), δ ≤ U x := by
+      refine (ae_restrict_iff' hs.measurableSet).2 ?_
+      exact Filter.Eventually.of_forall fun x hx => hmin hx
+    simpa only [U] using
+      DifferentialGeometry.Analysis.Integration.tendsto_integral_regularized_inv_sq_smul_of_integrable_of_ae_lower_bound
+        hU_meas hb hδ_pos hδ_le
+  · have hs_empty : s = ∅ := not_nonempty_iff_eq_empty.mp hs_nonempty
+    subst s
+    simp
 
 end DifferentialGeometry.Topology.Morse
