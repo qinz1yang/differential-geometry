@@ -28,6 +28,36 @@ variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+private lemma strictMonoOn_mul_exp_neg_Iic_one :
+    StrictMonoOn (fun x : Real => x * Real.exp (-x)) (Set.Iic 1) := by
+  apply strictMonoOn_of_deriv_pos (convex_Iic 1) (by fun_prop)
+  intro x hx
+  rw [interior_Iic] at hx
+  change x < 1 at hx
+  have hexp : HasDerivAt (fun y : Real => Real.exp (-y))
+      (-Real.exp (-x)) x := by
+    simpa using! (hasDerivAt_neg x).exp
+  have hderiv : HasDerivAt (fun y : Real => y * Real.exp (-y))
+      ((1 - x) * Real.exp (-x)) x := by
+    simpa [sub_mul] using! (hasDerivAt_id x).mul hexp
+  rw [hderiv.deriv]
+  exact mul_pos (sub_pos.mpr hx) (Real.exp_pos _)
+
+private lemma strictAntiOn_mul_exp_neg_Ici_one :
+    StrictAntiOn (fun x : Real => x * Real.exp (-x)) (Set.Ici 1) := by
+  apply strictAntiOn_of_deriv_neg (convex_Ici 1) (by fun_prop)
+  intro x hx
+  rw [interior_Ici] at hx
+  change 1 < x at hx
+  have hexp : HasDerivAt (fun y : Real => Real.exp (-y))
+      (-Real.exp (-x)) x := by
+    simpa using! (hasDerivAt_neg x).exp
+  have hderiv : HasDerivAt (fun y : Real => y * Real.exp (-y))
+      ((1 - x) * Real.exp (-x)) x := by
+    simpa [sub_mul] using! (hasDerivAt_id x).mul hexp
+  rw [hderiv.deriv]
+  exact mul_neg_of_neg_of_pos (sub_neg.mpr hx) (Real.exp_pos _)
+
 theorem normalizedGradientRicciSoliton_metricScalarAt_ne_one_at_criticalPoint_of_finrank_eq_two_of_not_constant
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f)
@@ -430,5 +460,97 @@ theorem normalizedGradientRicciSoliton_exists_potential_extrema_with_scalar_lt_o
   · exact
       normalizedGradientRicciSoliton_one_lt_metricScalarAt_at_local_max_of_finrank_eq_two_of_not_constant
         (I := I) h hdim hnonconstant xmax (hmax.isLocalMax (by simp))
+
+private theorem normalizedGradientRicciSoliton_critical_scalar_eq_extreme_scalar
+    [CompactSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2)
+    (hnonconstant : ¬ ∀ y z : M, f y = f z)
+    {xmin xmax p : M}
+    (hmin : IsMinOn f univ xmin) (hmax : IsMaxOn f univ xmax)
+    (hpcrit : IsCriticalPointAt I f p) :
+    metricScalarAt (I := I) (M := M) g p =
+        metricScalarAt (I := I) (M := M) g xmin ∨
+      metricScalarAt (I := I) (M := M) g p =
+        metricScalarAt (I := I) (M := M) g xmax := by
+  let R : M → Real := fun x => metricScalarAt (I := I) (M := M) g x
+  have hgradp : gradFun (I := I) g f p = 0 :=
+    gradFun_eq_zero_of_mfderiv_eq_zero (I := I) g f hpcrit
+  have hgradMin : gradFun (I := I) g f xmin = 0 :=
+    gradientFun_eq_zero_of_isLocalMin (I := I) g
+      (hmin.isLocalMin (by simp)) ((f.contMDiff xmin).mdifferentiableAt (by simp))
+  have hgradMax : gradFun (I := I) g f xmax = 0 :=
+    gradientFun_eq_zero_of_isLocalMax (I := I) g
+      (hmax.isLocalMax (by simp)) ((f.contMDiff xmax).mdifferentiableAt (by simp))
+  have hRmin : R xmin < 1 :=
+    normalizedGradientRicciSoliton_metricScalarAt_lt_one_at_local_min_of_finrank_eq_two_of_not_constant
+      (I := I) h hdim hnonconstant xmin (hmin.isLocalMin (by simp))
+  have hRmax : 1 < R xmax :=
+    normalizedGradientRicciSoliton_one_lt_metricScalarAt_at_local_max_of_finrank_eq_two_of_not_constant
+      (I := I) h hdim hnonconstant xmax (hmax.isLocalMax (by simp))
+  have hRpne : R p ≠ 1 :=
+    normalizedGradientRicciSoliton_metricScalarAt_ne_one_at_criticalPoint_of_finrank_eq_two_of_not_constant
+      (I := I) h hdim hnonconstant p hpcrit
+  have hEqMin : R p * Real.exp (-R p) = R xmin * Real.exp (-R xmin) :=
+    normalizedGradientRicciSoliton_metricScalarAt_mul_exp_neg_eq_of_finrank_eq_two_of_gradient_eq_zero
+      (I := I) h hdim p xmin hgradp hgradMin
+  have hEqMax : R p * Real.exp (-R p) = R xmax * Real.exp (-R xmax) :=
+    normalizedGradientRicciSoliton_metricScalarAt_mul_exp_neg_eq_of_finrank_eq_two_of_gradient_eq_zero
+      (I := I) h hdim p xmax hgradp hgradMax
+  rcases lt_or_gt_of_ne hRpne with hRp | hRp
+  · left
+    apply strictMonoOn_mul_exp_neg_Iic_one.injOn
+    · exact le_of_lt hRp
+    · exact le_of_lt hRmin
+    · exact hEqMin
+  · right
+    apply strictAntiOn_mul_exp_neg_Ici_one.injOn
+    · exact le_of_lt hRp
+    · exact le_of_lt hRmax
+    · exact hEqMax
+
+theorem normalizedGradientRicciSoliton_isMinOn_or_isMaxOn_at_criticalPoint_of_compact_of_finrank_eq_two_of_not_constant
+    [CompactSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2)
+    (hnonconstant : ¬ ∀ y z : M, f y = f z)
+    (p : M) (hpcrit : IsCriticalPointAt I f p) :
+    IsMinOn f univ p ∨ IsMaxOn f univ p := by
+  obtain ⟨xmin, xmax, hmin, hmax, _, _⟩ :=
+    normalizedGradientRicciSoliton_exists_potential_extrema_with_scalar_lt_one_and_one_lt_of_compact_of_finrank_eq_two_of_not_constant
+      (I := I) h hdim hnonconstant
+  have hscalar :=
+    normalizedGradientRicciSoliton_critical_scalar_eq_extreme_scalar
+      (I := I) h hdim hnonconstant hmin hmax hpcrit
+  have hgradp : gradFun (I := I) g f p = 0 :=
+    gradFun_eq_zero_of_mfderiv_eq_zero (I := I) g f hpcrit
+  have hgradMin : gradFun (I := I) g f xmin = 0 :=
+    gradientFun_eq_zero_of_isLocalMin (I := I) g
+      (hmin.isLocalMin (by simp)) ((f.contMDiff xmin).mdifferentiableAt (by simp))
+  have hgradMax : gradFun (I := I) g f xmax = 0 :=
+    gradientFun_eq_zero_of_isLocalMax (I := I) g
+      (hmax.isLocalMax (by simp)) ((f.contMDiff xmax).mdifferentiableAt (by simp))
+  have hfp :=
+    normalizedGradientRicciSoliton_potential_eq_metricScalarAt_of_gradient_eq_zero
+      (I := I) h p hgradp
+  rcases hscalar with hscalar | hscalar
+  · left
+    have hfmin :=
+      normalizedGradientRicciSoliton_potential_eq_metricScalarAt_of_gradient_eq_zero
+        (I := I) h xmin hgradMin
+    have hfpmin : f p = f xmin := hfp.trans (hscalar.trans hfmin.symm)
+    intro x hx
+    rw [hfpmin]
+    exact hmin hx
+  · right
+    have hfmax :=
+      normalizedGradientRicciSoliton_potential_eq_metricScalarAt_of_gradient_eq_zero
+        (I := I) h xmax hgradMax
+    have hfpmax : f p = f xmax := hfp.trans (hscalar.trans hfmax.symm)
+    intro x hx
+    rw [hfpmax]
+    exact hmax hx
 
 end DifferentialGeometry.Geometry
