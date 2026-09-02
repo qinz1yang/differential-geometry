@@ -29,6 +29,12 @@ theorem tensor0SSpace_continuousLinearEquiv_symm_norm_apply (s : ℕ) (b : M)
     ‖(tensor0SSpaceContinuousLinearEquiv (𝕜 := 𝕜) (E := E) (I := I)
         (M := M) s b).symm f‖ = ‖f‖ := rfl
 
+@[simp]
+theorem tensorRSSpace_continuousLinearEquiv_norm_apply (r s : ℕ) (b : M)
+    (T : TensorRSSpace r s I b) :
+    ‖tensorRSSpaceContinuousLinearEquiv (𝕜 := 𝕜) (E := E) (I := I)
+        (M := M) r s b T‖ = ‖T‖ := rfl
+
 theorem tensorRSSpace_norm_eq_carrier_opNorm {b : M} (T : TensorRSSpace r s I b) :
     ‖T‖ = sInf {c : ℝ | 0 ≤ c ∧
       ∀ x : Tensor0SSpace r I b,

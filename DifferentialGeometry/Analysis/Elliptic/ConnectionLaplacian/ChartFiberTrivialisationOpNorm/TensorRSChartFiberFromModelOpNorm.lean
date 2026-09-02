@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.TensorRSContRiemannianBundle
-import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleLocalityIdentities
+import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleTransition
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Riemannian
@@ -140,7 +140,7 @@ private lemma exists_W_and_constant_symmL
         (fun y : M => TensorRSSpace r s I y) y₀) b with hccF_def
   have hy₀_y₀ : y₀ ∈ (chartAt H y₀).source := mem_chart_source H y₀
   have h_cc_continuousAt : ContinuousAt ccF y₀ :=
-    tensorRSCoordChangeL_continuousAt (I := I) r s α y₀ y₀ h_y₀_α hy₀_y₀
+    tensorRS_coordChangeL_continuousAt (I := I) r s α y₀ y₀ h_y₀_α hy₀_y₀
   have h_norm_continuousAt : ContinuousAt (fun b => ‖ccF b‖) y₀ :=
     continuous_norm.continuousAt.comp h_cc_continuousAt
   set C₂ : ℝ := ‖ccF y₀‖ + 1 with hC₂_def
