@@ -3064,6 +3064,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceIdentities
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceFlux
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceMorse
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceCompactness
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceClassification
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.MunteanuWang
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.MunteanuWangCompactness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderIsometry
