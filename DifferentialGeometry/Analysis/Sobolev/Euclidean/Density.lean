@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Tools.WeakPartialLimit
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Limit
 import DifferentialGeometry.Analysis.Sobolev.Tools.FrechetKolmogorov
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich
 import DifferentialGeometry.Analysis.Sobolev.Tools.Mollifier

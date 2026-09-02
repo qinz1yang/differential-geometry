@@ -1058,6 +1058,9 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.CrossCha
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.IteratedSobolevHalfSpace
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.IteratedSobolevSigmaCompactPatch
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.IteratedSobolevSupportPromotion
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Basic
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Distribution
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Limit
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNormDiscreteLogConvex
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNormGeneralValence
@@ -1143,7 +1146,6 @@ import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.Defs
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.Iteration
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.NonSmooth
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.SmoothTestPairing
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.SmoothWeakSolutionH2
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.Coercivity
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.CrossBounds
@@ -1279,8 +1281,6 @@ import DifferentialGeometry.Analysis.Sobolev.Tools.FrechetKolmogorov
 import DifferentialGeometry.Analysis.Sobolev.Tools.Mollifier
 import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
 import DifferentialGeometry.Analysis.Sobolev.Tools.Translation
-import DifferentialGeometry.Analysis.Sobolev.Tools.WeakDerivative
-import DifferentialGeometry.Analysis.Sobolev.Tools.WeakPartialLimit
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Chart.Banach
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Chart.Completeness
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Chart.Defs

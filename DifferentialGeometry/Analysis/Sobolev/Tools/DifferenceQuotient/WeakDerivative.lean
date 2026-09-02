@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.SmoothRegularity
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.Support
-import DifferentialGeometry.Analysis.Sobolev.Tools.WeakDerivative
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Basic
 
 noncomputable section
 

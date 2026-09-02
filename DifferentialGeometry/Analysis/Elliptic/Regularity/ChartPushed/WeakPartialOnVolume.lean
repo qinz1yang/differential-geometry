@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.GradientH1LipschitzBound
-import DifferentialGeometry.Analysis.Sobolev.Tools.WeakPartialLimit
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Limit
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 
 

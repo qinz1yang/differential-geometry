@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.ChainRuleHigher
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevBanach
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
-import DifferentialGeometry.Analysis.Sobolev.Tools.WeakPartialLimit
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Limit
 import Mathlib.Analysis.Calculus.ContDiff.Bounds
 import Mathlib.Data.Nat.Choose.Bounds
 

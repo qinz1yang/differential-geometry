@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Distribution
 import Mathlib.Analysis.Normed.Lp.SmoothApprox
 import Mathlib.Analysis.Normed.Operator.Extend
 import Mathlib.Analysis.InnerProductSpace.Dual
@@ -154,27 +155,6 @@ private lemma denseRange_smoothCompactlySupportedToLp :
     rw [dist_comm]
     exact mem_ball.mp hh_mem
 
-omit [NeZero d] in
-private lemma integrable_w_partial_phi_univ
-    {w : E → ℝ} (hw_l2 : MemLp w 2 (volume : Measure E))
-    {φ : E → ℝ} (hφ_smooth : ContDiff ℝ (⊤ : ℕ∞) φ)
-    (hφ_supp : HasCompactSupport φ) (k : Fin d) :
-    Integrable (fun x => w x * (fderiv ℝ φ x) (EuclideanSpace.single k 1))
-      (volume : Measure E) := by
-  have h_partial_cont : Continuous
-      (fun x : E => (fderiv ℝ φ x) (EuclideanSpace.single k 1)) :=
-    (hφ_smooth.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
-      continuous_const
-  have h_partial_supp :
-      HasCompactSupport
-        (fun x : E => (fderiv ℝ φ x) (EuclideanSpace.single k 1)) :=
-    hφ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single k 1)
-  have h_partial_memLp :
-      MemLp (fun x : E => (fderiv ℝ φ x) (EuclideanSpace.single k 1)) 2
-        (volume : Measure E) :=
-    h_partial_cont.memLp_of_hasCompactSupport h_partial_supp
-  exact MemLp.integrable_mul hw_l2 h_partial_memLp
-
 private def smoothTestFunctional
     {w : E → ℝ} (hw_l2 : MemLp w 2 (volume : Measure E)) (k : Fin d) :
     smoothCompactlySupportedSubmodule (d := d) →ₗ[ℝ] ℝ where
@@ -203,8 +183,16 @@ private def smoothTestFunctional
           w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1) +
             w x * (fderiv ℝ ψ.1 x) (EuclideanSpace.single k 1) := by
       intro x; rw [h_fderiv_sum x]; ring
-    have hφ_int := integrable_w_partial_phi_univ hw_l2 φ.2.1 φ.2.2 k
-    have hψ_int := integrable_w_partial_phi_univ hw_l2 ψ.2.1 ψ.2.2 k
+    have hφ_int : Integrable
+        (fun x => w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1))
+        (volume : Measure E) := by
+      simpa using Euclidean.integrable_mul_fderiv_apply_of_memLp
+        (Ω := Set.univ) (by simpa using hw_l2) φ.2.1 φ.2.2 k
+    have hψ_int : Integrable
+        (fun x => w x * (fderiv ℝ ψ.1 x) (EuclideanSpace.single k 1))
+        (volume : Measure E) := by
+      simpa using Euclidean.integrable_mul_fderiv_apply_of_memLp
+        (Ω := Set.univ) (by simpa using hw_l2) ψ.2.1 ψ.2.2 k
     have h_int_eq :
         ∫ x, w x * (fderiv ℝ ((φ + ψ : smoothCompactlySupportedSubmodule (d := d)).1) x)
                 (EuclideanSpace.single k 1) =
