@@ -3043,6 +3043,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.WeightedRicci
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Anisotropy
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CompactAnisotropy
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CompactRankReduction
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PositiveRoundness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverGaussian
@@ -3122,6 +3123,7 @@ import DifferentialGeometry.Geometry.Operator.CotangentSharpSmooth
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Geometry.Operator.GradientRegularity
 import DifferentialGeometry.Geometry.Operator.Hessian
+import DifferentialGeometry.Geometry.Operator.HessianExtrema
 import DifferentialGeometry.Geometry.Operator.HessianTrace
 import DifferentialGeometry.Geometry.Operator.HessianTraceChartDensityJacobiDerivative
 import DifferentialGeometry.Geometry.Operator.HessianTraceChartGramRegularity

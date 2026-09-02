@@ -516,7 +516,7 @@ private theorem fderiv_fderiv_self_nonneg_of_isLocalMin
     rw [hzero]
     simp only [ContinuousLinearMap.comp_apply, zero_apply, map_zero, le_refl]
 
-private theorem cov_gradient_inner_self_nonneg_at_spatial_min
+theorem cov_gradientFun_inner_self_nonneg_at_spatial_min_of_isInteriorPoint
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
@@ -599,7 +599,7 @@ theorem laplacian_nonneg_at_spatial_min_of_metricCompatible_of_isInteriorPoint
     ((cov (fun y : M => gradientFun (I := I) g f y) x).toLinearMap)
     (fun v => by
       simpa using
-        cov_gradient_inner_self_nonneg_at_spatial_min
+        cov_gradientFun_inner_self_nonneg_at_spatial_min_of_isInteriorPoint
           (I := I) cov g hmc hmin hx hf hf_near hgrad v)
 
 

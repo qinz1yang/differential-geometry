@@ -181,7 +181,7 @@ private theorem inner_curvatureRicciContraction_metricRicci_eq_ricciReaction3
   ring
 
 omit [I.Boundaryless] [T2Space M] in
-private theorem normSq_metricRicci_eq_ricciEigenNormSq3
+theorem normSq0S_metricRicciAt_eq_ricciEigenNormSq3_of_ricciDiag
     (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth : OrthonormalBasisAt (I := I) g x basis)
@@ -226,7 +226,7 @@ theorem ricciReactionDefectAt_eq_curvatureReactionPolynomial3
   let l1 := (mu + nu) / 2
   let l2 := (lambda + nu) / 2
   let l3 := (lambda + mu) / 2
-  have hnorm := normSq_metricRicci_eq_ricciEigenNormSq3
+  have hnorm := normSq0S_metricRicciAt_eq_ricciEigenNormSq3_of_ricciDiag
     (I := I) (M := M) g x basis horth l1 l2 l3 hdiag
   have hinner := inner_curvatureRicciContraction_metricRicci_eq_ricciReaction3
     (I := I) (M := M) g x basis horth l1 l2 l3 hdiag

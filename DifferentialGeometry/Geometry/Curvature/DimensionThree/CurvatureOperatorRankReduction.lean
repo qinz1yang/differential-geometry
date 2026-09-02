@@ -16,6 +16,41 @@ namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 open DifferentialGeometry.Tensor0SBundle
 
+private theorem diagonal_fin_three_rank_one_cases (d : Fin 3 → Real)
+    (h : (Matrix.diagonal d).rank = 1) :
+    (d 0 ≠ 0 ∧ d 1 = 0 ∧ d 2 = 0) ∨
+      (d 0 = 0 ∧ d 1 ≠ 0 ∧ d 2 = 0) ∨
+      (d 0 = 0 ∧ d 1 = 0 ∧ d 2 ≠ 0) := by
+  classical
+  have hcard : Fintype.card {i : Fin 3 // d i ≠ 0} = 1 := by
+    simpa only using (Matrix.rank_diagonal d).symm.trans h
+  have hatMostOne {i j : Fin 3} (hij : i ≠ j) (hi : d i ≠ 0) (hj : d j ≠ 0) : False := by
+    let e : Fin 2 → {k : Fin 3 // d k ≠ 0} := fun q =>
+      if hq : q = 0 then ⟨i, hi⟩ else ⟨j, hj⟩
+    have he : Function.Injective e := by
+      intro q r hqr
+      fin_cases q <;> fin_cases r <;> simp_all [e]
+    have hle := Fintype.card_le_of_injective e he
+    rw [hcard] at hle
+    norm_num at hle
+  by_cases h0 : d 0 = 0
+  · by_cases h1 : d 1 = 0
+    · by_cases h2 : d 2 = 0
+      · have hzero : d = 0 := by
+          funext i
+          fin_cases i <;> simp_all
+        rw [hzero] at h
+        simp at h
+      · exact Or.inr (Or.inr ⟨h0, h1, h2⟩)
+    · by_cases h2 : d 2 = 0
+      · exact Or.inr (Or.inl ⟨h0, h1, h2⟩)
+      · exact False.elim (hatMostOne (i := 1) (j := 2) (by decide) h1 h2)
+  · by_cases h1 : d 1 = 0
+    · by_cases h2 : d 2 = 0
+      · exact Or.inl ⟨h0, h1, h2⟩
+      · exact False.elim (hatMostOne (i := 0) (j := 2) (by decide) h0 h2)
+    · exact False.elim (hatMostOne (i := 0) (j := 1) (by decide) h0 h1)
+
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
   [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type*} [TopologicalSpace H]
@@ -227,5 +262,98 @@ theorem metricCurvatureOperatorRankAt_eq_zero_or_one_or_three_of_leastCurvatureO
     (I := I) (M := M) g x hdim
       ((zero_le_leastCurvatureOperatorEigenvalueAt_iff_mem_curvatureOperatorNonnegativeCone
         (I := I) (x := x) g hdim).mp hleast) hzero
+
+omit [I.Boundaryless] [SigmaCompactSpace M] in
+theorem two_mul_normSq0S_metricRicciAt_eq_metricScalarAt_sq_of_metricCurvatureOperatorRankAt_eq_one
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (hrank : metricCurvatureOperatorRankAt (I := I) g x hdim = 1) :
+    2 * normSq0S (I := I) g x 2
+        (metricRicciAt (I := I) (M := M) g x) =
+      metricScalarAt (I := I) (M := M) g x ^ 2 := by
+  obtain ⟨basis, lambda, mu, nu, horth, hdiag⟩ :=
+    exists_orthonormal_curvature_eigenframe (I := I) (M := M) g x hdim
+  let d : Fin 3 → Real := fun i =>
+    if i = 0 then nu / 2 else if i = 1 then mu / 2 else lambda / 2
+  have hmatrix :
+      curvatureOperatorDiagonal3 ((mu + nu) / 2) ((lambda + nu) / 2)
+          ((lambda + mu) / 2) = Matrix.diagonal d := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      simp [curvatureOperatorDiagonal3, d, sec12Ric3, sec13Ric3, sec23Ric3] <;>
+      ring
+  have hdrank : (Matrix.diagonal d).rank = 1 := by
+    rw [← hmatrix]
+    rw [← metricCurvatureOperatorMatrixAt_eq_diagonal_of_ricciDiag
+      (I := I) (M := M) g x basis horth
+      ((mu + nu) / 2) ((lambda + nu) / 2) ((lambda + mu) / 2) hdiag]
+    rw [← metricCurvatureOperatorRankAt_eq_matrix_rank_of_orthonormal
+      (I := I) (M := M) g x hdim basis horth]
+    exact hrank
+  have hcases := diagonal_fin_three_rank_one_cases d hdrank
+  rw [normSq0S_metricRicciAt_eq_ricciEigenNormSq3_of_ricciDiag
+    (I := I) (M := M) g x basis horth
+      ((mu + nu) / 2) ((lambda + nu) / 2) ((lambda + mu) / 2) hdiag,
+    hdiag.1]
+  rcases hcases with hnu | hmu | hlambda
+  · have hmu0 : mu = 0 := by simpa [d] using hnu.2.1
+    have hlambda0 : lambda = 0 := by simpa [d] using hnu.2.2
+    simp [ricciEigenNormSq3, ricciEigenScalar3, hmu0, hlambda0]
+    ring
+  · have hnu0 : nu = 0 := by simpa [d] using hmu.1
+    have hlambda0 : lambda = 0 := by simpa [d] using hmu.2.2
+    simp [ricciEigenNormSq3, ricciEigenScalar3, hnu0, hlambda0]
+    ring
+  · have hnu0 : nu = 0 := by simpa [d] using hlambda.1
+    have hmu0 : mu = 0 := by simpa [d] using hlambda.2.1
+    simp [ricciEigenNormSq3, ricciEigenScalar3, hnu0, hmu0]
+    ring
+
+omit [I.Boundaryless] [SigmaCompactSpace M] in
+theorem exists_metricRicciAt_nullVector_of_metricCurvatureOperatorRankAt_eq_one
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (hrank : metricCurvatureOperatorRankAt (I := I) g x hdim = 1) :
+    ∃ v : TangentSpace I x, v ≠ 0 ∧
+      metricRicciAt (I := I) (M := M) g x (vec2 (I := I) v v) = 0 := by
+  obtain ⟨basis, lambda, mu, nu, horth, hdiag⟩ :=
+    exists_orthonormal_curvature_eigenframe (I := I) (M := M) g x hdim
+  let d : Fin 3 → Real := fun i =>
+    if i = 0 then nu / 2 else if i = 1 then mu / 2 else lambda / 2
+  have hmatrix :
+      curvatureOperatorDiagonal3 ((mu + nu) / 2) ((lambda + nu) / 2)
+          ((lambda + mu) / 2) = Matrix.diagonal d := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      simp [curvatureOperatorDiagonal3, d, sec12Ric3, sec13Ric3, sec23Ric3] <;>
+      ring
+  have hdrank : (Matrix.diagonal d).rank = 1 := by
+    rw [← hmatrix]
+    rw [← metricCurvatureOperatorMatrixAt_eq_diagonal_of_ricciDiag
+      (I := I) (M := M) g x basis horth
+      ((mu + nu) / 2) ((lambda + nu) / 2) ((lambda + mu) / 2) hdiag]
+    rw [← metricCurvatureOperatorRankAt_eq_matrix_rank_of_orthonormal
+      (I := I) (M := M) g x hdim basis horth]
+    exact hrank
+  have hcases := diagonal_fin_three_rank_one_cases d hdrank
+  rcases hcases with hnu | hmu | hlambda
+  · refine ⟨basis 2, basis.ne_zero 2, ?_⟩
+    have h := hdiag.2 2 2
+    rw [ricciCompAt_apply] at h
+    have hmu0 : mu = 0 := by simpa [d] using hnu.2.1
+    have hlambda0 : lambda = 0 := by simpa [d] using hnu.2.2
+    simpa [ricciDiag3, hmu0, hlambda0] using h
+  · refine ⟨basis 1, basis.ne_zero 1, ?_⟩
+    have h := hdiag.2 1 1
+    rw [ricciCompAt_apply] at h
+    have hnu0 : nu = 0 := by simpa [d] using hmu.1
+    have hlambda0 : lambda = 0 := by simpa [d] using hmu.2.2
+    simpa [ricciDiag3, hnu0, hlambda0] using h
+  · refine ⟨basis 0, basis.ne_zero 0, ?_⟩
+    have h := hdiag.2 0 0
+    rw [ricciCompAt_apply] at h
+    have hnu0 : nu = 0 := by simpa [d] using hlambda.1
+    have hmu0 : mu = 0 := by simpa [d] using hlambda.2.1
+    simpa [ricciDiag3, hnu0, hmu0] using h
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
