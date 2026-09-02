@@ -630,39 +630,52 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
                   DifferentialGeometry.Analysis.ODE.curveAt X
                     (exists_globalIntegralCurve_of_unit_section g hg X hunit)
                     (show M from y.1) t)
-              (∀ (y : DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0)
-                  (t : ℝ)
-                  (u v : TangentSpace
-                    (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) y)
-                  (r q : ℝ),
-                g.inner (F (y, t))
-                    ((mfderiv
+              (And
+                (∀ (y : DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0)
+                    (t r : ℝ),
+                  (mfderiv
+                    ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                      𝓘(ℝ, ℝ)) I
+                    (fun z :
+                      DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 × ℝ =>
+                        F z) (y, t))
+                    (show TangentSpace
                       ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
-                        𝓘(ℝ, ℝ)) I
-                      (fun z :
-                        DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 × ℝ =>
-                          F z) (y, t))
-                      (show TangentSpace
+                        𝓘(ℝ, ℝ)) (y, t) from (0, r)) =
+                      r • X (F (y, t)))
+                (∀ (y : DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0)
+                    (t : ℝ)
+                    (u v : TangentSpace
+                      (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) y)
+                    (r q : ℝ),
+                  g.inner (F (y, t))
+                      ((mfderiv
                         ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
-                          𝓘(ℝ, ℝ)) (y, t) from (u, r)))
-                    ((mfderiv
-                      ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
-                        𝓘(ℝ, ℝ)) I
-                      (fun z :
-                        DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 × ℝ =>
-                          F z) (y, t))
-                      (show TangentSpace
+                          𝓘(ℝ, ℝ)) I
+                        (fun z :
+                          DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 × ℝ =>
+                            F z) (y, t))
+                        (show TangentSpace
+                          ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                            𝓘(ℝ, ℝ)) (y, t) from (u, r)))
+                      ((mfderiv
                         ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
-                          𝓘(ℝ, ℝ)) (y, t) from (v, q))) =
-                  g.inner y.1
-                    ((mfderiv
-                      (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) I
-                      (fun z : DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 =>
-                        z.1) y) u)
-                    ((mfderiv
-                      (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) I
-                      (fun z : DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 =>
-                        z.1) y) v) + r * q)) := by
+                          𝓘(ℝ, ℝ)) I
+                        (fun z :
+                          DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 × ℝ =>
+                            F z) (y, t))
+                        (show TangentSpace
+                          ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)).prod
+                            𝓘(ℝ, ℝ)) (y, t) from (v, q))) =
+                    g.inner y.1
+                      ((mfderiv
+                        (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) I
+                        (fun z : DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 =>
+                          z.1) y) u)
+                      ((mfderiv
+                        (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)) I
+                        (fun z : DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 =>
+                          z.1) y) v) + r * q))) := by
   obtain ⟨f0, hf0, hdf0⟩ :=
     exists_global_gradient_potential_of_parallel_section g X hparallel
   let p0 : M := Classical.arbitrary M
@@ -795,9 +808,20 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
     { toEquiv := e
       contMDiff_toFun := hforward
       contMDiff_invFun := hbackward }
-  refine ⟨F, ?_, ?_⟩
+  refine ⟨F, ?_, ?_, ?_⟩
   · intro y t
     rfl
+  · intro y t r
+    let J := 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)
+    let inclusion :
+        DifferentialGeometry.Topology.Morse.LevelSetSpace (M := M) f 0 → M :=
+      fun z => z.1
+    have hdirection := mfderiv_globalIntegralCurve_product_apply
+      X hcomplete inclusion hinclusion y t 0 r
+    have hzero : (mfderiv J I inclusion y) 0 = 0 :=
+      map_zero (mfderiv J I inclusion y)
+    rw [hzero, map_zero, add_zero] at hdirection
+    exact hdirection
   · intro y t u v r q
     let J := 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel m)
     let inclusion :
