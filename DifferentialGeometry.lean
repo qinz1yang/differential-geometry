@@ -3961,6 +3961,7 @@ import DifferentialGeometry.Bundle.SmoothSubbundle.KernelMotion
 import DifferentialGeometry.Bundle.SmoothSubbundle.Map
 import DifferentialGeometry.Geometry.Connection.NormalSection
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Kernel
+import DifferentialGeometry.Geometry.Connection.GlobalParallelLine
 import DifferentialGeometry.Geometry.Connection.ParallelLineSplitting
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImageLine
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorKernel
