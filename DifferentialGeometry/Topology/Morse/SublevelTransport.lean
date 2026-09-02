@@ -409,8 +409,9 @@ private theorem regularFamily_f_sublevel_of_uniqueCritical
           IsCriticalPointAt I f q.1 := by
         have hg : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
             (fun x : M => F x q.2) := regularFamilySliceSmooth I F hF q.2
-        rw [isCriticalPointAt_iff_chart_fderiv I (fun x : M => F x q.2) hg q.1]
-        rw [isCriticalPointAt_iff_chart_fderiv I f hf q.1]
+        rw [isCriticalPointAt_iff_chart_fderiv (I := I)
+          (f := fun x : M => F x q.2) hg (p := q.1)]
+        rw [isCriticalPointAt_iff_chart_fderiv (I := I) (f := f) hf (p := q.1)]
         have hEq : (fun y : MorseModel (m + 1) => F ((extChartAt I q.1).symm y) q.2) =ᶠ[nhds ((extChartAt I q.1) q.1)] (fun y : MorseModel (m + 1) => f ((extChartAt I q.1).symm y) - (c + r ^ 2 / 2 + q.2 * (ε - r ^ 2 / 2))) := by
           filter_upwards with y
           simp [F]

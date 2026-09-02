@@ -3184,6 +3184,7 @@ import DifferentialGeometry.Topology.Homotopy.DeformationRetract
 import DifferentialGeometry.Topology.Homotopy.EquivUnder
 import DifferentialGeometry.Topology.Homotopy.Interval
 import DifferentialGeometry.Topology.Morse.CellAttachment
+import DifferentialGeometry.Topology.Morse.CriticalPoints
 import DifferentialGeometry.Topology.Morse.Defs
 import DifferentialGeometry.Topology.Morse.Flow
 import DifferentialGeometry.Topology.Morse.HandleAttachment

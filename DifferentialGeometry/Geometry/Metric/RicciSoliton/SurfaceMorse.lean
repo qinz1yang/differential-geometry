@@ -1,6 +1,7 @@
-import DifferentialGeometry.Topology.Morse.Riemannian
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceIdentities
 import DifferentialGeometry.Geometry.Operator.HessianExtrema
+import DifferentialGeometry.Topology.Morse.CriticalPoints
+import DifferentialGeometry.Topology.Morse.Riemannian
 
 set_option autoImplicit false
 
@@ -45,6 +46,17 @@ theorem normalizedGradientRicciSoliton_isNondegenerateCriticalPointAt_of_finrank
   · intro v w
     exact normalizedGradientRicciSoliton_hessFun_of_finrank_eq_two
       (I := I) h hdim x v w
+
+theorem normalizedGradientRicciSoliton_finite_criticalPoints_of_compact_of_finrank_eq_two_of_not_constant
+    [CompactSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2)
+    (hnonconstant : ¬ ∀ y z : M, f y = f z) :
+    (criticalPoints I f).Finite :=
+  finite_criticalPoints_of_compact_of_isNondegenerate f f.contMDiff fun p hp =>
+    normalizedGradientRicciSoliton_isNondegenerateCriticalPointAt_of_finrank_eq_two_of_not_constant
+      h hdim hnonconstant p hp
 
 theorem normalizedGradientRicciSoliton_metricScalarAt_lt_one_at_local_min_of_finrank_eq_two_of_not_constant
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}

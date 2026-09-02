@@ -102,7 +102,7 @@ theorem localUnitSpeedVectorField_at_noncritical (I : ModelWithCorners ℝ (Mors
     (extChartAt I x₀).map_source (mem_extChartAt_source x₀)
   have hcritChart : fderiv ℝ (fun y : MorseModel n => f ((extChartAt I x₀).symm y))
       (extChartAt I x₀ x₀) ≠ 0 := by
-    have hiff := isCriticalPointAt_iff_chart_fderiv I f hf x₀
+    have hiff := isCriticalPointAt_iff_chart_fderiv (I := I) (f := f) hf (p := x₀)
     intro hz
     exact hcrit (hiff.2 hz)
   rcases exists_coord_of_fderiv_ne_zero (fun y : MorseModel n => f ((extChartAt I x₀).symm y))

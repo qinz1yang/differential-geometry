@@ -1487,7 +1487,8 @@ theorem localUnitSpeedFamilyVectorField_at_noncritical
     exact (hF.comp hpair).congr (fun x => by rfl)
   have hcritChart : fderiv ℝ (fun y : MorseModel (m + 1) => F ((extChartAt I x₀).symm y) s₀)
       (extChartAt I x₀ x₀) ≠ 0 := by
-    have hiff := isCriticalPointAt_iff_chart_fderiv I (fun x : M => F x s₀) hfSlice x₀
+    have hiff := isCriticalPointAt_iff_chart_fderiv (I := I)
+      (f := fun x : M => F x s₀) hfSlice (p := x₀)
     intro hz
     exact hcrit (hiff.2 hz)
   rcases exists_coord_of_fderiv_ne_zero (fun y : MorseModel (m + 1) => F ((extChartAt I x₀).symm y) s₀)
