@@ -30,6 +30,96 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [ContMDiffVectorBundle ∞ F V I]
   [IsContMDiffRiemannianBundle I ∞ F V]
 
+private theorem positive_on_compact_slab_of_first_contact_impossible
+    {theta : Real → M → Real} {s t : Real}
+    {K : Set M} (hK : IsCompact K)
+    (htheta : ContinuousOn (fun p : Real × M ↦ theta p.1 p.2)
+      (Icc s t ×ˢ K))
+    (hinitial : ∀ x ∈ K, 0 < theta s x)
+    (hboundary : ∀ q ∈ Icc s t, ∀ x ∈ frontier K, 0 < theta q x)
+    (hfirst : ∀ {q : Real} {x : M}, q ∈ Ioc s t → x ∈ interior K →
+      (∀ᶠ p in 𝓝[Icc s q ×ˢ (Set.univ : Set M)] (q, x),
+        0 ≤ theta p.1 p.2) → theta q x = 0 → False) :
+    ∀ q ∈ Icc s t, ∀ x ∈ K, 0 < theta q x := by
+  have exists_zero {q : Real} (hq : q ∈ Icc s t) {x : M} (hx : x ∈ K)
+      (hqnonpos : theta q x ≤ 0) :
+      ∃ r ∈ Icc s q, theta r x = 0 := by
+    have hsq : s ≤ q := hq.1
+    have htime : ContinuousOn (fun r : Real ↦ -theta r x) (Icc s q) := by
+      exact htheta.neg.comp
+        (continuous_id.prodMk continuous_const).continuousOn
+        (fun r hr ↦ ⟨⟨hr.1, hr.2.trans hq.2⟩, hx⟩)
+    have hzero : (0 : Real) ∈ Icc (-theta s x) (-theta q x) := by
+      constructor
+      · linarith [hinitial x hx]
+      · linarith
+    obtain ⟨r, hr, hrzero⟩ := intermediate_value_Icc hsq htime hzero
+    exact ⟨r, hr, neg_eq_zero.mp hrzero⟩
+  by_contra hnot
+  push Not at hnot
+  obtain ⟨q, hq, x, hx, hqx⟩ := hnot
+  obtain ⟨r, hr, hrzero⟩ := exists_zero hq hx hqx
+  let slab : Set (Real × M) := Icc s t ×ˢ K
+  let zeroSet : Set (Real × M) :=
+    slab ∩ (fun p : Real × M ↦ theta p.1 p.2) ⁻¹' {0}
+  have hslabCompact : IsCompact slab := isCompact_Icc.prod hK
+  have hzeroClosed : IsClosed zeroSet := by
+    exact htheta.preimage_isClosed_of_isClosed hslabCompact.isClosed
+      isClosed_singleton
+  have hzeroCompact : IsCompact zeroSet :=
+    hslabCompact.of_isClosed_subset hzeroClosed (by
+      intro p hp
+      exact hp.1)
+  have hzeroNonempty : zeroSet.Nonempty := by
+    refine ⟨(r, x), ?_⟩
+    exact ⟨⟨⟨hr.1, hr.2.trans hq.2⟩, hx⟩, by simpa using hrzero⟩
+  obtain ⟨p, hp, hpmin⟩ :=
+    hzeroCompact.exists_isMinOn hzeroNonempty continuous_fst.continuousOn
+  rcases p with ⟨tau, z⟩
+  have hpSlab : (tau, z) ∈ slab := hp.1
+  have htau : tau ∈ Icc s t := hpSlab.1
+  have hzK : z ∈ K := hpSlab.2
+  have hcontact : theta tau z = 0 := by
+    simpa using hp.2
+  have hstau : s < tau := by
+    apply lt_of_le_of_ne htau.1
+    intro heq
+    subst tau
+    exact (ne_of_gt (hinitial z hzK)) hcontact
+  have hzNotFrontier : z ∉ frontier K := by
+    intro hz
+    exact (ne_of_gt (hboundary tau htau z hz)) hcontact
+  have hzInterior : z ∈ interior K :=
+    (mem_interior_iff_notMem_frontier hzK).2 hzNotFrontier
+  have hnonneg : ∀ q ∈ Icc s tau, ∀ y ∈ K, 0 ≤ theta q y := by
+    intro q hq y hy
+    by_contra hneg
+    have hqneg : theta q y < 0 := lt_of_not_ge hneg
+    have hqt : q ∈ Icc s t := ⟨hq.1, hq.2.trans htau.2⟩
+    obtain ⟨r, hr, hrzero⟩ := exists_zero hqt hy hqneg.le
+    have hrlt : r < q := by
+      apply lt_of_le_of_ne hr.2
+      intro heq
+      subst r
+      linarith
+    have hrzeroSet : (r, y) ∈ zeroSet := by
+      exact ⟨⟨⟨hr.1, hr.2.trans hqt.2⟩, hy⟩, by simpa using hrzero⟩
+    have htaur : tau ≤ r := hpmin hrzeroSet
+    exact (not_lt_of_ge hq.2) (htaur.trans_lt hrlt)
+  have hKnhds : K ∈ 𝓝 z :=
+    mem_of_superset (isOpen_interior.mem_nhds hzInterior) interior_subset
+  have hspace : ∀ᶠ p in 𝓝 (tau, z), p.2 ∈ K :=
+    continuousAt_snd.eventually hKnhds
+  have hspaceWithin :
+      ∀ᶠ p in 𝓝[Icc s tau ×ˢ (Set.univ : Set M)] (tau, z), p.2 ∈ K :=
+    hspace.filter_mono inf_le_left
+  have hthetaNonneg :
+      ∀ᶠ p in 𝓝[Icc s tau ×ˢ (Set.univ : Set M)] (tau, z),
+        0 ≤ theta p.1 p.2 := by
+    filter_upwards [self_mem_nhdsWithin, hspaceWithin] with p hpDomain hpK
+    exact hnonneg p.1 hpDomain.1 p.2 hpK
+  exact hfirst ⟨hstau, htau.2⟩ hzInterior hthetaNonneg hcontact
+
 theorem lowerKyFanSum_first_contact_impossible
     [NeZero (Module.finrank Real E)]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
@@ -266,5 +356,257 @@ theorem lowerKyFanSum_first_contact_impossible
         add_le_add_left hscalar_scaled
           (∑ i, inner Real (reaction (A t x) (v i x)) (v i x)))
   exact (not_lt_of_ge hcontact_global) hpositive
+
+theorem lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
+    [NeZero (Module.finrank Real E)]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (cov : Real → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T : Real} (hT : 0 < T) {s t : Real}
+    (hs : 0 ≤ s) (ht : t ≤ T)
+    {k : Nat} (hkpos : 0 < k) (hk : k ≤ Module.finrank Real F)
+    {Kset : Set M} (hKset : IsCompact Kset)
+    (hKsetInterior : interior Kset ⊆ I.interior M)
+    (A : Real → Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
+    (hAsymm : ∀ q y,
+      ((A q y : V y →L[Real] V y) : V y →ₗ[Real] V y).IsSymmetric)
+    (hApos : ∀ q ∈ Icc s t, ∀ y ∈ Kset, (A q y).IsPositive)
+    (hphiCont : ContinuousOn (fun p : Real × M ↦
+      (hAsymm p.1 p.2).lowerKyFanSum k) (Icc s t ×ˢ Kset))
+    {R : Real} (hR : ∀ q ∈ Icc s t, ∀ y ∈ Kset, ‖A q y‖ ≤ R)
+    (X : Real → (y : M) → TangentSpace I y)
+    (reaction : Real → (y : M) →
+      (V y →L[Real] V y) → V y →L[Real] V y)
+    (hreactionNull : ∀ q y,
+      satisfiesNullEigenvectorCondition (reaction q y))
+    {Klip : NNReal}
+    (hreactionLip : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      LipschitzOnWith Klip (reaction q y)
+        {B : V y →L[Real] V y | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    (f : Real → M → Real)
+    (hfCont : ContinuousOn (fun p : Real × M ↦ f p.1 p.2)
+      (Icc s t ×ˢ Kset))
+    (hfInitial : ∀ y ∈ Kset,
+      (k : Real) * f s y ≤ (hAsymm s y).lowerKyFanSum k)
+    (hfBoundary : ∀ q ∈ Icc s t, ∀ y ∈ frontier Kset, f q y = 0)
+    (hfPos : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset, 0 < f q y)
+    (hfTime : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      DifferentiableAt Real (fun r ↦ f r y) q)
+    (hfSpace : ∀ q ∈ Ioc s t,
+      ContMDiff I 𝓘(Real, Real) ∞ (f q))
+    {c epsilon : Real} (hc : (Klip : Real) < c) (hepsilon : 0 < epsilon)
+    (hfEquation : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      parabolicOperatorWithDrift (I := I) G T X f q y = -c * f q y)
+    (hGconn : ∀ q ∈ Ioc s t,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      DifferentiableAt Real (fun r ↦ A r y) q)
+    (hevolution : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      deriv (fun r ↦ A r y) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun z ↦ A q z) y +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
+          reaction q y (A q y)) :
+    ∀ q ∈ Icc s t, ∀ y ∈ Kset,
+      0 < (hAsymm q y).lowerKyFanSum k +
+        (k : Real) * (epsilon * Real.exp (c * (q - s)) - f q y) := by
+  let a : Real → M → Real := fun q y ↦
+    epsilon * Real.exp (c * (q - s)) - f q y
+  let theta : Real → M → Real := fun q y ↦
+    (hAsymm q y).lowerKyFanSum k + (k : Real) * a q y
+  have hthetaCont : ContinuousOn (fun p : Real × M ↦ theta p.1 p.2)
+      (Icc s t ×ˢ Kset) := by
+    have heCont : Continuous (fun p : Real × M ↦
+        epsilon * Real.exp (c * (p.1 - s))) := by fun_prop
+    have haCont : ContinuousOn (fun p : Real × M ↦ a p.1 p.2)
+        (Icc s t ×ˢ Kset) := by
+      dsimp only [a]
+      exact heCont.continuousOn.sub hfCont
+    dsimp only [theta]
+    exact hphiCont.add (continuousOn_const.mul haCont)
+  have hkReal : 0 < (k : Real) := by exact_mod_cast hkpos
+  have hinitial : ∀ y ∈ Kset, 0 < theta s y := by
+    intro y hy
+    have hdom := hfInitial y hy
+    dsimp only [theta, a]
+    rw [sub_self, mul_zero, Real.exp_zero, mul_one]
+    nlinarith [mul_pos hkReal hepsilon]
+  have hboundary : ∀ q ∈ Icc s t, ∀ y ∈ frontier Kset,
+      0 < theta q y := by
+    intro q hq y hy
+    have hyK : y ∈ Kset := by
+      have hyClosure : y ∈ closure Kset := frontier_subset_closure hy
+      simpa [hKset.isClosed.closure_eq] using hyClosure
+    have hphiNonneg := LinearMap.IsSymmetric.lowerKyFanSum_nonneg
+      ((ContinuousLinearMap.isPositive_toLinearMap_iff (A q y)).mpr
+        (hApos q hq y hyK)) k
+    have hexp : 0 < epsilon * Real.exp (c * (q - s)) :=
+      mul_pos hepsilon (Real.exp_pos _)
+    dsimp only [theta, a]
+    rw [hfBoundary q hq y hy, sub_zero]
+    nlinarith
+  apply positive_on_compact_slab_of_first_contact_impossible
+    hKset hthetaCont hinitial hboundary
+  intro q y hq hy hthetaNonneg hcontact
+  have hqIcc : q ∈ Icc s t := ⟨hq.1.le, hq.2⟩
+  have hyK : y ∈ Kset := interior_subset hy
+  have hqT : q ≤ T := hq.2.trans ht
+  have hfq := hfSpace q hq
+  have haTime : DifferentiableAt Real (fun r ↦ a r y) q := by
+    dsimp only [a]
+    fun_prop
+  have haSpace : ContMDiff I 𝓘(Real, Real) ∞ (a q) := by
+    dsimp only [a]
+    exact contMDiff_const.sub hfq
+  have haLt : -a q y < f q y := by
+    dsimp only [a]
+    nlinarith [mul_pos hepsilon (Real.exp_pos (c * (q - s)))]
+  let e : Real → M → Real := fun r _ ↦
+    epsilon * Real.exp (c * (r - s))
+  have huniq : UniqueDiffWithinAt Real (Icc 0 T) q :=
+    (uniqueDiffOn_Icc hT).uniqueDiffWithinAt ⟨hs.trans hq.1.le, hqT⟩
+  have heTime : DifferentiableWithinAt Real (fun r ↦ e r y) (Icc 0 T) q := by
+    fun_prop
+  have heSpace : ∀ z : M,
+      MDifferentiableAt I 𝓘(Real, Real) (e q) z := by
+    intro z
+    exact mdifferentiableAt_const
+  have heGrad : MDiffAt (T% fun z : M ↦
+      gradientFun (I := I) (G.metric q) (e q) z) y := by
+    have heq : (T% fun z : M ↦
+        gradientFun (I := I) (G.metric q) (e q) z) =
+        (T% fun z : M ↦ (0 : TangentSpace I z)) := by
+      funext z
+      apply congrArg (fun v ↦
+        (⟨z, v⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+      exact gradientFun_const (I := I) (G.metric q)
+        (epsilon * Real.exp (c * (q - s))) z
+    rw [heq]
+    exact mdifferentiableAt_zeroSection
+      (𝕜 := Real) (F := E) (E := (TangentSpace I : M → Type _))
+      (IB := I) (x := y)
+  have hfSpaceAt : ∀ z : M,
+      MDifferentiableAt I 𝓘(Real, Real) (f q) z := fun z ↦
+    hfq.mdifferentiable (by simp) z
+  have hfGrad : MDiffAt (T% fun z : M ↦
+      gradientFun (I := I) (G.metric q) (f q) z) y :=
+    (gradientFun_smooth (I := I) (G.metric q) hfq).mdifferentiableAt (by simp)
+  have heDerivAt : HasDerivAt (fun r ↦ e r y) (c * e q y) q := by
+    have hlinear : HasDerivAt (fun r : Real ↦ c * (r - s)) c q := by
+      simpa using ((hasDerivAt_id q).sub_const s).const_mul c
+    have hexp : HasDerivAt (fun r : Real ↦ Real.exp (c * (r - s)))
+        (Real.exp (c * (q - s)) * c) q := hlinear.exp
+    dsimp only [e]
+    simpa [mul_comm, mul_left_comm, mul_assoc] using hexp.const_mul epsilon
+  have heOperator :
+      parabolicOperatorWithDrift (I := I) G T X e q y = c * e q y := by
+    unfold parabolicOperatorWithDrift heatOperatorWithDrift laplacianAt driftTerm gradientAt
+    rw [heDerivAt.hasDerivWithinAt.derivWithin huniq,
+      laplacian_const (I := I) (G.connection q) (G.metric q)
+        (epsilon * Real.exp (c * (q - s))) y,
+      gradientFun_const]
+    simp
+  have haOperator :
+      parabolicOperatorWithDrift (I := I) G T X a q y =
+        c * (epsilon * Real.exp (c * (q - s)) + f q y) := by
+    have hsub := parabolic_sub (I := I) G T X e f q y
+      heTime (hfTime q hq y hy).differentiableWithinAt
+      heSpace hfSpaceAt heGrad hfGrad
+    change parabolicOperatorWithDrift (I := I) G T X a q y = _ at hsub
+    rw [hsub, heOperator, hfEquation q hq y hy]
+    dsimp only [e]
+    ring
+  apply lowerKyFanSum_first_contact_impossible
+    (I := I) G (cov q) (hcov q) hT hs hq.1 hqT A hAsymm y
+      (hKsetInterior hy) X (reaction q y) (hreactionNull q y)
+      (hApos q hqIcc y hyK) (hR q hqIcc y hyK)
+      (hreactionLip q hq y hy) hkpos hk a haTime haSpace hc
+      (hfPos q hq y hy) haLt
+      (by rw [haOperator]; nlinarith [mul_pos hepsilon (Real.exp_pos (c * (q - s)))])
+      (hGconn q hq) (hAt q hq y hy) (hevolution q hq y hy)
+  · simpa only [theta] using hthetaNonneg
+  · simpa only [theta] using hcontact
+
+theorem lowerKyFanSum_pos_on_compact_set_of_dirichlet_solution
+    [NeZero (Module.finrank Real E)]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (cov : Real → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T : Real} (hT : 0 < T) {s t : Real}
+    (hs : 0 ≤ s) (ht : t ≤ T)
+    {k : Nat} (hkpos : 0 < k) (hk : k ≤ Module.finrank Real F)
+    {Kset : Set M} (hKset : IsCompact Kset)
+    (hKsetInterior : interior Kset ⊆ I.interior M)
+    (A : Real → Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
+    (hAsymm : ∀ q y,
+      ((A q y : V y →L[Real] V y) : V y →ₗ[Real] V y).IsSymmetric)
+    (hApos : ∀ q ∈ Icc s t, ∀ y ∈ Kset, (A q y).IsPositive)
+    (hphiCont : ContinuousOn (fun p : Real × M ↦
+      (hAsymm p.1 p.2).lowerKyFanSum k) (Icc s t ×ˢ Kset))
+    {R : Real} (hR : ∀ q ∈ Icc s t, ∀ y ∈ Kset, ‖A q y‖ ≤ R)
+    (X : Real → (y : M) → TangentSpace I y)
+    (reaction : Real → (y : M) →
+      (V y →L[Real] V y) → V y →L[Real] V y)
+    (hreactionNull : ∀ q y,
+      satisfiesNullEigenvectorCondition (reaction q y))
+    {Klip : NNReal}
+    (hreactionLip : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      LipschitzOnWith Klip (reaction q y)
+        {B : V y →L[Real] V y | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    (f : Real → M → Real)
+    (hfCont : ContinuousOn (fun p : Real × M ↦ f p.1 p.2)
+      (Icc s t ×ˢ Kset))
+    (hfInitial : ∀ y ∈ Kset,
+      (k : Real) * f s y ≤ (hAsymm s y).lowerKyFanSum k)
+    (hfBoundary : ∀ q ∈ Icc s t, ∀ y ∈ frontier Kset, f q y = 0)
+    (hfPos : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset, 0 < f q y)
+    (hfTime : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      DifferentiableAt Real (fun r ↦ f r y) q)
+    (hfSpace : ∀ q ∈ Ioc s t,
+      ContMDiff I 𝓘(Real, Real) ∞ (f q))
+    {c : Real} (hc : (Klip : Real) < c)
+    (hfEquation : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      parabolicOperatorWithDrift (I := I) G T X f q y = -c * f q y)
+    (hGconn : ∀ q ∈ Ioc s t,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      DifferentiableAt Real (fun r ↦ A r y) q)
+    (hevolution : ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      deriv (fun r ↦ A r y) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun z ↦ A q z) y +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
+          reaction q y (A q y)) :
+    ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,
+      0 < (hAsymm q y).lowerKyFanSum k := by
+  intro q hq y hy
+  have hkReal : 0 < (k : Real) := by exact_mod_cast hkpos
+  have hexp : 0 < Real.exp (c * (q - s)) := Real.exp_pos _
+  have hlimit : (k : Real) * f q y ≤
+      (hAsymm q y).lowerKyFanSum k := by
+    apply le_of_forall_pos_le_add
+    intro delta hdelta
+    let epsilon : Real := delta / ((k : Real) * Real.exp (c * (q - s)))
+    have hepsilon : 0 < epsilon :=
+      div_pos hdelta (mul_pos hkReal hexp)
+    have hbarrier := lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
+      (I := I) G cov hcov hT hs ht hkpos hk hKset hKsetInterior
+        A hAsymm hApos hphiCont hR X reaction hreactionNull hreactionLip
+        f hfCont hfInitial hfBoundary hfPos hfTime hfSpace hc hepsilon
+        hfEquation hGconn hAt hevolution q ⟨hq.1.le, hq.2⟩ y (interior_subset hy)
+    have hepsilonEq :
+        (k : Real) * (epsilon * Real.exp (c * (q - s))) = delta := by
+      dsimp only [epsilon]
+      field_simp
+    nlinarith
+  exact (mul_pos hkReal (hfPos q hq y hy)).trans_le hlimit
 
 end PositiveSystem
