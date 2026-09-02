@@ -258,6 +258,68 @@ theorem curvatureOperator_nonnegative_of_parabolic_closed_flow
     (L.S.scalar t x / 2) leastLimit ageLimit scalarSeq leastSeq
       (fun k => scale (subseq k)) ageSeq hscalar hleast hscale hage hageLimit hbound
 
+theorem leastCurvatureOperatorEigenvalueAt_nonnegative_of_parabolic_closed_flow
+    [I.Boundaryless] [CompactSpace M]
+    {D₀ D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D₀)
+    (hS : IsSolutionOn (I := I) S)
+    (time scale : Nat → Real)
+    (hscalePos : ∀ i, 0 < scale i)
+    (htimeMem : ∀ i, time i ∈ D₀.carrier)
+    (hcarrier : ∀ i,
+      D.carrier ⊆ (paraInterval D₀ (time i) (scale i) (htimeMem i)).carrier)
+    (hregular : ∀ i,
+      D.regular ⊆ (paraInterval D₀ (time i) (scale i) (htimeMem i)).regular)
+    (basepoint : Nat → M)
+    {L : PointedFlowData.{u, uE, uH} (I := I) (D := D)}
+    {subseq : Nat → Nat}
+    (h : SmoothCGHConverges (I := I)
+      (parabolicPointedFlowSeq (I := I) S hS time scale hscalePos htimeMem
+        hcarrier hregular basepoint) L subseq)
+    (hscale : Tendsto (fun k => scale (subseq k)) atTop atTop)
+    {T t₀ : Real}
+    (htime : Tendsto (fun k => time (subseq k)) atTop (𝓝 T))
+    (ht₀T : t₀ < T)
+    (hslab : ∀ u ∈ D₀.carrier, t₀ ≤ u → Set.Icc t₀ u ⊆ D₀.carrier)
+    (hreg : ∀ u ∈ D₀.carrier, t₀ < u → Set.Ioo t₀ u ⊆ D₀.regular)
+    (hdim : Module.finrank Real E = 3) :
+    letI : TopologicalSpace L.M := L.topology
+    letI : ChartedSpace H L.M := L.charted
+    letI : IsManifold I ∞ L.M := L.smooth
+    letI : IsManifold I 1 L.M :=
+      IsManifold.of_le (I := I) (M := L.M) (n := ∞) (by decide)
+    letI : IsManifold I 2 L.M :=
+      IsManifold.of_le (I := I) (M := L.M) (n := ∞) (by decide)
+    letI : IsManifold I 3 L.M :=
+      IsManifold.of_le (I := I) (M := L.M) (n := ∞) (by decide)
+    letI : SigmaCompactSpace L.M := L.sigmaCompact
+    letI : T2Space L.M := L.t2
+    ∀ t ∈ D.carrier, ∀ x : L.M,
+      0 ≤ leastCurvatureOperatorEigenvalueAt (I := I)
+        (L.S.family.metric t) x
+        (metricAlgebraicCurvatureTensorAt (I := I) (L.S.family.metric t) x) := by
+  let : TopologicalSpace L.M := L.topology
+  let : ChartedSpace H L.M := L.charted
+  let : IsManifold I ∞ L.M := L.smooth
+  let : IsManifold I 1 L.M :=
+    IsManifold.of_le (I := I) (M := L.M) (n := ∞) (by decide)
+  let : IsManifold I 2 L.M :=
+    IsManifold.of_le (I := I) (M := L.M) (n := ∞) (by decide)
+  let : IsManifold I 3 L.M :=
+    IsManifold.of_le (I := I) (M := L.M) (n := ∞) (by decide)
+  let : SigmaCompactSpace L.M := L.sigmaCompact
+  let : T2Space L.M := L.t2
+  have hcone := curvatureOperator_nonnegative_of_parabolic_closed_flow
+    (I := I) S hS time scale hscalePos htimeMem hcarrier hregular basepoint h
+      hscale htime ht₀T hslab hreg hdim
+  intro t ht x
+  exact
+    (zero_le_leastCurvatureOperatorEigenvalueAt_iff_mem_curvatureOperatorNonnegativeCone
+      (I := I) (x := x)
+      (A := metricAlgebraicCurvatureTensorAt (I := I) (L.S.family.metric t) x)
+      (L.S.family.metric t) (by change Module.finrank Real E = 3; exact hdim)).mpr
+      (hcone t ht x)
+
 end SmoothCGHConverges
 
 end DifferentialGeometry.HCGCompactness
