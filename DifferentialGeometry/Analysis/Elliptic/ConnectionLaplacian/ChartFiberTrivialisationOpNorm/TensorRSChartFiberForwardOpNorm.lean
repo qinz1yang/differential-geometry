@@ -23,13 +23,13 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [SigmaCompactSpace M] [T2Space M]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-private lemma tensorRSSpace_norm_eq_fwd (r s : ℕ) (b : M)
+private lemma tensorRSSpace_norm_eq_continuousLinearEquiv (r s : ℕ) (b : M)
     (T : TensorRSSpace r s I b) :
     ‖T‖ = ‖tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b T‖ :=
   rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-private lemma tensorRS_trivAt_clmAt_eq_CLE_on_locality_fwd
+private lemma tensorRS_trivializationAt_continuousLinearMapAt_eq_continuousLinearEquiv_on_locality
     (r s : ℕ) (b₀ : M) {b : M}
     (h_chart : chartAt H b = chartAt H b₀)
     (h_src : b ∈ (chartAt H b₀).source) :
@@ -61,7 +61,7 @@ private lemma trivAt_clmAt_norm_eq_on_locality
     ‖((trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b T :
         TensorRSModel r s ℝ E)‖ = ‖T‖ := by
-  have h_clm := tensorRS_trivAt_clmAt_eq_CLE_on_locality_fwd
+  have h_clm := tensorRS_trivializationAt_continuousLinearMapAt_eq_continuousLinearEquiv_on_locality
     (I := I) (M := M) (r := r) (s := s) (b₀ := b₀) (b := b)
     (h_chart := h_chart) (h_src := h_src)
   have h_apply :
@@ -74,7 +74,7 @@ private lemma trivAt_clmAt_norm_eq_on_locality
       (fun (f : TensorRSSpace r s I b →L[ℝ] TensorRSModel r s ℝ E) => f T) h_clm
     simpa using this
   rw [h_apply]
-  exact (tensorRSSpace_norm_eq_fwd (I := I) (M := M) r s b T).symm
+  exact (tensorRSSpace_norm_eq_continuousLinearEquiv (I := I) (M := M) r s b T).symm
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private lemma chartFiberToModel_norm_le_coordChangeL_norm_on_locality
@@ -189,23 +189,6 @@ private lemma continuousOn_RS_coordChangeL_b₀_α (r s : ℕ) (α b₀ : M) :
     rw [inter_self, TangentBundle.trivializationAt_baseSet (𝕜 := ℝ) (I := I) b₀]
   rw [h_base_α, h_base_b₀] at h_smooth
   exact h_smooth.continuousOn
-
-omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-private lemma exists_opNorm_bound_on_compact_of_continuousOn_fwd
-    {r s : ℕ} (f : M → TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E)
-    {K : Set M} (hK : IsCompact K) (h_cont : ContinuousOn f K) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ b ∈ K, ‖f b‖ ≤ C := by
-  by_cases h_empty : K = ∅
-  · refine ⟨0, le_refl 0, ?_⟩
-    intro b hb; rw [h_empty] at hb; exact absurd hb (Set.notMem_empty _)
-  have h_norm_cont : ContinuousOn (fun b : M => ‖f b‖) K :=
-    continuous_norm.comp_continuousOn h_cont
-  have h_bdd : BddAbove ((fun b : M => ‖f b‖) '' K) :=
-    hK.bddAbove_image h_norm_cont
-  rcases h_bdd with ⟨C, hC⟩
-  refine ⟨max C 0, le_max_right _ _, ?_⟩
-  intro b hb
-  exact (hC ⟨b, hb, rfl⟩).trans (le_max_left _ _)
 
 end DifferentialGeometry.Analysis.Elliptic
 

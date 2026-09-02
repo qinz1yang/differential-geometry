@@ -454,7 +454,7 @@ private theorem chartPhaseVF_bddOn_closedBall
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)] in
-private theorem orbit_speed_confined_fwd
+private theorem orbit_speed_confined
     (g : SmoothRiemannianMetric I M) (α : M)
     {c : ℝ → E × E} {z₀ : E × E} {R ρ M T_f : ℝ}
     (hMpos : 0 < M) (hRρ : ρ < R) (hT_f : 0 < T_f)
@@ -511,7 +511,7 @@ private theorem flowOrbit_speed_confined_uniform
   intro v hv s hs
   have hdivlt : (R - ρ) / Mb < T_f := by rw [div_lt_iff₀ hMpos]; linarith [hRMT]
   have hmin : min T_f ((R - ρ) / Mb) = (R - ρ) / Mb := min_eq_right (le_of_lt hdivlt)
-  have hconf := orbit_speed_confined_fwd g α (c := fun τ => Φ (z v, τ)) (z₀ := z₀)
+  have hconf := orbit_speed_confined g α (c := fun τ => Φ (z v, τ)) (z₀ := z₀)
     (R := R) (ρ := ρ) (T_f := T_f) hMpos hRρ hT_f
     (by rw [hΦinit v hv]; exact hz_ball v hv)
     (fun s' hs' => by

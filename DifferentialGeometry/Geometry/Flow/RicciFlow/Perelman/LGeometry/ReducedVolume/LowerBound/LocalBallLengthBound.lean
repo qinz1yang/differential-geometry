@@ -28,7 +28,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] in
-theorem lRampAct_fwd
+theorem lRampAct_uniform_bound_on_compact
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     {t₀ t₁ omega : Real} (ht₀omega : t₀ ≤ omega)
     (hreg : Icc t₀ t₁ ⊆ D.regular) (p : M)
@@ -111,7 +111,7 @@ theorem redLen_ramp_bound
                     (b - c)) + Cs * (b - c)) /
               (2 * b) := by
   obtain ⟨Cg, Cs, hCg, hCs, hramp⟩ :=
-    lRampAct_fwd (I := I) S hS ht₀omega hregFwd p hKc hKchart
+    lRampAct_uniform_bound_on_compact (I := I) S hS ht₀omega hregFwd p hKc hKchart
   refine ⟨Cg, Cs, hCg, hCs, ?_⟩
   intro T b c l₀ x W hT hc hcb hslab hforward hbdom hmin hrayc hyK hred z hzK
   have hb : 0 < b := hc.trans hcb

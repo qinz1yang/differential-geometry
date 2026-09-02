@@ -321,12 +321,12 @@ theorem summand_left_match
       uncurrySum.summand (curryFin F x) (Quotient.mk'' σ') (w ∘ Sum.map Fin.succ id) := by
   have h_coset : (Quotient.mk'' σ' :
       Equiv.Perm.ModSumCongr (Fin m) (Fin (n + 1))) =
-      Quotient.mk'' (shuffleLeftFwd σ hσ) := by
+      Quotient.mk'' (shuffleLeftRestrictRepresentative σ hσ) := by
     rw [hσ']
-    change Quotient.mk'' (shuffleLeftFwd (Quotient.out (Quotient.mk'' σ)) _) =
-      Quotient.mk'' (shuffleLeftFwd σ hσ)
+    change Quotient.mk'' (shuffleLeftRestrictRepresentative (Quotient.out (Quotient.mk'' σ)) _) =
+      Quotient.mk'' (shuffleLeftRestrictRepresentative σ hσ)
     apply Quotient.sound'
-    apply shuffleLeftFwd_wd
+    apply shuffleLeftRestrictRepresentative_respects_leftRel
     rw [QuotientGroup.leftRel_apply]
     have h_eq : (Quotient.mk'' (Quotient.out (Quotient.mk'' σ)) :
       Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin (n + 1))) = Quotient.mk'' σ :=
@@ -335,11 +335,11 @@ theorem summand_left_match
   rw [h_coset]
   set k := hσ.choose
   set hk := hσ.choose_spec
-  set σ_can := shuffleLeftFwd σ hσ
+  set σ_can := shuffleLeftRestrictRepresentative σ hσ
   have h_sign : Equiv.Perm.sign σ_can =
       Equiv.Perm.sign σ * Equiv.Perm.sign (Equiv.swap 0 k) := by
-    change Equiv.Perm.sign (shuffleLeftFwd σ hσ) = _
-    unfold shuffleLeftFwd
+    change Equiv.Perm.sign (shuffleLeftRestrictRepresentative σ hσ) = _
+    unfold shuffleLeftRestrictRepresentative
     rw [restrictComplement_sign _ (normalizeLeft_fixes σ k hk)]
     unfold normalizeLeft
     rw [Equiv.Perm.sign_mul]
@@ -411,12 +411,12 @@ theorem summand_right_match
           (Sum.map id Fin.succ y)))) := by
   have h_coset : (Quotient.mk'' σ' :
       Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n)) =
-      Quotient.mk'' (shuffleRightFwd σ hσ) := by
+      Quotient.mk'' (shuffleRightRestrictRepresentative σ hσ) := by
     rw [hσ']
-    change Quotient.mk'' (shuffleRightFwd (Quotient.out (Quotient.mk'' σ)) _) =
-      Quotient.mk'' (shuffleRightFwd σ hσ)
+    change Quotient.mk'' (shuffleRightRestrictRepresentative (Quotient.out (Quotient.mk'' σ)) _) =
+      Quotient.mk'' (shuffleRightRestrictRepresentative σ hσ)
     apply Quotient.sound'
-    apply shuffleRightFwd_wd
+    apply shuffleRightRestrictRepresentative_respects_leftRel
     rw [QuotientGroup.leftRel_apply]
     have h_eq : (Quotient.mk'' (Quotient.out (Quotient.mk'' σ)) :
       Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin (n + 1))) = Quotient.mk'' σ :=
@@ -425,11 +425,11 @@ theorem summand_right_match
   rw [h_coset]
   set k := hσ.choose
   set hk := hσ.choose_spec
-  set σ_can := shuffleRightFwd σ hσ
+  set σ_can := shuffleRightRestrictRepresentative σ hσ
   have h_sign : Equiv.Perm.sign σ_can =
       -Equiv.Perm.sign σ * Equiv.Perm.sign (Equiv.swap (0 : Fin (n + 1)) k) := by
-    change Equiv.Perm.sign (shuffleRightFwd σ hσ) = _
-    unfold shuffleRightFwd
+    change Equiv.Perm.sign (shuffleRightRestrictRepresentative σ hσ) = _
+    unfold shuffleRightRestrictRepresentative
     rw [restrictComplementRight_sign _ (normalizeRight_fixes σ k hk)]
     unfold normalizeRight
     rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_mul, Equiv.Perm.sign_sumCongr,

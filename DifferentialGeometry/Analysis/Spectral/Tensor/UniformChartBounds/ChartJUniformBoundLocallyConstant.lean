@@ -219,25 +219,6 @@ private lemma chartJinv_continuousOn_loc
       (hU_sub_α hb) (hU_sub_b₀ hb) (hU_const b hb)).symm
   exact h_coord_cont.congr h_eq
 
-omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] [T2Space M] in
-private lemma exists_opNorm_bound_on_compact_of_continuousOn
-    (f : M → E →L[ℝ] E)
-    {K : Set M} (hK : IsCompact K) (h_cont : ContinuousOn f K) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ b ∈ K, ‖f b‖ ≤ C := by
-  by_cases h_empty : K = ∅
-  · refine ⟨0, le_refl 0, ?_⟩
-    intro b hb
-    rw [h_empty] at hb
-    exact absurd hb (Set.notMem_empty _)
-  have h_norm_cont : ContinuousOn (fun b : M => ‖f b‖) K :=
-    continuous_norm.comp_continuousOn h_cont
-  have h_bdd : BddAbove ((fun b : M => ‖f b‖) '' K) :=
-    hK.bddAbove_image h_norm_cont
-  rcases h_bdd with ⟨C, hC⟩
-  refine ⟨max C 0, le_max_right _ _, ?_⟩
-  intro b hb
-  exact (hC ⟨b, hb, rfl⟩).trans (le_max_left _ _)
-
 end TensorSpectral
 end Parabolic
 end Analysis

@@ -144,14 +144,14 @@ theorem restrictComplement_sumCongr_mem
     (finSuccEquiv'_succAbove 0 a ▸ (finSuccEquiv' 0).symm_apply_apply _).symm,
     ha']; rfl
 
-noncomputable def shuffleLeftFwd
+noncomputable def shuffleLeftRestrictRepresentative
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hσ : ∃ k, σ⁻¹ (Sum.inl 0) = Sum.inl k) :
     Equiv.Perm (Fin m ⊕ Fin (n + 1)) :=
   let k := hσ.choose
   restrictComplement (normalizeLeft σ k)
 
-theorem shuffleLeftFwd_wd
+theorem shuffleLeftRestrictRepresentative_respects_leftRel
     (σ₁ σ₂ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hσ₁ : ∃ k, σ₁⁻¹ (Sum.inl 0) = Sum.inl k)
     (hσ₂ : ∃ k, σ₂⁻¹ (Sum.inl 0) = Sum.inl k)
@@ -159,7 +159,7 @@ theorem shuffleLeftFwd_wd
         (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range σ₁ σ₂) :
     QuotientGroup.leftRel
         (Equiv.Perm.sumCongrHom (Fin m) (Fin (n + 1))).range
-        (shuffleLeftFwd σ₁ hσ₁) (shuffleLeftFwd σ₂ hσ₂) := by
+        (shuffleLeftRestrictRepresentative σ₁ hσ₁) (shuffleLeftRestrictRepresentative σ₂ hσ₂) := by
   set k₁ := hσ₁.choose; set hk₁ := hσ₁.choose_spec
   set k₂ := hσ₂.choose; set hk₂ := hσ₂.choose_spec
   set n1 := normalizeLeft σ₁ k₁
@@ -217,25 +217,25 @@ theorem shuffleLeftFwd_wd
   rw [this]
   exact restrictComplement_sumCongr_mem τ_l τ_r hτ_fix
 
-noncomputable def shuffleLeftBwd
+noncomputable def shuffleLeftExtendRepresentative
     (σ' : Equiv.Perm (Fin m ⊕ Fin (n + 1))) :
     Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)) :=
   Equiv.permCongr finSuccSumOptionEquiv.symm σ'.optionCongr
 
-theorem shuffleLeftBwd_fixes (σ' : Equiv.Perm (Fin m ⊕ Fin (n + 1))) :
-    shuffleLeftBwd σ' (Sum.inl 0) = Sum.inl 0 := by
-  unfold shuffleLeftBwd
+theorem shuffleLeftExtendRepresentative_fixes (σ' : Equiv.Perm (Fin m ⊕ Fin (n + 1))) :
+    shuffleLeftExtendRepresentative σ' (Sum.inl 0) = Sum.inl 0 := by
+  unfold shuffleLeftExtendRepresentative
   simp [Equiv.permCongr_apply, finSuccSumOptionEquiv, ShuffleSplit.optionSumEquiv,
     Equiv.optionCongr_apply]
 
-theorem shuffleLeftBwd_isLeft (σ' : Equiv.Perm (Fin m ⊕ Fin (n + 1))) :
-    ∃ k, (shuffleLeftBwd σ')⁻¹ (Sum.inl 0) = Sum.inl k :=
-  ⟨0, by rw [← shuffleLeftBwd_fixes σ']; exact (shuffleLeftBwd σ').symm_apply_apply _⟩
+theorem shuffleLeftExtendRepresentative_isLeft (σ' : Equiv.Perm (Fin m ⊕ Fin (n + 1))) :
+    ∃ k, (shuffleLeftExtendRepresentative σ')⁻¹ (Sum.inl 0) = Sum.inl k :=
+  ⟨0, by rw [← shuffleLeftExtendRepresentative_fixes σ']; exact (shuffleLeftExtendRepresentative σ').symm_apply_apply _⟩
 
-theorem restrictComplement_shuffleLeftBwd
+theorem restrictComplement_shuffleLeftExtendRepresentative
     (σ' : Equiv.Perm (Fin m ⊕ Fin (n + 1))) :
-    restrictComplement (shuffleLeftBwd σ') = σ' := by
-  simp only [restrictComplement, shuffleLeftBwd]
+    restrictComplement (shuffleLeftExtendRepresentative σ') = σ' := by
+  simp only [restrictComplement, shuffleLeftExtendRepresentative]
   have : Equiv.permCongr finSuccSumOptionEquiv
       (Equiv.permCongr finSuccSumOptionEquiv.symm σ'.optionCongr) =
       σ'.optionCongr := by
@@ -243,14 +243,14 @@ theorem restrictComplement_shuffleLeftBwd
   rw [this]
   exact Equiv.removeNone_optionCongr σ'
 
-theorem shuffleLeftBwd_restrictComplement
+theorem shuffleLeftExtendRepresentative_restrictComplement
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hfix : σ (Sum.inl 0) = Sum.inl 0) :
-    shuffleLeftBwd (restrictComplement σ) = σ := by
+    shuffleLeftExtendRepresentative (restrictComplement σ) = σ := by
   have h_fixes_none :
       (Equiv.permCongr finSuccSumOptionEquiv σ) none = none := by
     simp [Equiv.permCongr_apply, hfix]
-  simp only [shuffleLeftBwd, restrictComplement]
+  simp only [shuffleLeftExtendRepresentative, restrictComplement]
   have h_round : (Equiv.removeNone
       (Equiv.permCongr finSuccSumOptionEquiv σ)).optionCongr =
       Equiv.permCongr finSuccSumOptionEquiv σ := by
@@ -262,22 +262,22 @@ noncomputable def liftPermSucc (τ : Equiv.Perm (Fin m)) :
     Equiv.Perm (Fin (m + 1)) :=
   Equiv.permCongr (finSuccEquiv' 0).symm τ.optionCongr
 
-theorem shuffleLeftBwd_wd
+theorem shuffleLeftExtendRepresentative_respects_leftRel
     (s1 s2 : Equiv.Perm (Fin m ⊕ Fin (n + 1)))
     (h_rel : QuotientGroup.leftRel
         (Equiv.Perm.sumCongrHom (Fin m) (Fin (n + 1))).range s1 s2) :
     QuotientGroup.leftRel
         (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range
-        (shuffleLeftBwd s1) (shuffleLeftBwd s2) := by
+        (shuffleLeftExtendRepresentative s1) (shuffleLeftExtendRepresentative s2) := by
   rw [QuotientGroup.leftRel_apply] at h_rel ⊢
   obtain ⟨⟨tl, tr⟩, htau⟩ := h_rel
-  suffices h_mem : shuffleLeftBwd (Equiv.Perm.sumCongr tl tr) ∈
+  suffices h_mem : shuffleLeftExtendRepresentative (Equiv.Perm.sumCongr tl tr) ∈
       (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range by
     convert h_mem using 1
     have h_sc : (Equiv.Perm.sumCongrHom _ _ (tl, tr) : Equiv.Perm _) = s1⁻¹ * s2 := htau
     rw [show Equiv.Perm.sumCongr tl tr = s1⁻¹ * s2 from h_sc]
     ext x
-    unfold shuffleLeftBwd
+    unfold shuffleLeftExtendRepresentative
     apply finSuccSumOptionEquiv.injective
     simp only [Equiv.Perm.coe_mul, Function.comp_apply, Equiv.permCongr_apply,
       Equiv.apply_symm_apply, Equiv.optionCongr_apply]
@@ -305,42 +305,42 @@ theorem shuffleLeftBwd_wd
   refine ⟨(liftPermSucc tl, tr), ?_⟩
   simp only [Equiv.Perm.sumCongrHom_apply]
   ext (a | b)
-  · simp only [shuffleLeftBwd, Equiv.permCongr_apply, Equiv.sumCongr_apply, Sum.map_inl,
+  · simp only [shuffleLeftExtendRepresentative, Equiv.permCongr_apply, Equiv.sumCongr_apply, Sum.map_inl,
       Equiv.optionCongr_apply, liftPermSucc]
     simp only [finSuccSumOptionEquiv, ShuffleSplit.optionSumEquiv,
       Equiv.symm_trans_apply]
     rcases h : (finSuccEquiv' (0 : Fin (m + 1))) a with _ | a' <;> simp [h]
-  · simp [shuffleLeftBwd, Equiv.permCongr_apply, Equiv.sumCongr_apply,
+  · simp [shuffleLeftExtendRepresentative, Equiv.permCongr_apply, Equiv.sumCongr_apply,
       Equiv.optionCongr_apply, finSuccSumOptionEquiv, ShuffleSplit.optionSumEquiv]
 
-theorem shuffleLeft_fwd_bwd_eq
+theorem shuffleLeftRestrictRepresentative_extendRepresentative
     (σ' : Equiv.Perm (Fin m ⊕ Fin (n + 1))) :
-    shuffleLeftFwd (shuffleLeftBwd σ') (shuffleLeftBwd_isLeft σ') = σ' := by
-  set hσ := shuffleLeftBwd_isLeft σ'
-  have h_inv_zero : (shuffleLeftBwd σ')⁻¹ (Sum.inl 0) = Sum.inl 0 := by
-    rw [← shuffleLeftBwd_fixes σ']
-    exact (shuffleLeftBwd σ').symm_apply_apply _
+    shuffleLeftRestrictRepresentative (shuffleLeftExtendRepresentative σ') (shuffleLeftExtendRepresentative_isLeft σ') = σ' := by
+  set hσ := shuffleLeftExtendRepresentative_isLeft σ'
+  have h_inv_zero : (shuffleLeftExtendRepresentative σ')⁻¹ (Sum.inl 0) = Sum.inl 0 := by
+    rw [← shuffleLeftExtendRepresentative_fixes σ']
+    exact (shuffleLeftExtendRepresentative σ').symm_apply_apply _
   have hk_eq : hσ.choose = (0 : Fin (m + 1)) :=
     Sum.inl.inj (hσ.choose_spec.symm.trans h_inv_zero)
   change restrictComplement
-    (normalizeLeft (shuffleLeftBwd σ') hσ.choose) = σ'
-  have : normalizeLeft (shuffleLeftBwd σ') hσ.choose =
-      shuffleLeftBwd σ' := by
+    (normalizeLeft (shuffleLeftExtendRepresentative σ') hσ.choose) = σ'
+  have : normalizeLeft (shuffleLeftExtendRepresentative σ') hσ.choose =
+      shuffleLeftExtendRepresentative σ' := by
     unfold normalizeLeft; rw [hk_eq]; ext (a | b) <;> simp
   simp only [this]
-  exact restrictComplement_shuffleLeftBwd σ'
+  exact restrictComplement_shuffleLeftExtendRepresentative σ'
 
-theorem shuffleLeft_bwd_fwd
+theorem shuffleLeftExtendRepresentative_restrictRepresentative_rel
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hσ : ∃ k, σ⁻¹ (Sum.inl 0) = Sum.inl k) :
     QuotientGroup.leftRel
         (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range
-        (shuffleLeftBwd (shuffleLeftFwd σ hσ)) σ := by
+        (shuffleLeftExtendRepresentative (shuffleLeftRestrictRepresentative σ hσ)) σ := by
   set k := hσ.choose
   set hk := hσ.choose_spec
-  rw [show shuffleLeftFwd σ hσ =
+  rw [show shuffleLeftRestrictRepresentative σ hσ =
     restrictComplement (normalizeLeft σ k) from rfl]
-  rw [shuffleLeftBwd_restrictComplement _ (normalizeLeft_fixes σ k hk)]
+  rw [shuffleLeftExtendRepresentative_restrictComplement _ (normalizeLeft_fixes σ k hk)]
   rw [QuotientGroup.leftRel_apply]
   refine ⟨⟨(Equiv.swap 0 k)⁻¹, 1⟩, ?_⟩
   simp [normalizeLeft, Equiv.Perm.sumCongrHom_apply]
@@ -351,48 +351,48 @@ noncomputable def shuffleLeftRestrict :
         Quotient.mk'' τ = σ → ∃ k, τ⁻¹ (Sum.inl 0) = Sum.inl k} ≃
     Equiv.Perm.ModSumCongr (Fin m) (Fin (n + 1)) where
   toFun := fun ⟨q, hq⟩ =>
-    Quotient.mk'' (shuffleLeftFwd q.out (hq _ (Quotient.out_eq q)))
+    Quotient.mk'' (shuffleLeftRestrictRepresentative q.out (hq _ (Quotient.out_eq q)))
   invFun := fun q =>
-    ⟨Quotient.mk'' (shuffleLeftBwd q.out), fun τ hτ => by
+    ⟨Quotient.mk'' (shuffleLeftExtendRepresentative q.out), fun τ hτ => by
       have h_rel := QuotientGroup.leftRel_apply.mp (Quotient.exact' hτ)
-      have h_inv : (shuffleLeftBwd q.out)⁻¹ * τ ∈
+      have h_inv : (shuffleLeftExtendRepresentative q.out)⁻¹ * τ ∈
           (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range := by
-        rw [show (shuffleLeftBwd q.out)⁻¹ * τ = (τ⁻¹ * shuffleLeftBwd q.out)⁻¹
+        rw [show (shuffleLeftExtendRepresentative q.out)⁻¹ * τ = (τ⁻¹ * shuffleLeftExtendRepresentative q.out)⁻¹
           from by group]
         exact Subgroup.inv_mem _ h_rel
-      rw [show τ = shuffleLeftBwd q.out * ((shuffleLeftBwd q.out)⁻¹ * τ)
+      rw [show τ = shuffleLeftExtendRepresentative q.out * ((shuffleLeftExtendRepresentative q.out)⁻¹ * τ)
         from by group]
-      exact (shuffle_side_well_defined (shuffleLeftBwd q.out) ⟨_, h_inv⟩).mp
-        (shuffleLeftBwd_isLeft q.out)⟩
+      exact (shuffle_side_well_defined (shuffleLeftExtendRepresentative q.out) ⟨_, h_inv⟩).mp
+        (shuffleLeftExtendRepresentative_isLeft q.out)⟩
   left_inv := fun ⟨q, hq⟩ => by
     ext
-    have h1 : (Quotient.mk'' (shuffleLeftFwd q.out
+    have h1 : (Quotient.mk'' (shuffleLeftRestrictRepresentative q.out
         (hq _ (Quotient.out_eq q))) :
         Equiv.Perm.ModSumCongr (Fin m) (Fin (n + 1))) =
-      Quotient.mk'' (Quotient.mk'' (shuffleLeftFwd q.out
+      Quotient.mk'' (Quotient.mk'' (shuffleLeftRestrictRepresentative q.out
         (hq _ (Quotient.out_eq q)))).out :=
       (Quotient.out_eq _).symm
-    calc Quotient.mk'' (shuffleLeftBwd (Quotient.mk''
-            (shuffleLeftFwd q.out (hq _ (Quotient.out_eq q)))).out)
-        = Quotient.mk'' (shuffleLeftBwd
-            (shuffleLeftFwd q.out (hq _ (Quotient.out_eq q)))) :=
-          Quotient.sound' (shuffleLeftBwd_wd _ _
+    calc Quotient.mk'' (shuffleLeftExtendRepresentative (Quotient.mk''
+            (shuffleLeftRestrictRepresentative q.out (hq _ (Quotient.out_eq q)))).out)
+        = Quotient.mk'' (shuffleLeftExtendRepresentative
+            (shuffleLeftRestrictRepresentative q.out (hq _ (Quotient.out_eq q)))) :=
+          Quotient.sound' (shuffleLeftExtendRepresentative_respects_leftRel _ _
             (Quotient.exact' h1.symm))
       _ = Quotient.mk'' q.out :=
-          Quotient.sound' (shuffleLeft_bwd_fwd q.out _)
+          Quotient.sound' (shuffleLeftExtendRepresentative_restrictRepresentative_rel q.out _)
       _ = q := Quotient.out_eq q
   right_inv := fun q => by
-    have h1 : (Quotient.mk'' (shuffleLeftBwd q.out) :
+    have h1 : (Quotient.mk'' (shuffleLeftExtendRepresentative q.out) :
         Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin (n + 1))) =
-      Quotient.mk'' (Quotient.mk'' (shuffleLeftBwd q.out)).out :=
+      Quotient.mk'' (Quotient.mk'' (shuffleLeftExtendRepresentative q.out)).out :=
       (Quotient.out_eq _).symm
-    calc Quotient.mk'' (shuffleLeftFwd
-            (Quotient.mk'' (shuffleLeftBwd q.out)).out _)
-        = Quotient.mk'' (shuffleLeftFwd (shuffleLeftBwd q.out)
-            (shuffleLeftBwd_isLeft q.out)) :=
-          Quotient.sound' (shuffleLeftFwd_wd _ _ _ _
+    calc Quotient.mk'' (shuffleLeftRestrictRepresentative
+            (Quotient.mk'' (shuffleLeftExtendRepresentative q.out)).out _)
+        = Quotient.mk'' (shuffleLeftRestrictRepresentative (shuffleLeftExtendRepresentative q.out)
+            (shuffleLeftExtendRepresentative_isLeft q.out)) :=
+          Quotient.sound' (shuffleLeftRestrictRepresentative_respects_leftRel _ _ _ _
             (Quotient.exact' h1.symm))
-      _ = Quotient.mk'' q.out := by rw [shuffleLeft_fwd_bwd_eq]
+      _ = Quotient.mk'' q.out := by rw [shuffleLeftRestrictRepresentative_extendRepresentative]
       _ = q := Quotient.out_eq q
 
 theorem shuffleLeftRestrict_subtype_of_inv
@@ -548,23 +548,23 @@ theorem restrictComplementRight_lift
   rw [h_lift_rn] at h_inv
   exact h_inv
 
-noncomputable def shuffleRightFwd
+noncomputable def shuffleRightRestrictRepresentative
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hσ : ∃ k, σ⁻¹ (Sum.inl 0) = Sum.inr k) :
     Equiv.Perm (Fin (m + 1) ⊕ Fin n) :=
   let k := hσ.choose
   restrictComplementRight (normalizeRight σ k)
 
-noncomputable def shuffleRightBwd
+noncomputable def shuffleRightExtendRepresentative
     (σ' : Equiv.Perm (Fin (m + 1) ⊕ Fin n)) :
     Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)) :=
   Equiv.swap (Sum.inl 0) (Sum.inr 0) *
     Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr
 
-theorem shuffleRightBwd_isRight (σ' : Equiv.Perm (Fin (m + 1) ⊕ Fin n)) :
-    ∃ k, (shuffleRightBwd σ')⁻¹ (Sum.inl 0) = Sum.inr k := by
+theorem shuffleRightExtendRepresentative_isRight (σ' : Equiv.Perm (Fin (m + 1) ⊕ Fin n)) :
+    ∃ k, (shuffleRightExtendRepresentative σ')⁻¹ (Sum.inl 0) = Sum.inr k := by
   refine ⟨0, ?_⟩
-  unfold shuffleRightBwd
+  unfold shuffleRightExtendRepresentative
   rw [mul_inv_rev]
   change (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr)⁻¹
       ((Equiv.swap (Sum.inl 0) (Sum.inr 0))⁻¹ (Sum.inl 0)) = Sum.inr 0
@@ -618,7 +618,7 @@ theorem restrictComplementRight_sumCongr_mem
   simp only [Equiv.sumCongr_apply, Sum.map_inl]
   exact h_fwd_τ
 
-theorem shuffleRightFwd_wd
+theorem shuffleRightRestrictRepresentative_respects_leftRel
     (σ₁ σ₂ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hσ₁ : ∃ k, σ₁⁻¹ (Sum.inl 0) = Sum.inr k)
     (hσ₂ : ∃ k, σ₂⁻¹ (Sum.inl 0) = Sum.inr k)
@@ -626,7 +626,7 @@ theorem shuffleRightFwd_wd
         (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range σ₁ σ₂) :
     QuotientGroup.leftRel
         (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin n)).range
-        (shuffleRightFwd σ₁ hσ₁) (shuffleRightFwd σ₂ hσ₂) := by
+        (shuffleRightRestrictRepresentative σ₁ hσ₁) (shuffleRightRestrictRepresentative σ₂ hσ₂) := by
   set k₁ := hσ₁.choose; set hk₁ := hσ₁.choose_spec
   set k₂ := hσ₂.choose; set hk₂ := hσ₂.choose_spec
   set n1 := normalizeRight σ₁ k₁
@@ -696,19 +696,19 @@ noncomputable def liftPermSuccR (τ : Equiv.Perm (Fin n)) :
     Equiv.Perm (Fin (n + 1)) :=
   Equiv.permCongr (finSuccEquiv' 0).symm τ.optionCongr
 
-theorem shuffleRightBwd_wd
+theorem shuffleRightExtendRepresentative_respects_leftRel
     (σ₁' σ₂' : Equiv.Perm (Fin (m + 1) ⊕ Fin n))
     (h_rel : QuotientGroup.leftRel
         (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin n)).range σ₁' σ₂') :
     QuotientGroup.leftRel
         (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range
-        (shuffleRightBwd σ₁') (shuffleRightBwd σ₂') := by
+        (shuffleRightExtendRepresentative σ₁') (shuffleRightExtendRepresentative σ₂') := by
   rw [QuotientGroup.leftRel_apply] at h_rel ⊢
   obtain ⟨⟨tl, tr⟩, htau⟩ := h_rel
-  have h_swap_cancel : (shuffleRightBwd σ₁')⁻¹ * shuffleRightBwd σ₂' =
+  have h_swap_cancel : (shuffleRightExtendRepresentative σ₁')⁻¹ * shuffleRightExtendRepresentative σ₂' =
       (Equiv.permCongr finSumSuccOptionEquiv.symm σ₁'.optionCongr)⁻¹ *
       (Equiv.permCongr finSumSuccOptionEquiv.symm σ₂'.optionCongr) := by
-    unfold shuffleRightBwd
+    unfold shuffleRightExtendRepresentative
     group
   rw [h_swap_cancel]
   suffices h_mem : (Equiv.permCongr finSumSuccOptionEquiv.symm
@@ -775,7 +775,7 @@ theorem shuffleRightBwd_wd
       rw [h1]
       simp
 
-theorem restrictComplementRight_shuffleRightBwd
+theorem restrictComplementRight_shuffleRightExtendRepresentative
     (σ' : Equiv.Perm (Fin (m + 1) ⊕ Fin n)) :
     restrictComplementRight
       (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr) = σ' := by
@@ -785,12 +785,12 @@ theorem restrictComplementRight_shuffleRightBwd
       σ'.optionCongr := by ext x; simp [Equiv.permCongr_apply]
   rw [this]; exact Equiv.removeNone_optionCongr σ'
 
-theorem shuffleRight_fwd_bwd_eq
+theorem shuffleRightRestrictRepresentative_extendRepresentative
     (σ' : Equiv.Perm (Fin (m + 1) ⊕ Fin n)) :
-    shuffleRightFwd (shuffleRightBwd σ') (shuffleRightBwd_isRight σ') = σ' := by
-  set hσ := shuffleRightBwd_isRight σ'
-  have h_inv_zero : (shuffleRightBwd σ')⁻¹ (Sum.inl 0) = Sum.inr 0 := by
-    unfold shuffleRightBwd
+    shuffleRightRestrictRepresentative (shuffleRightExtendRepresentative σ') (shuffleRightExtendRepresentative_isRight σ') = σ' := by
+  set hσ := shuffleRightExtendRepresentative_isRight σ'
+  have h_inv_zero : (shuffleRightExtendRepresentative σ')⁻¹ (Sum.inl 0) = Sum.inr 0 := by
+    unfold shuffleRightExtendRepresentative
     rw [mul_inv_rev]
     change (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr)⁻¹
         ((Equiv.swap (Sum.inl 0) (Sum.inr 0))⁻¹ (Sum.inl 0)) = Sum.inr 0
@@ -806,12 +806,12 @@ theorem shuffleRight_fwd_bwd_eq
   have hk_eq : hσ.choose = (0 : Fin (n + 1)) :=
     Sum.inr.inj (hσ.choose_spec.symm.trans h_inv_zero)
   change restrictComplementRight
-    (normalizeRight (shuffleRightBwd σ') hσ.choose) = σ'
-  have h_norm : normalizeRight (shuffleRightBwd σ') hσ.choose =
+    (normalizeRight (shuffleRightExtendRepresentative σ') hσ.choose) = σ'
+  have h_norm : normalizeRight (shuffleRightExtendRepresentative σ') hσ.choose =
       Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr := by
     unfold normalizeRight
     rw [hk_eq]
-    unfold shuffleRightBwd
+    unfold shuffleRightExtendRepresentative
     have h_swap_zero : Equiv.swap (0 : Fin (n + 1)) 0 = 1 := Equiv.swap_self 0
     rw [h_swap_zero]
     simp only [Equiv.Perm.sumCongr_one, mul_one]
@@ -820,14 +820,14 @@ theorem shuffleRight_fwd_bwd_eq
         Equiv.swap (Sum.inl 0) (Sum.inr 0) = 1 from Equiv.swap_mul_self _ _,
       one_mul]
   simp only [h_norm]
-  exact restrictComplementRight_shuffleRightBwd σ'
+  exact restrictComplementRight_shuffleRightExtendRepresentative σ'
 
-theorem shuffleRightBwd_restrictComplementRight
+theorem shuffleRightExtendRepresentative_restrictComplementRight
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hfix : σ (Sum.inr 0) = Sum.inr 0) :
-    shuffleRightBwd (restrictComplementRight σ) =
+    shuffleRightExtendRepresentative (restrictComplementRight σ) =
       Equiv.swap (Sum.inl 0) (Sum.inr 0) * σ := by
-  unfold shuffleRightBwd restrictComplementRight
+  unfold shuffleRightExtendRepresentative restrictComplementRight
   have h_fixes_none :
       (Equiv.permCongr finSumSuccOptionEquiv σ) none = none := by
     simp [Equiv.permCongr_apply, hfix]
@@ -842,17 +842,17 @@ theorem shuffleRightBwd_restrictComplementRight
     ext x; simp [Equiv.permCongr_apply]
   rw [h_cancel]
 
-theorem shuffleRight_bwd_fwd
+theorem shuffleRightExtendRepresentative_restrictRepresentative_rel
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hσ : ∃ k, σ⁻¹ (Sum.inl 0) = Sum.inr k) :
     QuotientGroup.leftRel
         (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range
-        (shuffleRightBwd (shuffleRightFwd σ hσ)) σ := by
+        (shuffleRightExtendRepresentative (shuffleRightRestrictRepresentative σ hσ)) σ := by
   set k := hσ.choose
   set hk := hσ.choose_spec
-  rw [show shuffleRightFwd σ hσ =
+  rw [show shuffleRightRestrictRepresentative σ hσ =
     restrictComplementRight (normalizeRight σ k) from rfl]
-  rw [shuffleRightBwd_restrictComplementRight _ (normalizeRight_fixes σ k hk)]
+  rw [shuffleRightExtendRepresentative_restrictComplementRight _ (normalizeRight_fixes σ k hk)]
   rw [QuotientGroup.leftRel_apply]
   refine ⟨⟨1, (Equiv.swap 0 k)⁻¹⟩, ?_⟩
   simp only [Equiv.Perm.sumCongrHom_apply]
@@ -878,43 +878,43 @@ noncomputable def shuffleRightRestrict :
         Quotient.mk'' τ = σ → ∃ k, τ⁻¹ (Sum.inl 0) = Sum.inr k} ≃
     Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n) where
   toFun := fun ⟨q, hq⟩ =>
-    Quotient.mk'' (shuffleRightFwd q.out (hq _ (Quotient.out_eq q)))
+    Quotient.mk'' (shuffleRightRestrictRepresentative q.out (hq _ (Quotient.out_eq q)))
   invFun := fun q =>
-    ⟨Quotient.mk'' (shuffleRightBwd q.out), fun τ hτ => by
+    ⟨Quotient.mk'' (shuffleRightExtendRepresentative q.out), fun τ hτ => by
       have h_rel := QuotientGroup.leftRel_apply.mp (Quotient.exact' hτ)
-      have h_inv : (shuffleRightBwd q.out)⁻¹ * τ ∈
+      have h_inv : (shuffleRightExtendRepresentative q.out)⁻¹ * τ ∈
           (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range := by
-        rw [show (shuffleRightBwd q.out)⁻¹ * τ =
-          (τ⁻¹ * shuffleRightBwd q.out)⁻¹ from by group]
+        rw [show (shuffleRightExtendRepresentative q.out)⁻¹ * τ =
+          (τ⁻¹ * shuffleRightExtendRepresentative q.out)⁻¹ from by group]
         exact Subgroup.inv_mem _ h_rel
-      rw [show τ = shuffleRightBwd q.out *
-        ((shuffleRightBwd q.out)⁻¹ * τ) from by group]
+      rw [show τ = shuffleRightExtendRepresentative q.out *
+        ((shuffleRightExtendRepresentative q.out)⁻¹ * τ) from by group]
       exact (shuffle_side_well_defined_right
-        (shuffleRightBwd q.out) ⟨_, h_inv⟩).mp
-        (shuffleRightBwd_isRight q.out)⟩
+        (shuffleRightExtendRepresentative q.out) ⟨_, h_inv⟩).mp
+        (shuffleRightExtendRepresentative_isRight q.out)⟩
   left_inv := fun ⟨q, hq⟩ => by
     ext
-    have h1 := (Quotient.out_eq (Quotient.mk'' (shuffleRightFwd q.out
+    have h1 := (Quotient.out_eq (Quotient.mk'' (shuffleRightRestrictRepresentative q.out
         (hq _ (Quotient.out_eq q))) :
         Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n))).symm
-    calc Quotient.mk'' (shuffleRightBwd (Quotient.mk''
-            (shuffleRightFwd q.out (hq _ (Quotient.out_eq q)))).out)
-        = Quotient.mk'' (shuffleRightBwd
-            (shuffleRightFwd q.out (hq _ (Quotient.out_eq q)))) :=
-          Quotient.sound' (shuffleRightBwd_wd _ _ (Quotient.exact' h1.symm))
+    calc Quotient.mk'' (shuffleRightExtendRepresentative (Quotient.mk''
+            (shuffleRightRestrictRepresentative q.out (hq _ (Quotient.out_eq q)))).out)
+        = Quotient.mk'' (shuffleRightExtendRepresentative
+            (shuffleRightRestrictRepresentative q.out (hq _ (Quotient.out_eq q)))) :=
+          Quotient.sound' (shuffleRightExtendRepresentative_respects_leftRel _ _ (Quotient.exact' h1.symm))
       _ = Quotient.mk'' q.out :=
-          Quotient.sound' (shuffleRight_bwd_fwd q.out _)
+          Quotient.sound' (shuffleRightExtendRepresentative_restrictRepresentative_rel q.out _)
       _ = q := Quotient.out_eq q
   right_inv := fun q => by
-    have h1 := (Quotient.out_eq (Quotient.mk'' (shuffleRightBwd q.out) :
+    have h1 := (Quotient.out_eq (Quotient.mk'' (shuffleRightExtendRepresentative q.out) :
         Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin (n + 1)))).symm
-    calc Quotient.mk'' (shuffleRightFwd
-            (Quotient.mk'' (shuffleRightBwd q.out)).out _)
-        = Quotient.mk'' (shuffleRightFwd (shuffleRightBwd q.out)
-            (shuffleRightBwd_isRight q.out)) :=
-          Quotient.sound' (shuffleRightFwd_wd _ _ _ _
+    calc Quotient.mk'' (shuffleRightRestrictRepresentative
+            (Quotient.mk'' (shuffleRightExtendRepresentative q.out)).out _)
+        = Quotient.mk'' (shuffleRightRestrictRepresentative (shuffleRightExtendRepresentative q.out)
+            (shuffleRightExtendRepresentative_isRight q.out)) :=
+          Quotient.sound' (shuffleRightRestrictRepresentative_respects_leftRel _ _ _ _
             (Quotient.exact' h1.symm))
-      _ = Quotient.mk'' q.out := by rw [shuffleRight_fwd_bwd_eq]
+      _ = Quotient.mk'' q.out := by rw [shuffleRightRestrictRepresentative_extendRepresentative]
       _ = q := Quotient.out_eq q
 
 theorem shuffleRightRestrict_subtype_of_inv

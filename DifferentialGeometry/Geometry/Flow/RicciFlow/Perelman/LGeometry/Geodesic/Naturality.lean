@@ -37,7 +37,7 @@ omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [IsManifold I ∞ M] [IsManifold I ∞ N] [T2Space M] [T2Space N]
   [SigmaCompactSpace M] [SigmaCompactSpace N] in
-private theorem mfderiv_fwd_inv
+private theorem mfderiv_apply_symm_apply
     (Phi : M ≃ₘ⟮I, I⟯ N) (x : M) (Y : TangentSpace I (Phi x)) :
     mfderiv I I (Phi : M → N) x
         (mfderiv I I (Phi.symm : N → M) (Phi x) Y) = Y := by
@@ -49,7 +49,7 @@ omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [IsManifold I ∞ M] [IsManifold I ∞ N] [T2Space M] [T2Space N]
   [SigmaCompactSpace M] [SigmaCompactSpace N] in
-private theorem mfderiv_inv_fwd
+private theorem mfderiv_symm_apply_apply
     (Phi : M ≃ₘ⟮I, I⟯ N) (x : M) (X : TangentSpace I x) :
     mfderiv I I (Phi.symm : N → M) (Phi x)
         (mfderiv I I (Phi : M → N) x X) = X := by
@@ -103,7 +103,7 @@ theorem lRegAccel_pull
   ext Y
   rw [metricFlatEquiv_apply, metricFlatEquiv_apply]
   have hY : mfderiv I I (Phi : M → N) x (Yback Y) = Y :=
-    mfderiv_fwd_inv (I := I) Phi x Y
+    mfderiv_apply_symm_apply (I := I) Phi x Y
   have hscalar : SP.scalar t = S.scalar t ∘ (Phi : M → N) := by
     funext y
     exact scalar_pullback (I := I) S Phi t y
@@ -241,7 +241,7 @@ theorem lRegDomain_pull
     have hback := isLRegCurve_pull (I := I)
       (solutionOnPullback (I := I) S Phi) Phi.symm T beta J (Phi x)
       (mfderiv I I (Phi : M → N) x Z) hbeta'
-    have hZ := mfderiv_inv_fwd (I := I) Phi x Z
+    have hZ := mfderiv_symm_apply_apply (I := I) Phi x Z
     refine ⟨fun r => Phi.symm (beta r), J, hJopen, hJconn, h0J, hsJ, ?_⟩
     convert hback using 1 <;> simp only [Phi.symm_apply_apply, hZ]
 
