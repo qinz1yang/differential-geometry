@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.BoundaryHopf
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ScalarStrong
 
 set_option autoImplicit false
@@ -10,6 +11,7 @@ open Bundle Set
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open scoped Manifold ContDiff Topology
 
 universe u uE uH
@@ -95,6 +97,45 @@ theorem scalar_heat_positive_of_initial_point
   intro y
   exact scalar_strong_maximum_principle_fixed_metric_positive (I := I)
     g hT u hu_cont hu_nonneg hu_time hu_space hu_super hτmem hxτ y
+
+section Dirichlet
+
+theorem scalar_dirichlet_solution_nonnegative
+    [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (T : Real)
+    (X : Real → (x : M) → TangentSpace I x)
+    (a : Real) (ha : 0 ≤ a)
+    (u : Real → M → Real)
+    (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hu_initial : ∀ x : M, 0 ≤ u 0 x)
+    (hu_boundary : ∀ t ∈ Set.Icc 0 T, ∀ p : BoundaryManifold I M,
+      u t (p : M) = 0)
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ I.interior M,
+      DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
+    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ I.interior M,
+      MDifferentiableAt I 𝓘(Real, Real) (u t) x)
+    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ I.interior M,
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hu_equation : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ I.interior M,
+      parabolicOperatorWithDrift (I := I) G T X u t x = -a * u t x) :
+    ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x := by
+  apply strict_barrier_on_compact_manifold_with_boundary
+    (I := I) G T X u hu_cont hu_initial
+  · intro t ht p
+    rw [hu_boundary t ht p]
+  · exact hu_time
+  · exact hu_mdiff
+  · exact hu_grad
+  · intro t ht htpos x hx hneg
+    rw [hu_equation t ht htpos x hx]
+    simpa only [mul_neg, neg_mul] using
+      mul_nonneg ha (neg_nonneg.mpr hneg.le)
+
+end Dirichlet
 
 end
 

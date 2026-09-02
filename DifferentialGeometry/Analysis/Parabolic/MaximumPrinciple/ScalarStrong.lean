@@ -1447,7 +1447,7 @@ private theorem time_dependent_metric_with_drift_strong_maximum_principle_of_bar
     (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
     (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
-    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDifferentiableAt I 𝓘(Real, Real) (u t) x)
     (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
@@ -1697,7 +1697,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
     (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
     (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
-    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDifferentiableAt I 𝓘(Real, Real) (u t) x)
     (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
@@ -1709,9 +1709,14 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
   let P : Set M := U ∩ {x | 0 < u T x}
   have hTs : T ∈ Set.Icc (0 : Real) T := ⟨hT.le, le_rfl⟩
   have huT_cont : Continuous (u T) := by
-    rw [continuous_iff_continuousAt]
-    intro x
-    exact (hu_mdiff T hTs hT x).continuousAt
+    rw [← continuousOn_univ]
+    have hmap : Set.MapsTo (fun x : M => (T, x)) Set.univ
+        (spacetimeSlab (M := M) T) := by
+      intro x hx
+      exact ⟨hTs, hx⟩
+    change ContinuousOn
+      ((fun p : Real × M => u p.1 p.2) ∘ fun x : M => (T, x)) Set.univ
+    exact hu_cont.comp (by fun_prop) hmap
   have hPopen : IsOpen P := hUopen.inter (isOpen_lt continuous_const huT_cont)
   have hPclosure : closure P ∩ U ⊆ P := by
     intro a ha
@@ -1894,7 +1899,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
       (fun _ _ => BoundarylessManifold.isInteriorPoint) isPreconnected_univ
       hu_cont hu_nonneg
       (fun t ht htpos x hx => hu_time t ht htpos x)
-      hu_mdiff
+      (fun t ht htpos x hx => hu_mdiff t ht htpos x)
       (fun t ht htpos x hx => hu_grad t ht htpos x)
       (fun t ht htpos x hx => hu_super t ht htpos x)
       (Set.mem_univ c) hc y (Set.mem_univ y)

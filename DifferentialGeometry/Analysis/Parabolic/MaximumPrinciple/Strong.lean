@@ -1103,7 +1103,7 @@ theorem scalar_strong_maximum_principle_of_barrier_interior_region
     (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
     (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
-    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDifferentiableAt I 𝓘(Real, Real) (u t) x)
     (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
@@ -1215,24 +1215,23 @@ theorem scalar_strong_maximum_principle_of_barrier_interior_region
   have hw_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDifferentiableAt I 𝓘(Real, Real) (w t) x := by
     intro t ht htpos x hx
-    exact (hu_mdiff t ht htpos x).sub (hv_mdiff t ht htpos x)
+    exact (hu_mdiff t ht htpos x hx).sub (hv_mdiff t ht htpos x)
   have hw_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (w t) y) x := by
     intro t ht htpos x hx
     have heq :
-        (T% fun y : M => gradientFun (I := I) (G.metric t) (w t) y) =
+        (T% fun y : M => gradientFun (I := I) (G.metric t) (w t) y) =ᶠ[nhds x]
           (T% fun y : M =>
             gradientFun (I := I) (G.metric t) (u t) y -
               gradientFun (I := I) (G.metric t) (v t) y) := by
-      funext z
+      filter_upwards [hUopen.mem_nhds hx] with z hz
       apply congrArg (fun q =>
         (⟨z, q⟩ : TotalSpace E (TangentSpace I : M → Type _)))
       exact gradientFun_sub (I := I) (G.metric t)
-        (hu_mdiff t ht htpos z) (hv_mdiff t ht htpos z)
-    rw [heq]
-    exact mdifferentiableAt_sub_section
-      (hu_grad t ht htpos x hx) (hv_grad t ht htpos x hx)
+        (hu_mdiff t ht htpos z hz) (hv_mdiff t ht htpos z)
+    exact (mdifferentiableAt_sub_section
+      (hu_grad t ht htpos x hx) (hv_grad t ht htpos x hx)).congr_of_eventuallyEq heq
   have hnegative : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       w t x < 0 → 0 ≤
         parabolicOperatorWithDrift (I := I) G T X w t x := by
@@ -1306,9 +1305,13 @@ theorem scalar_strong_maximum_principle_of_barrier_interior_region
       rw [hformula]
       exact mul_nonpos_of_nonneg_of_nonpos
         (mul_nonneg hepsilon.le (Real.exp_pos _).le) hbracket
-    have hsub := parabolic_sub (I := I) G T X u v t x
+    have hu_near : ∀ᶠ y in nhds x,
+        MDifferentiableAt I 𝓘(Real, Real) (u t) y := by
+      filter_upwards [hUopen.mem_nhds hx] with y hy
+      exact hu_mdiff t ht htpos y hy
+    have hsub := parabolic_sub_at (I := I) G T X u v t x
       (hu_time t ht htpos x hx) (hv_time t ht htpos x hx)
-      (hu_mdiff t ht htpos) (hv_mdiff t ht htpos)
+      hu_near (Filter.Eventually.of_forall (hv_mdiff t ht htpos))
       (hu_grad t ht htpos x hx) (hv_grad t ht htpos x hx)
     change parabolicOperatorWithDrift (I := I) G T X w t x = _ at hsub
     rw [hsub]
@@ -1388,7 +1391,7 @@ theorem scalar_strong_maximum_principle_of_barrier
     (fun _ _ => BoundarylessManifold.isInteriorPoint)
     hu_cont hu_nonneg
     (fun t ht htpos x hx => hu_time t ht htpos x)
-    hu_mdiff
+    (fun t ht htpos x hx => hu_mdiff t ht htpos x)
     (fun t ht htpos x hx => hu_grad t ht htpos x)
     (fun t ht htpos x hx => hu_super t ht htpos x)
     hrho hrho_nonneg hR hdelta heta
