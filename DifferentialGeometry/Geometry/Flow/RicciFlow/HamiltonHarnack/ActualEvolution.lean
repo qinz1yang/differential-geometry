@@ -5422,7 +5422,7 @@ private noncomputable def connectionVariationPThirdField
         (ricciFlowConnectionVariationField (I := I) g)
         (hamiltonPField (I := I) g)))
 
-private noncomputable def hamiltonNablaPActualTimeDerivativeField
+noncomputable def hamiltonNablaPTimeVariationField
     [T2Space M]
     (g : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -5603,7 +5603,7 @@ private theorem christoffelEvolutionRHSInFrame_tensor_contraction
         rw [hInv q p]
 
 open DifferentialGeometry.Tensor.Coordinates in
-private theorem hamiltonNablaPActualTimeDerivativeField_apply_coordinateFrame
+private theorem hamiltonNablaPTimeVariationField_apply_coordinateFrame
     [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -5613,7 +5613,7 @@ private theorem hamiltonNablaPActualTimeDerivativeField_apply_coordinateFrame
     let gammaDt := christoffelEvolutionRHSInFrame
       (M := M) (coordInv (I := I) S x0)
       (nablaRicComp (I := I) S frame) s x0
-    hamiltonNablaPActualTimeDerivativeField
+    hamiltonNablaPTimeVariationField
           (I := I) (S.base.metric s) x0
           (vec4 (I := I)
             (frame d x0) (frame a x0) (frame b x0) (frame c x0)) =
@@ -5642,7 +5642,7 @@ private theorem hamiltonNablaPActualTimeDerivativeField_apply_coordinateFrame
       (I := I) (M := M) (S.base.metric s) x0 basis gInv := by
     simpa [basis, gInv, SolutionOn.family] using
       coordInvReal (I := I) S x0 s
-  rw [hamiltonNablaPActualTimeDerivativeField]
+  rw [hamiltonNablaPTimeVariationField]
   simp only [ContMDiffSection.coe_sub, Pi.sub_apply,
     Tensor0SSpace.sub_apply]
   rw [connectionVariationPFirstField_apply_basis
@@ -5681,7 +5681,7 @@ private theorem hamiltonNablaPField_hasDerivWithinAt_coordinateFrame_actual
             (coordinateFrameAt (I := I) x0 a x0)
             (coordinateFrameAt (I := I) x0 b x0)
             (coordinateFrameAt (I := I) x0 c x0)))
-      (hamiltonNablaPActualTimeDerivativeField
+      (hamiltonNablaPTimeVariationField
         (I := I) (S.base.metric (t : Real)) x0
           (vec4 (I := I)
             (coordinateFrameAt (I := I) x0 d x0)
@@ -5692,7 +5692,7 @@ private theorem hamiltonNablaPField_hasDerivWithinAt_coordinateFrame_actual
   have hraw := hamiltonNablaPField_hasDerivWithinAt_coordinateFrame
     (I := I) S hS t x0 d a b c
   exact hraw.congr_deriv
-    (hamiltonNablaPActualTimeDerivativeField_apply_coordinateFrame
+    (hamiltonNablaPTimeVariationField_apply_coordinateFrame
       (I := I) S (t : Real) x0 d a b c).symm
 
 open DifferentialGeometry.Tensor.Coordinates in
@@ -5738,7 +5738,7 @@ private theorem hamiltonNablaPField_deriv_of_coord
   exact (hD m).mul_const _
 
 open DifferentialGeometry.Tensor.Coordinates in
-private theorem hamiltonNablaPField_hasDerivWithinAt_of_solution
+theorem hamiltonNablaPField_hasDerivWithinAt_of_ricci_flow
     [I.Boundaryless] [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -5747,13 +5747,13 @@ private theorem hamiltonNablaPField_hasDerivWithinAt_of_solution
     (x0 : M) (v : Fin 4 -> TangentSpace I x0) :
     HasDerivWithinAt
       (fun s : Real => hamiltonNablaPField (I := I) (S.base.metric s) x0 v)
-      (hamiltonNablaPActualTimeDerivativeField
+      (hamiltonNablaPTimeVariationField
         (I := I) (S.base.metric (t : Real)) x0 v)
       D.carrier (t : Real) := by
   classical
   let frame := coordinateFrameAt (I := I) x0
   let V : (Fin 4 -> CoordinateIdx (𝕜 := Real) E) -> Real := fun m =>
-    hamiltonNablaPActualTimeDerivativeField
+    hamiltonNablaPTimeVariationField
       (I := I) (S.base.metric (t : Real)) x0
         (fun q => frame (m q) x0)
   have hD (m : Fin 4 -> CoordinateIdx (𝕜 := Real) E) :
@@ -5768,7 +5768,7 @@ private theorem hamiltonNablaPField_hasDerivWithinAt_of_solution
       funext q
       fin_cases q <;> rfl
     change HasDerivWithinAt _
-      (hamiltonNablaPActualTimeDerivativeField
+      (hamiltonNablaPTimeVariationField
         (I := I) (S.base.metric (t : Real)) x0
           (fun q => frame (m q) x0)) _ _
     rw [hvec]
@@ -5780,7 +5780,7 @@ private theorem hamiltonNablaPField_hasDerivWithinAt_of_solution
   refine htransport.congr_deriv ?_
   have hexp := tensor0S_apply_eq_sum
     (I := I) (coordinateFrameAtToBasis (I := I) x0)
-      (hamiltonNablaPActualTimeDerivativeField
+      (hamiltonNablaPTimeVariationField
         (I := I) (S.base.metric (t : Real)) x0) v
   simpa only [V, frame, component0S_apply, coordinateFrameAt_toBasis_apply] using
     hexp.symm
@@ -5806,7 +5806,7 @@ private noncomputable def hamiltonDivPTimeDerivativeField
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 :=
   metricTraceFirstTwoField (I := I) (M := M) g
-      (hamiltonNablaPActualTimeDerivativeField (I := I) g) +
+      (hamiltonNablaPTimeVariationField (I := I) g) +
     (2 : Real) • ricciNablaPTraceField (I := I) g
 
 private theorem ricciNablaPTraceField_apply_basis
@@ -5870,7 +5870,7 @@ private theorem hamiltonDivPTimeDerivativeField_apply_basis
     hamiltonDivPTimeDerivativeField (I := I) g x (vec2 (I := I) A B) =
       (∑ i : Idx, ∑ j : Idx,
         gInv i j *
-          hamiltonNablaPActualTimeDerivativeField (I := I) g x
+          hamiltonNablaPTimeVariationField (I := I) g x
             (vec4 (I := I) (basis i) (basis j) A B)) +
         2 * ricciNablaPTraceField (I := I) g x
           (vec2 (I := I) A B) := by
@@ -6232,7 +6232,7 @@ private theorem hamiltonDivPAt_hasDerivWithinAt_coordinateFrame_actual
   have hraw := hamiltonDivPAt_hasDerivWithinAt_coordinateFrame
     (I := I) S hS t x0 a b
   have hactual (i j : CoordinateIdx (𝕜 := Real) E) :=
-    hamiltonNablaPActualTimeDerivativeField_apply_coordinateFrame
+    hamiltonNablaPTimeVariationField_apply_coordinateFrame
       (I := I) S (t : Real) x0 i j a b
   have hmetric := inverseMetricEvolution_hamiltonNablaP_contraction
     (I := I) S (t : Real) x0 (frame a x0) (frame b x0)
@@ -6273,7 +6273,7 @@ private theorem hamiltonDivPAt_hasDerivWithinAt_coordinateFrame_actual
                 (vec4 (I := I)
                   (frame i x0) (frame j x0) (frame a x0) (frame b x0)) +
           gInv i j *
-            hamiltonNablaPActualTimeDerivativeField (I := I) g x0
+            hamiltonNablaPTimeVariationField (I := I) g x0
               (vec4 (I := I)
                 (frame i x0) (frame j x0) (frame a x0) (frame b x0))) := by
           refine Finset.sum_congr rfl fun i _ => ?_
@@ -6287,7 +6287,7 @@ private theorem hamiltonDivPAt_hasDerivWithinAt_coordinateFrame_actual
               (frame i x0) (frame j x0) (frame a x0) (frame b x0))) +
       ∑ i, ∑ j,
         gInv i j *
-          hamiltonNablaPActualTimeDerivativeField (I := I) g x0
+          hamiltonNablaPTimeVariationField (I := I) g x0
             (vec4 (I := I)
               (frame i x0) (frame j x0) (frame a x0) (frame b x0)) := by
         simp only [Finset.sum_add_distrib]
@@ -6295,7 +6295,7 @@ private theorem hamiltonDivPAt_hasDerivWithinAt_coordinateFrame_actual
           (vec2 (I := I) (frame a x0) (frame b x0)) +
         ∑ i, ∑ j,
           gInv i j *
-            hamiltonNablaPActualTimeDerivativeField (I := I) g x0
+            hamiltonNablaPTimeVariationField (I := I) g x0
               (vec4 (I := I)
                 (frame i x0) (frame j x0) (frame a x0) (frame b x0)) := by
         rw [show
@@ -7061,7 +7061,7 @@ private theorem hamiltonRmRoughLaplacianField_eq_component_orthonormal
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
     Finset.mem_univ, if_true]
 
-private theorem hamiltonNablaPActualTimeDerivativeField_apply_orthonormal
+private theorem hamiltonNablaPTimeVariationField_apply_orthonormal
     [T2Space M]
     {n : Nat}
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -7069,7 +7069,7 @@ private theorem hamiltonNablaPActualTimeDerivativeField_apply_orthonormal
     (horth : forall i j,
       g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
     (d a b c : Fin n) :
-    hamiltonNablaPActualTimeDerivativeField (I := I) g x
+    hamiltonNablaPTimeVariationField (I := I) g x
         (vec4 (I := I) (basis d) (basis a) (basis b) (basis c)) =
       hamiltonNablaPTimeDerivativeField (I := I) g x
           (vec4 (I := I) (basis d) (basis a) (basis b) (basis c)) -
@@ -7090,7 +7090,7 @@ private theorem hamiltonNablaPActualTimeDerivativeField_apply_orthonormal
               (vec3 (I := I) (basis a) (basis b) (basis p)) := by
   classical
   have hinv := metricInverseInBasis_of_orthonormal (I := I) g basis horth
-  rw [hamiltonNablaPActualTimeDerivativeField]
+  rw [hamiltonNablaPTimeVariationField]
   simp only [ContMDiffSection.coe_sub, Pi.sub_apply, Tensor0SSpace.sub_apply]
   rw [connectionVariationPFirstField_apply_basis
       (I := I) g basis (fun i j => if i = j then (1 : Real) else 0) hinv,
@@ -7112,7 +7112,7 @@ private theorem hamiltonDivPTimeDerivativeField_apply_orthonormal
     hamiltonDivPTimeDerivativeField (I := I) g x
         (vec2 (I := I) (basis a) (basis b)) =
       (∑ c : Fin n,
-        hamiltonNablaPActualTimeDerivativeField (I := I) g x
+        hamiltonNablaPTimeVariationField (I := I) g x
           (vec4 (I := I) (basis c) (basis c) (basis a) (basis b))) +
         2 * ∑ c : Fin n, ∑ p : Fin n,
           metricRicci (I := I) (M := M) g x
@@ -7345,7 +7345,7 @@ private theorem hamiltonDivPTimeDerivativeField_apply_orthonormal_expanded
     (I := I) g basis horth]
   refine congrArg₂ (fun u v : Real => u + 2 * v) ?_ rfl
   refine Finset.sum_congr rfl fun c _ => ?_
-  rw [hamiltonNablaPActualTimeDerivativeField_apply_orthonormal
+  rw [hamiltonNablaPTimeVariationField_apply_orthonormal
     (I := I) g basis horth]
   simp_rw [ricciFlowConnectionVariationField_apply (I := I) g x]
   rfl

@@ -306,17 +306,17 @@ private theorem quadratic_level_isCompact
     isClosed_eq hqcont continuous_const
   exact hLallCompact.of_isClosed_subset (hbaseClosed.inter hlevelClosed) hsub
 
-private abbrev HarnackCarrierModel :=
+abbrev HarnackCarrierModel :=
   HamiltonHarnackTwoForm E × Tensor0SModel 1 Real E
 
-private abbrev HarnackCarrierFiber (x : M) :=
+abbrev HarnackCarrierFiber (x : M) :=
   HamiltonHarnackTwoForm (TangentSpace I x) × Tensor0SSpace 1 I x
 
-private abbrev HarnackCarrierTotal :=
+abbrev HarnackCarrierTotal :=
   Bundle.TotalSpace (HarnackCarrierModel (E := E))
     (HarnackCarrierFiber (E := E) (I := I) (M := M))
 
-private noncomputable instance harnackTwoFormModelFiniteDimensional :
+noncomputable instance harnackTwoFormModelFiniteDimensional :
     FiniteDimensional Real (HamiltonHarnackTwoForm E) := by
   let _ : FiniteDimensional Real
       (ContinuousMultilinearMap Real (fun _ : Fin 2 ↦ E) Real) :=
@@ -325,7 +325,7 @@ private noncomputable instance harnackTwoFormModelFiniteDimensional :
     ContinuousAlternatingMap.toContinuousMultilinearMapLinear
     ContinuousAlternatingMap.toContinuousMultilinearMap_injective
 
-private theorem harnackCarrierModel_finrank_pos
+theorem harnackCarrierModel_finrank_pos
     [NeZero (Module.finrank Real E)] :
     0 < Module.finrank Real (HarnackCarrierModel (E := E)) := by
   rw [Module.finrank_prod,
@@ -335,7 +335,7 @@ private theorem harnackCarrierModel_finrank_pos
   simpa [pow_one] using
     Nat.add_pos_right (Module.finrank Real (HamiltonHarnackTwoForm E)) hE
 
-private theorem harnackCarrierModel_nontrivial
+theorem harnackCarrierModel_nontrivial
     [NeZero (Module.finrank Real E)] :
     Nontrivial (HarnackCarrierModel (E := E)) :=
   Module.nontrivial_of_finrank_pos (R := Real)
@@ -423,13 +423,13 @@ private theorem harnackCarrier_second_continuous :
     (Tensor0SModel 1 Real E) (fun x : M => Tensor0SSpace 1 I x)
   exact continuous_snd.comp hdiag.continuous
 
-private def harnackCarrierNormSq
+def harnackCarrierNormSq
     (g : SmoothRiemannianMetric I M)
     (p : HarnackCarrierTotal (E := E) (I := I) (M := M)) : Real :=
   normSq0S (I := I) g p.proj 2 p.2.1.toTensor0S +
     normSq0S (I := I) g p.proj 1 p.2.2
 
-private theorem harnackCarrierNormSq_continuous
+theorem harnackCarrierNormSq_continuous
     (g : SmoothRiemannianMetric I M) :
     Continuous (harnackCarrierNormSq (E := E) (I := I) (M := M) g) := by
   have hq2 := (normSq0S_total_cont (I := I) (M := M) (s := 2) g).comp
@@ -452,7 +452,7 @@ private theorem harnackTwoForm_toTensor0S_ne_zero
     (I := I) (M := M) (x := x) 0 U
   simpa using h.symm
 
-private theorem harnackCarrierNormSq_pos
+theorem harnackCarrierNormSq_pos
     (g : SmoothRiemannianMetric I M)
     (p : HarnackCarrierTotal (E := E) (I := I) (M := M))
     (hp : p.2 ≠ 0) :
@@ -470,7 +470,7 @@ private theorem harnackCarrierNormSq_pos
         (harnackTwoForm_toTensor0S_ne_zero (I := I) hfirst))
       (normSq0S_nonneg (I := I) g p.proj 1 p.2.2)
 
-private theorem harnackCarrierNormSq_smul
+theorem harnackCarrierNormSq_smul
     (g : SmoothRiemannianMetric I M) (x : M) (c : Real)
     (z : HarnackCarrierFiber (E := E) (I := I) (M := M) x) :
     harnackCarrierNormSq (E := E) (I := I) (M := M) g
@@ -487,7 +487,7 @@ private theorem harnackCarrierNormSq_smul
   rw [h2, h1]
   ring
 
-private theorem harnackCarrierNormSq_level_isCompact
+theorem harnackCarrierNormSq_level_isCompact
     [NeZero (Module.finrank Real E)] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {K : Set M} (hK : IsCompact K) :
@@ -506,7 +506,7 @@ private theorem harnackCarrierNormSq_level_isCompact
     (harnackCarrierNormSq_smul (E := E) (I := I) (M := M) g)
     hK
 
-private theorem harnackCarrierNormSq_time_level_isCompact
+theorem harnackCarrierNormSq_time_level_isCompact
     [NeZero (Module.finrank Real E)] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {T : Set Real} (hT : IsCompact T)
@@ -1029,7 +1029,7 @@ private theorem hamiltonPerturbedHarnackQuadraticAt_eq_inner
   rfl
 
 omit [SigmaCompactSpace M] in
-private theorem hamiltonHarnackQuadraticAt_smul
+theorem hamiltonHarnackQuadraticAt_smul
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (clock : HarnackClock) (x : M) (c : Real)
@@ -1080,7 +1080,7 @@ private theorem hamiltonPerturbedHarnackQuadraticAt_smul
   ring
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
-private def normalizeHarnackCarrier
+def normalizeHarnackCarrier
     (gRef : SmoothRiemannianMetric I M) (x : M)
     (z : HarnackCarrierFiber (E := E) (I := I) (M := M) x) :
     HarnackCarrierFiber (E := E) (I := I) (M := M) x := by
@@ -1090,7 +1090,7 @@ private def normalizeHarnackCarrier
       (Bundle.TotalSpace.mk' (HarnackCarrierModel (E := E)) x z)))⁻¹ • z
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-private theorem normalizeHarnackCarrier_ne_zero
+theorem normalizeHarnackCarrier_ne_zero
     (gRef : SmoothRiemannianMetric I M) (x : M)
     (z : HarnackCarrierFiber (E := E) (I := I) (M := M) x)
     (hz : z ≠ 0) :
@@ -1101,7 +1101,7 @@ private theorem normalizeHarnackCarrier_ne_zero
   exact smul_ne_zero (inv_ne_zero (ne_of_gt (Real.sqrt_pos.2 hq))) hz
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-private theorem normalizeHarnackCarrier_normSq
+theorem normalizeHarnackCarrier_normSq
     (gRef : SmoothRiemannianMetric I M) (x : M)
     (z : HarnackCarrierFiber (E := E) (I := I) (M := M) x)
     (hz : z ≠ 0) :
@@ -9613,7 +9613,7 @@ theorem hamilton_matrix_harnack_of_compact_of_initial_nonnegative
     (I := I) S' hS' hR' ht.1 hregular' x U W
 
 omit [SigmaCompactSpace M] in
-private theorem exists_hamiltonHarnackQuadratic_minimizer
+theorem exists_hamiltonHarnackQuadratic_minimizer
     [I.Boundaryless] [NeZero (Module.finrank Real E)]
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

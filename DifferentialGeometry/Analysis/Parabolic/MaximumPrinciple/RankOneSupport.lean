@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open scoped Manifold ContDiff
 
-private structure FirstNull
+structure FirstNull
     {Z : Type*} (q : Real -> Z -> Real) (a b : Real) where
   time : Real
   direction : Z
@@ -21,7 +21,7 @@ private structure FirstNull
     forall t, t ∈ Set.Icc a time -> forall z, 0 <= q t z
   null : q time direction = 0
 
-private theorem exists_firstNull
+theorem exists_first_null
     {Z : Type*} [TopologicalSpace Z]
     (q : Real -> Z -> Real) (a b : Real) (K : Set Z)
     (hK : IsCompact K)
@@ -92,7 +92,7 @@ private theorem exists_firstNull
       nonnegative_until := hnonnegative
       null := le_antisymm hqnonpos hqnonneg }
 
-private theorem exists_firstNull_of_compact_representatives
+theorem exists_first_null_of_compact_representatives
     {Z : Type*} [TopologicalSpace Z]
     (q : Real -> Z -> Real) (a b : Real) (K : Set Z)
     (hK : IsCompact K)
@@ -254,7 +254,7 @@ theorem strict_rank_one_support_of_compact_representatives
           (qTotal s w < 0 -> qTotal s w' < 0) := by
     intro s hs w hw
     exact hrepresent s hs w hw
-  obtain ⟨d⟩ := exists_firstNull_of_compact_representatives
+  obtain ⟨d⟩ := exists_first_null_of_compact_representatives
     qTotal (a + eta) b K hK hcontTotal hinit hrepresentTotal hfail
   have hnonnegative : forall y w, 0 <= q d.time y w := by
     intro y w
