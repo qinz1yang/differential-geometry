@@ -133,4 +133,26 @@ theorem tendsto_integral_cauchyPeak_smul_of_integrable
     tendsto_integral_comp_smul_smul_of_integrable
       cauchyPeak_nonneg integral_cauchyPeak cauchyPeak_decay hg hcont
 
+theorem tendsto_integral_regularized_quadratic_kernel_mul_of_integrable
+    {a : Real} (ha : a ≠ 0) {g : Complex → Real}
+    (hg : Integrable g) (hcont : ContinuousAt g 0) :
+    Tendsto
+      (fun c : Real => ∫ z : Complex,
+        (a ^ 2 / c ^ 2) * g z *
+          (a ^ 2 * ‖z‖ ^ 2 + a ^ 2 / c ^ 2)⁻¹ ^ 2)
+      atTop (𝓝 (Real.pi / a ^ 2 * g 0)) := by
+  have hbase := tendsto_integral_cauchyPeak_smul_of_integrable hg hcont
+  have hscaled := hbase.const_mul (Real.pi / a ^ 2)
+  apply hscaled.congr'
+  filter_upwards [eventually_gt_atTop (0 : Real)] with c hc
+  rw [← integral_const_mul]
+  apply integral_congr_ae
+  filter_upwards with z
+  simp only [smul_eq_mul]
+  rw [cauchyPeak]
+  rw [norm_smul]
+  simp only [Real.norm_eq_abs, abs_of_pos hc]
+  field_simp [ha, ne_of_gt hc, Real.pi_ne_zero]
+  ring
+
 end DifferentialGeometry.Analysis.Integration
