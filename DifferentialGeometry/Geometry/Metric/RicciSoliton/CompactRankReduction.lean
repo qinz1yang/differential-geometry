@@ -191,6 +191,29 @@ theorem exists_roundThreeSphere_solitonModelCovering_of_compact_of_finrank_eq_th
   exact exists_roundThreeSphere_solitonModelCovering_of_compact_of_finrank_eq_three_of_nonnegative_of_rank_three
     (I := I) (M := M) h hdim hcone hrank
 
+theorem exists_gaussian_or_roundThreeSphere_solitonModelCovering_of_compact_of_finrank_eq_three_of_nonnegative
+    [CompactSpace M] [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 3)
+    (hcone : ∀ x : M,
+      metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x ∈
+        algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M)) :
+    (∃ cover : E → M,
+      solitonModelCovering (euclideanMetric (E := E))
+        (gaussianPotential (E := E)) g f cover) ∨
+    (∃ cover : Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1 → M,
+      solitonModelCovering roundThreeSphereShrinkerMetric
+        roundThreeSphereShrinkerPotential g f cover) := by
+  classical
+  by_cases hGaussian : isGaussianGradientRicciSoliton (E := E) g f 1
+  · left
+    exact exists_solitonModelCovering_of_isGaussianGradientRicciSoliton
+      (I := I) h hGaussian
+  · right
+    exact exists_roundThreeSphere_solitonModelCovering_of_compact_of_finrank_eq_three_of_nonnegative_of_not_isGaussian
+      (I := I) (M := M) h hdim hGaussian hcone
+
 theorem isSphericalSpaceForm_of_compact_of_finrank_eq_three_of_nonnegative_of_not_isGaussian
     [CompactSpace M] [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
