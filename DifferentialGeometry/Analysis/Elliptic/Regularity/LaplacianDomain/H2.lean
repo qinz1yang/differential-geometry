@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ManifoldH2.NonSmooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain
+import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.Conclusion
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartHk.H2NonSmooth
 import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
 
@@ -27,7 +27,6 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBoundCanonical
 open DifferentialGeometry.Analysis.Laplacian.ChartH2NonSmooth
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.ManifoldH2NonSmooth
@@ -75,7 +74,7 @@ theorem chartH2_localBound_of_laplacianDomain
   set D := chartBilinearH1ComplDataOfLaplacianDomain
     (I := I) (M := M) g α hu_h with hD_def
   obtain ⟨MBound, hM_nn, h_uniform_bd⟩ :=
-    chartBilinearH1Compl_uniform_diffQuot_bound_of_data
+    uniform_diffQuot_weakPartial_bound
       (I := I) (M := M) (g := g) (α := α) D
       hη hη_supp hη_range hN h_fderiv_eta
       hΩ' hΩ'_chart hΩ'_compact hη_in_Ω' (R₀ := 1) one_pos hh_supp_in_Ω'

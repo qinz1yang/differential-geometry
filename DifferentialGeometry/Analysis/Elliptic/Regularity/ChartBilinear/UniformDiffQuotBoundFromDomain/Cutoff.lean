@@ -13,7 +13,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace ChartBilinearUniformDiffQuotBoundCanonical
+namespace ChartBilinearH1Compl
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -25,7 +25,6 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
-open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBound
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
@@ -45,7 +44,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
-theorem exists_cutoff_around_tsupport
+theorem exists_cutoff_eq_one_on_cthickening_tsupport
     [I.Boundaryless]
     {α : M} {η : EuclN → ℝ} (hη_supp : HasCompactSupport η)
     (h_cthick_1_in_chart : Metric.cthickening 1 (tsupport η) ⊆
@@ -89,7 +88,7 @@ theorem exists_cutoff_around_tsupport
   exact ⟨χ, hχ_smooth, hχ_cs, hχ_nn, hχ_one, hχ_tsupp_in_chart⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem cutoff_fChart_memLp_two_univ
+theorem cutoff_mul_fChart_memLp_two
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -154,7 +153,7 @@ theorem cutoff_fChart_memLp_two_univ
   rw [h_indicator_eq] at h_indicator_lp
   exact h_indicator_lp
 
-end ChartBilinearUniformDiffQuotBoundCanonical
+end ChartBilinearH1Compl
 
 end Laplacian
 end Analysis

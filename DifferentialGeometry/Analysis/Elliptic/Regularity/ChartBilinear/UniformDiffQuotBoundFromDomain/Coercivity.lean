@@ -13,7 +13,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace ChartBilinearUniformDiffQuotBoundCanonical
+namespace ChartBilinearH1Compl
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -25,7 +25,6 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
-open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBound
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
@@ -45,7 +44,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 
-theorem chartBilinear_master_nonsmooth_discharge
+theorem weighted_diffQuot_weakPartial_energy_le
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -897,7 +896,7 @@ theorem chartBilinear_master_nonsmooth_discharge
           rw [abs_neg, abs_neg, abs_neg, abs_neg]
   exact h_LHS_le_principal_A.trans h_triangle
 
-end ChartBilinearUniformDiffQuotBoundCanonical
+end ChartBilinearH1Compl
 
 end Laplacian
 end Analysis

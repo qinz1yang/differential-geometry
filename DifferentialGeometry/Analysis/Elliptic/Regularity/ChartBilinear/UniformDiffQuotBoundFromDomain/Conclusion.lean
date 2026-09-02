@@ -3,10 +3,10 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDi
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotGTotalBound
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.ChartBilinearVariationalIdentity
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.SubstitutionNonSmooth
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomainSmoothCutoffMemLp
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomainDiffQuotUChartBound
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomainTestFunctionSquareBound
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomainNonsmoothCoercivityBound
+import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.Coercivity
+import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.Cutoff
+import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.SolutionDifferenceQuotient
+import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.TestFunction
 
 
 noncomputable section
@@ -18,7 +18,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace ChartBilinearUniformDiffQuotBoundCanonical
+namespace ChartBilinearH1Compl
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -30,7 +30,6 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
-open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBound
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
@@ -196,7 +195,7 @@ private theorem exists_smooth_metric_extension_with_density
   exact ⟨B, h_agree_a, h_agree_c⟩
 
 
-theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
+theorem uniform_diffQuot_weakPartial_bound_quantitative
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -359,13 +358,13 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
   refine ⟨C_geom, fun i k => Real.sqrt_nonneg _, ?_⟩
   intro D i k h hh_pos hh_le
   have h_FK_diffQuot_u_bound :=
-    chartBilinearFK_diffQuot_u_discharge (I := I) (M := M) D hη_supp
+    integral_sq_diffQuot_uChart_le (I := I) (M := M) D hη_supp
       hΩ'_chart hΩ'_compact hR₀_pos hh_supp_in_Ω'
   have h_v_test_sq_bound :=
-    chartBilinear_v_test_sq_discharge (I := I) (M := M) D hη hη_supp hη_range
+    integral_sq_nirenbergTestFunction_le (I := I) (M := M) D hη hη_supp hη_range
       hN h_fderiv_eta hΩ'_chart hR₀_pos hh_supp_in_Ω'
   have h_master_nonsmooth :=
-    chartBilinear_master_nonsmooth_discharge (I := I) (M := M) D B hη hη_supp
+    weighted_diffQuot_weakPartial_energy_le (I := I) (M := M) D B hη hη_supp
       hΩ'_chart hη_in_Ω' hR₀_pos hh_supp_in_Ω'
       hB_a_match hB_c_match
   set u_g : EuclN → ℝ := fun x => χ x * D.uChart x with hu_g_def
@@ -1379,7 +1378,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
   exact h_g_g_bd
 
 
-theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data
+theorem uniform_diffQuot_weakPartial_bound
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -1407,7 +1406,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data
           ≤ ENNReal.ofReal (MBound i k)) := by
   classical
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=
-    chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
+    uniform_diffQuot_weakPartial_bound_quantitative
       (I := I) (M := M) (E := E) (H := H) (g := g) (α := α)
       hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_chart hΩ'_compact
       hη_in_Ω' hR₀_pos hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas
@@ -1422,7 +1421,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data
     fun i k => mul_nonneg (hC_geom_nn i k) (Real.sqrt_nonneg _),
     fun i k h hpos hle => hC_geom D hpos hle⟩
 
-end ChartBilinearUniformDiffQuotBoundCanonical
+end ChartBilinearH1Compl
 
 end Laplacian
 end Analysis

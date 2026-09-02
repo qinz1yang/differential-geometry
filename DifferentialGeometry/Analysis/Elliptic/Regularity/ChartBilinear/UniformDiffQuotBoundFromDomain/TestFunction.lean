@@ -13,7 +13,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace ChartBilinearUniformDiffQuotBoundCanonical
+namespace ChartBilinearH1Compl
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -25,7 +25,6 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
-open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBound
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
@@ -199,7 +198,7 @@ private lemma nirenberg_product_rule_square_bound
               (d := Module.finrank ℝ E) k h g x)^2 := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartBilinear_v_test_sq_discharge
+theorem integral_sq_nirenbergTestFunction_le
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -1054,7 +1053,7 @@ theorem chartBilinear_v_test_sq_discharge
           ∂(volume : Measure EuclN)) := by
           rw [h_int_dq_u_g_eq, h_int_eta_sq_dq_G_eq]
 
-end ChartBilinearUniformDiffQuotBoundCanonical
+end ChartBilinearH1Compl
 
 end Laplacian
 end Analysis

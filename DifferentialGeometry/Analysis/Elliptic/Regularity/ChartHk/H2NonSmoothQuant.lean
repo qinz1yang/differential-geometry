@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartHk.H2NonSmooth
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain
+import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.Conclusion
 
 noncomputable section
 
@@ -23,7 +23,6 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBoundCanonical
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
 
@@ -70,7 +69,7 @@ theorem exists_weak_second_partial_bound_by_geometric_constant
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)) := by
   classical
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=
-    chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
+    uniform_diffQuot_weakPartial_bound_quantitative
       (I := I) (M := M) (E := E) (H := H) (g := g) (α := α)
       hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_chart hΩ'_compact
       hη_in_Ω' hR₀_pos hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_open.measurableSet
