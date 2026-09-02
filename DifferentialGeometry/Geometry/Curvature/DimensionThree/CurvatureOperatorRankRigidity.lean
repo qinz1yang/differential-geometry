@@ -1,5 +1,8 @@
 import DifferentialGeometry.Bundle.SmoothSubbundle.KernelMotion
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionAlgebra
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorKernel
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Endomorphism
+import Mathlib.LinearAlgebra.Matrix.Rank
 
 set_option autoImplicit false
 
@@ -8,6 +11,15 @@ noncomputable section
 namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 open scoped BigOperators
+open scoped Manifold ContDiff
+
+universe uE uH uM
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I ∞ M]
 
 private theorem diagonal_mulVec_apply {q : Fin 3 → Real} {w : Fin 3 → Real} (i : Fin 3) :
     Matrix.mulVec (Matrix.diagonal q) w i = q i * w i := by
@@ -301,5 +313,61 @@ theorem curvatureOperator_rank_trichotomy_at_right_endpoint
   apply curvatureOperator_rank_trichotomy_of_reaction_annihilation hAb
   exact curvatureOperatorReaction3_kernel_annihilation_at_right_endpoint
     hab hA hK hfin hzero
+
+private theorem finrank_range_eq_matrix_rank_of_basis
+    {V : Type*} [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    (basis : Module.Basis (Fin 3) Real V) (L : V →ₗ[Real] V) :
+    Module.finrank Real L.range = Matrix.rank ((LinearMap.toMatrix basis basis) L) := by
+  rw [Matrix.rank_eq_finrank_range_toLin ((LinearMap.toMatrix basis basis) L) basis basis]
+  rw [Matrix.toLin_toMatrix]
+
+theorem curvatureOperator_finrank_range_trichotomy_of_matrix_representation
+    [FiniteDimensional Real E]
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : DifferentialGeometry.Geometry.Curvature.algebraicCurvatureTensorSubmodule
+      (I := I) (M := M) x)
+    (hmatrix : LinearMap.toMatrix
+      (curvatureTwoFormBasisAt (I := I) basis)
+      (curvatureTwoFormBasisAt (I := I) basis)
+      (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+        (I := I) g x A).toLinearMap =
+        traceNormalizedCurvatureOperatorMatrixAt (I := I) x basis A)
+    (hpositive : (traceNormalizedCurvatureOperatorMatrixAt (I := I) x basis A).PosSemidef)
+    (hnull : ∀ v : Fin 3 → Real,
+      Matrix.mulVec (traceNormalizedCurvatureOperatorMatrixAt (I := I) x basis A) v = 0 →
+        Matrix.mulVec
+          (curvatureOperatorReaction3
+            (traceNormalizedCurvatureOperatorMatrixAt (I := I) x basis A)) v = 0) :
+    Module.finrank Real
+        (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+          (I := I) g x A).range = 0 ∨
+      Module.finrank Real
+          (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+            (I := I) g x A).range = 1 ∨
+        Module.finrank Real
+            (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+              (I := I) g x A).range = 3 := by
+  let b := curvatureTwoFormBasisAt (I := I) basis
+  let _ : FiniteDimensional Real
+      (TangentSpace I x [⋀^Fin 2]→L[Real] Real) :=
+    (ContinuousAlternatingMap.elementaryCovectorBasis (k := 2)
+      (Module.finBasis Real (TangentSpace I x))).finiteDimensional_of_finite
+  let L := (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+    (I := I) g x A).toLinearMap
+  let R := traceNormalizedCurvatureOperatorMatrixAt (I := I) x basis A
+  have htri := curvatureOperator_rank_trichotomy_of_reaction_annihilation
+    (A := R) hpositive hnull
+  have hL : LinearMap.toMatrix b b L = R := by
+    simpa [b, L, R] using hmatrix
+  have hrank : Module.finrank Real L.range = R.rank := by
+    calc
+      Module.finrank Real L.range = Matrix.rank (LinearMap.toMatrix b b L) :=
+        finrank_range_eq_matrix_rank_of_basis b L
+      _ = R.rank := by rw [hL]
+  rcases htri with h0 | h1 | h3
+  · exact Or.inl (hrank.trans h0)
+  · exact Or.inr (Or.inl (hrank.trans h1))
+  · exact Or.inr (Or.inr (hrank.trans h3))
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
