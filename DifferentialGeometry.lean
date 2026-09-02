@@ -2315,6 +2315,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.React
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Region
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.RegionDistance
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.PinchingAlgebra
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.RankTrichotomy
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.UhlReaction3
@@ -3951,6 +3952,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.FirstContact
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.InitialData
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelRigidity
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelTimeConstancy
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
 import DifferentialGeometry.Analysis.Sobolev.DirichletHs.HeatSemigroupContinuity
 import DifferentialGeometry.Bundle.SmoothSubbundle.Defs
 import DifferentialGeometry.Bundle.SmoothSubbundle.Basic
