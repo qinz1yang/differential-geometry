@@ -1,5 +1,6 @@
 import Mathlib.Analysis.SpecialFunctions.PolarCoord
 import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.MeasureTheory.Integral.PeakFunction
 
@@ -11,6 +12,60 @@ open Bornology Complex Filter MeasureTheory Real Set
 open scoped Topology
 
 namespace DifferentialGeometry.Analysis.Integration
+
+theorem tendsto_integral_regularized_inv_sq_smul_of_integrable_of_ae_lower_bound
+    {α V : Type*} {m : MeasurableSpace α} {μ : Measure α}
+    [NormedAddCommGroup V] [NormedSpace Real V]
+    {u : α → Real} {b : α → V} {δ : Real}
+    (hu : AEMeasurable u μ) (hb : Integrable b μ)
+    (hδ : 0 < δ) (huδ : ∀ᵐ x ∂μ, δ ≤ u x) :
+    Tendsto
+      (fun ε : Real => ∫ x, (ε * (u x + ε)⁻¹ ^ 2) • b x ∂μ)
+      (𝓝[>] 0) (𝓝 0) := by
+  let F : Real → α → V := fun ε x => (ε * (u x + ε)⁻¹ ^ 2) • b x
+  have hF_meas : ∀ ε : Real, AEStronglyMeasurable (F ε) μ := by
+    intro ε
+    exact (((hu.add_const ε).inv.pow_const 2).const_mul ε).aestronglyMeasurable.smul
+      hb.aestronglyMeasurable
+  have hbound_integrable : Integrable (fun x => δ⁻¹ * ‖b x‖) μ := by
+    simpa only [smul_eq_mul] using hb.norm.const_mul δ⁻¹
+  have hbound : ∀ᶠ ε : Real in 𝓝[>] 0,
+      ∀ᵐ x ∂μ, ‖F ε x‖ ≤ δ⁻¹ * ‖b x‖ := by
+    filter_upwards [self_mem_nhdsWithin] with ε hε
+    change 0 < ε at hε
+    filter_upwards [huδ] with x hx
+    have hu_pos : 0 < u x := hδ.trans_le hx
+    have hden_pos : 0 < u x + ε := add_pos hu_pos hε
+    have hscalar_nonneg : 0 ≤ ε * (u x + ε)⁻¹ ^ 2 :=
+      mul_nonneg hε.le (sq_nonneg _)
+    have hscalar_le : ε * (u x + ε)⁻¹ ^ 2 ≤ δ⁻¹ := by
+      calc
+        ε * (u x + ε)⁻¹ ^ 2 ≤ (u x + ε) * (u x + ε)⁻¹ ^ 2 :=
+          mul_le_mul_of_nonneg_right (le_add_of_nonneg_left hu_pos.le) (sq_nonneg _)
+        _ = (u x + ε)⁻¹ := by field_simp
+        _ ≤ δ⁻¹ := (inv_le_inv₀ hden_pos hδ).2
+          (hx.trans (le_add_of_nonneg_right hε.le))
+    calc
+      ‖F ε x‖ = (ε * (u x + ε)⁻¹ ^ 2) * ‖b x‖ := by
+        change ‖(ε * (u x + ε)⁻¹ ^ 2) • b x‖ = _
+        rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hscalar_nonneg]
+      _ ≤ δ⁻¹ * ‖b x‖ :=
+        mul_le_mul_of_nonneg_right hscalar_le (norm_nonneg _)
+  have hlim : ∀ᵐ x ∂μ, Tendsto (fun ε => F ε x) (𝓝[>] 0) (𝓝 0) := by
+    filter_upwards [huδ] with x hx
+    have hu_ne : u x ≠ 0 := ne_of_gt (hδ.trans_le hx)
+    have hε : Tendsto (fun ε : Real => ε) (𝓝[>] 0) (𝓝 0) :=
+      tendsto_id.mono_left nhdsWithin_le_nhds
+    have hden : Tendsto (fun ε : Real => u x + ε) (𝓝[>] 0) (𝓝 (u x)) :=
+      by simpa only [add_zero] using tendsto_const_nhds.add hε
+    have hscalar : Tendsto (fun ε : Real => ε * (u x + ε)⁻¹ ^ 2)
+        (𝓝[>] 0) (𝓝 0) := by
+      simpa only [zero_mul] using hε.mul ((hden.inv₀ hu_ne).pow 2)
+    simpa only [F, zero_smul] using hscalar.smul_const (b x)
+  simpa only [F, integral_zero] using
+    tendsto_integral_filter_of_dominated_convergence
+      (fun x => δ⁻¹ * ‖b x‖)
+      (Filter.Eventually.of_forall hF_meas) hbound hbound_integrable hlim
 
 def cauchyPeak (z : Complex) : Real :=
   (Real.pi * (1 + ‖z‖ ^ 2) ^ 2)⁻¹
