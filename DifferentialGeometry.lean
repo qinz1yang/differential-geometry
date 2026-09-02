@@ -2087,6 +2087,7 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.Musical
 import DifferentialGeometry.Geometry.Connection.Laplacian.RankZero
 import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacian
 import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacianChart
+import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundleInner
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.ChristoffelCorrectionBasepoint
 import DifferentialGeometry.Geometry.Connection.LeviCivita.ChristoffelDiffKoszulDeriv
