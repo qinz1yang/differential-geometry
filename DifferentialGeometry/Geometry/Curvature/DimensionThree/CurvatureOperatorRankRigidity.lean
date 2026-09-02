@@ -370,4 +370,43 @@ theorem curvatureOperator_finrank_range_trichotomy_of_matrix_representation
   · exact Or.inr (Or.inl (hrank.trans h1))
   · exact Or.inr (Or.inr (hrank.trans h3))
 
+theorem curvatureOperatorImageAt_finrank_trichotomy_of_matrix_representation
+    [FiniteDimensional Real E]
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : DifferentialGeometry.Geometry.Curvature.algebraicCurvatureTensorSubmodule
+      (I := I) (M := M) x)
+    (hmatrix : LinearMap.toMatrix
+      (curvatureTwoFormBasisAt (I := I) basis)
+      (curvatureTwoFormBasisAt (I := I) basis)
+      (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+        (I := I) g x A).toLinearMap =
+        traceNormalizedCurvatureOperatorMatrixAt (I := I) x basis A)
+    (hpositive : (traceNormalizedCurvatureOperatorMatrixAt (I := I) x basis A).PosSemidef)
+    (hnull : ∀ v : Fin 3 → Real,
+      Matrix.mulVec (traceNormalizedCurvatureOperatorMatrixAt (I := I) x basis A) v = 0 →
+        Matrix.mulVec
+          (curvatureOperatorReaction3
+            (traceNormalizedCurvatureOperatorMatrixAt (I := I) x basis A)) v = 0) :
+    Module.finrank Real
+        (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+          (I := I) g x A) = 0 ∨
+      Module.finrank Real
+          (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+            (I := I) g x A) = 1 ∨
+        Module.finrank Real
+            (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+              (I := I) g x A) = 3 := by
+  change Module.finrank Real
+      (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+        (I := I) g x A).range = 0 ∨
+    Module.finrank Real
+        (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+          (I := I) g x A).range = 1 ∨
+      Module.finrank Real
+          (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+            (I := I) g x A).range = 3
+  exact curvatureOperator_finrank_range_trichotomy_of_matrix_representation
+    (I := I) g x basis A hmatrix hpositive hnull
+
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
