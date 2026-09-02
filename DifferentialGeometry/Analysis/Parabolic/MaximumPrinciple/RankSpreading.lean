@@ -148,6 +148,49 @@ theorem finrank_range_eq_at_positive_time_of_spreading
   · exact hspread
   · exact ht
 
+theorem finrank_range_le_of_lowerKyFanSum_pos_spreading
+    {A : ℝ → X → {B : E →L[ℝ] E // B.IsPositive}} {T : ℝ}
+    (hkyfan : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T → ∀ x y,
+      ∀ k : ℕ, 1 ≤ k → k ≤ Module.finrank ℝ E →
+        0 < ((A s x).2.toLinearMap.isSymmetric.lowerKyFanSum k) →
+        0 < ((A t y).2.toLinearMap.isSymmetric.lowerKyFanSum k))
+    {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
+    (x y : X) :
+    Module.finrank ℝ (A s x).1.range ≤
+      Module.finrank ℝ (A t y).1.range := by
+  exact LinearMap.IsPositive.finrank_range_le_of_lowerKyFanSum_pos
+    (A s x).2.toLinearMap (A t y).2.toLinearMap
+    (fun k hk₁ hkE hkpos => hkyfan hs hst ht x y k hk₁ hkE hkpos)
+
+theorem finrank_range_spatially_constant_and_locally_constant_from_lowerKyFanSum_pos
+    [Nonempty X]
+    {A : ℝ → X → {B : E →L[ℝ] E // B.IsPositive}} {T : ℝ}
+    (hT : 0 < T)
+    (hcontinuous : ∀ x, ContinuousOn (fun t => A t x) (Icc 0 T))
+    (hkyfan : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T → ∀ x y,
+      ∀ k : ℕ, 1 ≤ k → k ≤ Module.finrank ℝ E →
+        0 < ((A s x).2.toLinearMap.isSymmetric.lowerKyFanSum k) →
+        0 < ((A t y).2.toLinearMap.isSymmetric.lowerKyFanSum k)) :
+    (∀ t ∈ Ioc 0 T, ∀ x y,
+      Module.finrank ℝ (A t x).1.range =
+        Module.finrank ℝ (A t y).1.range) ∧
+      (∀ x, MonotoneOn
+        (fun t => Module.finrank ℝ (A t x).1.range) (Ioc 0 T)) ∧
+      (∀ t ∈ Ioc 0 T, ∀ x,
+        ∃ ε ∈ Ioc 0 t, ∀ s ∈ Ioc (t - ε) t,
+          Module.finrank ℝ (A s x).1.range =
+            Module.finrank ℝ (A t x).1.range) ∧
+      ∃ δ ∈ Ioc 0 T, ∃ q : Nat, ∀ t ∈ Ioc 0 δ, ∀ x,
+        Module.finrank ℝ (A t x).1.range = q := by
+  refine rank_spatially_constant_and_locally_constant_from_left_of_spreading
+    hT ?_ ?_
+  · intro t ht x
+    exact ContinuousLinearMap.IsPositive.eventually_finrank_range_ge_of_tendsto
+      (hcontinuous x t ⟨ht.1.le, ht.2⟩)
+  · intro s t hs hst ht x y
+    exact finrank_range_le_of_lowerKyFanSum_pos_spreading
+      hkyfan hs hst ht x y
+
 theorem finrank_range_spatially_constant_and_locally_constant_from_left_of_spreading
     [Nonempty X]
     {A : ℝ → X → {B : E →L[ℝ] E // B.IsPositive}} {T : ℝ}
