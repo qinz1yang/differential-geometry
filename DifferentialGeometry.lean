@@ -3060,6 +3060,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.GaussianRigidity
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.GaussianModelCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ChowLuYang
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceIdentities
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceMorse
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceCompactness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.MunteanuWang
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.MunteanuWangCompactness
@@ -3194,6 +3195,7 @@ import DifferentialGeometry.Topology.Morse.NoCriticalValues
 import DifferentialGeometry.Topology.Morse.RegularSublevel
 import DifferentialGeometry.Topology.Morse.RegularIsotopy
 import DifferentialGeometry.Topology.Morse.RegularVectorField
+import DifferentialGeometry.Topology.Morse.Riemannian
 import DifferentialGeometry.Topology.Morse.SmoothHandleAttachment
 import DifferentialGeometry.Topology.Morse.SublevelTransport
 import DifferentialGeometry.Tensor.Alternating.Basis
