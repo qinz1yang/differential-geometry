@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Reaction
+import Mathlib.Analysis.InnerProductSpace.Positive
+import Mathlib.LinearAlgebra.Trace
 import Mathlib.LinearAlgebra.Matrix.PosDef
 
 set_option autoImplicit false
@@ -13,6 +15,41 @@ open scoped BigOperators
 def curvatureOperatorReaction3
     (A : Matrix (Fin 3) (Fin 3) Real) : Matrix (Fin 3) (Fin 3) Real :=
   A * A + A.adjugate
+
+def curvatureOperatorReactionEndomorphism3
+    {V : Type*} [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    (A : V →ₗ[Real] V) : V →ₗ[Real] V :=
+  (2 : Real) • (A.comp A) - (LinearMap.trace Real V A) • A +
+    (((LinearMap.trace Real V A) ^ 2 - LinearMap.trace Real V (A.comp A)) / (2 : Real)) •
+      LinearMap.id
+
+private theorem curvatureOperatorReaction3_eq_trace_polynomial
+    (A : Matrix (Fin 3) (Fin 3) Real) :
+    curvatureOperatorReaction3 A =
+      (2 : Real) • (A * A) - A.trace • A +
+        ((A.trace ^ 2 - (A * A).trace) / (2 : Real)) •
+          (1 : Matrix (Fin 3) (Fin 3) Real) := by
+  unfold curvatureOperatorReaction3
+  rw [Matrix.adjugate_fin_three]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.trace, Matrix.diag, Matrix.mul_apply, Fin.sum_univ_three] <;> ring
+
+theorem curvatureOperatorReactionEndomorphism3_toMatrix
+    {V : Type*} [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    (basis : Module.Basis (Fin 3) Real V) (A : V →ₗ[Real] V) :
+    LinearMap.toMatrix basis basis (curvatureOperatorReactionEndomorphism3 A) =
+      curvatureOperatorReaction3 (LinearMap.toMatrix basis basis A) := by
+  classical
+  let B := LinearMap.toMatrix basis basis A
+  have htrace : LinearMap.trace Real V A = B.trace :=
+    LinearMap.trace_eq_matrix_trace Real basis A
+  have htraceSq : LinearMap.trace Real V (A.comp A) = (B * B).trace := by
+    rw [LinearMap.trace_eq_matrix_trace Real basis, LinearMap.toMatrix_comp basis basis basis]
+  unfold curvatureOperatorReactionEndomorphism3
+  simp only [map_add, map_sub, map_smul, LinearMap.toMatrix_id]
+  rw [LinearMap.toMatrix_comp basis basis basis, htrace, htraceSq]
+  exact (curvatureOperatorReaction3_eq_trace_polynomial B).symm
 
 private lemma diagProduct_erase_curvatureReaction3
     (l1 l2 l3 : Real) (i : Fin 3) :

@@ -21,6 +21,12 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
+noncomputable local instance twoFormFiniteDimensional (x : M)
+    [FiniteDimensional Real E] :
+    FiniteDimensional Real (TangentSpace I x [⋀^Fin 2]→L[Real] Real) :=
+  (ContinuousAlternatingMap.elementaryCovectorBasis (k := 2)
+    (Module.finBasis Real (TangentSpace I x))).finiteDimensional_of_finite
+
 private theorem diagonal_mulVec_apply {q : Fin 3 → Real} {w : Fin 3 → Real} (i : Fin 3) :
     Matrix.mulVec (Matrix.diagonal q) w i = q i * w i := by
   unfold Matrix.mulVec dotProduct Matrix.diagonal
@@ -313,6 +319,146 @@ theorem curvatureOperator_rank_trichotomy_at_right_endpoint
   apply curvatureOperator_rank_trichotomy_of_reaction_annihilation hAb
   exact curvatureOperatorReaction3_kernel_annihilation_at_right_endpoint
     hab hA hK hfin hzero
+
+theorem curvatureOperatorEndomorphism_finrank_range_trichotomy
+    {V : Type*} [NormedAddCommGroup V] [InnerProductSpace Real V]
+    [FiniteDimensional Real V]
+    (hDim : Module.finrank Real V = 3) (A : V →ₗ[Real] V)
+    (hA : A.IsPositive)
+    (hnull : ∀ v : V, A v = 0 → curvatureOperatorReactionEndomorphism3 A v = 0) :
+    Module.finrank Real A.range = 0 ∨
+      Module.finrank Real A.range = 1 ∨
+        Module.finrank Real A.range = 3 := by
+  let basis : OrthonormalBasis (Fin 3) Real V :=
+    hA.isSymmetric.eigenvectorBasis hDim
+  let matrix : Matrix (Fin 3) (Fin 3) Real :=
+    LinearMap.toMatrix basis.toBasis basis.toBasis A
+  have hmatrix_positive : matrix.PosSemidef :=
+    (LinearMap.posSemidef_toMatrix_iff basis).mpr hA
+  have hmatrix_null : ∀ v : Fin 3 → Real,
+      Matrix.mulVec matrix v = 0 →
+        Matrix.mulVec (curvatureOperatorReaction3 matrix) v = 0 := by
+    intro v hv
+    let w : V := basis.repr.symm (WithLp.toLp 2 v)
+    have hwrepr : (basis.toBasis.repr w : Fin 3 → Real) = v := by
+      ext i
+      simp [w]
+    have hAwrepr : basis.toBasis.repr (A w) = 0 := by
+      have hcoord := LinearMap.toMatrix_mulVec_repr
+        basis.toBasis basis.toBasis A w
+      rw [hwrepr] at hcoord
+      rw [show matrix = LinearMap.toMatrix basis.toBasis basis.toBasis A by rfl] at hv
+      simpa using hcoord.symm.trans hv
+    have hAw : A w = 0 :=
+      basis.toBasis.repr.injective (by simpa using hAwrepr)
+    have hreaction := hnull w hAw
+    have hcoord := LinearMap.toMatrix_mulVec_repr basis.toBasis basis.toBasis
+      (curvatureOperatorReactionEndomorphism3 A) w
+    rw [curvatureOperatorReactionEndomorphism3_toMatrix basis.toBasis A, hwrepr] at hcoord
+    rw [hreaction] at hcoord
+    simpa using hcoord
+  have htrichotomy :=
+    curvatureOperator_rank_trichotomy_of_reaction_annihilation
+      hmatrix_positive hmatrix_null
+  have hrank : Module.finrank Real A.range = matrix.rank := by
+    calc
+      Module.finrank Real A.range = Matrix.rank
+          (LinearMap.toMatrix basis.toBasis basis.toBasis A) := by
+        rw [Matrix.rank_eq_finrank_range_toLin
+          (LinearMap.toMatrix basis.toBasis basis.toBasis A)
+          basis.toBasis basis.toBasis]
+        rw [Matrix.toLin_toMatrix]
+      _ = matrix.rank := by rfl
+  rcases htrichotomy with hzero | hone | hthree
+  · exact Or.inl (hrank.trans hzero)
+  · exact Or.inr (Or.inl (hrank.trans hone))
+  · exact Or.inr (Or.inr (hrank.trans hthree))
+
+theorem curvatureOperatorEndomorphism_finrank_range_trichotomy_of_metric
+    {V : Type*} [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    (D : DifferentialGeometry.Tensor0SBundle.MetricFiberData V)
+    (hDim : Module.finrank Real V = 3) (A : V →ₗ[Real] V)
+    (hA_symm : D.IsSymmetric A)
+    (hA_nonneg : ∀ v : V, 0 ≤ D.inner (A v) v)
+    (hnull : ∀ v : V, A v = 0 → curvatureOperatorReactionEndomorphism3 A v = 0) :
+    Module.finrank Real A.range = 0 ∨
+      Module.finrank Real A.range = 1 ∨
+        Module.finrank Real A.range = 3 := by
+  let addV : AddCommGroup V := inferInstance
+  let modV : Module Real V := inferInstance
+  let : InnerProductSpace.Core Real V := D.toCore
+  let : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
+  let : AddCommGroup V := addV
+  let : Module Real V := modV
+  let : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
+  have hA : A.IsPositive := by
+    rw [LinearMap.isPositive_iff]
+    constructor
+    · intro v w
+      rw [DifferentialGeometry.Tensor0SBundle.MetricFiberData.toCore_inner D,
+        DifferentialGeometry.Tensor0SBundle.MetricFiberData.toCore_inner D]
+      exact hA_symm v w
+    · intro v
+      rw [DifferentialGeometry.Tensor0SBundle.MetricFiberData.toCore_inner D]
+      exact hA_nonneg v
+  exact curvatureOperatorEndomorphism_finrank_range_trichotomy hDim A hA hnull
+
+theorem curvatureOperatorImageAt_finrank_trichotomy
+    [FiniteDimensional Real E]
+    (hDim : Module.finrank Real E = 3)
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (A : DifferentialGeometry.Geometry.Curvature.algebraicCurvatureTensorSubmodule
+      (I := I) (M := M) x)
+    (hpositive : ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+      0 ≤ (DifferentialGeometry.Geometry.Curvature.twoFormMetricData
+        (I := I) g x).inner
+          (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+            (I := I) g x A a) a)
+    (hnull : ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+      DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+          (I := I) g x A a = 0 →
+        curvatureOperatorReactionEndomorphism3
+            (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+              (I := I) g x A).toLinearMap a = 0) :
+    Module.finrank Real
+        (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+          (I := I) g x A) = 0 ∨
+      Module.finrank Real
+          (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+            (I := I) g x A) = 1 ∨
+        Module.finrank Real
+            (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+              (I := I) g x A) = 3 := by
+  have hTangentDim : Module.finrank Real (TangentSpace I x) = 3 := by
+    exact (show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl).trans hDim
+  let tangentBasis : Module.Basis (Fin 3) Real (TangentSpace I x) := by
+    have basis := Module.finBasis Real (TangentSpace I x)
+    rw [hTangentDim] at basis
+    exact basis
+  let twoFormBasis := DifferentialGeometry.Geometry.Curvature.curvatureTwoFormBasisAt
+    (I := I) tangentBasis
+  have hTwoFormDim : Module.finrank Real
+      (TangentSpace I x [⋀^Fin 2]→L[Real] Real) = 3 := by
+    rw [Module.finrank_eq_card_basis twoFormBasis, Fintype.card_fin]
+  change Module.finrank Real
+      (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+        (I := I) g x A).toLinearMap.range = 0 ∨
+    Module.finrank Real
+        (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+          (I := I) g x A).toLinearMap.range = 1 ∨
+      Module.finrank Real
+          (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+            (I := I) g x A).toLinearMap.range = 3
+  exact curvatureOperatorEndomorphism_finrank_range_trichotomy_of_metric
+    (DifferentialGeometry.Geometry.Curvature.twoFormMetricData (I := I) g x)
+    hTwoFormDim
+    (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+      (I := I) g x A).toLinearMap
+    (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt_isSymmetric
+      (I := I) g x A)
+    hpositive hnull
 
 private theorem finrank_range_eq_matrix_rank_of_basis
     {V : Type*} [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
