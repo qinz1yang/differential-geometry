@@ -210,4 +210,59 @@ theorem tendsto_integral_regularized_quadratic_kernel_mul_of_integrable
   field_simp [ha, ne_of_gt hc, Real.pi_ne_zero]
   ring
 
+theorem tendsto_integral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_zero
+    {a : Real} (ha : a ≠ 0) {g : Complex → Real}
+    (hg : Integrable g) (hcont : ContinuousAt g 0) :
+    Tendsto
+      (fun ε : Real => ∫ z : Complex,
+        ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2)
+      (𝓝[>] 0) (𝓝 (Real.pi / a ^ 2 * g 0)) := by
+  let c : Real → Real := fun ε => |a| * (Real.sqrt ε)⁻¹
+  have hsqrt_full : Tendsto (fun ε : Real => Real.sqrt ε) (𝓝 0) (𝓝 0) := by
+    simpa only [Real.sqrt_zero] using Real.continuous_sqrt.tendsto (0 : Real)
+  have hsqrt : Tendsto (fun ε : Real => Real.sqrt ε) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨hsqrt_full.mono_left nhdsWithin_le_nhds, ?_⟩
+    filter_upwards [self_mem_nhdsWithin] with ε hε
+    exact Real.sqrt_pos.2 hε
+  have hc : Tendsto c (𝓝[>] 0) atTop := by
+    exact (tendsto_inv_nhdsGT_zero.comp hsqrt).const_mul_atTop (abs_pos.2 ha)
+  have hbase :=
+    (tendsto_integral_regularized_quadratic_kernel_mul_of_integrable ha hg hcont).comp hc
+  apply hbase.congr'
+  filter_upwards [self_mem_nhdsWithin] with ε hε
+  change 0 < ε at hε
+  apply integral_congr_ae
+  filter_upwards with z
+  have hsqrt_pos : 0 < Real.sqrt ε := Real.sqrt_pos.2 hε
+  have hscale : a ^ 2 / c ε ^ 2 = ε := by
+    dsimp [c]
+    field_simp [ha, ne_of_gt hsqrt_pos]
+    rw [sq_abs, Real.sq_sqrt hε.le]
+  rw [hscale]
+
+theorem tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_zero
+    {a : Real} (ha : a ≠ 0) {s : Set Complex}
+    (hs : MeasurableSet s) (h0 : s ∈ 𝓝 (0 : Complex))
+    {g : Complex → Real} (hg : Integrable g) (hcont : ContinuousAt g 0) :
+    Tendsto
+      (fun ε : Real => ∫ z in s,
+        ε * g z * (a ^ 2 * ‖z‖ ^ 2 + ε)⁻¹ ^ 2)
+      (𝓝[>] 0) (𝓝 (Real.pi / a ^ 2 * g 0)) := by
+  have h0s : (0 : Complex) ∈ s := mem_of_mem_nhds h0
+  have hindicator : s.indicator g =ᶠ[𝓝 (0 : Complex)] g := by
+    filter_upwards [h0] with z hz
+    rw [indicator_of_mem hz]
+  have hbase :=
+    tendsto_integral_regularized_quadratic_kernel_mul_of_integrable_nhdsGT_zero
+      ha (hg.indicator hs) (hcont.congr_of_eventuallyEq hindicator)
+  rw [indicator_of_mem h0s] at hbase
+  apply hbase.congr'
+  filter_upwards with ε
+  rw [← integral_indicator hs]
+  apply integral_congr_ae
+  filter_upwards with z
+  by_cases hz : z ∈ s
+  · simp only [indicator_of_mem hz]
+  · simp only [indicator_of_notMem hz, mul_zero, zero_mul]
+
 end DifferentialGeometry.Analysis.Integration
