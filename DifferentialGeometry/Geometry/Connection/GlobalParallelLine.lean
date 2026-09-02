@@ -256,7 +256,7 @@ private theorem unitLine_isCoveringMap
   exact (unitLine_isEvenlyCovered g S hSrank hS x).to_isEvenlyCovered_preimage
 
 theorem ContMDiffVectorSubbundle.exists_global_parallel_unit_section_of_rank_eq_one
-    [Nonempty M] [SimplyConnectedSpace M]
+    [SimplyConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
     (S : ContMDiffVectorSubbundle
       (I := I) (F := E) (V := (TangentSpace I : M → Type _))
