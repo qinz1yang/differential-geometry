@@ -1494,4 +1494,29 @@ theorem normalizedGradientRicciSoliton_potential_constant_of_compact_of_finrank_
   rw [hone, hzero] at hstrict
   exact lt_irrefl 0 hstrict
 
+theorem normalizedGradientRicciSoliton_scalar_eq_one_of_compact_of_finrank_eq_two
+    [CompactSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2) :
+    ∀ x : M, metricScalarAt (I := I) (M := M) g x = 1 := by
+  have hconstant :=
+    normalizedGradientRicciSoliton_potential_constant_of_compact_of_finrank_eq_two
+      (I := I) (E := E) h hdim
+  let c : Real := f (Classical.arbitrary M)
+  have hf : f = ContMDiffMap.const (I := I) (I' := 𝓘(Real, Real))
+      (M := M) c := by
+    apply ContMDiffMap.ext
+    intro x
+    exact hconstant x (Classical.arbitrary M)
+  have hlap : ∀ x : M, ΔG (I := I) g f x = 0 := by
+    intro x
+    rw [hf]
+    exact Δ_g_const (I := I) g c x
+  intro x
+  have htrace := gradientRicciSoliton_trace (I := I) h.2.1 x
+  rw [hlap x, hdim] at htrace
+  norm_num at htrace ⊢
+  linarith
+
 end DifferentialGeometry.Geometry
