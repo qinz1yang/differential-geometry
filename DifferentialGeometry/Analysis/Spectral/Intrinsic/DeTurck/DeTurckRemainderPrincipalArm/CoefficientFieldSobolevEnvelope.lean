@@ -6,6 +6,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipal
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderHigherOrderTame
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNormEquiv
+import DifferentialGeometry.Analysis.Convex.LogConvexSequence
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.CrossScalePairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ArmCoefficient.ReindexingNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ConnectionLaplacian.CommutatorCoefficientTame
@@ -89,7 +91,7 @@ private lemma smoothCcToTensorHs_norm_logConvex (g₀ : SmoothRiemannianMetric I
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k + 1 : ℕ) : ℝ) T₀‖ ^ 2 ≤
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k + 2 : ℕ) : ℝ) T₀‖ *
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℕ) : ℝ) T₀‖ := by
-  have hv := DifferentialGeometry.Analysis.Parabolic.QuasiLinear.tensorHs_incl_norm_sq_le
+  have hv := DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.tensorHsInclusion_norm_sq_le
     (I := I) (M := M) (g := g₀) (r := 0) (s := 2) (a := (k : ℝ))
     (smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℝ) + 2) T₀)
   rw [tensorHsInclusion_smoothCcToTensorHs (I := I) (M := M) g₀
@@ -112,12 +114,12 @@ private lemma logConvex_extreme_product_le {f : ℕ → ℝ} (hf_nn : ∀ k, 0 �
       f σ₁ * f σ₂ ≤ B * f γ := by
     intro σ₁ σ₂ hle h1γ h2γ hs
     by_cases hge : γ ≤ σ₁ + σ₂
-    · have hex := DifferentialGeometry.Analysis.Parabolic.QuasiLinear.logConvex_extreme_pair
+    · have hex := DifferentialGeometry.Analysis.Convex.logConvex_extreme_pair
         hf_nn hlc (σ₁ := σ₁) (σ₂ := σ₂) (τ₁ := σ₁ + σ₂ - γ) (τ₂ := γ)
         (by omega) hle (by omega)
       have hlowB : f (σ₁ + σ₂ - γ) ≤ B := hB _ (by omega)
       exact le_trans hex (mul_le_mul_of_nonneg_right hlowB (hf_nn γ))
-    · have hex := DifferentialGeometry.Analysis.Parabolic.QuasiLinear.logConvex_extreme_pair
+    · have hex := DifferentialGeometry.Analysis.Convex.logConvex_extreme_pair
         hf_nn hlc (σ₁ := σ₁) (σ₂ := σ₂) (τ₁ := 0) (τ₂ := σ₁ + σ₂)
         (Nat.zero_le _) hle (by omega)
       have hf0B : f 0 ≤ B := hB 0 (Nat.zero_le _)
