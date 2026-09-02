@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.CompactCutoff
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBound
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotGTotalBound
+import DifferentialGeometry.Analysis.Elliptic.MetricExtension.DensityBounds
+import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.DataBounds
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.UniformDifferenceQuotient
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.ChartBilinearVariationalIdentity
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.SubstitutionNonSmooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.Coercivity
@@ -30,7 +31,6 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
-open DifferentialGeometry.Analysis.Laplacian.ChartBilinearUniformDiffQuotBound
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
 open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
@@ -353,17 +353,17 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     fun i k => Real.sqrt ((2 / B.lam) *
       nirenbergMasterYoungConstant B N hΩ'_compact k *
       (2 * ((Module.finrank ℝ E : ℝ) + 1) * (M_χ ^ 2 + M_dχ ^ 2 + 1)) *
-      max 1 ((chartDensitySup (I := I) (M := M) g α Ω') ^ 2))
+      max 1 ((densityOnEuclidClosureSup (I := I) (M := M) g α Ω') ^ 2))
     with hC_geom_def
   refine ⟨C_geom, fun i k => Real.sqrt_nonneg _, ?_⟩
   intro D i k h hh_pos hh_le
-  have h_FK_diffQuot_u_bound :=
+  have h_diffQuot_u_bound :=
     integral_sq_diffQuot_uChart_le (I := I) (M := M) D hη_supp
       hΩ'_chart hΩ'_compact hR₀_pos hh_supp_in_Ω'
-  have h_v_test_sq_bound :=
+  have h_testFunction_sq_bound :=
     integral_sq_nirenbergTestFunction_le (I := I) (M := M) D hη hη_supp hη_range
       hN h_fderiv_eta hΩ'_chart hR₀_pos hh_supp_in_Ω'
-  have h_master_nonsmooth :=
+  have h_coercivity :=
     weighted_diffQuot_weakPartial_energy_le (I := I) (M := M) D B hη hη_supp
       hΩ'_chart hη_in_Ω' hR₀_pos hh_supp_in_Ω'
       hB_a_match hB_c_match
@@ -603,7 +603,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       intro l _
       rw [hg_g_eq_on_closure x hx_in_closure l]
     rw [h_LHS_eq, h_RHS_eq]
-    exact h_FK_diffQuot_u_bound k hh hh_le
+    exact h_diffQuot_u_bound k hh hh_le
   have h_nirenberg_eq :
       ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
       ∀ (k : Fin (Module.finrank ℝ E)),
@@ -696,7 +696,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
           subset_tsupport η (Function.mem_support.mpr hη_x)
         rw [h_diffQuot_g_g_eq_on_tsupport hh hh_le k k x hx_in_supp]
     rw [h_LHS_eq, h_RHS_1_eq, h_RHS_2_eq]
-    exact h_v_test_sq_bound k hh hh_le
+    exact h_testFunction_sq_bound k hh hh_le
   have h_master :
       ∀ (k : Fin (Module.finrank ℝ E)),
       ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -1183,7 +1183,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       intro j _
       exact h_A3_eq i j
     rw [h_A1_sum_eq, h_A2_sum_eq, h_A3_sum_eq, h_f_term_eq, h_c_term_eq]
-    exact h_master_nonsmooth k hh hh_le
+    exact h_coercivity k hh hh_le
   have h_g_g_quant :
       eLpNorm
         (DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -1195,10 +1195,10 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
               ∂(volume : Measure EuclN) +
             ∫ x in Ω', (u_g x)^2 ∂(volume : Measure EuclN) +
             ∫ x in Ω', (f_g x)^2 ∂(volume : Measure EuclN)))) :=
-    chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
-      (E := E)
+    uniform_diffQuot_bound_quantitative
+      (d := Module.finrank ℝ E)
       B hu_g_l2 hf_g_l2_loc hg_g_l2 hη hη_supp hη_range hN
-      h_fderiv_eta hΩ' (by intro x _; exact Set.mem_univ _) hΩ'_compact
+      h_fderiv_eta hΩ' hΩ'_compact
       hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas
       h_FK h_v_test_sq h_master hh_pos hh_le
   have hΩ'_closure_meas : MeasurableSet (closure Ω') :=
@@ -1211,7 +1211,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     with hfSrc_def
   have hfSrc_l2_closure : MemLp fSrc 2
       ((volume : Measure EuclN).restrict (closure Ω')) :=
-    densityWeightedSource_memLp (I := I) (M := M) (g := g) (α := α)
+    densityOnEuclid_mul_memLp (I := I) (M := M) (g := g) (α := α)
       hΩ'_compact hΩ'_chart hf_chart_l2_closure
   set Sw : ℝ := ∑ l : Fin (Module.finrank ℝ E),
       (eLpNorm (D.weakPartial l) 2
@@ -1244,8 +1244,8 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
   have h_Sf'_le :
       (eLpNorm fSrc 2
         ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 ≤
-        (chartDensitySup (I := I) (M := M) g α Ω') ^ 2 * Sf := by
-    have h := densityWeightedSource_eLpNorm_sq_le (I := I) (M := M)
+        (densityOnEuclidClosureSup (I := I) (M := M) g α Ω') ^ 2 * Sf := by
+    have h := eLpNorm_densityOnEuclid_mul_sq_le (I := I) (M := M)
       (g := g) (α := α) hΩ'_compact hΩ'_chart hf_chart_l2_closure
     rw [hfSrc_def, hSf_def]
     exact h
@@ -1253,15 +1253,16 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       Cχ * (Sw + Su +
         (eLpNorm fSrc 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2) := by
-    have h := gTotal_le_data_eLpNorm (I := I) (M := M) (g := g) (α := α)
+    have h := cutoff_energy_le_data_eLpNorm_sq (I := I) (M := M) (g := g) (α := α)
       hχ_smooth hM_χ_bd hM_dχ_bd hΩ'_compact hΩ'_chart hfSrc_l2_closure D
     rw [hG_total_def, hCχ_def, hSw_def, hSu_def]
     simp only [hg_g_def, hu_g_def, hf_g_def, hfSrc_def] at h ⊢
     convert h using 2
-  set Mden2 : ℝ := max 1 ((chartDensitySup (I := I) (M := M) g α Ω') ^ 2)
+  set Mden2 : ℝ := max 1 ((densityOnEuclidClosureSup (I := I) (M := M) g α Ω') ^ 2)
     with hMden2_def
   have hMden2_one_le : (1 : ℝ) ≤ Mden2 := le_max_left _ _
-  have hMden2_dens_le : (chartDensitySup (I := I) (M := M) g α Ω') ^ 2 ≤ Mden2 :=
+  have hMden2_dens_le :
+      (densityOnEuclidClosureSup (I := I) (M := M) g α Ω') ^ 2 ≤ Mden2 :=
     le_max_right _ _
   have hMden2_nn : 0 ≤ Mden2 := le_trans zero_le_one hMden2_one_le
   have h_gTotal_max : G_total ≤ Cχ * Mden2 * (Sw + Su + Sf) := by

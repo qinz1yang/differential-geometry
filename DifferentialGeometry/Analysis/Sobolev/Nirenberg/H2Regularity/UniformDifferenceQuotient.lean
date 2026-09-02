@@ -1,42 +1,19 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1Compl_H1_0
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartHk.H2NonSmooth
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.MasterInequalityNonSmooth
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.WeakRegularity
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakDerivativeBound
 
 noncomputable section
 
-open Bundle Manifold Set MeasureTheory Filter Topology Function
-open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
-  RealInnerProductSpace ENNReal
-
-namespace DifferentialGeometry
-namespace Analysis
-namespace Laplacian
-namespace ChartBilinearUniformDiffQuotBound
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Analysis.Laplacian.MetricExtension
-open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
-open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
-open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
+open MeasureTheory Metric Filter Topology Set Function
 open DifferentialGeometry.Analysis.Sobolev
-open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
 open DifferentialGeometry.Analysis.Sobolev.NirenbergCrossBoundsNonSmooth
+open scoped ENNReal NNReal Convolution Pointwise BigOperators InnerProductSpace
 
-private local instance : MeasurableSpace E := borel E
-private local instance : BorelSpace E := ⟨rfl⟩
-private local instance : MeasurableSpace M := borel M
-private local instance : BorelSpace M := ⟨rfl⟩
+namespace DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
 
-local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+variable {d : ℕ} [NeZero d]
+
+local notation "Eucl" => EuclideanSpace ℝ (Fin d)
 
 private lemma sq_le_finset_sum_sq
     {n : ℕ} {α : Type*} (f : Fin n → α → ℝ) (i : Fin n) (x : α) :
@@ -133,118 +110,116 @@ private lemma eLpNorm_two_le_ofReal_sqrt
   rw [sqrt_ofReal_eq_ofReal_sqrt hS] at h_pow
   exact h_pow
 
-omit [FiniteDimensional ℝ E] in
-theorem chartBilinearH1Compl_uniform_diffQuot_bound
+theorem uniform_diffQuot_bound
     (B : SmoothEllipticBilinearForm
-      (Module.finrank ℝ E) (Set.univ : Set EuclN))
-    {u_g f_g : EuclN → ℝ}
-    (hu_g_l2 : MemLp u_g 2 (volume : Measure EuclN))
-    (hf_g_l2_loc : ∀ {Ω' : Set EuclN}, IsCompact (closure Ω') →
-      MemLp f_g 2 ((volume : Measure EuclN).restrict Ω'))
-    {g_g : Fin (Module.finrank ℝ E) → EuclN → ℝ}
-    (hg_g_l2 : ∀ i, MemLp (g_g i) 2 (volume : Measure EuclN))
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
+      d (Set.univ : Set Eucl))
+    {u_g f_g : Eucl → ℝ}
+    (hu_g_l2 : MemLp u_g 2 (volume : Measure Eucl))
+    (hf_g_l2_loc : ∀ {Ω' : Set Eucl}, IsCompact (closure Ω') →
+      MemLp f_g 2 ((volume : Measure Eucl).restrict Ω'))
+    {g_g : Fin d → Eucl → ℝ}
+    (hg_g_l2 : ∀ i, MemLp (g_g i) 2 (volume : Measure Eucl))
+    {η : Eucl → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ N)
-    {Ω' Ω'' : Set EuclN} (hΩ' : IsOpen Ω')
-    (hΩ'_closure : closure Ω' ⊆ (Set.univ : Set EuclN))
+    {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : Eucl, ‖fderiv ℝ η x‖ ≤ N)
+    {Ω' Ω'' : Set Eucl} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_meas : MeasurableSet Ω'')
-    (h_FK_diffQuot_u_bound :
-      ∀ (k : Fin (Module.finrank ℝ E)),
+    (h_diffQuot_u_bound :
+      ∀ (k : Fin d),
       ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
         ∫ x in tsupport η,
             (DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g x)^2
-          ∂(volume : Measure EuclN) ≤
-          ∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((g_g l) x) ^ 2
-            ∂(volume : Measure EuclN))
-    (h_v_test_sq_bound :
-      ∀ (k : Fin (Module.finrank ℝ E)),
+          ∂(volume : Measure Eucl) ≤
+          ∫ x in Ω', ∑ l : Fin d, ((g_g l) x) ^ 2
+            ∂(volume : Measure Eucl))
+    (h_testFunction_sq_bound :
+      ∀ (k : Fin d),
       ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
         ∫ x, (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η u_g x)^2 ∂(volume : Measure EuclN) ≤
+              k h η u_g x)^2 ∂(volume : Measure Eucl) ≤
           8 * N^2 *
             ∫ x in tsupport η,
                 (DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g x)^2
-              ∂(volume : Measure EuclN) +
+              ∂(volume : Measure Eucl) +
           2 * ∫ x, (η x)^2 *
               (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g k) x)^2
-            ∂(volume : Measure EuclN))
-    (h_master_nonsmooth :
-      ∀ (k : Fin (Module.finrank ℝ E)),
+            ∂(volume : Measure Eucl))
+    (h_coercivity :
+      ∀ (k : Fin d),
       ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
       B.lam * ∫ x, (η x)^2 *
-          ∑ l : Fin (Module.finrank ℝ E),
+          ∑ l : Fin d,
             DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g l) x ^ 2
-        ∂(volume : Measure EuclN) ≤
-        |∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E), ∫ x,
+        ∂(volume : Measure Eucl) ≤
+        |∑ i : Fin d,
+          ∑ j : Fin d, ∫ x,
               2 * DifferentialGeometry.Analysis.Sobolev.translate k h
-                (fun y : EuclN => B.a y i j) x * (η x) *
+                (fun y : Eucl => B.a y i j) x * (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g i) x *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g x
-            ∂(volume : Measure EuclN)| +
-        |∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E), ∫ x,
+            ∂(volume : Measure Eucl)| +
+        |∑ i : Fin d,
+          ∑ j : Fin d, ∫ x,
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
-                (fun y : EuclN => B.a y i j) x * (η x)^2 *
+                (fun y : Eucl => B.a y i j) x * (η x)^2 *
               ((g_g i) x) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g j) x
-            ∂(volume : Measure EuclN)| +
-        |∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E), ∫ x,
+            ∂(volume : Measure Eucl)| +
+        |∑ i : Fin d,
+          ∑ j : Fin d, ∫ x,
               2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
-                (fun y : EuclN => B.a y i j) x * (η x) *
+                (fun y : Eucl => B.a y i j) x * (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
               ((g_g i) x) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g x
-            ∂(volume : Measure EuclN)| +
-        |∫ x in (Set.univ : Set EuclN), f_g x *
+            ∂(volume : Measure Eucl)| +
+        |∫ x in (Set.univ : Set Eucl), f_g x *
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g x| +
-        |∫ x in (Set.univ : Set EuclN), B.c x * u_g x *
+        |∫ x in (Set.univ : Set Eucl), B.c x * u_g x *
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η u_g x ∂(volume : Measure EuclN)|) :
-    ∃ MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ,
+              k h η u_g x ∂(volume : Measure Eucl)|) :
+    ∃ MBound : Fin d → Fin d → ℝ,
       (∀ i k, 0 ≤ MBound i k) ∧
-      (∀ (i k : Fin (Module.finrank ℝ E)) (h : ℝ),
+      (∀ (i k : Fin d) (h : ℝ),
         0 < |h| → |h| ≤ R₀ →
           eLpNorm
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (g_g i)) 2
-            ((volume : Measure EuclN).restrict Ω'')
+              (d := d) k h (g_g i)) 2
+            ((volume : Measure Eucl).restrict Ω'')
           ≤ ENNReal.ofReal (MBound i k)) := by
   classical
   have h_per_k :
-      ∀ (k : Fin (Module.finrank ℝ E)),
+      ∀ (k : Fin d),
       ∃ C_k : ℝ, 0 ≤ C_k ∧ ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
         (B.lam / 2) * ∫ x in Ω'',
-            ∑ l : Fin (Module.finrank ℝ E),
+            ∑ l : Fin d,
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g l) x ^ 2
-          ∂(volume : Measure EuclN) ≤
-          C_k * (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((g_g l) x) ^ 2
-                  ∂(volume : Measure EuclN) +
-              ∫ x in Ω', (u_g x)^2 ∂(volume : Measure EuclN) +
-              ∫ x in Ω', (f_g x)^2 ∂(volume : Measure EuclN)) := by
+          ∂(volume : Measure Eucl) ≤
+          C_k * (∫ x in Ω', ∑ l : Fin d, ((g_g l) x) ^ 2
+                  ∂(volume : Measure Eucl) +
+              ∫ x in Ω', (u_g x)^2 ∂(volume : Measure Eucl) +
+              ∫ x in Ω', (f_g x)^2 ∂(volume : Measure Eucl)) := by
     intro k
-    exact nirenberg_diffQuot_g_localL2_bound (d := Module.finrank ℝ E)
+    exact nirenberg_diffQuot_g_localL2_bound (d := d)
       B hu_g_l2 hf_g_l2_loc hg_g_l2
-      hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
+      hη hη_supp hη_range hN h_fderiv_eta hΩ' (Set.subset_univ _) hΩ'_compact
       hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas k
-      (h_FK_diffQuot_u_bound k)
-      (h_v_test_sq_bound k)
-      (h_master_nonsmooth k)
+      (h_diffQuot_u_bound k)
+      (h_testFunction_sq_bound k)
+      (h_coercivity k)
   set G_total : ℝ :=
-    (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((g_g l) x) ^ 2
-      ∂(volume : Measure EuclN) +
-      ∫ x in Ω', (u_g x)^2 ∂(volume : Measure EuclN) +
-      ∫ x in Ω', (f_g x)^2 ∂(volume : Measure EuclN)) with hG_total_def
+    (∫ x in Ω', ∑ l : Fin d, ((g_g l) x) ^ 2
+      ∂(volume : Measure Eucl) +
+      ∫ x in Ω', (u_g x)^2 ∂(volume : Measure Eucl) +
+      ∫ x in Ω', (f_g x)^2 ∂(volume : Measure Eucl)) with hG_total_def
   have hG_total_nn : 0 ≤ G_total := by
     rw [hG_total_def]
     refine add_nonneg (add_nonneg ?_ ?_) ?_
@@ -257,15 +232,15 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
       intro x; exact sq_nonneg _
   have hlam_pos : 0 < B.lam := B.hlam_pos
   have hlam_half_pos : 0 < B.lam / 2 := by linarith
-  let CkChoice : Fin (Module.finrank ℝ E) → ℝ := fun k => Classical.choose (h_per_k k)
+  let CkChoice : Fin d → ℝ := fun k => Classical.choose (h_per_k k)
   have CkChoice_spec : ∀ k, 0 ≤ CkChoice k ∧
       ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
         (B.lam / 2) * ∫ x in Ω'',
-            ∑ l : Fin (Module.finrank ℝ E),
+            ∑ l : Fin d,
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g l) x ^ 2
-          ∂(volume : Measure EuclN) ≤
+          ∂(volume : Measure Eucl) ≤
           CkChoice k * G_total := fun k => Classical.choose_spec (h_per_k k)
-  set MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
+  set MBound : Fin d → Fin d → ℝ :=
     fun _ k => Real.sqrt ((2 / B.lam) * CkChoice k * G_total) with hM_bound_def
   refine ⟨MBound, ?_, ?_⟩
   · intro i k
@@ -277,9 +252,9 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
     have hk_spec := (CkChoice_spec k).2 hh_ne hh_le
     set sumInt : ℝ :=
       ∫ x in Ω'',
-        ∑ l : Fin (Module.finrank ℝ E),
+        ∑ l : Fin d,
           DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g l) x ^ 2
-        ∂(volume : Measure EuclN) with hsumInt_def
+        ∂(volume : Measure Eucl) with hsumInt_def
     set S : ℝ := (2 / B.lam) * CkChoice k * G_total with hS_def
     have hS_nn : 0 ≤ S := by
       rw [hS_def]
@@ -298,180 +273,178 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
       rw [h_rhs_eq]
       exact mul_le_mul_of_nonneg_left hk_spec h_factor.le
     have h_per_l_int :
-        ∀ l : Fin (Module.finrank ℝ E),
+        ∀ l : Fin d,
           Integrable
             (fun x => (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (g_g l) x)^2)
-            ((volume : Measure EuclN).restrict Ω'') := by
+              (d := d) k h (g_g l) x)^2)
+            ((volume : Measure Eucl).restrict Ω'') := by
       intro l
       have h_dq_l2_global :
           MemLp
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (g_g l)) 2
-            (volume : Measure EuclN) :=
-        memLp_diffQuot_two (d := Module.finrank ℝ E) k h (hg_g_l2 l)
+              (d := d) k h (g_g l)) 2
+            (volume : Measure Eucl) :=
+        memLp_diffQuot_two (d := d) k h (hg_g_l2 l)
       have h_dq_l2_restrict :
           MemLp
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (g_g l)) 2
-            ((volume : Measure EuclN).restrict Ω'') :=
+              (d := d) k h (g_g l)) 2
+            ((volume : Measure Eucl).restrict Ω'') :=
         h_dq_l2_global.restrict _
       exact h_dq_l2_restrict.integrable_sq
     have h_sum_int :
         Integrable
-          (fun x => ∑ l : Fin (Module.finrank ℝ E),
+          (fun x => ∑ l : Fin d,
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (g_g l) x)^2)
-          ((volume : Measure EuclN).restrict Ω'') := by
+              (d := d) k h (g_g l) x)^2)
+          ((volume : Measure Eucl).restrict Ω'') := by
       have h_aux := integrable_finsetSum
-        (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+        (Finset.univ : Finset (Fin d))
         (fun l _ => h_per_l_int l)
       have h_eq :
-          (fun x : EuclN => ∑ l : Fin (Module.finrank ℝ E),
+          (fun x : Eucl => ∑ l : Fin d,
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (g_g l) x)^2) =
-          (fun x : EuclN => ∑ l ∈ (Finset.univ : Finset (Fin (Module.finrank ℝ E))),
+              (d := d) k h (g_g l) x)^2) =
+          (fun x : Eucl => ∑ l ∈ (Finset.univ : Finset (Fin d)),
             (fun y => (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (g_g l) y)^2) x) := by
+              (d := d) k h (g_g l) y)^2) x) := by
         funext x; rfl
       rw [h_eq]; exact h_aux
     have h_per_i_sq :
         (eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (g_g i)) 2
-          ((volume : Measure EuclN).restrict Ω''))^ 2 ≤
+          (d := d) k h (g_g i)) 2
+          ((volume : Measure Eucl).restrict Ω''))^ 2 ≤
           ENNReal.ofReal S := by
       refine sq_eLpNorm_two_le_of_integral_sum_sq_le
-        (n := Module.finrank ℝ E)
-        (μ := (volume : Measure EuclN).restrict Ω'')
+        (n := d)
+        (μ := (volume : Measure Eucl).restrict Ω'')
         (fun l => DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (g_g l)) h_sum_int i ?_
+          (d := d) k h (g_g l)) h_sum_int i ?_
       exact h_sumInt_le_S
     have h_concl :
         eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (g_g i)) 2
-          ((volume : Measure EuclN).restrict Ω'') ≤
+          (d := d) k h (g_g i)) 2
+          ((volume : Measure Eucl).restrict Ω'') ≤
           ENNReal.ofReal (Real.sqrt S) :=
       eLpNorm_two_le_ofReal_sqrt hS_nn h_per_i_sq
     have hM_eq : MBound i k = Real.sqrt S := by rw [hM_bound_def, hS_def]
     rw [hM_eq]
     exact h_concl
 
-omit [FiniteDimensional ℝ E] in
-theorem chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
+theorem uniform_diffQuot_bound_quantitative
     (B : SmoothEllipticBilinearForm
-      (Module.finrank ℝ E) (Set.univ : Set EuclN))
-    {u_g f_g : EuclN → ℝ}
-    (hu_g_l2 : MemLp u_g 2 (volume : Measure EuclN))
-    (hf_g_l2_loc : ∀ {Ω' : Set EuclN}, IsCompact (closure Ω') →
-      MemLp f_g 2 ((volume : Measure EuclN).restrict Ω'))
-    {g_g : Fin (Module.finrank ℝ E) → EuclN → ℝ}
-    (hg_g_l2 : ∀ i, MemLp (g_g i) 2 (volume : Measure EuclN))
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
+      d (Set.univ : Set Eucl))
+    {u_g f_g : Eucl → ℝ}
+    (hu_g_l2 : MemLp u_g 2 (volume : Measure Eucl))
+    (hf_g_l2_loc : ∀ {Ω' : Set Eucl}, IsCompact (closure Ω') →
+      MemLp f_g 2 ((volume : Measure Eucl).restrict Ω'))
+    {g_g : Fin d → Eucl → ℝ}
+    (hg_g_l2 : ∀ i, MemLp (g_g i) 2 (volume : Measure Eucl))
+    {η : Eucl → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hη_supp : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ N)
-    {Ω' Ω'' : Set EuclN} (hΩ' : IsOpen Ω')
-    (hΩ'_closure : closure Ω' ⊆ (Set.univ : Set EuclN))
+    {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : Eucl, ‖fderiv ℝ η x‖ ≤ N)
+    {Ω' Ω'' : Set Eucl} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
     (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_meas : MeasurableSet Ω'')
-    (h_FK_diffQuot_u_bound :
-      ∀ (k : Fin (Module.finrank ℝ E)),
+    (h_diffQuot_u_bound :
+      ∀ (k : Fin d),
       ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
         ∫ x in tsupport η,
             (DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g x)^2
-          ∂(volume : Measure EuclN) ≤
-          ∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((g_g l) x) ^ 2
-            ∂(volume : Measure EuclN))
-    (h_v_test_sq_bound :
-      ∀ (k : Fin (Module.finrank ℝ E)),
+          ∂(volume : Measure Eucl) ≤
+          ∫ x in Ω', ∑ l : Fin d, ((g_g l) x) ^ 2
+            ∂(volume : Measure Eucl))
+    (h_testFunction_sq_bound :
+      ∀ (k : Fin d),
       ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
         ∫ x, (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η u_g x)^2 ∂(volume : Measure EuclN) ≤
+              k h η u_g x)^2 ∂(volume : Measure Eucl) ≤
           8 * N^2 *
             ∫ x in tsupport η,
                 (DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g x)^2
-              ∂(volume : Measure EuclN) +
+              ∂(volume : Measure Eucl) +
           2 * ∫ x, (η x)^2 *
               (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g k) x)^2
-            ∂(volume : Measure EuclN))
-    (h_master_nonsmooth :
-      ∀ (k : Fin (Module.finrank ℝ E)),
+            ∂(volume : Measure Eucl))
+    (h_coercivity :
+      ∀ (k : Fin d),
       ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
       B.lam * ∫ x, (η x)^2 *
-          ∑ l : Fin (Module.finrank ℝ E),
+          ∑ l : Fin d,
             DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g l) x ^ 2
-        ∂(volume : Measure EuclN) ≤
-        |∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E), ∫ x,
+        ∂(volume : Measure Eucl) ≤
+        |∑ i : Fin d,
+          ∑ j : Fin d, ∫ x,
               2 * DifferentialGeometry.Analysis.Sobolev.translate k h
-                (fun y : EuclN => B.a y i j) x * (η x) *
+                (fun y : Eucl => B.a y i j) x * (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g i) x *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g x
-            ∂(volume : Measure EuclN)| +
-        |∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E), ∫ x,
+            ∂(volume : Measure Eucl)| +
+        |∑ i : Fin d,
+          ∑ j : Fin d, ∫ x,
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
-                (fun y : EuclN => B.a y i j) x * (η x)^2 *
+                (fun y : Eucl => B.a y i j) x * (η x)^2 *
               ((g_g i) x) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g j) x
-            ∂(volume : Measure EuclN)| +
-        |∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E), ∫ x,
+            ∂(volume : Measure Eucl)| +
+        |∑ i : Fin d,
+          ∑ j : Fin d, ∫ x,
               2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
-                (fun y : EuclN => B.a y i j) x * (η x) *
+                (fun y : Eucl => B.a y i j) x * (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
               ((g_g i) x) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g x
-            ∂(volume : Measure EuclN)| +
-        |∫ x in (Set.univ : Set EuclN), f_g x *
+            ∂(volume : Measure Eucl)| +
+        |∫ x in (Set.univ : Set Eucl), f_g x *
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g x| +
-        |∫ x in (Set.univ : Set EuclN), B.c x * u_g x *
+        |∫ x in (Set.univ : Set Eucl), B.c x * u_g x *
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η u_g x ∂(volume : Measure EuclN)|) :
-    ∀ ⦃i k : Fin (Module.finrank ℝ E)⦄ ⦃h : ℝ⦄,
+              k h η u_g x ∂(volume : Measure Eucl)|) :
+    ∀ ⦃i k : Fin d⦄ ⦃h : ℝ⦄,
       0 < |h| → |h| ≤ R₀ →
         eLpNorm
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h (g_g i)) 2
-          ((volume : Measure EuclN).restrict Ω'')
+            (d := d) k h (g_g i)) 2
+          ((volume : Measure Eucl).restrict Ω'')
         ≤ ENNReal.ofReal (Real.sqrt ((2 / B.lam) *
             nirenbergMasterYoungConstant B N hΩ'_compact k *
-            (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((g_g l) x) ^ 2
-                ∂(volume : Measure EuclN) +
-              ∫ x in Ω', (u_g x)^2 ∂(volume : Measure EuclN) +
-              ∫ x in Ω', (f_g x)^2 ∂(volume : Measure EuclN)))) := by
+            (∫ x in Ω', ∑ l : Fin d, ((g_g l) x) ^ 2
+                ∂(volume : Measure Eucl) +
+              ∫ x in Ω', (u_g x)^2 ∂(volume : Measure Eucl) +
+              ∫ x in Ω', (f_g x)^2 ∂(volume : Measure Eucl)))) := by
   classical
   intro i k h hh hh_le
   have habs_pos : 0 < |h| := hh
   have hh_ne : h ≠ 0 := abs_ne_zero.mp (ne_of_gt habs_pos)
   have hk_spec :
       (B.lam / 2) * ∫ x in Ω'',
-          ∑ l : Fin (Module.finrank ℝ E),
+          ∑ l : Fin d,
             DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g l) x ^ 2
-        ∂(volume : Measure EuclN) ≤
+        ∂(volume : Measure Eucl) ≤
         nirenbergMasterYoungConstant B N hΩ'_compact k *
-          (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((g_g l) x) ^ 2
-                  ∂(volume : Measure EuclN) +
-              ∫ x in Ω', (u_g x)^2 ∂(volume : Measure EuclN) +
-              ∫ x in Ω', (f_g x)^2 ∂(volume : Measure EuclN)) :=
-    nirenberg_diffQuot_g_localL2_bound_quantitative (d := Module.finrank ℝ E)
+          (∫ x in Ω', ∑ l : Fin d, ((g_g l) x) ^ 2
+                  ∂(volume : Measure Eucl) +
+              ∫ x in Ω', (u_g x)^2 ∂(volume : Measure Eucl) +
+              ∫ x in Ω', (f_g x)^2 ∂(volume : Measure Eucl)) :=
+    nirenberg_diffQuot_g_localL2_bound_quantitative (d := d)
       B hu_g_l2 hf_g_l2_loc hg_g_l2
-      hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
+      hη hη_supp hη_range hN h_fderiv_eta hΩ' (Set.subset_univ _) hΩ'_compact
       hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas k
-      (h_FK_diffQuot_u_bound k)
-      (h_v_test_sq_bound k)
-      (h_master_nonsmooth k) hh_ne hh_le
+      (h_diffQuot_u_bound k)
+      (h_testFunction_sq_bound k)
+      (h_coercivity k) hh_ne hh_le
   set G_total : ℝ :=
-    (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((g_g l) x) ^ 2
-      ∂(volume : Measure EuclN) +
-      ∫ x in Ω', (u_g x)^2 ∂(volume : Measure EuclN) +
-      ∫ x in Ω', (f_g x)^2 ∂(volume : Measure EuclN)) with hG_total_def
+    (∫ x in Ω', ∑ l : Fin d, ((g_g l) x) ^ 2
+      ∂(volume : Measure Eucl) +
+      ∫ x in Ω', (u_g x)^2 ∂(volume : Measure Eucl) +
+      ∫ x in Ω', (f_g x)^2 ∂(volume : Measure Eucl)) with hG_total_def
   have hG_total_nn : 0 ≤ G_total := by
     rw [hG_total_def]
     refine add_nonneg (add_nonneg ?_ ?_) ?_
@@ -488,9 +461,9 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
     nirenbergMasterYoungConstant_nonneg B hN hΩ'_compact k
   set sumInt : ℝ :=
     ∫ x in Ω'',
-      ∑ l : Fin (Module.finrank ℝ E),
+      ∑ l : Fin d,
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g l) x ^ 2
-      ∂(volume : Measure EuclN) with hsumInt_def
+      ∂(volume : Measure Eucl) with hsumInt_def
   set S : ℝ :=
     (2 / B.lam) * nirenbergMasterYoungConstant B N hΩ'_compact k * G_total
     with hS_def
@@ -514,58 +487,54 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
     rw [h_rhs_eq]
     exact mul_le_mul_of_nonneg_left hk_spec h_factor.le
   have h_per_l_int :
-      ∀ l : Fin (Module.finrank ℝ E),
+      ∀ l : Fin d,
         Integrable
           (fun x => (DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h (g_g l) x)^2)
-          ((volume : Measure EuclN).restrict Ω'') := by
+            (d := d) k h (g_g l) x)^2)
+          ((volume : Measure Eucl).restrict Ω'') := by
     intro l
     have h_dq_l2_global :
         MemLp
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h (g_g l)) 2
-          (volume : Measure EuclN) :=
-      memLp_diffQuot_two (d := Module.finrank ℝ E) k h (hg_g_l2 l)
+            (d := d) k h (g_g l)) 2
+          (volume : Measure Eucl) :=
+      memLp_diffQuot_two (d := d) k h (hg_g_l2 l)
     have h_dq_l2_restrict :
         MemLp
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h (g_g l)) 2
-          ((volume : Measure EuclN).restrict Ω'') :=
+            (d := d) k h (g_g l)) 2
+          ((volume : Measure Eucl).restrict Ω'') :=
       h_dq_l2_global.restrict _
     exact h_dq_l2_restrict.integrable_sq
   have h_sum_int :
       Integrable
-        (fun x => ∑ l : Fin (Module.finrank ℝ E),
+        (fun x => ∑ l : Fin d,
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h (g_g l) x)^2)
-        ((volume : Measure EuclN).restrict Ω'') := by
+            (d := d) k h (g_g l) x)^2)
+        ((volume : Measure Eucl).restrict Ω'') := by
     have h_aux := integrable_finsetSum
-      (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+      (Finset.univ : Finset (Fin d))
       (fun l _ => h_per_l_int l)
     have h_eq :
-        (fun x : EuclN => ∑ l : Fin (Module.finrank ℝ E),
+        (fun x : Eucl => ∑ l : Fin d,
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h (g_g l) x)^2) =
-        (fun x : EuclN => ∑ l ∈ (Finset.univ : Finset (Fin (Module.finrank ℝ E))),
+            (d := d) k h (g_g l) x)^2) =
+        (fun x : Eucl => ∑ l ∈ (Finset.univ : Finset (Fin d)),
           (fun y => (DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h (g_g l) y)^2) x) := by
+            (d := d) k h (g_g l) y)^2) x) := by
       funext x; rfl
     rw [h_eq]; exact h_aux
   have h_per_i_sq :
       (eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (g_g i)) 2
-        ((volume : Measure EuclN).restrict Ω''))^ 2 ≤
+        (d := d) k h (g_g i)) 2
+        ((volume : Measure Eucl).restrict Ω''))^ 2 ≤
         ENNReal.ofReal S := by
     refine sq_eLpNorm_two_le_of_integral_sum_sq_le
-      (n := Module.finrank ℝ E)
-      (μ := (volume : Measure EuclN).restrict Ω'')
+      (n := d)
+      (μ := (volume : Measure Eucl).restrict Ω'')
       (fun l => DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (g_g l)) h_sum_int i ?_
+        (d := d) k h (g_g l)) h_sum_int i ?_
     exact h_sumInt_le_S
   exact eLpNorm_two_le_ofReal_sqrt hS_nn h_per_i_sq
 
-end ChartBilinearUniformDiffQuotBound
-
-end Laplacian
-end Analysis
-end DifferentialGeometry
+end DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
