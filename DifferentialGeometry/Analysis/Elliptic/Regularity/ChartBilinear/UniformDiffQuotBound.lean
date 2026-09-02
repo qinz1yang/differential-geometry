@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartHk.H2NonSmooth
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.MasterInequalityNonSmooth
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.WeakRegularity
-import DifferentialGeometry.Analysis.Sobolev.Tools.DiffQuotFKNonSmooth
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakDerivativeBound
 
 noncomputable section
 

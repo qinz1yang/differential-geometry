@@ -1,5 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.SmoothWeakSolutionH2
-import DifferentialGeometry.Analysis.Sobolev.Solutions.FriedrichsCommutator
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Kernel
 import Mathlib.Analysis.Calculus.BumpFunction.Convolution
 import Mathlib.Analysis.Calculus.ContDiff.Convolution
 
@@ -10,7 +9,7 @@ open MeasureTheory Metric Filter Topology Set Function
 open scoped ENNReal NNReal Convolution Pointwise BigOperators InnerProductSpace
   RealInnerProductSpace
 
-namespace DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect
+namespace DifferentialGeometry.Analysis.Sobolev
 
 variable {d : ℕ} [NeZero d]
 
@@ -45,6 +44,19 @@ lemma mollifyEps_apply {ε : ℝ} (hε : 0 < ε) (u : E → ℝ) (x : E) :
         ∂(volume : Measure E) := by
   simp [mollifyEps, MeasureTheory.convolution_def,
     ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+
+omit [NeZero d] in
+theorem mollifyEps_eq_convolution_swap
+    {ε : ℝ} (hε : 0 < ε) (u : E → ℝ) (x : E) :
+    mollifyEps (d := d) hε u x =
+      (u ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)]
+        mollifierEps (d := d) hε) x := by
+  classical
+  unfold mollifyEps
+  rw [convolution_lsmul, convolution_lsmul_swap]
+  refine integral_congr_ae ?_
+  filter_upwards with t
+  rw [smul_eq_mul, smul_eq_mul, mul_comm]
 
 omit [NeZero d] in
 theorem mollifyEps_hasCompactSupport {ε : ℝ} (hε : 0 < ε) {u : E → ℝ}
@@ -171,4 +183,4 @@ theorem ae_tendsto_mollifyEps_of_locallyIntegrable {ι : Type*} {l : Filter ι}
   refine hx₀.congr ?_
   intro i; exact h_eq i
 
-end DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect
+end DifferentialGeometry.Analysis.Sobolev

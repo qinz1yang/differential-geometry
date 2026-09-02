@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Tools.Mollifier
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Kernel
 import DifferentialGeometry.Analysis.Sobolev.Tools.Convolution
 import Mathlib.MeasureTheory.Integral.MeanInequalities
 import Mathlib.Analysis.Calculus.MeanValue

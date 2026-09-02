@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1Compl_H1_0
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.TranslatedCutoffDiffQuot
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
-import DifferentialGeometry.Analysis.Sobolev.Solutions.Mollification
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Basic
 
 
 noncomputable section

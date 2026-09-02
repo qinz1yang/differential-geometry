@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.SubstitutionNonSmoothChartBilinear
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.SmoothRegularity
-import DifferentialGeometry.Analysis.Sobolev.Solutions.Mollification
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Basic
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Approximation
 

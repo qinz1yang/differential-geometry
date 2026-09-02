@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Tools.Mollifier
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Kernel
 
 noncomputable section
 

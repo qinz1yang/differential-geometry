@@ -1,13 +1,10 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.SmoothWeakSolutionH2
-import DifferentialGeometry.Analysis.Sobolev.Solutions.Mollification
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Basic
 
 
 noncomputable section
 
 open MeasureTheory Metric Filter Topology Set Function
-open DifferentialGeometry.Analysis.Sobolev
-open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
-open DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect
 open scoped ENNReal NNReal Convolution Pointwise BigOperators InnerProductSpace
   RealInnerProductSpace
 
@@ -409,15 +406,15 @@ theorem mollifyEps_isSmoothWeakSolution_classicalApply
     {u : E → ℝ} (hu_loc : LocallyIntegrable u (volume : Measure E))
     {ε : ℝ} (hε : 0 < ε) :
     B.IsSmoothWeakSolution
-      (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+      (DifferentialGeometry.Analysis.Sobolev.mollifyEps
         (d := d) hε u)
       (B.classicalApply
-        (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+        (DifferentialGeometry.Analysis.Sobolev.mollifyEps
           (d := d) hε u)) := by
   have h_uε_smooth : ContDiff ℝ (⊤ : ℕ∞)
-      (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+      (DifferentialGeometry.Analysis.Sobolev.mollifyEps
         (d := d) hε u) :=
-    DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps_contDiff
+    DifferentialGeometry.Analysis.Sobolev.mollifyEps_contDiff
       (d := d) hε hu_loc
   exact isSmoothWeakSolution_classicalApply (d := d) hΩ B h_uε_smooth
 
@@ -428,9 +425,9 @@ theorem integral_classicalApply_mollifyEps_eq_bilin
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω) :
     ∫ x in Ω, B.classicalApply
-      (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+      (DifferentialGeometry.Analysis.Sobolev.mollifyEps
         (d := d) hε u) x * ψ x =
-      B.bilin (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+      B.bilin (DifferentialGeometry.Analysis.Sobolev.mollifyEps
         (d := d) hε u) ψ := by
   have h_smooth_weak :=
     mollifyEps_isSmoothWeakSolution_classicalApply (d := d) hΩ B hu_loc hε
@@ -446,42 +443,42 @@ theorem integral_classicalApply_mollifyEps_sub_eq_bilin_sub
     (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
     (hf_psi_int : Integrable (fun x : E => f x * ψ x) (volume.restrict Ω)) :
     ∫ x in Ω, (B.classicalApply
-        (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+        (DifferentialGeometry.Analysis.Sobolev.mollifyEps
           (d := d) hε u) x - f x) * ψ x =
-      B.bilin (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+      B.bilin (DifferentialGeometry.Analysis.Sobolev.mollifyEps
         (d := d) hε u) ψ - B.bilin u ψ := by
   have h_lhs_split : ∫ x in Ω, (B.classicalApply
-        (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+        (DifferentialGeometry.Analysis.Sobolev.mollifyEps
           (d := d) hε u) x - f x) * ψ x =
       (∫ x in Ω, B.classicalApply
-        (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+        (DifferentialGeometry.Analysis.Sobolev.mollifyEps
           (d := d) hε u) x * ψ x) -
       ∫ x in Ω, f x * ψ x := by
     have h_smooth_weak :=
       mollifyEps_isSmoothWeakSolution_classicalApply (d := d) hΩ B hu_loc hε
     have h_pairing_int : Integrable (fun x : E => B.classicalApply
-        (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+        (DifferentialGeometry.Analysis.Sobolev.mollifyEps
           (d := d) hε u) x * ψ x) (volume.restrict Ω) := by
       have h_class_smooth : ContDiff ℝ (⊤ : ℕ∞) (B.classicalApply
-          (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+          (DifferentialGeometry.Analysis.Sobolev.mollifyEps
             (d := d) hε u)) := by
         refine contDiff_classicalApply (d := d) B ?_
-        exact DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps_contDiff
+        exact DifferentialGeometry.Analysis.Sobolev.mollifyEps_contDiff
           (d := d) hε hu_loc
       have h_cont : Continuous (fun x : E => B.classicalApply
-          (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+          (DifferentialGeometry.Analysis.Sobolev.mollifyEps
             (d := d) hε u) x * ψ x) :=
         h_class_smooth.continuous.mul hψ.continuous
       have h_supp : HasCompactSupport (fun x : E => B.classicalApply
-          (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+          (DifferentialGeometry.Analysis.Sobolev.mollifyEps
             (d := d) hε u) x * ψ x) :=
         hψ_supp.mul_left
       exact (h_cont.integrable_of_hasCompactSupport h_supp).restrict
     have h_fun_eq : (fun x : E => (B.classicalApply
-            (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+            (DifferentialGeometry.Analysis.Sobolev.mollifyEps
               (d := d) hε u) x - f x) * ψ x) =
           (fun x : E => B.classicalApply
-              (DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect.mollifyEps
+              (DifferentialGeometry.Analysis.Sobolev.mollifyEps
                 (d := d) hε u) x * ψ x - f x * ψ x) := by
       funext x; ring
     rw [h_fun_eq]

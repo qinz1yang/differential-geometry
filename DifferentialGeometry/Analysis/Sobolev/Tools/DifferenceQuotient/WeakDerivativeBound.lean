@@ -1,12 +1,10 @@
-import DifferentialGeometry.Analysis.Sobolev.Approximation.H1WeakSolutionApprox
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.WeakDerivative
 
 
 noncomputable section
 
 open MeasureTheory Metric Filter Topology Set Function
-open DifferentialGeometry.Analysis.Sobolev
-open DifferentialGeometry.Analysis.Sobolev.H2NonSmoothDirect
-open DifferentialGeometry.Analysis.Sobolev.H1WeakSolutionApprox
 open scoped ENNReal NNReal Convolution Pointwise BigOperators
 
 namespace DifferentialGeometry.Analysis.Sobolev

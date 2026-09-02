@@ -1,7 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Limit
 import DifferentialGeometry.Analysis.Sobolev.Tools.FrechetKolmogorov
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich
-import DifferentialGeometry.Analysis.Sobolev.Tools.Mollifier
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Kernel
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.WeakDerivative
 
 
 noncomputable section
@@ -526,74 +527,6 @@ theorem MemWkp.extend_zero {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω V : Set
             ⟨h_ae_Ω, h_ae_V_diff⟩)
         exact (MemWkp_congr_ae hp hV hg_mod_ae_eq_g_V).mp hg_mod_mem_V
       exact ⟨hu_W_V, hwp_V⟩
-
-omit [NeZero d] in
-theorem convolution_fderiv_eq_convolution_weakPartial_univ
-    {u g : E → ℝ} {i : Fin d}
-    (hweak : DeGiorgi.HasWeakPartialDeriv i g u Set.univ)
-    {φ : E → ℝ} (hφ_smooth : ContDiff ℝ (⊤ : ℕ∞) φ)
-    (hφ_compact : HasCompactSupport φ) (x : E) :
-    ((fun y => (fderiv ℝ φ y) (EuclideanSpace.single i 1))
-        ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] u) x =
-      (φ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] g) x := by
-  classical
-  let T : Homeomorph E E := (Homeomorph.neg E).trans (Homeomorph.addLeft x)
-  let ψ : E → ℝ := φ ∘ T
-  have hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ := by
-    let h : ContDiff ℝ (⊤ : ℕ∞) ψ :=
-      hφ_smooth.comp (contDiff_const.add contDiff_id.neg)
-    exact h
-  have hψ_compact : HasCompactSupport ψ := by
-    simpa [ψ, T, Function.comp] using hφ_compact.comp_homeomorph T
-  have key := hweak ψ hψ_smooth hψ_compact (by simp)
-  have hderiv :
-      ∀ t,
-        (fderiv ℝ ψ t) (EuclideanSpace.single i 1) =
-          - (fderiv ℝ φ (x + -t)) (EuclideanSpace.single i 1) := by
-    intro t
-    have hraw :=
-      (hφ_smooth.differentiable
-        (show (((⊤ : ℕ∞) : WithTop ℕ∞)) ≠ 0 by simp) (x + -t)).hasFDerivAt.comp t
-          ((hasFDerivAt_const x t).add (hasFDerivAt_id t).neg)
-    have heq : ψ = φ ∘ ((fun _ : E => x) + -id) := by
-      funext y
-      simp [ψ, T]
-    rw [← heq] at hraw
-    rw [hraw.fderiv]
-    simp
-  have hkey :
-      ∫ t, g t * ψ t ∂volume =
-        ∫ t, u t * (fderiv ℝ φ (x + -t)) (EuclideanSpace.single i 1) ∂volume := by
-    have hkey' :
-        ∫ t, u t * (fderiv ℝ ψ t) (EuclideanSpace.single i 1) ∂volume =
-          -∫ t, g t * ψ t ∂volume := by
-      simpa [Measure.restrict_univ] using key
-    have hderiv_int :
-        ∫ t, u t * (fderiv ℝ ψ t) (EuclideanSpace.single i 1) ∂volume =
-          -∫ t, u t * (fderiv ℝ φ (x + -t)) (EuclideanSpace.single i 1) ∂volume := by
-      calc
-        ∫ t, u t * (fderiv ℝ ψ t) (EuclideanSpace.single i 1) ∂volume
-          = ∫ t, -(u t * (fderiv ℝ φ (x + -t)) (EuclideanSpace.single i 1)) ∂volume := by
-              refine integral_congr_ae ?_
-              filter_upwards with t
-              rw [hderiv t]
-              ring
-        _ = -∫ t, u t * (fderiv ℝ φ (x + -t)) (EuclideanSpace.single i 1) ∂volume := by
-              rw [integral_neg]
-    linarith
-  calc
-      ((fun y => (fderiv ℝ φ y) (EuclideanSpace.single i 1))
-        ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] u) x
-      = ∫ t, u t * (fderiv ℝ φ (x - t)) (EuclideanSpace.single i 1) ∂volume := by
-          simpa [smul_eq_mul, mul_comm] using
-            (MeasureTheory.convolution_lsmul_swap
-              (f := fun y => (fderiv ℝ φ y) (EuclideanSpace.single i 1)) (g := u) (x := x)
-              (μ := volume))
-    _ = ∫ t, g t * ψ t ∂volume := hkey.symm
-    _ = (φ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] g) x := by
-          simpa [ψ, T, Function.comp, sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-            smul_eq_mul, mul_comm] using
-            (MeasureTheory.convolution_lsmul_swap (f := φ) (g := g) (x := x) (μ := volume)).symm
 
 omit [NeZero d] in
 theorem convolution_fderiv_eq_convolution_indicator_chosenWeakPartial
