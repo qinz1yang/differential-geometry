@@ -816,7 +816,6 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelDualCone
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelConeStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelTensorNullDistribution
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ProperCone
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ScalarStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SemilinearConvex
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
@@ -3970,3 +3969,4 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorR
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureImageLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorKernel
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.ContractionKernelSubbundle
+import DifferentialGeometry.Analysis.ODE.LinearGrowthComplete
