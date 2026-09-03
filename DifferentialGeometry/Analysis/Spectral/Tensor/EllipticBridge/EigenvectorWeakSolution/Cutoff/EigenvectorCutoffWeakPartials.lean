@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cutoff.EigenvectorCutoffChartPartialL2
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Basic
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Limit
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 

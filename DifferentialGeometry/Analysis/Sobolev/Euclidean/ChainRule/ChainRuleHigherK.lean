@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.Defs
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Limit
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
 import DifferentialGeometry.External.DeGiorgi.BallExtension.RoughInput
 import Mathlib.Analysis.Calculus.ContDiff.Bounds
 import Mathlib.MeasureTheory.Function.Jacobian

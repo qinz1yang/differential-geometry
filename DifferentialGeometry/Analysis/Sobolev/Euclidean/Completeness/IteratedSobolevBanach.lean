@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevCauchy
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Limit
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
 
 noncomputable section
 
