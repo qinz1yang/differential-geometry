@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.Realization.Embedding
-import DifferentialGeometry.Geometry.Connection.Realization.Connection
+import DifferentialGeometry.Geometry.Connection.Realization.ConcreteConnection
 import DifferentialGeometry.Analysis.Integration.L2.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import Mathlib.Topology.Algebra.Support

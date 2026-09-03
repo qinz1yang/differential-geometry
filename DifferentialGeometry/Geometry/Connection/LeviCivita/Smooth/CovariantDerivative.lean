@@ -4,7 +4,6 @@ set_option autoImplicit false
 
 noncomputable section
 
-
 namespace DifferentialGeometry.Geometry.Connection
 
 attribute [local instance] Fintype.ofFinite Classical.propDecidable

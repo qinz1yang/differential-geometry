@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Curvature.Components.LocalFrame
 import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
 open DifferentialGeometry.Geometry.Curvature

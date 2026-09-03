@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 open DifferentialGeometry.Geometry.Curvature
 

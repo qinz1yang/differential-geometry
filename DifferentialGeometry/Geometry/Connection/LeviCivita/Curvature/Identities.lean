@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Curvature.Bianchi
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Hessian
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Model
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel
@@ -1061,7 +1061,7 @@ theorem rm04InputSkewAt_of_leviCivita_realizes
     (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} :
-    forall X Y Z W : TangentSpace I x,
+    ∀ X Y Z W : TangentSpace I x,
       Rm04 x (vec4 Y X Z W) = -Rm04 x (vec4 X Y Z W) := by
   intro X Y Z W
   obtain ⟨Wsec, hWsec⟩ :=
@@ -1109,7 +1109,7 @@ theorem rm04InputSkew_ofRealizes
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : rm04RealizesConnection (I := I) g cov Rm04)
     {x : M} :
-    forall X Y Z W : TangentSpace I x,
+    ∀ X Y Z W : TangentSpace I x,
       Rm04 x (vec4 Y X Z W) = -Rm04 x (vec4 X Y Z W) := by
   intro X Y Z W
   obtain ⟨Wsec, hWsec⟩ :=

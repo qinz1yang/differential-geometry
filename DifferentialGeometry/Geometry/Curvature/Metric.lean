@@ -4,10 +4,10 @@ import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Connection
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Trace04
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NablaTrace02
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Higher
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Model
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel

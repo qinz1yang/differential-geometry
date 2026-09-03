@@ -1,7 +1,7 @@
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SBochnerProduct
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 import DifferentialGeometry.Geometry.Operator.MetricFamily
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

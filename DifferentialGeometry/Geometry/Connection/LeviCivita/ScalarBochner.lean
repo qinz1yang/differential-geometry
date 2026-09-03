@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.ScalarBochner
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Hessian
 open DifferentialGeometry.Tensor.RicciIdentity

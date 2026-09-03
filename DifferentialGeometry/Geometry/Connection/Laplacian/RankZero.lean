@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacian
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Geometry.Operator.Operators

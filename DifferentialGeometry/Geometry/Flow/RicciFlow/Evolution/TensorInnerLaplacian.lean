@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.TensorInnerLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 
 set_option autoImplicit false
 

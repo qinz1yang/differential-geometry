@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartSection
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LinearExtensionTangent
 import Mathlib.Geometry.Manifold.BumpFunction
 

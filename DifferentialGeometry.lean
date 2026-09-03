@@ -2090,7 +2090,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
 import DifferentialGeometry.Geometry.Connection.LeviCivita.CovariantDerivativePointwise
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.DifferentiatedSecondBianchi
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Hamilton
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.DivergenceFrameInvariance
@@ -2110,7 +2110,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Reconcile
 import DifferentialGeometry.Geometry.Connection.LeviCivita.ScalarBochner
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Scaling
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Model
@@ -2148,7 +2148,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.RadialTensorEx
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.SectionalNonnegativeCone
 import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
 import DifferentialGeometry.Geometry.Connection.Realization.Basic
-import DifferentialGeometry.Geometry.Connection.Realization.Connection
+import DifferentialGeometry.Geometry.Connection.Realization.ConcreteConnection
 import DifferentialGeometry.Geometry.Connection.Realization.Embedding
 import DifferentialGeometry.Geometry.Connection.Realization.HomNabla
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections

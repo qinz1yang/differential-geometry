@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerTensor
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Model
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel

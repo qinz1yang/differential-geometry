@@ -7,7 +7,7 @@ import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import DifferentialGeometry.Geometry.Curvature.Contractions
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
 import Mathlib.Tactic.Ring

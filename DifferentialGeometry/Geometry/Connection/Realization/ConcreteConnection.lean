@@ -4,9 +4,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
 
 namespace DifferentialGeometry.Geometry.Connection.Realization
 
-
 noncomputable section
-
 
 open scoped Manifold ContDiff Topology
 open _root_.Bundle CovariantDerivative
