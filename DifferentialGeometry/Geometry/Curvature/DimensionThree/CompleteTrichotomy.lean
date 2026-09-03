@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RankTrichotomy
 import DifferentialGeometry.Geometry.Metric.UniversalCover.ParallelLineSplitting
+import DifferentialGeometry.Geometry.Metric.Product
+import DifferentialGeometry.Geometry.Metric.CompactPerturbationComplete
+import DifferentialGeometry.Geometry.Metric.PullbackCross
 
 set_option autoImplicit false
 
@@ -46,6 +49,85 @@ def HasCurvatureSurfaceProductSplitting
         (∀ y : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M,
           P.line.fiber y =
             (liftTangentSubbundle (I := I) (M := M) S).fiber y))
+
+theorem _root_.DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.GlobalSurfaceProductSplitting.pullbackMetric_eq_prod
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ
+      (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
+    [I.Boundaryless]
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
+    [LocallyPathConnectedSpace M]
+    [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
+    [Inhabited M]
+    (g : SmoothRiemannianMetric I M)
+    (P : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.GlobalSurfaceProductSplitting
+      (I := I) (M := M) g) :
+    let _ : TopologicalSpace P.N := P.topologyN
+    let _ : ChartedSpace (DifferentialGeometry.Topology.Morse.MorseModel 2) P.N := P.chartedN
+    let _ : IsManifold (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2))
+        (↑(⊤ : ℕ∞) : WithTop ℕ∞) P.N := P.manifoldN
+    let _ : T2Space P.N := P.t2N
+    let _ : SigmaCompactSpace P.N := P.sigmaN
+    Diffeomorph.pullbackMetricCross
+        (I := (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod 𝓘(ℝ, ℝ))
+        (J := I) (liftedMetric (I := I) g) P.F =
+      P.metricN.prod (flatModelMetric ℝ) := by
+  let _ : TopologicalSpace P.N := P.topologyN
+  let _ : ChartedSpace (DifferentialGeometry.Topology.Morse.MorseModel 2) P.N := P.chartedN
+  let _ : IsManifold (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2))
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞) P.N := P.manifoldN
+  let _ : T2Space P.N := P.t2N
+  let _ : SigmaCompactSpace P.N := P.sigmaN
+  apply SmoothRiemannianMetric.ext_inner
+  intro z u v
+  rw [Diffeomorph.pullbackMetricCross_inner]
+  have h := P.isometry z.1 z.2 u.1 v.1 u.2 v.2
+  have hu : u = (show TangentSpace
+      (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2).prod 𝓘(ℝ, ℝ)) z
+      from (u.1, u.2)) := by rfl
+  have hv : v = (show TangentSpace
+      (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2).prod 𝓘(ℝ, ℝ)) z
+      from (v.1, v.2)) := by rfl
+  rw [hu, hv]
+  rw [SmoothRiemannianMetric.prod_inner]
+  have hfst (w : TangentSpace
+      (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2).prod 𝓘(ℝ, ℝ)) z) :
+      (mfderiv (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2).prod
+        𝓘(ℝ, ℝ)) 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2)
+        Prod.fst z) w = w.1 := by
+    rw [mfderiv_fst]
+    rfl
+  have hsnd (w : TangentSpace
+      (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2).prod 𝓘(ℝ, ℝ)) z) :
+      (mfderiv (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2).prod
+        𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) Prod.snd z) w = w.2 := by
+    rw [mfderiv_snd]
+    rfl
+  rw [hfst (show TangentSpace
+    (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2).prod 𝓘(ℝ, ℝ)) z
+    from (u.1, u.2)),
+    hfst (show TangentSpace
+      (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2).prod 𝓘(ℝ, ℝ)) z
+      from (v.1, v.2)),
+    hsnd (show TangentSpace
+      (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2).prod 𝓘(ℝ, ℝ)) z
+      from (u.1, u.2)),
+    hsnd (show TangentSpace
+      (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2).prod 𝓘(ℝ, ℝ)) z
+      from (v.1, v.2))]
+  have hflat : (flatModelMetric ℝ).inner z.2 u.2 v.2 = u.2 * v.2 := by
+    change inner ℝ u.2 v.2 = _
+    rw [RCLike.inner_apply]
+    simp
+    ring
+  rw [hflat]
+  have hFfun : (P.F : P.N × ℝ →
+      DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) =
+    (fun z => P.F z) := by rfl
+  rw [hFfun]
+  exact h
 
 theorem curvatureOperator_time_slice_rank_trichotomy_of_complete_metric
     (g : SmoothRiemannianMetric I M)
