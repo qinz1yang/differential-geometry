@@ -2319,6 +2319,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Regio
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.RegionDistance
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.PinchingAlgebra
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RankTrichotomy
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CompleteTrichotomy
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.UhlReaction3
