@@ -37,12 +37,12 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 section Endpoint
 
 private lemma sepNextC0_nonneg {c0 cov δ : ℝ} (hc0 : 0 ≤ c0) (hδ : 0 ≤ δ)
-    (hfeed : 0 ≤ sepFeed c0 cov) : 0 ≤ sepNextC0 c0 cov δ := by
+    (hfeed : 0 ≤ sepEnvelope c0 cov) : 0 ≤ sepNextC0 c0 cov δ := by
   unfold sepNextC0
-  have h : 0 ≤ δ * (1 + sepFeed c0 cov) := mul_nonneg hδ (by linarith)
+  have h : 0 ≤ δ * (1 + sepEnvelope c0 cov) := mul_nonneg hδ (by linarith)
   linarith
 
-private lemma sepNextCov_nonneg {c0 cov δ B : ℝ} (hfeed : 0 ≤ sepFeed c0 cov)
+private lemma sepNextCov_nonneg {c0 cov δ B : ℝ} (hfeed : 0 ≤ sepEnvelope c0 cov)
     (hδ : 0 ≤ δ) (hB : 0 ≤ B) : 0 ≤ sepNextCov c0 cov δ B := by
   unfold sepNextCov
   have h : 0 ≤ δ * B := mul_nonneg hδ hB
@@ -238,10 +238,10 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       have hcovNextBudget : covNext ≤ sepBeta B * sepTail s (l + 1) := by
         dsimp [covNext]
         exact max_le hcovNFbudget hcovNRbudget
-      have hfeedF0 : 0 ≤ sepFeed c0F covF :=
-        sepFeed_nonneg hc0F0 (lt_of_le_of_lt hc0F2 (by norm_num))
-      have hfeedR0 : 0 ≤ sepFeed c0R covR :=
-        sepFeed_nonneg hc0R0 (lt_of_le_of_lt hc0R2 (by norm_num))
+      have hfeedF0 : 0 ≤ sepEnvelope c0F covF :=
+        sepEnvelope_nonneg hc0F0 (lt_of_le_of_lt hc0F2 (by norm_num))
+      have hfeedR0 : 0 ≤ sepEnvelope c0R covR :=
+        sepEnvelope_nonneg hc0R0 (lt_of_le_of_lt hc0R2 (by norm_num))
       have hc0NF0 : 0 ≤ c0NF := sepNextC0_nonneg hc0F0 hδF0 hfeedF0
       have hcovNF0 : 0 ≤ covNF := sepNextCov_nonneg hfeedF0 hδF0 hBpos.le
       have hc0NR0 : 0 ≤ c0NR := sepNextC0_nonneg hc0R0 hδR0 hfeedR0
@@ -394,17 +394,17 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       have hKU₁F : Metric.closedBall ((X.obj (σ s)).basepoint) Rnext ⊆
           (U₁ : Set (X.obj (σ s)).M) :=
         Metric.closedBall_subset_ball hRnext_lt_Rmid
-      have hqF1 : sepFeed c0F covF ≤ 1 :=
-        sepFeed_le_one hc0F2 (le_trans hcovF2 (by norm_num : (1 / 2 : ℝ) ≤ 1))
+      have hqF1 : sepEnvelope c0F covF ≤ 1 :=
+        sepEnvelope_le_one hc0F2 (le_trans hcovF2 (by norm_num : (1 / 2 : ℝ) ≤ 1))
       have hC_le_B : C ≤ B := by
         dsimp [B]
         exact le_max_left C 2
-      have hcovF_out : sepFeed c0F covF + δF * C ≤ covNext := by
+      have hcovF_out : sepEnvelope c0F covF + δF * C ≤ covNext := by
         calc
-          sepFeed c0F covF + δF * C = δF * C + sepFeed c0F covF := by ring
-          _ ≤ δF * B + sepFeed c0F covF := by
+          sepEnvelope c0F covF + δF * C = δF * C + sepEnvelope c0F covF := by ring
+          _ ≤ δF * B + sepEnvelope c0F covF := by
             exact add_le_add_left (mul_le_mul_of_nonneg_left hC_le_B hδF0) _
-          _ = sepFeed c0F covF + δF * B := by ring
+          _ = sepEnvelope c0F covF + δF * B := by ring
           _ = covNF := by rfl
           _ ≤ covNext := by
             dsimp [covNext]
@@ -418,7 +418,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         PartialDiffeomorphMetricApproximationBounds.transForward (I := I)
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l) (Ψ (s + l))
           hU₁_src hK₂_src himg_mid hKcompactF hKU₁F hc0F2
-          hfeedF0 hqF1 (sepFeed_c0 c0F covF) (sepFeed_cov c0F covF)
+          hfeedF0 hqF1 (sepEnvelope_c0 c0F covF) (sepEnvelope_cov c0F covF)
           hδF0 le_rfl le_rfl C hC0
           (by
             dsimp [c0Next, c0NF, sepNextC0]
@@ -505,14 +505,14 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             hsrc_step_mid
         intro y hy
         simpa [Ktail, openRadius, hΨbase s] using htmp hy
-      have hqR1 : sepFeed c0R covR ≤ 1 :=
-        sepFeed_le_one hc0R2 (le_trans hcovR2 (by norm_num : (1 / 2 : ℝ) ≤ 1))
-      have hcovR_out : sepFeed c0R covR + δR * C ≤ covNext := by
+      have hqR1 : sepEnvelope c0R covR ≤ 1 :=
+        sepEnvelope_le_one hc0R2 (le_trans hcovR2 (by norm_num : (1 / 2 : ℝ) ≤ 1))
+      have hcovR_out : sepEnvelope c0R covR + δR * C ≤ covNext := by
         calc
-          sepFeed c0R covR + δR * C = δR * C + sepFeed c0R covR := by ring
-          _ ≤ δR * B + sepFeed c0R covR := by
+          sepEnvelope c0R covR + δR * C = δR * C + sepEnvelope c0R covR := by ring
+          _ ≤ δR * B + sepEnvelope c0R covR := by
             exact add_le_add_left (mul_le_mul_of_nonneg_left hC_le_B hδR0) _
-          _ = sepFeed c0R covR + δR * B := by ring
+          _ = sepEnvelope c0R covR + δR * B := by ring
           _ = covNR := by rfl
           _ ≤ covNext := by
             dsimp [covNext]
@@ -532,7 +532,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           (Ψ s) (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
             htail_index)
           DstepRopen.source_sub hKtail_src himg_step_mid hKcompactF hKU₁F hc0R2
-          hfeedR0 hqR1 (sepFeed_c0 c0R covR) (sepFeed_cov c0R covR)
+          hfeedR0 hqR1 (sepEnvelope_c0 c0R covR) (sepEnvelope_cov c0R covR)
           hδR0 le_rfl le_rfl C hC0
           (by
             dsimp [c0Next, c0NR, sepNextC0]

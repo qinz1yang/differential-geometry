@@ -256,13 +256,13 @@ theorem ricciKer_split (g gm : SmoothRiemannianMetric I M) :
   rw [hraw, ricciCovariantDerivativeConnectionDifferenceKernel]
   module
 
-def ricciConnectionDifferenceQuadraticArm (g gm : SmoothRiemannianMetric I M) :
+def ricciConnectionDifferenceQuadraticTerm (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 2
     (ricciCometricFourTraceCastG0 (I := I) g gm)
     (ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g gm)
 
-def ricciCovariantDerivativeConnectionDifferenceArm (g gm : SmoothRiemannianMetric I M) :
+def ricciCovariantDerivativeConnectionDifferenceTerm (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 2
     (ricciCometricFourTraceCastG0 (I := I) g gm)
@@ -271,8 +271,8 @@ def ricciCovariantDerivativeConnectionDifferenceArm (g gm : SmoothRiemannianMetr
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
 theorem ricciCoeff_split (g gm : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g gm =
-      ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gm +
-        ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm := by
+      ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gm +
+        ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm := by
   rw [linearizedRicciConnectionDifferenceOrder0CoeffField_eq_ricciCometricFourTrace_comp_kernelField,
     ricciKer_split, operatorFieldComposition_add_right]
   rfl
@@ -1467,7 +1467,7 @@ theorem ricciCovariantDerivativeConnectionDifference_raw_expansion (g gm : Smoot
       tangentSpaceModelContinuousLinearEquiv (I := I) x
     unitModel (I := I) (M := M) g 2
         (operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W) x v =
+          (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W) x v =
       (1 / 2 : Real) *
         ∑ i : Fin (Module.finrank Real E),
           (-unitModel (I := I) (M := M) g 2 W x
@@ -1503,7 +1503,7 @@ theorem ricciCovariantDerivativeConnectionDifference_raw_expansion (g gm : Smoot
                 toModel (connectionDifferenceCovariantDerivativeContraction (I := I) (M := M) g gm x
                   (toTangent (v 0)) (toTangent (v 1)) (e i))]) := by
   dsimp only
-  rw [ricciCovariantDerivativeConnectionDifferenceArm, ← operatorFieldApplication_assoc (I := I) (M := M) g 2 4 2]
+  rw [ricciCovariantDerivativeConnectionDifferenceTerm, ← operatorFieldApplication_assoc (I := I) (M := M) g 2 4 2]
   rw [ricFour_eval]
   simp_rw [ricTrace_eval]
   simp_rw [domDomCongrSection_unitModel,
@@ -1632,7 +1632,7 @@ theorem ricciCovariantDerivativeConnectionDifference_reduced_expansion (g gm : S
       tangentSpaceModelContinuousLinearEquiv (I := I) x
     unitModel (I := I) (M := M) g 2
         (operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W) x v =
+          (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W) x v =
       (1 / 2 : Real) *
         ∑ i : Fin (Module.finrank Real E),
           (-2 * unitModel (I := I) (M := M) g 2 W x
@@ -1844,7 +1844,7 @@ theorem ricciCovariantDerivativeConnectionDifference_finiteSum_expansion (g gm :
       tangentSpaceModelContinuousLinearEquiv (I := I) x
     unitModel (I := I) (M := M) g 2
         (operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W) x
+          (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W) x
             (fun i => m (v i)) =
       ∑ r : Fin (Module.finrank Real E),
         ∑ p : Fin (Module.finrank Real E),
@@ -2027,7 +2027,7 @@ private theorem ricciCovariantDerivativeConnectionDifference_pointwise_pairing (
     tensorInnerPointwise (I := I) (M := M) g 0 2 x
         (W.toFun x)
         ((operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W).toFun x) =
+          (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W).toFun x) =
       tensorInnerPointwise (I := I) (M := M) g 0 4 x
         ((ricciCovariantDerivativeConnectionDifferenceFluxReindex (I := I) (M := M) g gm W).toFun x)
         ((ricciConnectionDifferenceCovariantDerivativeTensor (I := I) (M := M) g gm).toFun x) := by
@@ -2040,7 +2040,7 @@ private theorem ricciCovariantDerivativeConnectionDifference_pointwise_pairing (
     fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
   rw [ricInner0 (I := I) (M := M) g 2 W
       (operatorFieldApply (I := I) (M := M) g 2 2
-        (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W)
+        (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W)
       x e bse hbse horth,
     ricInner0 (I := I) (M := M) g 4
       (ricciCovariantDerivativeConnectionDifferenceFluxReindex (I := I) (M := M) g gm W)
@@ -2121,7 +2121,7 @@ theorem ricciCovariantDerivativeConnectionDifference_pairing (g gm : SmoothRiema
         smoothCcTensorBilinForm (I := I) g W x v u) :
     tensorL2Inner (I := I) (M := M) g 0 2 W.toFun
         (operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W).toFun =
+          (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W).toFun =
       tensorL2Inner (I := I) (M := M) g 0 4
         (ricciCovariantDerivativeConnectionDifferenceFluxReindex (I := I) (M := M) g gm W).toFun
         (ricciConnectionDifferenceCovariantDerivativeTensor (I := I) (M := M) g gm).toFun := by
@@ -2148,7 +2148,7 @@ theorem ricciCovariantDerivativeConnectionDifference_green_identity (g gm : Smoo
         smoothCcTensorBilinForm (I := I) g W x v u) :
     tensorL2Inner (I := I) (M := M) g 0 2 W.toFun
         (operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W).toFun =
+          (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W).toFun =
       -tensorL2Inner (I := I) (M := M) g 0 3
         (ricciCovariantDerivativeConnectionDifferenceAdjoint (I := I) (M := M) g gm W).toFun
         (ricciConnectionDifferenceLoweredReindex (I := I) (M := M) g gm).toFun := by

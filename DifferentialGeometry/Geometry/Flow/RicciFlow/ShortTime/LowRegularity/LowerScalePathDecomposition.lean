@@ -112,7 +112,7 @@ theorem lowerScaleActionCoefficients_sum_eq_path_integral_decomposition
     hδ_lt hδ hδ_lt hδZ]
   simp only [sub_zero, iteratedCovGrad_zero]
   have htop := principalCoefficientAction_decomposition (I := I) (M := M) g g T
-  simp only [deTurckPrincipalCometricArm, deTurckPrincipalCometricCoeff,
+  simp only [deTurckPrincipalCometricTerm, deTurckPrincipalCometricCoeff,
     sub_self, operatorFieldApplication_zero_left, add_zero] at htop
   have hlap : rawTensorConnLapSmooth (I := I) g 0 2 T =
       operatorFieldApply (I := I) (M := M) g 4 2
@@ -226,7 +226,7 @@ theorem oneMinusConnectionLaplacian_lowerScaleActionCoefficients_eq_path_terms
       rawTensorConnLapSmooth_sub]
   have htopT := principalCoefficientAction_decomposition (I := I) (M := M) g g T
   have htopLT := principalCoefficientAction_decomposition (I := I) (M := M) g g LT
-  simp only [deTurckPrincipalCometricArm, deTurckPrincipalCometricCoeff,
+  simp only [deTurckPrincipalCometricTerm, deTurckPrincipalCometricCoeff,
     sub_self, operatorFieldApplication_zero_left, add_zero] at htopT htopLT
   have hinside :
       operatorFieldApply (I := I) (M := M) g 2 2 (P0 + K0) T +
@@ -281,17 +281,17 @@ theorem low_order_path_integral_eq_decomposition_add_edge_pairing
   let Q : Real → SmoothCcTensor g 2 2 :=
     ricciDeTurckTopOrderBilinearPairingCoefficient (I := I) (M := M) g T T hdelta hdeltaZ
       ricciDecompositionQA ricciDecompositionQB lieDecompositionQ lieDecompositionEps
-  have hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 A
+  have hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2 A
       (δ := delta) (δ' := delta) := by
     simpa only [A] using ricciDeTurckRemainderZeroOrderCoefficient_path_joint (I := I) (M := M)
       g g_bg T 0 hdelta hdeltaZ
-  have hR : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 R
+  have hR : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2 R
       (δ := delta) (δ' := delta) := by
     simpa only [R] using rhsDecomposition0_joint (I := I) (M := M)
       g g_bg T hdelta hdeltaZ
-  have hQ : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Q
+  have hQ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2 Q
       (δ := delta) (δ' := delta) := by
-    rw [linearizedRicciThreeArmHjoint]
+    rw [linearizedRicciCovariantJetJointSmoothness]
     exact ricciDeTurckTopOrderPairingCoefficient_joint_contDiff (I := I) (M := M)
       g T T hdelta hdeltaZ ricciDecompositionQA ricciDecompositionQB
         lieDecompositionQ lieDecompositionEps
@@ -503,7 +503,7 @@ theorem lowerScaleZerothSecondOrderTerms_eq_centered_commutator_decomposition
     simp only [LT, oneMinusConnLapSmooth, rawTensorConnLapSmooth_sub]
   have htopT := principalCoefficientAction_decomposition (I := I) (M := M) g g T
   have htopLT := principalCoefficientAction_decomposition (I := I) (M := M) g g LT
-  simp only [deTurckPrincipalCometricArm, deTurckPrincipalCometricCoeff,
+  simp only [deTurckPrincipalCometricTerm, deTurckPrincipalCometricCoeff,
     sub_self, operatorFieldApplication_zero_left, add_zero] at htopT htopLT
   rw [operatorFieldApplication_add_left, oneMinusConn_add (I := I) (M := M) g 0 2,
     operatorFieldApplication_sub_left, hL_sub, operatorFieldApplication_sub_left, htopT, htopLT,

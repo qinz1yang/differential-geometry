@@ -62,8 +62,8 @@ theorem rem_h1_uniform
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ R →
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ R →
           ‖ccTensorToHs (I := I) (M := M) g 2 ((1 : ℕ) : ℝ)
-            ((deTurckRHSArmG0 (I := I) g gBase T hδ₀_lt hδ -
-                deTurckRHSArmG0 (I := I) g gBase T' hδ₀_lt hδ') -
+            ((deTurckRHSTermG0 (I := I) g gBase T hδ₀_lt hδ -
+                deTurckRHSTermG0 (I := I) g gBase T' hδ₀_lt hδ') -
               DifferentialGeometry.Analysis.Elliptic.rawTensorConnLapSmooth
                 (I := I) g 0 2 (T - T'))‖ ≤
             Ctop * R *

@@ -235,7 +235,7 @@ private theorem h3_bfg_four_int
     exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
       (I := I) (M := M) g 0 3
   obtain ⟨Cp, hCp, hpair⟩ :=
-    exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g 0 0 3 3 2
   let Q : Real -> Real := fun A =>
     max 1 (max ((C0 * A) ^ 2) ((C1 * A) ^ 2))

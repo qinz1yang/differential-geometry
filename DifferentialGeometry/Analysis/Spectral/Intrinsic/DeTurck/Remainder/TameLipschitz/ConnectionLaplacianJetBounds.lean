@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
@@ -29,7 +29,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturba
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieCoefficientApplication
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartReadout
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartComponents
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrderTerm.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.SecondOrderTerm.L2JetBound
@@ -60,15 +60,15 @@ open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
-  linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero
-  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
-  linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
-  linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
-  linearizedRicciArm1CorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
-  linearizedRicci_arm0Field_jointSmooth linearizedRicci_arm1Field_jointSmooth
-  linearizedRicci_arm2FieldLichnerowicz_jointSmooth ricciArmOrder1KoszulCoeff
-  exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
+  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
+  linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero
+  exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
+  linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
+  linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
+  exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
   symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
@@ -706,7 +706,7 @@ private lemma tensorChartComponentRaw_sub'
   rw [smul_eq_mul]; ring
 
 omit [SigmaCompactSpace M] in
-private lemma deTurckRHSArm_toSection_eq
+private lemma deTurckRHSTerm_toSection_eq
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -735,7 +735,7 @@ private lemma deTurckRHSArm_toSection_eq
   abel
 
 omit [SigmaCompactSpace M] in
-private lemma tensorChartComponentRaw_deTurckRHSArm_eq_chartDeTurckRicciRHS_diff
+private lemma tensorChartComponentRaw_deTurckRHSTerm_eq_chartDeTurckRicciRHS_diff
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -772,7 +772,7 @@ private lemma tensorChartComponentRaw_deTurckRHSArm_eq_chartDeTurckRicciRHS_diff
       hasCompactSupport := (deTurckRHSSectionBackground (I := I) g_bg g₂).hasCompactSupport } with hS₂_def
   have hsec : RHSarm.toSection = (S₁ - S₂).toSection := by
     rw [SmoothCcTensor.toSection_sub]
-    exact deTurckRHSArm_toSection_eq (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
+    exact deTurckRHSTerm_toSection_eq (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
   have hRHSeq : RHSarm = S₁ - S₂ := by
     apply DifferentialGeometry.Integral.L2.SmoothCcTensor.ext
     exact hsec
@@ -948,7 +948,7 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local5
   (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
-def deTurckRHSArmG0 (g₀ g_bg : SmoothRiemannianMetric I M)
+def deTurckRHSTermG0 (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
@@ -963,15 +963,15 @@ def deTurckRHSArmG0 (g₀ g_bg : SmoothRiemannianMetric I M)
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem deTurckRHSArmG0_symmS_eq
+theorem deTurckRHSTermG0_symmS_eq
     (g₀ g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ₁ : ℝ} (hδ₁_lt : δ₁ < 1)
     (hδ₁ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) g₀ T)) δ₁) :
-    deTurckRHSArmG0 (I := I) g₀ g_bg (ccTensor02Symm (I := I) g₀ T) hδ₁_lt hδ₁ =
-      deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ := by
+    deTurckRHSTermG0 (I := I) g₀ g_bg (ccTensor02Symm (I := I) g₀ T) hδ₁_lt hδ₁ =
+      deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ := by
   refine SmoothCcTensor.ext ?_
   change (deTurckRHSSection (I := I) g_bg
       (tensorSectionRealizeMetric (I := I) g₀ (ccTensor02Symm (I := I) g₀ T) hδ₁_lt hδ₁)).toSection
@@ -981,18 +981,18 @@ theorem deTurckRHSArmG0_symmS_eq
   rw [tensorSectionRealizeMetric_symmS_eq (I := I) g₀ T hδ_lt hδ hδ₁_lt hδ₁]
 
 omit [SigmaCompactSpace M] in
-private theorem deTurckSmoothRemainder_eq_arm_sub_connLap
+private theorem deTurckSmoothRemainder_eq_term_sub_connLap
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
     deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ =
-      deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ -
+      deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ -
         rawTensorConnLapSmooth (I := I) g₀ 0 2 T :=
   rfl
 
 omit [SigmaCompactSpace M] in
-theorem deTurckSmoothRemainderDiff_eq_armDiff_sub_connLapDiff
+theorem deTurckSmoothRemainderDiff_eq_termDiff_sub_connLapDiff
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -1001,11 +1001,11 @@ theorem deTurckSmoothRemainderDiff_eq_armDiff_sub_connLapDiff
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
     deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ -
         deTurckSmoothRemainder (I := I) g₀ g_bg T' hδ'_lt hδ' =
-      (deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ -
-          deTurckRHSArmG0 (I := I) g₀ g_bg T' hδ'_lt hδ') -
+      (deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ -
+          deTurckRHSTermG0 (I := I) g₀ g_bg T' hδ'_lt hδ') -
         rawTensorConnLapSmooth (I := I) g₀ 0 2 (T - T') := by
-  rw [deTurckSmoothRemainder_eq_arm_sub_connLap (I := I) g₀ g_bg T hδ_lt hδ,
-    deTurckSmoothRemainder_eq_arm_sub_connLap (I := I) g₀ g_bg T' hδ'_lt hδ',
+  rw [deTurckSmoothRemainder_eq_term_sub_connLap (I := I) g₀ g_bg T hδ_lt hδ,
+    deTurckSmoothRemainder_eq_term_sub_connLap (I := I) g₀ g_bg T' hδ'_lt hδ',
     rawTensorConnLapSmooth_sub (I := I) g₀ 0 2 T T']
   abel
 
@@ -1158,7 +1158,7 @@ theorem rawTensorConnLapSmooth_iteratedCovGrad_l2_tame
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
-theorem deTurckArmDiff_supercritical_pointwise_jet_le
+theorem deTurckTermDiff_supercritical_pointwise_jet_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
     ∃ Cemb : ℝ, 0 ≤ Cemb ∧

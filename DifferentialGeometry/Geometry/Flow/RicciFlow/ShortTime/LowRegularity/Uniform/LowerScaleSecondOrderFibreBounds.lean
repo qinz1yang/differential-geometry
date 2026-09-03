@@ -80,9 +80,9 @@ theorem secondOrderCoefficient_fibre_bound_uniform
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hΦ := rhsDecompositionTop_joint (I := I) (M := M) g T hδ_lt hδ hδZ
   have hΨ := RicciDeTurckLowOrder.selfTop_joint (I := I) (M := M) g T hδ hδZ
-  have hC := threeArmJoint_const (I := I) (M := M) g (δ := δ) (δ' := δ) C
-  have hKern := threeArmJoint_sub (I := I) (M := M) g _ _
-    (threeArmJoint_add (I := I) (M := M) g _ _ hΦ hΨ) hC
+  have hC := covariantJetJoint_const (I := I) (M := M) g (δ := δ) (δ' := δ) C
+  have hKern := covariantJetJoint_sub (I := I) (M := M) g _ _
+    (covariantJetJoint_add (I := I) (M := M) g _ _ hΦ hΨ) hC
   rw [RicciDeTurckLowOrder.secondOrderCoefficient_eq (I := I) (M := M) g gBase T hδ_lt hδ hδZ]
   apply path_add_sub_cap (I := I) (M := M) g 4 hSI Φ Ψ C
     hΦ hΨ hKern x (K * (δ / (1 - δ) ^ 2 + R))

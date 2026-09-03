@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponentialDerivative
 import DifferentialGeometry.Geometry.Metric.OpenSubtype
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import Mathlib.Topology.Connected.LocallyConnected

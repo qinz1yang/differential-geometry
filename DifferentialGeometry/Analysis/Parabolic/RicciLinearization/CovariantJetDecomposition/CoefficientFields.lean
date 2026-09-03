@@ -48,7 +48,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-def linearizedRicciThreeArmHjoint (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+def linearizedRicciCovariantJetJointSmoothness (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ} : Prop :=
   ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r 2 ℝ E)) ∞
     (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
@@ -57,11 +57,11 @@ def linearizedRicciThreeArmHjoint (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem linearizedRicciThreeArmHjoint_zero (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+theorem linearizedRicciCovariantJetJointSmoothness_zero (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     {δ δ' : ℝ} :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r
       (fun _ : ℝ => (0 : SmoothCcTensor g₀ r 2)) (δ := δ) (δ' := δ') := by
-  rw [linearizedRicciThreeArmHjoint]
+  rw [linearizedRicciCovariantJetJointSmoothness]
   have heq : (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
       (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1
         (((fun _ : ℝ => (0 : SmoothCcTensor g₀ r 2)) p.2).toSection p.1)) =
@@ -82,11 +82,11 @@ theorem linearizedRicciThreeArmHjoint_zero (g₀ : SmoothRiemannianMetric I M) (
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem linearizedRicciThreeArmHjoint_add (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+theorem linearizedRicciCovariantJetJointSmoothness_add (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
+    (hB : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r
       (fun t => A t + B t) (δ := δ) (δ' := δ') := by
   have hadd := jointTotalSpaceRS_add (I := I) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
@@ -99,10 +99,10 @@ theorem linearizedRicciThreeArmHjoint_add (g₀ : SmoothRiemannianMetric I M) (r
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem linearizedRicciThreeArmHjoint_smul (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+theorem linearizedRicciCovariantJetJointSmoothness_smul (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (c : ℝ) (A : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ')) :
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r
       (fun t => c • A t) (δ := δ) (δ' := δ') := by
   have hsmul := jointTotalSpaceRS_const_smul (I := I) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) c
@@ -114,29 +114,29 @@ theorem linearizedRicciThreeArmHjoint_smul (g₀ : SmoothRiemannianMetric I M) (
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem linearizedRicciThreeArmHjoint_add_smul (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+theorem linearizedRicciCovariantJetJointSmoothness_add_smul (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (c : ℝ) (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
+    (hB : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r
       (fun t => A t + c • B t) (δ := δ) (δ' := δ') :=
-  linearizedRicciThreeArmHjoint_add (I := I) (M := M) g₀ r A (fun t => c • B t) hA
-    (linearizedRicciThreeArmHjoint_smul (I := I) (M := M) g₀ r c B hB)
+  linearizedRicciCovariantJetJointSmoothness_add (I := I) (M := M) g₀ r A (fun t => c • B t) hA
+    (linearizedRicciCovariantJetJointSmoothness_smul (I := I) (M := M) g₀ r c B hB)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem linearizedRicciThreeArmHjoint_smul_add (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+theorem linearizedRicciCovariantJetJointSmoothness_smul_add (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (c : ℝ) (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
+    (hB : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r
       (fun t => c • A t + B t) (δ := δ) (δ' := δ') :=
-  linearizedRicciThreeArmHjoint_add (I := I) (M := M) g₀ r (fun t => c • A t) B
-    (linearizedRicciThreeArmHjoint_smul (I := I) (M := M) g₀ r c A hA) hB
+  linearizedRicciCovariantJetJointSmoothness_add (I := I) (M := M) g₀ r (fun t => c • A t) B
+    (linearizedRicciCovariantJetJointSmoothness_smul (I := I) (M := M) g₀ r c A hA) hB
 
 end NormedSpaceModel
 
-section NormedArmFields
+section NormedTermFields
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -147,15 +147,15 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-def linearizedRicciArm0BaseCoeff (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+def linearizedRicciOrderZeroBaseCoeff (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (s : ℝ) : SmoothCcTensor g₀ 2 2 :=
-  ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-    - ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+  ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+    - ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
 
-noncomputable def linearizedRicciArm1Fib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+noncomputable def linearizedRicciFirstOrderFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
   (show Tensor0SBundle.Tensor0SSpace 1 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
       raisedKoszulFib (I := I) g₀ g₁ x).comp
@@ -165,29 +165,29 @@ noncomputable def linearizedRicciArm1Fib (g₀ g₁ : SmoothRiemannianMetric I M
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
-@[simp] theorem linearizedRicciArm1Fib_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+@[simp] theorem linearizedRicciFirstOrderFib_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace 3 I x) :
-    linearizedRicciArm1Fib (I := I) g₀ g₁ x D =
+    linearizedRicciFirstOrderFib (I := I) g₀ g₁ x D =
       (show Tensor0SBundle.Tensor0SSpace 1 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
           raisedKoszulFib (I := I) g₀ g₁ x)
         (cometricDoubleTraceFib (I := I) g₁ 1 x D) := by
-  rw [linearizedRicciArm1Fib, ContinuousLinearMap.comp_apply]
+  rw [linearizedRicciFirstOrderFib, ContinuousLinearMap.comp_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-theorem linearizedRicciArm1Fib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
+theorem linearizedRicciFirstOrderFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 3 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z) x
-        (linearizedRicciArm1Fib (I := I) g₀ g₁ x)) := by
+        (linearizedRicciFirstOrderFib (I := I) g₀ g₁ x)) := by
   classical
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 3 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 3 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
-    (φ := fun x : M => linearizedRicciArm1Fib (I := I) g₀ g₁ x)
+    (φ := fun x : M => linearizedRicciFirstOrderFib (I := I) g₀ g₁ x)
   intro Y
   have hdt : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 1 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 1 ℝ E)
@@ -206,31 +206,31 @@ theorem linearizedRicciArm1Fib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M
   refine hkos.congr (fun x => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
-  rw [linearizedRicciArm1Fib, ContinuousLinearMap.comp_apply]
+  rw [linearizedRicciFirstOrderFib, ContinuousLinearMap.comp_apply]
 
-noncomputable def ricciArmOrder1KoszulCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
+noncomputable def ricciFirstOrderKoszulCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 3 2 where
   toSection :=
     { toFun := fun x : M =>
-        (show Tensor0SBundle.TensorRSSpace 3 2 I x from linearizedRicciArm1Fib (I := I) g₀ g₁ x)
-      contMDiff_toFun := linearizedRicciArm1Fib_contMDiff (I := I) g₀ g₁ }
+        (show Tensor0SBundle.TensorRSSpace 3 2 I x from linearizedRicciFirstOrderFib (I := I) g₀ g₁ x)
+      contMDiff_toFun := linearizedRicciFirstOrderFib_contMDiff (I := I) g₀ g₁ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-@[simp] theorem ricciArmOrder1KoszulCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
-    (ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀ g₁).toSection x =
-      (show Tensor0SBundle.TensorRSSpace 3 2 I x from linearizedRicciArm1Fib (I := I) g₀ g₁ x) :=
+@[simp] theorem ricciFirstOrderKoszulCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+    (ricciFirstOrderKoszulCoeff (I := I) (M := M) g₀ g₁).toSection x =
+      (show Tensor0SBundle.TensorRSSpace 3 2 I x from linearizedRicciFirstOrderFib (I := I) g₀ g₁ x) :=
         rfl
 
-def linearizedRicciArm1BaseCoeff (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+def linearizedRicciFirstOrderBaseCoeff (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (s : ℝ) : SmoothCcTensor g₀ 3 2 :=
-  ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+  ricciFirstOrderKoszulCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
 
 def traceHessianSlotPerm : Equiv.Perm (Fin 4) :=
   Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3
@@ -345,7 +345,7 @@ omit [I.Boundaryless] in
     (traceHessianCoeff (I := I) (M := M) g₀ g₁).toSection x =
       (show Tensor0SBundle.TensorRSSpace 4 2 I x from traceHessianFib (I := I) g₁ x) := rfl
 
-def linearizedRicciArm2FieldLichnerowicz (g₀ : SmoothRiemannianMetric I M)
+def linearizedRicciSecondOrderFieldLichnerowicz (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -484,7 +484,7 @@ theorem cDualBasis_trace_basis_indep
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [h_cov j]
 
-end NormedArmFields
+end NormedTermFields
 
 end TensorSpectral
 end Parabolic

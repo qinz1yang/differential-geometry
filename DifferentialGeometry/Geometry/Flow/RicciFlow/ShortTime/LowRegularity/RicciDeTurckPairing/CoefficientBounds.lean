@@ -20,7 +20,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Sobolev
-  (armSlotEndoCc_toSection armSlotFib armSlotFib_apply_eval metricConnectionDifferenceLoweredCoefficient
+  (termSlotEndoCc_toSection termSlotFib termSlotFib_apply_eval metricConnectionDifferenceLoweredCoefficient
    rsDomDomCongrSection_toSection)
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.Analysis.Spectral
@@ -663,14 +663,14 @@ theorem lieCorrectionZeroVectorBundleDerivativeCoefficient_metricPerturbationPat
       (fun t => lieCorrectionZeroVectorBundleUnscaledDerivativeCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) W) := by
     simpa only [lieCorrectionZeroVectorBundleUnscaledDerivativeCoefficient] using h₄
-  have hcore' : linearizedRicciThreeArmHjoint (I := I) (M := M) g 3
+  have hcore' : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 3
       (fun t => lieCorrectionZeroVectorBundleUnscaledDerivativeCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) W)
       (δ := δ) (δ' := δ) := hcore
-  have hs := threeArmJoint_smul (I := I) (M := M) (r := 3) g (2 : ℝ)
+  have hs := covariantJetJoint_smul (I := I) (M := M) (r := 3) g (2 : ℝ)
     (fun t => lieCorrectionZeroVectorBundleUnscaledDerivativeCoefficient (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hδ hδZ t) W) hcore'
-  simpa only [linearizedRicciThreeArmHjoint, lieCorrectionZeroVectorBundleDerivativeCoefficient] using hs
+  simpa only [linearizedRicciCovariantJetJointSmoothness, lieCorrectionZeroVectorBundleDerivativeCoefficient] using hs
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem metricConnectionDifferenceLoweredCoefficient_apply_unitTensor
@@ -833,7 +833,7 @@ theorem lieCorrectionZeroMixedConnectionDerivativeCoefficient_metricPerturbation
   have hB := lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ
     (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
   have hadd := jointlySmoothCcTensorFamily_add (I := I) (M := M) g hA hB
-  have hadd' : linearizedRicciThreeArmHjoint (I := I) (M := M) g 3
+  have hadd' : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 3
       (fun t =>
         lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδ hδZ t) g W
@@ -842,8 +842,8 @@ theorem lieCorrectionZeroMixedConnectionDerivativeCoefficient_metricPerturbation
             (metricPerturbationPath (I := I) g T 0 hδ hδZ t) g W
             (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
       (δ := δ) (δ' := δ) := hadd
-  have hs := threeArmJoint_smul (I := I) (M := M) (r := 3) g (2 : ℝ) _ hadd'
-  simpa only [linearizedRicciThreeArmHjoint, lieCorrectionZeroMixedConnectionDerivativeCoefficient] using hs
+  have hs := covariantJetJoint_smul (I := I) (M := M) (r := 3) g (2 : ℝ) _ hadd'
+  simpa only [linearizedRicciCovariantJetJointSmoothness, lieCorrectionZeroMixedConnectionDerivativeCoefficient] using hs
 
 omit [SigmaCompactSpace M] in
 theorem ricciConnectionDifferenceDerivativeCoefficient_metricPerturbationPath_jointlySmooth
@@ -870,22 +870,22 @@ theorem ricciConnectionDifferenceDerivativeCoefficient_metricPerturbationPath_jo
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma armSlotFib_toModel_apply (s : ℕ) (x : M)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+private lemma termSlotFib_toModel_apply (s : ℕ) (x : M)
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (D : Tensor0SSpace (s + 1) I x) (v : Fin (s + 1 + 1) → E) :
-    Tensor0SSpace.toModel (armSlotFib (I := I) (M := M) s x Arm D) v =
+    Tensor0SSpace.toModel (termSlotFib (I := I) (M := M) s x Term D) v =
       Tensor0SSpace.toModel
         (DifferentialGeometry.Geometry.Curvature.slotInsertEndoFib
           (I := I) (M := M) (s + 1) 0 x
-          (Arm ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) D)
+          (Term ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) D)
         (Matrix.vecTail v) := by
-  exact armSlotFib_apply_eval (I := I) (M := M) s x Arm D
+  exact termSlotFib_apply_eval (I := I) (M := M) s x Term D
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField
+theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField
     (g gm : SmoothRiemannianMetric I M) :
-    deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gm =
+    deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gm =
       ccOperatorFieldComp (I := I) (M := M) g 3 4 4
         (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
         (connectionDifferenceContravariantInsertionField (I := I) g gm) := by
@@ -893,7 +893,7 @@ theorem deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDif
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [deTurckLieCovariantDerivativeArmTwoCoefficient, armSlotEndoCc_toSection,
+  rw [deTurckLieCovariantDerivativeSecondOrderCoefficient, termSlotEndoCc_toSection,
     rsDomDomCongrSection_toSection]
   apply ContinuousLinearMap.ext
   intro D
@@ -901,12 +901,12 @@ theorem deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDif
   apply ContinuousMultilinearMap.ext
   intro v
   change Tensor0SSpace.toModel
-      (armSlotFib (I := I) (M := M) 2 x
+      (termSlotFib (I := I) (M := M) 2 x
         (connectionDifferenceEndomorphism (I := I) (M := M) g gm x) D) v =
     Tensor0SSpace.toModel
       ((rsDomDomCongr ricciQuadraticPermutationSwapBlocks
         ((connectionDifferenceContravariantInsertionField (I := I) g gm).toSection x)) D) v
-  rw [armSlotFib_toModel_apply, slotInsertEndoFib_apply_eval]
+  rw [termSlotFib_toModel_apply, slotInsertEndoFib_apply_eval]
   rw [toModel_rsDomDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
   rw [connectionDifferenceContravariantInsertionField_toSection, connContr21_insert]
@@ -916,7 +916,7 @@ theorem deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDif
   fin_cases k <;> simp [ricciQuadraticPermutationSwapBlocks] <;> rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem deTurckLieCovariantDerivativeArmTwoCoefficient_metricPerturbationPath_jointlySmooth
+theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
     (hδ : gFibreOpBound (I := I) (M := M) g
@@ -926,14 +926,14 @@ theorem deTurckLieCovariantDerivativeArmTwoCoefficient_metricPerturbationPath_jo
         (0 : SmoothCcTensor g 0 2)) δ) :
     JointlySmoothCcTensorFamily (I := I) g 3 4
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
-      (fun t => deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g
+      (fun t => deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t)) := by
   let S := metricPerturbationPathDomain (δ := δ) (δ' := δ)
   have hp := jointlySmoothCcTensorFamily_const (I := I) (M := M) g (S := S)
     (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
   have hi := connectionDifferenceContravariantInsertionField_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
   have hout := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g hp hi
-  simpa only [S, deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField] using hout
+  simpa only [S, deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField] using hout
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -1089,13 +1089,13 @@ theorem connectionDifferenceMetricLoweringCoefficient_apply
 noncomputable def connectionDifferenceQuadraticPairedDerivativeCoefficient
     (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 3 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 3 3 4
-    (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gm)
+    (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gm)
     (connectionDifferenceMetricLoweringCoefficient (I := I) (M := M) g gm)
 
 noncomputable def connectionDifferenceQuadraticComposedDerivativeCoefficient
     (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 3 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 3 3 4
-    (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gm)
+    (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gm)
     (ccOperatorFieldComp (I := I) (M := M) g 3 3 3
       (permCoeff (I := I) (M := M) g (Equiv.swap (0 : Fin 3) 1))
       (connectionDifferenceMetricLoweringCoefficient (I := I) (M := M) g gm))
@@ -1132,7 +1132,7 @@ theorem connectionDifferenceQuadraticPairedDerivativeCoefficient_metricPerturbat
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (fun t => connectionDifferenceQuadraticPairedDerivativeCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t)) := by
-  have harm := deTurckLieCovariantDerivativeArmTwoCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
+  have harm := deTurckLieCovariantDerivativeSecondOrderCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
   have homega := connectionDifferenceMetricLoweringCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
   simpa only [connectionDifferenceQuadraticPairedDerivativeCoefficient] using jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g harm homega
 
@@ -1150,7 +1150,7 @@ theorem connectionDifferenceQuadraticComposedDerivativeCoefficient_metricPerturb
       (fun t => connectionDifferenceQuadraticComposedDerivativeCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t)) := by
   let S := metricPerturbationPathDomain (δ := δ) (δ' := δ)
-  have harm := deTurckLieCovariantDerivativeArmTwoCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
+  have harm := deTurckLieCovariantDerivativeSecondOrderCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
   have hperm := jointlySmoothCcTensorFamily_const (I := I) (M := M) g (S := S)
     (permCoeff (I := I) (M := M) g (Equiv.swap (0 : Fin 3) 1))
   have homega := connectionDifferenceMetricLoweringCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
@@ -1339,7 +1339,7 @@ theorem deTurckLieCovariantDerivative_affineZero_decomposition
         (0 : SmoothCcTensor g 0 2)) δ)
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) :
     let gm := metricPerturbationPath (I := I) g T 0 hδ hδZ s
-    (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g -
+    (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδ hδZ
           lieDecompositionQ lieDecompositionEps s) -
       lieCorrectionQuadraticZeroCoefficient (I := I) (M := M) g gm =
@@ -2003,7 +2003,7 @@ noncomputable def lowOrderZeroCoefficientPath
         (0 : SmoothCcTensor g 0 2)) δ)
     (s : ℝ) : SmoothCcTensor g 2 2 :=
   let gm := metricPerturbationPath (I := I) g T 0 hδ hδZ s
-  (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g -
+  (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g -
       deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδ hδZ
         lieDecompositionQ lieDecompositionEps s) +
     lieCorrectionZeroRiemann (I := I) (M := M) g gm
@@ -2068,7 +2068,7 @@ theorem affineLowOrderZeroCoefficientPath_eq
   dsimp only
   rw [affineLowOrderZeroCoefficientPath, lowOrderZeroCoefficientPath]
   calc
-    (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+    (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ s) g -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδ hδZ
           lieDecompositionQ lieDecompositionEps s) +
@@ -2076,7 +2076,7 @@ theorem affineLowOrderZeroCoefficientPath_eq
             (metricPerturbationPath (I := I) g T 0 hδ hδZ s) -
         lieCorrectionQuadraticZeroCoefficient (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ s) =
-      ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+      ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδ hδZ s) g -
           deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδ hδZ
             lieDecompositionQ lieDecompositionEps s) -
@@ -2864,11 +2864,11 @@ theorem lowOrderFirstDerivativeCoefficientPath_jointlySmooth
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (lowOrderFirstDerivativeCoefficientPath (I := I) (M := M) g T hδ hδZ) := by
   have hR := ricciConnectionDifferenceDerivativeCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T T hδ hδZ
-  have hR' : linearizedRicciThreeArmHjoint (I := I) (M := M) g 3
+  have hR' : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 3
       (fun t => ricciConnectionDifferenceDerivativeCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) T)
       (δ := δ) (δ' := δ) := hR
-  have hRN := threeArmJoint_smul (I := I) (M := M) (r := 3) g (-2 : ℝ) _ hR'
+  have hRN := covariantJetJoint_smul (I := I) (M := M) (r := 3) g (-2 : ℝ) _ hR'
   have hRN' : JointlySmoothCcTensorFamily (I := I) g 3 2
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (fun t => (-2 : ℝ) • ricciConnectionDifferenceDerivativeCoefficient (I := I) (M := M) g
@@ -2906,14 +2906,14 @@ theorem lieCorrectionZeroRiemann_metricPerturbationPath_jointlySmooth
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ))
     (lieCorrectionZeroRiemannLift (I := I) g)
   have happ := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g hLive hPass
-  have happ' : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+  have happ' : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
       (fun t => ccOperatorFieldComp (I := I) (M := M) g 2 4 2
         (reindexedCometricDoubleTrace (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ t))
         (lieCorrectionZeroRiemannLift (I := I) g))
       (δ := δ) (δ' := δ) := happ
-  have hs := threeArmJoint_smul (I := I) (M := M) (r := 2) g (-1 : ℝ) _ happ'
-  simpa only [linearizedRicciThreeArmHjoint, lieCorrectionZeroRiemann_eq_ccOperatorFieldComp,
+  have hs := covariantJetJoint_smul (I := I) (M := M) (r := 2) g (-1 : ℝ) _ happ'
+  simpa only [linearizedRicciCovariantJetJointSmoothness, lieCorrectionZeroRiemann_eq_ccOperatorFieldComp,
     neg_one_smul] using hs
 
 omit [SigmaCompactSpace M] in
@@ -2937,7 +2937,7 @@ theorem lowOrderZeroCoefficientPath_jointlySmooth
   change JointlySmoothCcTensorFamily (I := I) g 2 2
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     (fun t =>
-      (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+      (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ t) g -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδ hδZ
           lieDecompositionQ lieDecompositionEps t) +
@@ -5362,12 +5362,12 @@ theorem exists_connectionDifferenceMetricLoweringCoefficient_pairing_secondOrder
       _ = P * (a + b R) * (D2 + N) := by rw [mul_assoc]
   exact hraw'.trans (pow_le_pow_left₀ hL0 hlead 2)
 
-private theorem quadratic_arm_pairing_scale_sq (p l o b d a q : ℝ) :
+private theorem quadratic_term_pairing_scale_sq (p l o b d a q : ℝ) :
     (p * ((l * a * q) * o + (b * a) * (d * q))) ^ 2 =
       (p * (l * o + b * d) * a * q) ^ 2 := by
   ring
 
-theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_pairing_secondOrder_bound
+theorem exists_connectionDifferenceQuadraticTermDerivativeCoefficients_pairing_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B : ℝ → ℝ, 0 < ρ ∧
@@ -5419,9 +5419,9 @@ theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_pairing_se
   obtain ⟨ρob, Bo, hρob, hBo, hob⟩ :=
     exists_connectionDifferenceMetricLoweringCoefficient_covariantJetNormSq_two_bound (I := I) (M := M) hDim g
   obtain ⟨L0, L1, hL0, hL1, hlp⟩ :=
-    lieArm2_pair_h2 (I := I) (M := M) hDim g
+    lieSecondOrder_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨Bl, hBl, hlb⟩ :=
-    deTurck_lie_arm_two_coefficient_sobolev_two_bound (I := I) (M := M) hDim g
+    deTurck_lie_term_two_coefficient_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨P, hP, happ⟩ :=
     exists_operatorFieldComposition_difference_covariantJetNormSq_two_bound (I := I) (M := M) hDim g 3 3 4
   let ρ : ℝ := min ρop ρob
@@ -5449,8 +5449,8 @@ theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_pairing_se
     hUn.trans (min_le_left _ _)
   have hTnob : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρob :=
     hTn.trans (min_le_right _ _)
-  let LT : SmoothCcTensor g 3 4 := deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gT
-  let LU : SmoothCcTensor g 3 4 := deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gU
+  let LT : SmoothCcTensor g 3 4 := deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gT
+  let LU : SmoothCcTensor g 3 4 := deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gU
   let OT : SmoothCcTensor g 3 3 := connectionDifferenceMetricLoweringCoefficient (I := I) (M := M) g gT
   let OU : SmoothCcTensor g 3 3 := connectionDifferenceMetricLoweringCoefficient (I := I) (M := M) g gU
   have hlraw := hlp gT gU T U hT hU hTtie hUtie
@@ -5514,7 +5514,7 @@ theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_pairing_se
       simpa only [connectionDifferenceQuadraticPairedDerivativeCoefficient, LT, LU, OT, OU] using hqraw
     refine h0.trans_eq ?_
     simpa only [B] using
-      quadratic_arm_pairing_scale_sq P (Ld R) (Bo R) (Bl R) (Bod R) (1 + A) D
+      quadratic_term_pairing_scale_sq P (Ld R) (Bo R) (Bl R) (Bod R) (1 + A) D
   let ST : SmoothCcTensor g 3 3 :=
     ccOperatorFieldComp (I := I) (M := M) g 3 3 3
       (permCoeff (I := I) (M := M) g (Equiv.swap (0 : Fin 3) 1)) OT
@@ -5559,7 +5559,7 @@ theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_pairing_se
       simpa only [connectionDifferenceQuadraticComposedDerivativeCoefficient, LT, LU, ST, SU, OT, OU] using haraw
     refine h0.trans_eq ?_
     simpa only [B] using
-      quadratic_arm_pairing_scale_sq P (Ld R) (Bo R) (Bl R) (Bod R) (1 + A) D
+      quadratic_term_pairing_scale_sq P (Ld R) (Bo R) (Bl R) (Bod R) (1 + A) D
   exact ⟨hq, ha⟩
 
 omit [CompactSpace M] in
@@ -5638,7 +5638,7 @@ theorem exists_connectionDifferenceQuadraticCurvatureDerivativeCoefficient_pairi
             connectionDifferenceQuadraticCurvatureDerivativeCoefficient (I := I) (M := M) g gU) ≤
         (B R * (1 + A) * (D3 + D2 + A * D2 + N)) ^ 2 := by
   obtain ⟨ρ, Bq, hρ, hBq, hqba⟩ :=
-    exists_connectionDifferenceQuadraticArmDerivativeCoefficients_pairing_secondOrder_bound (I := I) (M := M) hDim g
+    exists_connectionDifferenceQuadraticTermDerivativeCoefficients_pairing_secondOrder_bound (I := I) (M := M) hDim g
   let B : ℝ → ℝ := fun R => 32 * Bq R
   refine ⟨ρ, B, hρ,
     fun R hR => mul_nonneg (by norm_num) (hBq R hR), ?_⟩
@@ -5743,7 +5743,7 @@ theorem exists_connectionDifferenceQuadraticCurvatureDerivativeCoefficient_pairi
   simp only [B, S]
   ring
 
-theorem exists_deTurckLieCovariantDerivativeArmTwoCoefficient_covariantJetNormSq_two_bound
+theorem exists_deTurckLieCovariantDerivativeSecondOrderCoefficient_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ B : ℝ → ℝ, (∀ R : ℝ, 0 ≤ R → 0 ≤ B R) ∧
@@ -5765,7 +5765,7 @@ theorem exists_deTurckLieCovariantDerivativeArmTwoCoefficient_covariantJetNormSq
         covariantJetNormSq (I := I) (M := M) g 2 P ≤ R ^ 2 →
         covariantJetNormSq (I := I) (M := M) g 3 P ≤ A ^ 2 →
       covariantJetNormSq (I := I) (M := M) g 2
-          (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gm) ≤
+          (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gm) ≤
         (B R * (1 + A)) ^ 2 := by
   obtain ⟨Bc, hBc, hconn⟩ := exists_connectionDifferenceContravariantInsertionField_covariantJetNormSq_two_bound (I := I) (M := M) hDim g
   obtain ⟨Ca, hCa, happ⟩ := exists_operatorFieldComposition_covariantJetNormSq_two_bound (I := I) (M := M) hDim g 3 4 4
@@ -5792,12 +5792,12 @@ theorem exists_deTurckLieCovariantDerivativeArmTwoCoefficient_covariantJetNormSq
     Cp (Bc R * (1 + A)) hCp
     (mul_nonneg (hBc R hR) (add_nonneg (by norm_num) hA))
     hperm hc
-  rw [deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField (I := I) (M := M) g gm]
+  rw [deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField (I := I) (M := M) g gm]
   refine hraw.trans_eq ?_
   simp only [B]
   ring
 
-theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_covariantJetNormSq_two_bound
+theorem exists_connectionDifferenceQuadraticTermDerivativeCoefficients_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ Bq Ba : ℝ → ℝ, 0 < ρ ∧
@@ -5829,7 +5829,7 @@ theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_covariantJ
           (Ba R * (1 + A)) ^ 2 := by
   obtain ⟨ρ, Bo, hρ, hBo, homega⟩ :=
     exists_connectionDifferenceMetricLoweringCoefficient_covariantJetNormSq_two_bound (I := I) (M := M) hDim g
-  obtain ⟨Bl, hBl, harm⟩ := exists_deTurckLieCovariantDerivativeArmTwoCoefficient_covariantJetNormSq_two_bound (I := I) (M := M) hDim g
+  obtain ⟨Bl, hBl, harm⟩ := exists_deTurckLieCovariantDerivativeSecondOrderCoefficient_covariantJetNormSq_two_bound (I := I) (M := M) hDim g
   obtain ⟨Cb, hCb, hb⟩ := exists_operatorFieldComposition_covariantJetNormSq_two_bound (I := I) (M := M) hDim g 3 3 4
   obtain ⟨Cs, hCs, hs⟩ := exists_operatorFieldComposition_covariantJetNormSq_two_bound (I := I) (M := M) hDim g 3 3 3
   let Jp : ℝ := covariantJetNormSq (I := I) (M := M) g 2
@@ -5859,7 +5859,7 @@ theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_covariantJ
     R A hR hA hP2 hP3
   have honeA : 0 ≤ 1 + A := add_nonneg (by norm_num) hA
   have hqraw := hb
-    (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gm)
+    (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gm)
     (connectionDifferenceMetricLoweringCoefficient (I := I) (M := M) g gm)
     (Bl R * (1 + A)) (Bo R)
     (mul_nonneg (hBl R hR) honeA) (hBo R hR) hl ho
@@ -5868,7 +5868,7 @@ theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_covariantJ
       (Bq R * (1 + A)) ^ 2 := by
     change covariantJetNormSq (I := I) (M := M) g 2
       (ccOperatorFieldComp (I := I) (M := M) g 3 3 4
-        (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gm)
+        (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gm)
         (connectionDifferenceMetricLoweringCoefficient (I := I) (M := M) g gm)) ≤ _
     refine hqraw.trans_eq ?_
     simp only [Bq]
@@ -5884,7 +5884,7 @@ theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_covariantJ
     refine hsraw.trans_eq ?_
     simp only [Bs]
   have haraw := hb
-    (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gm)
+    (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gm)
     (ccOperatorFieldComp (I := I) (M := M) g 3 3 3
       (permCoeff (I := I) (M := M) g (Equiv.swap (0 : Fin 3) 1))
       (connectionDifferenceMetricLoweringCoefficient (I := I) (M := M) g gm))
@@ -5895,7 +5895,7 @@ theorem exists_connectionDifferenceQuadraticArmDerivativeCoefficients_covariantJ
       (Ba R * (1 + A)) ^ 2 := by
     change covariantJetNormSq (I := I) (M := M) g 2
       (ccOperatorFieldComp (I := I) (M := M) g 3 3 4
-        (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gm)
+        (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gm)
         (ccOperatorFieldComp (I := I) (M := M) g 3 3 3
           (permCoeff (I := I) (M := M) g (Equiv.swap (0 : Fin 3) 1))
           (connectionDifferenceMetricLoweringCoefficient (I := I) (M := M) g gm))) ≤ _
@@ -5983,7 +5983,7 @@ theorem exists_connectionDifferenceQuadraticCurvatureDerivativeCoefficient_covar
           (connectionDifferenceQuadraticCurvatureDerivativeCoefficient (I := I) (M := M) g gm) ≤
         (B R * (1 + A)) ^ 2 := by
   obtain ⟨ρ, Bq, Ba, hρ, hBq, hBa, hqba⟩ :=
-    exists_connectionDifferenceQuadraticArmDerivativeCoefficients_covariantJetNormSq_two_bound (I := I) (M := M) hDim g
+    exists_connectionDifferenceQuadraticTermDerivativeCoefficients_covariantJetNormSq_two_bound (I := I) (M := M) hDim g
   obtain ⟨Ca, hCa, happ⟩ := exists_operatorFieldComposition_covariantJetNormSq_two_bound (I := I) (M := M) hDim g 3 4 4
   let Jp : ℝ := quadraticCurvaturePermutationJetCap (I := I) (M := M) g
   let Cp : ℝ := Real.sqrt Jp

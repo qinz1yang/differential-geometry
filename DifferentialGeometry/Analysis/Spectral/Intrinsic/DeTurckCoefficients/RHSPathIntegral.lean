@@ -85,28 +85,28 @@ theorem rhs_top_path_joint
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
       (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)) (δ := δ) (δ' := δ') := by
-  have hLie := deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth
+  have hLie := deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth
     (I := I) g₀ T T' hδ hδ'
-  have hLich := linearizedRicci_arm2FieldLichnerowicz_jointSmooth
+  have hLich := linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth
     (I := I) g₀ T T' hδ hδ'
   have hadd := joint_rs_add (I := I) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ =>
-      (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
+      (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
     (fun p : M × ℝ =>
-      (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
+      (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
     hLich hLich
   have hsub := joint_rs_sub (I := I) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ =>
-      (deTurckLieArm2PrincipalCoeff (I := I) g₀
+      (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
     (fun p : M × ℝ =>
-      (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1 +
-        (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
+      (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1 +
+        (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
     hLie hadd
   refine hsub.congr (fun p _ => ?_)
   beta_reduce
@@ -329,15 +329,15 @@ theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
   set Ψ₂ : ℝ → SmoothCcTensor g₀ 4 2 := fun s =>
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hΨ₂def
-  have hj0 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Ψ₀
+  have hj0 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Ψ₀
       (δ := δ) (δ' := δ') := by
     rw [hΨ₀def]
     exact ricciDeTurckRemainderZeroOrderCoefficient_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ'
-  have hj1 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Ψ₁
+  have hj1 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3 Ψ₁
       (δ := δ) (δ' := δ') := by
     rw [hΨ₁def]
     exact ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ'
-  have hj2 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Ψ₂
+  have hj2 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Ψ₂
       (δ := δ) (δ' := δ') := by
     rw [hΨ₂def]
     exact rhs_top_path_joint (I := I) (M := M) g₀ T T' hδ hδ'
@@ -435,7 +435,7 @@ theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
     refine hsneq ?_
     simpa only [hΨ₀def, hΨ₁def, hΨ₂def, unitModel_add_app,
       ContinuousLinearEquiv.apply_symm_apply] using
-      ricciDeTurckRemainderSlope_eq_arms (I := I) g₀ g_bg T T' hTsymm hT'symm
+      ricciDeTurckRemainderSlope_eq_terms (I := I) g₀ g_bg T T' hTsymm hT'symm
         hδ_lt hδ hδ'_lt hδ' x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) hsIoo

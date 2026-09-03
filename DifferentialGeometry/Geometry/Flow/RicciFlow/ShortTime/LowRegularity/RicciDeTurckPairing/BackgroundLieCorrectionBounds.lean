@@ -732,8 +732,8 @@ private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_raw_secondOrder
             (metricLoweredConnectionDifferenceCoefficient (I := I) g gT -
               metricLoweredConnectionDifferenceCoefficient (I := I) g gU) ≤ X ^ 2 →
         covariantJetNormSq (I := I) (M := M) g 2
-            (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gT -
-              deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gU) ≤ Y ^ 2 →
+            (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gT -
+              deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gU) ≤ Y ^ 2 →
         covariantJetNormSq (I := I) (M := M) g 2
             (deTurckLieBackgroundDifferenceLoweredCoefficient (I := I) (M := M) g gT gB -
               deTurckLieBackgroundDifferenceLoweredCoefficient (I := I) (M := M) g gU gB) ≤
@@ -741,7 +741,7 @@ private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_raw_secondOrder
   obtain ⟨Ca, hCa, happ⟩ :=
     exists_operatorFieldComposition_covariantJetNormSq_two_bound (I := I) (M := M) hDim g 0 3 4
   let JA : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gB)
+    (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gB)
   let JC : ℝ := covariantJetNormSq (I := I) (M := M) g 2
     (metricLoweredConnectionDifferenceCoefficient (I := I) g gB)
   let KA : ℝ := Real.sqrt JA
@@ -763,20 +763,20 @@ private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_raw_secondOrder
   let X1 : SmoothCcTensor g 0 4 :=
     domDomCongrSection (I := I) g (deTurckLieBackgroundDifferencePermutations 0)
       (ccOperatorFieldComp (I := I) (M := M) g 0 3 4
-        (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gB)
+        (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gB)
         (metricLoweredConnectionDifferenceCoefficient (I := I) g gT -
           metricLoweredConnectionDifferenceCoefficient (I := I) g gU))
   let X2 : SmoothCcTensor g 0 4 :=
     domDomCongrSection (I := I) g (deTurckLieBackgroundDifferencePermutations 1)
       (ccOperatorFieldComp (I := I) (M := M) g 0 3 4
-        (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gT -
-          deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gU)
+        (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gT -
+          deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gU)
         (metricLoweredConnectionDifferenceCoefficient (I := I) g gB))
   let X3 : SmoothCcTensor g 0 4 :=
     domDomCongrSection (I := I) g (deTurckLieBackgroundDifferencePermutations 2)
       (ccOperatorFieldComp (I := I) (M := M) g 0 3 4
-        (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gT -
-          deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gU)
+        (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gT -
+          deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gU)
         (metricLoweredConnectionDifferenceCoefficient (I := I) g gB))
   let a : ℝ := Ca * KA * X
   let b : ℝ := Ca * Y * KC
@@ -919,9 +919,9 @@ private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_pairing_secondO
         hδ_le hδ0 hδT hδ_le hδ0 hδU
         R A D2 D3 hR hA hD2 hD3 hU2 hT3 hTU2 hTU3
     have harm : covariantJetNormSq (I := I) (M := M) g 2
-        (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gT -
-          deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gU) ≤ Y ^ 2 := by
-      rw [deTurckLieCovariantDerivativeArmTwoCoefficient, deTurckLieCovariantDerivativeArmTwoCoefficient]
+        (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gT -
+          deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gU) ≤ Y ^ 2 := by
+      rw [deTurckLieCovariantDerivativeSecondOrderCoefficient, deTurckLieCovariantDerivativeSecondOrderCoefficient]
       dsimp only [Y, fr]
       exact hs gT gU T U hT hU hTtie hUtie hδ_le hδ0 hδT hδU
         R A D2 D3 hR hA hD2 hD3 hU2 hT3 hTU2 hTU3

@@ -310,7 +310,7 @@ theorem exists_ricciCovariantDerivativeConnectionDifferenceLowOrder_capWindow (g
     capOfBnd (I := I) (M := M) g₀ P _ hSM_nn (fun i x => hSM i x)
   have hCov : HasCapWin (I := I) (M := M) g₀ P
       (covGrad (I := I) (M := M) g₀ 3 3 (connectionDifferenceLowOrderOperator (I := I) (M := M) g₀ g₁)) KCov := by
-    refine capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _
+    refine capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _
       (fun i => hCcl_nn (i + 1)) (fun i y => ?_)
     rw [riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 3 3 i
       (connectionDifferenceLowOrderOperator (I := I) (M := M) g₀ g₁) y]
@@ -332,7 +332,7 @@ theorem exists_ricciCovariantDerivativeConnectionDifferenceLowOrder_capWindow (g
   have hE1 : HasCapWin (I := I) (M := M) g₀ P
       (slotInsertEndoCc (I := I) (M := M) g₀ 1
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)) KE1 := by
-    refine capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hCe1_nn (fun i y => ?_)
+    refine capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hCe1_nn (fun i y => ?_)
     refine le_trans (hce1 g₁ P htie hδ_le hδ0 hδ i y) ?_
     refine mul_le_mul_of_nonneg_left ?_ (hCe1_nn i)
     exact Combinatorics.antidiagonalTupleGridWindow_mono _
@@ -510,7 +510,7 @@ private theorem pairCap (g₀ : SmoothRiemannianMetric I M)
       HasCapWin (I := I) (M := M) g₀ P (pureTrace (I := I) (M := M) g₀ g₁ s)
         (fun i => C i * antidiagonalTupleGridWindowShiftConstant Λ (i + 1)) := by
     intro s C hC hbd
-    refine capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hC (fun i y => ?_)
+    refine capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hC (fun i y => ?_)
     refine le_trans (hbd i y) ?_
     refine mul_le_mul_of_nonneg_left ?_ (hC i)
     exact Combinatorics.antidiagonalTupleGridWindow_mono _
@@ -728,14 +728,14 @@ private theorem omegaCap (g₀ : SmoothRiemannianMetric I M)
   have hEndo : HasCapWin (I := I) (M := M) g₀ P
       (slotInsertEndoCc (I := I) (M := M) g₀ 2
         (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀)) KE := by
-    refine capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hCe_nn (fun i y => ?_)
+    refine capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hCe_nn (fun i y => ?_)
     refine le_trans (hce g₁ P htie hδ_le hδ0 hδ i y) ?_
     refine mul_le_mul_of_nonneg_left ?_ (hCe_nn i)
     exact Combinatorics.antidiagonalTupleGridWindow_mono _
       (covariantJetFiberNormSqGrid_nonneg (I := I) (M := M) g₀ P y) (by omega)
   have hCL : HasCapWin (I := I) (M := M) g₀ P
       (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) KC := by
-    refine capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hCcd_nn (fun i y => ?_)
+    refine capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hCcd_nn (fun i y => ?_)
     rw [metricLoweredConnectionDifferenceCoefficient_fiber_norm_sq_eq (I := I) (M := M) g₀ g₁ i y]
     exact hcd g₁ P htie hδ_le hδ0 hδ i y
   exact capCongr (I := I) (M := M) g₀ P
@@ -768,20 +768,20 @@ private theorem lrQuadCap (g₀ : SmoothRiemannianMetric I M)
     operatorFieldCompositionGridConstant_nonneg (E := E) (u := 0) (v := 0) hKA_nn hKom_nn i
   refine ⟨fun i => 94 * KJ i, fun i => by have := hKJ_nn i; linarith, ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hP0 hP1
-  have hArm : HasCapWin (I := I) (M := M) g₀ P
-      (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g₀ g₁) KA := by
-    refine capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _
+  have hTerm : HasCapWin (I := I) (M := M) g₀ P
+      (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g₀ g₁) KA := by
+    refine capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _
       (fun i => mul_nonneg (pow_nonneg hfr_nn 2) (hCcd_nn i)) (fun i y => ?_)
-    refine le_trans (deTurckLieCovariantDerivativeArmTwoCoefficient_l2 (I := I) (M := M) g₀ g₁ i y) ?_
+    refine le_trans (deTurckLieCovariantDerivativeSecondOrderCoefficient_l2 (I := I) (M := M) g₀ g₁ i y) ?_
     rw [mul_assoc]
     exact mul_le_mul_of_nonneg_left (hcd g₁ P htie hδ_le hδ0 hδ i y) (pow_nonneg hfr_nn 2)
   have hOm := wom g₁ P htie hδ_le hδ0 hδ hP0 hP1
   have hQB : HasCapWin (I := I) (M := M) g₀ P (connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g₀ g₁) KJ :=
     capCongr (I := I) (M := M) g₀ P (rfl : connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g₀ g₁ = _)
-      (capApp (I := I) (M := M) g₀ P _ _ hKA_nn hKom_nn hArm hOm)
+      (capApp (I := I) (M := M) g₀ P _ _ hKA_nn hKom_nn hTerm hOm)
   have hQA : HasCapWin (I := I) (M := M) g₀ P (connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ g₁) KJ :=
     capCongr (I := I) (M := M) g₀ P (rfl : connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ g₁ = _)
-      (capApp (I := I) (M := M) g₀ P _ _ hKA_nn hKom_nn hArm
+      (capApp (I := I) (M := M) g₀ P _ _ hKA_nn hKom_nn hTerm
         (capDdc0 (I := I) (M := M) g₀ P (Equiv.swap (0 : Fin 3) 1) hOm))
   have hsum := capAdd (I := I) (M := M) g₀ P
     (capAdd (I := I) (M := M) g₀ P
@@ -814,7 +814,7 @@ theorem lieCovCap (g₀ : SmoothRiemannianMetric I M)
         (_hP1 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀
           (convexPerturbation (I := I) g₀ T 0 s) x 1 ≤ Λ),
         HasCapWin (I := I) (M := M) g₀ (convexPerturbation (I := I) g₀ T 0 s)
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδg hδZ s) g₀ -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g₀ T hδg hδZ
               lieDecompositionQ lieDecompositionEps s) K := by
@@ -1020,37 +1020,37 @@ theorem lrQuadMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : �
     operatorFieldCompositionGridConstant_nonneg (E := E) (u := 0) (v := 0) hKA_nn hKom_nn i
   refine ⟨fun i => 94 * KJ i, fun i => by have := hKJ_nn i; linarith, ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ
-  have hArm : HasMarkedGridWindow (I := I) (M := M) g₀ P
-      (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g₀ g₁) 1 KA := by
+  have hTerm : HasMarkedGridWindow (I := I) (M := M) g₀ P
+      (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g₀ g₁) 1 KA := by
     intro i y
-    refine le_trans (deTurckLieCovariantDerivativeArmTwoCoefficient_l2 (I := I) (M := M) g₀ g₁ i y) ?_
+    refine le_trans (deTurckLieCovariantDerivativeSecondOrderCoefficient_l2 (I := I) (M := M) g₀ g₁ i y) ?_
     rw [hKA_def, mul_assoc]
     exact mul_le_mul_of_nonneg_left (hcd g₁ P htie hδ_le hδ0 hδ i y) (pow_nonneg hfr_nn 2)
   have hOm := wom g₁ P htie hδ_le hδ0 hδ
   have hQB : HasMarkedGridWindow (I := I) (M := M) g₀ P (connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g₀ g₁) 2 KJ := by
     have hpaired : connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g₀ g₁ =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 4
-          (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g₀ g₁)
+          (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g₀ g₁)
           (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ g₁) := by
       unfold connectionDifferenceQuadraticPairedTensor
-        deTurckLieCovariantDerivativeArmTwoCoefficient
+        deTurckLieCovariantDerivativeSecondOrderCoefficient
       rfl
     refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P hpaired ?_
     rw [hKJ_def]
     exact hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _
-      hKA_nn hKom_nn hArm hOm
+      hKA_nn hKom_nn hTerm hOm
   have hQA : HasMarkedGridWindow (I := I) (M := M) g₀ P (connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ g₁) 2 KJ := by
     have hcomposed : connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g₀ g₁ =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 4
-          (deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g₀ g₁)
+          (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g₀ g₁)
           (domDomCongrSection (I := I) (M := M) g₀ (Equiv.swap (0 : Fin 3) 1)
             (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ g₁)) := by
       unfold connectionDifferenceQuadraticComposedTensor
-        deTurckLieCovariantDerivativeArmTwoCoefficient
+        deTurckLieCovariantDerivativeSecondOrderCoefficient
       rfl
     refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P hcomposed ?_
     rw [hKJ_def]
-    exact hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKA_nn hKom_nn hArm
+    exact hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKA_nn hKom_nn hTerm
       (hasMarkedGridWindow_covariantDomainReindex (I := I) (M := M) g₀ P (Equiv.swap (0 : Fin 3) 1) hOm)
   have hsum := hasMarkedGridWindow_add (I := I) (M := M) g₀ P
     (hasMarkedGridWindow_add (I := I) (M := M) g₀ P
@@ -1098,7 +1098,7 @@ theorem lieCovJet (hDim : Module.finrank ℝ E = 3)
           ((convexPerturbation (I := I) g₀ T 0 s).toSection x) ≤ 1)
         (i : ℕ),
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδg hδZ s) g₀ -
               deTurckLieTopOrderPairingFamily (I := I) (M := M) g₀ T hδg hδZ
                 lieDecompositionQ lieDecompositionEps s)‖ ^ 2 ≤
@@ -1175,7 +1175,7 @@ theorem lieCovJet (hDim : Module.finrank ℝ E = 3)
   have hPw : HasMarkedGridWindow (I := I) (M := M) g₀ P
       (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδg hδZ s)) 0 KP :=
     wP (metricPerturbationPath (I := I) g₀ T 0 hδg hδZ s) P htie hδ_le hδ0 hδP
-  have hArmA : HasMarkedGridWindow (I := I) (M := M) g₀ P
+  have hTermA : HasMarkedGridWindow (I := I) (M := M) g₀ P
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδg hδZ s))
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 deTurckLieCovariantDerivativePairTracePermutation
@@ -1184,7 +1184,7 @@ theorem lieCovJet (hDim : Module.finrank ℝ E = 3)
     simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKP_nn hKEA_nn hPw
       (hasMarkedGridWindow_domainReindex (I := I) (M := M) g₀ P deTurckLieCovariantDerivativePairTracePermutation
         (hasMarkedGridWindow_slotExtendIter (I := I) (M := M) g₀ P 2 hAw))
-  have hArmB : HasMarkedGridWindow (I := I) (M := M) g₀ P
+  have hTermB : HasMarkedGridWindow (I := I) (M := M) g₀ P
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδg hδZ s))
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 deTurckLieCovariantDerivativePairTracePermutation
@@ -1195,7 +1195,7 @@ theorem lieCovJet (hDim : Module.finrank ℝ E = 3)
       (hasMarkedGridWindow_domainReindex (I := I) (M := M) g₀ P deTurckLieCovariantDerivativePairTracePermutation
         (hasMarkedGridWindow_slotExtendIter (I := I) (M := M) g₀ P 2 hBw))
   have hres :
-      deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+      deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδg hδZ s) g₀ -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g₀ T hδg hδZ
           lieDecompositionQ lieDecompositionEps s =
@@ -1211,7 +1211,7 @@ theorem lieCovJet (hDim : Module.finrank ℝ E = 3)
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (((-(1 / 2) : ℝ)) • riemannCurvatureCoefficientField (I := I) (M := M) g₀ P))) := by
     have hres0 :
-        deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδg hδZ s) g₀ -
           deTurckLieTopOrderPairingFamily (I := I) (M := M) g₀ T hδg hδZ
             lieDecompositionQ lieDecompositionEps s =
@@ -1247,8 +1247,8 @@ theorem lieCovJet (hDim : Module.finrank ℝ E = 3)
         ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 :=
       Finset.sum_nonneg (fun _ _ => sq_nonneg _)
     simp only [hJS_def]; linarith
-  have hbA := hjet0 P hP0 _ hKAr_nn hArmA i
-  have hbB := hjet P (Λ₀ := 1) zero_le_one (le_refl _) hΛ₁0 hsup hcap _ hKBr_nn hArmB i
+  have hbA := hjet0 P hP0 _ hKAr_nn hTermA i
+  have hbB := hjet P (Λ₀ := 1) zero_le_one (le_refl _) hΛ₁0 hsup hcap _ hKBr_nn hTermB i
   rw [hres, iteratedCovGrad_sub]
   have hnA : (0 : ℝ) ≤ ‖iteratedCovGrad (I := I) g₀ 2 2 i
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2

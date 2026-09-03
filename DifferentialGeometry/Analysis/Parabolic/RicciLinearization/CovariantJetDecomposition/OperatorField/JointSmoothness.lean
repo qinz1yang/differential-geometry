@@ -17,7 +17,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.In
 import DifferentialGeometry.Geometry.Curvature.MetricPerturbationPathCurvatureJetBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RealizeMetricChartGramDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.FibreNorm
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.CovariantDerivativeReadout
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.CovariantDerivativeComponents
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -187,7 +187,7 @@ lemma unitModel_basis_expand_two (g₀ : SmoothRiemannianMetric I M)
   rw [Finset.sum_comm]
   exact (continuousBilinearMap_basis_expand (unitModel (I := I) (M := M) g₀ 2 W x) v).symm
 
-def linearizedRicciThreeArmHcont (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+def linearizedRicciCovariantJetJointContinuity (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ} : Prop :=
   ∀ x : M, ContinuousOn
     (fun t : ℝ => Tensor0SBundle.TensorRSSpace.toModel ((Φ t).toSection x))
@@ -195,11 +195,11 @@ def linearizedRicciThreeArmHcont (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma threeArm_unitModel_operatorFieldApplication_intervalIntegrable
+lemma covariantJet_unitModel_operatorFieldApplication_intervalIntegrable
     (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r 2) (W : SmoothCcTensor g₀ 0 r)
     {δ δ' : ℝ} (hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (hcont : linearizedRicciThreeArmHcont (I := I) (M := M) g₀ r Φ (δ := δ) (δ' := δ'))
+    (hcont : linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ r Φ (δ := δ) (δ' := δ'))
     (x : M) (v : Fin 2 → TangentSpace I x) :
     IntervalIntegrable
       (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
@@ -232,7 +232,7 @@ lemma threeArm_unitModel_operatorFieldApplication_intervalIntegrable
     exact (hkey s).symm
   exact (hcontFinal.mono hSI).intervalIntegrable
 
-def linearizedRicciArm2Field (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+def linearizedRicciSecondOrderField (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
@@ -311,13 +311,13 @@ private theorem jointTotalSpace_const_smul_local {d : ℕ} {S : Set ℝ} (a : �
       a (A p₀)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem linearizedRicci_arm2Field_jointSmooth (g₀ : SmoothRiemannianMetric I M)
+theorem linearizedRicci_secondOrderField_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
-      (linearizedRicciArm2Field (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
+      (linearizedRicciSecondOrderField (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
   have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 4 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 4 I x)
@@ -340,7 +340,7 @@ theorem linearizedRicci_arm2Field_jointSmooth (g₀ : SmoothRiemannianMetric I M
   refine hCLM.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) p.1 t) ?_
-  rw [linearizedRicciArm2Field, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
+  rw [linearizedRicciSecondOrderField, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
     Pi.smul_apply, cometricDoubleTraceCoefficient_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -836,7 +836,7 @@ private lemma riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
     intro σ
     have hscal := riemannBiContrFibAppY_chartCoord_jointContMDiffOn (I := I) g₀ T T' hδ hδ' Y α σ
     have hscalAt := (hscal p₀ ⟨hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
-    have hreadout : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
+    have hcoordinates : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1)⟩).2 σ =
           Tensor0SSpace.toModel (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
             ![(DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 0) q.1 : E),
@@ -870,8 +870,8 @@ private lemma riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
       have hqbaseT : q.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
         rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hq.1
       have hqbase : q.1 ∈ e.baseSet := by rw [he]; exact hqbaseT
-      exact hreadout hqbase
-    · exact hreadout hαbase
+      exact hcoordinates hqbase
+    · exact hcoordinates hαbase
   have hcoordVec : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ) ∞
       (fun p : M × ℝ => fun σ : Fin 2 → Fin (Module.finrank ℝ E) =>
@@ -1180,7 +1180,7 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
     intro σ
     have hscal := raisedKoszulFibAppOm_chartCoord_jointContMDiffOn (I := I) g₀ T T' hδ hδ' om α σ
     have hscalAt := (hscal p₀ ⟨hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
-    have hreadout : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
+    have hcoordinates : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, (show Tensor0SBundle.Tensor0SSpace 1 I q.1 →L[ℝ]
             Tensor0SBundle.Tensor0SSpace 2 I q.1 from
           raisedKoszulFib (I := I) g₀ (gfam q.2) q.1) (om q.1)⟩).2 σ =
@@ -1230,8 +1230,8 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
       have hqbaseT : q.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
         rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hq.1
       have hqbase : q.1 ∈ e.baseSet := by rw [he]; exact hqbaseT
-      exact hreadout hqbase
-    · exact hreadout hαbase
+      exact hcoordinates hqbase
+    · exact hcoordinates hαbase
   have hcoordVec : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ) ∞
       (fun p : M × ℝ => fun σ : Fin 2 → Fin (Module.finrank ℝ E) =>
@@ -1258,7 +1258,7 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
   exact hfinal
 
 omit [SigmaCompactSpace M] in
-theorem ricciArmOrder0RiemannCoeff_metricPerturbationPath_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
+theorem ricciOrderZeroRiemannCoeff_metricPerturbationPath_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1266,7 +1266,7 @@ theorem ricciArmOrder0RiemannCoeff_metricPerturbationPath_jointContMDiff (g₀ :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1
-        ((ricciArmOrder0RiemannCoeff (I := I) g₀
+        ((ricciOrderZeroRiemannCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
@@ -1280,30 +1280,30 @@ theorem ricciArmOrder0RiemannCoeff_metricPerturbationPath_jointContMDiff (g₀ :
   refine hCLM.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1 t) ?_
-  rw [ricciArmOrder0RiemannCoeff_toSection]
+  rw [ricciOrderZeroRiemannCoeff_toSection]
   rfl
 
 omit [SigmaCompactSpace M] in
-theorem linearizedRicci_arm0BaseCoeff_jointSmooth (g₀ : SmoothRiemannianMetric I M)
+theorem linearizedRicci_orderZeroBaseCoeff_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-      (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
-  have hRm := ricciArmOrder0RiemannCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
-  have hCurv := ricciArmOrder0CurvCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+      (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
+  have hRm := ricciOrderZeroRiemannCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
+  have hCurv := ricciOrderZeroCurvCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
   have hsub := jointTotalSpaceRS_sub_local (I := I) (r := 2) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (fun p : M × ℝ => (ricciArmOrder0RiemannCoeff (I := I) g₀
+    (fun p : M × ℝ => (ricciOrderZeroRiemannCoeff (I := I) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
-    (fun p : M × ℝ => (ricciArmOrder0CurvCoeff (I := I) g₀
+    (fun p : M × ℝ => (ricciOrderZeroCurvCoeff (I := I) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
     hRm hCurv
   refine hsub.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1 t) ?_
-  rw [linearizedRicciArm0BaseCoeff, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
+  rw [linearizedRicciOrderZeroBaseCoeff, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
     Pi.sub_apply]
 
 omit [BoundarylessManifold I M] in
@@ -1333,13 +1333,13 @@ theorem raisedKoszulFib_metricPerturbationPath_jointContMDiffOn (g₀ : SmoothRi
   exact raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ' om
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem linearizedRicci_arm1BaseCoeff_jointSmooth (g₀ : SmoothRiemannianMetric I M)
+theorem linearizedRicci_firstOrderBaseCoeff_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
-      (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3
+      (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
   have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 3 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 3 I x)
@@ -1347,7 +1347,7 @@ theorem linearizedRicci_arm1BaseCoeff_jointSmooth (g₀ : SmoothRiemannianMetric
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
       (show Tensor0SBundle.Tensor0SSpace 3 I p.1 →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I p.1 from
-        linearizedRicciArm1Fib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1))
+        linearizedRicciFirstOrderFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1))
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun Y => by
       have hZ := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 1) g₀ T T' hδ
@@ -1358,20 +1358,20 @@ theorem linearizedRicci_arm1BaseCoeff_jointSmooth (g₀ : SmoothRiemannianMetric
       refine hkos.congr (fun q _ => ?_)
       refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) q.1 t) ?_
-      rw [linearizedRicciArm1Fib_apply])
+      rw [linearizedRicciFirstOrderFib_apply])
   refine hCLM.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z) p.1 t) ?_
-  rw [linearizedRicciArm1BaseCoeff, ricciArmOrder1KoszulCoeff_toSection]
+  rw [linearizedRicciFirstOrderBaseCoeff, ricciFirstOrderKoszulCoeff_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem linearizedRicci_arm2FieldLichnerowicz_jointSmooth (g₀ : SmoothRiemannianMetric I M)
+theorem linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
-      (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
+      (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
   have hPrin := ricciDeTurckPrincipalCoefficient_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
   have hTH := traceHessianCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
   have hsmul := jointTotalSpaceRS_const_smul (I := I) (r := 4) (s := 2) (1 / 2 : ℝ)
@@ -1389,7 +1389,7 @@ theorem linearizedRicci_arm2FieldLichnerowicz_jointSmooth (g₀ : SmoothRiemanni
   refine hsub.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) p.1 t) ?_
-  rw [linearizedRicciArm2FieldLichnerowicz, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
+  rw [linearizedRicciSecondOrderFieldLichnerowicz, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
     Pi.sub_apply, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
 
 end TensorSpectral

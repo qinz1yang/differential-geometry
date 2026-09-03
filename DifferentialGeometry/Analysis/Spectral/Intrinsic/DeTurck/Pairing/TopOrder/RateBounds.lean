@@ -55,7 +55,7 @@ def ricciDeTurckPairingZeroOrderCoefficient (g gm g_bg : SmoothRiemannianMetric 
     (C0 : SmoothCcTensor g 2 2) : SmoothCcTensor g 2 2 :=
   backgroundZeroOrderCoefficient (I := I) (M := M) g g_bg +
     (-2 : Real) • ricciPalatiniHalfCoefficient (I := I) (M := M) g gm + C0 +
-    ricciPalatiniZeroOrderFold (I := I) (M := M) g gm g_bg
+    ricciPalatiniZeroOrderContraction (I := I) (M := M) g gm g_bg
 
 def ricciDeTurckPairingFirstOrderCoefficient (g gm g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 3 2 :=
@@ -117,7 +117,7 @@ theorem exists_ricciDeTurck_pairing_coefficient_decomposition
     exists_riemannPalatini_decomposition_identity_data (I := I) (M := M)
       g a ha hR hhalf_lt
   obtain ⟨LambdaD, hLambdaD, KD, hKD, q, epsilon, hepsilon, hDmain⟩ :=
-    exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data (I := I) (M := M)
+    exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_data (I := I) (M := M)
       g g_bg a ha hR hhalf_lt
   obtain ⟨C0R, hjR, hidR, hsupR, henvR⟩ :=
     hRmain W hWsymm hdelta_half hdelta hdeltaZ hball
@@ -138,7 +138,7 @@ theorem exists_ricciDeTurck_pairing_coefficient_decomposition
               (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s)) W +
           operatorFieldApply (I := I) (M := M) g 2 2 (C0 s) W +
           operatorFieldApply (I := I) (M := M) g 2 2
-            (ricciPalatiniZeroOrderFold (I := I) (M := M) g
+            (ricciPalatiniZeroOrderContraction (I := I) (M := M) g
               (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s) g_bg) W +
           operatorFieldApply (I := I) (M := M) g 3 2
             (metricDependentFirstOrderCoefficient (I := I) (M := M) g
@@ -154,10 +154,10 @@ theorem exists_ricciDeTurck_pairing_coefficient_decomposition
     simp only [iteratedCovGrad_zero] at hriem hlie
     rw [hmetric]
     simp only [metricDependentLowOrderAction, firstOrderCoefficientAction, metricDependentZeroOrderCoefficient,
-      deTurckLieCoeffField_eq_covDerivArm_add_endoArm,
+      deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm,
       operatorFieldApplication_add_left, operatorFieldApplication_sub_left, operatorFieldApplication_smul_left]
     rw [hlie]
-    simp only [ricciPalatiniHalfCoefficient, ricciPalatiniZeroOrderFold, C0, C2,
+    simp only [ricciPalatiniHalfCoefficient, ricciPalatiniZeroOrderContraction, C0, C2,
       operatorFieldApplication_add_left, operatorFieldApplication_sub_left, operatorFieldApplication_smul_left]
     rw [hriem]
     simp only [operatorFieldApplication_smul_left]
@@ -174,7 +174,7 @@ theorem exists_ricciDeTurck_pairing_coefficient_decomposition
         qA qB q epsilon s).symm
   have hnormal : ∀ s ∈ Set.Icc (0 : Real) 1,
       (rawTensorConnLapSmooth (I := I) g 0 2 W +
-          deTurckPrincipalCometricArm (I := I) (M := M) g
+          deTurckPrincipalCometricTerm (I := I) (M := M) g
             (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s) W) +
         (backgroundLowOrderAction (I := I) (M := M) g g_bg W +
           metricDependentLowOrderAction (I := I) (M := M) g
@@ -258,7 +258,7 @@ private theorem edge_core_smul
     (c : Real) (W : SmoothCcTensor g 0 2) :
     ricciDeTurckLowOrderAction (I := I) (M := M) g gm C0 C1 (c • W) =
       c • ricciDeTurckLowOrderAction (I := I) (M := M) g gm C0 C1 W := by
-  simp only [ricciDeTurckLowOrderAction, firstOrderCoefficientAction, deTurckPrincipalCometricArm,
+  simp only [ricciDeTurckLowOrderAction, firstOrderCoefficientAction, deTurckPrincipalCometricTerm,
     edge_lap_smul, iteratedCovGrad_smul, operatorFieldApplication_smul_right]
   module
 

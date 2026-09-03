@@ -1461,7 +1461,7 @@ theorem metricLoweredConnectionDifference_iteratedCovGrad_norm_sq_topOrderSepara
       ‖iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)‖),
     hFcd_nn n, hS'_nn, mul_nonneg (hFcd_nn n) hS'_nn]
 
-private lemma cometricCastG0_wXi_twoArm_fold_rf
+private lemma cometricCastG0_wXi_twoTerm_radiusFree
     (g₀ g_bg : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Klower : ℕ → ℝ, (∀ n, 0 ≤ Klower n) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1579,7 +1579,7 @@ private lemma exists_riemannianFiberNormSq_wOmega_topsep_rf
   obtain ⟨ΛC, FlowC, hΛC_nn, hFlowC_nn, hCg⟩ :=
     cometricCastG0_order0sup_jetL2_radiusFree (I := I) (M := M) g₀ a hδ₀ hΛ₀0
   obtain ⟨Klower, hKlower_nn, hfold⟩ :=
-    cometricCastG0_wXi_twoArm_fold_rf (I := I) (M := M) g₀ g_bg hδ₀
+    cometricCastG0_wXi_twoTerm_radiusFree (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨2 * ΛC ^ 2, mul_nonneg (by norm_num) (sq_nonneg ΛC),
     fun n => 2 * ((n : ℝ) * operatorFieldApplicationGdiag (E := E) n * Klower n),
     fun n => mul_nonneg (by norm_num)
@@ -1849,7 +1849,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_wOmega_antidiagonalTupleGrid
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2) := by
   classical
   obtain ⟨Klower, hKlower_nn, hfold⟩ :=
-    cometricCastG0_wXi_twoArm_fold_rf (I := I) (M := M) g₀ g_bg hδ₀
+    cometricCastG0_wXi_twoTerm_radiusFree (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨fun n => operatorFieldApplicationGdiag (E := E) n * Klower n,
     fun n => mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) n) (hKlower_nn n), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ n x
@@ -1858,7 +1858,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_wOmega_antidiagonalTupleGrid
   rw [mul_assoc]
   exact mul_le_mul_of_nonneg_left (hfold g₁ P htie hδ_le hδ0 hδ n x) (operatorFieldApplicationGdiag_nonneg (E := E) n)
 
-private lemma wCA_wOmega_twoArm_fold_rf
+private lemma wCA_wOmega_twoTerm_radiusFree
     (g₀ g_bg : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ KB : ℕ → ℝ, (∀ i, 0 ≤ KB i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1976,7 +1976,7 @@ lemma deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_iteratedC
           FlowB i * (1 + ∑ j ∈ Finset.range (i + 3),
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  obtain ⟨KB, hKB_nn, hfoldB⟩ := wCA_wOmega_twoArm_fold_rf (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨KB, hKB_nn, hfoldB⟩ := wCA_wOmega_twoTerm_radiusFree (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨K_rf, hK_rf_nn, hK_rf⟩ :=
     antidiagonalTupleGrid_integral_radiusFree (I := I) (M := M) g₀ hΛ₀0
   refine ⟨fun i => (operatorFieldApplicationGdiag (E := E) i * KB i) * ∑ k ∈ Finset.range (i + 3), K_rf k,

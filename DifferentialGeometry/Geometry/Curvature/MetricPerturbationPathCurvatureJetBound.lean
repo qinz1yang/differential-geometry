@@ -40,8 +40,8 @@ theorem exists_curvatureCoeff_riemannianFiberNormSq_le_of_perturbedMetric_jetEnv
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B)
     (coeff : SmoothRiemannianMetric I M → SmoothCcTensor g₀ 2 2)
-    (hcoeff_curvature : coeff = (fun g₁ => ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁) ∨
-      coeff = (fun g₁ => ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)) :
+    (hcoeff_curvature : coeff = (fun g₁ => ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁) ∨
+      coeff = (fun g₁ => ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)) :
     ∃ Λ : ℝ, 0 ≤ Λ ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (_hδ_le : δ ≤ max δ₀ 0)
@@ -64,15 +64,15 @@ theorem exists_curvatureCoeff_riemannianFiberNormSq_le_of_perturbedMetric_jetEnv
     refine ⟨Λ ^ 2, sq_nonneg Λ, ?_⟩
     intro g₁ P δ hδ_le hδ htie x henv
     have h := hΛ g₁ P hδ_le hδ htie x henv
-    rw [hcoeff, ricciArmOrder0RiemannCoeff_toSection]
+    rw [hcoeff, ricciOrderZeroRiemannCoeff_toSection]
     exact h
   · obtain ⟨Λ, _, hΛ⟩ :=
-      exists_ricciArmOrder0CurvCoeffFib_perturbed_riemannianFiberNormSq_le_of_jetEnvelope
+      exists_ricciOrderZeroCurvCoeffFib_perturbed_riemannianFiberNormSq_le_of_jetEnvelope
         (I := I) (M := M) g₀ hδ₀ B hB
     refine ⟨Λ ^ 2, sq_nonneg Λ, ?_⟩
     intro g₁ P δ hδ_le hδ htie x henv
     have h := hΛ g₁ P hδ_le hδ htie x henv
-    rw [hcoeff, ricciArmOrder0CurvCoeff_toSection]
+    rw [hcoeff, ricciOrderZeroCurvCoeff_toSection]
     exact h
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
@@ -81,8 +81,8 @@ theorem exists_curvatureCoeff_riemannianFiberNormSq_le_of_metricPerturbationPath
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B)
     (coeff : SmoothRiemannianMetric I M → SmoothCcTensor g₀ 2 2)
-    (hcoeff_curvature : coeff = (fun g₁ => ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁) ∨
-      coeff = (fun g₁ => ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)) :
+    (hcoeff_curvature : coeff = (fun g₁ => ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁) ∨
+      coeff = (fun g₁ => ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)) :
     ∃ Λ : ℝ, 0 ≤ Λ ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (_hδ_le : δ ≤ δ₀)
@@ -166,15 +166,15 @@ theorem exists_riemannBiContrFib_riemannianFiberNormSq_le_of_metricPerturbationP
   obtain ⟨Λ, hΛ_nn, hΛ⟩ :=
     exists_curvatureCoeff_riemannianFiberNormSq_le_of_metricPerturbationPath_jetEnvelope (I := I) (M := M) g₀
       hδ₀ B hB
-      (fun g₁ => ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁) (Or.inl rfl)
+      (fun g₁ => ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁) (Or.inl rfl)
   refine ⟨Λ, hΛ_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' s hs x henv
   have h := hΛ T T' hδ_le hδ hδ'_le hδ' s hs x henv
-  rwa [ricciArmOrder0RiemannCoeff_toSection] at h
+  rwa [ricciOrderZeroRiemannCoeff_toSection] at h
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-theorem exists_ricciArmOrder0CurvCoeffFib_riemannianFiberNormSq_le_of_metricPerturbationPath_jetEnvelope
+theorem exists_ricciOrderZeroCurvCoeffFib_riemannianFiberNormSq_le_of_metricPerturbationPath_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
     ∃ Λ : ℝ, 0 ≤ Λ ∧
@@ -191,17 +191,17 @@ theorem exists_ricciArmOrder0CurvCoeffFib_riemannianFiberNormSq_le_of_metricPert
                 (convexPerturbation (I := I) g₀ T T' s)).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
               (show TensorRSSpace 2 2 I x from
-                TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I)
+                TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I)
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x)) ≤ Λ := by
   classical
   obtain ⟨Λ, hΛ_nn, hΛ⟩ :=
     exists_curvatureCoeff_riemannianFiberNormSq_le_of_metricPerturbationPath_jetEnvelope (I := I) (M := M) g₀
       hδ₀ B hB
-      (fun g₁ => ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁) (Or.inr rfl)
+      (fun g₁ => ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁) (Or.inr rfl)
   refine ⟨Λ, hΛ_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' s hs x henv
   have h := hΛ T T' hδ_le hδ hδ'_le hδ' s hs x henv
-  rwa [ricciArmOrder0CurvCoeff_toSection] at h
+  rwa [ricciOrderZeroCurvCoeff_toSection] at h
 
 end Curvature
 end Geometry

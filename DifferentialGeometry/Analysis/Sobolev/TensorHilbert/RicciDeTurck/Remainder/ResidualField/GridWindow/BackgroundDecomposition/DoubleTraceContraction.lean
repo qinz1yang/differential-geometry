@@ -305,7 +305,7 @@ lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) 
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) D) v =
       ∑ b : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
@@ -321,7 +321,7 @@ lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) 
   classical
   set Y : Tensor0SSpace 6 I x :=
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D with hY_def
   have hYval : ∀ w : Fin 6 → E,
       Tensor0SSpace.toModel Y w =
@@ -330,17 +330,17 @@ lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) 
     intro w
     rw [hY_def]
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRSDomDomCongr ricciFoldRemainderSlotPerm
+          tensorRSDomDomCongr ricciContractionRemainderSlotPerm
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x)) D) from by
       rw [rsDomDomCongrSection_toSection]]
-    rw [toModel_rsDomDomCongr_apply (I := I) (M := M) ricciFoldRemainderSlotPerm
+    rw [toModel_rsDomDomCongr_apply (I := I) (M := M) ricciContractionRemainderSlotPerm
       ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x) D]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
     rw [slotExtendIter_two_toModel (I := I) (M := M) g₀ X x D
-      (fun i => w (ricciFoldRemainderSlotPerm i))]
+      (fun i => w (ricciContractionRemainderSlotPerm i))]
     refine congrArg₂ (· * ·) ?_ ?_
     · refine congrArg _ ?_
       funext k
@@ -351,7 +351,7 @@ lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) 
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) D) =
       cometricDoubleTraceFib (I := I) g₁ 2 x
         (cometricDoubleTraceFib (I := I) g₁ 4 x Y) from by
@@ -380,7 +380,7 @@ lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) 
   rw [hYval]
   rfl
 
-def riemannCometricDoubleTraceFold : SmoothCcTensor g₀ 2 4 :=
+def riemannCometricDoubleTraceContraction : SmoothCcTensor g₀ 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
     (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 (Equiv.swap (1 : Fin 6) 3)
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
@@ -388,11 +388,11 @@ def riemannCometricDoubleTraceFold : SmoothCcTensor g₀ 2 4 :=
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-lemma bgRArmWeight_toModel (x : M) (D : Tensor0SSpace 2 I x)
+lemma bgRTermWeight_toModel (x : M) (D : Tensor0SSpace 2 I x)
     (m : Fin 4 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
-          (riemannCometricDoubleTraceFold (I := I) (M := M) g₀).toSection x) D) m =
+          (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀).toSection x) D) m =
       ∑ e : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
             ![(smoothOrthoFrame (I := I) g₀ x e x : E), (m 1 : E)] *
@@ -435,9 +435,9 @@ lemma bgRArmWeight_toModel (x : M) (D : Tensor0SSpace 2 I x)
       funext k
       fin_cases k <;> simp [Equiv.swap_apply_def]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
-      (riemannCometricDoubleTraceFold (I := I) (M := M) g₀).toSection x) D) =
+      (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀).toSection x) D) =
       cometricDoubleTraceFib (I := I) g₀ 4 x Y from by
-    rw [hY_def, riemannCometricDoubleTraceFold]
+    rw [hY_def, riemannCometricDoubleTraceContraction]
     rw [operatorFieldComposition_toSection]
     rfl]
   rw [cometricDoubleTraceFib_toModel (I := I) g₀ 4 x Y]

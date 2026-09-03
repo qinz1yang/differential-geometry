@@ -113,7 +113,7 @@ private theorem mixed_real_holder_two_nonneg
   exact (ENNReal.ofReal_le_ofReal_iff hrhs_nn).mp hHolder
 
 
-private theorem mixed_young_arm_split
+private theorem mixed_young_term_split
     (wi wl CS CT ΛS ΛT NS NT Iφp Iψq : ℝ)
     (hwi_nn : 0 ≤ wi) (hwl_nn : 0 ≤ wl) (hwsum : wi + wl = 1)
     (hCS : 0 ≤ CS) (hCT : 0 ≤ CT) (hΛS : 0 ≤ ΛS) (hΛT : 0 ≤ ΛT)
@@ -150,7 +150,7 @@ private theorem mixed_young_arm_split
         mul_le_mul_of_nonneg_left hyoung (by positivity)
 
 open DifferentialGeometry.Analysis.Sobolev.Tensor in
-private theorem operatorFieldApplication_integrated_grid_twoArm_mixed
+private theorem operatorFieldApplication_integrated_grid_twoTerm_mixed
     (g : SmoothRiemannianMetric I M) (r s₁ s₂ k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : Integral.L2.SmoothCcTensor g r s₁) (T : Integral.L2.SmoothCcTensor g 0 s₂)
@@ -410,7 +410,7 @@ private theorem operatorFieldApplication_integrated_grid_twoArm_mixed
           rw [hIφp]; exact integral_nonneg (fun x => Real.rpow_nonneg (hSj_nn i x) _)
         have hIψq_nn : 0 ≤ Iψq := by
           rw [hIψq]; exact integral_nonneg (fun x => Real.rpow_nonneg (hTj_nn l x) _)
-        have hys := mixed_young_arm_split wi wl (CSf m) (CTf m) ΛS ΛT
+        have hys := mixed_young_term_split wi wl (CSf m) (CTf m) ΛS ΛT
           ‖iteratedCovGrad (I := I) g r s₁ m S‖
           ‖iteratedCovGrad (I := I) g 0 s₂ m T‖
           Iφp Iψq hwi_nn hwl_nn hwsum (hCSf_nn m) (hCTf_nn m) hΛS hΛT
@@ -525,7 +525,7 @@ private theorem operatorFieldApplication_integrated_grid_twoArm_mixed
   rw [hc]
   ring
 
-theorem ccTensorContract_topOrder_l2_twoArm_mixed_le
+theorem ccTensorContract_topOrder_l2_twoTerm_mixed_le
     (g₀ : SmoothRiemannianMetric I M) (b₀ s₀ q : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (Φ : SmoothCcTensor g₀ b₀ s₀) (W : SmoothCcTensor g₀ 0 b₀) (ΛΦ ΛW : ℝ),
@@ -546,7 +546,7 @@ theorem ccTensorContract_topOrder_l2_twoArm_mixed_le
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Cgrid, hCgrid_nn, hCgrid⟩ :=
-    operatorFieldApplication_integrated_grid_twoArm_mixed (I := I) g₀ b₀ s₀ b₀ q
+    operatorFieldApplication_integrated_grid_twoTerm_mixed (I := I) g₀ b₀ s₀ b₀ q
   set Gk : ℝ := diagonalGridGrowthFactor (E := E) q with hGk
   have hGk_nn : 0 ≤ Gk := operatorFieldApplicationGdiag_nonneg (E := E) q
   refine ⟨Gk * Cgrid, by positivity, ?_⟩

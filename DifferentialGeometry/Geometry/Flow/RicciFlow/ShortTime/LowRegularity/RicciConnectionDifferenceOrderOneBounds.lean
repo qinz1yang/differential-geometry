@@ -271,7 +271,7 @@ private theorem kernel_split
               (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ki120) := rfl
 
 omit [SigmaCompactSpace M] in
-private theorem arm_riemannianFiberNormSq
+private theorem term_riemannianFiberNormSq
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
@@ -302,7 +302,7 @@ private theorem arm_riemannianFiberNormSq
   rw [hy, slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
 omit [SigmaCompactSpace M] in
-private theorem fullArm_riemannianFiberNormSq
+private theorem fullTerm_riemannianFiberNormSq
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3))
     (q : ℕ) (x : M) :
@@ -320,9 +320,9 @@ private theorem fullArm_riemannianFiberNormSq
     (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4
       (slotPermutationCoefficient (I := I) (M := M) g₀ σ)
       (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ρ q x]
-  exact arm_riemannianFiberNormSq (I := I) (M := M) g₀ g₁ σ q x
+  exact term_riemannianFiberNormSq (I := I) (M := M) g₀ g₁ σ q x
 
-private theorem arm_norm
+private theorem term_norm
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (q : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ 3 4 q
@@ -339,9 +339,9 @@ private theorem arm_norm
       (I := I) (M := M) g₀ 3 (4 + q)]
   exact MeasureTheory.integral_congr_ae
     (Filter.Eventually.of_forall fun x =>
-      arm_riemannianFiberNormSq (I := I) (M := M) g₀ g₁ σ q x)
+      term_riemannianFiberNormSq (I := I) (M := M) g₀ g₁ σ q x)
 
-private theorem fullArm_norm
+private theorem fullTerm_norm
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (q : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ 3 4 q
@@ -359,7 +359,7 @@ private theorem fullArm_norm
       (I := I) (M := M) g₀ 3 (4 + q)]
   exact MeasureTheory.integral_congr_ae
     (Filter.Eventually.of_forall fun x =>
-      fullArm_riemannianFiberNormSq (I := I) (M := M) g₀ g₁ σ ρ q x)
+      fullTerm_riemannianFiberNormSq (I := I) (M := M) g₀ g₁ σ ρ q x)
 
 private theorem norm_five_le
     {V : Type*} [SeminormedAddCommGroup V]
@@ -394,11 +394,11 @@ private theorem kernel_h2
       iteratedCovGrad_add, iteratedCovGrad_add,
       iteratedCovGrad_add, iteratedCovGrad_add]
     exact norm_five_le
-      (fullArm_norm (I := I) (M := M) g₀ g₁ ko0312 ki102 i)
-      (fullArm_norm (I := I) (M := M) g₀ g₁ ko0213 ki120 i)
-      (arm_norm (I := I) (M := M) g₀ g₁ ko2301 i)
-      (fullArm_norm (I := I) (M := M) g₀ g₁ ko1302 ki102 i)
-      (fullArm_norm (I := I) (M := M) g₀ g₁ ko1203 ki120 i)
+      (fullTerm_norm (I := I) (M := M) g₀ g₁ ko0312 ki102 i)
+      (fullTerm_norm (I := I) (M := M) g₀ g₁ ko0213 ki120 i)
+      (term_norm (I := I) (M := M) g₀ g₁ ko2301 i)
+      (fullTerm_norm (I := I) (M := M) g₀ g₁ ko1302 ki102 i)
+      (fullTerm_norm (I := I) (M := M) g₀ g₁ ko1203 ki120 i)
   have hsq : ∀ i : ℕ,
       ‖iteratedCovGrad (I := I) g₀ 3 4 i
         (linearizedRicciConnectionDifferenceOrder1KernelField (I := I) g₀ g₁)‖ ^ 2 ≤

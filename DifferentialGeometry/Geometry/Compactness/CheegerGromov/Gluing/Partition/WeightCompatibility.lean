@@ -77,7 +77,7 @@ theorem normalRaw_eq_bump {ι : Type*} [DecidableEq ι]
         (fun j v => normalChartAt (I := I0) g (p j)
           ((normalChartAt (I := I0) g (p β)).symm v)) i0 i z := by
   simpa only [bumpNum] using
-    (normalRaw_readout (I := I0) (z := z) g p cut f i0 β i hsrc)
+    (normalRaw_normalChart_apply (I := I0) (z := z) g p cut f i0 β i hsrc)
 
 omit [T2Space M0] in
 omit [NeZero (Module.finrank ℝ E0)] in

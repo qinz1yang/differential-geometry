@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopRadial
 import DifferentialGeometry.Geometry.Comparison.RadialLaplacian
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint
-import DifferentialGeometry.Geometry.Exponential.IntrinsicSmooth
+import DifferentialGeometry.Geometry.Exponential.IntrinsicGeodesicSmoothness
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

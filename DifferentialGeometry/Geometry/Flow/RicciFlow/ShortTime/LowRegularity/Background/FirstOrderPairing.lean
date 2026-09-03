@@ -77,10 +77,10 @@ private theorem bg0Fam_joint
     (hδZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g
         (0 : SmoothCcTensor g 0 2)) δ) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
       (bg0Fam (I := I) (M := M) g gB T hδ hδZ)
       (δ := δ) (δ' := δ) := by
-  exact threeArmJoint_sub (I := I) (M := M) g _ _
+  exact covariantJetJoint_sub (I := I) (M := M) g _ _
     (RicciDeTurckLowOrder.selfLow_joint
       (I := I) (M := M) g gB T hδ hδZ)
     (RicciDeTurckLowOrder.selfLow_joint
@@ -107,7 +107,7 @@ private noncomputable def bg0PairInt
     (by
       rw [Set.uIcc_of_le zero_le_one]
       exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt)
-    (threeArmJoint_sub (I := I) (M := M) g _ _
+    (covariantJetJoint_sub (I := I) (M := M) g _ _
       (bg0Fam_joint (I := I) (M := M) g gB T hδT hδZ)
       (bg0Fam_joint (I := I) (M := M) g gB U hδU hδZ))
 
@@ -340,9 +340,9 @@ theorem bg0_pair_h1
     dsimp only [S]
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
-  have hjoint : linearizedRicciThreeArmHjoint
+  have hjoint : linearizedRicciCovariantJetJointSmoothness
       (I := I) (M := M) g 2 Φ (δ := δ) (δ' := δ) :=
-    threeArmJoint_sub (I := I) (M := M) g _ _
+    covariantJetJoint_sub (I := I) (M := M) g _ _
       (bg0Fam_joint (I := I) (M := M) g gB T hδT hδZ)
       (bg0Fam_joint (I := I) (M := M) g gB U hδU hδZ)
   let B : ℝ := B0 R A * D2 + B1 A * N
@@ -528,9 +528,9 @@ theorem bg0_pair_h2
     dsimp only [S]
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
-  have hjoint : linearizedRicciThreeArmHjoint
+  have hjoint : linearizedRicciCovariantJetJointSmoothness
       (I := I) (M := M) g 2 Φ (δ := δ) (δ' := δ) :=
-    threeArmJoint_sub (I := I) (M := M) g _ _
+    covariantJetJoint_sub (I := I) (M := M) g _ _
       (bg0Fam_joint (I := I) (M := M) g gB T hδT hδZ)
       (bg0Fam_joint (I := I) (M := M) g gB U hδU hδZ)
   let B : ℝ :=
@@ -847,7 +847,7 @@ private noncomputable def firstOrderBackgroundCoefficientDifference
     (by
       rw [Set.uIcc_of_le zero_le_one]
       exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt)
-    (threeArmJoint_sub (I := I) (M := M) g _ _
+    (covariantJetJoint_sub (I := I) (M := M) g _ _
       (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g gB T 0 hδT hδZ)
       (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g gB U 0 hδU hδZ))
 
@@ -974,13 +974,13 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_background_pairing_h2_bound
                   (I := I) (M := M) g gT -
                 linearizedRicciConnectionDifferenceOrder1CoeffField
                   (I := I) (M := M) g gU) +
-            (deTurckLieArm1Coeff (I := I) (M := M) g gT gB -
-              deTurckLieArm1Coeff (I := I) (M := M) g gU gB)) ≤
+            (deTurckLieFirstOrderCoeff (I := I) (M := M) g gT gB -
+              deTurckLieFirstOrderCoeff (I := I) (M := M) g gU gB)) ≤
         (B0 * D3 + B1 * D2 + B1 * A * D2) ^ 2 := by
   obtain ⟨ρr, R0, R1, hρr, hR0, hR1, hricci⟩ :=
     exists_linearizedRicciConnectionDifferenceOrderOneCoefficient_pairing_secondOrder_bound (I := I) (M := M) hDim g
   obtain ⟨ρl, L0, L1, hρl, hL0, hL1, hlie⟩ :=
-    exists_deTurckLieArmOneCoefficient_backgroundDifference_pairing_secondOrder_bound (I := I) (M := M) hDim g gB
+    exists_deTurckLieFirstOrderCoefficient_backgroundDifference_pairing_secondOrder_bound (I := I) (M := M) hDim g gB
   let ρ : ℝ := min ρr ρl
   let B0 : ℝ := 4 * R0 + 2 * L0
   let B1 : ℝ := 4 * R1 + 2 * L1
@@ -1006,8 +1006,8 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_background_pairing_h2_bound
       linearizedRicciConnectionDifferenceOrder1CoeffField
         (I := I) (M := M) g gU
   let VL : SmoothCcTensor g 3 2 :=
-    deTurckLieArm1Coeff (I := I) (M := M) g gT gB -
-      deTurckLieArm1Coeff (I := I) (M := M) g gU gB
+    deTurckLieFirstOrderCoeff (I := I) (M := M) g gT gB -
+      deTurckLieFirstOrderCoeff (I := I) (M := M) g gU gB
   have hN : 0 ≤ N := norm_nonneg _
   have hXR : 0 ≤ XR :=
     add_nonneg
@@ -1072,9 +1072,9 @@ private theorem rhs1_bg_sub
               (I := I) g T 0 hδT hδZ s -
             linearizedRicciConnectionDifferenceOrder1Coeff
               (I := I) g U 0 hδU hδZ s) +
-        (deTurckLieArm1Coeff (I := I) (M := M) g
+        (deTurckLieFirstOrderCoeff (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδT hδZ s) gB -
-          deTurckLieArm1Coeff (I := I) (M := M) g
+          deTurckLieFirstOrderCoeff (I := I) (M := M) g
             (metricPerturbationPath (I := I) g U 0 hδU hδZ s) gB) := by
   simp only [ricciDeTurckRemainderFirstOrderCoefficient, smul_sub]
   abel
@@ -1140,10 +1140,10 @@ theorem firstOrderBackgroundCoefficient_pairing_h2_bound
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjoint :
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g 3 Φ
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 3 Φ
         (δ := δ) (δ' := δ) := by
     dsimp only [Φ]
-    exact threeArmJoint_sub (I := I) (M := M) g _ _
+    exact covariantJetJoint_sub (I := I) (M := M) g _ _
       (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g gB T 0 hδT hδZ)
       (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g gB U 0 hδU hδZ)
   have hpoint : ∀ s ∈ Set.Icc (0 : ℝ) 1,
@@ -1265,8 +1265,8 @@ theorem firstOrderBackgroundCoefficient_pairing_h2_bound
                   (I := I) (M := M) g gmT -
                 linearizedRicciConnectionDifferenceOrder1CoeffField
                   (I := I) (M := M) g gmU) +
-            (deTurckLieArm1Coeff (I := I) (M := M) g gmT gB -
-              deTurckLieArm1Coeff (I := I) (M := M) g gmU gB) := by
+            (deTurckLieFirstOrderCoeff (I := I) (M := M) g gmT gB -
+              deTurckLieFirstOrderCoeff (I := I) (M := M) g gmU gB) := by
       dsimp only [Φ, gmT, gmU]
       rw [rhs1_bg_sub (I := I) (M := M) g gB T U hδT hδU hδZ s]
       rfl

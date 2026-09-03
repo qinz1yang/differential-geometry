@@ -35,10 +35,10 @@ variable
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem armConst
+theorem termConst
     (g : SmoothRiemannianMetric I M) {r : ℕ}
     (A : SmoothCcTensor g r 2) {δ δ' : ℝ} :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun _ => A) (δ := δ) (δ' := δ') :=
   (A.toSection.contMDiff.comp_contMDiffOn contMDiffOn_fst).mono (Set.subset_univ _)
 
@@ -48,11 +48,11 @@ theorem path_sub_eq
     {δ δ' : ℝ}
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (Φ Ψ : ℝ → SmoothCcTensor g r 2)
-    (hΦ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Φ
+    (hΦ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Φ
       (δ := δ) (δ' := δ'))
-    (hΨ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Ψ
+    (hΨ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Ψ
       (δ := δ) (δ' := δ'))
-    (hD : linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    (hD : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun t => Φ t - Ψ t) (δ := δ) (δ' := δ')) :
     pathIntegralCoeffField (I := I) (M := M) g r 2 Φ
           (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
@@ -64,7 +64,7 @@ theorem path_sub_eq
         (fun t => Φ t - Ψ t)
         (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
         metricPerturbationPathDomain_isOpen hSI hD := by
-  rw [linearizedRicciThreeArmHjoint] at hΦ hΨ hD
+  rw [linearizedRicciCovariantJetJointSmoothness] at hΦ hΨ hD
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro y
@@ -103,11 +103,11 @@ theorem path_add_sub_eq
     {δ δ' : ℝ}
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (Φ Ψ : ℝ → SmoothCcTensor g r 2) (C : SmoothCcTensor g r 2)
-    (hΦ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Φ
+    (hΦ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Φ
       (δ := δ) (δ' := δ'))
-    (hΨ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Ψ
+    (hΨ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Ψ
       (δ := δ) (δ' := δ'))
-    (hK : linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    (hK : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun t => Φ t + Ψ t - C) (δ := δ) (δ' := δ')) :
     pathIntegralCoeffField (I := I) (M := M) g r 2 Φ
           (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
@@ -120,7 +120,7 @@ theorem path_add_sub_eq
         (fun t => Φ t + Ψ t - C)
         (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
         metricPerturbationPathDomain_isOpen hSI hK := by
-  rw [linearizedRicciThreeArmHjoint] at hΦ hΨ hK
+  rw [linearizedRicciCovariantJetJointSmoothness] at hΦ hΨ hK
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro y
@@ -164,9 +164,9 @@ theorem path_add_sub_jet
     {δ δ' : ℝ}
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (Φ Ψ : ℝ → SmoothCcTensor g r 2) (C : SmoothCcTensor g r 2)
-    (hΦ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Φ
+    (hΦ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Φ
       (δ := δ) (δ' := δ'))
-    (hΨ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Ψ
+    (hΨ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Ψ
       (δ := δ) (δ' := δ'))
     {Λ : ℝ} (hΛ : 0 ≤ Λ)
     (hcap : ∀ t ∈ Set.Icc (0 : ℝ) 1,
@@ -180,11 +180,11 @@ theorem path_add_sub_jet
               metricPerturbationPathDomain_isOpen hSI hΨ -
           C) ≤ Λ := by
   classical
-  have hK : linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+  have hK : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun t => Φ t + Ψ t - C) (δ := δ) (δ' := δ') :=
-    threeArmJoint_sub (I := I) (M := M) g _ _
-      (threeArmJoint_add (I := I) (M := M) g _ _ hΦ hΨ)
-      (armConst (I := I) (M := M) g C)
+    covariantJetJoint_sub (I := I) (M := M) g _ _
+      (covariantJetJoint_add (I := I) (M := M) g _ _ hΦ hΨ)
+      (termConst (I := I) (M := M) g C)
   have heq := path_add_sub_eq (I := I) (M := M) g r hSI Φ Ψ C hΦ hΨ hK
   have hsq : Real.sqrt Λ ^ 2 = Λ := Real.sq_sqrt hΛ
   have hcap' : ∀ t ∈ Set.Icc (0 : ℝ) 1,

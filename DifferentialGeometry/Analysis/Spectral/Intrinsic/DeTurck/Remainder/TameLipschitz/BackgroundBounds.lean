@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradUniformBound
@@ -33,7 +33,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturba
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieCoefficientApplication
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartReadout
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartComponents
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrderTerm.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.SecondOrderTerm.L2JetBound
@@ -64,15 +64,15 @@ open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
-  linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero
-  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
-  linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
-  linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
-  linearizedRicciArm1CorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
-  linearizedRicci_arm0Field_jointSmooth linearizedRicci_arm1Field_jointSmooth
-  linearizedRicci_arm2FieldLichnerowicz_jointSmooth ricciArmOrder1KoszulCoeff
-  exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
+  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
+  linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero
+  exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
+  linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
+  linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
+  exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
   symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
@@ -99,45 +99,45 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieArm2PrincipalCoeff deTurckLieArm1Coeff deTurckLieCoeffField
-  deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth
+  (deTurckLieSecondOrderPrincipalCoeff deTurckLieFirstOrderCoeff deTurckLieCoeffField
+  deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth
   deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
   deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib
-  domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieArm2DivSlotPermA
-  deTurckLieArm2DivSlotPermAT traceHessianCoeff_toSection)
+  domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieSecondOrderDivSlotPermA
+  deTurckLieSecondOrderDivSlotPermAT traceHessianCoeff_toSection)
 
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
 open Analysis.Parabolic.TensorSpectral
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-lemma de_turck_arm_fibre_const_eq_one_of_finrank_eq_one (h1 : Module.finrank ℝ E = 1) :
-    deTurckArmFibreConst (Module.finrank ℝ E) = 1 := by
+lemma de_turck_term_fibre_const_eq_one_of_finrank_eq_one (h1 : Module.finrank ℝ E = 1) :
+    deTurckTermFibreConst (Module.finrank ℝ E) = 1 := by
   rw [h1]
-  rw [deTurckArmFibreConst]
+  rw [deTurckTermFibreConst]
   rw [Nat.cast_one, one_pow, Real.sqrt_one]
 
-private lemma sqrt_natCast_mul_natCast_eq_deTurckArmFibreConst (n : ℕ) :
-    Real.sqrt n * n = deTurckArmFibreConst n := by
-  rw [deTurckArmFibreConst]
+private lemma sqrt_natCast_mul_natCast_eq_deTurckTermFibreConst (n : ℕ) :
+    Real.sqrt n * n = deTurckTermFibreConst n := by
+  rw [deTurckTermFibreConst]
   rw [show ((n : ℝ)) ^ 3 = (n : ℝ) * (n : ℝ) ^ 2 from by ring]
   rw [Real.sqrt_mul (Nat.cast_nonneg n)]
   rw [Real.sqrt_sq (Nat.cast_nonneg n)]
 
-lemma background_coefficient_le_deTurckArmFibreConst_polynomial (n : ℕ) (hn : 2 ≤ n) {δ₀ : ℝ}
+lemma background_coefficient_le_deTurckTermFibreConst_polynomial (n : ℕ) (hn : 2 ≤ n) {δ₀ : ℝ}
     (hδ₀ : δ₀ < 1) (hδ₀half : δ₀ ≤ 1 / 2) {c : ℝ} (hc0 : 0 ≤ c) (hc : c ≤ 13 / 2) :
     27 * Real.sqrt n * (1 - δ₀) * (c * n * (1 / (1 - δ₀)) ^ 2) ≤
-      2 * (32 * deTurckArmFibreConst n ^ 3 - 28 * deTurckArmFibreConst n ^ 2) := by
+      2 * (32 * deTurckTermFibreConst n ^ 3 - 28 * deTurckTermFibreConst n ^ 2) := by
   have h1δ : (0 : ℝ) < 1 - δ₀ := by linarith
   have hhalf : 1 / (1 - δ₀) ≤ 2 := by
     rw [div_le_iff₀ h1δ]
     linarith
   have hhalf0 : 0 < 1 / (1 - δ₀) := by positivity
-  set f := deTurckArmFibreConst n with hf_def
-  have hf0 : 0 ≤ f := de_turck_arm_fibre_const_nonneg n
-  have hf2 : f ^ 2 = (n : ℝ) ^ 3 := sq_de_turck_arm_fibre_const n
+  set f := deTurckTermFibreConst n with hf_def
+  have hf0 : 0 ≤ f := de_turck_term_fibre_const_nonneg n
+  have hf2 : f ^ 2 = (n : ℝ) ^ 3 := sq_de_turck_term_fibre_const n
   have hn' : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hf2ge : (8 : ℝ) ≤ f ^ 2 := by
     rw [hf2]
@@ -164,7 +164,7 @@ lemma background_coefficient_le_deTurckArmFibreConst_polynomial (n : ℕ) (hn : 
   have hLHS : 27 * Real.sqrt n * (1 - δ₀) * (c * n * (1 / (1 - δ₀)) ^ 2) =
       27 * c * (Real.sqrt n * n) * ((1 - δ₀) * (1 / (1 - δ₀)) ^ 2) := by
     ring
-  rw [sqrt_natCast_mul_natCast_eq_deTurckArmFibreConst n] at hLHS
+  rw [sqrt_natCast_mul_natCast_eq_deTurckTermFibreConst n] at hLHS
   have hδfac : (1 - δ₀) * (1 / (1 - δ₀)) ^ 2 = 1 / (1 - δ₀) := by
     field_simp
   rw [hLHS, hδfac]
@@ -178,61 +178,6 @@ lemma background_coefficient_le_deTurckArmFibreConst_polynomial (n : ℕ) (hn : 
     nlinarith only [hc, hfge, hs2, hs2lb, hs2ub, hf0,
       sq_nonneg (f - 2 * Real.sqrt 2)]
   nlinarith only [hcore, hf0, mul_nonneg hc0 hf0, hfge, hs2lb, hs2]
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_sub_left_ext (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ₁ Φ₂ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s (Φ₁ - Φ₂) W =
-      operatorFieldApply (I := I) (M := M) g r s Φ₁ W - operatorFieldApply (I := I) (M := M) g r s
-        Φ₂ W := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((operatorFieldApply (I := I) (M := M) g r s Φ₁ W
-      - operatorFieldApply (I := I) (M := M) g r s Φ₂ W).toSection x) =
-      (operatorFieldApply (I := I) (M := M) g r s Φ₁ W).toSection x -
-        (operatorFieldApply (I := I) (M := M) g r s Φ₂ W).toSection x from rfl]
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection, operatorFieldApplication_toSection]
-  rw [show ((Φ₁ - Φ₂).toSection x : TensorRSSpace r s I x) =
-      Φ₁.toSection x - Φ₂.toSection x from by
-    rw [SmoothCcTensor.toSection_sub]
-    rfl]
-  rw [ContinuousLinearMap.sub_comp]
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem ccTensor02Symm_eq_self (g₀ : SmoothRiemannianMetric I M)
-    (S : SmoothCcTensor g₀ 0 2)
-    (hsymm : ∀ (x : M) (u w : TangentSpace I x),
-      smoothCcTensorBilinForm (I := I) g₀ S x u w = smoothCcTensorBilinForm (I := I) g₀ S x w u) :
-    ccTensor02Symm (I := I) (M := M) g₀ S = S := by
-  have hswap : domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S = S := by
-    refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
-    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel]
-    refine ContinuousMultilinearMap.ext (fun v => ?_)
-    rw [ContinuousMultilinearMap.domDomCongr_apply]
-    have hv : ∀ u w : TangentSpace I x,
-        DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M)
-            g₀ 2 S x ![u, w] =
-          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M)
-            g₀ 2 S x ![w, u] := by
-      intro u w
-      rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ S x u w,
-        unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ S x w u]
-      exact hsymm x u w
-    have hveta : (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) = ![v 1, v 0] := by
-      funext i
-      fin_cases i <;> rfl
-    have hveta' : v = ![v 0, v 1] := by
-      funext i
-      fin_cases i <;> rfl
-    rw [hveta]
-    conv_rhs => rw [hveta']
-    exact hv (v 1) (v 0)
-  have htwo : S + S = (2 : ℝ) • S := (two_smul ℝ S).symm
-  rw [ccTensor02Symm, hswap, htwo, smul_smul,
-    show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -361,18 +306,18 @@ private theorem ccTensor22_ext_of_operatorFieldApplication (g₀ : SmoothRiemann
   exact h2
 
 omit [SigmaCompactSpace M] in
-theorem half_ricciArmOrder0RiemannCoeff_difference_eq_residualFieldSum_add_kernelContraction
+theorem half_ricciOrderZeroRiemannCoeff_difference_eq_residualFieldSum_add_kernelContraction
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
     (hPsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ P x v w = smoothCcTensorBilinForm (I := I) g₀ P x w v) :
     (1 / 2 : ℝ) •
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
             (I := I) (M := M) g₀ g₁
-          - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+          - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
             (I := I) (M := M) g₀ g₀) =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0AACommCoeffField
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroAACommCoeffField
           (I := I) (M := M) g₀ g₁
         + Analysis.Parabolic.TensorSpectral.backgroundRicciCommutatorDiffDecompositionRemainderField
             (I := I) (M := M) g₀ g₁
@@ -386,35 +331,36 @@ theorem half_ricciArmOrder0RiemannCoeff_difference_eq_residualFieldSum_add_kerne
   rw [hP]
   refine ccTensor22_ext_of_operatorFieldApplication (I := I) (M := M) g₀ _ _ (fun W => ?_)
   have hprim :=
-    ricciArmOrder0RiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
+    ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
       (I := I) (M := M) g₀ g₁ P htie hPsymm W
   rw [hP] at hprim
-  rw [operatorFieldApplication_smul_left (I := I) (M := M) g₀ 2 2, operatorFieldApplication_sub_left_ext (I := I) (M := M) g₀ 2 2]
+  rw [operatorFieldApplication_smul_left (I := I) (M := M) g₀ 2 2,
+    operatorFieldApplication_sub_left (I := I) (M := M) g₀ 2 2]
   rw [hprim]
   rw [show (ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-        (Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+        (Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
             (I := I) (M := M) g₀ g₁
-          - Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+          - Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
             (I := I) (M := M) g₀ g₀)
         (ccInputSlotSwapField (I := I) (M := M) g₀)
       + (1 / 2 : ℝ) •
-          Analysis.Parabolic.TensorSpectral.ricciArmSharpGradKoszulResidualField
+          Analysis.Parabolic.TensorSpectral.ricciCovariantTermSharpGradKoszulResidualField
             (I := I) (M := M) g₀ g₁
             (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricDifferenceCcTensor
               (I := I) (M := M) g₀ g₁)
-      - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmRicciFoldRemainderField
+      - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciContractionRemainderField
           (I := I) (M := M) g₀ g₁
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricDifferenceCcTensor
             (I := I) (M := M) g₀ g₁)) =
       Analysis.Parabolic.TensorSpectral.backgroundRicciCommutatorDiffDecompositionRemainderField
         (I := I) (M := M) g₀ g₁ from rfl]
   rw [operatorFieldApplication_add_left (I := I) (M := M) g₀ 2 2
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0AACommCoeffField
+    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroAACommCoeffField
       (I := I) (M := M) g₀ g₁)
     (Analysis.Parabolic.TensorSpectral.backgroundRicciCommutatorDiffDecompositionRemainderField
       (I := I) (M := M) g₀ g₁) W]
   rw [operatorFieldApplication_add_left (I := I) (M := M) g₀ 2 2
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0AACommCoeffField
+    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroAACommCoeffField
         (I := I) (M := M) g₀ g₁
       + Analysis.Parabolic.TensorSpectral.backgroundRicciCommutatorDiffDecompositionRemainderField
         (I := I) (M := M) g₀ g₁)
@@ -426,7 +372,7 @@ theorem half_ricciArmOrder0RiemannCoeff_difference_eq_residualFieldSum_add_kerne
       (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
       (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1) W]
   rw [operatorFieldApplication_add_left (I := I) (M := M) g₀ 2 2
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0AACommCoeffField
+    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroAACommCoeffField
       (I := I) (M := M) g₀ g₁)
     (Analysis.Parabolic.TensorSpectral.backgroundRicciCommutatorDiffDecompositionRemainderField
       (I := I) (M := M) g₀ g₁) W]
@@ -458,13 +404,13 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3) := by
   classical
   obtain ⟨CB, hCB_nn, hCB⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0BackgroundRCommCoeffDiff_gridWindow_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroBackgroundRCommCoeffDiff_gridWindow_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CS, hCS_nn, hCS⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMetricDiff_gridWindow_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciCovariantTermSharpGradKoszulResidualMetricDiff_gridWindow_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CR, hCR_nn, hCR⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmRicciFoldRemainderFieldMetricDifference_boundedFactorGridWindow_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciContractionRemainderFieldMetricDifference_boundedFactorGridWindow_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨SW, hSW_nn, hSW⟩ := DifferentialGeometry.Analysis.Spectral.exists_riemannianFiberNormSq_iteratedCovGrad_bound (I := I) (M := M) g₀ 2 2
     (ccInputSlotSwapField (I := I) (M := M) g₀)
@@ -491,17 +437,17 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
     Analysis.Parabolic.TensorSpectral.backgroundRicciCommutatorDiffDecompositionRemainderField
       (I := I) (M := M) g₀ g₁ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-        (Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+        (Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
             (I := I) (M := M) g₀ g₁
-          - Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+          - Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
             (I := I) (M := M) g₀ g₀)
         (ccInputSlotSwapField (I := I) (M := M) g₀)
       + (1 / 2 : ℝ) •
-          Analysis.Parabolic.TensorSpectral.ricciArmSharpGradKoszulResidualField
+          Analysis.Parabolic.TensorSpectral.ricciCovariantTermSharpGradKoszulResidualField
             (I := I) (M := M) g₀ g₁
             (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricDifferenceCcTensor
               (I := I) (M := M) g₀ g₁)
-      - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmRicciFoldRemainderField
+      - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciContractionRemainderField
           (I := I) (M := M) g₀ g₁
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricDifferenceCcTensor
             (I := I) (M := M) g₀ g₁) := rfl
@@ -515,23 +461,23 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
   have hsplit2 := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x
     ((iteratedCovGrad (I := I) g₀ 2 2 i
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-        (Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+        (Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
             (I := I) (M := M) g₀ g₁
-          - Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+          - Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
             (I := I) (M := M) g₀ g₀)
         (ccInputSlotSwapField (I := I) (M := M) g₀))).toSection x)
     ((iteratedCovGrad (I := I) g₀ 2 2 i
       ((1 / 2 : ℝ) •
-        DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmSharpGradKoszulResidualField
+        DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciCovariantTermSharpGradKoszulResidualField
           (I := I) (M := M) g₀ g₁
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricDifferenceCcTensor
             (I := I) (M := M) g₀ g₁))).toSection x)
   have hA : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 2 i
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-          (Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+          (Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
               (I := I) (M := M) g₀ g₁
-            - Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+            - Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
               (I := I) (M := M) g₀ g₀)
           (ccInputSlotSwapField (I := I) (M := M) g₀))).toSection x) ≤
       (diagonalGridGrowthFactor (E := E) i *
@@ -539,9 +485,9 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
     refine le_trans
       (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
       (I := I) (M := M) g₀ i 2 2 2
-      (Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+      (Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
           (I := I) (M := M) g₀ g₁
-        - Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+        - Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
           (I := I) (M := M) g₀ g₀)
       (ccInputSlotSwapField (I := I) (M := M) g₀) x) ?_
     have hrhs : (diagonalGridGrowthFactor (E := E) i *
@@ -558,9 +504,9 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
     have hi'le : i' ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi')
     have hBGi' : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i') x
         ((iteratedCovGrad (I := I) g₀ 2 2 i'
-          (Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+          (Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
               (I := I) (M := M) g₀ g₁
-            - Analysis.Parabolic.TensorSpectral.ricciArmOrder0BackgroundCurvatureCoeffField
+            - Analysis.Parabolic.TensorSpectral.ricciOrderZeroBackgroundCurvatureCoeffField
               (I := I) (M := M) g₀ g₀)).toSection x) ≤ CB i' * w := by
       refine le_trans (hCB g₁ P htie hδ_le hδ0 hbound i' x) ?_
       refine mul_le_mul_of_nonneg_left ?_ (hCB_nn i')
@@ -574,19 +520,19 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
   have hS : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 2 i
         ((1 / 2 : ℝ) •
-          Analysis.Parabolic.TensorSpectral.ricciArmSharpGradKoszulResidualField
+          Analysis.Parabolic.TensorSpectral.ricciCovariantTermSharpGradKoszulResidualField
             (I := I) (M := M) g₀ g₁
             (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricDifferenceCcTensor
               (I := I) (M := M) g₀ g₁))).toSection x) ≤
       ((1 / 2 : ℝ) ^ 2 * CS i) * w := by
     rw [DifferentialGeometry.Analysis.Spectral.iteratedCovGrad_smul (I := I) (M := M) g₀ 2 2 i (1 / 2)]
     rw [show (((1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 2 2 i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmSharpGradKoszulResidualField
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciCovariantTermSharpGradKoszulResidualField
           (I := I) (M := M) g₀ g₁
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricDifferenceCcTensor
             (I := I) (M := M) g₀ g₁))).toSection x) =
         (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g₀ 2 2 i
-          (Analysis.Parabolic.TensorSpectral.ricciArmSharpGradKoszulResidualField
+          (Analysis.Parabolic.TensorSpectral.ricciCovariantTermSharpGradKoszulResidualField
             (I := I) (M := M) g₀ g₁
             (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricDifferenceCcTensor
               (I := I) (M := M) g₀ g₁))).toSection x from by
@@ -598,7 +544,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
     exact hCS g₁ P htie hδ_le hδ0 hbound i x
   have hR : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 2 i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmRicciFoldRemainderField
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciContractionRemainderField
           (I := I) (M := M) g₀ g₁
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricDifferenceCcTensor
             (I := I) (M := M) g₀ g₁))).toSection x) ≤ CR i * w :=

@@ -32,7 +32,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem quadNormal_readout
+theorem quadNormal_expMapDiffeo_apply
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (beta gamma : Y.M)
     (f : ContDiffBump (0 : Real)) {z : E}
     (hsrc :
@@ -62,7 +62,7 @@ theorem quadNormal_readout
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gluing_atom_readout
+theorem gluingAtom_expMapDiffeo_apply
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (beta gamma : Y.M)
     (lam : Real) (hlam : 0 < lam) {z : E}
     (hsrc :
@@ -83,7 +83,7 @@ theorem gluing_atom_readout
         (normalCoordMetric (I := I) Y gamma 0
           (normalTransition (I := I) Y beta gamma z)
           (normalTransition (I := I) Y beta gamma z)) := by
-  exact quadNormal_readout (I := I) Y beta gamma (gluingBump lam hlam) hsrc
+  exact quadNormal_expMapDiffeo_apply (I := I) Y beta gamma (gluingBump lam hlam) hsrc
 
 noncomputable def gluingAtomOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (beta gamma : Y.M)
@@ -387,7 +387,7 @@ theorem gluing_atom_converges {ι : Type*} [Fintype ι]
     i (gluingBump (lam i) (hlam i)) (gluingBump (lam i) (hlam i)).contDiff
   refine hraw.congr hU (fun k z hz => ?_) (fun _ _ => rfl)
   simpa only [gluingAtomChart, gluingAtomOn, c2_radius_normal_ball_chart_apply] using
-    (gluing_atom_readout (I := I) (X.obj k) (beta k) (center i k)
+    (gluingAtom_expMapDiffeo_apply (I := I) (X.obj k) (beta k) (center i k)
       (lam i) (hlam i) (hsrc i k z hz))
 
 omit [NeZero (Module.finrank ℝ E)] in

@@ -361,7 +361,7 @@ theorem normalRaw_tsupport (g : SmoothRiemannianMetric I M) (p : ι → M)
 
 omit [T2Space M] in
 omit [NeZero (Module.finrank Real E)] in
-theorem normalRaw_readout (g : SmoothRiemannianMetric I M) (p : ι → M)
+theorem normalRaw_normalChart_apply (g : SmoothRiemannianMetric I M) (p : ι → M)
     (cut : ContDiffBump (0 : E)) (f : ι → ContDiffBump (0 : E))
     (i0 β i : ι) {z : E}
     (hsrc : ∀ j, (normalChartAt (I := I) g (p β)).symm z ∈

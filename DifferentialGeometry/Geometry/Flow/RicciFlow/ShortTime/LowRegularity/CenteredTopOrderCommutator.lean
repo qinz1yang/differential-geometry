@@ -33,22 +33,6 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_sub_right_ec
-    (g : SmoothRiemannianMetric I M) (r s : Nat)
-    (Phi : SmoothCcTensor g r s) (W1 W2 : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s Phi (W1 - W2) =
-      operatorFieldApply (I := I) (M := M) g r s Phi W1 -
-        operatorFieldApply (I := I) (M := M) g r s Phi W2 := by
-  have h : operatorFieldApply (I := I) (M := M) g r s Phi (W1 - W2) +
-      operatorFieldApply (I := I) (M := M) g r s Phi W2 =
-        operatorFieldApply (I := I) (M := M) g r s Phi W1 := by
-    rw [← operatorFieldApplication_add_right]
-    congr 1
-    abel
-  exact eq_sub_of_add_eq h
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem centered_commutator_finish
@@ -320,7 +304,7 @@ theorem ricciDeTurck_remainder_centered_commutator_decomposition
     dsimp only [oneMinusConnLapSmooth]
     rw [hprod, harg]
     simp only [operatorFieldApplication_add_right]
-    rw [hHLT, operatorFieldApplication_sub_right_ec]
+    rw [hHLT, operatorFieldApplication_sub_right]
     dsimp only [G, P20, P11L, P11R, Tr]
     simp only [operatorFieldApplication_add_right]
     module

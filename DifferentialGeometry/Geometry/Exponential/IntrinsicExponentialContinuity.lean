@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Metric.Completeness
-import DifferentialGeometry.Geometry.Exponential.IntrinsicExp
+import DifferentialGeometry.Geometry.Exponential.IntrinsicExponential
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChainedFlowContinuity
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
 import DifferentialGeometry.Geometry.Geodesic.CrossVFReduction

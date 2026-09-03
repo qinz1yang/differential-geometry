@@ -596,7 +596,7 @@ private lemma corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMD
     have hscal := corrField_riemannBiContrFibAppY_chartCoord_jointContMDiffOn
       (I := I) g₀ T T' hδ hδ' Y α σ
     have hscalAt := (hscal p₀ ⟨hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
-    have hreadout : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
+    have hcoordinates : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1)⟩).2 σ =
           Tensor0SSpace.eval (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
             ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 0) q.1,
@@ -625,8 +625,8 @@ private lemma corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMD
       have hqbaseT : q.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
         rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hq.1
       have hqbase : q.1 ∈ e.baseSet := by rw [he]; exact hqbaseT
-      exact hreadout hqbase
-    · exact hreadout hαbase
+      exact hcoordinates hqbase
+    · exact hcoordinates hαbase
   have hcoordVec : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ) ∞
       (fun p : M × ℝ => fun σ : Fin 2 → Fin (Module.finrank ℝ E) =>
@@ -802,7 +802,7 @@ private lemma corrField_raisedKoszulFibAppOm_metricPerturbationPath_jointContMDi
     have hscal := corrField_raisedKoszulFibAppOm_chartCoord_jointContMDiffOn
       (I := I) g₀ T T' hδ hδ' om α σ
     have hscalAt := (hscal p₀ ⟨hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
-    have hreadout : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
+    have hcoordinates : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, (show Tensor0SBundle.Tensor0SSpace 1 I q.1 →L[ℝ]
             Tensor0SBundle.Tensor0SSpace 2 I q.1 from
           raisedKoszulFib (I := I) g₀ (gfam q.2) q.1) (om q.1)⟩).2 σ =
@@ -846,8 +846,8 @@ private lemma corrField_raisedKoszulFibAppOm_metricPerturbationPath_jointContMDi
       have hqbaseT : q.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
         rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hq.1
       have hqbase : q.1 ∈ e.baseSet := by rw [he]; exact hqbaseT
-      exact hreadout hqbase
-    · exact hreadout hαbase
+      exact hcoordinates hqbase
+    · exact hcoordinates hαbase
   have hcoordVec : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ) ∞
       (fun p : M × ℝ => fun σ : Fin 2 → Fin (Module.finrank ℝ E) =>

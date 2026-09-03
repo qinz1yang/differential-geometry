@@ -143,7 +143,7 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_h2_tame_bound_of_segment_boun
     (C2 * R) (C3 * A) hlow hhigh hP2 hP3
   have hLie : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 3 2 i
-        (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2) ≤
+        (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2) ≤
       LB ^ 2 := by
     simpa only [LB, L0, L1, mul_assoc] using hLieRaw
   have hraw := rhs_one_coefficient_sobolev_two_bound (I := I) (M := M) g₀ g_bg T T' hδ hδ'
@@ -250,7 +250,7 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_h2_tame_bound
     (C2 * R) (C3 * A) hlow hhigh hP2 hP3
   have hLie : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 3 2 i
-        (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2) ≤
+        (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2) ≤
       LB ^ 2 := by
     simpa only [LB, L0, L1, mul_assoc] using hLieRaw
   have hraw := rhs_one_coefficient_sobolev_two_bound (I := I) (M := M) g₀ g_bg T T' hδ hδ'

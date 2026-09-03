@@ -293,7 +293,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDif
             (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ gB -
               deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2) ≤
           (B0 R + B1 R * A) ^ 2 := by
-  obtain ⟨C, hC, hpt⟩ := bdCovDerivArmDiff_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
+  obtain ⟨C, hC, hpt⟩ := bdCovDerivTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
   obtain ⟨B0, B1, hB0, hB1, hgrid⟩ :=
     h2_grid_tame (I := I) (M := M) hDim g₀ C hC
   refine ⟨B0, B1, hB0, hB1, ?_⟩
@@ -332,7 +332,7 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covar
             (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ gB -
               deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2) ≤
           (B0 R + B1 R * A) ^ 2 := by
-  obtain ⟨C, hC, hpt⟩ := bdEndoArmDiff_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
+  obtain ⟨C, hC, hpt⟩ := bdEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
   obtain ⟨B0, B1, hB0, hB1, hgrid⟩ :=
     h2_grid_tame (I := I) (M := M) hDim g₀ C hC
   refine ⟨B0, B1, hB0, hB1, ?_⟩
@@ -1088,7 +1088,7 @@ private noncomputable def bgCorrInt
     (by
       rw [Set.uIcc_of_le zero_le_one]
       exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt)
-    (threeArmJoint_sub (I := I) (M := M) g₀ _ _
+    (covariantJetJoint_sub (I := I) (M := M) g₀ _ _
       (RicciDeTurckLowOrder.selfLow_joint
         (I := I) (M := M) g₀ gB T hδ hδZ)
       (RicciDeTurckLowOrder.selfLow_joint
@@ -1113,24 +1113,24 @@ private theorem selfLow_bg_sub
       metricPerturbationPathDomain (δ := δ) (δ' := δ) := by
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
-  have hBjoint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+  have hBjoint : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
       (RicciDeTurckLowOrder.pathIntegrand
         (I := I) (M := M) g₀ gB T hδ hδZ) (δ := δ) (δ' := δ) :=
     RicciDeTurckLowOrder.selfLow_joint
       (I := I) (M := M) g₀ gB T hδ hδZ
-  have h0joint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+  have h0joint : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
       (RicciDeTurckLowOrder.pathIntegrand
         (I := I) (M := M) g₀ g₀ T hδ hδZ) (δ := δ) (δ' := δ) :=
     RicciDeTurckLowOrder.selfLow_joint
       (I := I) (M := M) g₀ g₀ T hδ hδZ
-  have hDjoint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+  have hDjoint : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
       (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ)
       (δ := δ) (δ' := δ) := by
-    exact threeArmJoint_sub (I := I) (M := M) g₀ _ _ hBjoint h0joint
+    exact covariantJetJoint_sub (I := I) (M := M) g₀ _ _ hBjoint h0joint
   have hBjointRaw := hBjoint
   have h0jointRaw := h0joint
   have hDjointRaw := hDjoint
-  rw [linearizedRicciThreeArmHjoint] at hBjointRaw h0jointRaw hDjointRaw
+  rw [linearizedRicciCovariantJetJointSmoothness] at hBjointRaw h0jointRaw hDjointRaw
   have hBcont :=
     jointContMDiff_toModel_continuous_slice
       (I := I) g₀ 2 2
@@ -1231,7 +1231,7 @@ private theorem bgCorrInt_h2
     (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ)
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen hSI
-    (threeArmJoint_sub (I := I) (M := M) g₀ _ _
+    (covariantJetJoint_sub (I := I) (M := M) g₀ _ _
       (RicciDeTurckLowOrder.selfLow_joint
         (I := I) (M := M) g₀ gB T hδ hδZ)
       (RicciDeTurckLowOrder.selfLow_joint

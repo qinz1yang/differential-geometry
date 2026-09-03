@@ -267,7 +267,7 @@ theorem exists_ricciConnectionDifferenceTopOrderCoefficient_path_riemannianFiber
               (metricPerturbationPath (I := I) g T 0 hTδ hδZ s) T).toSection x) ≤
           (K * (δ / (1 - δ))) ^ 2 := by
   obtain ⟨KD, hKD0, hKD⟩ := exists_uniform_riemannianFiberNormSq_ricciConnectionPrincipalCoefficient_le (I := I) (M := M)
-  let K := 2 * deTurckArmFibreConst (Module.finrank ℝ E) * (1 + KD)
+  let K := 2 * deTurckTermFibreConst (Module.finrank ℝ E) * (1 + KD)
   refine ⟨K, mul_nonneg
     (mul_nonneg (by norm_num) (Real.sqrt_nonneg _)) (by linarith), ?_⟩
   intro g T hT δ hδ_le hδ0 hTδ hδZ s hs x
@@ -296,7 +296,7 @@ theorem exists_ricciConnectionDifferenceTopOrderCoefficient_path_riemannianFiber
   rw [← operatorFieldComposition_toSection] at hc
   have hprod := mul_le_mul hA hD
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g 4 4 x _)
-    (sq_nonneg (2 * deTurckArmFibreConst (Module.finrank ℝ E) *
+    (sq_nonneg (2 * deTurckTermFibreConst (Module.finrank ℝ E) *
       (δ / (1 - δ))))
   calc
     _ ≤ riemannianFiberNormSq (I := I) (M := M) g 4 2 x
@@ -304,9 +304,9 @@ theorem exists_ricciConnectionDifferenceTopOrderCoefficient_path_riemannianFiber
         riemannianFiberNormSq (I := I) (M := M) g 4 4 x
           ((ricciConnectionPrincipalCoefficient (I := I) (M := M) g gm).toSection x) := by
       simpa only [ricciConnectionDifferenceTopOrderCoefficient, gm] using hc
-    _ ≤ (2 * deTurckArmFibreConst (Module.finrank ℝ E) *
+    _ ≤ (2 * deTurckTermFibreConst (Module.finrank ℝ E) *
           (δ / (1 - δ))) ^ 2 * KD := hprod
-    _ ≤ (2 * deTurckArmFibreConst (Module.finrank ℝ E) *
+    _ ≤ (2 * deTurckTermFibreConst (Module.finrank ℝ E) *
           (δ / (1 - δ))) ^ 2 * (1 + KD) ^ 2 := by
       apply mul_le_mul_of_nonneg_left _ (sq_nonneg _)
       nlinarith
@@ -335,7 +335,7 @@ theorem exists_topOrderKernel_path_riemannianFiberNormSq_le :
                 ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T).toSection x) ≤
           (K * (δ / (1 - δ) ^ 2)) ^ 2 := by
   obtain ⟨KR, hKR0, hR⟩ := exists_ricciConnectionDifferenceTopOrderCoefficient_path_riemannianFiberNormSq_le (I := I) (M := M)
-  let KL := 4 * deTurckArmFibreConst (Module.finrank ℝ E)
+  let KL := 4 * deTurckTermFibreConst (Module.finrank ℝ E)
   let K0 := 2 * KL ^ 2 + 8 * KR ^ 2
   have hK0 : 0 ≤ K0 := by positivity
   refine ⟨Real.sqrt K0, Real.sqrt_nonneg _, ?_⟩

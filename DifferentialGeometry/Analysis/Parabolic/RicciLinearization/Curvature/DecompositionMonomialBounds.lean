@@ -256,7 +256,7 @@ theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
         (show TensorRSSpace 4 2 I x from
           TensorRSSpace.ofCLM
             (curvatureActionMonomialTrace (I := I) (M := M) g₁ W σ x)) ≤
-      (deTurckArmFibreConst (Module.finrank ℝ E) * (δW / (1 - δ) ^ 2)) ^ 2 := by
+      (deTurckTermFibreConst (Module.finrank ℝ E) * (δW / (1 - δ) ^ 2)) ^ 2 := by
   classical
   have h1mδ : (0 : ℝ) < 1 - δ := by linarith
   obtain ⟨n, e, hn, horth, hpars, hriemannianFiberNormSq⟩ :=
@@ -539,8 +539,8 @@ theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
     _ ≤ ((Module.finrank ℝ E : ℝ) ^ 2) *
           ((Module.finrank ℝ E : ℝ) * (δW ^ 2 / (1 - δ) ^ 4)) := by
         refine mul_le_mul_of_nonneg_left hVsum (by positivity)
-    _ = (deTurckArmFibreConst (Module.finrank ℝ E) * (δW / (1 - δ) ^ 2)) ^ 2 := by
-        rw [mul_pow, sq_de_turck_arm_fibre_const, div_pow]
+    _ = (deTurckTermFibreConst (Module.finrank ℝ E) * (δW / (1 - δ) ^ 2)) ^ 2 := by
+        rw [mul_pow, sq_de_turck_term_fibre_const, div_pow]
         ring
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
@@ -563,7 +563,7 @@ theorem riemannianFiberNormSq_curvatureDecompositionMonomialBiContrFib_le
         (show TensorRSSpace 4 2 I x from
           TensorRSSpace.ofCLM
             (curvatureDecompositionMonomialBiContrFib (I := I) (M := M) g₁ W σ x)) ≤
-      (deTurckArmFibreConst (Module.finrank ℝ E) * (δW / (1 - δ) ^ 2)) ^ 2 := by
+      (deTurckTermFibreConst (Module.finrank ℝ E) * (δW / (1 - δ) ^ 2)) ^ 2 := by
   simpa only [curvatureDecompositionMonomialBiContrFib] using
     riemannianFiberNormSq_curvatureActionMonomialTrace_le
       (I := I) (M := M) g₀ g₁ P htie hδ1 hδP W hδW0 hW σ x

@@ -67,25 +67,25 @@ private theorem unitModel_sub_app
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem threeArm_const
+private theorem covariantJet_const
     (g : SmoothRiemannianMetric I M) {r : Nat}
     (A : SmoothCcTensor g r 2) {delta delta' : Real} :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun _ => A) (δ := delta) (δ' := delta') := by
-  rw [linearizedRicciThreeArmHjoint]
+  rw [linearizedRicciCovariantJetJointSmoothness]
   exact (A.toSection.contMDiff.comp_contMDiffOn contMDiffOn_fst).mono
     (Set.subset_univ _)
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem threeArm_param_smul
+private theorem covariantJet_param_smul
     (g : SmoothRiemannianMetric I M) {r : Nat}
     (A : Real -> SmoothCcTensor g r 2) {delta delta' : Real}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g r A
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r A
       (δ := delta) (δ' := delta')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun t => t • A t) (δ := delta) (δ' := delta') := by
-  rw [linearizedRicciThreeArmHjoint] at hA ⊢
+  rw [linearizedRicciCovariantJetJointSmoothness] at hA ⊢
   intro p hp
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -115,16 +115,16 @@ private theorem threeArm_param_smul
         p.2 ((A p.2).toSection p.1)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem threeArm_comp
+private theorem covariantJet_comp
     (g : SmoothRiemannianMetric I M) (a b : Nat)
     (A : Real -> SmoothCcTensor g b 2) (B : SmoothCcTensor g a b)
     {delta delta' : Real}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g b A
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g b A
       (δ := delta) (δ' := delta')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g a
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g a
       (fun t => ccOperatorFieldComp (I := I) (M := M) g a b 2 (A t) B)
       (δ := delta) (δ' := delta') := by
-  rw [linearizedRicciThreeArmHjoint] at hA ⊢
+  rw [linearizedRicciCovariantJetJointSmoothness] at hA ⊢
   apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel a Real E)
     (V₁ := fun x : M => Tensor0SSpace a I x)
@@ -165,11 +165,11 @@ private theorem secondMetricPairTraceOperator_joint
       (ccTensorBilinSymm (I := I) g T) delta)
     (hdeltaZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 6
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 6
       (fun t => secondMetricPairTraceOperator (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t))
       (δ := delta) (δ' := delta) := by
-  rw [linearizedRicciThreeArmHjoint]
+  rw [linearizedRicciCovariantJetJointSmoothness]
   have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 6 Real E)
     (V₁ := fun x : M => Tensor0SSpace 6 I x)
@@ -215,14 +215,14 @@ theorem edgePairMono_joint
     (hdeltaZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta)
     (G : SmoothCcTensor g 0 4) (sigma : Equiv.Perm (Fin 4)) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
       (fun t => topOrderPairingCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) G sigma)
       (δ := delta) (δ' := delta) := by
-  have h := threeArm_comp (I := I) (M := M) g 2 6
+  have h := covariantJet_comp (I := I) (M := M) g 2 6
     (fun t => secondMetricPairTraceOperator (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t))
-    (rsDomDomCongrSection (I := I) (M := M) g 2 6 ricciFoldRemainderSlotPerm
+    (rsDomDomCongrSection (I := I) (M := M) g 2 6 ricciContractionRemainderSlotPerm
       (slotExtendIter (I := I) (M := M) g 0 4 2
         (domDomCongrSection (I := I) g
           (sigma.trans (Equiv.swap (0 : Fin 4) 2 *
@@ -239,19 +239,19 @@ theorem edgeLiePair_joint
     (hdeltaZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta)
     (q : Fin 3 -> Equiv.Perm (Fin 4)) (epsilon : Fin 3 -> Real) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
       (deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hdelta hdeltaZ q epsilon)
       (δ := delta) (δ' := delta) := by
   let G := iteratedCovGrad (I := I) g 0 2 2 T
   have hmono : ∀ sigma : Equiv.Perm (Fin 4),
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
         (fun t => topOrderPairingCoefficient (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) G sigma)
         (δ := delta) (δ' := delta) :=
     fun sigma => edgePairMono_joint (I := I) (M := M)
       g T hdelta hdeltaZ G sigma
   have hterm : ∀ i : Fin 3,
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
         (fun t => epsilon i • ((1 / 2 : Real) •
           (topOrderPairingCoefficient (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) G (q i) +
@@ -260,16 +260,16 @@ theorem edgeLiePair_joint
               ((q i).trans (Equiv.swap (0 : Fin 4) 1)))))
         (δ := delta) (δ' := delta) := by
     intro i
-    exact threeArmJoint_smul (I := I) (M := M) g (epsilon i) _
-      (threeArmJoint_smul (I := I) (M := M) g (1 / 2 : Real) _
-        (threeArmJoint_add (I := I) (M := M) g _ _
+    exact covariantJetJoint_smul (I := I) (M := M) g (epsilon i) _
+      (covariantJetJoint_smul (I := I) (M := M) g (1 / 2 : Real) _
+        (covariantJetJoint_add (I := I) (M := M) g _ _
           (hmono (q i))
           (hmono ((q i).trans (Equiv.swap (0 : Fin 4) 1)))))
-  have hsum := threeArmJoint_add (I := I) (M := M) g _ _
-    (threeArmJoint_add (I := I) (M := M) g _ _ (hterm 0) (hterm 1))
+  have hsum := covariantJetJoint_add (I := I) (M := M) g _ _
+    (covariantJetJoint_add (I := I) (M := M) g _ _ (hterm 0) (hterm 1))
     (hterm 2)
-  have hscaled := threeArm_param_smul (I := I) (M := M) g _ hsum
-  change linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+  have hscaled := covariantJet_param_smul (I := I) (M := M) g _ hsum
+  change linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
     (fun t => t • ∑ i : Fin 3, epsilon i • ((1 / 2 : Real) •
       (topOrderPairingCoefficient (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) G (q i) +
@@ -287,22 +287,22 @@ private theorem ricciHalf_joint
       (ccTensorBilinSymm (I := I) g T) delta)
     (hdeltaZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
       (fun t => ricciPalatiniHalfCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t))
       (δ := delta) (δ' := delta) := by
   have hconn :=
     linearizedRicciConnectionDifferenceOrder0Coeff_jointContMDiffOn_smallPerturbationSet
       (I := I) (M := M) g T 0 hdelta hdeltaZ
-  have hriem : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
-      (fun t => ricciArmOrder0RiemannCoeff (I := I) (M := M) g
+  have hriem : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
+      (fun t => ricciOrderZeroRiemannCoeff (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t))
       (δ := delta) (δ' := delta) := by
-    rw [linearizedRicciThreeArmHjoint]
-    exact ricciArmOrder0RiemannCoeff_metricPerturbationPath_jointContMDiff
+    rw [linearizedRicciCovariantJetJointSmoothness]
+    exact ricciOrderZeroRiemannCoeff_metricPerturbationPath_jointContMDiff
       (I := I) (M := M) g T 0 hdelta hdeltaZ
-  have hsum := threeArmJoint_add (I := I) (M := M) g _ _ hconn
-    (threeArmJoint_smul (I := I) (M := M) g (1 / 2 : Real) _ hriem)
+  have hsum := covariantJetJoint_add (I := I) (M := M) g _ _ hconn
+    (covariantJetJoint_smul (I := I) (M := M) g (1 / 2 : Real) _ hriem)
   simpa only [ricciPalatiniHalfCoefficient, linearizedRicciConnectionDifferenceOrder0Coeff] using hsum
 
 omit [SigmaCompactSpace M] in
@@ -313,38 +313,38 @@ private theorem ricciDecomposition0_joint
       (ccTensorBilinSymm (I := I) g T) delta)
     (hdeltaZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
       (fun t => ricciDecomposition0 (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) (t • T))
       (δ := delta) (δ' := delta) := by
-  have hriem := threeArm_const (I := I) (M := M) g
-    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g g)
+  have hriem := covariantJet_const (I := I) (M := M) g
+    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g g)
     (delta := delta) (delta' := delta)
   have hAA :=
-    ricciArmOrder0AACommCoeffField_metricPerturbationPath_threeArmHjoint
+    ricciOrderZeroAACommCoeffField_metricPerturbationPath_covariantJetJointSmoothness
       (I := I) (M := M) g T hdelta hdeltaZ
   have hBackground :=
-    ricciArmOrder0BackgroundRCommCoeffField_metricPerturbationPath_threeArmHjoint
+    ricciOrderZeroBackgroundRCommCoeffField_metricPerturbationPath_covariantJetJointSmoothness
       (I := I) (M := M) g T hdelta hdeltaZ
-  have hBackground0 := threeArm_const (I := I) (M := M) g
-    (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g g)
+  have hBackground0 := covariantJet_const (I := I) (M := M) g
+    (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g g)
     (delta := delta) (delta' := delta)
-  have hBackgroundDiff := threeArmJoint_sub (I := I) (M := M) g _ _ hBackground hBackground0
-  have hSwap := threeArm_comp (I := I) (M := M) g 2 2 _
+  have hBackgroundDiff := covariantJetJoint_sub (I := I) (M := M) g _ _ hBackground hBackground0
+  have hSwap := covariantJet_comp (I := I) (M := M) g 2 2 _
     (ccSlotSwapField (I := I) (M := M) g) hBackgroundDiff
   have hSharp :=
-    ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoint
+    ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_covariantJetJointSmoothness
       (I := I) (M := M) g T hdelta hdeltaZ
   have hFold :=
-    ricciArmRicciFoldRemainderField_metricPerturbationPath_threeArmHjoint
+    ricciContractionRemainderField_metricPerturbationPath_covariantJetJointSmoothness
       (I := I) (M := M) g T hdelta hdeltaZ
-  have htail := threeArmJoint_sub (I := I) (M := M) g _ _
-    (threeArmJoint_add (I := I) (M := M) g _ _ hSwap
-      (threeArmJoint_smul (I := I) (M := M) g (1 / 2 : Real) _ hSharp))
+  have htail := covariantJetJoint_sub (I := I) (M := M) g _ _
+    (covariantJetJoint_add (I := I) (M := M) g _ _ hSwap
+      (covariantJetJoint_smul (I := I) (M := M) g (1 / 2 : Real) _ hSharp))
     hFold
-  have hinner := threeArmJoint_add (I := I) (M := M) g _ _ hAA htail
-  have hall := threeArmJoint_add (I := I) (M := M) g _ _ hriem
-    (threeArmJoint_smul (I := I) (M := M) g (2 : Real) _ hinner)
+  have hinner := covariantJetJoint_add (I := I) (M := M) g _ _ hAA htail
+  have hall := covariantJetJoint_add (I := I) (M := M) g _ _ hriem
+    (covariantJetJoint_smul (I := I) (M := M) g (2 : Real) _ hinner)
   simpa only [ricciDecomposition0] using hall
 
 omit [SigmaCompactSpace M] in
@@ -355,11 +355,11 @@ private theorem covDeriv_joint
       (ccTensorBilinSymm (I := I) g T) delta)
     (hdeltaZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
-      (fun t => deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
+      (fun t => deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) g_bg)
       (δ := delta) (δ' := delta) := by
-  rw [linearizedRicciThreeArmHjoint]
+  rw [linearizedRicciCovariantJetJointSmoothness]
   exact (deTurckLieConnectionDifferenceDerivativeBiContrFib_metricPerturbationPath_jointContMDiffOn
     (I := I) (M := M) g T 0 hdelta hdeltaZ g_bg).congr
       (fun p _ => by rfl)
@@ -372,16 +372,16 @@ private theorem endo_joint
       (ccTensorBilinSymm (I := I) g T) delta)
     (hdeltaZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
-      (fun t => deTurckLieEndoArmField (I := I) (M := M) g
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
+      (fun t => deTurckLieEndoTermField (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) g_bg)
       (δ := delta) (δ' := delta) := by
   have hall := deTurckLieCoeffField_metricPerturbationPath_jointSmooth
     (I := I) (M := M) g T 0 hdelta hdeltaZ g_bg
   have hcov := covDeriv_joint (I := I) (M := M)
     g g_bg T hdelta hdeltaZ
-  have hsub := threeArmJoint_sub (I := I) (M := M) g _ _ hall hcov
-  simpa only [deTurckLieCoeffField_eq_covDerivArm_add_endoArm,
+  have hsub := covariantJetJoint_sub (I := I) (M := M) g _ _ hall hcov
+  simpa only [deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm,
     add_sub_cancel_left] using hsub
 
 omit [SigmaCompactSpace M] in
@@ -392,12 +392,12 @@ theorem lieDecomposition_joint
       (ccTensorBilinSymm (I := I) g T) delta)
     (hdeltaZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
       (fun t => lieDecomposition0 (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) g_bg
         T hdelta hdeltaZ t)
       (δ := delta) (δ' := delta) := by
-  exact threeArmJoint_sub (I := I) (M := M) g _ _
+  exact covariantJetJoint_sub (I := I) (M := M) g _ _
     (covDeriv_joint (I := I) (M := M) g g_bg T hdelta hdeltaZ)
     (edgeLiePair_joint (I := I) (M := M)
       g T hdelta hdeltaZ lieDecompositionQ lieDecompositionEps)
@@ -410,7 +410,7 @@ theorem rhsDecomposition0_joint
       (ccTensorBilinSymm (I := I) g T) delta)
     (hdeltaZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
       (rhsDecomposition0 (I := I) (M := M) g g_bg T hdelta hdeltaZ)
       (δ := delta) (δ' := delta) := by
   have hRicci := ricciHalf_joint (I := I) (M := M)
@@ -423,12 +423,12 @@ theorem rhsDecomposition0_joint
     g g_bg T hdelta hdeltaZ
   have hCorr := lieCorrectionZero_path_joint (I := I) (M := M)
     g T 0 hdelta hdeltaZ g_bg
-  have hhead := threeArmJoint_add (I := I) (M := M) g _ _
-    (threeArmJoint_smul (I := I) (M := M) g (-2 : Real) _ hRicci)
+  have hhead := covariantJetJoint_add (I := I) (M := M) g _ _
+    (covariantJetJoint_smul (I := I) (M := M) g (-2 : Real) _ hRicci)
     hDecomposition
-  have htail := threeArmJoint_add (I := I) (M := M) g _ _
-    (threeArmJoint_add (I := I) (M := M) g _ _ hLie hEndo) hCorr
-  have hall := threeArmJoint_add (I := I) (M := M) g _ _ hhead htail
+  have htail := covariantJetJoint_add (I := I) (M := M) g _ _
+    (covariantJetJoint_add (I := I) (M := M) g _ _ hLie hEndo) hCorr
+  have hall := covariantJetJoint_add (I := I) (M := M) g _ _ hhead htail
   have hfamily :
       rhsDecomposition0 (I := I) (M := M) g g_bg T hdelta hdeltaZ =
         fun s =>
@@ -439,7 +439,7 @@ theorem rhsDecomposition0_joint
             (lieDecomposition0 (I := I) (M := M) g
                 (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) g_bg
                 T hdelta hdeltaZ s +
-              deTurckLieEndoArmField (I := I) (M := M) g
+              deTurckLieEndoTermField (I := I) (M := M) g
                 (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) g_bg +
               lieCorrectionZeroField (I := I) (M := M) g
                 (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) g_bg) := by
@@ -516,17 +516,17 @@ theorem rhs_sub_zero_decomposition
     ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g g_bg T 0 hdelta hdeltaZ s with hPsi1def
   set Psi2 : Real → SmoothCcTensor g 4 2 := fun s =>
     rhsDecompositionTop (I := I) (M := M) g T hdelta hdeltaZ s with hPsi2def
-  have hj0 : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Psi0
+  have hj0 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2 Psi0
       (δ := delta) (δ' := delta) := by
     rw [hPsi0def]
     exact rhsDecomposition0_joint (I := I) (M := M)
       g g_bg T hdelta hdeltaZ
-  have hj1 : linearizedRicciThreeArmHjoint (I := I) (M := M) g 3 Psi1
+  have hj1 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 3 Psi1
       (δ := delta) (δ' := delta) := by
     rw [hPsi1def]
     exact ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M)
       g g_bg T 0 hdelta hdeltaZ
-  have hj2 : linearizedRicciThreeArmHjoint (I := I) (M := M) g 4 Psi2
+  have hj2 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 4 Psi2
       (δ := delta) (δ' := delta) := by
     rw [hPsi2def]
     exact rhsDecompositionTop_joint (I := I) (M := M)

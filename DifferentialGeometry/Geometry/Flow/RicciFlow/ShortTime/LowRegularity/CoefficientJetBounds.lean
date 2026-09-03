@@ -1412,7 +1412,7 @@ theorem pbLow_h2
     apply Finset.sum_congr rfl
     intro i hi
     simpa only [W] using
-      lieCorrectionZerob_normSq_iteratedCovGrad_pbLow_eq (I := I) (M := M) g₀ P g₀ gB
+      lieCorrectionZero_normSq_iteratedCovGrad_pbLow_eq (I := I) (M := M) g₀ P g₀ gB
         (lieCorrectionZeroFixCd (I := I) (M := M) g₀ gB) (fun _ => rfl) i
   rw [heq]
   simpa only [B] using hout
@@ -1482,7 +1482,7 @@ theorem pbLow_h2_mul
     apply Finset.sum_congr rfl
     intro i _hi
     simpa only [W] using
-      lieCorrectionZerob_normSq_iteratedCovGrad_pbLow_eq (I := I) (M := M) g₀ P g₀ gB
+      lieCorrectionZero_normSq_iteratedCovGrad_pbLow_eq (I := I) (M := M) g₀ P g₀ gB
         (lieCorrectionZeroFixCd (I := I) (M := M) g₀ gB) (fun _ => rfl) i
   rw [heq]
   simpa only [C] using hout
@@ -1831,7 +1831,7 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covar
           (B A) ^ 2 := by
   classical
   obtain ⟨C, hC, hpt⟩ :=
-    bdEndoArmDiff_pointwise_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+    bdEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨K, hK, hgrid⟩ := h3_grid_int (I := I) (M := M) hDim g₀
   let Q : ℝ → ℝ := fun A => ∑ i ∈ Finset.range 2,
     C i * ∑ k ∈ Finset.range (i + 3), K A k
@@ -2366,8 +2366,8 @@ theorem deTurckLieLowerOrderTail_split
       (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg -
           deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀) +
         (lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg +
-          deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀) := by
-  rw [endoArmField_eq_deTurckLieCovariantDerivativeInsertionCoeffField (I := I) (M := M) g₀ g₁ g₀]
+          deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀) := by
+  rw [endomorphismTermField_eq_deTurckLieCovariantDerivativeInsertionCoeffField (I := I) (M := M) g₀ g₁ g₀]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -2619,7 +2619,7 @@ theorem rhs_one_coefficient_sobolev_two_bound
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))‖ ^ 2) ≤ Ar ^ 2)
     (hLie : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 3 2 i
-        (deTurckLieArm1Coeff (I := I) (M := M) g₀
+        (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2) ≤ Al ^ 2) :
     (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 3 2 i
@@ -2628,7 +2628,7 @@ theorem rhs_one_coefficient_sobolev_two_bound
   have hsum := jet_add2 (I := I) (M := M) g₀ 3 2 3
     (linearizedRicciConnectionDifferenceOrder1CoeffField (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
-    (deTurckLieArm1Coeff (I := I) (M := M) g₀
+    (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
     Ar Al hRic hLie
   have hinside : 0 ≤ 2 * (4 * Ar ^ 2 + Al ^ 2) := by positivity

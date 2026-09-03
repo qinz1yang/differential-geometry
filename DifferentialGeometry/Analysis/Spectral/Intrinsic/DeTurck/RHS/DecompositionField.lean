@@ -143,9 +143,9 @@ private theorem halfRiem_decomposition
       ccTensorBilin (I := I) g P x v w =
         ccTensorBilin (I := I) g P x w v) :
     (1 / 2 : Real) •
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g g1 -
-          ricciArmOrder0RiemannCoeff (I := I) (M := M) g g) =
-      ricciArmOrder0AACommCoeffField (I := I) (M := M) g g1 +
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g g1 -
+          ricciOrderZeroRiemannCoeff (I := I) (M := M) g g) =
+      ricciOrderZeroAACommCoeffField (I := I) (M := M) g g1 +
         backgroundRicciCommutatorDiffDecompositionRemainderField (I := I) (M := M) g g1 +
         decompositionKernelContractionField (I := I) (M := M) g g1
           (iteratedCovGrad (I := I) g 0 2 2 P)
@@ -156,7 +156,7 @@ private theorem halfRiem_decomposition
   rw [hP]
   refine cc22_ext_app (I := I) (M := M) g _ _ (fun W => ?_)
   have hprim :=
-    ricciArmOrder0RiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
+    ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
       (I := I) (M := M) g g1 P htie hPsymm W
   rw [hP] at hprim
   simpa only [operatorFieldApplication_smul_left, operatorFieldApplication_sub_left, operatorFieldApplication_add_left,
@@ -184,23 +184,23 @@ theorem ricciDecomposition_eq
   have hP := perturb_eq_diff (I := I) (M := M) g g1 P htie hPsymm
   have hhalf := halfRiem_decomposition (I := I) (M := M) g g1 P htie hPsymm
   have htwice :
-      ricciArmOrder0RiemannCoeff (I := I) (M := M) g g1 -
-          ricciArmOrder0RiemannCoeff (I := I) (M := M) g g =
+      ricciOrderZeroRiemannCoeff (I := I) (M := M) g g1 -
+          ricciOrderZeroRiemannCoeff (I := I) (M := M) g g =
         (2 : Real) • ((1 / 2 : Real) •
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g g1 -
-            ricciArmOrder0RiemannCoeff (I := I) (M := M) g g)) := by
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g g1 -
+            ricciOrderZeroRiemannCoeff (I := I) (M := M) g g)) := by
     rw [smul_smul, show (2 : Real) * (1 / 2) = 1 by norm_num, one_smul]
   rw [hhalf] at htwice
   rw [sub_eq_iff_eq_add] at htwice
   rw [ricciPalatiniHalfCoefficient, ricciDecomposition0]
   rw [show
       ccOperatorFieldComp (I := I) (M := M) g 2 2 2
-          (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g g1 -
-            ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g g)
+          (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g g1 -
+            ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g g)
           (ccSlotSwapField (I := I) (M := M) g) +
         (1 / 2 : Real) •
-          ricciArmSharpGradKoszulResidualField (I := I) (M := M) g g1 P -
-        ricciArmRicciFoldRemainderField (I := I) (M := M) g g1 P =
+          ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g g1 P -
+        ricciContractionRemainderField (I := I) (M := M) g g1 P =
       backgroundRicciCommutatorDiffDecompositionRemainderField (I := I) (M := M) g g1 by
         rw [hP]
         rfl]
@@ -259,23 +259,23 @@ theorem rhsDecomposition_eq
     rw [bilin_smul (I := I) (M := M),
       bilin_smul (I := I) (M := M), hTsymm x v w]
   have hlie :
-      deTurckLieCovariantDerivativeArmField (I := I) (M := M) g g1 g_bg +
-          deTurckLieEndoArmField (I := I) (M := M) g g1 g_bg =
+      deTurckLieCovariantDerivativeTermField (I := I) (M := M) g g1 g_bg +
+          deTurckLieEndoTermField (I := I) (M := M) g g1 g_bg =
         deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g g1 g_bg +
           deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g g1 g_bg := by
-    rw [← deTurckLieCoeffField_eq_covDerivArm_add_endoArm,
+    rw [← deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm,
       deTurckLieConnectionDifferenceDerivCoeffField_add_deTurckLieCovariantDerivativeInsertionField]
   rw [rhsDecomposition0]
   rw [ricciDecomposition_eq (I := I) (M := M) g g1 P htie hPsymm]
   rw [lieDecomposition0]
   rw [show
-    deTurckLieCovariantDerivativeArmField (I := I) (M := M) g g1 g_bg -
+    deTurckLieCovariantDerivativeTermField (I := I) (M := M) g g1 g_bg -
           deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hdelta hdeltaZ
             lieDecompositionQ lieDecompositionEps s +
-          deTurckLieEndoArmField (I := I) (M := M) g g1 g_bg +
+          deTurckLieEndoTermField (I := I) (M := M) g g1 g_bg +
           lieCorrectionZeroField (I := I) (M := M) g g1 g_bg =
-        (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g g1 g_bg +
-          deTurckLieEndoArmField (I := I) (M := M) g g1 g_bg) +
+        (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g g1 g_bg +
+          deTurckLieEndoTermField (I := I) (M := M) g g1 g_bg) +
           lieCorrectionZeroField (I := I) (M := M) g g1 g_bg -
           deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hdelta hdeltaZ
             lieDecompositionQ lieDecompositionEps s by module, hlie]

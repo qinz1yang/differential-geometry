@@ -361,7 +361,7 @@ theorem intrExt_minVec_mem
       fun z v =>
         tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := 𝓘(Real, E)) gExt z v
-    ∀ (B : ExpInvBranch (I := 𝓘(Real, E)) gExt hExt pt),
+    ∀ (B : ExponentialInverseBranch (I := 𝓘(Real, E)) gExt hExt pt),
       u ∈ B.hom.source →
       (∀ v : E,
         expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt pt v = q →
@@ -524,7 +524,7 @@ theorem branchEnergy_min_germ
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
-    {pt q : M} (B : ExpInvBranch (I := I) g hEnorm pt)
+    {pt q : M} (B : ExponentialInverseBranch (I := I) g hEnorm pt)
     (hmem :
       ∀ᶠ z in 𝓝 q,
         (minimizingVec (I := I) g hEnorm pt z : E) ∈
@@ -1142,7 +1142,7 @@ theorem intrOrigin_hess_pos
         (I := 𝓘(Real, E)) gExt y v
   let hom : PartialDiffeomorph 𝓘(Real, E) 𝓘(Real, E) E E ∞ :=
     intrOriginHom (E := E) (R := R)
-  let B : ExpInvBranch (I := 𝓘(Real, E)) gExt hExt (0 : E) :=
+  let B : ExponentialInverseBranch (I := 𝓘(Real, E)) gExt hExt (0 : E) :=
     { hom := hom
       hom_eq := by
         intro y hy

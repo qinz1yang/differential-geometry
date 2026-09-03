@@ -209,14 +209,14 @@ private theorem iteratedCovGrad_pathIntegralCoeffField_comm
       (by funext t; rw [iteratedCovGrad_succ])
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem armField_pathIntegral_jetL2_perOrder_le
+theorem termField_pathIntegral_jetL2_perOrder_le
     (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPathDomain
       (δ := δ) (δ' := δ'))
     (hSopen : IsOpen (DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPathDomain (δ := δ)
       (δ' := δ')))
-    (hjoint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r Φ (δ := δ) (δ' := δ'))
+    (hjoint : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r Φ (δ := δ) (δ' := δ'))
     (i : ℕ) {B : ℝ}
     (hΦjet : ∀ s ∈ Set.Icc (0 : ℝ) 1,
       ‖iteratedCovGrad (I := I) g₀ r 2 i (Φ s)‖ ^ 2 ≤ B ^ 2) :

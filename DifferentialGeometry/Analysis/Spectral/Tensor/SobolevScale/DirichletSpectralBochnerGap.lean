@@ -38,7 +38,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 omit [BoundarylessManifold I M] in
-private theorem tensorL2Inner_eq_tsum_l2Coeff_cross
+theorem tensorL2Inner_eq_tsum_l2Coeff_cross
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (A B : SmoothCcTensor g₀ 0 s) :
     tensorL2Inner (I := I) (M := M) g₀ 0 s A.toFun B.toFun =
       ∑' i : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx

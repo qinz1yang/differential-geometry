@@ -240,7 +240,7 @@ theorem pbLow_raise (g₀ gB : SmoothRiemannianMetric I M)
         (domDomCongrSection (I := I) g₀ (finRotate 3)
           (lieCorrectionZeroPbLow (I := I) (M := M) g₀ P g₀ gB)) =
       ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 2
-        (lieArm1FixCd (I := I) (M := M) g₀ gB)
+        (lieFirstOrderFixCd (I := I) (M := M) g₀ gB)
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
           (symmS (I := I) (M := M) g₀ P)) := by
   apply Integral.L2.SmoothCcTensor.ext
@@ -309,7 +309,7 @@ theorem pbLow_raise (g₀ gB : SmoothRiemannianMetric I M)
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
       Matrix.cons_val_two, Matrix.tail_cons, ContinuousLinearEquiv.symm_apply_apply]
   have hRHS : ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (lieArm1FixCd (I := I) (M := M) g₀ gB).toSection x).comp
+        (lieFirstOrderFixCd (I := I) (M := M) g₀ gB).toSection x).comp
         (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
           (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
             (symmS (I := I) (M := M) g₀ P)).toSection x)) om YZ =
@@ -320,7 +320,7 @@ theorem pbLow_raise (g₀ gB : SmoothRiemannianMetric I M)
       (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
           (symmS (I := I) (M := M) g₀ P)).toSection x) om with hom'
-    rw [show (lieArm1FixCd (I := I) (M := M) g₀ gB).toSection x =
+    rw [show (lieFirstOrderFixCd (I := I) (M := M) g₀ gB).toSection x =
       connectionDifferenceFib (I := I) g₀ gB x from rfl]
     rw [connectionDifferenceFib_apply_eval (I := I) g₀ gB x om' YZ]
     rw [show om' (fun _ : Fin 1 =>
@@ -401,7 +401,7 @@ theorem pbLow_riemannianFiberNormSq (g₀ gB : SmoothRiemannianMetric I M)
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
         ((iteratedCovGrad (I := I) g₀ 1 2 n
           (ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 2
-            (lieArm1FixCd (I := I) (M := M) g₀ gB)
+            (lieFirstOrderFixCd (I := I) (M := M) g₀ gB)
             (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
               (symmS (I := I) (M := M) g₀ P)))).toSection x) := by
   calc
@@ -427,7 +427,7 @@ theorem pbLow_riemannianFiberNormSq (g₀ gB : SmoothRiemannianMetric I M)
     _ = riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
           ((iteratedCovGrad (I := I) g₀ 1 2 n
             (ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 2
-              (lieArm1FixCd (I := I) (M := M) g₀ gB)
+              (lieFirstOrderFixCd (I := I) (M := M) g₀ gB)
               (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
                 (symmS (I := I) (M := M) g₀ P)))).toSection x) := by
         rw [pbLow_raise (I := I) (M := M) g₀ gB P]

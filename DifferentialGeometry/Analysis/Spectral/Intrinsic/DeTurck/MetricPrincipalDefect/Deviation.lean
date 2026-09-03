@@ -44,8 +44,8 @@ theorem deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormSq_le_inv
           - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x) ≤
       (8 * CTH + 8 * CR) * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
         ((inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x) := by
-  set ρA : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
-  set ρAT : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT
+  set ρA : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA
+  set ρAT : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
   set DTHs : SmoothCcTensor g₀ 4 2 :=
     traceHessianCoeff (I := I) (M := M) g₀ g₁
       - traceHessianCoeff (I := I) (M := M) g₀ g₀
@@ -85,11 +85,11 @@ theorem deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormSq_le_inv
       ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
         + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
       ((DRs + DRs).toSection x)
-    have h2 := lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le
+    have h2 := lieCorrectionZero_riemannianFiberNormSq_toSection_add_le
       (I := I) (M := M) g₀ 4 2
       (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA)
       (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT) x
-    have h3 := lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le
+    have h3 := lieCorrectionZero_riemannianFiberNormSq_toSection_add_le
       (I := I) (M := M) g₀ 4 2 DRs DRs x
     linarith
   have hAr : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x

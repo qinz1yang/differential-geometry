@@ -910,9 +910,9 @@ theorem HasMoserTameBounds.deTurckMetricPrincipalDefectDifference
     ricciDeTurckPrincipalCoefficient_sub_background_jetL2_le_inverseMetricDifferenceSlotCoefficient_jetL2
       (I := I) (M := M) g
   set ρA : Equiv.Perm (Fin 4) :=
-    traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA with hρA
+    traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA with hρA
   set ρAT : Equiv.Perm (Fin 4) :=
-    traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT with hρAT
+    traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT with hρAT
   set ATH : ℕ → ℝ :=
     fun n => (∑ i ∈ Finset.range (n + 1), CTj i) * AG n with hATH
   set STH : ℝ := Real.sqrt (CTp 0) * SG with hSTH

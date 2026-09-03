@@ -77,7 +77,7 @@ private lemma riemannianFiberNormSq_smul_value (g : SmoothRiemannianMetric I M) 
 end NormedScalarHelpers
 
 
-theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0BackgroundRCommCoeffDiff_gridWindow_le
+theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroBackgroundRCommCoeffDiff_gridWindow_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -89,8 +89,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0BackgroundRCommCoeff
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
-                - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)).toSection x)
+              (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
+                - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)).toSection x)
                   ≤
           C i * Combinatorics.boundedFactorGridWindow
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
@@ -116,19 +116,19 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0BackgroundRCommCoeff
   set KW : ℕ → ℝ := fun w =>
     (exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 2 (4 + w)
       (iteratedCovGrad (I := I) g₀ 2 4 w
-        (riemannCometricDoubleTraceFold (I := I) (M := M) g₀))).choose
+        (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀))).choose
     with hKW_def
   have hKW_nn : ∀ w, 0 ≤ KW w := fun w =>
     (exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 2 (4 + w)
       (iteratedCovGrad (I := I) g₀ 2 4 w
-        (riemannCometricDoubleTraceFold (I := I) (M := M) g₀))).choose_spec.1
+        (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀))).choose_spec.1
   have hKW : ∀ w (y : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + w) y
           ((iteratedCovGrad (I := I) g₀ 2 4 w
-            (riemannCometricDoubleTraceFold (I := I) (M := M) g₀)).toSection y) ≤ KW w := fun w =>
+            (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀)).toSection y) ≤ KW w := fun w =>
     (exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 2 (4 + w)
       (iteratedCovGrad (I := I) g₀ 2 4 w
-        (riemannCometricDoubleTraceFold (I := I) (M := M) g₀))).choose_spec.2
+        (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀))).choose_spec.2
   refine ⟨fun i => diagonalGridGrowthFactor (E := E) i *
       ∑ u ∈ Finset.range (i + 1), (2 * C2 u + 2 * KD u) *
         ∑ w ∈ Finset.range (i + 1 - u), KW w,
@@ -141,16 +141,16 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0BackgroundRCommCoeff
     ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x) with hb_def
   have hb_nn : ∀ l, 0 ≤ b l :=
     fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _
-  have hdiff : ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
-      - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀ =
+  have hdiff : ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
+      - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
         (secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ 2 - cometricDoubleTraceField
           (I := I) g₀ 2)
-        (riemannCometricDoubleTraceFold (I := I) (M := M) g₀) := by
+        (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀) := by
     rw [operatorFieldComposition_sub_left (I := I) (M := M) g₀ 2 4 2
       (secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ 2)
         (cometricDoubleTraceField (I := I) g₀ 2)
-      (riemannCometricDoubleTraceFold (I := I) (M := M) g₀)]
+      (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀)]
     rw [← bgRCommCoeffField_eq_decomposition (I := I) (M := M) g₀ g₁]
     rw [← movingMetricDoubleTraceField_self_eq (I := I) (M := M) g₀ 2]
     rw [← bgRCommCoeffField_eq_decomposition (I := I) (M := M) g₀ g₀]
@@ -161,7 +161,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0BackgroundRCommCoeff
     (M := M) g₀ i 2 4 2
     (secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ 2 - cometricDoubleTraceField
       (I := I) g₀ 2)
-    (riemannCometricDoubleTraceFold (I := I) (M := M) g₀) x) ?_
+    (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀) x) ?_
   have hW_nn : 0 ≤ Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) :=
     Combinatorics.boundedFactorGridWindow_nonneg b hb_nn _ _
   have hAd : ∀ u : ℕ, u ≤ i →
@@ -237,7 +237,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0BackgroundRCommCoeff
             ∑ w ∈ Finset.range (i + 1 - u),
               riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + w) x
                 ((iteratedCovGrad (I := I) g₀ 2 4 w
-                  (riemannCometricDoubleTraceFold (I := I) (M := M) g₀)).toSection x)
+                  (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀)).toSection x)
       ≤ diagonalGridGrowthFactor (E := E) i *
           ∑ u ∈ Finset.range (i + 1),
             ((2 * C2 u + 2 * KD u) *
@@ -265,7 +265,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0BackgroundRCommCoeff
         ring
 
 
-theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMetricDiff_gridWindow_le
+theorem riemannianFiberNormSq_iteratedCovGrad_ricciCovariantTermSharpGradKoszulResidualMetricDiff_gridWindow_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -277,7 +277,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+              (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
                 (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x) ≤
           C i * Combinatorics.boundedFactorGridWindow
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
@@ -286,16 +286,16 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
   obtain ⟨CPT, hCPT_nn, hCPT⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_movingMetricPairTraceOperator_window (I := I) (M := M) g₀ hδ₀
   obtain ⟨CW1, hCW1_nn, hCW1⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le (I := I)
+    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
       (M := M) g₀ sharpGradKoszulKernelPositivePermutation hδ₀
   obtain ⟨CW2, hCW2_nn, hCW2⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le (I := I)
+    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
       (M := M) g₀ sharpGradKoszulKernelPositiveKoszulSwapPermutation hδ₀
   obtain ⟨CW3, hCW3_nn, hCW3⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le (I := I)
+    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
       (M := M) g₀ sharpGradKoszulKernelNegativePermutation hδ₀
   obtain ⟨CW4, hCW4_nn, hCW4⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le (I := I)
+    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
       (M := M) g₀ sharpGradKoszulKernelNegativeKoszulSwapPermutation hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
@@ -330,21 +330,21 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
       ((2 : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))))).toSection x =
+              ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))))).toSection x =
       (2 : ℝ) • ((iteratedCovGrad (I := I) g₀ 2 2 i
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))))).toSection x) := by
+              ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))))).toSection x) := by
     rw [iteratedCovGrad_smul_real (I := I) g₀ 2 2 i (2 : ℝ) _,
       SmoothCcTensor.toSection_smul]
     rfl
@@ -359,91 +359,91 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
   have hWX : ∀ w : ℕ, w ≤ i →
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
           ((iteratedCovGrad (I := I) g₀ 2 6 w
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x) ≤
+                ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                    koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                  (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                    koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x) ≤
         CX w * Combinatorics.boundedFactorGridWindow b (i + 1) (w + 3) := by
     intro w hw
     rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongrSection_eq (I := I) (M := M) g₀ 2 6
-      ricciFoldRemainderSlotPerm _ w x]
+      ricciContractionRemainderSlotPerm _ w x]
     rw [show slotExtendIter (I := I) (M := M) g₀ 0 4 2
-        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) =
+        ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) =
         slotExtend (I := I) (M := M) g₀ 1 5 (slotExtend (I := I) (M := M) g₀ 0 4
-          ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))) from rfl]
+          ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))) from rfl]
     refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 5
       (slotExtend (I := I) (M := M) g₀ 0 4
-        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))) w x) ?_
+        ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))) w x) ?_
     refine le_trans (mul_le_mul_of_nonneg_left
       (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 0 4
-        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) w x) hfr_nn) ?_
+        ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) w x) hfr_nn) ?_
     have hsub : (iteratedCovGrad (I := I) g₀ 0 4 w
-        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x =
+        ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x =
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x -
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x -
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x := by
-      rw [sub_eq_add_neg (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)]
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x := by
+      rw [sub_eq_add_neg (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)]
       rw [iteratedCovGrad_add (I := I) g₀ 0 4 w _ _,
         iteratedCovGrad_neg (I := I) g₀ 0 4 w _, SmoothCcTensor.toSection_add]
       rw [show (((iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection +
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection +
           (-(iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection) x) =
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection) x) =
           (iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x +
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x +
           (-(iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x from rfl]
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x from rfl]
       rw [show ((-(iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x) =
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x) =
           -((iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x) from by
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x) from by
         rw [SmoothCcTensor.toSection_neg]; rfl]
       rw [← sub_eq_add_neg]
     have h12 : (iteratedCovGrad (I := I) g₀ 0 4 w
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x =
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x =
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P)).toSection x +
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P)).toSection x +
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x := by
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x := by
       rw [iteratedCovGrad_add (I := I) g₀ 0 4 w _ _, SmoothCcTensor.toSection_add]
       rfl
     have h34 : (iteratedCovGrad (I := I) g₀ 0 4 w
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x =
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x =
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P)).toSection x +
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P)).toSection x +
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x := by
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x := by
       rw [iteratedCovGrad_add (I := I) g₀ 0 4 w _ _, SmoothCcTensor.toSection_add]
       rfl
     have hA1 := hCW1 g₁ P htie hδ_le hδ0 hbound w (i + 1) (by omega) x
@@ -452,42 +452,42 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
             (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) =
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P from rfl] at hA1
+        koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P from rfl] at hA1
     have hA2 := hCW2 g₁ P htie hδ_le hδ0 hbound w (i + 1) (by omega) x
     rw [show ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelPositiveKoszulSwapPermutation
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
             (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) =
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P from rfl] at hA2
+        koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P from rfl] at hA2
     have hA3 := hCW3 g₁ P htie hδ_le hδ0 hbound w (i + 1) (by omega) x
     rw [show ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelNegativePermutation
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
             (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) =
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P from rfl] at hA3
+        koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P from rfl] at hA3
     have hA4 := hCW4 g₁ P htie hδ_le hδ0 hbound w (i + 1) (by omega) x
     rw [show ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelNegativeKoszulSwapPermutation
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
             (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) =
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P from rfl] at hA4
+        koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P from rfl] at hA4
     calc fr * (fr * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
           ((iteratedCovGrad (I := I) g₀ 0 4 w
-            ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x))
+            ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+              (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x))
         ≤ fr * (fr * (2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
             ((iteratedCovGrad (I := I) g₀ 0 4 w
-              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x)
+              (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x)
           + 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
             ((iteratedCovGrad (I := I) g₀ 0 4 w
-              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x))) := by
+              (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x))) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ hfr_nn) hfr_nn
           rw [hsub]
           exact riemannianFiberNormSq_sub_le_pt (I := I) (M := M) g₀ 0 (4 + w) x _ _
@@ -499,26 +499,26 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ hfr_nn) hfr_nn
           have hx12 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
               ((iteratedCovGrad (I := I) g₀ 0 4 w
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x) ≤
+                (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x) ≤
               2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
                 ((iteratedCovGrad (I := I) g₀ 0 4 w
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P)).toSection x)
+                  (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P)).toSection x)
               + 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
                 ((iteratedCovGrad (I := I) g₀ 0 4 w
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x) := by
+                  (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x) := by
             rw [h12]
             exact riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 0 (4 + w) x _ _
           have hx34 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
               ((iteratedCovGrad (I := I) g₀ 0 4 w
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x) ≤
+                (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x) ≤
               2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
                 ((iteratedCovGrad (I := I) g₀ 0 4 w
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P)).toSection x)
+                  (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P)).toSection x)
               + 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
                 ((iteratedCovGrad (I := I) g₀ 0 4 w
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x) := by
+                  (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x) := by
             rw [h34]
             exact riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 0 (4 + w) x _ _
           linarith [hA1, hA2, hA3, hA4, hx12, hx34]
@@ -529,12 +529,12 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
       (I := I) (M := M) g₀ i 2 6 2
       (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-          ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))) x)
+          ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))) x)
     (by norm_num : (0 : ℝ) ≤ 4)) ?_
   calc (4 : ℝ) * (diagonalGridGrowthFactor (E := E) i *
         ∑ u ∈ Finset.range (i + 1),
@@ -544,12 +544,12 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
             ∑ w ∈ Finset.range (i + 1 - u),
               riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
                 ((iteratedCovGrad (I := I) g₀ 2 6 w
-                  (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+                  (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
                     (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                      ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-                        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁
+                      ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁
                             sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x))
       ≤ 4 * (diagonalGridGrowthFactor (E := E) i *
           ∑ u ∈ Finset.range (i + 1),
@@ -609,7 +609,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
 
 
 theorem
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmRicciFoldRemainderFieldMetricDifference_boundedFactorGridWindow_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciContractionRemainderFieldMetricDifference_boundedFactorGridWindow_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -621,7 +621,7 @@ theorem
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁
+              (ricciContractionRemainderField (I := I) (M := M) g₀ g₁
                 (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x) ≤
           C i * Combinatorics.boundedFactorGridWindow
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
@@ -630,12 +630,12 @@ theorem
   obtain ⟨CPT, hCPT_nn, hCPT⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_movingMetricPairTraceOperator_window (I := I) (M := M) g₀ hδ₀
   obtain ⟨CWA, hCWA_nn, hCWA⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_ricciFoldWeightGeneral_boundedFactorGridWindow_le
+    exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeightGeneral_boundedFactorGridWindow_le
       (I := I) (M := M) g₀
       (Equiv.swap (1 : Fin 6) 3) hδ₀
   obtain ⟨CWB, hCWB_nn, hCWB⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_ricciFoldWeightGeneral_boundedFactorGridWindow_le
-      (I := I) (M := M) g₀ ricciFoldWeightBPerm hδ₀
+    exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeightGeneral_boundedFactorGridWindow_le
+      (I := I) (M := M) g₀ ricciContractionWeightBPerm hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
   set CX : ℕ → ℝ := fun w => fr ^ 2 * (2 * CWA w + 2 * CWB w) with hCX_def
@@ -661,23 +661,23 @@ theorem
   have hb_nn : ∀ l, 0 ≤ b l :=
     fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _
   rw [metricDifferenceCcTensor_eq_symmS (I := I) (M := M) g₀ g₁ P htie]
-  rw [ricciFoldRemainderField_eq_decomposition (I := I) (M := M) g₀ g₁ (ccTensor02Symm (I := I) g₀ P)]
+  rw [ricciContractionRemainderField_eq_decomposition (I := I) (M := M) g₀ g₁ (ccTensor02Symm (I := I) g₀ P)]
   have hsm : (iteratedCovGrad (I := I) g₀ 2 2 i
       ((-(1 / 2) : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-                ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P)))))).toSection
+              (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+                ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P)))))).toSection
                   x =
       (-(1 / 2) : ℝ) • ((iteratedCovGrad (I := I) g₀ 2 2 i
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-                ricciFoldWeightB (I := I) (M := M) g₀
+              (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+                ricciContractionWeightB (I := I) (M := M) g₀
                   (ccTensor02Symm (I := I) g₀ P)))))).toSection x) := by
     rw [iteratedCovGrad_smul_real (I := I) g₀ 2 2 i (-(1 / 2) : ℝ) _,
       SmoothCcTensor.toSection_smul]
@@ -693,36 +693,36 @@ theorem
   have hWX : ∀ w : ℕ, w ≤ i →
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
           ((iteratedCovGrad (I := I) g₀ 2 6 w
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-                  ricciFoldWeightB (I := I) (M := M) g₀
+                (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+                  ricciContractionWeightB (I := I) (M := M) g₀
                     (ccTensor02Symm (I := I) g₀ P))))).toSection x) ≤
         CX w * Combinatorics.boundedFactorGridWindow b (i + 1) (w + 1) := by
     intro w hw
     rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongrSection_eq (I := I) (M := M) g₀ 2 6
-      ricciFoldRemainderSlotPerm _ w x]
+      ricciContractionRemainderSlotPerm _ w x]
     rw [show slotExtendIter (I := I) (M := M) g₀ 0 4 2
-        (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-          ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P)) =
+        (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+          ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P)) =
         slotExtend (I := I) (M := M) g₀ 1 5 (slotExtend (I := I) (M := M) g₀ 0 4
-          (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-            ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))) from rfl]
+          (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+            ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))) from rfl]
     refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 5
       (slotExtend (I := I) (M := M) g₀ 0 4
-        (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-          ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))) w x) ?_
+        (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+          ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))) w x) ?_
     refine le_trans (mul_le_mul_of_nonneg_left
       (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 0 4
-        (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-          ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P)) w x) hfr_nn) ?_
+        (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+          ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P)) w x) hfr_nn) ?_
     have hsplit : (iteratedCovGrad (I := I) g₀ 0 4 w
-        (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-          ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x =
+        (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+          ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x =
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x +
+          (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x +
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x := by
+          (ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x := by
       rw [iteratedCovGrad_add (I := I) g₀ 0 4 w _ _, SmoothCcTensor.toSection_add]
       rfl
     have hA := hCWA P hδ_le hδ0 hbound w (i + 1) (by omega) x
@@ -734,25 +734,25 @@ theorem
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀))
             (ccTensor02Symm (I := I) g₀ P)))) =
-        ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) from rfl] at hA
+        ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) from rfl] at hA
     rw [show (ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
       (cometricDoubleTraceField (I := I) g₀ 4)
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 ricciFoldWeightBPerm
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 ricciContractionWeightBPerm
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀))
             (ccTensor02Symm (I := I) g₀ P)))) =
-        ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) from rfl] at hB
+        ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) from rfl] at hB
     calc fr * (fr * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
           ((iteratedCovGrad (I := I) g₀ 0 4 w
-            (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-              ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x))
+            (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+              ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x))
         ≤ fr * (fr * (2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
             ((iteratedCovGrad (I := I) g₀ 0 4 w
-              (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x)
+              (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x)
           + 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
             ((iteratedCovGrad (I := I) g₀ 0 4 w
-              (ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection
+              (ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection
                 x))) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ hfr_nn) hfr_nn
           rw [hsplit]
@@ -762,7 +762,7 @@ theorem
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ hfr_nn) hfr_nn
           have hnnA := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + w) x
             ((iteratedCovGrad (I := I) g₀ 0 4 w
-              (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x)
+              (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P))).toSection x)
           linarith [hA, hB]
       _ = CX w * Combinatorics.boundedFactorGridWindow b (i + 1) (w + 1) := by
           simp only [hCX_def]
@@ -771,10 +771,10 @@ theorem
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
       (I := I) (M := M) g₀ i 2 6 2
       (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-          (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-            ricciFoldWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P)))) x)
+          (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+            ricciContractionWeightB (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P)))) x)
     (by norm_num : (0 : ℝ) ≤ 1 / 4)) ?_
   have hW_nn : 0 ≤ Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) :=
     Combinatorics.boundedFactorGridWindow_nonneg b hb_nn _ _
@@ -786,10 +786,10 @@ theorem
             ∑ w ∈ Finset.range (i + 1 - u),
               riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
                 ((iteratedCovGrad (I := I) g₀ 2 6 w
-                  (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+                  (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
                     (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                      (ricciFoldWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
-                        ricciFoldWeightB (I := I) (M := M) g₀
+                      (ricciContractionWeightA (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) +
+                        ricciContractionWeightB (I := I) (M := M) g₀
                           (ccTensor02Symm (I := I) g₀ P))))).toSection x))
       ≤ (1 / 4 : ℝ) * (diagonalGridGrowthFactor (E := E) i *
           ∑ u ∈ Finset.range (i + 1),
@@ -911,13 +911,13 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3) := by
   classical
   obtain ⟨C₁, hC₁_nn, hC₁⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0BackgroundRCommCoeffDiff_gridWindow_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroBackgroundRCommCoeffDiff_gridWindow_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨C₂, hC₂_nn, hC₂⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMetricDiff_gridWindow_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciCovariantTermSharpGradKoszulResidualMetricDiff_gridWindow_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨C₃, hC₃_nn, hC₃⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmRicciFoldRemainderFieldMetricDifference_boundedFactorGridWindow_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciContractionRemainderFieldMetricDifference_boundedFactorGridWindow_le
       (I := I) (M := M) g₀ hδ₀
   have hSW_ex : ∀ q : ℕ, ∃ c : ℝ, 0 ≤ c ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + q) x
@@ -951,11 +951,11 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
     set W : ℝ := Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) with hW_def
     have hW_nn : 0 ≤ W := Combinatorics.boundedFactorGridWindow_nonneg b hb_nn _ _
     set BD : SmoothCcTensor g₀ 2 2 :=
-      (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
-          - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
-        + (1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+      (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
+          - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
+        + (1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
             (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁)
-        - ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁
+        - ricciContractionRemainderField (I := I) (M := M) g₀ g₁
             (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁) with hBD_def
     have hB : ∀ n : ℕ, n ≤ i →
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + n) x
@@ -967,54 +967,54 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
         exact Combinatorics.boundedFactorGridWindow_mono b hb_nn (by omega) (by omega)
       have h1 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + n) x
           ((iteratedCovGrad (I := I) g₀ 2 2 n
-            (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
-              - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)).toSection x) ≤
+            (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
+              - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)).toSection x) ≤
           C₁ n * W :=
         le_trans (hC₁ g₁ P htie hδ_le hδ0 hbound n x)
           (mul_le_mul_of_nonneg_left hwin (hC₁_nn n))
       have h2 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + n) x
           ((iteratedCovGrad (I := I) g₀ 2 2 n
-            (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+            (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
               (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x) ≤
           C₂ n * W :=
         le_trans (hC₂ g₁ P htie hδ_le hδ0 hbound n x)
           (mul_le_mul_of_nonneg_left hwin (hC₂_nn n))
       have h3 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + n) x
           ((iteratedCovGrad (I := I) g₀ 2 2 n
-            (ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁
+            (ricciContractionRemainderField (I := I) (M := M) g₀ g₁
               (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x) ≤
           C₃ n * W :=
         le_trans (hC₃ g₁ P htie hδ_le hδ0 hbound n x)
           (mul_le_mul_of_nonneg_left hwin (hC₃_nn n))
       have h2' : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + n) x
           ((iteratedCovGrad (I := I) g₀ 2 2 n
-            ((1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+            ((1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
               (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x) ≤
           C₂ n * W := by
         rw [iteratedCovGrad_smul_real,
           show ((1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 2 2 n
-              (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+              (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
                 (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x =
             (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g₀ 2 2 n
-              (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+              (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
                 (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x from by
             rw [SmoothCcTensor.toSection_smul]; rfl,
           riemannianFiberNormSq_smul_value,
           show (1 / 2 : ℝ) ^ 2 = 1 / 4 from by norm_num]
         have hnn := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 (2 + n) x
           ((iteratedCovGrad (I := I) g₀ 2 2 n
-            (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+            (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
               (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x)
         linarith [h2]
       have hsplit : (iteratedCovGrad (I := I) g₀ 2 2 n BD).toSection x =
           ((iteratedCovGrad (I := I) g₀ 2 2 n
-            (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
-              - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)).toSection x
+            (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
+              - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)).toSection x
           + (iteratedCovGrad (I := I) g₀ 2 2 n
-              ((1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+              ((1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
                 (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x)
           - (iteratedCovGrad (I := I) g₀ 2 2 n
-              (ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁
+              (ricciContractionRemainderField (I := I) (M := M) g₀ g₁
                 (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x := by
         rw [hBD_def, iteratedCovGrad_sub, iteratedCovGrad_add,
           SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_add]
@@ -1022,20 +1022,20 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
       rw [hsplit]
       have hsub := riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 2 (2 + n) x
         ((iteratedCovGrad (I := I) g₀ 2 2 n
-          (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
-            - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)).toSection x
+          (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
+            - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)).toSection x
         + (iteratedCovGrad (I := I) g₀ 2 2 n
-            ((1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+            ((1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
               (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x)
         ((iteratedCovGrad (I := I) g₀ 2 2 n
-          (ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁
+          (ricciContractionRemainderField (I := I) (M := M) g₀ g₁
             (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x)
       have hadd := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + n) x
         ((iteratedCovGrad (I := I) g₀ 2 2 n
-          (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
-            - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)).toSection x)
+          (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
+            - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)).toSection x)
         ((iteratedCovGrad (I := I) g₀ 2 2 n
-          ((1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+          ((1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
             (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁))).toSection x)
       have hCBW : CB n * W = 4 * (C₁ n * W) + 4 * (C₂ n * W) + 2 * (C₃ n * W) := by
         simp only [hCB_def]
@@ -1058,12 +1058,12 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
       rw [hBD_def]
       rw [show backgroundRicciCommutatorDiffDecompositionRemainderField (I := I) (M := M) g₀ g₁ =
           ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-              (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
-                - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
+              (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁
+                - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
               (ccInputSlotSwapField (I := I) (M := M) g₀)
-            + (1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+            + (1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
                 (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁)
-            - ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁
+            - ricciContractionRemainderField (I := I) (M := M) g₀ g₁
                 (metricDifferenceCcTensor (I := I) (M := M) g₀ g₁) from rfl]
       simp only [operatorFieldComposition_sub_left, operatorFieldComposition_add_left, operatorFieldComposition_smul_left_local,
         operatorFieldComposition_ccSlotSwapField_involutive]
@@ -1213,18 +1213,18 @@ private def sigmaQ2 : Equiv.Perm (Fin 6) :=
    by decide, by decide⟩
 
 omit [SigmaCompactSpace M] in
-private lemma qCommFoldWeights_unitModel_eq_kernel (P : SmoothCcTensor g₀ 0 2)
+private lemma qCommContractionWeights_unitModel_eq_kernel (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
     (x : M) (p q v0 v1 : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x
         ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ x p q v0 v1 := by
   classical
   have hM1 : unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P) x
+      (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q p)
@@ -1233,13 +1233,13 @@ private lemma qCommFoldWeights_unitModel_eq_kernel (P : SmoothCcTensor g₀ 0 2)
             ![(v1 : E),
               ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
               (v0 : E)] := by
-    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P =
+    rw [show koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sigmaQ1
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sigmaQ1 P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sigmaQ1 P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -1283,7 +1283,7 @@ private lemma qCommFoldWeights_unitModel_eq_kernel (P : SmoothCcTensor g₀ 0 2)
       Matrix.cons_val_two, Matrix.tail_cons] at h12
     exact h12
   have hM2 : unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x
+      (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0)
@@ -1292,13 +1292,13 @@ private lemma qCommFoldWeights_unitModel_eq_kernel (P : SmoothCcTensor g₀ 0 2)
             ![(v1 : E),
               ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
               (p : E)] := by
-    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P =
+    rw [show koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sigmaQ2
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sigmaQ2 P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sigmaQ2 P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -1397,24 +1397,24 @@ private lemma qCommFoldWeights_unitModel_eq_kernel (P : SmoothCcTensor g₀ 0 2)
       (fun e => ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E))
       ((v1 : TangentSpace I x) : E) ((p : TangentSpace I x) : E)
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) (M := M) g₀ 4
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x]
+    (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)
+    (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x]
   rw [sub_apply]
   rw [hM1, hM2]
   rw [connectionDifferenceAACommKernelBilin_apply (I := I) g₀ g₁ x p q v0 v1]
   rw [hT1, hT2]
 
 omit [SigmaCompactSpace M] in
-private lemma ricciArmOrder0AACommCoeffField_eq_decomposition (P : SmoothCcTensor g₀ 0 2)
+private lemma ricciOrderZeroAACommCoeffField_eq_decomposition (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w) :
-    ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁ =
+    ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P))) := by
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P))) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -1426,16 +1426,16 @@ private lemma ricciArmOrder0AACommCoeffField_eq_decomposition (P : SmoothCcTenso
   intro v
   beta_reduce
   rw [secondMetricPairTraceOperator_apply_toModel (I := I) (M := M) g₀ g₁
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-      koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x D v]
+    (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+      koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) x D v]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁).toSection x) D) =
+      (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁).toSection x) D) =
       connectionDifferenceAACommBiContrFib (I := I) g₀ g₁ x D from rfl]
   rw [connectionDifferenceAACommBiContrFib_toModel (I := I) g₀ g₁ x D v]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun b _ => ?_
   refine Finset.sum_congr rfl fun a _ => ?_
-  have hq := qCommFoldWeights_unitModel_eq_kernel
+  have hq := qCommContractionWeights_unitModel_eq_kernel
     (I := I) (M := M) g₀ g₁ P htie x
     (smoothOrthoFrame (I := I) g₁ x a x)
     (smoothOrthoFrame (I := I) g₁ x b x) (v 0) (v 1)
@@ -1445,7 +1445,7 @@ private lemma ricciArmOrder0AACommCoeffField_eq_decomposition (P : SmoothCcTenso
   with_unfolding_all
     exact hmul.symm
 
-lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffField_window
+lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroAACommCoeffField_window
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1457,7 +1457,7 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFiel
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x) ≤
+              (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x) ≤
           C i * Combinatorics.boundedFactorGridWindow
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3) := by
@@ -1465,10 +1465,10 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFiel
   obtain ⟨CPT, hCPT_nn, hCPT⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_movingMetricPairTraceOperator_window (I := I) (M := M) g₀ hδ₀
   obtain ⟨CW1, hCW1_nn, hCW1⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le (I := I)
+    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
       (M := M) g₀ sigmaQ1 hδ₀
   obtain ⟨CW2, hCW2_nn, hCW2⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le (I := I)
+    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
       (M := M) g₀ sigmaQ2 hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
@@ -1492,7 +1492,7 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFiel
     ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x) with hb_def
   have hb_nn : ∀ l, 0 ≤ b l :=
     fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _
-  rw [ricciArmOrder0AACommCoeffField_eq_decomposition (I := I) (M := M) g₀ g₁ P htie]
+  rw [ricciOrderZeroAACommCoeffField_eq_decomposition (I := I) (M := M) g₀ g₁ P htie]
   have hPT : ∀ u : ℕ, u ≤ i →
       riemannianFiberNormSq (I := I) (M := M) g₀ 6 (2 + u) x
           ((iteratedCovGrad (I := I) g₀ 6 2 u
@@ -1502,51 +1502,51 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFiel
   have hWX : ∀ w : ℕ, w ≤ i →
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
           ((iteratedCovGrad (I := I) g₀ 2 6 w
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)))).toSection x) ≤
+                (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)))).toSection x) ≤
         CX w * Combinatorics.boundedFactorGridWindow b (i + 1) (w + 3) := by
     intro w hw
     rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongrSection_eq (I := I) (M := M) g₀ 2 6
-      ricciFoldRemainderSlotPerm _ w x]
+      ricciContractionRemainderSlotPerm _ w x]
     rw [show slotExtendIter (I := I) (M := M) g₀ 0 4 2
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) =
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) =
         slotExtend (I := I) (M := M) g₀ 1 5 (slotExtend (I := I) (M := M) g₀ 0 4
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)) from rfl]
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)) from rfl]
     refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 5
       (slotExtend (I := I) (M := M) g₀ 0 4
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)) w x) ?_
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)) w x) ?_
     refine le_trans (mul_le_mul_of_nonneg_left
       (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 0 4
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) w x) hfr_nn) ?_
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P) w x) hfr_nn) ?_
     have hsub : (iteratedCovGrad (I := I) g₀ 0 4 w
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)).toSection x =
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)).toSection x =
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)).toSection x -
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)).toSection x -
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)).toSection x := by
-      rw [sub_eq_add_neg (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)]
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)).toSection x := by
+      rw [sub_eq_add_neg (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)]
       rw [iteratedCovGrad_add (I := I) g₀ 0 4 w _ _,
         iteratedCovGrad_neg (I := I) g₀ 0 4 w _, SmoothCcTensor.toSection_add]
       rw [show (((iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)).toSection +
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)).toSection +
           (-(iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P))).toSection) x) =
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P))).toSection) x) =
           (iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)).toSection x +
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)).toSection x +
           (-(iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P))).toSection x from rfl]
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P))).toSection x from rfl]
       rw [show ((-(iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P))).toSection x) =
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P))).toSection x) =
           -((iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)).toSection x) from by
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)).toSection x) from by
         rw [SmoothCcTensor.toSection_neg]; rfl]
       rw [← sub_eq_add_neg]
     have hA1 := hCW1 g₁ P htie hδ_le hδ0 hbound w (i + 1) (by omega) x
@@ -1555,24 +1555,24 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFiel
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
             (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) =
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P from rfl] at hA1
+        koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P from rfl] at hA1
     have hA2 := hCW2 g₁ P htie hδ_le hδ0 hbound w (i + 1) (by omega) x
     rw [show ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sigmaQ2
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
             (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) =
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P from rfl] at hA2
+        koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P from rfl] at hA2
     calc fr * (fr * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
           ((iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)).toSection x))
+            (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+              koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)).toSection x))
         ≤ fr * (fr * (2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
             ((iteratedCovGrad (I := I) g₀ 0 4 w
-              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)).toSection x)
+              (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P)).toSection x)
           + 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
             ((iteratedCovGrad (I := I) g₀ 0 4 w
-              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)).toSection x))) := by
+              (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P)).toSection x))) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ hfr_nn) hfr_nn
           rw [hsub]
           exact riemannianFiberNormSq_sub_le_pt (I := I) (M := M) g₀ 0 (4 + w) x _ _
@@ -1588,10 +1588,10 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFiel
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I)
     (M := M) g₀ i 2 6 2 (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-    (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+    (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P))) x) ?_
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ2 P))) x) ?_
   calc diagonalGridGrowthFactor (E := E) i *
         ∑ u ∈ Finset.range (i + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 6 (2 + u) x
@@ -1600,10 +1600,10 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFiel
             ∑ w ∈ Finset.range (i + 1 - u),
               riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
                 ((iteratedCovGrad (I := I) g₀ 2 6 w
-                  (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+                  (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
                     (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
-                        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁
+                      (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sigmaQ1 P -
+                        koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁
                           sigmaQ2 P)))).toSection x)
       ≤ diagonalGridGrowthFactor (E := E) i *
           ∑ u ∈ Finset.range (i + 1),
@@ -1670,7 +1670,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
-theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFieldInputSymm_boundedFactorGridWindow_le
+theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroAACommCoeffFieldInputSymm_boundedFactorGridWindow_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1683,13 +1683,13 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFieldInpu
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
               (ccInputSlotSymm (I := I) (M := M) g₀
-                (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁))).toSection x) ≤
+                (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁))).toSection x) ≤
           C i * Combinatorics.boundedFactorGridWindow
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3) := by
   classical
   obtain ⟨Cq, hCq_nn, hCq⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffField_window (I := I)
+    exists_riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroAACommCoeffField_window (I := I)
       (M := M) g₀ hδ₀
   have hSW_ex : ∀ q : ℕ, ∃ c : ℝ, 0 ≤ c ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + q) x
@@ -1717,7 +1717,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFieldInpu
     have hQ : ∀ n : ℕ, n ≤ i →
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + n) x
           ((iteratedCovGrad (I := I) g₀ 2 2 n
-            (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x) ≤
+            (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x) ≤
         Cq n * W := by
       intro n hn
       refine le_trans (hCq g₁ P htie hδ_le hδ0 hbound n x) ?_
@@ -1725,21 +1725,21 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFieldInpu
       rw [hW_def]
       exact Combinatorics.boundedFactorGridWindow_mono b hb_nn (by omega) (by omega)
     have hsubject : ccInputSlotSymm (I := I) (M := M) g₀
-        (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁) =
-        (1 / 2 : ℝ) • (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁
+        (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁) =
+        (1 / 2 : ℝ) • (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁
           + ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-            (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
+            (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)
             (ccInputSlotSwapField (I := I) (M := M) g₀)) := rfl
     rw [hsubject]
     have hsm : (iteratedCovGrad (I := I) g₀ 2 2 i
-        ((1 / 2 : ℝ) • (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁
+        ((1 / 2 : ℝ) • (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁
           + ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-            (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
+            (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)
             (ccInputSlotSwapField (I := I) (M := M) g₀)))).toSection x =
         (1 / 2 : ℝ) • ((iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁
+          (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁
             + ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-              (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
+              (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)
               (ccInputSlotSwapField (I := I) (M := M) g₀))).toSection x) := by
       rw [iteratedCovGrad_smul_real (I := I) g₀ 2 2 i (1 / 2 : ℝ) _,
         SmoothCcTensor.toSection_smul]
@@ -1747,15 +1747,15 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFieldInpu
     rw [hsm, riemannianFiberNormSq_smul_value (I := I) (M := M) g₀ 2 (2 + i) x (1 / 2 : ℝ) _,
       show (1 / 2 : ℝ) ^ 2 = 1 / 4 from by norm_num]
     have hsplit : (iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁
+        (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁
           + ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-            (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
+            (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)
             (ccInputSlotSwapField (I := I) (M := M) g₀))).toSection x =
         (iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x
+          (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x
         + (iteratedCovGrad (I := I) g₀ 2 2 i
             (ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-              (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
+              (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)
               (ccInputSlotSwapField (I := I) (M := M) g₀))).toSection x := by
       rw [iteratedCovGrad_add (I := I) g₀ 2 2 i _ _, SmoothCcTensor.toSection_add]
       rfl
@@ -1765,20 +1765,20 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFieldInpu
       (by norm_num : (0 : ℝ) ≤ 1 / 4)) ?_
     have hQi : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x) ≤
+          (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x) ≤
         Cq i * W :=
       hQ i (le_refl i)
     have hApp : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 2 2 i
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-            (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
+            (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)
             (ccInputSlotSwapField (I := I) (M := M) g₀))).toSection x) ≤
         diagonalGridGrowthFactor (E := E) i * ((∑ i' ∈ Finset.range (i + 1), Cq i') *
           ((∑ l ∈ Finset.range (i + 1), SW l) * W)) := by
       refine le_trans
         (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
         (I := I) (M := M) g₀ i 2 2 2
-        (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
+        (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)
         (ccInputSlotSwapField (I := I) (M := M) g₀) x) ?_
       refine mul_le_mul_of_nonneg_left ?_ (operatorFieldApplicationGdiag_nonneg (E := E) i)
       rw [Finset.sum_mul]
@@ -1802,7 +1802,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFieldInpu
           riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 (2 + l) x _
       calc riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i') x
               ((iteratedCovGrad (I := I) g₀ 2 2 i'
-                (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x) *
+                (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x) *
             ∑ l ∈ Finset.range (i + 1 - i'),
               riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + l) x
                 ((iteratedCovGrad (I := I) g₀ 2 2 l
@@ -1812,11 +1812,11 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0AACommCoeffFieldInpu
         _ = Cq i' * ((∑ l ∈ Finset.range (i + 1), SW l) * W) := by ring
     calc (1 / 4 : ℝ) * (2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x)
+              (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)).toSection x)
           + 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
               (ccOperatorFieldComp (I := I) (M := M) g₀ 2 2 2
-                (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁)
+                (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁)
                 (ccInputSlotSwapField (I := I) (M := M) g₀))).toSection x))
         ≤ (1 / 4 : ℝ) * (2 * (Cq i * W)
             + 2 * (diagonalGridGrowthFactor (E := E) i * ((∑ i' ∈ Finset.range (i + 1), Cq i') *
@@ -1840,7 +1840,7 @@ theorem decompositionKernelContractionMonomialField_eq_movingMetricPairTraceOper
     decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (domDomCongrSection (I := I) g₀
               (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ) G))) := by
@@ -1924,7 +1924,7 @@ private theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernel
   refine le_trans
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I) (M := M) g₀ i 2 6 2 (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-    (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+    (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (domDomCongrSection (I := I) g₀
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
@@ -1938,7 +1938,7 @@ private theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernel
   have hWb : ∀ l : ℕ,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + l) x
           ((iteratedCovGrad (I := I) g₀ 2 6 l
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (domDomCongrSection (I := I) g₀
                   (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
@@ -1947,7 +1947,7 @@ private theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernel
         fr ^ 2 * b (2 + l) := by
     intro l
     rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongrSection_eq (I := I) (M := M) g₀ 2 6
-      ricciFoldRemainderSlotPerm _ l x]
+      ricciContractionRemainderSlotPerm _ l x]
     rw [show slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (domDomCongrSection (I := I) g₀
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
@@ -1984,7 +1984,7 @@ private theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernel
         ∑ l ∈ Finset.range (i + 1 - n),
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + l) x
             ((iteratedCovGrad (I := I) g₀ 2 6 l
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
@@ -1998,7 +1998,7 @@ private theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernel
     have hsumW : (∑ l ∈ Finset.range (i + 1 - n),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + l) x
           ((iteratedCovGrad (I := I) g₀ 2 6 l
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (domDomCongrSection (I := I) g₀
                   (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
@@ -2009,7 +2009,7 @@ private theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernel
     have hW_nn : 0 ≤ ∑ l ∈ Finset.range (i + 1 - n),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + l) x
           ((iteratedCovGrad (I := I) g₀ 2 6 l
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (domDomCongrSection (I := I) g₀
                   (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)

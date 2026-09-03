@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.ApproximatesLinearOn
-import DifferentialGeometry.Analysis.ODE.PhaseFlowSmallness
+import DifferentialGeometry.Analysis.ODE.PhaseFlow.Smallness
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 

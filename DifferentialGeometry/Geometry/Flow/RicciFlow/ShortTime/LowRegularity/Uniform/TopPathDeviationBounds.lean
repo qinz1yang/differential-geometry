@@ -77,7 +77,7 @@ theorem top_path_dev_uniform
         (metricPerturbationPath (I := I) g T T' hδ hδ' s) -
       deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   have hjpath := rhs_top_path_joint (I := I) (M := M) g T T' hδ hδ'
-  have hjdev : linearizedRicciThreeArmHjoint (I := I) (M := M) g 4 Φ
+  have hjdev : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 4 Φ
       (δ := δ) (δ' := δ') := by
     simpa [Φ] using phi_dev_joint (I := I) (M := M) g T T' hδ hδ'
   let Pdev : SmoothCcTensor g 4 2 :=
@@ -90,7 +90,7 @@ theorem top_path_dev_uniform
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro x
     have h := hjpath
-    rw [linearizedRicciThreeArmHjoint] at h
+    rw [linearizedRicciCovariantJetJointSmoothness] at h
     exact jointContMDiff_toModel_continuous_slice (I := I) g 4 2
       (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T T' hδ hδ' s))

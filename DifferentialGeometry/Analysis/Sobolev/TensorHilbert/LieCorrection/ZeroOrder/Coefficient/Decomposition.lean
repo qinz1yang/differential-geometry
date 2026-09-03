@@ -23,7 +23,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieEndoArmField deTurckLieEndoArmField_toSection deTurckLieCovariantDerivativeInsertionFib
+  (deTurckLieEndoTermField deTurckLieEndoTermField_toSection deTurckLieCovariantDerivativeInsertionFib
     reindexCoeffGen reindexCoeffGen_toSection reindexCoeffFibGen reindexCoeffFibGen_apply
     domDomCongrFibRank domDomCongrFibRank_apply tensor0SProdKappaFib
     tensor0SProdKappaFib_apply unitModel unitTensor
@@ -51,13 +51,13 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem deTurckLieEndomorphismArm_eq_covariantDerivativeInsertion (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
-    deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg =
+theorem deTurckLieEndomorphismTerm_eq_covariantDerivativeInsertion (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+    deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g_bg =
       deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [deTurckLieEndoArmField_toSection, deTurckLieCovariantDerivativeInsertionField_toSection]
+  rw [deTurckLieEndoTermField_toSection, deTurckLieCovariantDerivativeInsertionField_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -66,7 +66,7 @@ theorem lieCorrectionZeroInsertion_base_eq_neg_covariantDerivativeInsertion (g�
       -deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀ := by
   have h := insert_base (I := I) (M := M) g₀ g₁ g₀
   rw [sub_self] at h
-  rw [eq_neg_of_add_eq_zero_left h, deTurckLieEndomorphismArm_eq_covariantDerivativeInsertion]
+  rw [eq_neg_of_add_eq_zero_left h, deTurckLieEndomorphismTerm_eq_covariantDerivativeInsertion]
 
 private theorem lieCorrectionZeroInsertionBase_metricPerturbationPath_perOrder_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -639,7 +639,7 @@ private theorem lieCorrectionZeroRiem_metricPerturbationPath_perOrder_topOrderSe
   obtain ⟨KP, hKP_nn, hKP⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 2 4 (lieCorrectionZeroRiemannLift (I := I) g₀)
   choose Cint hCint_nn hCint using
-    (fun k : ℕ => exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    (fun k : ℕ => exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g₀ 4 2 2 4 k)
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr
   have hfr_nn : (0 : ℝ) ≤ fr := Nat.cast_nonneg _
@@ -1425,7 +1425,7 @@ private theorem vbPass_jetL2
   obtain ⟨ΛΩ, FΩ, hΛΩ_nn, hFΩ_nn, hΩgen⟩ :=
     deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_succ_le (I := I) (M := M) g₀ g₀ a ha_super hR hδ₀
   choose CI hCI_nn hCI using
-    (fun k : ℕ => exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    (fun k : ℕ => exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g₀ 1 2 4 1 k)
   set n : ℝ := (Module.finrank ℝ E : ℝ) with hn
   have hn_nn : (0 : ℝ) ≤ n := Nat.cast_nonneg _
@@ -1574,7 +1574,7 @@ private theorem lieCorrectionZeroVectorBundle_ballUniform
       ha_super hR hδ₀
   obtain ⟨ΛP, FP, hΛP_nn, hFP_nn, hvb⟩ := vbPass_jetL2 (I := I) (M := M) g₀ a ha_super hR hδ₀
   choose Cint hCint_nn hCint using
-    (fun k : ℕ => exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    (fun k : ℕ => exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g₀ 4 2 2 4 k)
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr
   have hfr_nn : (0 : ℝ) ≤ fr := Nat.cast_nonneg _

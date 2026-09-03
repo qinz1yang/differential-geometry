@@ -173,7 +173,7 @@ theorem operatorFieldApplication_grad_l2
           C * A * B := by
   classical
   obtain ⟨Cg, hCg, hgrid⟩ :=
-    exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g (s + 2) 0 c (s + 1) 2
   refine ⟨Real.sqrt (2 * Cg), Real.sqrt_nonneg _, ?_⟩
   intro Φ V A B hA hB hΦsup hVsup hΦjet hVjet

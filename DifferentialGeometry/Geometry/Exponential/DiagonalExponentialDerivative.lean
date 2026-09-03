@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-import DifferentialGeometry.Geometry.Exponential.DiagInvBranch
-import DifferentialGeometry.Geometry.Exponential.ExpVariationSmooth
+import DifferentialGeometry.Geometry.Exponential.DiagonalInverseBranch
+import DifferentialGeometry.Geometry.Exponential.ExponentialVariationSmoothness
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Analysis.ODE.PhaseFlowPerturbation
+import DifferentialGeometry.Analysis.ODE.PhaseFlow.Perturbation
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -1064,7 +1064,7 @@ private theorem exists_stdBranch
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
-    ∃ B : DiagInvBranch (I := I) g hEnorm p,
+    ∃ B : DiagonalInverseBranch (I := I) g hEnorm p,
       B.inv = diagExpInv (I := I) g hEnorm p := by
   classical
   obtain ⟨U, hUopen, hpU, hUsmooth, hU⟩ :=
@@ -1157,7 +1157,7 @@ private theorem exists_stdBranch
   have hinvInf : ContMDiffOn (I.prod I) I.tangent ∞ H.symm H.target := by
     rw [hHinv]
     exact hUsmooth.mono htarget_sub
-  let B : DiagInvBranch (I := I) g hEnorm p :=
+  let B : DiagonalInverseBranch (I := I) g hEnorm p :=
     { hom := H
       zero_mem := hzeroH
       hom_eq := hhomEq
@@ -1173,7 +1173,7 @@ noncomputable def stdBranch
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) : DiagInvBranch (I := I) g hEnorm p :=
+    (p : M) : DiagonalInverseBranch (I := I) g hEnorm p :=
   Classical.choose (exists_stdBranch (I := I) g hEnorm p)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

@@ -34,10 +34,10 @@ noncomputable def chartCmEqnC
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
     (p : M) (c : NormalBallChart (I := I) p)
-    (B : DiagInvBranch (I := I) g hEnorm p)
+    (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z : E) (params : (ι → Real) × (ι → E)) : E :=
   ∑ i, params.1 i •
-    B.chartReadout c (c.hom z, c.hom (params.2 i))
+    B.chartDiagonalInverseCoordinates c (c.hom z, c.hom (params.2 i))
 
 def HasCmSolC
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -45,12 +45,12 @@ def HasCmSolC
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
     (p : M) (c : NormalBallChart (I := I) p)
-    (B : DiagInvBranch (I := I) g hEnorm p)
+    (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z : E)
     (params : (ι → Real) × (ι → E)) : Prop :=
   z ∈ Metric.ball (0 : E) c.radius ∧
     (∀ i, params.2 i ∈ Metric.ball (0 : E) c.radius) ∧
-    (∀ i, (c.hom z, c.hom (params.2 i)) ∈ B.chartReadDom c) ∧
+    (∀ i, (c.hom z, c.hom (params.2 i)) ∈ B.chartCoordinateDomain c) ∧
     chartCmEqnC (I := I) g hEnorm p c B z params = 0 ∧
     ∃ L : E ≃L[Real] E,
       HasFDerivAt
@@ -74,11 +74,11 @@ theorem chartCmC_zero_of_sum
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
     (p : M) (c : NormalBallChart (I := I) p)
-    (B : DiagInvBranch (I := I) g hEnorm p)
+    (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z : E) (mu : ι → Real) (xi : ι → E)
     (hz : z ∈ Metric.ball (0 : E) c.radius)
     (hdom : ∀ i,
-      (c.hom z, c.hom (xi i)) ∈ B.chartReadDom c)
+      (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c)
     (hsum : ∑ i, mu i •
       (show TangentSpace I (c.hom z) from
         (B.inv (c.hom z, c.hom (xi i))).snd) = 0) :
@@ -96,15 +96,15 @@ theorem chartCmC_zero_of_sum
     refine Bundle.TotalSpace.ext (B.proj_eq (hdom i).1) ?_
     exact heq_of_eq rfl
   have hterm (i : ι) :
-      B.chartReadout c (c.hom z, c.hom (xi i)) =
+      B.chartDiagonalInverseCoordinates c (c.hom z, c.hom (xi i)) =
         mfderiv I (modelWithCornersSelf Real E) c.inv (c.hom z)
           (show TangentSpace I (c.hom z) from
             (B.inv (c.hom z, c.hom (xi i))).snd) := by
-    unfold DiagInvBranch.chartReadout
+    unfold DiagonalInverseBranch.chartDiagonalInverseCoordinates
     rw [hinvBase i, c.tangentHome_symm_apply hzTarget]
   unfold chartCmEqnC
   have hlinear :
-      ∑ i, mu i • B.chartReadout c (c.hom z, c.hom (xi i)) =
+      ∑ i, mu i • B.chartDiagonalInverseCoordinates c (c.hom z, c.hom (xi i)) =
         mfderiv I (modelWithCornersSelf Real E) c.inv (c.hom z)
           (∑ i, mu i •
             (show TangentSpace I (c.hom z) from
@@ -125,13 +125,13 @@ theorem chartCmEqnC_cdAt
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
     (p : M) (c : NormalBallChart (I := I) p)
-    (B : DiagInvBranch (I := I) g hEnorm p)
+    (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → Real) × (ι → E))
     (n : ℕ∞)
     (hz : z₀ ∈ Metric.ball (0 : E) c.radius)
     (hξ : ∀ i, params₀.2 i ∈ Metric.ball (0 : E) c.radius)
     (hdom : ∀ i,
-      (c.hom z₀, c.hom (params₀.2 i)) ∈ B.chartReadDom c) :
+      (c.hom z₀, c.hom (params₀.2 i)) ∈ B.chartCoordinateDomain c) :
     ContDiffAt Real n
       (fun w : E × ((ι → Real) × (ι → E)) =>
         chartCmEqnC (I := I) g hEnorm p c B w.1 w.2)
@@ -165,37 +165,37 @@ theorem chartCmEqnC_cdAt
       ContMDiffAt.prodMk (hcenter.comp (z₀, params₀) hfst)
         (hpoint.comp (z₀, params₀) hproj)
     have hread : ContMDiffAt (I.prod I) 𝓘(Real, E) n
-        (B.chartReadout c) (c.hom z₀, c.hom (params₀.2 i)) :=
-      ((B.chartReadoutInf c).2.2.1
+        (B.chartDiagonalInverseCoordinates c) (c.hom z₀, c.hom (params₀.2 i)) :=
+      ((B.chartDiagonalInverseCoordinates_properties c).2.2.1
         (c.hom z₀, c.hom (params₀.2 i)) (hdom i)).contMDiffAt
-          ((B.chartReadoutInf c).1.mem_nhds (hdom i)) |>.of_le (by simp)
+          ((B.chartDiagonalInverseCoordinates_properties c).1.mem_nhds (hdom i)) |>.of_le (by simp)
     have hcomp : ContMDiffAt
         𝓘(Real, E × ((ι → Real) × (ι → E))) 𝓘(Real, E) n
         (fun w : E × ((ι → Real) × (ι → E)) =>
-          B.chartReadout c (c.hom w.1, c.hom (w.2.2 i))) (z₀, params₀) :=
+          B.chartDiagonalInverseCoordinates c (c.hom w.1, c.hom (w.2.2 i))) (z₀, params₀) :=
       ContMDiffAt.comp
         (I := 𝓘(Real, E × ((ι → Real) × (ι → E))))
         (I' := I.prod I) (I'' := 𝓘(Real, E))
         (f := fun w : E × ((ι → Real) × (ι → E)) =>
           (c.hom w.1, c.hom (w.2.2 i)))
-        (g := B.chartReadout c)
+        (g := B.chartDiagonalInverseCoordinates c)
         (z₀, params₀) hread hinner
     exact hcomp
 
 omit [CompleteSpace E] [ConnectedSpace M] [T3Space M]
   [T2Space (TangentBundle I M)] in
-theorem readoutSolC_strict
+theorem chartCmEqnC_implicitFunction_hasStrictFDerivAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
     (p : M) (c : NormalBallChart (I := I) p)
-    (B : DiagInvBranch (I := I) g hEnorm p)
+    (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → Real) × (ι → E))
     (hz : z₀ ∈ Metric.ball (0 : E) c.radius)
     (hξ : ∀ i, params₀.2 i ∈ Metric.ball (0 : E) c.radius)
     (hdom : ∀ i,
-      (c.hom z₀, c.hom (params₀.2 i)) ∈ B.chartReadDom c)
+      (c.hom z₀, c.hom (params₀.2 i)) ∈ B.chartCoordinateDomain c)
     (hinv : ∃ L : E ≃L[Real] E,
       HasFDerivAt
         (fun z : E => chartCmEqnC (I := I) g hEnorm p c B z params₀)
@@ -227,19 +227,19 @@ theorem readoutSolC_strict
 
 omit [CompleteSpace E] [ConnectedSpace M] [T3Space M]
   [T2Space (TangentBundle I M)] in
-theorem readoutSolC_cdAt
+theorem chartCmEqnC_implicitFunction_contDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
     (p : M) (c : NormalBallChart (I := I) p)
-    (B : DiagInvBranch (I := I) g hEnorm p)
+    (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → Real) × (ι → E))
     (n : Nat) (hn : 1 ≤ n)
     (hz : z₀ ∈ Metric.ball (0 : E) c.radius)
     (hξ : ∀ i, params₀.2 i ∈ Metric.ball (0 : E) c.radius)
     (hdom : ∀ i,
-      (c.hom z₀, c.hom (params₀.2 i)) ∈ B.chartReadDom c)
+      (c.hom z₀, c.hom (params₀.2 i)) ∈ B.chartCoordinateDomain c)
     (hinv : ∃ L : E ≃L[Real] E,
       HasFDerivAt
         (fun z : E => chartCmEqnC (I := I) g hEnorm p c B z params₀)

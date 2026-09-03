@@ -322,51 +322,51 @@ lemma riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-private lemma flatArmVec_self_eq_zero (g₀ : SmoothRiemannianMetric I M) (kind : Bool) (x : M)
+private lemma flatTermVec_self_eq_zero (g₀ : SmoothRiemannianMetric I M) (kind : Bool) (x : M)
     (om : Tensor0SSpace 1 I x) (v0 : TangentSpace I x) :
-    flatArmVec (I := I) g₀ g₀ kind x om v0 = 0 := by
+    flatTermVec (I := I) g₀ g₀ kind x om v0 = 0 := by
   have hcd : PDE.DeTurck.connectionDifference (I := I) g₀ g₀ x = 0 := by
     rw [PDE.DeTurck.connectionDifference_self]; rfl
   cases kind with
   | true =>
-      simp only [flatArmVec, if_true, hcd, zero_apply, neg_zero]
+      simp only [flatTermVec, if_true, hcd, zero_apply, neg_zero]
   | false =>
-      simp only [flatArmVec, if_neg (by decide : ¬ (false = true)), hcd]
+      simp only [flatTermVec, if_neg (by decide : ¬ (false = true)), hcd]
       simp
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-private lemma flatArmFib_self_eq_zero (g₀ : SmoothRiemannianMetric I M) (kind : Bool) (x : M) :
-    flatArmFib (I := I) g₀ g₀ kind x = (0 : TensorRSSpace 1 2 I x) := by
+private lemma flatTermFib_self_eq_zero (g₀ : SmoothRiemannianMetric I M) (kind : Bool) (x : M) :
+    flatTermFib (I := I) g₀ g₀ kind x = (0 : TensorRSSpace 1 2 I x) := by
   apply tensorRSSpace_ext 1 2 x
   intro om
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (0 : TensorRSSpace 1 2 I x)) om = (0 : Tensor0SSpace 2 I x) from rfl]
-  rw [flatArmFib_apply]
+  rw [flatTermFib_apply]
   apply ContinuousMultilinearMap.ext
   intro YZ
-  change Tensor0SSpace.eval (flatArmPairing (I := I) g₀ g₀ kind x om) YZ =
+  change Tensor0SSpace.eval (flatTermPairing (I := I) g₀ g₀ kind x om) YZ =
     Tensor0SSpace.eval 0 YZ
-  rw [Tensor0SSpace.eval_eq, flatArmPairing_apply, flatArmVec_self_eq_zero, map_zero]
+  rw [Tensor0SSpace.eval_eq, flatTermPairing_apply, flatTermVec_self_eq_zero, map_zero]
   rw [Tensor0SSpace.eval_zero, zero_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma flatArmCc_self_eq_zero (g₀ : SmoothRiemannianMetric I M) (kind : Bool) :
-    flatArmCc (I := I) g₀ g₀ kind = 0 := by
+private lemma flatTermCc_self_eq_zero (g₀ : SmoothRiemannianMetric I M) (kind : Bool) :
+    flatTermCc (I := I) g₀ g₀ kind = 0 := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [flatArmCc_toSection, flatArmFib_self_eq_zero]
+  rw [flatTermCc_toSection, flatTermFib_self_eq_zero]
   simp
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covGrad_sharpFlatEndoCc_self_eq_zero (g₀ : SmoothRiemannianMetric I M) :
     covGrad (I := I) (M := M) g₀ 1 1 (sharpFlatEndoCc (I := I) g₀ g₀) = 0 := by
-  rw [covGrad_sharpFlatEndoCc_eq_arms (I := I) g₀ g₀]
-  rw [flatArmCc_self_eq_zero, flatArmCc_self_eq_zero, add_zero]
+  rw [covGrad_sharpFlatEndoCc_eq_terms (I := I) g₀ g₀]
+  rw [flatTermCc_self_eq_zero, flatTermCc_self_eq_zero, add_zero]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in

@@ -910,7 +910,7 @@ theorem sharpGradKoszulBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric 
     (congrArg TensorRSSpace.ofCLM
       (sharpGradKoszulBiContrFib_eq_fixedFrame_on_nbhd (I := I) g₀ g₁ S x₀ hy))
 
-def ricciArmSharpGradKoszulResidualField (g₀ g₁ : SmoothRiemannianMetric I M)
+def ricciCovariantTermSharpGradKoszulResidualField (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
@@ -920,22 +920,22 @@ def ricciArmSharpGradKoszulResidualField (g₀ g₁ : SmoothRiemannianMetric I M
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [SigmaCompactSpace M] in
-@[simp] theorem ricciArmSharpGradKoszulResidualField_toSection
+@[simp] theorem ricciCovariantTermSharpGradKoszulResidualField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x : M) :
-    (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ S).toSection x =
+    (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ S).toSection x =
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (sharpGradKoszulBiContrFib (I := I) g₀ g₁ S x)) := rfl
 
 
 omit [SigmaCompactSpace M] in
-theorem ricciArmSharpGradKoszulResidualField_zero_weight
+theorem ricciCovariantTermSharpGradKoszulResidualField_zero_weight
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+    ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
       (0 : SmoothCcTensor g₀ 0 2) = 0 := by
   classical
   refine SmoothCcTensor.ext ?_
   refine ContMDiffSection.ext (fun x => ?_)
-  rw [ricciArmSharpGradKoszulResidualField_toSection]
+  rw [ricciCovariantTermSharpGradKoszulResidualField_toSection]
   have hzero : sharpGradKoszulBiContrFib (I := I) g₀ g₁ (0 : SmoothCcTensor g₀ 0 2) x = 0 := by
     apply ContinuousLinearMap.ext
     intro D

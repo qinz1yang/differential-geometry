@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.GalerkinForcingArms
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.GalerkinForcingTerms
 
 noncomputable section
 
@@ -64,7 +64,7 @@ theorem galN_evalBackground (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ
     (galCoreRep (I := I) (M := M) g₀ R S c)
     (galCoreRep_ball (I := I) (M := M) g₀ hR.le S c)
 
-theorem galArmIdBackground (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
+theorem galTermIdBackground (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 < R) (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hreal : ∀ T : SmoothCcTensor g₀ 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀
@@ -144,7 +144,7 @@ theorem galArmIdBackground (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
   exact h₁.trans (h₂.trans
     (congrArg (smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)) h₃))
 
-theorem galArmCapBackground (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
+theorem galTermCapBackground (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hreal : ∀ T : SmoothCcTensor g₀ 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀
@@ -200,7 +200,7 @@ def galerkinActionVectorBackground (g₀ g_bg : SmoothRiemannianMetric I M) {R �
           (galCoreRep (I := I) (M := M) g₀ R F c)))
 
 open scoped Classical in
-theorem galForceArmBackground (g₀ g_bg : SmoothRiemannianMetric I M)
+theorem galForceTermBackground (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ Ctop B1 ρ P : ℝ} (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hCtop : 0 ≤ Ctop) (hB1 : 0 ≤ B1) (hρ : 0 < ρ) (hP : 0 < P)
     (hreal : ∀ T : SmoothCcTensor g₀ 0 2,
@@ -254,7 +254,7 @@ theorem galForceArmBackground (g₀ g_bg : SmoothRiemannianMetric I M)
                   (galCoreRep (I := I) (M := M) g₀
                     (lowRegularityStateRadius Ctop B1 ρ P) S c)))).coeff i
       else 0 := by
-  have harm := galArmIdBackground (I := I) (M := M) g₀ g_bg
+  have harm := galTermIdBackground (I := I) (M := M) g₀ g_bg
     (lowRegularityStateRadius_pos hCtop hB1 hρ hP) hδ hδ0 hδ3
     (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
       hP.le hreal) hcore S c

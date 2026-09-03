@@ -1371,45 +1371,6 @@ private lemma slotPair_trace_swap_tangent (g₁ : SmoothRiemannianMetric I M) (x
     DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_centered_chart_basis, tangent_model_equiv_tangentOfModel] using h
 
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private lemma operatorFieldApplication_sub_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ Ψ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s (Φ - Ψ) W =
-      operatorFieldApply (I := I) (M := M) g r s Φ W - operatorFieldApply (I := I) (M := M) g r s Ψ
-        W := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((operatorFieldApply (I := I) (M := M) g r s Φ W - operatorFieldApply (I := I) (M := M) g
-    r s Ψ W).toSection x) =
-      (operatorFieldApply (I := I) (M := M) g r s Φ W).toSection x -
-        (operatorFieldApply (I := I) (M := M) g r s Ψ W).toSection x from by
-    rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection, operatorFieldApplication_toSection]
-  rw [show ((Φ - Ψ).toSection x : Tensor0SBundle.TensorRSSpace r s I x) =
-      Φ.toSection x - Ψ.toSection x from by
-    rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [ContinuousLinearMap.sub_comp]
-
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private lemma operatorFieldApplication_smul_left' (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (c : ℝ) (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s (c • Φ) W =
-      c • operatorFieldApply (I := I) (M := M) g r s Φ W := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((c • operatorFieldApply (I := I) (M := M) g r s Φ W).toSection x) =
-      c • (operatorFieldApply (I := I) (M := M) g r s Φ W).toSection x from rfl]
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection]
-  rw [show ((c • Φ).toSection x : Tensor0SBundle.TensorRSSpace r s I x) = c • Φ.toSection x from by
-    rw [SmoothCcTensor.toSection_smul]; rfl]
-  rw [ContinuousLinearMap.smul_comp]
-
-
 private def perm4_1032 : Equiv.Perm (Fin 4) :=
   permOfImages ![1, 0, 3, 2] ![1, 0, 3, 2] (by decide) (by decide)
 
@@ -1535,7 +1496,7 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
     linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (v 0) (v 1) s =
       unitModelTangent (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+          (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
           (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s)) x v := by
   classical
   have hD4rfl : ∀ (m : Fin 4 → TangentSpace I x),
@@ -1551,7 +1512,7 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
                   ((Module.finBasis ℝ E).cDualBasis k)) := fun k => rfl
   have hRHS : unitModelTangent (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ 4 2
-        (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+        (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
         (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s)) x v =
       (1 / 2 : ℝ) *
         ((∑ k : Fin (Module.finrank ℝ E),
@@ -1587,11 +1548,11 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
                     ((Module.finBasis ℝ E).cDualBasis k),
                     modelBasisTangent (I := I) x (Module.finBasis ℝ E) k]) := by
-    rw [show linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s =
+    rw [show linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s =
         ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) -
           (1 / 2 : ℝ) • traceHessianCoeff (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) from rfl]
-    rw [operatorFieldApplication_sub_left, operatorFieldApplication_smul_left',
+    rw [operatorFieldApplication_sub_left, operatorFieldApplication_smul_left,
       unitModelTangent_sub_gen, unitModelTangent_smul_gen]
     rw [unitModelTangent_eq_unitModel, unitModelTangent_eq_unitModel]
     rw [ricciDeTurckPrincipalCoefficient_operatorFieldApplication_eq_combinedTrace (I := I) (M := M) g₀

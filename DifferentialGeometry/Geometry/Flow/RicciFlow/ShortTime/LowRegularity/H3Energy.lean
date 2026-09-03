@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.GalerkinForcingArms
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.GalerkinForcingTerms
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderPerIndex
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.FirstOrderPerIndex
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
@@ -724,7 +724,7 @@ private theorem exists_galerkin_energy_three_bound_parameters_raw (hDim : Module
             ⟨0, DifferentialGeometry.Analysis.Parabolic.zero_mem_lowerState
               (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i := by
       intro i hi
-      rw [galForceArm (I := I) (M := M) g₀ hδ hδ0 hδ3 hCtop hB1 hρ hP hreal
+      rw [galForceTerm (I := I) (M := M) g₀ hδ hδ0 hδ3 hCtop hB1 hρ hP hreal
         hcore (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i, if_pos hi]
       simp only [galerkinActionVector]
       module

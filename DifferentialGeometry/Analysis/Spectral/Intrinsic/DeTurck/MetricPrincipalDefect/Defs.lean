@@ -23,7 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def deTurckMetricPrincipalDefectTotal (g₀ g : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 :=
-  deTurckLieArm2PrincipalCoeff (I := I) g₀ g
+  deTurckLieSecondOrderPrincipalCoeff (I := I) g₀ g
     + traceHessianCoeff (I := I) (M := M) g₀ g
     - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g
         + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g)
@@ -71,26 +71,26 @@ theorem deTurckMetricPrincipalDefectTotal_eq_reindex (g₀ g : SmoothRiemannianM
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g =
       reindexCoeffGen (I := I) (M := M) g₀ 4 2
           (traceHessianCoeff (I := I) (M := M) g₀ g)
-          (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)
+          (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)
         + reindexCoeffGen (I := I) (M := M) g₀ 4 2
           (traceHessianCoeff (I := I) (M := M) g₀ g)
-          (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)
+          (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)
         - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g
             + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g) := by
   have hPhi : deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g =
-      (deTurckLieTraceCoeff (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermA
-        + deTurckLieTraceCoeff (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermAT
+      (deTurckLieTraceCoeff (I := I) (M := M) g₀ g deTurckLieSecondOrderDivSlotPermA
+        + deTurckLieTraceCoeff (I := I) (M := M) g₀ g deTurckLieSecondOrderDivSlotPermAT
         - traceHessianCoeff (I := I) (M := M) g₀ g)
       + traceHessianCoeff (I := I) (M := M) g₀ g
       - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g
           + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g) := rfl
   rw [hPhi,
-    lieTrace_reindex (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermA
-      (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)
-      (trace_perm_comp deTurckLieArm2DivSlotPermA),
-    lieTrace_reindex (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermAT
-      (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)
-      (trace_perm_comp deTurckLieArm2DivSlotPermAT)]
+    lieTrace_reindex (I := I) (M := M) g₀ g deTurckLieSecondOrderDivSlotPermA
+      (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)
+      (trace_perm_comp deTurckLieSecondOrderDivSlotPermA),
+    lieTrace_reindex (I := I) (M := M) g₀ g deTurckLieSecondOrderDivSlotPermAT
+      (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)
+      (trace_perm_comp deTurckLieSecondOrderDivSlotPermAT)]
   abel
 
 omit [SigmaCompactSpace M] in
@@ -105,11 +105,11 @@ theorem deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq
     (s : ℝ) :
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) =
-      deTurckLieArm2PrincipalCoeff (I := I) g₀
+      deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-        - (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
-            + linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) := by
-  rw [deTurckMetricPrincipalDefectTotal, linearizedRicciArm2FieldLichnerowicz]
+        - (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
+            + linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) := by
+  rw [deTurckMetricPrincipalDefectTotal, linearizedRicciSecondOrderFieldLichnerowicz]
   set X : SmoothCcTensor g₀ 4 2 :=
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
@@ -137,14 +137,14 @@ theorem deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq_neg_two_smul
     (s : ℝ) :
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) =
-      (-2 : ℝ) • linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
-        + deTurckLieArm2PrincipalCoeff (I := I) g₀
+      (-2 : ℝ) • linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
+        + deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) := by
   rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq (I := I) (M := M)
     g₀ T T' hδ hδ' s]
-  rw [show (-2 : ℝ) • linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s =
-      -(linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
-        + linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) from by
+  rw [show (-2 : ℝ) • linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s =
+      -(linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
+        + linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) from by
     rw [show (-2 : ℝ) = -(2 : ℝ) by norm_num, neg_smul, two_smul]]
   abel
 

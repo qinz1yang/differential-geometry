@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSP
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3Principal
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.CoefficientBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.CurvatureFold
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.CurvatureContraction
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.L2JetMoser
 
 open DifferentialGeometry.Analysis.Sobolev
@@ -54,7 +54,7 @@ theorem phi_dev_joint
       (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound g₀
       (ccTensorBilinSymm (I := I) g₀ T') δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
       (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) -
         deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)
@@ -93,7 +93,7 @@ theorem lieDecomposition2_cap
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 4 2 x
         ((lieDecomposition2 (I := I) (M := M) g T hδ hδZ s).toSection x) ≤
-      (4 * deTurckArmFibreConst (Module.finrank ℝ E) *
+      (4 * deTurckTermFibreConst (Module.finrank ℝ E) *
         (δ / (1 - δ) ^ 2)) ^ 2 := by
   let gm := metricPerturbationPath (I := I) g T 0 hδ hδZ s
   let P := convexPerturbation (I := I) g T 0 s
@@ -114,7 +114,7 @@ theorem lieDecomposition2_cap
         abs_of_nonneg hs.1]
       ring
     rwa [heq] at hraw
-  let B := deTurckArmFibreConst (Module.finrank ℝ E) *
+  let B := deTurckTermFibreConst (Module.finrank ℝ E) *
     (δ / (1 - δ) ^ 2)
   have hmono : ∀ σ : Equiv.Perm (Fin 4),
       riemannianFiberNormSq (I := I) (M := M) g 4 2 x
@@ -184,7 +184,7 @@ theorem lieDecomposition2_cap
   have hscaled : s ^ 2 * riemannianFiberNormSq
       (I := I) (M := M) g 4 2 x (U 0 + U 1 + U 2) ≤ 10 * B ^ 2 := by
     exact (mul_le_mul_of_nonneg_right hs2 hsum0).trans (by simpa using hsum)
-  have htarget : (4 * deTurckArmFibreConst (Module.finrank ℝ E) *
+  have htarget : (4 * deTurckTermFibreConst (Module.finrank ℝ E) *
       (δ / (1 - δ) ^ 2)) ^ 2 = 16 * B ^ 2 := by
     simp only [B]
     ring
@@ -230,8 +230,8 @@ theorem metricPrincipalDefect_cap
   let Dev : SmoothCcTensor g 4 2 :=
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gm -
       deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
-  let ρA := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
-  let ρAT := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT
+  let ρA := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA
+  let ρAT := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
   have hDev : Dev =
       reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρA +
         reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρAT - (DR + DR) := by
@@ -317,11 +317,11 @@ theorem path_add_sub_cap
     {δ δ' : ℝ}
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (Φ Ψ : ℝ → SmoothCcTensor g r 2) (C : SmoothCcTensor g r 2)
-    (hΦ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Φ
+    (hΦ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Φ
       (δ := δ) (δ' := δ'))
-    (hΨ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Ψ
+    (hΨ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Ψ
       (δ := δ) (δ' := δ'))
-    (hK : linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    (hK : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun t => Φ t + Ψ t - C) (δ := δ) (δ' := δ'))
     (x : M) (Λ : ℝ) (hΛ : 0 ≤ Λ)
     (hcap : ∀ t ∈ Set.Icc (0 : ℝ) 1,
@@ -508,9 +508,9 @@ theorem phi_dev_h2
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
       deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀
   let ρA : Equiv.Perm (Fin 4) :=
-    traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
+    traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA
   let ρAT : Equiv.Perm (Fin 4) :=
-    traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT
+    traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
   have hdev_eq : Dev =
       reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA +
         reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT -
@@ -760,7 +760,7 @@ theorem top_path_dev_h2
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) -
       deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀
   have hjpath := rhs_top_path_joint (I := I) (M := M) g₀ T T' hδ hδ'
-  have hjdev : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ
+  have hjdev : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Φ
       (δ := δ) (δ' := δ') := by
     simpa [Φ] using phi_dev_joint (I := I) (M := M) g₀ T T' hδ hδ'
   let Pdev : SmoothCcTensor g₀ 4 2 :=
@@ -773,7 +773,7 @@ theorem top_path_dev_h2
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro x
     have h := hjpath
-    rw [linearizedRicciThreeArmHjoint] at h
+    rw [linearizedRicciCovariantJetJointSmoothness] at h
     exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 4 2
       (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
@@ -917,7 +917,7 @@ theorem top_path_split
       (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ -
         cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₀) by abel]
   rw [operatorFieldApplication_add_left, operatorFieldApplication_sub_left,
-    metricPrincipalDefect_curv_fold (I := I) (M := M) g₀ g₀ U]
+    metricPrincipalDefect_curvature_contraction (I := I) (M := M) g₀ g₀ U]
 
 theorem fixed_curv_h1
     (hDim : Module.finrank ℝ E = 3)

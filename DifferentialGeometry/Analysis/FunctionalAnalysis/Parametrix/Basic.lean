@@ -20,7 +20,7 @@ def localParametrix
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U) (R : U →L[ℝ] X) : Y →L[ℝ] X :=
   R.comp (H.comp E)
 
-def localErrorArm
+def localErrorTerm
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U) (C : U →L[ℝ] Y) : Y →L[ℝ] Y :=
   C.comp (H.comp E)
 
@@ -186,12 +186,12 @@ theorem retractParametrix
     (hLH : L.comp H = ContinuousLinearMap.id ℝ V)
     (hRE : RF.comp E = ContinuousLinearMap.id ℝ Y) :
     T.comp (localParametrix E H R) =
-      ContinuousLinearMap.id ℝ Y + localErrorArm E H C := by
+      ContinuousLinearMap.id ℝ Y + localErrorTerm E H C := by
   ext y
   have hTRy := congrArg (fun A : U →L[ℝ] Y => A (H (E y))) hTR
   have hLHy := congrArg (fun A : V →L[ℝ] V => A (E y)) hLH
   have hREy := congrArg (fun A : Y →L[ℝ] Y => A y) hRE
-  simp only [localParametrix, localErrorArm,
+  simp only [localParametrix, localErrorTerm,
     ContinuousLinearMap.comp_apply, add_apply,
     ContinuousLinearMap.id_apply]
   simp only [ContinuousLinearMap.comp_apply, add_apply] at hTRy
@@ -207,13 +207,13 @@ theorem retractParam_split
     (hLH : L.comp H = ContinuousLinearMap.id ℝ V)
     (hRE : RF.comp E = ContinuousLinearMap.id ℝ Y) :
     T.comp (localParametrix E H R) =
-      ContinuousLinearMap.id ℝ Y + localErrorArm E H C₂ +
-        localErrorArm E H C₁₀ := by
+      ContinuousLinearMap.id ℝ Y + localErrorTerm E H C₂ +
+        localErrorTerm E H C₁₀ := by
   ext y
   have hTRy := congrArg (fun A : U →L[ℝ] Y => A (H (E y))) hTR
   have hLHy := congrArg (fun A : V →L[ℝ] V => A (E y)) hLH
   have hREy := congrArg (fun A : Y →L[ℝ] Y => A y) hRE
-  simp only [localParametrix, localErrorArm,
+  simp only [localParametrix, localErrorTerm,
     ContinuousLinearMap.comp_apply, add_apply,
     ContinuousLinearMap.id_apply]
   simp only [ContinuousLinearMap.comp_apply, add_apply] at hTRy
@@ -234,7 +234,7 @@ theorem retractParam_factor
         factoredError E H D₂ C₂ D₁₀ C₁₀ := by
   have h := retractParam_split T R E RF L H
     (C₂.comp D₂) (C₁₀.comp D₁₀) hTR hLH hRE
-  simpa only [factoredError, principalError, lowerError, localErrorArm,
+  simpa only [factoredError, principalError, lowerError, localErrorTerm,
     ContinuousLinearMap.comp_assoc, add_assoc] using h
 def parametrixError (T : X →L[ℝ] Y) (Q : Y →L[ℝ] X) : Y →L[ℝ] Y :=
   T.comp Q - ContinuousLinearMap.id ℝ Y

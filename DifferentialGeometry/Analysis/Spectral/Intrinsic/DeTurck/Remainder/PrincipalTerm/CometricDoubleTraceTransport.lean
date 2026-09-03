@@ -182,20 +182,6 @@ theorem rawTensorConnLapSmooth_eq_operatorFieldComposition_cometricDoubleTrace_r
   intro x
   exact rawTensorConnLap_toSection_eq_cometricDoubleTrace (I := I) g r s Φ x
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private lemma operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ : SmoothCcTensor g r s) (A B : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s Φ (A - B) =
-      operatorFieldApply (I := I) (M := M) g r s Φ A - operatorFieldApply (I := I) (M := M) g r s Φ
-        B := by
-  have hAB : A - B = A + (-1 : ℝ) • B := by
-    rw [neg_one_smul]
-    exact sub_eq_add_neg A B
-  rw [hAB, operatorFieldApplication_add_right (I := I) (M := M) g r s Φ A ((-1 : ℝ) • B),
-    operatorFieldApplication_smul_right (I := I) (M := M) g r s (-1 : ℝ) Φ B,
-    neg_one_smul, ← sub_eq_add_neg]
-
 omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 lemma oneMinusConnLapSmoothIter_sub (g : SmoothRiemannianMetric I M) (r s : ℕ) (q : ℕ)
@@ -274,7 +260,7 @@ private lemma operatorFieldApplication_connLap_commutator (Φ : SmoothCcTensor g
   abel
 
 omit [SigmaCompactSpace M] in
-lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_decomposition (Φ : SmoothCcTensor g₀ 2 2) (W : SmoothCcTensor g₀ 0 2) (p : ℕ) :
+lemma DeTurckRemainderPrincipalTerm.connLapIterate_operatorFieldApplication_decomposition (Φ : SmoothCcTensor g₀ 2 2) (W : SmoothCcTensor g₀ 0 2) (p : ℕ) :
     oneMinusConnLapSmoothIter (I := I) g₀ 0 2 p (operatorFieldApply (I := I) (M := M) g₀ 2 2 Φ W) =
       operatorFieldApply (I := I) (M := M) g₀ 2 2 (oneMinusConnLapSmoothIter (I := I) g₀ 2 2 p Φ) W
         +

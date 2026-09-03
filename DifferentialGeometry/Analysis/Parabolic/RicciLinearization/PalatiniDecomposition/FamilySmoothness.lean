@@ -101,7 +101,7 @@ lemma not_isFramePairPartner_self (q : Fin 4 → Equiv.Perm (Fin 4)) :
   rw [Equiv.swap_apply_left, Equiv.Perm.one_apply] at h1
   exact absurd h1 (by decide)
 
-def deTurckLieCovariantDerivativeArmField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+def deTurckLieCovariantDerivativeTermField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
@@ -112,13 +112,13 @@ def deTurckLieCovariantDerivativeArmField (g₀ g₁ g_bg : SmoothRiemannianMetr
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem deTurckLieCovariantDerivativeArmField_toSection
+@[simp] theorem deTurckLieCovariantDerivativeTermField_toSection
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
-    (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
+    (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg x)) := rfl
 
-def deTurckLieEndoArmField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+def deTurckLieEndoTermField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
@@ -130,30 +130,30 @@ def deTurckLieEndoArmField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem deTurckLieEndoArmField_toSection
+@[simp] theorem deTurckLieEndoTermField_toSection
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
-    (deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
+    (deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x)) := rfl
 
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem deTurckLieCoeffField_eq_covDerivArm_add_endoArm
+theorem deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg =
-      deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀ g₁ g_bg
-        + deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg := by
+      deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀ g₁ g_bg
+        + deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g_bg := by
   refine SmoothCcTensor.ext ?_
   refine ContMDiffSection.ext (fun x => ?_)
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    deTurckLieCoeffField_toSection, deTurckLieCovariantDerivativeArmField_toSection,
-    deTurckLieEndoArmField_toSection]
+    deTurckLieCoeffField_toSection, deTurckLieCovariantDerivativeTermField_toSection,
+    deTurckLieEndoTermField_toSection]
   rfl
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-theorem exists_ricciArmOrder0RiemannCoeff_metricPerturbationPath_riemannianFiberNormSq_ballUniform_sq
+theorem exists_ricciOrderZeroRiemannCoeff_metricPerturbationPath_riemannianFiberNormSq_ballUniform_sq
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -166,17 +166,17 @@ theorem exists_ricciArmOrder0RiemannCoeff_metricPerturbationPath_riemannianFiber
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀
+            ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x) ≤ Λ ^ 2 := by
   classical
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_diagonalProductGrid_le
       (I := I) (M := M) g₀ (max_lt hδ₀ one_pos)
   obtain ⟨Csob, hCsob_nn, hCsob⟩ :=
     exists_Csob_convexPerturbation_pointwise_C2_le (I := I) (M := M) (E := E) g₀ a ha_super
   obtain ⟨Kbg, hKbg_nn, hKbg_bd⟩ :=
     exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 2 2
-      (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)
+      (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)
   set F : ℝ := (1 + (Csob * R) ^ 2) ^ 2 with hF_def
   have hF_nn : (0 : ℝ) ≤ F := by positivity
   set cnt : ℝ := ∑ k ∈ Finset.range 3, ∑ n ∈ Finset.range (k + 1),
@@ -311,32 +311,32 @@ theorem exists_ricciArmOrder0RiemannCoeff_metricPerturbationPath_riemannianFiber
       _ = (Finset.Nat.antidiagonalTuple n k).card • F := Finset.sum_const F
       _ = ((Finset.Nat.antidiagonalTuple n k).card : ℝ) * F := nsmul_eq_mul _ _
   have hdiff_le : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-      ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀
+      ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-        - ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) ≤
+        - ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) ≤
       CD 0 * (cnt * F) :=
     le_trans hCD0 (mul_le_mul_of_nonneg_left hgrid_le (hCD_nn 0))
   have hbg_le : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-      ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) ≤ Kbg :=
+      ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) ≤ Kbg :=
     hKbg_bd x
-  have hsplit : (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀
+  have hsplit : (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x =
-      ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀
+      ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-        - ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) +
-      ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) := by
+        - ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) +
+      ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) := by
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
     abel
   have hfin : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-      ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀
+      ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x) ≤
       2 * (CD 0 * (cnt * F)) + 2 * Kbg := by
     rw [hsplit]
     have htri := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 2 x
-      ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀
+      ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-        - ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x)
-      ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x)
+        - ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x)
+      ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x)
     linarith
   rw [Real.sq_sqrt hsum_nn]
   exact hfin
@@ -542,7 +542,7 @@ private lemma toModelEvalCLM_apply (s : ℕ) (x : M) (v : Fin s → E)
     (D : Tensor0SSpace s I x) :
     toModelEvalCLM (I := I) (M := M) s x v D = Tensor0SSpace.toModel (𝕜 := ℝ) D v := rfl
 
-private def pairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
+private def pairEvaluationScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
@@ -559,13 +559,13 @@ private def pairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma pairFeedScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
+private lemma pairEvaluationScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) (p q : TangentSpace I x) :
-    pairFeedScalarCLM (I := I) (M := M) s x G v p q =
+    pairEvaluationScalarCLM (I := I) (M := M) s x G v p q =
       Tensor0SSpace.toModel (𝕜 := ℝ) G
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)) := by
-  rw [pairFeedScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
+  rw [pairEvaluationScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     ContinuousLinearMap.comp_apply, toModelEvalCLM_apply,
     Tensor0SSpace.toModel_apply_model_vector]
   change Tensor0SSpace.eval
@@ -624,20 +624,20 @@ private lemma curvatureDecompositionMonomialBiContrFib_toModel_chartα
             (Fin.cons
               (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g x b x)) v) :
               Fin 4 → E) (σp i)) =
-      pairFeedScalarCLM (I := I) (M := M) 0 x (W x) ![]
+      pairEvaluationScalarCLM (I := I) (M := M) 0 x (W x) ![]
           (smoothOrthoFrame (I := I) g x a x) (smoothOrthoFrame (I := I) g x b x) *
-        pairFeedScalarCLM (I := I) (M := M) 2 x
+        pairEvaluationScalarCLM (I := I) (M := M) 2 x
           (tensorRank4PermuteCLM (I := I) (M := M) x σp G) v
           (smoothOrthoFrame (I := I) g x a x) (smoothOrthoFrame (I := I) g x b x) := by
     intro a b
-    rw [pairFeedScalarCLM_apply, pairFeedScalarCLM_apply, slotPerm4Fib_toModel,
+    rw [pairEvaluationScalarCLM_apply, pairEvaluationScalarCLM_apply, slotPerm4Fib_toModel,
       ContinuousMultilinearMap.domDomCongr_apply]
     rw [← Tensor0SSpace.toModel_apply_tangent]
     congr 2
   rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hsummand a b))]
   rw [double_frame_bilin_trace_chartα (I := I) g α hxbase
-    (pairFeedScalarCLM (I := I) (M := M) 0 x (W x) ![])
-    (pairFeedScalarCLM (I := I) (M := M) 2 x (tensorRank4PermuteCLM (I := I) (M := M) x σp G) v)
+    (pairEvaluationScalarCLM (I := I) (M := M) 0 x (W x) ![])
+    (pairEvaluationScalarCLM (I := I) (M := M) 2 x (tensorRank4PermuteCLM (I := I) (M := M) x σp G) v)
     (fun a => smoothOrthoFrame (I := I) g x a x) hBf_on]
   refine Finset.sum_congr rfl (fun m _ => ?_)
   refine Finset.sum_congr rfl (fun n _ => ?_)
@@ -645,7 +645,7 @@ private lemma curvatureDecompositionMonomialBiContrFib_toModel_chartα
   refine Finset.sum_congr rfl (fun k _ => ?_)
   refine Finset.sum_congr rfl (fun l _ => ?_)
   refine congrArg (fun t => chartInvGramMatrix (I := I) g α x k l * t) ?_
-  rw [pairFeedScalarCLM_apply, pairFeedScalarCLM_apply, slotPerm4Fib_toModel,
+  rw [pairEvaluationScalarCLM_apply, pairEvaluationScalarCLM_apply, slotPerm4Fib_toModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   congr 2
 
@@ -842,7 +842,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
     have hscal := curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContMDiffOn
       (I := I) (M := M) g₀ T hδ hδZ W hW σp Y α σc
     have hscalAt := (hscal p₀ ⟨hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
-    have hreadout : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
+    have hcoordinates : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, curvatureActionMonomialTrace (I := I) (M := M)
             (gfam q.2) W σp q.1 (Y q.1)⟩).2 σc =
           Tensor0SSpace.toModel (curvatureActionMonomialTrace (I := I) (M := M)
@@ -880,8 +880,8 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
       have hqbaseT : q.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
         rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hq.1
       have hqbase : q.1 ∈ e.baseSet := by rw [he]; exact hqbaseT
-      exact hreadout hqbase
-    · exact hreadout hαbase
+      exact hcoordinates hqbase
+    · exact hcoordinates hαbase
   have hcoordVec : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ) ∞
       (fun p : M × ℝ => fun σc : Fin 2 → Fin (Module.finrank ℝ E) =>
@@ -938,14 +938,14 @@ theorem curvatureDecompositionMonomialCoeffField_metricPerturbationPath_jointCon
 
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem riemannPalatiniDecompositionC2Family_threeArmHjoint
+theorem riemannPalatiniDecompositionC2Family_covariantJetJointSmoothness
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ)
     (qA qB : Fin 4 → Equiv.Perm (Fin 4)) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
       (riemannPalatiniDecompositionC2Family (I := I) (M := M) g₀ T hδ hδZ qA qB)
       (δ := δ) (δ' := δ) := by
   classical

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
@@ -29,7 +29,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturba
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieCoefficientApplication
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartReadout
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartComponents
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrderTerm.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.SecondOrderTerm.L2JetBound
@@ -60,15 +60,15 @@ open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
-  linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero
-  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
-  linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
-  linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
-  linearizedRicciArm1CorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
-  linearizedRicci_arm0Field_jointSmooth linearizedRicci_arm1Field_jointSmooth
-  linearizedRicci_arm2FieldLichnerowicz_jointSmooth ricciArmOrder1KoszulCoeff
-  exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
+  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
+  linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero
+  exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
+  linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
+  linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
+  exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
   symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
@@ -99,7 +99,7 @@ private local instance tensorRSModelNormedSpace (r s : ℕ) :
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma threeArmCoeffSum_riemannianFiberNormSq_le (g₀ : SmoothRiemannianMetric I M) {r s : ℕ}
+lemma covariantJetCoeffSum_riemannianFiberNormSq_le (g₀ : SmoothRiemannianMetric I M) {r s : ℕ}
     (R L : SmoothCcTensor g₀ r s) (ΛR ΛL : ℝ) (x : M)
     (hR : riemannianFiberNormSq (I := I) (M := M) g₀ r s x (R.toSection x) ≤ ΛR ^ 2)
     (hL : riemannianFiberNormSq (I := I) (M := M) g₀ r s x (L.toSection x) ≤ ΛL ^ 2) :
@@ -201,7 +201,7 @@ lemma unitModel_add2_apply_tame (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma threeArm_unitModel_operatorFieldApplication_intervalIntegrable_tame
+lemma covariantJet_unitModel_operatorFieldApplication_intervalIntegrable_tame
     (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r 2) (W : SmoothCcTensor g₀ 0 r)
     {δ δ' : ℝ} (hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
@@ -254,15 +254,15 @@ theorem uniform_C0_bound_concrete_lichnerowicz_coeffFields
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 → ∀ x : M,
           Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤ ΛC ∧
+            ((linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤ ΛC ∧
           Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
-            ((linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤ ΛC ∧
+            ((linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤ ΛC ∧
           Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-            ((linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤ ΛC :=
-  Analysis.Parabolic.TensorSpectral.ricciArmFields_concrete_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform
+            ((linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤ ΛC :=
+  Analysis.Parabolic.TensorSpectral.ricciCovariantTermFields_concrete_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform
     (I := I) (M := M) g₀ a ha_super hR hδ₀
 
-private theorem linearizedRicciArm0BaseCoeff_perOrder_riemannianFiberNormSq_ballUniform
+private theorem linearizedRicciOrderZeroBaseCoeff_perOrder_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -276,8 +276,8 @@ private theorem linearizedRicciArm0BaseCoeff_perOrder_riemannianFiberNormSq_ball
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i :=
-  linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform
+              (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i :=
+  linearizedRicciOrderZeroBaseCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform
     (I := I) (M := M) g₀ a ha_super hR hδ₀
 
 private lemma sq_le_two_of_sq_le_add_sq
@@ -300,7 +300,7 @@ private lemma combine_three_component_bounds
       6 * (cBound₁ + cBound₂) := by
   linarith
 
-private theorem linearizedRicciArm0CorrField_perOrder_riemannianFiberNormSq_ballUniform
+private theorem linearizedRicciOrderZeroCorrField_perOrder_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -314,24 +314,24 @@ private theorem linearizedRicciArm0CorrField_perOrder_riemannianFiberNormSq_ball
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (linearizedRicciArm0CorrField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
+              (linearizedRicciOrderZeroCorrField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
   classical
   obtain ⟨KR, hKR_nn, hKR⟩ :=
-    ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_ballUniform
+    ricciOrderZeroRiemannCoeff_backgroundDifference_perOrder_l2_ballUniform
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨KC, hKC_nn, hKC⟩ :=
-    ricciArmOrder0CurvCoeff_backgroundDifference_perOrder_l2_ballUniform
+    ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_ballUniform
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨fun i =>
     3 * (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.corrFieldTameJetBound
         (I := I) (M := M) g₀ a R δ₀ i * (1 + 2 * ((a : ℝ) + 2) * R ^ 2)) +
       27 / 2 * (KR i +
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
             (I := I) (M := M) g₀ g₀)‖ ^ 2) +
       6 * (KC i +
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
             (I := I) (M := M) g₀ g₀)‖ ^ 2),
     fun i => ?_, ?_⟩
   · have h1 :=
@@ -342,11 +342,11 @@ private theorem linearizedRicciArm0CorrField_perOrder_riemannianFiberNormSq_ball
     have h4 := hKC_nn i
     have h5 : (0 : ℝ) ≤
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
             (I := I) (M := M) g₀ g₀)‖ ^ 2 := sq_nonneg _
     have h6 : (0 : ℝ) ≤
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
             (I := I) (M := M) g₀ g₀)‖ ^ 2 := sq_nonneg _
     have h7 := mul_nonneg h1 h2
     linarith
@@ -418,7 +418,7 @@ private theorem linearizedRicciArm0CorrField_perOrder_riemannianFiberNormSq_ball
       (DifferentialGeometry.PDE.DeTurck.RicciLinearization.convexPerturbation
         (I := I) g₀ T T' s) hδP_le hδP htie hPball i hi
     obtain ⟨_, _, hbound, _⟩ :=
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_arm0_arm1_corrField_data
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
         (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
     have hjet := ((hbound ha_super hR hδ₀ hδ_le hδ'_le hTball hT'ball).2 i hi s hs).1
     have hwin : ∑ j ∈ Finset.range (i + 2),
@@ -457,19 +457,19 @@ private theorem linearizedRicciArm0CorrField_perOrder_riemannianFiberNormSq_ball
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.corrFieldTameJetBound_nonneg
         (I := I) (M := M) g₀ a R δ₀ i
     have hZraw := le_trans hjet (mul_le_mul_of_nonneg_left hone hK_nn)
-    rw [show linearizedRicciArm0CorrField (I := I) g₀ T T' hδ hδ' =
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_arm0_arm1_corrField_data
+    rw [show linearizedRicciOrderZeroCorrField (I := I) g₀ T T' hδ hδ' =
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
           (I := I) g₀ T T' hδ hδ').choose from rfl]
     set Cf :=
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_arm0_arm1_corrField_data
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
         (I := I) g₀ T T' hδ hδ').choose s with hCf_def
-    set Rmf := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+    set Rmf := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
         (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hRmf_def
-    set Cvf := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+    set Cvf := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
         (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hCvf_def
-    set Rm0 := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+    set Rm0 := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
         (I := I) (M := M) g₀ g₀ with hRm0_def
-    set Cv0 := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+    set Cv0 := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
         (I := I) (M := M) g₀ g₀ with hCv0_def
     have hRm_split : iteratedCovGrad (I := I) g₀ 2 2 i Rmf =
         iteratedCovGrad (I := I) g₀ 2 2 i (Rmf - Rm0) +
@@ -534,7 +534,7 @@ private theorem linearizedRicciArm0CorrField_perOrder_riemannianFiberNormSq_ball
       exact sq_le_weighted_three_of_sq_le hx2
     exact combine_three_component_bounds hxsq hZraw hRm_sq hCv_sq
 
-private theorem linearizedRicciArm1BaseCoeff_perOrder_riemannianFiberNormSq_ballUniform
+private theorem linearizedRicciFirstOrderBaseCoeff_perOrder_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -548,11 +548,11 @@ private theorem linearizedRicciArm1BaseCoeff_perOrder_riemannianFiberNormSq_ball
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-              (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i :=
-  linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform
+              (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i :=
+  linearizedRicciFirstOrderBaseCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform
     (I := I) (M := M) g₀ a ha_super hR hδ₀
 
-private theorem linearizedRicciArm1CorrField_perOrder_riemannianFiberNormSq_ballUniform
+private theorem linearizedRicciFirstOrderCorrField_perOrder_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -566,7 +566,7 @@ private theorem linearizedRicciArm1CorrField_perOrder_riemannianFiberNormSq_ball
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-              (linearizedRicciArm1CorrField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
+              (linearizedRicciFirstOrderCorrField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
   classical
   refine ⟨fun i =>
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.corrFieldTameJetBound
@@ -578,7 +578,7 @@ private theorem linearizedRicciArm1CorrField_perOrder_riemannianFiberNormSq_ball
         (by positivity), ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
   obtain ⟨_, _, hbound, _⟩ :=
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_arm0_arm1_corrField_data
+    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
       (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
   have hjet := ((hbound ha_super hR hδ₀ hδ_le hδ'_le hTball hT'ball).2 i hi s hs).2
   have hwin : ∑ j ∈ Finset.range (i + 2),
@@ -616,8 +616,8 @@ private theorem linearizedRicciArm1CorrField_perOrder_riemannianFiberNormSq_ball
   have hK_nn :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.corrFieldTameJetBound_nonneg
       (I := I) (M := M) g₀ a R δ₀ i
-  rw [show linearizedRicciArm1CorrField (I := I) g₀ T T' hδ hδ' =
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_arm0_arm1_corrField_data
+  rw [show linearizedRicciFirstOrderCorrField (I := I) g₀ T T' hδ hδ' =
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
         (I := I) g₀ T T' hδ hδ').choose_spec.choose from rfl]
   exact le_trans hjet (mul_le_mul_of_nonneg_left hone hK_nn)
 
@@ -742,7 +742,7 @@ lemma normSq_iteratedCovGrad_sub_smul_le_tame
     abs_nonneg c, sq_nonneg (Real.sqrt PA - |c| * Real.sqrt PB),
     mul_nonneg (abs_nonneg c) (mul_nonneg (Real.sqrt_nonneg PA) (Real.sqrt_nonneg PB))]
 
-private theorem linearizedRicciArm_concreteField_perOrder_riemannianFiberNormSq_ballUniform
+private theorem linearizedRicciCovariantTerm_concreteField_perOrder_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -756,20 +756,20 @@ private theorem linearizedRicciArm_concreteField_perOrder_riemannianFiberNormSq_
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i ∧
+              (linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i ∧
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-              (linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i ∧
+              (linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i ∧
           ‖iteratedCovGrad (I := I) g₀ 4 2 i
-              (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
+              (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
   classical
   obtain ⟨P0b, hP0b_nn, hP0b⟩ :=
-    linearizedRicciArm0BaseCoeff_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
+    linearizedRicciOrderZeroBaseCoeff_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨P0c, hP0c_nn, hP0c⟩ :=
-    linearizedRicciArm0CorrField_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
+    linearizedRicciOrderZeroCorrField_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨P1b, hP1b_nn, hP1b⟩ :=
-    linearizedRicciArm1BaseCoeff_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
+    linearizedRicciFirstOrderBaseCoeff_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨P1c, hP1c_nn, hP1c⟩ :=
-    linearizedRicciArm1CorrField_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
+    linearizedRicciFirstOrderCorrField_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨Pp, hPp_nn, hPp⟩ :=
     ricciDeTurckPrincipalCoefficient_metricPerturbationPath_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨Ph, hPh_nn, hPh⟩ :=
@@ -787,24 +787,24 @@ private theorem linearizedRicciArm_concreteField_perOrder_riemannianFiberNormSq_
     have hp := hPp T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i hi s hs
     have hh := hPh T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i hi s hs
     refine ⟨?_, ?_, ?_⟩
-    · rw [linearizedRicciArm0Field]
+    · rw [linearizedRicciOrderZeroField]
       exact (normSq_iteratedCovGrad_add_le_tame (I := I) g₀ 2 2 i
-        (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s)
-        (linearizedRicciArm0CorrField (I := I) g₀ T T' hδ hδ' s) (P0b i) (P0c i) hb0 hc0).trans
+        (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s)
+        (linearizedRicciOrderZeroCorrField (I := I) g₀ T T' hδ hδ' s) (P0b i) (P0c i) hb0 hc0).trans
         (le_max_left _ _)
-    · rw [linearizedRicciArm1Field]
+    · rw [linearizedRicciFirstOrderField]
       refine (normSq_iteratedCovGrad_add_le_tame (I := I) g₀ 3 2 i
-        (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s)
-        (linearizedRicciArm1CorrField (I := I) g₀ T T' hδ hδ' s) (P1b i) (P1c i) hb1 hc1).trans ?_
+        (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s)
+        (linearizedRicciFirstOrderCorrField (I := I) g₀ T T' hδ hδ' s) (P1b i) (P1c i) hb1 hc1).trans ?_
       exact le_max_of_le_right (le_max_left _ _)
-    · rw [linearizedRicciArm2FieldLichnerowicz]
+    · rw [linearizedRicciSecondOrderFieldLichnerowicz]
       refine (normSq_iteratedCovGrad_sub_smul_le_tame (I := I) g₀ 4 2 i
         (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
         (traceHessianCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
         (1 / 2 : ℝ) (Pp i) (Ph i) hp hh).trans ?_
       exact le_max_of_le_right (le_max_right _ _)
 
-theorem linearizedRicciArm_concreteField_jetL2_ballUniform
+theorem linearizedRicciCovariantTerm_concreteField_jetL2_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -819,18 +819,18 @@ theorem linearizedRicciArm_concreteField_jetL2_ballUniform
         (∀ s ∈ Set.Icc (0 : ℝ) 1,
           (∑ i ∈ Finset.range (a + 1),
             ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ' s)‖ ^ 2) ≤ B ^ 2) ∧
+              (linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2) ≤ B ^ 2) ∧
         (∀ s ∈ Set.Icc (0 : ℝ) 1,
           (∑ i ∈ Finset.range (a + 1),
             ‖iteratedCovGrad (I := I) g₀ 3 2 i
-              (linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ' s)‖ ^ 2) ≤ B ^ 2) ∧
+              (linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2) ≤ B ^ 2) ∧
         (∀ s ∈ Set.Icc (0 : ℝ) 1,
           (∑ i ∈ Finset.range (a + 1),
             ‖iteratedCovGrad (I := I) g₀ 4 2 i
-              (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)‖ ^ 2) ≤ B ^ 2) := by
+              (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)‖ ^ 2) ≤ B ^ 2) := by
   classical
   obtain ⟨P, hP_nn, hP⟩ :=
-    linearizedRicciArm_concreteField_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
+    linearizedRicciCovariantTerm_concreteField_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   set Psum : ℝ := ∑ i ∈ Finset.range (a + 1), P i with hPsum_def
   have hPsum_nn : 0 ≤ Psum := Finset.sum_nonneg (fun i _ => hP_nn i)
   refine ⟨Real.sqrt Psum, Real.sqrt_nonneg _, ?_⟩
@@ -849,15 +849,15 @@ theorem linearizedRicciArm_concreteField_jetL2_ballUniform
       _ = Psum := hPsum_def.symm
   refine ⟨?_, ?_, ?_⟩
   · intro s hs
-    exact hkey 2 (linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ') s
+    exact hkey 2 (linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ') s
       (fun i hi => (hP T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i
         (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)) s hs).1)
   · intro s hs
-    exact hkey 3 (linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ') s
+    exact hkey 3 (linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ') s
       (fun i hi => (hP T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i
         (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)) s hs).2.1)
   · intro s hs
-    exact hkey 4 (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ') s
+    exact hkey 4 (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ') s
       (fun i hi => (hP T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i
         (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)) s hs).2.2)
 
@@ -880,17 +880,17 @@ private theorem uniform_riemannianFiberNormSq_bound_lichnerowicz_coeffFields
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∃ (Φ₀ : ℝ → SmoothCcTensor g₀ 2 2) (Φ₁ : ℝ → SmoothCcTensor g₀ 3 2)
           (Φ₂ : ℝ → SmoothCcTensor g₀ 4 2),
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Φ₀
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Φ₀
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Φ₁
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3 Φ₁
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ₂
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Φ₂
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 2 Φ₀
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 2 Φ₀
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 3 Φ₁
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 3 Φ₁
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 4 Φ₂
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 4 Φ₂
             (δ := δ) (δ' := δ') ∧
           (∀ (s : ℝ), s ∈ Set.Ioo (0 : ℝ) 1 →
             ∀ (x : M) (v : Fin 2 → TangentSpace I x),
@@ -924,32 +924,32 @@ private theorem uniform_riemannianFiberNormSq_bound_lichnerowicz_coeffFields
   obtain ⟨ΛC, hΛC_nn, hC0⟩ :=
     uniform_C0_bound_concrete_lichnerowicz_coeffFields (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨B, hB_nn, hJet⟩ :=
-    linearizedRicciArm_concreteField_jetL2_ballUniform (I := I) g₀ a ha_super hR hδ₀
+    linearizedRicciCovariantTerm_concreteField_jetL2_ballUniform (I := I) g₀ a ha_super hR hδ₀
   refine ⟨ΛC, B, hΛC_nn, hB_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTsymm hT'symm hTball hT'ball
-  set Φ₀ : ℝ → SmoothCcTensor g₀ 2 2 := linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ'
-  set Φ₁ : ℝ → SmoothCcTensor g₀ 3 2 := linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ'
+  set Φ₀ : ℝ → SmoothCcTensor g₀ 2 2 := linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ'
+  set Φ₁ : ℝ → SmoothCcTensor g₀ 3 2 := linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ'
   set Φ₂ : ℝ → SmoothCcTensor g₀ 4 2 :=
-    linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ'
+    linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ'
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le hδ₀
   have hδ'_lt : δ' < 1 := lt_of_le_of_lt hδ'_le hδ₀
   obtain ⟨hJet0, hJet1, hJet2⟩ := hJet T T' hδ_le hδ hδ'_le hδ' hTball hT'ball
   refine ⟨Φ₀, Φ₁, Φ₂, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · exact linearizedRicci_arm0Field_jointSmooth (I := I) g₀ T T' hδ hδ'
-  · exact linearizedRicci_arm1Field_jointSmooth (I := I) g₀ T T' hδ hδ'
-  · exact linearizedRicci_arm2FieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ'
+  · exact linearizedRicci_orderZeroField_jointSmooth (I := I) g₀ T T' hδ hδ'
+  · exact linearizedRicci_firstOrderField_jointSmooth (I := I) g₀ T T' hδ hδ'
+  · exact linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ'
   · exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 2 2 Φ₀
       (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-      (linearizedRicci_arm0Field_jointSmooth (I := I) g₀ T T' hδ hδ')
+      (linearizedRicci_orderZeroField_jointSmooth (I := I) g₀ T T' hδ hδ')
   · exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 3 2 Φ₁
       (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-      (linearizedRicci_arm1Field_jointSmooth (I := I) g₀ T T' hδ hδ')
+      (linearizedRicci_firstOrderField_jointSmooth (I := I) g₀ T T' hδ hδ')
   · exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 4 2 Φ₂
       (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-      (linearizedRicci_arm2FieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ')
+      (linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ')
   · intro s hs x v
     obtain ⟨_, _, _, hident, _, _⟩ :=
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_arm0_arm1_corrField_data
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
         (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
     exact hident hTsymm hT'symm s hs x v hδ_lt hδ'_lt
   · intro s hs x
@@ -965,7 +965,7 @@ private theorem uniform_riemannianFiberNormSq_bound_lichnerowicz_coeffFields
   · exact hJet1
   · exact hJet2
 
-private theorem ricciArm_threeArm_coeffFields_uniformC0
+private theorem ricciCovariantTerm_covariantJet_coeffFields_uniformC0
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -984,17 +984,17 @@ private theorem ricciArm_threeArm_coeffFields_uniformC0
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∃ (Φ₀ : ℝ → SmoothCcTensor g₀ 2 2) (Φ₁ : ℝ → SmoothCcTensor g₀ 3 2)
           (Φ₂ : ℝ → SmoothCcTensor g₀ 4 2),
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Φ₀
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Φ₀
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Φ₁
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3 Φ₁
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ₂
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Φ₂
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 2 Φ₀
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 2 Φ₀
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 3 Φ₁
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 3 Φ₁
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 4 Φ₂
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 4 Φ₂
             (δ := δ) (δ' := δ') ∧
           (∀ (s : ℝ), s ∈ Set.Ioo (0 : ℝ) 1 →
             ∀ (x : M) (v : Fin 2 → TangentSpace I x),
@@ -1026,7 +1026,7 @@ private theorem ricciArm_threeArm_coeffFields_uniformC0
               2) := by
   exact uniform_riemannianFiberNormSq_bound_lichnerowicz_coeffFields (I := I) (M := M) g₀ a ha_super hR hδ₀
 
-private theorem ricciArm_threeArm_coeffFields_C0_bound
+private theorem ricciCovariantTerm_covariantJet_coeffFields_C0_bound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1045,17 +1045,17 @@ private theorem ricciArm_threeArm_coeffFields_C0_bound
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∃ (Φ₀ : ℝ → SmoothCcTensor g₀ 2 2) (Φ₁ : ℝ → SmoothCcTensor g₀ 3 2)
           (Φ₂ : ℝ → SmoothCcTensor g₀ 4 2),
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Φ₀
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Φ₀
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Φ₁
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3 Φ₁
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ₂
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Φ₂
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 2 Φ₀
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 2 Φ₀
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 3 Φ₁
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 3 Φ₁
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 4 Φ₂
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 4 Φ₂
             (δ := δ) (δ' := δ') ∧
           (∀ (s : ℝ), s ∈ Set.Ioo (0 : ℝ) 1 →
             ∀ (x : M) (v : Fin 2 → TangentSpace I x),
@@ -1085,9 +1085,9 @@ private theorem ricciArm_threeArm_coeffFields_C0_bound
           (∀ s ∈ Set.Icc (0 : ℝ) 1,
             (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i (Φ₂ s)‖ ^ 2) ≤ B ^
               2) := by
-  exact ricciArm_threeArm_coeffFields_uniformC0 (I := I) (M := M) g₀ a ha_super hR hδ₀
+  exact ricciCovariantTerm_covariantJet_coeffFields_uniformC0 (I := I) (M := M) g₀ a ha_super hR hδ₀
 
-theorem exists_ricciArm_threeArm_coeffFields_ballUniform
+theorem exists_ricciCovariantTerm_covariantJet_coeffFields_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1106,17 +1106,17 @@ theorem exists_ricciArm_threeArm_coeffFields_ballUniform
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∃ (Φ₀ : ℝ → SmoothCcTensor g₀ 2 2) (Φ₁ : ℝ → SmoothCcTensor g₀ 3 2)
           (Φ₂ : ℝ → SmoothCcTensor g₀ 4 2),
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Φ₀
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Φ₀
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Φ₁
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3 Φ₁
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ₂
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Φ₂
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 2 Φ₀
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 2 Φ₀
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 3 Φ₁
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 3 Φ₁
             (δ := δ) (δ' := δ') ∧
-          linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 4 Φ₂
+          linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 4 Φ₂
             (δ := δ) (δ' := δ') ∧
           (∀ (s : ℝ), s ∈ Set.Ioo (0 : ℝ) 1 →
             ∀ (x : M) (v : Fin 2 → TangentSpace I x),
@@ -1145,9 +1145,9 @@ theorem exists_ricciArm_threeArm_coeffFields_ballUniform
             (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 3 2 i (Φ₁ s)‖ ^ 2) ≤ B ^ 2) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1,
             (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i (Φ₂ s)‖ ^ 2) ≤ B ^ 2) :=
-  ricciArm_threeArm_coeffFields_C0_bound (I := I) g₀ a ha_super hR hδ₀
+  ricciCovariantTerm_covariantJet_coeffFields_C0_bound (I := I) g₀ a ha_super hR hδ₀
 
-private theorem exists_ricciArmCoeff_ballUniform_C0_sup
+private theorem exists_ricciCovariantTermCoeff_ballUniform_C0_sup
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1187,7 +1187,7 @@ private theorem exists_ricciArmCoeff_ballUniform_C0_sup
             2) := by
   classical
   obtain ⟨ΛR, B, hΛR_nn, hB_nn, hbrick⟩ :=
-    exists_ricciArm_threeArm_coeffFields_ballUniform (I := I) g₀ a ha_super hR hδ₀
+    exists_ricciCovariantTerm_covariantJet_coeffFields_ballUniform (I := I) g₀ a ha_super hR hδ₀
   refine ⟨2 * ΛR, by positivity, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTsymm hT'symm hTball hT'ball
   obtain ⟨Φ₀, Φ₁, Φ₂, hj0, hj1, hj2, hc0, hc1, hc2, hid, hb0, hb1, hb2, _, _, _⟩ :=
@@ -1251,17 +1251,17 @@ private theorem exists_ricciArmCoeff_ballUniform_C0_sup
           (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
             (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Φ₀ s) W₀) x v)
           MeasureTheory.volume 0 1 :=
-        threeArm_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 2 Φ₀ W₀ hSI hc0 x v
+        covariantJet_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 2 Φ₀ W₀ hSI hc0 x v
       have hI1 : IntervalIntegrable
           (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
             (operatorFieldApply (I := I) (M := M) g₀ 3 2 (Φ₁ s) W₁) x v)
           MeasureTheory.volume 0 1 :=
-        threeArm_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 3 Φ₁ W₁ hSI hc1 x v
+        covariantJet_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 3 Φ₁ W₁ hSI hc1 x v
       have hI2 : IntervalIntegrable
           (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
             (operatorFieldApply (I := I) (M := M) g₀ 4 2 (Φ₂ s) W₂) x v)
           MeasureTheory.volume 0 1 :=
-        threeArm_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 4 Φ₂ W₂ hSI hc2 x v
+        covariantJet_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 4 Φ₂ W₂ hSI hc2 x v
       rw [intervalIntegral.integral_add (hI0.add hI1) hI2,
         intervalIntegral.integral_add hI0 hI1]
       have he0 := pathIntegralCoeffField_operatorFieldApplication_eq (I := I) (M := M) g₀ 2 2 Φ₀ W₀
@@ -1316,7 +1316,7 @@ private theorem exists_ricciArmCoeff_ballUniform_C0_sup
     nlinarith [hPbound, sq_nonneg ΛR, riemannianFiberNormSq_nonneg
       (I := I) (M := M) g₀ 4 2 x (P₂.toSection x)]
 
-theorem deTurckRicciArm_operatorFieldApplication_graded_ballUniform
+theorem deTurckRicciCovariantTerm_operatorFieldApplication_graded_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1355,7 +1355,7 @@ theorem deTurckRicciArm_operatorFieldApplication_graded_ballUniform
             2) := by
   classical
   obtain ⟨ΛR, hΛR_nn, hsup⟩ :=
-    exists_ricciArmCoeff_ballUniform_C0_sup (I := I) g₀ a ha_super hR hδ₀
+    exists_ricciCovariantTermCoeff_ballUniform_C0_sup (I := I) g₀ a ha_super hR hδ₀
   refine ⟨ΛR, hΛR_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTsymm hT'symm hTball hT'ball
   obtain ⟨R₀, R₁, R₂, hval, hR₀, hR₁, hR₂⟩ :=

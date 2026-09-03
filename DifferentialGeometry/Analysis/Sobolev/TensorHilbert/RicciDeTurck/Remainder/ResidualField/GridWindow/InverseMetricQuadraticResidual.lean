@@ -66,14 +66,14 @@ section helpers
 
 variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
-private def gInvQuadDecompositionArm : SmoothCcTensor g₀ 1 2 :=
+private def gInvQuadDecompositionTerm : SmoothCcTensor g₀ 1 2 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 1 4 2 (cometricDoubleTraceField (I := I) g₀ 2)
     (slotExtend (I := I) (M := M) g₀ 0 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))
 
 private def gInvQuadDecompositionWeight : SmoothCcTensor g₀ 2 1 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 1 (cometricDoubleTraceField (I := I) g₀ 1)
     (reindexCoeffGen (I := I) (M := M) g₀ 2 3
-      (slotExtend (I := I) (M := M) g₀ 1 2 (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁))
+      (slotExtend (I := I) (M := M) g₀ 1 2 (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁))
       (Equiv.swap (0 : Fin 2) 1))
 
 section NormedMetricFrameHelpers
@@ -399,10 +399,10 @@ private lemma slotExtend_connectionDifferenceLowered_toModel (x : M)
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma gInvQuadDecompositionArm_toModel (x : M) (om : Tensor0SSpace 1 I x) (m : Fin 2 → E) :
+private lemma gInvQuadDecompositionTerm_toModel (x : M) (om : Tensor0SSpace 1 I x) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁).toSection x) om) m =
+          (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁).toSection x) om) m =
       ∑ c : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel om
             ![tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -414,7 +414,7 @@ private lemma gInvQuadDecompositionArm_toModel (x : M) (om : Tensor0SSpace 1 I x
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1)) := by
   have h0 : Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁).toSection x) om) m =
+        (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁).toSection x) om) m =
       Tensor0SSpace.toModel
         (cometricDoubleTraceFib (I := I) g₀ 2 x
           ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
@@ -457,27 +457,27 @@ private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I
           (reindexCoeffFibGen (I := I) 2 3 (Equiv.swap (0 : Fin 2) 1) x
             (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
               (slotExtend (I := I) (M := M) g₀ 1 2
-                (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)).toSection x) D)) m := rfl
+                (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)).toSection x) D)) m := rfl
   rw [h0]
   rw [cometricDoubleTraceFib_toModel_center (I := I) (M := M) g₀ 1 x
     (reindexCoeffFibGen (I := I) 2 3 (Equiv.swap (0 : Fin 2) 1) x
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         (slotExtend (I := I) (M := M) g₀ 1 2
-          (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)).toSection x) D) m]
+          (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)).toSection x) D) m]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [reindexCoeffFibGen_apply (I := I) 2 3 (Equiv.swap (0 : Fin 2) 1) x
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
       (slotExtend (I := I) (M := M) g₀ 1 2
-        (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)).toSection x) D]
+        (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)).toSection x) D]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
       (slotExtend (I := I) (M := M) g₀ 1 2
-        (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)).toSection x) =
+        (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)).toSection x) =
       slotExtendPointwise (I := I) (M := M) 1 2 x
         (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁).toSection x) from rfl]
+          (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁).toSection x) from rfl]
   rw [slotExtendFib_apply_eval (I := I) (M := M) 1 2 x
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁).toSection x)
+      (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁).toSection x)
     (Tensor0SSpace.ofModel
       (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
         (Tensor0SSpace.toModel D)))
@@ -486,7 +486,7 @@ private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I
     (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
       (smoothOrthoFrame (I := I) g₀ x a x)) m)]
   simp only [ContinuousLinearEquiv.symm_apply_apply]
-  rw [gInvQuadDecompositionArm_toModel (I := I) (M := M) g₀ g₁ x
+  rw [gInvQuadDecompositionTerm_toModel (I := I) (M := M) g₀ g₁ x
     (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
       (Tensor0SSpace.ofModel
         (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
@@ -513,7 +513,7 @@ omit [I.Boundaryless] in
 private theorem gInvDiffQuadResidualField_eq_decomposition :
     gInvDiffQuadResidualField (I := I) (M := M) g₀ g₁ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 2
-        (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)
+        (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)
         (gInvQuadDecompositionWeight (I := I) (M := M) g₀ g₁) := by
   classical
   apply SmoothCcTensor.ext
@@ -548,7 +548,7 @@ private theorem gInvDiffQuadResidualField_eq_decomposition :
   have hRHS : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 2
-          (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)
+          (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)
           (gInvQuadDecompositionWeight (I := I) (M := M) g₀ g₁)).toSection x) D) v =
       ∑ e : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         ∑ q : Fin (Module.finrank ℝ E),
@@ -567,15 +567,15 @@ private theorem gInvDiffQuadResidualField_eq_decomposition :
     have hr0 : Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 2
-            (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)
+            (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)
             (gInvQuadDecompositionWeight (I := I) (M := M) g₀ g₁)).toSection x) D) v =
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁).toSection x)
+            (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁).toSection x)
             ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from
               (gInvQuadDecompositionWeight (I := I) (M := M) g₀ g₁).toSection x) D)) v := rfl
     rw [hr0]
-    rw [gInvQuadDecompositionArm_toModel (I := I) (M := M) g₀ g₁ x
+    rw [gInvQuadDecompositionTerm_toModel (I := I) (M := M) g₀ g₁ x
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from
         (gInvQuadDecompositionWeight (I := I) (M := M) g₀ g₁).toSection x) D) v]
     refine Finset.sum_congr rfl fun e _ => ?_
@@ -677,7 +677,7 @@ private theorem gInvDiffQuadResidualField_eq_decomposition :
     _ = Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 2
-            (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)
+            (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)
             (gInvQuadDecompositionWeight (I := I) (M := M) g₀ g₁)).toSection x) D) v := hRHS.symm
 
 private lemma sum_range_mono_of_nonneg (a : ℕ → ℝ) (ha : ∀ j, 0 ≤ a j)
@@ -799,10 +799,10 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connec
       (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) w x
     rw [riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLowered_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ w x] at h
     exact h
-  have hArm : ∀ k : ℕ,
+  have hTerm : ∀ k : ℕ,
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + k) x
           ((iteratedCovGrad (I := I) g₀ 1 2 k
-            (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)).toSection x) ≤
+            (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)).toSection x) ≤
         C1 k * ∑ w ∈ Finset.range (k + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + w) x
             ((iteratedCovGrad (I := I) g₀ 1 2 w
@@ -867,7 +867,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connec
           ((iteratedCovGrad (I := I) g₀ 2 3 w
             (reindexCoeffGen (I := I) (M := M) g₀ 2 3
               (slotExtend (I := I) (M := M) g₀ 1 2
-                (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁))
+                (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁))
               (Equiv.swap (0 : Fin 2) 1))).toSection x) ≤
         (fr * C1 w) * ∑ u ∈ Finset.range (w + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + u) x
@@ -876,12 +876,12 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connec
     intro w
     rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 3
       (slotExtend (I := I) (M := M) g₀ 1 2
-        (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁))
+        (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁))
       (Equiv.swap (0 : Fin 2) 1) w x]
     refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 2
-      (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁) w x) ?_
+      (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁) w x) ?_
     rw [mul_assoc]
-    exact mul_le_mul_of_nonneg_left (hArm w) hfr_nn
+    exact mul_le_mul_of_nonneg_left (hTerm w) hfr_nn
   have hW : ∀ l : ℕ,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (1 + l) x
           ((iteratedCovGrad (I := I) g₀ 2 1 l
@@ -897,7 +897,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connec
       (M := M) g₀ l 2 3 1 (cometricDoubleTraceField (I := I) g₀ 1)
       (reindexCoeffGen (I := I) (M := M) g₀ 2 3
         (slotExtend (I := I) (M := M) g₀ 1 2
-          (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁))
+          (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁))
         (Equiv.swap (0 : Fin 2) 1)) x) ?_
     calc diagonalGridGrowthFactor (E := E) l *
           ∑ u ∈ Finset.range (l + 1),
@@ -909,7 +909,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connec
                   ((iteratedCovGrad (I := I) g₀ 2 3 w
                     (reindexCoeffGen (I := I) (M := M) g₀ 2 3
                       (slotExtend (I := I) (M := M) g₀ 1 2
-                        (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁))
+                        (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁))
                       (Equiv.swap (0 : Fin 2) 1))).toSection x)
         ≤ diagonalGridGrowthFactor (E := E) l *
             ∑ u ∈ Finset.range (l + 1), Kd1 u *
@@ -928,7 +928,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connec
                 ((iteratedCovGrad (I := I) g₀ 2 3 w
                   (reindexCoeffGen (I := I) (M := M) g₀ 2 3
                     (slotExtend (I := I) (M := M) g₀ 1 2
-                      (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁))
+                      (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁))
                     (Equiv.swap (0 : Fin 2) 1))).toSection x)
               ≤ ∑ w ∈ Finset.range (l + 1 - u),
                   (fr * C1 w) * ∑ v ∈ Finset.range (l + 1),
@@ -973,13 +973,13 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connec
   refine le_trans
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I)
-    (M := M) g₀ i 2 1 2 (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)
+    (M := M) g₀ i 2 1 2 (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)
     (gInvQuadDecompositionWeight (I := I) (M := M) g₀ g₁) x) ?_
   calc diagonalGridGrowthFactor (E := E) i *
         ∑ k ∈ Finset.range (i + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + k) x
               ((iteratedCovGrad (I := I) g₀ 1 2 k
-                (gInvQuadDecompositionArm (I := I) (M := M) g₀ g₁)).toSection x) *
+                (gInvQuadDecompositionTerm (I := I) (M := M) g₀ g₁)).toSection x) *
             ∑ l ∈ Finset.range (i + 1 - k),
               riemannianFiberNormSq (I := I) (M := M) g₀ 2 (1 + l) x
                 ((iteratedCovGrad (I := I) g₀ 2 1 l
@@ -996,7 +996,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connec
                   ((iteratedCovGrad (I := I) g₀ 1 2 w
                     (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)) := by
         refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun k _ => ?_) (hG_nn i)
-        refine mul_le_mul (hArm k) (Finset.sum_le_sum fun l _ => hW l) ?_ ?_
+        refine mul_le_mul (hTerm k) (Finset.sum_le_sum fun l _ => hW l) ?_ ?_
         · exact Finset.sum_nonneg fun l _ =>
             riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 (1 + l) x _
         · exact mul_nonneg (hC1_nn k) (hT_nn k)

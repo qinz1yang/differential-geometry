@@ -475,7 +475,7 @@ theorem connectionDifferenceAACommBiContrFib_contMDiff (g₀ g₁ : SmoothRieman
     (congrArg TensorRSSpace.ofCLM
       (connectionDifferenceAACommBiContrFib_eq_fixedFrame_on_nbhd (I := I) g₀ g₁ x₀ hy))
 
-def ricciArmOrder0AACommCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
+def ricciOrderZeroAACommCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
@@ -486,9 +486,9 @@ def ricciArmOrder0AACommCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem ricciArmOrder0AACommCoeffField_toSection
+@[simp] theorem ricciOrderZeroAACommCoeffField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
-    (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₁).toSection x =
+    (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₁).toSection x =
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (connectionDifferenceAACommBiContrFib (I := I) g₀ g₁ x)) := rfl
 
@@ -528,12 +528,12 @@ theorem connectionDifferenceAACommBiContrFib_self (g₀ : SmoothRiemannianMetric
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem ricciArmOrder0AACommCoeffField_self (g₀ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀ g₀ = 0 := by
+theorem ricciOrderZeroAACommCoeffField_self (g₀ : SmoothRiemannianMetric I M) :
+    ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀ g₀ = 0 := by
   classical
   refine SmoothCcTensor.ext ?_
   refine ContMDiffSection.ext (fun x => ?_)
-  rw [ricciArmOrder0AACommCoeffField_toSection, connectionDifferenceAACommBiContrFib_self]
+  rw [ricciOrderZeroAACommCoeffField_toSection, connectionDifferenceAACommBiContrFib_self]
   rfl
 
 end TensorSpectral

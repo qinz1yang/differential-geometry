@@ -400,7 +400,7 @@ theorem exists_decompositionKernelContractionMonomialField_secondOrder_tame_boun
           (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g 6 2
             (secondMetricPairTraceOperator (I := I) (M := M) g g1) i i)
           (iteratedCovGrad (I := I) g 2 6 i
-            (rsDomDomCongrSection (I := I) (M := M) g 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g 0 4 2
                 (domDomCongrSection (I := I) g
                   (Equiv.swap (0 : Fin 4) 2 *
@@ -778,13 +778,13 @@ theorem exists_ricciOrderZeroBaseCoefficient_secondOrder_tame_bound
             norm (iteratedCovGrad (I := I) g 0 2 j P) ^ 2) <= A ^ 2 ->
           (∑ i ∈ Finset.range 3,
             norm (iteratedCovGrad (I := I) g 2 2 i
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g g1 -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g g1)) ^ 2) <=
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g g1 -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g g1)) ^ 2) <=
               Ktop * norm (iteratedCovGrad (I := I) g 0 2 4 P) ^ 2 +
                 (B A) ^ 2 := by
   classical
   obtain ⟨Ktop, hKtop, Klow, hKlow, hbase⟩ :=
-    ricciArmOrder0BaseCoeff_summed_l2_radiusFree
+    ricciOrderZeroBaseCoeff_summed_l2_radiusFree
       (I := I) (M := M) g 2 hdelta0_lt
   let B : Real -> Real := fun A =>
     Real.sqrt (Ktop * A ^ 2 + Klow * (1 + A ^ 2))
@@ -822,8 +822,8 @@ theorem exists_ricciOrderZeroBaseCoefficient_secondOrder_tame_bound
   calc
     (∑ i ∈ Finset.range 3,
         norm (iteratedCovGrad (I := I) g 2 2 i
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g g1 -
-            ricciArmOrder0CurvCoeff (I := I) (M := M) g g1)) ^ 2)
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g g1 -
+            ricciOrderZeroCurvCoeff (I := I) (M := M) g g1)) ^ 2)
         <= Ktop * (∑ j ∈ Finset.range 5,
               norm (iteratedCovGrad (I := I) g 0 2 j
                 (ccTensor02Symm (I := I) (M := M) g P)) ^ 2) +

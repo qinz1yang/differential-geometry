@@ -40,7 +40,7 @@ private theorem sumPairLe (f : ℕ → ℝ) (hf : ∀ i, 0 ≤ f i) (a b : ℕ) 
     linarith only [hf a]
   · exact le_of_eq (Finset.sum_pair hab)
 
-private theorem a1Arm0Background (hDim : Module.finrank ℝ E = 3)
+private theorem a1Term0Background (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ C K : ℕ → ℝ, (∀ q, 0 ≤ C q) ∧ (∀ i, 0 ≤ K i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -348,7 +348,7 @@ private theorem a1Arm0Background (hDim : Module.finrank ℝ E = 3)
     (operatorFieldApplicationGdiag_nonneg (E := E) q)) (le_of_eq ?_)
   ring
 
-private theorem a1Arm1Background (hDim : Module.finrank ℝ E = 3)
+private theorem a1Term1Background (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ C K : ℕ → ℝ, (∀ q, 0 ≤ C q) ∧ (∀ i, 0 ≤ K i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -602,9 +602,9 @@ theorem firstOrderAction_perIndex_jet_bound_background (hDim : Module.finrank �
                     ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2))) := by
   classical
   obtain ⟨C0, K0, hC0_nn, hK0_nn, harm0⟩ :=
-    a1Arm0Background (I := I) (M := M) hDim g g_bg
+    a1Term0Background (I := I) (M := M) hDim g g_bg
   obtain ⟨C1, K1, hC1_nn, hK1_nn, harm1⟩ :=
-    a1Arm1Background (I := I) (M := M) hDim g g_bg
+    a1Term1Background (I := I) (M := M) hDim g g_bg
   refine ⟨fun q => 2 * (C0 q + C1 q), K0, K1,
     fun q => by linarith only [hC0_nn q, hC1_nn q], hK0_nn, hK1_nn, ?_⟩
   intro T hT δ hδ0 hδ_le hδg hδZ q

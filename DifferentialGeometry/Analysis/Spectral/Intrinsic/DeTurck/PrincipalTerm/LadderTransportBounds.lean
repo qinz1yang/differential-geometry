@@ -55,7 +55,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
-theorem arm_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ) :
+theorem term_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ u₀ : SmoothCcTensor g₀ 0 2,
       |tensorL2Inner (I := I) (M := M) g₀ 0 2
           (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 n u₀).toFun
@@ -77,10 +77,10 @@ theorem arm_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric I M) (n
       (covGrad (I := I) (M := M) g₀ (2 + 1) (2 + 1)
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
           (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))) with hGf_def
-  obtain ⟨CfL, hCfL_nn, hCfL⟩ := armJet_iteratedCovGrad_iterL_le (I := I) (M := M) g₀ 2 b
-  obtain ⟨CfR, hCfR_nn, hCfR⟩ := armJet_iteratedCovGrad_iterL_le (I := I) (M := M) g₀ 2 a
+  obtain ⟨CfL, hCfL_nn, hCfL⟩ := termJet_iteratedCovGrad_iterL_le (I := I) (M := M) g₀ 2 b
+  obtain ⟨CfR, hCfR_nn, hCfR⟩ := termJet_iteratedCovGrad_iterL_le (I := I) (M := M) g₀ 2 a
   obtain ⟨CfG, hCfG_nn, hCfG⟩ :=
-    armJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ (2 + 1) (2 + 0) Gf
+    termJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ (2 + 1) (2 + 0) Gf
   refine ⟨CfL 0 * (CfR 0 * ∑ q ∈ Finset.range (2 * a + 1), CfG q), ?_, fun u₀ => ?_⟩
   · exact mul_nonneg (hCfL_nn 0)
       (mul_nonneg (hCfR_nn 0) (Finset.sum_nonneg (fun q _ => hCfG_nn q)))
@@ -113,12 +113,12 @@ theorem arm_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric I M) (n
         rw [← hGT_def] at hstep
         refine le_trans hstep ?_
         refine mul_le_mul_of_nonneg_left ?_ (hCfG_nn q)
-        refine le_trans (armJet_jetSum_mono (I := I) (M := M) g₀ (2 + 1)
+        refine le_trans (termJet_jetSum_mono (I := I) (M := M) g₀ (2 + 1)
           (show q + 1 ≤ 2 * a + 1 by omega) (covGrad (I := I) (M := M) g₀ 0 2 u₀)) ?_
-        exact armJet_jetSum_covGrad_le (I := I) (M := M) g₀ 2 (2 * a + 1) u₀
+        exact termJet_jetSum_covGrad_le (I := I) (M := M) g₀ 2 (2 * a + 1) u₀
       refine le_trans (Finset.sum_le_sum hq) ?_
       rw [← Finset.sum_mul]
-    have habs := armJet_abs_pairing_le (I := I) (M := M) g₀ 2
+    have habs := termJet_abs_pairing_le (I := I) (M := M) g₀ 2
       (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 b u₀)
       (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 a GT)
     refine le_trans habs ?_
@@ -139,14 +139,14 @@ theorem arm_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric I M) (n
             ((∑ j ∈ Finset.range (n + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖) *
               (∑ j ∈ Finset.range (n + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖)) := by
           refine mul_le_mul_of_nonneg_left ?_ ?_
-          · exact armJet_jetProduct_le (I := I) (M := M) g₀ n (2 * b + 1) (2 * a + 2)
+          · exact termJet_jetProduct_le (I := I) (M := M) g₀ n (2 * b + 1) (2 * a + 2)
               (by omega) (by omega) (by omega) u₀
           · exact mul_nonneg (hCfL_nn 0)
               (mul_nonneg (hCfR_nn 0) (Finset.sum_nonneg (fun q _ => hCfG_nn q)))
 
 omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
-private theorem armLadder_rawConnLap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private theorem termLadder_rawConnLap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) :
     rawTensorConnLapSmooth (I := I) g r s (A + B) =
       rawTensorConnLapSmooth (I := I) g r s A + rawTensorConnLapSmooth (I := I) g r s B := by
@@ -161,17 +161,17 @@ private theorem armLadder_rawConnLap_add (g : SmoothRiemannianMetric I M) (r s :
 
 omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
-private theorem armLadder_oneMinusConnLapSmooth_add (g : SmoothRiemannianMetric I M)
+private theorem termLadder_oneMinusConnLapSmooth_add (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmooth (I := I) g r s (A + B) =
       oneMinusConnLapSmooth (I := I) g r s A + oneMinusConnLapSmooth (I := I) g r s B := by
   unfold oneMinusConnLapSmooth
-  rw [armLadder_rawConnLap_add (I := I) (M := M) g r s A B]
+  rw [termLadder_rawConnLap_add (I := I) (M := M) g r s A B]
   abel
 
 omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
-private theorem armLadder_iterL_add (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
+private theorem termLadder_iterL_add (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
     (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s j (A + B) =
       oneMinusConnLapSmoothIter (I := I) g r s j A +
@@ -181,10 +181,10 @@ private theorem armLadder_iterL_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
   | succ k ih =>
     rw [oneMinusConnLapSmoothIter_succ, oneMinusConnLapSmoothIter_succ,
       oneMinusConnLapSmoothIter_succ, ih,
-      armLadder_oneMinusConnLapSmooth_add (I := I) (M := M) g r s]
+      termLadder_oneMinusConnLapSmooth_add (I := I) (M := M) g r s]
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
-private theorem armLadder_covGrad_oneMinusConnLapSmooth (g : SmoothRiemannianMetric I M)
+private theorem termLadder_covGrad_oneMinusConnLapSmooth (g : SmoothRiemannianMetric I M)
     (s : ℕ) (S : SmoothCcTensor g 0 s) :
     covGrad (I := I) (M := M) g 0 s (oneMinusConnLapSmooth (I := I) g 0 s S) =
       oneMinusConnLapSmooth (I := I) g 0 (s + 1) (covGrad (I := I) (M := M) g 0 s S) +
@@ -196,14 +196,14 @@ private theorem armLadder_covGrad_oneMinusConnLapSmooth (g : SmoothRiemannianMet
   abel
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem armLadder_iterL_one (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private theorem termLadder_iterL_one (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s 1 S = oneMinusConnLapSmooth (I := I) g r s S := by
   rw [oneMinusConnLapSmoothIter_succ, oneMinusConnLapSmoothIter_zero]
 
 omit [SigmaCompactSpace M] in
 omit [CompactSpace M] in
-theorem armLadder_covGrad_iterL_expansion (g : SmoothRiemannianMetric I M)
+theorem termLadder_covGrad_iterL_expansion (g : SmoothRiemannianMetric I M)
     (s : ℕ) (j : ℕ) :
     ∀ S : SmoothCcTensor g 0 s,
       covGrad (I := I) (M := M) g 0 s (oneMinusConnLapSmoothIter (I := I) g 0 s j S) =
@@ -222,10 +222,10 @@ theorem armLadder_covGrad_iterL_expansion (g : SmoothRiemannianMetric I M)
     have hsplit : oneMinusConnLapSmoothIter (I := I) g 0 s (k + 1) S =
         oneMinusConnLapSmoothIter (I := I) g 0 s k (oneMinusConnLapSmooth (I := I) g 0 s S) := by
       rw [oneMinusConnLapSmoothIter_add (I := I) (M := M) g 0 s k 1 S,
-        armLadder_iterL_one (I := I) (M := M) g 0 s S]
+        termLadder_iterL_one (I := I) (M := M) g 0 s S]
     rw [hsplit, ih (oneMinusConnLapSmooth (I := I) g 0 s S)]
-    rw [armLadder_covGrad_oneMinusConnLapSmooth (I := I) (M := M) g s S]
-    rw [armLadder_iterL_add (I := I) (M := M) g 0 (s + 1) k
+    rw [termLadder_covGrad_oneMinusConnLapSmooth (I := I) (M := M) g s S]
+    rw [termLadder_iterL_add (I := I) (M := M) g 0 (s + 1) k
       (oneMinusConnLapSmooth (I := I) g 0 (s + 1) (covGrad (I := I) (M := M) g 0 s S))
       (pointwiseTensorCurv (I := I) (M := M) g s S)]
     have hL : oneMinusConnLapSmoothIter (I := I) g 0 (s + 1) k
@@ -233,7 +233,7 @@ theorem armLadder_covGrad_iterL_expansion (g : SmoothRiemannianMetric I M)
         oneMinusConnLapSmoothIter (I := I) g 0 (s + 1) (k + 1)
           (covGrad (I := I) (M := M) g 0 s S) := by
       rw [oneMinusConnLapSmoothIter_add (I := I) (M := M) g 0 (s + 1) k 1,
-        armLadder_iterL_one (I := I) (M := M) g 0 (s + 1)]
+        termLadder_iterL_one (I := I) (M := M) g 0 (s + 1)]
     rw [hL]
     have hsum : ∑ i ∈ Finset.range k,
         oneMinusConnLapSmoothIter (I := I) g 0 (s + 1) i
@@ -248,7 +248,7 @@ theorem armLadder_covGrad_iterL_expansion (g : SmoothRiemannianMetric I M)
       rw [Finset.mem_range] at hi
       have hidx : k + 1 - 1 - i = (k - 1 - i) + 1 := by omega
       rw [hidx, oneMinusConnLapSmoothIter_add (I := I) (M := M) g 0 s (k - 1 - i) 1 S,
-        armLadder_iterL_one (I := I) (M := M) g 0 s S]
+        termLadder_iterL_one (I := I) (M := M) g 0 s S]
     rw [hsum]
     rw [Finset.sum_range_succ
       (fun i => oneMinusConnLapSmoothIter (I := I) g 0 (s + 1) i
@@ -257,7 +257,7 @@ theorem armLadder_covGrad_iterL_expansion (g : SmoothRiemannianMetric I M)
     rw [show k + 1 - 1 - k = 0 from by omega, oneMinusConnLapSmoothIter_zero]
     abel
 
-theorem armLadder_pairing_transport (g : SmoothRiemannianMetric I M) (σ a r : ℕ)
+theorem termLadder_pairing_transport (g : SmoothRiemannianMetric I M) (σ a r : ℕ)
     (hr : r ≤ a) (X Y : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ
         (oneMinusConnLapSmoothIter (I := I) g 0 σ a X).toFun Y.toFun =
@@ -274,33 +274,33 @@ theorem armLadder_pairing_transport (g : SmoothRiemannianMetric I M) (σ a r : �
   exact oneMinusConnLapSmoothIter_l2Inner_selfAdjoint (I := I) (M := M) g 0 σ r
     (oneMinusConnLapSmoothIter (I := I) g 0 σ (a - r) X) Y
 
-theorem armLadder_pairing_abs_le_transport (g : SmoothRiemannianMetric I M)
+theorem termLadder_pairing_abs_le_transport (g : SmoothRiemannianMetric I M)
     (σ a r : ℕ) (hr : r ≤ a) (X Y : SmoothCcTensor g 0 σ) :
     |tensorL2Inner (I := I) (M := M) g 0 σ
         (oneMinusConnLapSmoothIter (I := I) g 0 σ a X).toFun Y.toFun| ≤
       ‖oneMinusConnLapSmoothIter (I := I) g 0 σ (a - r) X‖ *
         ‖oneMinusConnLapSmoothIter (I := I) g 0 σ r Y‖ := by
-  rw [armLadder_pairing_transport (I := I) (M := M) g σ a r hr X Y]
-  exact armJet_abs_pairing_le (I := I) (M := M) g σ
+  rw [termLadder_pairing_transport (I := I) (M := M) g σ a r hr X Y]
+  exact termJet_abs_pairing_le (I := I) (M := M) g σ
     (oneMinusConnLapSmoothIter (I := I) g 0 σ (a - r) X)
     (oneMinusConnLapSmoothIter (I := I) g 0 σ r Y)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private theorem armAsm_l2Inner_zero_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
+private theorem termAsm_l2Inner_zero_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ (0 : SmoothCcTensor g 0 σ).toFun Z.toFun = 0 := by
   rw [SmoothCcTensor.toFun_zero]
   exact tensorL2Inner_zero_left (I := I) (M := M) g 0 σ Z.toFun
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private theorem armAsm_l2Inner_zero_right (g : SmoothRiemannianMetric I M) (σ : ℕ)
+private theorem termAsm_l2Inner_zero_right (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ Z.toFun (0 : SmoothCcTensor g 0 σ).toFun = 0 := by
   rw [SmoothCcTensor.toFun_zero]
   exact tensorL2Inner_zero_right (I := I) (M := M) g 0 σ Z.toFun
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem armAsm_l2Inner_add_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
+theorem termAsm_l2Inner_add_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (A B Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ (A + B).toFun Z.toFun =
       tensorL2Inner (I := I) (M := M) g 0 σ A.toFun Z.toFun +
@@ -310,11 +310,11 @@ theorem armAsm_l2Inner_add_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
     tensorL2Inner_sub_left_smoothCc (I := I) (M := M) g 0 σ A (0 - B) Z,
     SmoothCcTensor.toFun_sub,
     tensorL2Inner_sub_left_smoothCc (I := I) (M := M) g 0 σ 0 B Z,
-    armAsm_l2Inner_zero_left (I := I) (M := M) g σ Z]
+    termAsm_l2Inner_zero_left (I := I) (M := M) g σ Z]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem armAsm_l2Inner_add_right (g : SmoothRiemannianMetric I M) (σ : ℕ)
+theorem termAsm_l2Inner_add_right (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (Z A B : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ Z.toFun (A + B).toFun =
       tensorL2Inner (I := I) (M := M) g 0 σ Z.toFun A.toFun +
@@ -324,23 +324,23 @@ theorem armAsm_l2Inner_add_right (g : SmoothRiemannianMetric I M) (σ : ℕ)
     tensorL2Inner_sub_right_smoothCc (I := I) (M := M) g 0 σ Z A (0 - B),
     SmoothCcTensor.toFun_sub,
     tensorL2Inner_sub_right_smoothCc (I := I) (M := M) g 0 σ Z 0 B,
-    armAsm_l2Inner_zero_right (I := I) (M := M) g σ Z]
+    termAsm_l2Inner_zero_right (I := I) (M := M) g σ Z]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem armAsm_l2Inner_sum_left (g : SmoothRiemannianMetric I M) (σ c : ℕ)
+theorem termAsm_l2Inner_sum_left (g : SmoothRiemannianMetric I M) (σ c : ℕ)
     (f : ℕ → SmoothCcTensor g 0 σ) (Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ (∑ i ∈ Finset.range c, f i).toFun Z.toFun =
       ∑ i ∈ Finset.range c, tensorL2Inner (I := I) (M := M) g 0 σ (f i).toFun Z.toFun := by
   induction c with
   | zero =>
     rw [Finset.range_zero, Finset.sum_empty, Finset.sum_empty]
-    exact armAsm_l2Inner_zero_left (I := I) (M := M) g σ Z
+    exact termAsm_l2Inner_zero_left (I := I) (M := M) g σ Z
   | succ d ih =>
     rw [Finset.sum_range_succ, Finset.sum_range_succ,
-      armAsm_l2Inner_add_left (I := I) (M := M) g σ (∑ i ∈ Finset.range d, f i) (f d) Z, ih]
+      termAsm_l2Inner_add_left (I := I) (M := M) g σ (∑ i ∈ Finset.range d, f i) (f d) Z, ih]
 
-theorem armAsm_sum_window_le (P w : ℕ) (φ A B : ℕ → ℝ)
+theorem termAsm_sum_window_le (P w : ℕ) (φ A B : ℕ → ℝ)
     (hφ_nn : ∀ c, 0 ≤ φ c) (hB_nn : ∀ e, 0 ≤ B e)
     (h : ∀ c, c < P → A c ≤ φ c * ∑ e ∈ Finset.range (c + w + 1), B e) :
     ∑ c ∈ Finset.range P, A c ≤
@@ -356,11 +356,11 @@ theorem armAsm_sum_window_le (P w : ℕ) (φ A B : ℕ → ℝ)
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [← Finset.sum_mul]
 
-theorem armAsm_iterL_norm_le (g₀ : SmoothRiemannianMetric I M) (σ a : ℕ) :
+theorem termAsm_iterL_norm_le (g₀ : SmoothRiemannianMetric I M) (σ a : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ v : SmoothCcTensor g₀ 0 σ,
       ‖oneMinusConnLapSmoothIter (I := I) g₀ 0 σ a v‖ ≤
         C * ∑ q ∈ Finset.range (2 * a + 1), ‖iteratedCovGrad (I := I) g₀ 0 σ q v‖ := by
-  obtain ⟨Cf, hCf_nn, hCf⟩ := armJet_iteratedCovGrad_iterL_le (I := I) (M := M) g₀ σ a
+  obtain ⟨Cf, hCf_nn, hCf⟩ := termJet_iteratedCovGrad_iterL_le (I := I) (M := M) g₀ σ a
   refine ⟨Cf 0, hCf_nn 0, fun v => ?_⟩
   have h := hCf 0 v
   simpa only [Nat.zero_add, iteratedCovGrad_zero] using h
@@ -368,7 +368,7 @@ theorem armAsm_iterL_norm_le (g₀ : SmoothRiemannianMetric I M) (σ a : ℕ) :
 omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem armAsm_shifted_jetSum_le (g₀ : SmoothRiemannianMetric I M) (base c : ℕ)
+private theorem termAsm_shifted_jetSum_le (g₀ : SmoothRiemannianMetric I M) (base c : ℕ)
     (u₀ : SmoothCcTensor g₀ 0 2) :
     ∑ a ∈ Finset.range c,
         ‖iteratedCovGrad (I := I) g₀ 0 (2 + base) a
@@ -378,7 +378,7 @@ private theorem armAsm_shifted_jetSum_le (g₀ : SmoothRiemannianMetric I M) (ba
       ‖iteratedCovGrad (I := I) g₀ 0 (2 + base) a
           (iteratedCovGrad (I := I) g₀ 0 2 base u₀)‖ =
         ‖iteratedCovGrad (I := I) g₀ 0 2 (base + a) u₀‖ :=
-    fun a _ => armJet_norm_comp (I := I) (M := M) g₀ 2 base a u₀
+    fun a _ => termJet_norm_comp (I := I) (M := M) g₀ 2 base a u₀
   rw [Finset.sum_congr rfl hterm]
   have hIco : ∑ a ∈ Finset.range c, ‖iteratedCovGrad (I := I) g₀ 0 2 (base + a) u₀‖ =
       ∑ b ∈ Finset.Ico base (base + c), ‖iteratedCovGrad (I := I) g₀ 0 2 b u₀‖ := by
@@ -394,18 +394,18 @@ private theorem armAsm_shifted_jetSum_le (g₀ : SmoothRiemannianMetric I M) (ba
   omega
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem armAsm_operatorFieldApplication_jet_window (g₀ : SmoothRiemannianMetric I M) (base c : ℕ)
+theorem termAsm_operatorFieldApplication_jet_window (g₀ : SmoothRiemannianMetric I M) (base c : ℕ)
     (Φ : SmoothCcTensor g₀ (2 + base) c) :
     ∃ cc : ℕ → ℝ, (∀ p, 0 ≤ cc p) ∧ ∀ (u₀ : SmoothCcTensor g₀ 0 2) (p : ℕ),
       ‖iteratedCovGrad (I := I) g₀ 0 c p
           (operatorFieldApply (I := I) (M := M) g₀ (2 + base) c Φ
             (iteratedCovGrad (I := I) g₀ 0 2 base u₀))‖ ≤
         cc p * ∑ j ∈ Finset.range (p + base + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
-  obtain ⟨Cf, hCf_nn, hCf⟩ := armJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ (2 + base) c Φ
+  obtain ⟨Cf, hCf_nn, hCf⟩ := termJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ (2 + base) c Φ
   refine ⟨Cf, hCf_nn, fun u₀ p => ?_⟩
   refine le_trans (hCf p (iteratedCovGrad (I := I) g₀ 0 2 base u₀)) ?_
   refine mul_le_mul_of_nonneg_left ?_ (hCf_nn p)
-  have hsh := armAsm_shifted_jetSum_le (I := I) (M := M) g₀ base (p + 1) u₀
+  have hsh := termAsm_shifted_jetSum_le (I := I) (M := M) g₀ base (p + 1) u₀
   rw [show p + 1 + base = p + base + 1 from by omega] at hsh
   exact hsh
 
@@ -423,7 +423,7 @@ theorem exists_appFullSec_iteratedCovGrad_shiftedJetWindow_bound (g₀ : SmoothR
   refine ⟨cq, hcq_nn, fun u₀ p => ?_⟩
   refine le_trans (hcq (iteratedCovGrad (I := I) g₀ 0 2 base u₀) p) ?_
   refine mul_le_mul_of_nonneg_left ?_ (hcq_nn p)
-  have hsh := armAsm_shifted_jetSum_le (I := I) (M := M) g₀ base (p + 1) u₀
+  have hsh := termAsm_shifted_jetSum_le (I := I) (M := M) g₀ base (p + 1) u₀
   rw [show p + 1 + base = p + base + 1 from by omega] at hsh
   exact hsh
 
@@ -437,7 +437,7 @@ theorem exists_operatorFieldApplication_appFullSec_iteratedCovGrad_jetWindow_bou
             (homTensorRSFieldApply (I := I) (M := M) g₀ 0 (2 + base) b2 Q
               (iteratedCovGrad (I := I) g₀ 0 2 base u₀)))‖ ≤
         cc p * ∑ j ∈ Finset.range (p + base + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
-  obtain ⟨Cf, hCf_nn, hCf⟩ := armJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ b2 c2 Φ
+  obtain ⟨Cf, hCf_nn, hCf⟩ := termJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ b2 c2 Φ
   obtain ⟨cq, hcq_nn, hcq⟩ :=
     exists_appFullSec_iteratedCovGrad_shiftedJetWindow_bound (I := I) (M := M) g₀ base b2 Q
   refine ⟨fun p => Cf p * ∑ e ∈ Finset.range (p + 1), cq e,
@@ -447,7 +447,7 @@ theorem exists_operatorFieldApplication_appFullSec_iteratedCovGrad_jetWindow_bou
     (iteratedCovGrad (I := I) g₀ 0 2 base u₀))) ?_
   rw [mul_assoc]
   refine mul_le_mul_of_nonneg_left ?_ (hCf_nn p)
-  have hwin := armAsm_sum_window_le (p + 1) base cq
+  have hwin := termAsm_sum_window_le (p + 1) base cq
     (fun e => ‖iteratedCovGrad (I := I) g₀ 0 b2 e
       (homTensorRSFieldApply (I := I) (M := M) g₀ 0 (2 + base) b2 Q
         (iteratedCovGrad (I := I) g₀ 0 2 base u₀))‖)
@@ -457,7 +457,7 @@ theorem exists_operatorFieldApplication_appFullSec_iteratedCovGrad_jetWindow_bou
   exact hwin
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem armAsm_covGrad_operatorFieldApplication_jet_window (g₀ : SmoothRiemannianMetric I M) (base : ℕ)
+theorem termAsm_covGrad_operatorFieldApplication_jet_window (g₀ : SmoothRiemannianMetric I M) (base : ℕ)
     (Φ : SmoothCcTensor g₀ (2 + base) (2 + base)) :
     ∃ cc : ℕ → ℝ, (∀ p, 0 ≤ cc p) ∧ ∀ (u₀ : SmoothCcTensor g₀ 0 2) (p : ℕ),
       ‖iteratedCovGrad (I := I) g₀ 0 ((2 + base) + 1) p
@@ -466,7 +466,7 @@ theorem armAsm_covGrad_operatorFieldApplication_jet_window (g₀ : SmoothRiemann
               (iteratedCovGrad (I := I) g₀ 0 2 base u₀)))‖ ≤
         cc p * ∑ j ∈ Finset.range (p + base + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
   obtain ⟨Cf, hCf_nn, hCf⟩ :=
-    armJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ (2 + base) (2 + base) Φ
+    termJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ (2 + base) (2 + base) Φ
   refine ⟨fun p => Cf (1 + p), fun p => hCf_nn (1 + p), fun u₀ p => ?_⟩
   have hnc : ‖iteratedCovGrad (I := I) g₀ 0 ((2 + base) + 1) p
       (covGrad (I := I) (M := M) g₀ 0 (2 + base)
@@ -475,17 +475,17 @@ theorem armAsm_covGrad_operatorFieldApplication_jet_window (g₀ : SmoothRiemann
       ‖iteratedCovGrad (I := I) g₀ 0 (2 + base) (1 + p)
         (operatorFieldApply (I := I) (M := M) g₀ (2 + base) (2 + base) Φ
           (iteratedCovGrad (I := I) g₀ 0 2 base u₀))‖ :=
-    armJet_norm_comp (I := I) (M := M) g₀ (2 + base) 1 p
+    termJet_norm_comp (I := I) (M := M) g₀ (2 + base) 1 p
       (operatorFieldApply (I := I) (M := M) g₀ (2 + base) (2 + base) Φ
         (iteratedCovGrad (I := I) g₀ 0 2 base u₀))
   rw [hnc]
   refine le_trans (hCf (1 + p) (iteratedCovGrad (I := I) g₀ 0 2 base u₀)) ?_
   refine mul_le_mul_of_nonneg_left ?_ (hCf_nn (1 + p))
-  have hsh := armAsm_shifted_jetSum_le (I := I) (M := M) g₀ base (1 + p + 1) u₀
+  have hsh := termAsm_shifted_jetSum_le (I := I) (M := M) g₀ base (1 + p + 1) u₀
   rw [show 1 + p + 1 + base = p + base + 2 from by omega] at hsh
   exact hsh
 
-theorem armAsm_abs_add4_sub_le (a b c d e : ℝ) :
+theorem termAsm_abs_add4_sub_le (a b c d e : ℝ) :
     |a + b + c + d - e| ≤ |a| + |b| + |c| + |d| + |e| := by
   calc |a + b + c + d - e| = |a + b + c + d + -e| := by rw [sub_eq_add_neg]
     _ ≤ |a + b + c + d| + |-e| := abs_add_le _ _
@@ -496,7 +496,7 @@ theorem armAsm_abs_add4_sub_le (a b c d e : ℝ) :
         add_le_add_left (add_le_add_left (add_le_add_left (abs_add_le _ _) _) _) _
     _ = |a| + |b| + |c| + |d| + |e| := by rw [abs_neg]
 
-theorem armAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
+theorem termAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
     (σ a r dX dY NA NB : ℕ) (hr : r ≤ a)
     (hNA : 2 * (a - r) + dX ≤ NA) (hNB : 2 * r + dY ≤ NB)
     (cX cY : ℕ → ℝ) (hcX_nn : ∀ p, 0 ≤ cX p) (hcY_nn : ∀ p, 0 ≤ cY p) :
@@ -510,8 +510,8 @@ theorem armAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
         C * ((∑ j ∈ Finset.range (NA + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖) *
           (∑ j ∈ Finset.range (NB + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖)) := by
   classical
-  obtain ⟨CL, hCL_nn, hCL⟩ := armAsm_iterL_norm_le (I := I) (M := M) g₀ σ (a - r)
-  obtain ⟨CR, hCR_nn, hCR⟩ := armAsm_iterL_norm_le (I := I) (M := M) g₀ σ r
+  obtain ⟨CL, hCL_nn, hCL⟩ := termAsm_iterL_norm_le (I := I) (M := M) g₀ σ (a - r)
+  obtain ⟨CR, hCR_nn, hCR⟩ := termAsm_iterL_norm_le (I := I) (M := M) g₀ σ r
   refine ⟨(CL * ∑ p ∈ Finset.range (2 * (a - r) + 1), cX p) *
       (CR * ∑ p ∈ Finset.range (2 * r + 1), cY p),
     mul_nonneg (mul_nonneg hCL_nn (Finset.sum_nonneg fun p _ => hcX_nn p))
@@ -526,7 +526,7 @@ theorem armAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
         (∑ p ∈ Finset.range (2 * (a - r) + 1), cX p) *
           ∑ j ∈ Finset.range (2 * (a - r) + 1 + dX),
             ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ :=
-      armAsm_sum_window_le (2 * (a - r) + 1) dX cX
+      termAsm_sum_window_le (2 * (a - r) + 1) dX cX
         (fun p => ‖iteratedCovGrad (I := I) g₀ 0 σ p X‖)
         (fun j => ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖)
         hcX_nn (fun _ => norm_nonneg _) (fun p _ => hX p)
@@ -534,7 +534,7 @@ theorem armAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
     rw [← mul_assoc]
     refine mul_le_mul_of_nonneg_left ?_
       (mul_nonneg hCL_nn (Finset.sum_nonneg fun p _ => hcX_nn p))
-    exact armJet_jetSum_mono (I := I) (M := M) g₀ 2 (by omega) u₀
+    exact termJet_jetSum_mono (I := I) (M := M) g₀ 2 (by omega) u₀
   have hYb : ‖oneMinusConnLapSmoothIter (I := I) g₀ 0 σ r Y‖ ≤
       (CR * ∑ p ∈ Finset.range (2 * r + 1), cY p) *
         ∑ j ∈ Finset.range (NB + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
@@ -544,7 +544,7 @@ theorem armAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
         (∑ p ∈ Finset.range (2 * r + 1), cY p) *
           ∑ j ∈ Finset.range (2 * r + 1 + dY),
             ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ :=
-      armAsm_sum_window_le (2 * r + 1) dY cY
+      termAsm_sum_window_le (2 * r + 1) dY cY
         (fun p => ‖iteratedCovGrad (I := I) g₀ 0 σ p Y‖)
         (fun j => ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖)
         hcY_nn (fun _ => norm_nonneg _) (fun p _ => hY p)
@@ -552,9 +552,9 @@ theorem armAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
     rw [← mul_assoc]
     refine mul_le_mul_of_nonneg_left ?_
       (mul_nonneg hCR_nn (Finset.sum_nonneg fun p _ => hcY_nn p))
-    exact armJet_jetSum_mono (I := I) (M := M) g₀ 2 (by omega) u₀
+    exact termJet_jetSum_mono (I := I) (M := M) g₀ 2 (by omega) u₀
   refine le_trans
-    (armLadder_pairing_abs_le_transport (I := I) (M := M) g₀ σ a r hr X Y) ?_
+    (termLadder_pairing_abs_le_transport (I := I) (M := M) g₀ σ a r hr X Y) ?_
   calc ‖oneMinusConnLapSmoothIter (I := I) g₀ 0 σ (a - r) X‖ *
         ‖oneMinusConnLapSmoothIter (I := I) g₀ 0 σ r Y‖
       ≤ ((CL * ∑ p ∈ Finset.range (2 * (a - r) + 1), cX p) *
@@ -570,7 +570,7 @@ theorem armAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private theorem armSwap_appFullSec_sub_right (g : SmoothRiemannianMetric I M) (t : ℕ)
+private theorem termSwap_appFullSec_sub_right (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (A B : SmoothCcTensor g 0 (t + 2)) :
     homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F (A - B) =
@@ -591,7 +591,7 @@ private theorem armSwap_appFullSec_sub_right (g : SmoothRiemannianMetric I M) (t
   exact map_sub _ _ _
 
 omit [SigmaCompactSpace M] in
-private theorem armSwap_oneMinusConnLapSmooth_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
+private theorem termSwap_oneMinusConnLapSmooth_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
       (a b : TangentSpace I x) (w : Fin t → TangentSpace I x),
@@ -609,11 +609,11 @@ private theorem armSwap_oneMinusConnLapSmooth_comm (g : SmoothRiemannianMetric I
         (oneMinusConnLapSmooth (I := I) g 0 (t + 2) U) := by
   unfold oneMinusConnLapSmooth
   rw [appFullSec_swap_rawConnLap_comm (I := I) (M := M) g t F hF U,
-    armSwap_appFullSec_sub_right (I := I) (M := M) g t F U
+    termSwap_appFullSec_sub_right (I := I) (M := M) g t F U
       (rawTensorConnLapSmooth (I := I) g 0 (t + 2) U)]
 
 omit [SigmaCompactSpace M] in
-theorem armSwap_iterL_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
+theorem termSwap_iterL_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
       (a b : TangentSpace I x) (w : Fin t → TangentSpace I x),
@@ -633,13 +633,13 @@ theorem armSwap_iterL_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
   | zero => simp only [oneMinusConnLapSmoothIter_zero]
   | succ d ih =>
     rw [oneMinusConnLapSmoothIter_succ, ih,
-      armSwap_oneMinusConnLapSmooth_comm (I := I) (M := M) g t F hF
+      termSwap_oneMinusConnLapSmooth_comm (I := I) (M := M) g t F hF
         (oneMinusConnLapSmoothIter (I := I) g 0 (t + 2) d U),
       oneMinusConnLapSmoothIter_succ]
 
 omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
-private theorem armLadder_oneMinusConnLapSmooth_sub (g : SmoothRiemannianMetric I M)
+private theorem termLadder_oneMinusConnLapSmooth_sub (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmooth (I := I) g r s (A - B) =
       oneMinusConnLapSmooth (I := I) g r s A - oneMinusConnLapSmooth (I := I) g r s B := by
@@ -649,7 +649,7 @@ private theorem armLadder_oneMinusConnLapSmooth_sub (g : SmoothRiemannianMetric 
 
 omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
-theorem armLadder_iterL_sub (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
+theorem termLadder_iterL_sub (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
     (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s j (A - B) =
       oneMinusConnLapSmoothIter (I := I) g r s j A -
@@ -658,7 +658,7 @@ theorem armLadder_iterL_sub (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : �
   | zero => simp only [oneMinusConnLapSmoothIter_zero]
   | succ d ih =>
     rw [oneMinusConnLapSmoothIter_succ, ih,
-      armLadder_oneMinusConnLapSmooth_sub (I := I) (M := M) g r s,
+      termLadder_oneMinusConnLapSmooth_sub (I := I) (M := M) g r s,
       oneMinusConnLapSmoothIter_succ, oneMinusConnLapSmoothIter_succ]
 
 end Spectral

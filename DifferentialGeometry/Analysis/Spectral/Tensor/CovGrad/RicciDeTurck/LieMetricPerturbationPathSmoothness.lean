@@ -377,10 +377,10 @@ theorem deTurckVF_metricPerturbationPath_jointContMDiffOn
   refine hlocalAt.congr_of_eventuallyEq ?_ (heqOn p hpmem).symm
   filter_upwards [hnhd] with q hq using (heqOn q hq).symm
 
-private def arm1LowerSwapPermA : Equiv.Perm (Fin 3) :=
+private def firstOrderLowerSwapPermA : Equiv.Perm (Fin 3) :=
   ⟨![1, 0, 2], ![1, 0, 2], by decide, by decide⟩
 
-private def arm1LowerSwapPermC : Equiv.Perm (Fin 3) :=
+private def firstOrderLowerSwapPermC : Equiv.Perm (Fin 3) :=
   ⟨![2, 1, 0], ![2, 1, 0], by decide, by decide⟩
 
 private noncomputable def covGradSymmSValue (g₀ : SmoothRiemannianMetric I M)
@@ -554,24 +554,24 @@ theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1 (Vfam p))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     covGradSymmSValueFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
-  have hU1 := domDomCongrField_jointContMDiffOn (I := I) arm1LowerSwapPermA
+  have hU1 := domDomCongrField_jointContMDiffOn (I := I) firstOrderLowerSwapPermA
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) Vfam hV
-  have hU3 := domDomCongrField_jointContMDiffOn (I := I) arm1LowerSwapPermC
+  have hU3 := domDomCongrField_jointContMDiffOn (I := I) firstOrderLowerSwapPermC
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) Vfam hV
   have hsum := jointTotalSpace0S_add_local (I := I) (d := 3)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
-      (ContinuousMultilinearMap.domDomCongr arm1LowerSwapPermA
+      (ContinuousMultilinearMap.domDomCongr firstOrderLowerSwapPermA
         (Tensor0SBundle.Tensor0SSpace.toModel (Vfam p))))
     Vfam hU1 hV
   have hsub := jointTotalSpace0S_sub_local (I := I) (d := 3)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ =>
       Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
-        (ContinuousMultilinearMap.domDomCongr arm1LowerSwapPermA
+        (ContinuousMultilinearMap.domDomCongr firstOrderLowerSwapPermA
           (Tensor0SBundle.Tensor0SSpace.toModel (Vfam p))) + Vfam p)
     (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
-      (ContinuousMultilinearMap.domDomCongr arm1LowerSwapPermC
+      (ContinuousMultilinearMap.domDomCongr firstOrderLowerSwapPermC
         (Tensor0SBundle.Tensor0SSpace.toModel (Vfam p))))
     hsum hU3
   have hhalf := jointTotalSpace0S_smulFun_local (I := I) (d := 3)
@@ -579,10 +579,10 @@ theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
     (f := fun _ : ℝ => (1 / 2 : ℝ)) contDiff_const
     (fun p : M × ℝ =>
       (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
-          (ContinuousMultilinearMap.domDomCongr arm1LowerSwapPermA
+          (ContinuousMultilinearMap.domDomCongr firstOrderLowerSwapPermA
             (Tensor0SBundle.Tensor0SSpace.toModel (Vfam p))) + Vfam p) -
         Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
-          (ContinuousMultilinearMap.domDomCongr arm1LowerSwapPermC
+          (ContinuousMultilinearMap.domDomCongr firstOrderLowerSwapPermC
             (Tensor0SBundle.Tensor0SSpace.toModel (Vfam p))))
     hsub
   refine hhalf.congr (fun p hp => ?_)
@@ -610,9 +610,9 @@ theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
     ((tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm (v 1))
     ((tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm (v 2))
   rw [hid]
-  have h1 : (fun j => v (arm1LowerSwapPermA j)) = ![v 1, v 0, v 2] := by
+  have h1 : (fun j => v (firstOrderLowerSwapPermA j)) = ![v 1, v 0, v 2] := by
     funext j; fin_cases j <;> rfl
-  have h3 : (fun j => v (arm1LowerSwapPermC j)) = ![v 2, v 1, v 0] := by
+  have h3 : (fun j => v (firstOrderLowerSwapPermC j)) = ![v 2, v 1, v 0] := by
     funext j; fin_cases j <;> rfl
   rw [h1, h3]
   have huM : ∀ vv : Fin 3 → E,

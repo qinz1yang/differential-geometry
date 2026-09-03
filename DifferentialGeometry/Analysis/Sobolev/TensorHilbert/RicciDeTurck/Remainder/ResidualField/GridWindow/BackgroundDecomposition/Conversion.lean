@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.InverseMetricQuadraticResidual
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.BackgroundDecomposition.MultilinearIdentities
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.BackgroundDecomposition.FibreNormBounds
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.BackgroundDecomposition.DoubleTraceFold
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.BackgroundDecomposition.DoubleTraceContraction
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -75,23 +75,23 @@ lemma metricDifferenceCcTensor_eq_symmS (P : SmoothCcTensor g₀ 0 2)
   rw [htie x (m 0) (m 1)]
   ring
 
-def ricciFoldWeightA (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 0 4 :=
+def ricciContractionWeightA (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 0 4 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
     (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 (Equiv.swap (1 : Fin 6) 3)
       (ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)) S))
 
-def ricciFoldWeightB (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 0 4 :=
+def ricciContractionWeightB (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 0 4 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
-    (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 ricciFoldWeightBPerm
+    (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 ricciContractionWeightBPerm
       (ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)) S))
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma ricciFoldWeight_unitModel_gen (σ : Equiv.Perm (Fin 6))
+private lemma ricciContractionWeight_unitModel_gen (σ : Equiv.Perm (Fin 6))
     (S : SmoothCcTensor g₀ 0 2) (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4
         (ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
@@ -195,29 +195,29 @@ private lemma ricciFoldWeight_unitModel_gen (σ : Equiv.Perm (Fin 6))
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma ricciFoldWeights_unitModel_eq_kernel (S : SmoothCcTensor g₀ 0 2) (x : M)
+private lemma ricciContractionWeights_unitModel_eq_kernel (S : SmoothCcTensor g₀ 0 2) (x : M)
     (p q v0 v1 : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4
-        (ricciFoldWeightA (I := I) (M := M) g₀ S +
-          ricciFoldWeightB (I := I) (M := M) g₀ S) x
+        (ricciContractionWeightA (I := I) (M := M) g₀ S +
+          ricciContractionWeightB (I := I) (M := M) g₀ S) x
         ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       smoothCcTensorBilinForm (I := I) g₀ S x (riemannOp (LeviCivita (I := I) g₀) x v0 p q) v1 +
         smoothCcTensorBilinForm (I := I) g₀ S x q
           (riemannOp (LeviCivita (I := I) g₀) x v0 p v1) := by
   classical
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g₀ 4
-    (ricciFoldWeightA (I := I) (M := M) g₀ S) (ricciFoldWeightB (I := I) (M := M) g₀ S) x,
+    (ricciContractionWeightA (I := I) (M := M) g₀ S) (ricciContractionWeightB (I := I) (M := M) g₀ S) x,
     add_apply]
-  have hA : unitModel (I := I) (M := M) g₀ 4 (ricciFoldWeightA (I := I) (M := M) g₀ S) x
+  have hA : unitModel (I := I) (M := M) g₀ 4 (ricciContractionWeightA (I := I) (M := M) g₀ S) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       smoothCcTensorBilinForm (I := I) g₀ S x (riemannOp (LeviCivita (I := I) g₀) x v0 p q) v1 := by
-    rw [show ricciFoldWeightA (I := I) (M := M) g₀ S =
+    rw [show ricciContractionWeightA (I := I) (M := M) g₀ S =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 (Equiv.swap (1 : Fin 6) 3)
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)) S)) from rfl]
-    rw [ricciFoldWeight_unitModel_gen (I := I) (M := M) g₀ (Equiv.swap (1 : Fin 6) 3) S x
+    rw [ricciContractionWeight_unitModel_gen (I := I) (M := M) g₀ (Equiv.swap (1 : Fin 6) 3) S x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     rw [tensorBilinearPairing_expand_left (I := I) (M := M) g₀ S x
       (riemannOp (LeviCivita (I := I) g₀) x v0 p q) v1]
@@ -288,16 +288,16 @@ private lemma ricciFoldWeights_unitModel_eq_kernel (S : SmoothCcTensor g₀ 0 2)
     rw [unitModel_eq_ccTensorBilin_pt (I := I) (M := M) g₀ S x
       (smoothOrthoFrame (I := I) g₀ x e x) v1]
     ring
-  have hB : unitModel (I := I) (M := M) g₀ 4 (ricciFoldWeightB (I := I) (M := M) g₀ S) x
+  have hB : unitModel (I := I) (M := M) g₀ 4 (ricciContractionWeightB (I := I) (M := M) g₀ S) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       smoothCcTensorBilinForm (I := I) g₀ S x q (riemannOp (LeviCivita (I := I) g₀) x v0 p v1) := by
-    rw [show ricciFoldWeightB (I := I) (M := M) g₀ S =
+    rw [show ricciContractionWeightB (I := I) (M := M) g₀ S =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 ricciFoldWeightBPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 ricciContractionWeightBPerm
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)) S)) from rfl]
-    rw [ricciFoldWeight_unitModel_gen (I := I) (M := M) g₀ ricciFoldWeightBPerm S x
+    rw [ricciContractionWeight_unitModel_gen (I := I) (M := M) g₀ ricciContractionWeightBPerm S x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     rw [tensorBilinearPairing_expand_right (I := I) (M := M) g₀ S x q
       (riemannOp (LeviCivita (I := I) g₀) x v0 p v1)]
@@ -306,11 +306,11 @@ private lemma ricciFoldWeights_unitModel_eq_kernel (S : SmoothCcTensor g₀ 0 2)
         ![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
               ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E)
-            (ricciFoldWeightBPerm 0)),
+            (ricciContractionWeightBPerm 0)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
               ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E)
-            (ricciFoldWeightBPerm 1))] =
+            (ricciContractionWeightBPerm 1))] =
         unitModel (I := I) (M := M) g₀ 2 S x
           ![(q : E), ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
       refine congrArg _ ?_
@@ -321,37 +321,37 @@ private lemma ricciFoldWeights_unitModel_eq_kernel (S : SmoothCcTensor g₀ 0 2)
         ![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
               ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E)
-            (ricciFoldWeightBPerm 2)),
+            (ricciContractionWeightBPerm 2)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
               ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E)
-            (ricciFoldWeightBPerm 3)),
+            (ricciContractionWeightBPerm 3)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
               ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E)
-            (ricciFoldWeightBPerm 4)),
+            (ricciContractionWeightBPerm 4)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
               ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E)
-            (ricciFoldWeightBPerm 5))] =
+            (ricciContractionWeightBPerm 5))] =
         g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x v0 p v1)
           (smoothOrthoFrame (I := I) g₀ x e x) := by
       rw [show (![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
               ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E)
-            (ricciFoldWeightBPerm 2)),
+            (ricciContractionWeightBPerm 2)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
               ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E)
-            (ricciFoldWeightBPerm 3)),
+            (ricciContractionWeightBPerm 3)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
               ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E)
-            (ricciFoldWeightBPerm 4)),
+            (ricciContractionWeightBPerm 4)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
               ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E)
-            (ricciFoldWeightBPerm 5))] : Fin 4 → E) =
+            (ricciContractionWeightBPerm 5))] : Fin 4 → E) =
           ![(v0 : E), ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
             (p : E), (v1 : E)] from by
         funext k
@@ -375,15 +375,15 @@ private lemma ricciFoldWeights_unitModel_eq_kernel (S : SmoothCcTensor g₀ 0 2)
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-lemma ricciFoldRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0 2) :
-    ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁ S =
+lemma ricciContractionRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0 2) :
+    ricciContractionRemainderField (I := I) (M := M) g₀ g₁ S =
       (-(1 / 2) : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (ricciFoldWeightA (I := I) (M := M) g₀ S +
-                ricciFoldWeightB (I := I) (M := M) g₀ S))) := by
+              (ricciContractionWeightA (I := I) (M := M) g₀ S +
+                ricciContractionWeightB (I := I) (M := M) g₀ S))) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -398,42 +398,42 @@ lemma ricciFoldRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0 2) :
       (((-(1 / 2) : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (ricciFoldWeightA (I := I) (M := M) g₀ S +
-                ricciFoldWeightB (I := I) (M := M) g₀ S)))).toSection x)) D) =
+              (ricciContractionWeightA (I := I) (M := M) g₀ S +
+                ricciContractionWeightB (I := I) (M := M) g₀ S)))).toSection x)) D) =
       (-(1 / 2) : ℝ) • ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (ricciFoldWeightA (I := I) (M := M) g₀ S +
-                ricciFoldWeightB (I := I) (M := M) g₀ S)))).toSection x) D) := by
+              (ricciContractionWeightA (I := I) (M := M) g₀ S +
+                ricciContractionWeightB (I := I) (M := M) g₀ S)))).toSection x) D) := by
     rw [show ((((-(1 / 2) : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (ricciFoldWeightA (I := I) (M := M) g₀ S +
-                ricciFoldWeightB (I := I) (M := M) g₀ S)))).toSection x)) =
+              (ricciContractionWeightA (I := I) (M := M) g₀ S +
+                ricciContractionWeightB (I := I) (M := M) g₀ S)))).toSection x)) =
         (-(1 / 2) : ℝ) •
           ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (ricciFoldWeightA (I := I) (M := M) g₀ S +
-                  ricciFoldWeightB (I := I) (M := M) g₀ S)))).toSection x) from by
+                (ricciContractionWeightA (I := I) (M := M) g₀ S +
+                  ricciContractionWeightB (I := I) (M := M) g₀ S)))).toSection x) from by
       rw [SmoothCcTensor.toSection_smul]; rfl]
     rfl
   rw [hRHSsmul, Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
   rw [secondMetricPairTraceOperator_apply_toModel (I := I) (M := M) g₀ g₁
-    (ricciFoldWeightA (I := I) (M := M) g₀ S + ricciFoldWeightB (I := I) (M := M) g₀ S) x D v]
+    (ricciContractionWeightA (I := I) (M := M) g₀ S + ricciContractionWeightB (I := I) (M := M) g₀ S) x D v]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (ricciArmRicciFoldRemainderField (I := I) (M := M) g₀ g₁ S).toSection x) D) =
-      ricciFoldBiContrFib (I := I) g₀ g₁ S x D from rfl]
-  rw [show ricciFoldBiContrFib (I := I) g₀ g₁ S x =
-      ricciFoldBiContrFibFixedFrame (I := I) g₀ S (smoothOrthoFrame (I := I) g₁ x) x from rfl]
-  rw [ricciFoldBiContrFibFixedFrame_toModel (I := I) g₀ S (smoothOrthoFrame (I := I) g₁ x) x D v]
+      (ricciContractionRemainderField (I := I) (M := M) g₀ g₁ S).toSection x) D) =
+      ricciContractionBiContrFib (I := I) g₀ g₁ S x D from rfl]
+  rw [show ricciContractionBiContrFib (I := I) g₀ g₁ S x =
+      ricciContractionBiContrFibFixedFrame (I := I) g₀ S (smoothOrthoFrame (I := I) g₁ x) x from rfl]
+  rw [ricciContractionBiContrFibFixedFrame_toModel (I := I) g₀ S (smoothOrthoFrame (I := I) g₁ x) x D v]
   rw [Finset.sum_comm]
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun b _ => ?_
@@ -443,7 +443,7 @@ lemma ricciFoldRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0 2) :
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)
   let v1 : TangentSpace I x :=
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)
-  have hkernel := ricciFoldKernelBilin_apply (I := I) g₀ S x
+  have hkernel := ricciContractionKernelBilin_apply (I := I) g₀ S x
     (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x) v0 v1
   with_unfolding_all
     change
@@ -452,7 +452,7 @@ lemma ricciFoldRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0 2) :
               (smoothOrthoFrame (I := I) g₁ x a x),
             (tangentSpaceModelContinuousLinearEquiv (I := I) x)
               (smoothOrthoFrame (I := I) g₁ x b x)] *
-          ricciFoldKernelBilin (I := I) g₀ S x
+          ricciContractionKernelBilin (I := I) g₀ S x
             (smoothOrthoFrame (I := I) g₁ x a x)
             (smoothOrthoFrame (I := I) g₁ x b x) v0 v1 =
         (-(1 / 2) : ℝ) *
@@ -462,8 +462,8 @@ lemma ricciFoldRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0 2) :
                 (tangentSpaceModelContinuousLinearEquiv (I := I) x)
                   (smoothOrthoFrame (I := I) g₁ x b x)] *
             unitModel (I := I) (M := M) g₀ 4
-              (ricciFoldWeightA (I := I) (M := M) g₀ S +
-                ricciFoldWeightB (I := I) (M := M) g₀ S) x
+              (ricciContractionWeightA (I := I) (M := M) g₀ S +
+                ricciContractionWeightB (I := I) (M := M) g₀ S) x
               ![v 0, v 1,
                 (tangentSpaceModelContinuousLinearEquiv (I := I) x)
                   (smoothOrthoFrame (I := I) g₁ x a x),
@@ -471,7 +471,7 @@ lemma ricciFoldRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0 2) :
                   (smoothOrthoFrame (I := I) g₁ x b x)])
   rw [hkernel]
   have hfold : unitModel (I := I) (M := M) g₀ 4
-      (ricciFoldWeightA (I := I) (M := M) g₀ S + ricciFoldWeightB (I := I) (M := M) g₀ S) x
+      (ricciContractionWeightA (I := I) (M := M) g₀ S + ricciContractionWeightB (I := I) (M := M) g₀ S) x
       ![v 0, v 1,
         (tangentSpaceModelContinuousLinearEquiv (I := I) x)
           (smoothOrthoFrame (I := I) g₁ x a x),
@@ -483,7 +483,7 @@ lemma ricciFoldRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0 2) :
         smoothCcTensorBilinForm (I := I) g₀ S x (smoothOrthoFrame (I := I) g₁ x b x)
           (riemannOp (LeviCivita (I := I) g₀) x v0 (smoothOrthoFrame (I := I) g₁ x a x)
             v1) := by
-    have h := ricciFoldWeights_unitModel_eq_kernel g₀ S x
+    have h := ricciContractionWeights_unitModel_eq_kernel g₀ S x
       (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
       v0 v1
     with_unfolding_all
@@ -491,7 +491,7 @@ lemma ricciFoldRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0 2) :
   rw [hfold]
   ring
 
-lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciFoldWeightGeneral_boundedFactorGridWindow_le
+lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeightGeneral_boundedFactorGridWindow_le
     (σ : Equiv.Perm (Fin 6))
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ w, 0 ≤ C w) ∧
@@ -714,10 +714,10 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciFoldWeightGeneral_bounde
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma bgRCommCoeffField_eq_decomposition (g : SmoothRiemannianMetric I M) :
-    ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g =
+    ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
         (secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g 2)
-        (riemannCometricDoubleTraceFold (I := I) (M := M) g₀) := by
+        (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -733,7 +733,7 @@ lemma bgRCommCoeffField_eq_decomposition (g : SmoothRiemannianMetric I M) :
   let v1 : TangentSpace I x :=
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g).toSection x) D) =
+      (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g).toSection x) D) =
       backgroundRiemannBiContrFib (I := I) g₀ g x D from rfl]
   rw [show backgroundRiemannBiContrFib (I := I) g₀ g x =
       backgroundRiemannBiContrFibFixedFrame (I := I) g₀ (smoothOrthoFrame (I := I) g x) x from rfl]
@@ -742,10 +742,10 @@ lemma bgRCommCoeffField_eq_decomposition (g : SmoothRiemannianMetric I M) :
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
         (secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g 2)
-        (riemannCometricDoubleTraceFold (I := I) (M := M) g₀)).toSection x) D) =
+        (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀)).toSection x) D) =
       cometricDoubleTraceFib (I := I) g 2 x
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
-          (riemannCometricDoubleTraceFold (I := I) (M := M) g₀).toSection x) D) from by
+          (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀).toSection x) D) from by
     rw [operatorFieldComposition_toSection]
     rfl]
   rw [cometricDoubleTraceFib_toModel (I := I) g 2 x]
@@ -754,10 +754,10 @@ lemma bgRCommCoeffField_eq_decomposition (g : SmoothRiemannianMetric I M) :
     (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
-        (riemannCometricDoubleTraceFold (I := I) (M := M) g₀).toSection x) D))
+        (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀).toSection x) D))
     (fun j => (v j : E))]
   refine Finset.sum_congr rfl fun c _ => ?_
-  rw [bgRArmWeight_toModel (I := I) (M := M) g₀ x D]
+  rw [bgRTermWeight_toModel (I := I) (M := M) g₀ x D]
   change Tensor0SSpace.toModel D
       (Fin.cons ((tangentSpaceModelContinuousLinearEquiv (I := I) x)
           (riemannOp (LeviCivita (I := I) g₀) x
@@ -854,7 +854,7 @@ lemma koszulCovecCc_unitModel_eq_connectionDifference_g1_inner (P : SmoothCcTens
 
 end NormedKoszulCovectorConnectionDifferenceIdentity
 
-section NormedKoszulConnectionDifferenceFoldWeight
+section NormedKoszulConnectionDifferenceContractionWeight
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -867,7 +867,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
-def koszulConnectionDifferenceFoldWeight (σ : Equiv.Perm (Fin 6)) (P : SmoothCcTensor g₀ 0 2) :
+def koszulConnectionDifferenceContractionWeight (σ : Equiv.Perm (Fin 6)) (P : SmoothCcTensor g₀ 0 2) :
     SmoothCcTensor g₀ 0 4 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
     (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 σ
@@ -875,9 +875,9 @@ def koszulConnectionDifferenceFoldWeight (σ : Equiv.Perm (Fin 6)) (P : SmoothCc
         (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
         (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)))
 
-end NormedKoszulConnectionDifferenceFoldWeight
+end NormedKoszulConnectionDifferenceContractionWeight
 
-section NormedKoszulConnectionDifferenceFoldIdentity
+section NormedKoszulConnectionDifferenceContractionIdentity
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -891,7 +891,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [SigmaCompactSpace M] in
-lemma koszulConnectionDifferenceFoldWeight_unitModel_general (σ : Equiv.Perm (Fin 6))
+lemma koszulConnectionDifferenceContractionWeight_unitModel_general (σ : Equiv.Perm (Fin 6))
     (P : SmoothCcTensor g₀ 0 2) (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4
         (ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
@@ -999,23 +999,23 @@ lemma koszulConnectionDifferenceFoldWeight_unitModel_general (σ : Equiv.Perm (F
   rw [hYval]
   rfl
 
-end NormedKoszulConnectionDifferenceFoldIdentity
+end NormedKoszulConnectionDifferenceContractionIdentity
 
 omit [SigmaCompactSpace M] in
-private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g₀ 0 2)
+private lemma sharpGradKoszulKernel_contractionWeights_unitModel (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
     (x : M) (p q v0 v1 : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4
-        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) x
+        ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+          (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) x
         ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       sharpGradKoszulKernelBilin (I := I) g₀ g₁ (ccTensor02Symm (I := I) g₀ P) x p q v0 v1 := by
   classical
   have hM1 : unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P) x
+      (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0)
@@ -1023,13 +1023,13 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
           unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
             ![(v1 : E), (p : E),
               ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
-    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P =
+    rw [show koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelPositivePermutation
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -1072,7 +1072,7 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
       Matrix.cons_val_two, Matrix.tail_cons] at h12
     exact h12
   have hM2 : unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) x
+      (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0)
@@ -1080,13 +1080,13 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
           unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
             ![((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
               (p : E), (v1 : E)] := by
-    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P =
+    rw [show koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelPositiveKoszulSwapPermutation
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -1129,7 +1129,7 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
       Matrix.cons_val_two, Matrix.tail_cons] at h12
     exact h12
   have hM3 : unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P) x
+      (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q p)
@@ -1137,13 +1137,13 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
           unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
             ![(v1 : E), (v0 : E),
               ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
-    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P =
+    rw [show koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelNegativePermutation
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -1186,7 +1186,7 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
       Matrix.cons_val_two, Matrix.tail_cons] at h12
     exact h12
   have hM4 : unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x
+      (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q p)
@@ -1194,13 +1194,13 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
           unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
             ![((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
               (v0 : E), (v1 : E)] := by
-    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P =
+    rw [show koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelNegativeKoszulSwapPermutation
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -1336,16 +1336,16 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
       (fun e => ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E))
       ((v0 : TangentSpace I x) : E) ((v1 : TangentSpace I x) : E)
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) (M := M) g₀ 4
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-      koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-      koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x]
+    (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+      koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)
+    (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+      koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x]
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g₀ 4
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P)
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) x]
+    (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P)
+    (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) x]
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M) g₀ 4
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P)
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x]
+    (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P)
+    (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x]
   rw [sub_apply, add_apply,
     add_apply]
   rw [hM1, hM2, hM3, hM4]
@@ -1358,16 +1358,16 @@ omit [SigmaCompactSpace M] in
 lemma sharpGradKoszulResidualField_eq_decomposition (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w) :
-    ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ (ccTensor02Symm (I := I) g₀ P) =
+    ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ (ccTensor02Symm (I := I) g₀ P) =
       (2 : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))) := by
+              ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -1382,51 +1382,51 @@ lemma sharpGradKoszulResidualField_eq_decomposition (P : SmoothCcTensor g₀ 0 2
       (((2 : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)) D) =
+              ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)) D) =
       (2 : ℝ) • ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)
+              ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)
                     D) := by
     rw [show ((((2 : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)) =
+              ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)) =
         (2 : ℝ) •
           ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)
+                ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                    koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                  (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                    koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)
                       from by
       rw [SmoothCcTensor.toSection_smul]; rfl]
     rfl
   rw [hRHSsmul, Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
   rw [secondMetricPairTraceOperator_apply_toModel (I := I) (M := M) g₀ g₁
-    ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) x D v]
+    ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+        koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+      (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+        koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) x D v]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
+      (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
         (ccTensor02Symm (I := I) g₀ P)).toSection x) D) =
       sharpGradKoszulBiContrFib (I := I) g₀ g₁ (ccTensor02Symm (I := I) g₀ P) x D from rfl]
   rw [show sharpGradKoszulBiContrFib (I := I) g₀ g₁ (ccTensor02Symm (I := I) g₀ P) x =
@@ -1461,10 +1461,10 @@ lemma sharpGradKoszulResidualField_eq_decomposition (P : SmoothCcTensor g₀ 0 2
     with_unfolding_all
       rfl
   have hfold : unitModel (I := I) (M := M) g₀ 4
-      ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) x
+      ((koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+        (koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+          koszulConnectionDifferenceContractionWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) x
       ![v 0, v 1,
         (tangentSpaceModelContinuousLinearEquiv (I := I) x)
           (smoothOrthoFrame (I := I) g₁ x a x),
@@ -1473,7 +1473,7 @@ lemma sharpGradKoszulResidualField_eq_decomposition (P : SmoothCcTensor g₀ 0 2
       sharpGradKoszulKernelBilin (I := I) g₀ g₁ (ccTensor02Symm (I := I) g₀ P) x
         (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
         v0 v1 := by
-    have h := sharpGradKoszulKernel_foldWeights_unitModel (I := I) (M := M) g₀ g₁ P htie x
+    have h := sharpGradKoszulKernel_contractionWeights_unitModel (I := I) (M := M) g₀ g₁ P htie x
       (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
       v0 v1
     rw [hv0Model, hv1Model, haModel, hbModel] at h
@@ -1496,7 +1496,7 @@ lemma sharpGradKoszulResidualField_eq_decomposition (P : SmoothCcTensor g₀ 0 2
   with_unfolding_all
     rw [hv0Model, hv1Model]
 
-section NormedKoszulConnectionDifferenceFoldGrid
+section NormedKoszulConnectionDifferenceContractionGrid
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -1509,7 +1509,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 variable (g₀ : SmoothRiemannianMetric I M)
 
-lemma exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le
+lemma exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le
     (σ : Equiv.Perm (Fin 6))
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ w, 0 ≤ C w) ∧
@@ -1781,7 +1781,7 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFol
         rw [Finset.sum_congr rfl fun w₁ _ => hstep w₁, ← Finset.sum_mul]
         ring
 
-end NormedKoszulConnectionDifferenceFoldGrid
+end NormedKoszulConnectionDifferenceContractionGrid
 
 end bgrConversion
 

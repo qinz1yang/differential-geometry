@@ -1142,10 +1142,10 @@ theorem operator_field_composition_h2_h2_to_h2_bound
     exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
       (I := I) (M := M) g p r
   let G : ℕ → ℝ := fun i =>
-    (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g r p c r i).choose
   have hG : ∀ i, 0 ≤ G i := fun i =>
-    (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g r p c r i).choose_spec.1
   let K : ℝ := ∑ i ∈ Finset.range 3,
     diagonalGridGrowthFactor (E := E) i * G i * (CW ^ 2 + CΦ ^ 2)
@@ -1197,7 +1197,7 @@ theorem operator_field_composition_h2_h2_to_h2_bound
             riemannianFiberNormSq (I := I) (M := M) g p (r + l) x
               ((iteratedCovGrad (I := I) g p r l W).toSection x)
     obtain ⟨hgridInt, hgridBound⟩ :=
-      (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+      (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
         (I := I) (M := M) g r p c r i).choose_spec.2
         Φ W (CΦ * A) (CW * B) (mul_nonneg hCΦ hA)
           (mul_nonneg hCW hB) hΦsup hWsup

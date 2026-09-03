@@ -1234,7 +1234,7 @@ theorem exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism
         (bilinearSlotInsertionCoefficient (I := I) (M := M) g 2
           (connectionDifferenceEndomorphism (I := I) (M := M) g gT -
             connectionDifferenceEndomorphism (I := I) (M := M) g gU)) := by
-      rw [DifferentialGeometry.Analysis.Sobolev.armSlotEndoCc_sub]
+      rw [DifferentialGeometry.Analysis.Sobolev.termSlotEndoCc_sub]
     _ ≤ (Module.finrank ℝ E : ℝ) ^ 2 *
         covariantJetNormSq (I := I) (M := M) g 2
           (bilinearSlotInsertionCoefficient (I := I) (M := M) g 0
@@ -1247,7 +1247,7 @@ theorem exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism
               (connectionDifferenceEndomorphism (I := I) (M := M) g gT) -
             bilinearSlotInsertionCoefficient (I := I) (M := M) g 0
               (connectionDifferenceEndomorphism (I := I) (M := M) g gU)) := by
-      rw [DifferentialGeometry.Analysis.Sobolev.armSlotEndoCc_sub]
+      rw [DifferentialGeometry.Analysis.Sobolev.termSlotEndoCc_sub]
     _ ≤ (Module.finrank ℝ E : ℝ) ^ 2 *
         (B0 R * D3 + B1 R * D2 + B1 R * A * D2) ^ 2 :=
       mul_le_mul_of_nonneg_left h0 (pow_nonneg (Nat.cast_nonneg _) 2)
@@ -2212,11 +2212,11 @@ theorem exists_deTurckLieCovariantDerivativeRemainder_covariantJetNormSq_differe
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
       covariantJetNormSq (I := I) (M := M) g 2
-          ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+          ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδT hδZ
               lieDecompositionQ lieDecompositionEps s) -
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
               (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g U hδU hδZ
               lieDecompositionQ lieDecompositionEps s)) ≤
@@ -2319,7 +2319,7 @@ theorem exists_deTurckLieCovariantDerivativeRemainder_covariantJetNormSq_differe
     rw [hu]
     linarith [sq_nonneg D3]
   have hUT :
-      deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmT g -
+      deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gmT g -
         deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M)
           g T hδT hδZ
             ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -2335,7 +2335,7 @@ theorem exists_deTurckLieCovariantDerivativeRemainder_covariantJetNormSq_differe
     rw [hgmT]
     exact lieCov_residual (I := I) (M := M) g T hδ_lt hδT hδZ hT hs
   have hUU :
-      deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmU g -
+      deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gmU g -
         deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M)
           g U hδU hδZ
             ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -2513,7 +2513,7 @@ open DifferentialGeometry.Analysis.Spectral
   (operatorFieldApply operatorFieldApplication_add_left operatorFieldApplication_add_right operatorFieldApplication_assoc operatorFieldApplication_smul_left operatorFieldApplication_smul_right operatorFieldApplication_sub_left operatorFieldApplication_toSection ccOperatorFieldComp
    operatorFieldComposition_toSection operatorFieldComposition_zero_eq_operatorFieldApply ccInputSlotSymm ccInputSlotSymm ccOperatorFieldComp
    ccSlotSwapField ccSlotSwapField_toSection deTurckLieTopOrderPairingFamily lieCorrectionZeroMixedConnection lieCorrectionZeroKappa lieCorrectionZeroRiemann lieCorrectionZeroVectorBundle
-   lieCorrectionZeroField operatorFieldApply permCoeff ricciConnectionDifferenceQuadraticArm ricciConnectionDifferenceQuadraticKernel rsDomDomCongr slotExtend slotSwapFib slotSwapFib_apply
+   lieCorrectionZeroField operatorFieldApply permCoeff ricciConnectionDifferenceQuadraticTerm ricciConnectionDifferenceQuadraticKernel rsDomDomCongr slotExtend slotSwapFib slotSwapFib_apply
    slotExtendFib_apply slotExtend_toSection slotExtendIter symmS_eq_self_of_ccTensorBilin_symm
    tail_base_split toModel_rsDomDomCongr_apply)
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc slotInsertEndoCc_toSection)
@@ -3874,12 +3874,12 @@ theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_apply
       gm.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
     operatorFieldApply (I := I) (M := M) g 2 2
-        (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gm)
+        (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gm)
         (symmS (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 2
         (ricciConnectionDifferenceQuadraticDerivativeCoefficient (I := I) (M := M) g gm W)
         (covGrad (I := I) (M := M) g 0 2 P) := by
-  rw [ricciConnectionDifferenceQuadraticArm, ← operatorFieldApplication_assoc, ricciConnectionDifferenceQuadraticKernel_eq_sum]
+  rw [ricciConnectionDifferenceQuadraticTerm, ← operatorFieldApplication_assoc, ricciConnectionDifferenceQuadraticKernel_eq_sum]
   unfold ricciConnectionDifferenceQuadraticKernelSum
   simp only [operatorFieldApplication_add_left]
   have h0 := nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo_apply (I := I) (M := M) g gm P W hP htie
@@ -3979,7 +3979,7 @@ theorem lowerScalePathIntegrand_decomposition
       let gm := metricPerturbationPath (I := I) g T 0 hδ hδZ s
       ((((-2 : ℝ) •
             RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gm (s • T) +
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g -
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδ hδZ
               lieDecompositionQ lieDecompositionEps s)) +
         lieCorrectionZeroVectorBundle (I := I) (M := M) g gm) +
@@ -3993,15 +3993,15 @@ theorem lowerScalePathIntegrand_decomposition
   have hlie :
       deTurckLieCoeffField (I := I) (M := M) g gm g +
           lieCorrectionZeroField (I := I) (M := M) g gm g - Q =
-        (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g - Q) +
+        (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g - Q) +
           lieCorrectionZeroVectorBundle (I := I) (M := M) g gm +
           lieCorrectionZeroMixedConnection (I := I) (M := M) g gm g +
           lieCorrectionZeroRiemann (I := I) (M := M) g gm := by
     calc
-      _ = (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g - Q) +
+      _ = (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g - Q) +
           (lieCorrectionZeroField (I := I) (M := M) g gm g +
-            deTurckLieEndoArmField (I := I) (M := M) g gm g) := by
-        rw [deTurckLieCoeffField_eq_covDerivArm_add_endoArm]
+            deTurckLieEndoTermField (I := I) (M := M) g gm g) := by
+        rw [deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm]
         abel
       _ = _ := by
         rw [tail_base_split (I := I) (M := M) g gm g]

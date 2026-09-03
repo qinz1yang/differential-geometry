@@ -35,7 +35,7 @@ open DifferentialGeometry.Analysis.Spectral
     oneMinusConnLapSmoothIter metricPrincipalDefectCurvCoeff smoothCcToTensorHs
     smoothCcToTensorHs_add_two_norm_eq_oneMinusConnLap smoothCcToTensorHs_coeff
     tensorL2Coeff_ofCompact_oneMinusConnLapSmoothIter
-    tensorL2Inner_eq_tsum_l2Coeff_cross_arm tensorResolventL2_isCompactOperator)
+    tensorL2Inner_eq_tsum_l2Coeff_cross tensorResolventL2_isCompactOperator)
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -71,8 +71,8 @@ theorem oneMinusConnLapSmooth_pair_h5_h3
         (inner ℝ
           (smoothCcToTensorHs (I := I) (M := M) g ((1 : ℕ) : ℝ) L2T)
           (smoothCcToTensorHs (I := I) (M := M) g ((1 : ℕ) : ℝ) LY) : ℝ) := by
-    rw [tensorL2Inner_eq_tsum_l2Coeff_cross_arm
-      (I := I) (M := M) g L3T LY,
+    rw [tensorL2Inner_eq_tsum_l2Coeff_cross
+      (I := I) (M := M) g 2 L3T LY,
       TensorHs.inner_def]
     refine tsum_congr (fun i => ?_)
     rw [smoothCcToTensorHs_coeff, smoothCcToTensorHs_coeff,

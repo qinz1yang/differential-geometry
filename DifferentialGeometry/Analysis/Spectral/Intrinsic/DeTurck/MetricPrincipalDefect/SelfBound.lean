@@ -284,9 +284,9 @@ theorem phiSelf_grid
       phiSelfC (E := E) i := by
   classical
   let ρA : Equiv.Perm (Fin 4) :=
-    traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
+    traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA
   let ρB : Equiv.Perm (Fin 4) :=
-    traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT
+    traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
   set A := (iteratedCovGrad (I := I) g 4 2 i
     (reindexCoeffGen (I := I) (M := M) g 4 2
       (traceHessianCoeff (I := I) (M := M) g g) ρA)).toSection x with hA

@@ -51,30 +51,30 @@ theorem nextTol_pos {a δ B : ℝ} (ha0 : 0 < a) (ha1 : a < 1) (hδ0 : 0 < δ)
   have hδB : 0 ≤ δ * B := mul_nonneg hδ0.le hB0
   exact lt_of_lt_of_le (by linarith) (nextTol_left a δ B)
 
-def sepFeed (c0 cov : ℝ) : ℝ :=
+def sepEnvelope (c0 cov : ℝ) : ℝ :=
   max (c0 / (1 - c0)) cov
 
 def sepNextC0 (c0 cov δ : ℝ) : ℝ :=
-  c0 + δ * (1 + sepFeed c0 cov)
+  c0 + δ * (1 + sepEnvelope c0 cov)
 
 def sepNextCov (c0 cov δ B : ℝ) : ℝ :=
-  sepFeed c0 cov + δ * B
+  sepEnvelope c0 cov + δ * B
 
-theorem sepFeed_c0 (c0 cov : ℝ) :
-    c0 / (1 - c0) ≤ sepFeed c0 cov :=
+theorem sepEnvelope_c0 (c0 cov : ℝ) :
+    c0 / (1 - c0) ≤ sepEnvelope c0 cov :=
   le_max_left _ _
 
-theorem sepFeed_cov (c0 cov : ℝ) :
-    cov ≤ sepFeed c0 cov :=
+theorem sepEnvelope_cov (c0 cov : ℝ) :
+    cov ≤ sepEnvelope c0 cov :=
   le_max_right _ _
 
-theorem sepFeed_nonneg {c0 cov : ℝ} (hc0 : 0 ≤ c0) (hc1 : c0 < 1) :
-    0 ≤ sepFeed c0 cov := by
+theorem sepEnvelope_nonneg {c0 cov : ℝ} (hc0 : 0 ≤ c0) (hc1 : c0 < 1) :
+    0 ≤ sepEnvelope c0 cov := by
   have hden : 0 ≤ 1 - c0 := by linarith
-  exact le_trans (div_nonneg hc0 hden) (sepFeed_c0 c0 cov)
+  exact le_trans (div_nonneg hc0 hden) (sepEnvelope_c0 c0 cov)
 
-theorem sepFeed_le_one {c0 cov : ℝ} (hc0_half : c0 ≤ 1 / 2) (hcov : cov ≤ 1) :
-    sepFeed c0 cov ≤ 1 := by
+theorem sepEnvelope_le_one {c0 cov : ℝ} (hc0_half : c0 ≤ 1 / 2) (hcov : cov ≤ 1) :
+    sepEnvelope c0 cov ≤ 1 := by
   have hden : 0 < 1 - c0 := by linarith
   have hc0frac : c0 / (1 - c0) ≤ 1 := by
     rw [div_le_one hden]
@@ -82,11 +82,11 @@ theorem sepFeed_le_one {c0 cov : ℝ} (hc0_half : c0 ≤ 1 / 2) (hcov : cov ≤ 
   exact max_le hc0frac hcov
 
 theorem sepNextC0_bound (c0 cov δ : ℝ) :
-    c0 + δ * (1 + sepFeed c0 cov) ≤ sepNextC0 c0 cov δ :=
+    c0 + δ * (1 + sepEnvelope c0 cov) ≤ sepNextC0 c0 cov δ :=
   le_rfl
 
 theorem sepNextCov_bound (c0 cov δ B : ℝ) :
-    sepFeed c0 cov + δ * B ≤ sepNextCov c0 cov δ B :=
+    sepEnvelope c0 cov + δ * B ≤ sepNextCov c0 cov δ B :=
   le_rfl
 
 def sepTail (s l : ℕ) : ℝ :=
@@ -122,10 +122,10 @@ theorem le_sepBeta (B : ℝ) :
     B ≤ sepBeta B := by
   simp [sepBeta]
 
-theorem sepFeed_le_beta {B c0 cov T : ℝ} (hT0 : 0 ≤ T) (hc0 : 0 ≤ c0)
+theorem sepEnvelope_le_beta {B c0 cov T : ℝ} (hT0 : 0 ≤ T) (hc0 : 0 ≤ c0)
     (hc0T : c0 ≤ 2 * T) (hcovT : cov ≤ sepBeta B * T)
     (hTsmall : T ≤ 1 / sepBeta B) :
-    sepFeed c0 cov ≤ sepBeta B * T := by
+    sepEnvelope c0 cov ≤ sepBeta B * T := by
   have hβpos : 0 < sepBeta B := sepBeta_pos B
   have hβ4 : (4 : ℝ) ≤ sepBeta B := sepBeta_four B
   have hTβ : T * sepBeta B ≤ 1 := by
@@ -149,8 +149,8 @@ theorem sepNextC0_le {B c0 cov T δ : ℝ} (hT0 : 0 ≤ T) (hδ0 : 0 ≤ δ)
     (hTsmall : T ≤ 1 / sepBeta B) :
     sepNextC0 c0 cov δ ≤ 2 * (T + δ) := by
   have hβpos : 0 < sepBeta B := sepBeta_pos B
-  have hfeed : sepFeed c0 cov ≤ sepBeta B * T :=
-    sepFeed_le_beta hT0 hc0 hc0T hcovT hTsmall
+  have hfeed : sepEnvelope c0 cov ≤ sepBeta B * T :=
+    sepEnvelope_le_beta hT0 hc0 hc0T hcovT hTsmall
   have hTβ : T * sepBeta B ≤ 1 := by
     rwa [le_div_iff₀ hβpos] at hTsmall
   dsimp [sepNextC0]
@@ -160,8 +160,8 @@ theorem sepNextCov_le {B c0 cov T δ : ℝ} (hT0 : 0 ≤ T) (hδ0 : 0 ≤ δ)
     (hc0 : 0 ≤ c0) (hc0T : c0 ≤ 2 * T) (hcovT : cov ≤ sepBeta B * T)
     (hTsmall : T ≤ 1 / sepBeta B) :
     sepNextCov c0 cov δ B ≤ sepBeta B * (T + δ) := by
-  have hfeed : sepFeed c0 cov ≤ sepBeta B * T :=
-    sepFeed_le_beta hT0 hc0 hc0T hcovT hTsmall
+  have hfeed : sepEnvelope c0 cov ≤ sepBeta B * T :=
+    sepEnvelope_le_beta hT0 hc0 hc0T hcovT hTsmall
   have hBβ : B ≤ sepBeta B := le_sepBeta B
   dsimp [sepNextCov]
   nlinarith

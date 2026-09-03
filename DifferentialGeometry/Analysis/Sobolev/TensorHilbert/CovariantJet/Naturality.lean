@@ -228,7 +228,7 @@ theorem covariantJetNormSq_bilinearSlotInsertionCoefficient_succ_le
       (Module.finrank ℝ E : ℝ) *
         covariantJetNormSq (I := I) (M := M) g m
           (bilinearSlotInsertionCoefficient (I := I) (M := M) g s A) := by
-  rw [armSlotEndoCc_succ (I := I) (M := M) g s A,
+  rw [termSlotEndoCc_succ (I := I) (M := M) g s A,
     covariantJetNormSq_reindexCoeffGen,
     covariantJetNormSq_rsDomDomCongrSection]
   exact covariantJetNormSq_slotExtend_le

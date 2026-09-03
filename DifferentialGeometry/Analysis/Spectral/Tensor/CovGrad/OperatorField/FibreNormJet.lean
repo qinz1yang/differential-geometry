@@ -885,7 +885,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalP
         riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 (a + l) x _
       have hGj_nn : (0 : ℝ) ≤ diagonalGridGrowthFactor (E := E) j := operatorFieldApplicationGdiag_nonneg (E := E) j
       have hn_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
-      have hArmA : riemannianFiberNormSq (I := I) (M := M) g 0 ((b + 1) + j) x
+      have hTermA : riemannianFiberNormSq (I := I) (M := M) g 0 ((b + 1) + j) x
             ((iteratedCovGrad (I := I) g 0 (b + 1) j
               (ccOperatorFieldComp (I := I) (M := M) g 0 a (b + 1)
                 (covGrad (I := I) (M := M) g a b Φ) W)).toSection x) ≤
@@ -896,7 +896,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalP
         rw [hcΦ_def]
         dsimp only
         rw [riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g a b i Φ x]
-      have hArmB : riemannianFiberNormSq (I := I) (M := M) g 0 ((b + 1) + j) x
+      have hTermB : riemannianFiberNormSq (I := I) (M := M) g 0 ((b + 1) + j) x
             ((iteratedCovGrad (I := I) g 0 (b + 1) j
               (ccOperatorFieldComp (I := I) (M := M) g 0 (a + 1) (b + 1)
                 (slotExtend (I := I) (M := M) g a b Φ)
@@ -936,8 +936,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalP
           _ = (Module.finrank ℝ E : ℝ) * (cΦ i * ∑ l ∈ Finset.range (j + 1 - i), cW (l + 1)) := by
                 ring
       refine le_trans (add_le_add
-        (mul_le_mul_of_nonneg_left hArmA (by norm_num : (0:ℝ) ≤ 2))
-        (mul_le_mul_of_nonneg_left hArmB (by norm_num : (0:ℝ) ≤ 2))) ?_
+        (mul_le_mul_of_nonneg_left hTermA (by norm_num : (0:ℝ) ≤ 2))
+        (mul_le_mul_of_nonneg_left hTermB (by norm_num : (0:ℝ) ≤ 2))) ?_
       set Gj : ℝ := diagonalGridGrowthFactor (E := E) j with hGj_def
       set SA : ℝ := ∑ i ∈ Finset.range (j + 1), cΦ (i + 1) * ∑ l ∈ Finset.range (j + 1 - i), cW l
         with hSA_def
@@ -1863,7 +1863,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalP
         riemannianFiberNormSq_nonneg (I := I) (M := M) g p (a + l) x _
       have hGj_nn : (0 : ℝ) ≤ diagonalGridGrowthFactor (E := E) j := operatorFieldApplicationGdiag_nonneg (E := E) j
       have hn_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
-      have hArmA : riemannianFiberNormSq (I := I) (M := M) g p ((b + 1) + j) x
+      have hTermA : riemannianFiberNormSq (I := I) (M := M) g p ((b + 1) + j) x
             ((iteratedCovGrad (I := I) g p (b + 1) j
               (ccOperatorFieldComp (I := I) (M := M) g p a (b + 1)
                 (covGrad (I := I) (M := M) g a b Φ) W)).toSection x) ≤
@@ -1874,7 +1874,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalP
         rw [hcΦ_def]
         dsimp only
         rw [riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g a b i Φ x]
-      have hArmB : riemannianFiberNormSq (I := I) (M := M) g p ((b + 1) + j) x
+      have hTermB : riemannianFiberNormSq (I := I) (M := M) g p ((b + 1) + j) x
             ((iteratedCovGrad (I := I) g p (b + 1) j
               (ccOperatorFieldComp (I := I) (M := M) g p (a + 1) (b + 1)
                 (slotExtend (I := I) (M := M) g a b Φ)
@@ -1914,8 +1914,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalP
           _ = (Module.finrank ℝ E : ℝ) * (cΦ i * ∑ l ∈ Finset.range (j + 1 - i), cW (l + 1)) := by
                 ring
       refine le_trans (add_le_add
-        (mul_le_mul_of_nonneg_left hArmA (by norm_num : (0:ℝ) ≤ 2))
-        (mul_le_mul_of_nonneg_left hArmB (by norm_num : (0:ℝ) ≤ 2))) ?_
+        (mul_le_mul_of_nonneg_left hTermA (by norm_num : (0:ℝ) ≤ 2))
+        (mul_le_mul_of_nonneg_left hTermB (by norm_num : (0:ℝ) ≤ 2))) ?_
       set Gj : ℝ := diagonalGridGrowthFactor (E := E) j with hGj_def
       set SA : ℝ := ∑ i ∈ Finset.range (j + 1), cΦ (i + 1) * ∑ l ∈ Finset.range (j + 1 - i), cW l
         with hSA_def

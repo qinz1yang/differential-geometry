@@ -89,7 +89,7 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-structure ExpInvBranch
+structure ExponentialInverseBranch
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) where
@@ -102,24 +102,24 @@ structure ExpInvBranch
       hom
       hom.source
 
-namespace ExpInvBranch
+namespace ExponentialInverseBranch
 
 def inv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p) : M → E :=
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) : M → E :=
   B.hom.symm
 
 def dom
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p) : Set M :=
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) : Set M :=
   B.hom.target
 
 theorem right_inv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p)
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {y : M} (hy : y ∈ B.dom) :
     expMapIntrinsic (I := I) g hEnorm p
         ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm (B.inv y)) = y := by
@@ -133,7 +133,7 @@ theorem right_inv
 theorem left_inv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p)
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : E} (hu : u ∈ B.hom.source) :
     B.inv
         (expMapIntrinsic (I := I) g hEnorm p
@@ -148,11 +148,11 @@ theorem left_inv
 theorem inv_inf
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p) :
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) :
     ContMDiffOn I 𝓘(Real, E) ∞ B.inv B.dom := by
   exact B.hom.contMDiffOn_invFun
 
-end ExpInvBranch
+end ExponentialInverseBranch
 
 private theorem branch_of_inj
     (g : SmoothRiemannianMetric I M)
@@ -164,7 +164,7 @@ private theorem branch_of_inj
           expMapIntrinsic (I := I) g hEnorm p
             ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm z))
         u)) :
-    ∃ B : ExpInvBranch (I := I) g hEnorm p, u ∈ B.hom.source := by
+    ∃ B : ExponentialInverseBranch (I := I) g hEnorm p, u ∈ B.hom.source := by
   classical
   let f : E → M := fun z : E =>
     expMapIntrinsic (I := I) g hEnorm p
@@ -223,7 +223,7 @@ theorem branch_of_not_conj
     {p : M} {u : TangentSpace I p}
     (hu : ¬ IsConjVec (I := I) g hEnorm p
       (tangentSpaceModelContinuousLinearEquiv (I := I) p u)) :
-    ∃ B : ExpInvBranch (I := I) g hEnorm p,
+    ∃ B : ExponentialInverseBranch (I := I) g hEnorm p,
       tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source := by
   classical
   apply branch_of_inj (I := I) g hEnorm
@@ -244,12 +244,12 @@ theorem branch_of_not_conj
       ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm
         (tangentSpaceModelContinuousLinearEquiv (I := I) p u)))).injective hvw
 
-namespace ExpInvBranch
+namespace ExponentialInverseBranch
 
 theorem not_conj
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p)
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source) :
     ¬ IsConjVec (I := I) g hEnorm p
@@ -277,7 +277,7 @@ theorem not_conj
       (tangentSpaceModelContinuousLinearEquiv (I := I) p u)).symm.injective
   exact hinj hvw
 
-end ExpInvBranch
+end ExponentialInverseBranch
 
 end Exponential
 end Riemannian

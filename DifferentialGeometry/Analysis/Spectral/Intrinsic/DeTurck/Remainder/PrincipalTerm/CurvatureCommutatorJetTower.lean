@@ -742,7 +742,7 @@ private lemma rawTensorConnLap_jets_bound (g : SmoothRiemannianMetric I M) (r s 
     exact h
   linarith [hpiece1, hpiece2]
 
-lemma DeTurckRemainderPrincipalArm.connLapIterate_jet_bound (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+lemma DeTurckRemainderPrincipalTerm.connLapIterate_jet_bound (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ c : ℕ → ℝ, (∀ p, 0 ≤ c p) ∧
       ∀ (p : ℕ) (S : SmoothCcTensor g r s),
         ‖oneMinusConnLapSmoothIter (I := I) g r s p S‖ ≤

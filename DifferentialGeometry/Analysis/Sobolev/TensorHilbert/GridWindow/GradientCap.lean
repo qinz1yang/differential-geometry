@@ -52,7 +52,7 @@ private lemma nnCapW (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g�
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem capOfArm (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
+theorem capOfTerm (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {Λ : ℝ} (hΛ1 : 1 ≤ Λ)
     (hP0 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 0 ≤ Λ)
     (hP1 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 1 ≤ Λ)

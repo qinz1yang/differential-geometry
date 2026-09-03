@@ -30,7 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
-theorem deTurckPrincipalCometricArm_spectralGarding_kernel [Nonempty M]
+theorem deTurckPrincipalCometricTerm_spectralGarding_kernel [Nonempty M]
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -41,18 +41,18 @@ theorem deTurckPrincipalCometricArm_spectralGarding_kernel [Nonempty M]
       ∀ (m : ℕ) (T₀ : SmoothCcTensor g₀ 0 2)
         (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
-            (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+            (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
               (tensorSectionRealizeMetric (I := I) g₀ T₀
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                 (hδ_fibre T₀ hball)) T₀)‖ ≤
-          deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+          deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
                 (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ +
             Clower m * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 1) T₀‖ :=
-  deTurckPrincipalCometricArm_realize_Hs_norm_le (I := I) (M := M) g₀ a
+  deTurckPrincipalCometricTerm_realize_Hs_norm_le (I := I) (M := M) g₀ a
     ha_super hR₀ hδ_le hδ_fibre
 
-theorem exists_smoothCcToTensorHs_deTurckPrincipalCometricArm_principal_le
+theorem exists_smoothCcToTensorHs_deTurckPrincipalCometricTerm_principal_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -63,11 +63,11 @@ theorem exists_smoothCcToTensorHs_deTurckPrincipalCometricArm_principal_le
       ∀ (m : ℕ) (T₀ : SmoothCcTensor g₀ 0 2)
         (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
-            (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+            (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
               (tensorSectionRealizeMetric (I := I) g₀ T₀
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                 (hδ_fibre T₀ hball)) T₀)‖ ≤
-          deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+          deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
                 (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ +
             Clower m * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 1) T₀‖ := by
@@ -88,7 +88,7 @@ theorem exists_smoothCcToTensorHs_deTurckPrincipalCometricArm_principal_le
         hL2, tensorL2Coeff_eq_inner, inner_zero_right]
     rw [hzero, hzero, hzero]
     simp
-  · exact deTurckPrincipalCometricArm_spectralGarding_kernel (I := I) (M := M) g₀ a
+  · exact deTurckPrincipalCometricTerm_spectralGarding_kernel (I := I) (M := M) g₀ a
       ha_super hR₀ hδ_le hδ_fibre
 
 end Spectral

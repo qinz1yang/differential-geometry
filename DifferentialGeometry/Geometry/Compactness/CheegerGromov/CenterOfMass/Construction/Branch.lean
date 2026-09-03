@@ -446,7 +446,7 @@ theorem HasNormalBrFull.exists_cm_eqn
             (I := I) (X.obj k).metric x).symm (xi i))) <
         ENNReal.ofReal (ρ / 2) := by
     simpa only [riemannianEDist_comm] using hpairs'
-  have hz := centerReadoutB_min (I := I) hb k hcomplete hconn x hq he hf
+  have hz := centerOfMass_chartCmEqnB_eq_zero_of_normalBounds (I := I) hb k hcomplete hconn x hq he hf
     mu xi join p r h' hρ hρq hρmetric hρexp hpairs''
   simpa only [xi, hdecode] using hz
 
@@ -603,7 +603,7 @@ theorem HasNormalBrFull.exists_cm_deriv
             (I := I) (X.obj k).metric x).symm (xi i))) <
         ENNReal.ofReal (ρ / 2) := by
     simpa only [riemannianEDist_comm] using hpairs'
-  have hzero' := centerReadoutB_min (I := I) hb k hcomplete hconn x hq he hf
+  have hzero' := centerOfMass_chartCmEqnB_eq_zero_of_normalBounds (I := I) hb k hcomplete hconn x hq he hf
     mu xi join p r h' hρ hρq hρmetric hρexp hpairs''
   have hzero : chartCmEqnB (I := I) (X.obj k).metric
       (normal_enorm (I := I) (X.obj k)) x
@@ -778,7 +778,7 @@ theorem HasNormalBrFull.exists_cmC
             (I := I) (X.obj k).metric x).symm (xi i))) <
         ENNReal.ofReal (ρ / 2) := by
     simpa only [riemannianEDist_comm] using hpairs'
-  have hzero' := centerReadoutB_min (I := I) hb k hcomplete hconn x
+  have hzero' := centerOfMass_chartCmEqnB_eq_zero_of_normalBounds (I := I) hb k hcomplete hconn x
     hq he hf
     mu xi join p r h' hρ hρq hρmetric hρexp hpairs''
   have hzeroB₀ :
@@ -878,7 +878,7 @@ theorem HasNormalBrFull.exists_cmC
   let B := IsNormalDiag.toBranch
     (I := I) (X.obj k) hcomplete hconn x hq he
   have hdom (i : ι) :
-      (c.hom z, c.hom (xi i)) ∈ B.chartReadDom c := by
+      (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c := by
     have hpair :
         normalPair (I := I) (X.obj k) x (z, xi i) (c := c) ∈ B.dom := by
       rw [← (IsNormalDiag.full_transport (I := I) (X.obj k)
@@ -1577,10 +1577,10 @@ theorem exists_cm_branch
         dist p x ≤ R) →
       ENNReal.ofReal (R + 2 * r) < ENNReal.ofReal (ρ / 2) →
       ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
-      ∃ B : DiagInvBranch (I := I) (X.obj k).metric
+      ∃ B : DiagonalInverseBranch (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k)) x,
         ∀ i, (centerOfMass (I := I) (ι := ι) (X.obj k).metric μ pts join p r h,
-          pts i) ∈ B.readDom := by
+          pts i) ∈ B.coordinateDomain := by
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
   let : ChartedSpace H (X.obj k).M := (X.obj k).charted
   let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
@@ -1611,7 +1611,7 @@ theorem exists_cm_branch
           (centerOfMass (I := I) (ι := ι) (X.obj k).metric μ pts join p r h) x)
         (riemannianEDist I (pts i) x) < ENNReal.ofReal (ρ / 2) :=
     centerPairs_lt_le (I := I) (X.obj k).metric μ pts join p r h x R hpq hscale
-  exact HasNormalBranchDom.exists_pair_readout (I := I) hb k hcomplete hconn x hdom
+  exact HasNormalBranchDom.exists_branch_containing_pairs (I := I) hb k hcomplete hconn x hdom
     (fun _ ↦ centerOfMass (I := I) (ι := ι) (X.obj k).metric μ pts join p r h) pts
     hρExp (by simpa [riemannianEDist_comm] using hpairs)
 

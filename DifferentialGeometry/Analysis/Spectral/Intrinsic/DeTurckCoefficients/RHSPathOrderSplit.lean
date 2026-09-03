@@ -82,37 +82,6 @@ private theorem ccBilin_sub
   exact unitModel_sub_app (I := I) (M := M) g₀ T T' x
     (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (![v, w] i))
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] [T2Space M] in
-private theorem symmS_eq_self
-    (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
-    (hS : ∀ (x : M) (v w : TangentSpace I x),
-      smoothCcTensorBilinForm (I := I) g₀ S x v w = smoothCcTensorBilinForm (I := I) g₀ S x w v) :
-    ccTensor02Symm (I := I) (M := M) g₀ S = S := by
-  have hswap : domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S = S := by
-    refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
-    rw [domDomCongrSection_unitModel]
-    refine ContinuousMultilinearMap.ext (fun v => ?_)
-    rw [ContinuousMultilinearMap.domDomCongr_apply]
-    have hv : ∀ u w : TangentSpace I x,
-        unitModel (I := I) (M := M) g₀ 2 S x ![u, w] =
-          unitModel (I := I) (M := M) g₀ 2 S x ![w, u] := by
-      intro u w
-      rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ S x u w,
-        unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ S x w u]
-      exact hS x u w
-    have hveta : (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) = ![v 1, v 0] := by
-      funext i
-      fin_cases i <;> rfl
-    have hveta' : v = ![v 0, v 1] := by
-      funext i
-      fin_cases i <;> rfl
-    rw [hveta]
-    conv_rhs => rw [hveta']
-    exact hv (v 1) (v 0)
-  rw [ccTensor02Symm, hswap, ← two_smul ℝ S, smul_smul,
-    show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
-
 def rhsPathSlope
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -293,7 +262,7 @@ def lieTopCovSum
       ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (deTurckLieArm2PrincipalCoeff (I := I) g₀
+          (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
@@ -400,7 +369,7 @@ theorem lieTop_add_swap
         lieTopTailSwap (I := I) g₀ T T' hδ hδ' x v w s =
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (deTurckLieArm2PrincipalCoeff (I := I) g₀
+          (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
@@ -414,7 +383,7 @@ theorem lieTop_add_swap
           ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
           unitModel (I := I) (M := M) g₀ 2
             (operatorFieldApply (I := I) (M := M) g₀ 4 2
-              (deTurckLieArm2PrincipalCoeff (I := I) g₀
+              (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
@@ -432,7 +401,7 @@ theorem lieTop_add_swap
     _ = _ := by
       simpa using unitModel_basis_expand_two (I := I) (M := M) g₀
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (deTurckLieArm2PrincipalCoeff (I := I) g₀
+          (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
@@ -574,39 +543,39 @@ theorem rhsSlope_eq_raw [BoundarylessManifold I M]
     rhsSumSlope (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s =
       (-2 : ℝ) * unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s +
+            (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s +
               (linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s -
-                linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s))
+                linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
           operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s +
+            (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s +
               (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s -
-                linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s))
+                linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T')) +
           operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+            (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
         (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (![v, w] j)) +
       lieTopSum (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s +
       lieOneSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
       lieZeroSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s := by
   rw [rhsSlope_eq_lin (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w hs]
-  have hRic := linearizedRicciAt_eq_threeArm_connectionDifferenceCoeff (I := I) g₀ T T'
+  have hRic := linearizedRicciAt_eq_covariantJet_connectionDifferenceCoeff (I := I) g₀ T T'
     hTsymm hT'symm hδ_lt hδ hδ'_lt hδ' s hs x ![v, w]
   have hRic' : linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       x v w s = unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s +
+            (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s +
               (linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s -
-                linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s))
+                linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
           operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s +
+            (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s +
               (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s -
-                linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s))
+                linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T')) +
           operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+            (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
         (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (![v, w] j)) := by
     simpa using hRic
@@ -639,14 +608,14 @@ def rhsLowTerm
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   (-2 : ℝ) * unitModel (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ 2 2
-          (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s +
+          (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s +
             (linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s -
-              linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s))
+              linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
         operatorFieldApply (I := I) (M := M) g₀ 3 2
-          (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s +
+          (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s +
             (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s -
-              linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s))
+              linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x
       (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (![v, w] j)) +
     lieOneSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
@@ -670,7 +639,7 @@ theorem rhsTop_eq_raw
     rhsTopTerm (I := I) g₀ T T' hδ hδ' x v w s =
       (-2 : ℝ) * unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+          (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
           (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
         (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (![v, w] j)) +
       lieTopSum (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s +
@@ -683,7 +652,7 @@ theorem rhsTop_eq_raw
       ccBilin_sub (I := I) (M := M) g₀ T T' y z u,
       hTsymm y u z, hT'symm y u z]
   have hsymmS : ccTensor02Symm (I := I) (M := M) g₀ (T - T') = T - T' :=
-    symmS_eq_self (I := I) (M := M) g₀ (T - T') hSsymm
+    ccTensor02Symm_eq_self (I := I) (M := M) g₀ (T - T') hSsymm
   have hLie := lieTop_add_swap (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x v w s
   rw [hsymmS] at hLie

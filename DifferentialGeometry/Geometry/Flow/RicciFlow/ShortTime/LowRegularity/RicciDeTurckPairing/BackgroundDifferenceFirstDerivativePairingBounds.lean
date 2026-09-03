@@ -103,78 +103,78 @@ private theorem cometricRaiseSlot0Field_sub
   exact ContinuousLinearMap.map_sub _ _ _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem deTurckLieArmOneBackgroundLoweredConnectionDifference_eq_neg_lieCorrectionZeroKappa
+private theorem deTurckLieFirstOrderBackgroundLoweredConnectionDifference_eq_neg_lieCorrectionZeroKappa
     (g gT gB : SmoothRiemannianMetric I M) :
-    deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB =
+    deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB =
       -lieCorrectionZeroKappa (I := I) (M := M) g gT gB := by
   have h := metricConnectionDifferenceLoweredCoefficient_eq_neg_kappa
     (I := I) (M := M) g gT gB
   change lieCorrectionZeroKappa (I := I) (M := M) g gT gB =
-    -deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB at h
+    -deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB at h
   have hneg := congrArg Neg.neg h
   simp only [neg_neg] at hneg
   exact hneg.symm
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem deTurckLieArmOneBackgroundLoweredConnectionDifference_backgroundDifference
+private theorem deTurckLieFirstOrderBackgroundLoweredConnectionDifference_backgroundDifference
     (g gT gB : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2)
     (htie : ∀ (x : M) (u v : TangentSpace I x),
       gT.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g T x u v) :
-    deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB -
-        deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g gT g =
+    deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB -
+        deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g gT g =
       -lieCorrectionZeroKappa (I := I) (M := M) g g gB -
         lieCorrectionZeroPbLow (I := I) (M := M) g T g gB := by
-  rw [deTurckLieArmOneBackgroundLoweredConnectionDifference_eq_neg_lieCorrectionZeroKappa (I := I) (M := M) g gT gB,
-    deTurckLieArmOneBackgroundLoweredConnectionDifference_eq_neg_lieCorrectionZeroKappa (I := I) (M := M) g gT g,
+  rw [deTurckLieFirstOrderBackgroundLoweredConnectionDifference_eq_neg_lieCorrectionZeroKappa (I := I) (M := M) g gT gB,
+    deTurckLieFirstOrderBackgroundLoweredConnectionDifference_eq_neg_lieCorrectionZeroKappa (I := I) (M := M) g gT g,
     kappa_bg (I := I) (M := M) g gT gB T htie]
   module
 
-private noncomputable def deTurckLieArmOneBackgroundRaisedConnectionDifference
+private noncomputable def deTurckLieFirstOrderBackgroundRaisedConnectionDifference
     (g gT gB : SmoothRiemannianMetric I M) : SmoothCcTensor g 1 2 :=
   cometricRaiseSlot0Field (I := I) (M := M) g 1
-    (domDomCongrSection (I := I) g lieArm1RhoSlot0
-      (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB))
+    (domDomCongrSection (I := I) g lieFirstOrderRhoSlot0
+      (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB))
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private theorem deTurckLieArmOneBackgroundRaisedConnectionDifference_backgroundDifference
+private theorem deTurckLieFirstOrderBackgroundRaisedConnectionDifference_backgroundDifference
     (g gT gB : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2)
     (htie : ∀ (x : M) (u v : TangentSpace I x),
       gT.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g T x u v) :
-    deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
-        deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g =
+    deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
+        deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g =
       cometricRaiseSlot0Field (I := I) (M := M) g 1
-        (domDomCongrSection (I := I) g lieArm1RhoSlot0
+        (domDomCongrSection (I := I) g lieFirstOrderRhoSlot0
           (-lieCorrectionZeroKappa (I := I) (M := M) g g gB -
             lieCorrectionZeroPbLow (I := I) (M := M) g T g gB)) := by
-  simp only [deTurckLieArmOneBackgroundRaisedConnectionDifference]
+  simp only [deTurckLieFirstOrderBackgroundRaisedConnectionDifference]
   rw [← cometricRaiseSlot0Field_sub, ← domDomCongrSection_sub,
-    deTurckLieArmOneBackgroundLoweredConnectionDifference_backgroundDifference (I := I) (M := M) g gT gB T htie]
+    deTurckLieFirstOrderBackgroundLoweredConnectionDifference_backgroundDifference (I := I) (M := M) g gT gB T htie]
 
-private noncomputable def deTurckLieArmOneBackgroundCoefficientDifference
+private noncomputable def deTurckLieFirstOrderBackgroundCoefficientDifference
     (g gT gB : SmoothRiemannianMetric I M) : SmoothCcTensor g 1 2 :=
-  deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT gB -
-    deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT g
+  deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gT gB -
+    deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gT g
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem deTurckLieArmOneBackgroundCoefficientDifference_eq_comp
+private theorem deTurckLieFirstOrderBackgroundCoefficientDifference_eq_comp
     (g gT gB : SmoothRiemannianMetric I M) :
-    deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gT gB =
+    deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gT gB =
       ccOperatorFieldComp (I := I) (M := M) g 1 1 2
-        (deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
-          deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g)
+        (deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
+          deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g)
         (sharpFlatEndoCc (I := I) g gT) := by
-  simp only [deTurckLieArmOneBackgroundCoefficientDifference, deTurckLieArmOneBackgroundRaisedConnectionDifference, deTurckLieArmOneBackgroundCoefficient, lieArm1RhoSlot0]
+  simp only [deTurckLieFirstOrderBackgroundCoefficientDifference, deTurckLieFirstOrderBackgroundRaisedConnectionDifference, deTurckLieFirstOrderBackgroundCoefficient, lieFirstOrderRhoSlot0]
   rw [operatorFieldComposition_sub_left]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private theorem deTurckLieArmOneBackgroundRaisedConnectionDifference_difference
+private theorem deTurckLieFirstOrderBackgroundRaisedConnectionDifference_difference
     (g gT gU gB : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
     (hTtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -183,15 +183,15 @@ private theorem deTurckLieArmOneBackgroundRaisedConnectionDifference_difference
     (hUtie : ∀ (x : M) (u v : TangentSpace I x),
       gU.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g U x u v) :
-    (deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
-        deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g) -
-      (deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
-        deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g) =
+    (deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
+        deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g) -
+      (deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
+        deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g) =
       cometricRaiseSlot0Field (I := I) (M := M) g 1
-        (domDomCongrSection (I := I) g lieArm1RhoSlot0
+        (domDomCongrSection (I := I) g lieFirstOrderRhoSlot0
           (-lieCorrectionZeroPbLow (I := I) (M := M) g (T - U) g gB)) := by
-  rw [deTurckLieArmOneBackgroundRaisedConnectionDifference_backgroundDifference (I := I) (M := M) g gT gB T hTtie,
-    deTurckLieArmOneBackgroundRaisedConnectionDifference_backgroundDifference (I := I) (M := M) g gU gB U hUtie]
+  rw [deTurckLieFirstOrderBackgroundRaisedConnectionDifference_backgroundDifference (I := I) (M := M) g gT gB T hTtie,
+    deTurckLieFirstOrderBackgroundRaisedConnectionDifference_backgroundDifference (I := I) (M := M) g gU gB U hUtie]
   rw [← cometricRaiseSlot0Field_sub, ← domDomCongrSection_sub]
   congr 2
   rw [pbLow_sub (I := I) (M := M) g T U g gB]
@@ -199,31 +199,31 @@ private theorem deTurckLieArmOneBackgroundRaisedConnectionDifference_difference
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem deTurckLieArmOneBackgroundCoefficientDifference_difference_decomposition
+private theorem deTurckLieFirstOrderBackgroundCoefficientDifference_difference_decomposition
     (g gT gU gB : SmoothRiemannianMetric I M) :
-    deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gT gB -
-        deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gU gB =
+    deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gT gB -
+        deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gU gB =
       ccOperatorFieldComp (I := I) (M := M) g 1 1 2
-          (deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
-            deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g)
+          (deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
+            deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g)
           (sharpFlatEndoCc (I := I) g gT -
             sharpFlatEndoCc (I := I) g gU) +
         ccOperatorFieldComp (I := I) (M := M) g 1 1 2
-          ((deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
-              deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g) -
-            (deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
-              deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g))
+          ((deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
+              deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g) -
+            (deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
+              deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g))
           (sharpFlatEndoCc (I := I) g gU) := by
   let AT : SmoothCcTensor g 1 2 :=
-    deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
-      deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g
+    deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
+      deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g
   let AU : SmoothCcTensor g 1 2 :=
-    deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
-      deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g
+    deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
+      deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g
   let ST : SmoothCcTensor g 1 1 := sharpFlatEndoCc (I := I) g gT
   let SU : SmoothCcTensor g 1 1 := sharpFlatEndoCc (I := I) g gU
-  rw [deTurckLieArmOneBackgroundCoefficientDifference_eq_comp (I := I) (M := M) g gT gB,
-    deTurckLieArmOneBackgroundCoefficientDifference_eq_comp (I := I) (M := M) g gU gB]
+  rw [deTurckLieFirstOrderBackgroundCoefficientDifference_eq_comp (I := I) (M := M) g gT gB,
+    deTurckLieFirstOrderBackgroundCoefficientDifference_eq_comp (I := I) (M := M) g gU gB]
   change ccOperatorFieldComp (I := I) (M := M) g 1 1 2 AT ST -
       ccOperatorFieldComp (I := I) (M := M) g 1 1 2 AU SU =
     ccOperatorFieldComp (I := I) (M := M) g 1 1 2 AT (ST - SU) +
@@ -363,7 +363,7 @@ private theorem covariantJetNormSq_two_neg_lieCorrectionZeroKappa_base_eq
     (Filter.Eventually.of_forall fun x =>
       metricLoweredConnectionDifferenceCoefficient_fiber_norm_sq_eq (I := I) (M := M) g gB i x)
 
-private theorem exists_deTurckLieArmOneBackgroundRaisedConnectionDifference_pairing_second_order_bound
+private theorem exists_deTurckLieFirstOrderBackgroundRaisedConnectionDifference_pairing_second_order_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
     ∃ ρ L D : ℝ, 0 < ρ ∧ 0 ≤ L ∧ 0 ≤ D ∧
@@ -377,13 +377,13 @@ private theorem exists_deTurckLieArmOneBackgroundRaisedConnectionDifference_pair
             g.inner x u v + ccTensorBilinSymm (I := I) g U x u v),
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
       covariantJetNormSq (I := I) (M := M) g 2
-          (deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
-            deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g) ≤ L ^ 2 ∧
+          (deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
+            deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g) ≤ L ^ 2 ∧
         covariantJetNormSq (I := I) (M := M) g 2
-          ((deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
-              deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g) -
-            (deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
-              deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g)) ≤
+          ((deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
+              deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g) -
+            (deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
+              deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g)) ≤
           (D * ‖ccTensorToHs (I := I) (M := M) g 2
             (2 : ℝ) (T - U)‖) ^ 2 := by
   obtain ⟨Kp, hKp, hpb⟩ :=
@@ -407,11 +407,11 @@ private theorem exists_deTurckLieArmOneBackgroundRaisedConnectionDifference_pair
   let N : ℝ :=
     ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖
   let LT : SmoothCcTensor g 1 2 :=
-    deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
-      deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g
+    deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
+      deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g
   let LU : SmoothCcTensor g 1 2 :=
-    deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
-      deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g
+    deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
+      deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g
   let PbT : SmoothCcTensor g 0 3 :=
     lieCorrectionZeroPbLow (I := I) (M := M) g T g gB
   have hN : 0 ≤ N := norm_nonneg _
@@ -434,10 +434,10 @@ private theorem exists_deTurckLieArmOneBackgroundRaisedConnectionDifference_pair
   have hLT : covariantJetNormSq (I := I) (M := M) g 2 LT ≤ L ^ 2 := by
     rw [show LT =
         cometricRaiseSlot0Field (I := I) (M := M) g 1
-          (domDomCongrSection (I := I) g lieArm1RhoSlot0 (F - PbT)) by
+          (domDomCongrSection (I := I) g lieFirstOrderRhoSlot0 (F - PbT)) by
       simpa only [LT, F, PbT] using
-        deTurckLieArmOneBackgroundRaisedConnectionDifference_backgroundDifference (I := I) (M := M) g gT gB T hTtie]
-    rw [covariantJetNormSq_two_cometricRaise_domDomCongrSection (I := I) (M := M) g lieArm1RhoSlot0 (F - PbT)]
+        deTurckLieFirstOrderBackgroundRaisedConnectionDifference_backgroundDifference (I := I) (M := M) g gT gB T hTtie]
+    rw [covariantJetNormSq_two_cometricRaise_domDomCongrSection (I := I) (M := M) g lieFirstOrderRhoSlot0 (F - PbT)]
     calc
       covariantJetNormSq (I := I) (M := M) g 2 (F - PbT) =
           covariantJetNormSq (I := I) (M := M) g 2 (F + -PbT) := by
@@ -460,11 +460,11 @@ private theorem exists_deTurckLieArmOneBackgroundRaisedConnectionDifference_pair
       (D * N) ^ 2 := by
     rw [show LT - LU =
         cometricRaiseSlot0Field (I := I) (M := M) g 1
-          (domDomCongrSection (I := I) g lieArm1RhoSlot0
+          (domDomCongrSection (I := I) g lieFirstOrderRhoSlot0
             (-lieCorrectionZeroPbLow (I := I) (M := M) g (T - U) g gB)) by
       simpa only [LT, LU] using
-        deTurckLieArmOneBackgroundRaisedConnectionDifference_difference (I := I) (M := M) g gT gU gB T U hTtie hUtie]
-    rw [covariantJetNormSq_two_cometricRaise_domDomCongrSection (I := I) (M := M) g lieArm1RhoSlot0,
+        deTurckLieFirstOrderBackgroundRaisedConnectionDifference_difference (I := I) (M := M) g gT gU gB T U hTtie hUtie]
+    rw [covariantJetNormSq_two_cometricRaise_domDomCongrSection (I := I) (M := M) g lieFirstOrderRhoSlot0,
       covariantJetNormSq_neg (I := I) (M := M) g 2]
     exact hPbD
   simpa only [LT, LU, N] using And.intro hLT hLD
@@ -585,7 +585,7 @@ private theorem exists_sharpFlatEndoCc_pairing_second_order_bounds
       hδT_le hδT0 hδT hδU_le hδU0 hδU hTHss hUHss
   exact ⟨hST, hSU, hSD⟩
 
-theorem exists_deTurckLieArmOneBackgroundCoefficient_difference_pairing_secondOrder_bound
+theorem exists_deTurckLieFirstOrderBackgroundCoefficient_difference_pairing_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -616,16 +616,16 @@ theorem exists_deTurckLieArmOneBackgroundCoefficient_difference_pairing_secondOr
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
       let N := ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖
       covariantJetNormSq (I := I) (M := M) g 2
-          (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT gB -
-            deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT g) ≤ P ^ 2 ∧
+          (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gT gB -
+            deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gT g) ≤ P ^ 2 ∧
         covariantJetNormSq (I := I) (M := M) g 2
-          ((deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT gB -
-              deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT g) -
-            (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gU gB -
-              deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gU g)) ≤
+          ((deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gT gB -
+              deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gT g) -
+            (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gU gB -
+              deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gU g)) ≤
           (B * N) ^ 2 := by
   obtain ⟨ρl, L, D, hρl, hL, hD, hleft⟩ :=
-    exists_deTurckLieArmOneBackgroundRaisedConnectionDifference_pairing_second_order_bound (I := I) (M := M) hDim g gB
+    exists_deTurckLieFirstOrderBackgroundRaisedConnectionDifference_pairing_second_order_bound (I := I) (M := M) hDim g gB
   obtain ⟨ρs, S, C, hρs, hS, hC, hsharp⟩ :=
     exists_sharpFlatEndoCc_pairing_second_order_bounds (I := I) (M := M) hDim g hδ₀0 hδ₀
   obtain ⟨Ca, hCa, happ⟩ :=
@@ -647,11 +647,11 @@ theorem exists_deTurckLieArmOneBackgroundCoefficient_difference_pairing_secondOr
   let N : ℝ :=
     ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖
   let LT : SmoothCcTensor g 1 2 :=
-    deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
-      deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g
+    deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT gB -
+      deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gT g
   let LU : SmoothCcTensor g 1 2 :=
-    deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
-      deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g
+    deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU gB -
+      deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gU g
   let ST : SmoothCcTensor g 1 1 := sharpFlatEndoCc (I := I) g gT
   let SU : SmoothCcTensor g 1 1 := sharpFlatEndoCc (I := I) g gU
   have hN : 0 ≤ N := norm_nonneg _
@@ -676,11 +676,11 @@ theorem exists_deTurckLieArmOneBackgroundCoefficient_difference_pairing_secondOr
   have hZ2 : 0 ≤ Z2 :=
     mul_nonneg (mul_nonneg hCa (mul_nonneg hD hN)) hS
   have hPsiT : covariantJetNormSq (I := I) (M := M) g 2
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT gB -
-        deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT g) ≤ P ^ 2 := by
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gT gB -
+        deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gT g) ≤ P ^ 2 := by
     change covariantJetNormSq (I := I) (M := M) g 2
-      (deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gT gB) ≤ P ^ 2
-    rw [deTurckLieArmOneBackgroundCoefficientDifference_eq_comp (I := I) (M := M) g gT gB]
+      (deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gT gB) ≤ P ^ 2
+    rw [deTurckLieFirstOrderBackgroundCoefficientDifference_eq_comp (I := I) (M := M) g gT gB]
     simpa only [LT, ST, P] using
       happ LT ST L S hL hS hLT hST
   have hV1 : covariantJetNormSq (I := I) (M := M) g 2 V1 ≤ Z1 ^ 2 := by
@@ -693,9 +693,9 @@ theorem exists_deTurckLieArmOneBackgroundCoefficient_difference_pairing_secondOr
         (mul_nonneg hD hN) hS hLD hSU
   refine ⟨hPsiT, ?_⟩
   change covariantJetNormSq (I := I) (M := M) g 2
-    (deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gT gB -
-      deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gU gB) ≤ (B * N) ^ 2
-  rw [deTurckLieArmOneBackgroundCoefficientDifference_difference_decomposition (I := I) (M := M) g gT gU gB]
+    (deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gT gB -
+      deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gU gB) ≤ (B * N) ^ 2
+  rw [deTurckLieFirstOrderBackgroundCoefficientDifference_difference_decomposition (I := I) (M := M) g gT gU gB]
   change covariantJetNormSq (I := I) (M := M) g 2 (V1 + V2) ≤ (B * N) ^ 2
   calc
     covariantJetNormSq (I := I) (M := M) g 2 (V1 + V2) ≤
@@ -779,9 +779,9 @@ private theorem deTurckLieTraceCoeffPiece_sub
     reindexCoeffGen_sub (I := I) (M := M)]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem deTurckLieArmOneBackgroundConnectionDifference_self
+private theorem deTurckLieFirstOrderBackgroundConnectionDifference_self
     (g gm : SmoothRiemannianMetric I M) :
-    deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g gm g =
+    deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g gm g =
       connectionDifferenceSection (I := I) gm g := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -790,35 +790,35 @@ private theorem deTurckLieArmOneBackgroundConnectionDifference_self
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem deTurckLieArmOneCoefficient_backgroundDifference_decomposition
+private theorem deTurckLieFirstOrderCoefficient_backgroundDifference_decomposition
     (g gm gB : SmoothRiemannianMetric I M) :
-    deTurckLieArm1Coeff (I := I) (M := M) g gm gB -
-        deTurckLieArm1Coeff (I := I) (M := M) g gm g =
-      lieArm1Piece (I := I) (M := M) g gm lieArm1SigmaC
-          lieArm1RhoSlot0 (lieArm1FixCd (I := I) (M := M) g gB) +
-        lieArm1Piece (I := I) (M := M) g gm lieArm1SigmaA
-          (Equiv.refl (Fin 3)) (deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gm gB) +
-        lieArm1Piece (I := I) (M := M) g gm lieArm1SigmaASwap
-          (Equiv.refl (Fin 3)) (deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gm gB) := by
-  rw [deTurckLieArm1Coeff_eq_lieArm1Piece_sum
+    deTurckLieFirstOrderCoeff (I := I) (M := M) g gm gB -
+        deTurckLieFirstOrderCoeff (I := I) (M := M) g gm g =
+      lieFirstOrderPiece (I := I) (M := M) g gm lieFirstOrderSigmaC
+          lieFirstOrderRhoSlot0 (lieFirstOrderFixCd (I := I) (M := M) g gB) +
+        lieFirstOrderPiece (I := I) (M := M) g gm lieFirstOrderSigmaA
+          (Equiv.refl (Fin 3)) (deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gm gB) +
+        lieFirstOrderPiece (I := I) (M := M) g gm lieFirstOrderSigmaASwap
+          (Equiv.refl (Fin 3)) (deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gm gB) := by
+  rw [deTurckLieFirstOrderCoeff_eq_lieFirstOrderPiece_sum
       (I := I) (M := M) g gm gB,
-    deTurckLieArm1Coeff_eq_lieArm1Piece_sum
+    deTurckLieFirstOrderCoeff_eq_lieFirstOrderPiece_sum
       (I := I) (M := M) g gm g,
-    lieArm1_connectionDifferenceBackground_decomp (I := I) (M := M) g gm gB,
-    deTurckLieArmOneBackgroundConnectionDifference_self (I := I) (M := M) g gm,
+    lieFirstOrder_connectionDifferenceBackground_decomp (I := I) (M := M) g gm gB,
+    deTurckLieFirstOrderBackgroundConnectionDifference_self (I := I) (M := M) g gm,
     deTurckLieTraceCoeffPiece_add (I := I) (M := M)]
-  unfold deTurckLieArmOneBackgroundCoefficientDifference
+  unfold deTurckLieFirstOrderBackgroundCoefficientDifference
   change _ =
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g gm lieArm1SigmaC
-        lieArm1RhoSlot0 (lieArm1FixCd (I := I) (M := M) g gB) +
-      deTurckLieTraceCoeffPiece (I := I) (M := M) g gm lieArm1SigmaA
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g gm lieFirstOrderSigmaC
+        lieFirstOrderRhoSlot0 (lieFirstOrderFixCd (I := I) (M := M) g gB) +
+      deTurckLieTraceCoeffPiece (I := I) (M := M) g gm lieFirstOrderSigmaA
         (Equiv.refl (Fin 3))
-          (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gm gB -
-            deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gm g) +
-      deTurckLieTraceCoeffPiece (I := I) (M := M) g gm lieArm1SigmaASwap
+          (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gm gB -
+            deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gm g) +
+      deTurckLieTraceCoeffPiece (I := I) (M := M) g gm lieFirstOrderSigmaASwap
         (Equiv.refl (Fin 3))
-          (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gm gB -
-            deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gm g)
+          (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gm gB -
+            deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g gm g)
   rw [deTurckLieTraceCoeffPiece_sub (I := I) (M := M),
     deTurckLieTraceCoeffPiece_sub (I := I) (M := M)]
   module
@@ -855,7 +855,7 @@ private theorem deTurckLieTraceCoeff_eq_reindexedPureTrace
     ContinuousLinearMap.comp_apply, domDomCongrFibPerm_apply]
 
 
-theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_covariantJetNormSq_two_uniform_bound
+theorem exists_deTurckLieFirstOrderCoefficient_backgroundDifference_covariantJetNormSq_two_uniform_bound
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -876,8 +876,8 @@ theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_covariantJetNorm
           ∀ R : ℝ, 0 ≤ R →
           covariantJetNormSq (I := I) (M := M) g 2 P ≤ R ^ 2 →
           covariantJetNormSq (I := I) (M := M) g 2
-            (deTurckLieArm1Coeff (I := I) (M := M) g gm gBase -
-              deTurckLieArm1Coeff (I := I) (M := M) g gm g) ≤
+            (deTurckLieFirstOrderCoeff (I := I) (M := M) g gm gBase -
+              deTurckLieFirstOrderCoeff (I := I) (M := M) g gm g) ≤
             (B R) ^ 2 := by
   have hΛ0 : 0 ≤ Λ := le_trans (by norm_num) hΛ
   obtain ⟨Bt, hBt, htrace⟩ :=
@@ -921,18 +921,18 @@ theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_covariantJetNorm
   intro g hEq hjet1 hjet2 hjet3 gm P htie δ hδ_le hδ_nonneg hbound
     R hR hP
   let Fix : SmoothCcTensor g 1 2 :=
-    lieArm1FixCd (I := I) (M := M) g gBase
+    lieFirstOrderFixCd (I := I) (M := M) g gBase
   let CovFix : SmoothCcTensor g 0 3 :=
     -lieCorrectionZeroKappa (I := I) (M := M) g g gBase
   let Pb : SmoothCcTensor g 0 3 :=
     lieCorrectionZeroPbLow (I := I) (M := M) g P g gBase
   let Left : SmoothCcTensor g 1 2 :=
-    deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gm gBase -
-      deTurckLieArmOneBackgroundRaisedConnectionDifference (I := I) (M := M) g gm g
+    deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gm gBase -
+      deTurckLieFirstOrderBackgroundRaisedConnectionDifference (I := I) (M := M) g gm g
   let Sharp : SmoothCcTensor g 1 1 :=
     sharpFlatEndoCc (I := I) g gm
   let Psi : SmoothCcTensor g 1 2 :=
-    deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gm gBase
+    deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gm gBase
   have hTrace : ∀ σ : Equiv.Perm (Fin 4),
       covariantJetNormSq (I := I) (M := M) g 2
           (deTurckLieTraceCoeff (I := I) (M := M) g gm σ) ≤
@@ -963,11 +963,11 @@ theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_covariantJetNorm
       (L R) ^ 2 := by
     rw [show Left =
         cometricRaiseSlot0Field (I := I) (M := M) g 1
-          (domDomCongrSection (I := I) g lieArm1RhoSlot0
+          (domDomCongrSection (I := I) g lieFirstOrderRhoSlot0
             (CovFix - Pb)) by
       simpa only [Left, CovFix, Pb] using
-        deTurckLieArmOneBackgroundRaisedConnectionDifference_backgroundDifference (I := I) (M := M) g gm gBase P htie]
-    rw [covariantJetNormSq_two_cometricRaise_domDomCongrSection (I := I) (M := M) g lieArm1RhoSlot0 (CovFix - Pb)]
+        deTurckLieFirstOrderBackgroundRaisedConnectionDifference_backgroundDifference (I := I) (M := M) g gm gBase P htie]
+    rw [covariantJetNormSq_two_cometricRaise_domDomCongrSection (I := I) (M := M) g lieFirstOrderRhoSlot0 (CovFix - Pb)]
     calc
       covariantJetNormSq (I := I) (M := M) g 2 (CovFix - Pb) =
           covariantJetNormSq (I := I) (M := M) g 2 (CovFix + -Pb) := by
@@ -986,48 +986,48 @@ theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_covariantJetNorm
   have hPsi : covariantJetNormSq (I := I) (M := M) g 2 Psi ≤
       (Ppsi R) ^ 2 := by
     change covariantJetNormSq (I := I) (M := M) g 2
-      (deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gm gBase) ≤ (Ppsi R) ^ 2
-    rw [deTurckLieArmOneBackgroundCoefficientDifference_eq_comp (I := I) (M := M) g gm gBase]
+      (deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gm gBase) ≤ (Ppsi R) ^ 2
+    rw [deTurckLieFirstOrderBackgroundCoefficientDifference_eq_comp (I := I) (M := M) g gm gBase]
     simpa only [Left, Sharp, Ppsi, covariantJetNormSq, Nat.reduceAdd] using
       happ g hEq hjet1 hjet2 Left Sharp (L R) (Bs R)
         (hL R hR) (hBs R hR)
         (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hLeft)
         (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hSharp)
   let V0 : SmoothCcTensor g 3 2 :=
-    lieArm1Piece (I := I) (M := M) g gm lieArm1SigmaC
-      lieArm1RhoSlot0 Fix
+    lieFirstOrderPiece (I := I) (M := M) g gm lieFirstOrderSigmaC
+      lieFirstOrderRhoSlot0 Fix
   let V1 : SmoothCcTensor g 3 2 :=
-    lieArm1Piece (I := I) (M := M) g gm lieArm1SigmaA
+    lieFirstOrderPiece (I := I) (M := M) g gm lieFirstOrderSigmaA
       (Equiv.refl (Fin 3)) Psi
   let V2 : SmoothCcTensor g 3 2 :=
-    lieArm1Piece (I := I) (M := M) g gm lieArm1SigmaASwap
+    lieFirstOrderPiece (I := I) (M := M) g gm lieFirstOrderSigmaASwap
       (Equiv.refl (Fin 3)) Psi
   have hV0 : covariantJetNormSq (I := I) (M := M) g 2 V0 ≤ (Qfix R) ^ 2 := by
     simpa only [V0, Qfix, S, covariantJetNormSq, Nat.reduceAdd] using
-      hpiece g hEq hjet1 hjet2 gm lieArm1SigmaC lieArm1RhoSlot0 Fix
+      hpiece g hEq hjet1 hjet2 gm lieFirstOrderSigmaC lieFirstOrderRhoSlot0 Fix
         (Bt R) Fm (hBt R hR) hFm
-        (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hTrace lieArm1SigmaC)
+        (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hTrace lieFirstOrderSigmaC)
         (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hFix)
   have hV1 : covariantJetNormSq (I := I) (M := M) g 2 V1 ≤ (Qpsi R) ^ 2 := by
     simpa only [V1, Qpsi, S, covariantJetNormSq, Nat.reduceAdd] using
-      hpiece g hEq hjet1 hjet2 gm lieArm1SigmaA (Equiv.refl (Fin 3)) Psi
+      hpiece g hEq hjet1 hjet2 gm lieFirstOrderSigmaA (Equiv.refl (Fin 3)) Psi
         (Bt R) (Ppsi R) (hBt R hR) (hPpsi R hR)
-        (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hTrace lieArm1SigmaA)
+        (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hTrace lieFirstOrderSigmaA)
         (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hPsi)
   have hV2 : covariantJetNormSq (I := I) (M := M) g 2 V2 ≤ (Qpsi R) ^ 2 := by
     simpa only [V2, Qpsi, S, covariantJetNormSq, Nat.reduceAdd] using
-      hpiece g hEq hjet1 hjet2 gm lieArm1SigmaASwap
+      hpiece g hEq hjet1 hjet2 gm lieFirstOrderSigmaASwap
         (Equiv.refl (Fin 3)) Psi (Bt R) (Ppsi R)
         (hBt R hR) (hPpsi R hR)
         (by simpa only [covariantJetNormSq, Nat.reduceAdd] using
-          hTrace lieArm1SigmaASwap)
+          hTrace lieFirstOrderSigmaASwap)
         (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hPsi)
   have hcorr :
-      deTurckLieArm1Coeff (I := I) (M := M) g gm gBase -
-          deTurckLieArm1Coeff (I := I) (M := M) g gm g =
+      deTurckLieFirstOrderCoeff (I := I) (M := M) g gm gBase -
+          deTurckLieFirstOrderCoeff (I := I) (M := M) g gm g =
         V0 + V1 + V2 := by
     simpa only [V0, V1, V2, Fix, Psi] using
-      deTurckLieArmOneCoefficient_backgroundDifference_decomposition (I := I) (M := M) g gm gBase
+      deTurckLieFirstOrderCoefficient_backgroundDifference_decomposition (I := I) (M := M) g gm gBase
   rw [hcorr]
   change covariantJetNormSq (I := I) (M := M) g 2 (V0 + V1 + V2) ≤ (B R) ^ 2
   calc
@@ -1085,13 +1085,13 @@ private noncomputable def lowerScaleFirstOrderCoefficient_backgroundDifferencePa
       rw [Set.uIcc_of_le zero_le_one]
       exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt)
     (by
-      change linearizedRicciThreeArmHjoint (I := I) (M := M) g 3
+      change linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 3
         (fun s =>
           ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
               g gBase T 0 hδT hδZ s -
             ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
               g g T 0 hδT hδZ s)
-      exact threeArmJoint_sub (I := I) (M := M) g _ _
+      exact covariantJetJoint_sub (I := I) (M := M) g _ _
         (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M)
           g gBase T 0 hδT hδZ)
         (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M)
@@ -1173,7 +1173,7 @@ private theorem lowerScaleFirstOrderCoefficient_backgroundDifference_eq_pathInte
   rw [intervalIntegral.integral_sub hBint hSint]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem rhsLow1Coeff_backgroundDifference_eq_deTurckLieArmOneCoefficientDifference
+private theorem rhsLow1Coeff_backgroundDifference_eq_deTurckLieFirstOrderCoefficientDifference
     (g gBase : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
     (hδT : gFibreOpBound (I := I) (M := M) g
@@ -1184,9 +1184,9 @@ private theorem rhsLow1Coeff_backgroundDifference_eq_deTurckLieArmOneCoefficient
     (s : ℝ) :
     ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g gBase T 0 hδT hδZ s -
         ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g g T 0 hδT hδZ s =
-      deTurckLieArm1Coeff (I := I) (M := M) g
+      deTurckLieFirstOrderCoeff (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδT hδZ s) gBase -
-        deTurckLieArm1Coeff (I := I) (M := M) g
+        deTurckLieFirstOrderCoeff (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g := by
   simp only [ricciDeTurckRemainderFirstOrderCoefficient]
   abel
@@ -1217,7 +1217,7 @@ theorem exists_lowerScaleFirstOrderCoefficient_backgroundDifference_covariantJet
             (B R) ^ 2 := by
   obtain ⟨C, hC⟩ := exists_convex_jets (I := I) (M := M) gBase hΛ
   obtain ⟨Bc, hBc, hcorr⟩ :=
-    exists_deTurckLieArmOneCoefficient_backgroundDifference_covariantJetNormSq_two_uniform_bound (I := I) (M := M) hDim gBase hΛ hδ₀
+    exists_deTurckLieFirstOrderCoefficient_backgroundDifference_covariantJetNormSq_two_uniform_bound (I := I) (M := M) hDim gBase hΛ hδ₀
   let B : ℝ → ℝ := fun R => Bc (C.h2C * R)
   have hB : ∀ R : ℝ, 0 ≤ R → 0 ≤ B R := by
     intro R hR
@@ -1235,10 +1235,10 @@ theorem exists_lowerScaleFirstOrderCoefficient_backgroundDifference_covariantJet
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjoint :
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g 3 Φ
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 3 Φ
         (δ := δ) (δ' := δ) := by
     dsimp only [Φ]
-    exact threeArmJoint_sub (I := I) (M := M) g _ _
+    exact covariantJetJoint_sub (I := I) (M := M) g _ _
       (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g gBase T 0 hδT hδZ)
       (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g g T 0 hδT hδZ)
   obtain ⟨hpath2, _hpath3⟩ := hC.bounds g hEq hjet
@@ -1285,17 +1285,17 @@ theorem exists_lowerScaleFirstOrderCoefficient_backgroundDifference_covariantJet
       (hjet 2 (by norm_num)) (hjet 3 (by norm_num)) gm P hPtie
       hδ_le hδ_nonneg hδP (C.h2C * R) hCR hP2
     rw [show Φ s =
-        deTurckLieArm1Coeff (I := I) (M := M) g gm gBase -
-          deTurckLieArm1Coeff (I := I) (M := M) g gm g by
+        deTurckLieFirstOrderCoeff (I := I) (M := M) g gm gBase -
+          deTurckLieFirstOrderCoeff (I := I) (M := M) g gm g by
       dsimp only [Φ, gm]
-      exact rhsLow1Coeff_backgroundDifference_eq_deTurckLieArmOneCoefficientDifference (I := I) (M := M) g gBase T hδT hδZ s]
+      exact rhsLow1Coeff_backgroundDifference_eq_deTurckLieFirstOrderCoefficientDifference (I := I) (M := M) g gBase T hδT hδZ s]
     simpa only [B] using hraw
   have hpath := path_jetL2_le (I := I) (M := M) g 3 2 2
     Φ S metricPerturbationPathDomain_isOpen hSI hjoint
     (B := B R) hpoint
   simpa only [lowerScaleFirstOrderCoefficient_backgroundDifferencePathIntegral, Φ, S, covariantJetNormSq, Nat.reduceAdd] using hpath
 
-private theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_difference_covariantJetNormSq_two_bound
+private theorem exists_deTurckLieFirstOrderCoefficient_backgroundDifference_difference_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -1325,21 +1325,21 @@ private theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_differen
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
       let N := ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖
       covariantJetNormSq (I := I) (M := M) g 2
-          ((deTurckLieArm1Coeff (I := I) (M := M) g gT gB -
-              deTurckLieArm1Coeff (I := I) (M := M) g gT g) -
-            (deTurckLieArm1Coeff (I := I) (M := M) g gU gB -
-              deTurckLieArm1Coeff (I := I) (M := M) g gU g)) ≤
+          ((deTurckLieFirstOrderCoeff (I := I) (M := M) g gT gB -
+              deTurckLieFirstOrderCoeff (I := I) (M := M) g gT g) -
+            (deTurckLieFirstOrderCoeff (I := I) (M := M) g gU gB -
+              deTurckLieFirstOrderCoeff (I := I) (M := M) g gU g)) ≤
         (B * N) ^ 2 := by
   obtain ⟨ρt, Ct, hρt, hCt, htracePair⟩ :=
     RicciDeTurckLowOrder.trace2_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρb, Tb, hρb, hTb, htraceBdd⟩ :=
     RicciDeTurckLowOrder.trace_two_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨ρp, Pp, Bp, hρp, hPp, hBp, hpsi⟩ :=
-    exists_deTurckLieArmOneBackgroundCoefficient_difference_pairing_secondOrder_bound (I := I) (M := M) hDim g gB hδ₀0 hδ₀
+    exists_deTurckLieFirstOrderBackgroundCoefficient_difference_pairing_secondOrder_bound (I := I) (M := M) hDim g gB hδ₀0 hδ₀
   obtain ⟨Cp, hCp, hpiece⟩ :=
     liePiece_pair (I := I) (M := M) hDim g
   let F : SmoothCcTensor g 1 2 :=
-    lieArm1FixCd (I := I) (M := M) g gB
+    lieFirstOrderFixCd (I := I) (M := M) g gB
   let F0 : ℝ := Real.sqrt (covariantJetNormSq (I := I) (M := M) g 2 F)
   let B : ℝ :=
     2 * (Cp * Ct * F0 + 2 * (Cp * (Tb * Bp + Ct * Pp)))
@@ -1404,14 +1404,14 @@ private theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_differen
   have hPsiRaw := hpsi gT gU T U hT hU hTtie hUtie
     hδT_le hδT0 hδT hδU_le hδU0 hδU hTHsp hUHsp
   let PT : SmoothCcTensor g 1 2 :=
-    deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gT gB
+    deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gT gB
   let PU : SmoothCcTensor g 1 2 :=
-    deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gU gB
+    deTurckLieFirstOrderBackgroundCoefficientDifference (I := I) (M := M) g gU gB
   have hPT : covariantJetNormSq (I := I) (M := M) g 2 PT ≤ Pp ^ 2 := by
-    simpa only [PT, deTurckLieArmOneBackgroundCoefficientDifference] using hPsiRaw.1
+    simpa only [PT, deTurckLieFirstOrderBackgroundCoefficientDifference] using hPsiRaw.1
   have hPD : covariantJetNormSq (I := I) (M := M) g 2 (PT - PU) ≤
       (Bp * N) ^ 2 := by
-    simpa only [PT, PU, deTurckLieArmOneBackgroundCoefficientDifference, N] using hPsiRaw.2
+    simpa only [PT, PU, deTurckLieFirstOrderBackgroundCoefficientDifference, N] using hPsiRaw.2
   have hFF : covariantJetNormSq (I := I) (M := M) g 2 (F - F) ≤
       (0 : ℝ) ^ 2 := by
     rw [sub_self]
@@ -1427,19 +1427,19 @@ private theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_differen
   have hFs : covariantJetNormSq (I := I) (M := M) g 2 F ≤ F0 ^ 2 :=
     hF0sq.symm.le
   let V0 : SmoothCcTensor g 3 2 :=
-    lieArm1Piece (I := I) (M := M) g gT lieArm1SigmaC
-        lieArm1RhoSlot0 F -
-      lieArm1Piece (I := I) (M := M) g gU lieArm1SigmaC
-        lieArm1RhoSlot0 F
+    lieFirstOrderPiece (I := I) (M := M) g gT lieFirstOrderSigmaC
+        lieFirstOrderRhoSlot0 F -
+      lieFirstOrderPiece (I := I) (M := M) g gU lieFirstOrderSigmaC
+        lieFirstOrderRhoSlot0 F
   let V1 : SmoothCcTensor g 3 2 :=
-    lieArm1Piece (I := I) (M := M) g gT lieArm1SigmaA
+    lieFirstOrderPiece (I := I) (M := M) g gT lieFirstOrderSigmaA
         (Equiv.refl (Fin 3)) PT -
-      lieArm1Piece (I := I) (M := M) g gU lieArm1SigmaA
+      lieFirstOrderPiece (I := I) (M := M) g gU lieFirstOrderSigmaA
         (Equiv.refl (Fin 3)) PU
   let V2 : SmoothCcTensor g 3 2 :=
-    lieArm1Piece (I := I) (M := M) g gT lieArm1SigmaASwap
+    lieFirstOrderPiece (I := I) (M := M) g gT lieFirstOrderSigmaASwap
         (Equiv.refl (Fin 3)) PT -
-      lieArm1Piece (I := I) (M := M) g gU lieArm1SigmaASwap
+      lieFirstOrderPiece (I := I) (M := M) g gU lieFirstOrderSigmaASwap
         (Equiv.refl (Fin 3)) PU
   let Z0 : ℝ := Cp * (Tb * 0 + (Ct * N) * F0)
   let Z1 : ℝ := Cp * (Tb * (Bp * N) + (Ct * N) * Pp)
@@ -1451,30 +1451,30 @@ private theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_differen
     positivity
   have hV0 : covariantJetNormSq (I := I) (M := M) g 2 V0 ≤ Z0 ^ 2 := by
     simpa only [V0, Z0] using
-      hpiece gT gU lieArm1SigmaC lieArm1RhoSlot0 F F
+      hpiece gT gU lieFirstOrderSigmaC lieFirstOrderRhoSlot0 F F
         Tb (Ct * N) F0 0 hTb (mul_nonneg hCt hN) hF0
-        (by norm_num) (hTrU lieArm1SigmaC) (hTrD lieArm1SigmaC)
+        (by norm_num) (hTrU lieFirstOrderSigmaC) (hTrD lieFirstOrderSigmaC)
         hFs hFF
   have hV1 : covariantJetNormSq (I := I) (M := M) g 2 V1 ≤ Z1 ^ 2 := by
     simpa only [V1, Z1] using
-      hpiece gT gU lieArm1SigmaA (Equiv.refl (Fin 3)) PT PU
+      hpiece gT gU lieFirstOrderSigmaA (Equiv.refl (Fin 3)) PT PU
         Tb (Ct * N) Pp (Bp * N) hTb (mul_nonneg hCt hN) hPp
-        (mul_nonneg hBp hN) (hTrU lieArm1SigmaA)
-        (hTrD lieArm1SigmaA) hPT hPD
+        (mul_nonneg hBp hN) (hTrU lieFirstOrderSigmaA)
+        (hTrD lieFirstOrderSigmaA) hPT hPD
   have hV2 : covariantJetNormSq (I := I) (M := M) g 2 V2 ≤ Z1 ^ 2 := by
     simpa only [V2, Z1] using
-      hpiece gT gU lieArm1SigmaASwap (Equiv.refl (Fin 3)) PT PU
+      hpiece gT gU lieFirstOrderSigmaASwap (Equiv.refl (Fin 3)) PT PU
         Tb (Ct * N) Pp (Bp * N) hTb (mul_nonneg hCt hN) hPp
-        (mul_nonneg hBp hN) (hTrU lieArm1SigmaASwap)
-        (hTrD lieArm1SigmaASwap) hPT hPD
+        (mul_nonneg hBp hN) (hTrU lieFirstOrderSigmaASwap)
+        (hTrD lieFirstOrderSigmaASwap) hPT hPD
   have hcorr :
-      (deTurckLieArm1Coeff (I := I) (M := M) g gT gB -
-          deTurckLieArm1Coeff (I := I) (M := M) g gT g) -
-        (deTurckLieArm1Coeff (I := I) (M := M) g gU gB -
-          deTurckLieArm1Coeff (I := I) (M := M) g gU g) =
+      (deTurckLieFirstOrderCoeff (I := I) (M := M) g gT gB -
+          deTurckLieFirstOrderCoeff (I := I) (M := M) g gT g) -
+        (deTurckLieFirstOrderCoeff (I := I) (M := M) g gU gB -
+          deTurckLieFirstOrderCoeff (I := I) (M := M) g gU g) =
       V0 + V1 + V2 := by
-    rw [deTurckLieArmOneCoefficient_backgroundDifference_decomposition (I := I) (M := M) g gT gB,
-      deTurckLieArmOneCoefficient_backgroundDifference_decomposition (I := I) (M := M) g gU gB]
+    rw [deTurckLieFirstOrderCoefficient_backgroundDifference_decomposition (I := I) (M := M) g gT gB,
+      deTurckLieFirstOrderCoefficient_backgroundDifference_decomposition (I := I) (M := M) g gU gB]
     dsimp only [V0, V1, V2, PT, PU, F]
     module
   rw [hcorr]
@@ -1505,7 +1505,7 @@ private theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_differen
       ring
 
 
-theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_pairing_secondOrder_bound
+theorem exists_deTurckLieFirstOrderCoefficient_backgroundDifference_pairing_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
     ∃ ρ B0 B1 : ℝ,
@@ -1537,13 +1537,13 @@ theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_pairing_secondOr
       let D2 :=
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖
       covariantJetNormSq (I := I) (M := M) g 2
-          (deTurckLieArm1Coeff (I := I) (M := M) g gT gB -
-            deTurckLieArm1Coeff (I := I) (M := M) g gU gB) ≤
+          (deTurckLieFirstOrderCoeff (I := I) (M := M) g gT gB -
+            deTurckLieFirstOrderCoeff (I := I) (M := M) g gU gB) ≤
         (B0 * D3 + B1 * D2 + B1 * A * D2) ^ 2 := by
   obtain ⟨ρs, L0, L1, hρs, hL0, hL1, hsame⟩ :=
     deTurckLieFirstOrder_pairing_h2_bound (I := I) (M := M) hDim g
   obtain ⟨ρc, C, hρc, hC, hcorr⟩ :=
-    exists_deTurckLieArmOneCoefficient_backgroundDifference_difference_covariantJetNormSq_two_bound (I := I) (M := M) hDim g gB
+    exists_deTurckLieFirstOrderCoefficient_backgroundDifference_difference_covariantJetNormSq_two_bound (I := I) (M := M) hDim g gB
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   let ρ : ℝ := min ρs ρc
   let B0 : ℝ := 2 * L0
@@ -1560,13 +1560,13 @@ theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_pairing_secondOr
     ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖
   let S : ℝ := L0 * D3 + L1 * N + L1 * A * N
   let X : SmoothCcTensor g 3 2 :=
-    deTurckLieArm1Coeff (I := I) (M := M) g gT g -
-      deTurckLieArm1Coeff (I := I) (M := M) g gU g
+    deTurckLieFirstOrderCoeff (I := I) (M := M) g gT g -
+      deTurckLieFirstOrderCoeff (I := I) (M := M) g gU g
   let Y : SmoothCcTensor g 3 2 :=
-    (deTurckLieArm1Coeff (I := I) (M := M) g gT gB -
-        deTurckLieArm1Coeff (I := I) (M := M) g gT g) -
-      (deTurckLieArm1Coeff (I := I) (M := M) g gU gB -
-        deTurckLieArm1Coeff (I := I) (M := M) g gU g)
+    (deTurckLieFirstOrderCoeff (I := I) (M := M) g gT gB -
+        deTurckLieFirstOrderCoeff (I := I) (M := M) g gT g) -
+      (deTurckLieFirstOrderCoeff (I := I) (M := M) g gU gB -
+        deTurckLieFirstOrderCoeff (I := I) (M := M) g gU g)
   have hN : 0 ≤ N := norm_nonneg _
   have hS : 0 ≤ S := by
     dsimp only [S]
@@ -1588,8 +1588,8 @@ theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_pairing_secondOr
       hcorr gT gU T U hT hU hTtie hUtie
         hδ_le hδ0 hδT hδ_le hδ0 hδU hTHsc hUHsc
   have hsplit :
-      deTurckLieArm1Coeff (I := I) (M := M) g gT gB -
-          deTurckLieArm1Coeff (I := I) (M := M) g gU gB =
+      deTurckLieFirstOrderCoeff (I := I) (M := M) g gT gB -
+          deTurckLieFirstOrderCoeff (I := I) (M := M) g gU gB =
         X + Y := by
     dsimp only [X, Y]
     module

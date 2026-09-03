@@ -53,7 +53,7 @@ theorem metricPrincipalDefect_symm_zero
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add,
     sub_apply, sub_apply, add_apply, add_apply]
   have hLie :=
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff_apply_eq
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieSecondOrderPrincipalCoeff_apply_eq
       (I := I) g₀ g W x v
   have hTHraw :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.traceHessianCoeff_apply_eq
@@ -187,7 +187,7 @@ noncomputable def metricPrincipalDefectCurvCoeff
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem metricPrincipalDefect_curv_fold
+theorem metricPrincipalDefect_curvature_contraction
     (g₀ g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
     operatorFieldApply (I := I) (M := M) g₀ 4 2
         (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g

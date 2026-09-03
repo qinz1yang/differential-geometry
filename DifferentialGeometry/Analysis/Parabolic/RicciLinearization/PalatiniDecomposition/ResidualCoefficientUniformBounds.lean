@@ -295,7 +295,7 @@ theorem exists_sobolevConst_riemannianFiberNormSq_covGrad_T_le_sq (g₀ : Smooth
   nlinarith [h0', hb, hnn, mul_nonneg hCsob_nn hR]
 
 
-theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riemannianFiberNormSq_uniformBound
+theorem exists_ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_riemannianFiberNormSq_uniformBound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -308,7 +308,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-              ((ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+              ((ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x) ≤ Λ := by
   classical
   set δ₁ : ℝ := max δ₀ 0 with hδ₁_def
@@ -356,12 +356,12 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
     have h0 := htie0 y v w
     rwa [show convexPerturbation (I := I) g₀ T 0 s = s • T from by
       rw [convexPerturbation, smul_zero, zero_add]] at h0
-  have hfield : ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+  have hfield : ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T) =
       ((2 : ℝ) * (s * s)) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -376,7 +376,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
     rw [bdSGKXi_smul (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T s]
     rw [operatorFieldComposition_smul_right (I := I) (M := M) g₀ 2 6 2 (s * s)
       (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -391,7 +391,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
   rw [show ((((2 : ℝ) * (s * s)) •
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -404,7 +404,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
       ((2 : ℝ) * (s * s)) •
         ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -422,7 +422,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
   have hcomp : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
       ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -436,7 +436,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
           ((cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection
             x) *
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-          ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -743,7 +743,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau4 T T).toSection x)
     exact real_sixteen_K_bound hW1 hW2 hW3 hW4 hadd12 hadd34 hsub
   have hperm6 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -764,7 +764,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
       sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau4 T T))).toSection x) := by
     have h := riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M)
-      g₀ 2 6 armPairTraceSlotPerm6
+      g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -774,7 +774,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau3 T T +
       sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau4 T T)))
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -831,7 +831,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
     refine mul_le_mul_of_nonneg_left ?_ hfr_nn
     exact h1
   have hXi : riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -847,7 +847,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
     refine mul_le_mul_of_nonneg_left ?_ hfr_nn
     exact mul_le_mul_of_nonneg_left hXval hfr_nn
   have hcompnn : (0 : ℝ) ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -861,7 +861,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
   have hfnn : (0 : ℝ) ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
       ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -878,7 +878,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
   calc ((2 : ℝ) * (s * s)) ^ 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
         ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -891,7 +891,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
       ≤ 4 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
           ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -906,7 +906,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
             ((cometricDoublePairTraceCoefficient (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x) *
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-            ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) bdSGKTau1 T T +
@@ -971,7 +971,7 @@ theorem exists_sobolevConst_riemannianFiberNormSq_T_le_sq (g₀ : SmoothRiemanni
   nlinarith [h0', hb, hnn, mul_nonneg hCsob_nn hR]
 
 
-theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_riemannianFiberNormSq_uniformBound
+theorem exists_ricciContractionRemainderField_metricPerturbationPath_riemannianFiberNormSq_uniformBound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -984,7 +984,7 @@ theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_riemannian
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-              ((ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+              ((ricciContractionRemainderField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x) ≤ Λ := by
   classical
   set δ₁ : ℝ := max δ₀ 0 with hδ₁_def
@@ -1028,66 +1028,66 @@ theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_riemannian
       rw [abs_of_nonneg (by linarith : (0 : ℝ) ≤ 1 - s), abs_of_nonneg hs0]
       ring
     rwa [heq] at hraw
-  have hfield : ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+  have hfield : ricciContractionRemainderField (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T) =
       ((-(1 / 2) : ℝ) * s) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))) := by
-    rw [bdRicciFold_eq_decomposition (I := I) (M := M) g₀
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))) := by
+    rw [bdRicciContraction_eq_decomposition (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)]
-    rw [bdRicciFoldXi_smul (I := I) (M := M) g₀ T s]
+    rw [bdRicciContractionXi_smul (I := I) (M := M) g₀ T s]
     rw [operatorFieldComposition_smul_right (I := I) (M := M) g₀ 2 6 2 s
       (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-          (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-            palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))]
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))]
     rw [smul_smul]
   rw [hfield]
   rw [show (((((-(1 / 2) : ℝ) * s) •
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-            (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-              palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection x)) =
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection x)) =
       ((-(1 / 2) : ℝ) * s) •
         ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection x) from by
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection x) from by
     rw [SmoothCcTensor.toSection_smul]; rfl]
   rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
   have hsq1 : ((-(1 / 2) : ℝ) * s) ^ 2 ≤ 1 := by nlinarith
   have hcomp : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
       ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-            (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-              palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection x) ≤
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection x) ≤
       riemannianFiberNormSq (I := I) (M := M) g₀ 6 2 x
           ((cometricDoublePairTraceCoefficient (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x) *
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-          ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection x) := by
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection x) := by
     rw [operatorFieldComposition_toSection]
     exact riemannianFiberNormSq_compRS_le_mul (I := I) (M := M) g₀ 2 6 2 x
       ((cometricDoublePairTraceCoefficient (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x)
-      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-          (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-            palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection x)
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection x)
   have hPTO : riemannianFiberNormSq (I := I) (M := M) g₀ 6 2 x
       ((cometricDoublePairTraceCoefficient (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x) ≤ CP 0 := by
@@ -1100,10 +1100,10 @@ theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_riemannian
   have hTcap : riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
       (T.toSection x) ≤ (Csob * R) ^ 2 := hTcapAll T hR hball x
   have hXi : riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-          (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-            palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection x) ≤
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection x) ≤
       fr * (fr * (4 * (KD4 * (KsR * (Csob * R) ^ 2)))) := by
     have hWgen : ∀ σw : Equiv.Perm (Fin 6),
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 4 x
@@ -1213,89 +1213,89 @@ theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_riemannian
             refine mul_le_mul_of_nonneg_left ?_ hKD4_nn
             exact mul_le_mul hKsRx hTcap hTnn hKsR_nn
     have hperm6 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-        ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-            (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-              palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection x) =
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection x) =
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
           ((slotExtendIter (I := I) (M := M) g₀ 0 4 2
-            (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-              palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)).toSection x) := by
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)).toSection x) := by
       have h := riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M)
-        g₀ 2 6 armPairTraceSlotPerm6
+        g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-          (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-            palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-            (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-              palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))
         (fun y d => by
           rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) 0 x
       rwa [iteratedCovGrad_zero, iteratedCovGrad_zero] at h
     have hslot2 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
         ((slotExtendIter (I := I) (M := M) g₀ 0 4 2
-          (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-            palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)).toSection x) ≤
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)).toSection x) ≤
         fr * riemannianFiberNormSq (I := I) (M := M) g₀ 1 5 x
           ((slotExtendIter (I := I) (M := M) g₀ 0 4 1
-            (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-              palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)).toSection x) := by
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)).toSection x) := by
       have h := riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 5
         (slotExtendIter (I := I) (M := M) g₀ 0 4 1
-          (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-            palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)) 0 x
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)) 0 x
       rwa [iteratedCovGrad_zero, iteratedCovGrad_zero] at h
     have hslot1 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 5 x
         ((slotExtendIter (I := I) (M := M) g₀ 0 4 1
-          (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-            palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)).toSection x) ≤
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)).toSection x) ≤
         fr * riemannianFiberNormSq (I := I) (M := M) g₀ 0 4 x
-          ((palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-            palatiniRicciFoldWeightB (I := I) (M := M) g₀ T).toSection x) := by
+          ((palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T).toSection x) := by
       have h := riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 0 4
-        (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-          palatiniRicciFoldWeightB (I := I) (M := M) g₀ T) 0 x
+        (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+          palatiniRicciContractionWeightB (I := I) (M := M) g₀ T) 0 x
       rwa [iteratedCovGrad_zero, iteratedCovGrad_zero] at h
     have hW4 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 4 x
-        ((palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-          palatiniRicciFoldWeightB (I := I) (M := M) g₀ T).toSection x) ≤
+        ((palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+          palatiniRicciContractionWeightB (I := I) (M := M) g₀ T).toSection x) ≤
         4 * (KD4 * (KsR * (Csob * R) ^ 2)) := by
-      have hsplit : ((palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-          palatiniRicciFoldWeightB (I := I) (M := M) g₀ T).toSection x) =
-          (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T).toSection x +
-            (palatiniRicciFoldWeightB (I := I) (M := M) g₀ T).toSection x := by
+      have hsplit : ((palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+          palatiniRicciContractionWeightB (I := I) (M := M) g₀ T).toSection x) =
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T).toSection x +
+            (palatiniRicciContractionWeightB (I := I) (M := M) g₀ T).toSection x := by
         rw [SmoothCcTensor.toSection_add]
         rfl
       rw [hsplit]
       have hadd := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 0 4 x
-        ((palatiniRicciFoldWeightA (I := I) (M := M) g₀ T).toSection x)
-        ((palatiniRicciFoldWeightB (I := I) (M := M) g₀ T).toSection x)
+        ((palatiniRicciContractionWeightA (I := I) (M := M) g₀ T).toSection x)
+        ((palatiniRicciContractionWeightB (I := I) (M := M) g₀ T).toSection x)
       have hWA := hWgen (Equiv.swap (1 : Fin 6) 3)
-      have hWB := hWgen palatiniRicciFoldWeightBPerm
+      have hWB := hWgen palatiniRicciContractionWeightBPerm
       have hWA' : riemannianFiberNormSq (I := I) (M := M) g₀ 0 4 x
-          ((palatiniRicciFoldWeightA (I := I) (M := M) g₀ T).toSection x) ≤
+          ((palatiniRicciContractionWeightA (I := I) (M := M) g₀ T).toSection x) ≤
           KD4 * (KsR * (Csob * R) ^ 2) := hWA
       have hWB' : riemannianFiberNormSq (I := I) (M := M) g₀ 0 4 x
-          ((palatiniRicciFoldWeightB (I := I) (M := M) g₀ T).toSection x) ≤
+          ((palatiniRicciContractionWeightB (I := I) (M := M) g₀ T).toSection x) ≤
           KD4 * (KsR * (Csob * R) ^ 2) := hWB
       linarith
     calc riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-          ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection x)
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection x)
         = riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)).toSection x) := hperm6
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)).toSection x) := hperm6
       _ ≤ fr * riemannianFiberNormSq (I := I) (M := M) g₀ 1 5 x
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 1
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)).toSection x) := hslot2
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)).toSection x) := hslot2
       _ ≤ fr * (fr * riemannianFiberNormSq (I := I) (M := M) g₀ 0 4 x
-            ((palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-              palatiniRicciFoldWeightB (I := I) (M := M) g₀ T).toSection x)) :=
+            ((palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T).toSection x)) :=
           mul_le_mul_of_nonneg_left hslot1 hfr_nn
       _ ≤ fr * (fr * (4 * (KD4 * (KsR * (Csob * R) ^ 2)))) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hW4 hfr_nn) hfr_nn
@@ -1304,50 +1304,50 @@ theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_riemannian
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x) :=
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 6 2 x _
   have hXinn : (0 : ℝ) ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-          (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-            palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection x) :=
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection x) :=
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 6 x _
   have hcompnn : (0 : ℝ) ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
       ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-            (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-              palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection x) :=
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection x) :=
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 2 x _
   calc (((-(1 / 2) : ℝ) * s) ^ 2) *
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
           ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                  palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection x)
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection x)
       ≤ 1 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
           ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                  palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection x) :=
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection x) :=
         mul_le_mul_of_nonneg_right hsq1 hcompnn
     _ = riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
           ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                  palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection x) := one_mul _
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection x) := one_mul _
     _ ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 6 2 x
           ((cometricDoublePairTraceCoefficient (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x) *
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 6 x
-          ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection x) := hcomp
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection x) := hcomp
     _ ≤ CP 0 * (fr * (fr * (4 * (KD4 * (KsR * (Csob * R) ^ 2))))) :=
         mul_le_mul hPTO hXi hXinn (hCP_nn 0)
 

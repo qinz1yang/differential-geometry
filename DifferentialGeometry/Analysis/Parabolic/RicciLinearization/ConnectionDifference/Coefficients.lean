@@ -1629,7 +1629,7 @@ lemma toModel2_add_slot1 {x : M} (T : Tensor0SBundle.Tensor0SSpace 2 I x)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem kOneSec_deriv_eq_threeArm_kernel (g₀ : SmoothRiemannianMetric I M)
+private theorem kOneSec_deriv_eq_covariantJet_kernel (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1950,14 +1950,14 @@ private lemma lichnerowiczFib_toModel_eq_fourTrace (g₀ : SmoothRiemannianMetri
     (v : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         ((show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-          (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s).toSection x) P) v =
+          (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s).toSection x) P) v =
       Tensor0SBundle.Tensor0SSpace.toModel
         (ricciCometricFourTraceCLM (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x P) v := by
   classical
   have hsplit : (show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ]
         Tensor0SBundle.Tensor0SSpace 2 I x from
-      (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s).toSection x) P =
+      (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s).toSection x) P =
       (show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
         (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x) P
@@ -1965,7 +1965,7 @@ private lemma lichnerowiczFib_toModel_eq_fourTrace (g₀ : SmoothRiemannianMetri
         ((show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
           (traceHessianCoeff (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x) P) := by
-    rw [show (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) =
+    rw [show (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) =
         ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
           - (1 / 2 : ℝ) • traceHessianCoeff (I := I) (M := M) g₀
@@ -2087,7 +2087,7 @@ private lemma lichnerowiczFib_toModel_eq_fourTrace (g₀ : SmoothRiemannianMetri
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
+private theorem lichnerowicz_velocitySecondCovGrad_eq_covariantJet_symm
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (_hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -2096,7 +2096,7 @@ private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
     {s : ℝ} (_hs : s ∈ Set.Ioo (0 : ℝ) 1) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+          (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
           (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s)) x v =
       unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 2 2
@@ -2109,7 +2109,7 @@ private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
                 v
         + unitModel (I := I) (M := M) g₀ 2
             (operatorFieldApply (I := I) (M := M) g₀ 4 2
-              (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+              (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
               (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
                 v := by
   classical
@@ -2134,7 +2134,7 @@ private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
     apply Tensor0SBundle.tensor0SSpace_ext 4 x
     intro m
     have h2 := velFibre_toModel_eval (I := I) (M := M) g₀ T T' hδ hδ' s x m
-    have h3 := kOneSec_deriv_eq_threeArm_kernel (I := I) (M := M) g₀ T T' hδ hδ' s x
+    have h3 := kOneSec_deriv_eq_covariantJet_kernel (I := I) (M := M) g₀ T T' hδ hδ' s x
       (m 0) (m 1) (m 2) (m 3)
     have h4 := w2Fibre_toModel_eval (I := I) (M := M) g₀ T T' x m
     have hm4 : m = ![m 0, m 1, m 2, m 3] := by
@@ -2161,12 +2161,12 @@ private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
       exact congrArg _ hm4.symm
   rw [show unitModel (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ 4 2
-        (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+        (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
         (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s)) x v =
       Tensor0SBundle.Tensor0SSpace.toModel
         ((show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ]
             Tensor0SBundle.Tensor0SSpace 2 I x from
-          (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s).toSection x)
+          (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s).toSection x)
           ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
               Tensor0SBundle.Tensor0SSpace 4 I x from
             (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s).toSection x)
@@ -2188,7 +2188,7 @@ private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
   rw [show Tensor0SBundle.Tensor0SSpace.toModel
       ((show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ]
           Tensor0SBundle.Tensor0SSpace 2 I x from
-        (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s).toSection x)
+        (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s).toSection x)
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
             Tensor0SBundle.Tensor0SSpace 4 I x from
           (iteratedCovGrad (I := I) g₀ 0 2 2
@@ -2196,7 +2196,7 @@ private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
           (unitTensor (I := I) (M := M) x))) v =
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+          (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x v from rfl]
   have horder1Input :
@@ -2256,7 +2256,7 @@ private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
   ring
 
 omit [SigmaCompactSpace M] in
-theorem linearizedRicciAt_eq_threeArm_connectionDifferenceCoeff (g₀ : SmoothRiemannianMetric I M)
+theorem linearizedRicciAt_eq_covariantJet_connectionDifferenceCoeff (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -2271,17 +2271,17 @@ theorem linearizedRicciAt_eq_threeArm_connectionDifferenceCoeff (g₀ : SmoothRi
         linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (v 0) (v 1) s =
           unitModel (I := I) (M := M) g₀ 2
             (operatorFieldApply (I := I) (M := M) g₀ 2 2
-                (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s
+                (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s
                   + (linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s
-                      - linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s))
+                      - linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s))
                 (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))
               + operatorFieldApply (I := I) (M := M) g₀ 3 2
-                (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s
+                (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s
                   + (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s
-                      - linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s))
+                      - linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s))
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
               + operatorFieldApply (I := I) (M := M) g₀ 4 2
-                (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+                (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
                 (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
             (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) := by
   intro s hs x v
@@ -2301,7 +2301,7 @@ theorem linearizedRicciAt_eq_threeArm_connectionDifferenceCoeff (g₀ : SmoothRi
     (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s)
     (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
   let C := operatorFieldApply (I := I) (M := M) g₀ 4 2
-    (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+    (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
     (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))
   let vE : Fin 2 → E := fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)
   change linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (v 0) (v 1) s =
@@ -2326,10 +2326,10 @@ theorem linearizedRicciAt_eq_threeArm_connectionDifferenceCoeff (g₀ : SmoothRi
   change linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (v 0) (v 1) s =
     unitModel (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ 4 2
-        (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+        (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
         (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s)) x vE at hlin
   rw [hlin]
-  exact lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm (I := I) (M := M) g₀ T T'
+  exact lichnerowicz_velocitySecondCovGrad_eq_covariantJet_symm (I := I) (M := M) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' hs x vE
 
 end TensorSpectral

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartReadout
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartComponents
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieCoefficientApplication
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 open DifferentialGeometry.Analysis.Spectral
@@ -38,12 +38,12 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma lieArm2_operatorFieldApplication_value_invGram
+private lemma lieSecondOrder_operatorFieldApplication_value_invGram
     (g₀ g₁ : SmoothRiemannianMetric I M) (D : SmoothCcTensor g₀ 0 4)
     (x : M) (i j : Fin (Module.finrank ℝ E)) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁) D) x
+          (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀ g₁) D) x
         ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix g₁ x x k₁ l *
@@ -57,7 +57,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
               ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j,
                 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k₁]) := by
   classical
-  refine (deTurckLieArm2PrincipalCoeff_apply_eq (I := I) g₀ g₁ D x
+  refine (deTurckLieSecondOrderPrincipalCoeff_apply_eq (I := I) g₀ g₁ D x
     ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j]).trans ?_
   have hv0 : (![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] :
       Fin 2 → E) 0 = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := rfl
@@ -155,8 +155,8 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedGramDeriv)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (domDomCongrSection_unitModel unitModel_basisChart_eq_tensorChartComponentRaw
   tensorChartComponentRaw tensorChartComponentRaw_add tensorChartComponentRaw_smul
-  arm2ReadoutCovDerivPair arm1ReadoutCovDeriv iteratedCovGrad2_chartComponent_readout
-  iteratedCovGrad1_chartComponent_readout partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
+  secondOrderCovariantDerivativeCorrection firstOrderCovariantDerivativeCorrection iteratedCovGrad2_chartComponent_decomposition
+  iteratedCovGrad1_chartComponent_decomposition partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
   partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial
   realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw
   euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw covDerivLowerOrderTerm02_center_eq
@@ -175,7 +175,7 @@ open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_frame0_eq_unitTensor (x b : M) :
+private lemma lieTerm_frame0_eq_unitTensor (x b : M) :
     chartFrameBasisModel (I := I) (M := M) x b 0 ![] = unitTensor (I := I) (M := M) b := by
   apply ContinuousMultilinearMap.ext
   intro v
@@ -183,7 +183,7 @@ private lemma lieArm_frame0_eq_unitTensor (x b : M) :
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_rawComponent_eq_unitModel_frame
+private lemma lieTerm_rawComponent_eq_unitModel_frame
     (g : SmoothRiemannianMetric I M) (s : ℕ) (W : SmoothCcTensor g 0 s) (x : M)
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (chartAt H x).source) :
@@ -191,11 +191,11 @@ private lemma lieArm_rawComponent_eq_unitModel_frame
       unitModel (I := I) (M := M) g s W b
         (fun j => (show E from DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x (Jdx j) b)) := by
   rw [tensorChartComponentRaw_eq_chartFrame (I := I) (M := M) g 0 s W x hb ![] Jdx]
-  rw [lieArm_frame0_eq_unitTensor (I := I) (M := M) x b]
+  rw [lieTerm_frame0_eq_unitTensor (I := I) (M := M) x b]
   rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma lieArm_euclidPartial_add_local
+private lemma lieTerm_euclidPartial_add_local
     (l : Fin (Module.finrank ℝ E))
     {f h : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
@@ -207,7 +207,7 @@ private lemma lieArm_euclidPartial_add_local
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_covDerivLowerOrderTerm_differentiableAt_center
+private lemma lieTerm_covDerivLowerOrderTerm_differentiableAt_center
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g₀ r s) (x : M)
     (m : Fin (Module.finrank ℝ E))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -230,7 +230,7 @@ private lemma lieArm_covDerivLowerOrderTerm_differentiableAt_center
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_euclidPartial_chartPushedRaw_differentiableAt_center
+private lemma lieTerm_euclidPartial_chartPushedRaw_differentiableAt_center
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g₀ r s) (x : M)
     (k : Fin (Module.finrank ℝ E))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -256,7 +256,7 @@ private lemma lieArm_euclidPartial_chartPushedRaw_differentiableAt_center
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma lieArm_unitModel4_basisChart_readout_split
+private lemma lieTerm_unitModel4_basisChart_decomposition
     (g₀ : SmoothRiemannianMetric I M) (h : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : Fin (Module.finrank ℝ E)) :
     unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 h) x
@@ -266,7 +266,7 @@ private lemma lieArm_unitModel4_basisChart_readout_split
             (chartPushedRaw I x (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2
               h x ![] ![c, d])) y')
           (toEuclidean (E := E) (extChartAt I x x))
-        + arm2ReadoutCovDerivPair (I := I) (M := M) g₀ h x ![a, b, c, d] := by
+        + secondOrderCovariantDerivativeCorrection (I := I) (M := M) g₀ h x ![a, b, c, d] := by
   classical
   have hmemsrc : x ∈ (chartAt H x).source := mem_chart_source H x
   have hroundtrip : (extChartAt I x).symm
@@ -285,30 +285,30 @@ private lemma lieArm_unitModel4_basisChart_readout_split
         ((extChartAt I x).symm
           ((toEuclidean (E := E)).symm ((toEuclidean (E := E)) (extChartAt I x x)))) from by
     rw [hroundtrip] ]
-  rw [iteratedCovGrad2_chartComponent_readout (I := I) g₀ h x (![a, b, c, d])]
+  rw [iteratedCovGrad2_chartComponent_decomposition (I := I) g₀ h x (![a, b, c, d])]
   have hJ0 : (![a, b, c, d] : Fin (2 + 2) → Fin (Module.finrank ℝ E)) 0 = a := rfl
   have hJ1 : (Matrix.vecTail (![a, b, c, d] : Fin (2 + 2) → Fin (Module.finrank ℝ E))) 0 = b := rfl
   have hJtail2 : Matrix.vecTail (Matrix.vecTail
       (![a, b, c, d] : Fin (2 + 2) → Fin (Module.finrank ℝ E))) = ![c, d] := by
     funext j; fin_cases j <;> rfl
-  simp only [arm2ReadoutCovDerivPair, hJ0, hJ1, hJtail2]
+  simp only [secondOrderCovariantDerivativeCorrection, hJ0, hJ1, hJtail2]
   have hPdiff : DifferentiableAt ℝ
       (euclidPartial (E := E) b
         (chartPushedRaw I x (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2 h x ![] ![c, d])))
       (toEuclidean (E := E) (extChartAt I x x)) :=
-    lieArm_euclidPartial_chartPushedRaw_differentiableAt_center (I := I) (M := M) g₀ 0 2 h x b ![]
+    lieTerm_euclidPartial_chartPushedRaw_differentiableAt_center (I := I) (M := M) g₀ 0 2 h x b ![]
       ![c, d]
   have hQdiff : DifferentiableAt ℝ
       (covDerivLowerOrderTerm (I := I) (M := M) g₀ 0 2 h x b ![] ![c, d])
       (toEuclidean (E := E) (extChartAt I x x)) :=
-    lieArm_covDerivLowerOrderTerm_differentiableAt_center (I := I) (M := M) g₀ 0 2 h x b ![] ![c, d]
-  rw [lieArm_euclidPartial_add_local a hPdiff hQdiff]
+    lieTerm_covDerivLowerOrderTerm_differentiableAt_center (I := I) (M := M) g₀ 0 2 h x b ![] ![c, d]
+  rw [lieTerm_euclidPartial_add_local a hPdiff hQdiff]
   ring
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma lieArm_unitModel3_basisChart_readout_split
+private lemma lieTerm_unitModel3_basisChart_decomposition
     (g₀ : SmoothRiemannianMetric I M) (h : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c : Fin (Module.finrank ℝ E)) :
     unitModel (I := I) (M := M) g₀ 3 (iteratedCovGrad (I := I) g₀ 0 2 1 h) x
@@ -317,7 +317,7 @@ private lemma lieArm_unitModel3_basisChart_readout_split
           (chartPushedRaw I x (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2
             h x ![] ![b, c]))
           (toEuclidean (E := E) (extChartAt I x x))
-        + arm1ReadoutCovDeriv (I := I) (M := M) g₀ h x ![a, b, c] := by
+        + firstOrderCovariantDerivativeCorrection (I := I) (M := M) g₀ h x ![a, b, c] := by
   classical
   have hmemsrc : x ∈ (chartAt H x).source := mem_chart_source H x
   have hroundtrip : (extChartAt I x).symm
@@ -336,15 +336,15 @@ private lemma lieArm_unitModel3_basisChart_readout_split
         ((extChartAt I x).symm
           ((toEuclidean (E := E)).symm ((toEuclidean (E := E)) (extChartAt I x x)))) from by
     rw [hroundtrip] ]
-  rw [iteratedCovGrad1_chartComponent_readout (I := I) g₀ h x (![a, b, c])]
+  rw [iteratedCovGrad1_chartComponent_decomposition (I := I) g₀ h x (![a, b, c])]
   have hJ0 : (![a, b, c] : Fin (2 + 1) → Fin (Module.finrank ℝ E)) 0 = a := rfl
   have hJtail : Matrix.vecTail (![a, b, c] : Fin (2 + 1) → Fin (Module.finrank ℝ E)) = ![b, c] := by
     funext j; fin_cases j <;> rfl
-  simp only [arm1ReadoutCovDeriv, hJ0, hJtail]
+  simp only [firstOrderCovariantDerivativeCorrection, hJ0, hJtail]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private lemma lieArm_symmS_rawComponent
+private lemma lieTerm_symmS_rawComponent
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (x : M)
     (c d : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (chartAt H x).source) :
@@ -357,8 +357,8 @@ private lemma lieArm_symmS_rawComponent
   have hswap : tensorChartComponentRaw (I := I) (M := M) g 0 2
       (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1) S) x ![] ![c, d] b =
       tensorChartComponentRaw (I := I) (M := M) g 0 2 S x ![] ![d, c] b := by
-    rw [lieArm_rawComponent_eq_unitModel_frame (I := I) (M := M) g 2 _ x ![c, d] hb,
-      lieArm_rawComponent_eq_unitModel_frame (I := I) (M := M) g 2 S x ![d, c] hb]
+    rw [lieTerm_rawComponent_eq_unitModel_frame (I := I) (M := M) g 2 _ x ![c, d] hb,
+      lieTerm_rawComponent_eq_unitModel_frame (I := I) (M := M) g 2 S x ![d, c] hb]
     rw [domDomCongrSection_unitModel (I := I) (M := M) g (Equiv.swap (0 : Fin 2) 1) S b]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
     refine congrArg (fun t : Fin 2 → E => unitModel (I := I) (M := M) g 2 S b t) ?_
@@ -372,7 +372,7 @@ private lemma lieArm_symmS_rawComponent
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
+private lemma lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -398,14 +398,14 @@ private lemma lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
     rw [← extChartAt_source (I := I)]
     exact (extChartAt I x).map_target hy_tgt
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
-  rw [lieArm_symmS_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
+  rw [lieTerm_symmS_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def,
     DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma lieArm_partialDeriv_symmS_scalar_eventuallyEq
+private lemma lieTerm_partialDeriv_symmS_scalar_eventuallyEq
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -418,7 +418,7 @@ private lemma lieArm_partialDeriv_symmS_scalar_eventuallyEq
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![c, d])) =ᶠ[𝓝 (extChartAt I x x)]
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d) := by
-  have hev := (lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
+  have hev := (lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x c d).eventuallyEq_nhds
   filter_upwards [hev] with y hy
   unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
@@ -427,7 +427,7 @@ private lemma lieArm_partialDeriv_symmS_scalar_eventuallyEq
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma lieArm_U4_readout
+private lemma lieTerm_secondOrderCovariantJet_chartComponent
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -441,19 +441,19 @@ private lemma lieArm_U4_readout
           (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d))
           (extChartAt I x x)
-        + arm2ReadoutCovDerivPair (I := I) (M := M) g₀
+        + secondOrderCovariantDerivativeCorrection (I := I) (M := M) g₀
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![a, b, c, d] := by
   classical
-  rw [lieArm_unitModel4_basisChart_readout_split (I := I) (M := M) g₀
+  rw [lieTerm_unitModel4_basisChart_decomposition (I := I) (M := M) g₀
     (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x a b c d]
   refine congrArg (fun t : ℝ =>
-    t + arm2ReadoutCovDerivPair (I := I) (M := M) g₀
+    t + secondOrderCovariantDerivativeCorrection (I := I) (M := M) g₀
       (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![a, b, c, d]) ?_
   rw
     [euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
     (I := I) (M := M) g₀
     (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x b a c d]
-  have hev1 := lieArm_partialDeriv_symmS_scalar_eventuallyEq (I := I) g₀ T T'
+  have hev1 := lieTerm_partialDeriv_symmS_scalar_eventuallyEq (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x b c d
   change fderiv ℝ
       (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
@@ -469,7 +469,7 @@ private lemma lieArm_U4_readout
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma lieArm_U3_readout
+private lemma lieTerm_firstOrderCovariantJet_chartComponent
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -482,13 +482,13 @@ private lemma lieArm_U3_readout
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x b c)
           (extChartAt I x x)
-        + arm1ReadoutCovDeriv (I := I) (M := M) g₀
+        + firstOrderCovariantDerivativeCorrection (I := I) (M := M) g₀
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![a, b, c] := by
   classical
-  rw [lieArm_unitModel3_basisChart_readout_split (I := I) (M := M) g₀
+  rw [lieTerm_unitModel3_basisChart_decomposition (I := I) (M := M) g₀
     (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x a b c]
   refine congrArg (fun t : ℝ =>
-    t + arm1ReadoutCovDeriv (I := I) (M := M) g₀
+    t + firstOrderCovariantDerivativeCorrection (I := I) (M := M) g₀
       (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![a, b, c]) ?_
   have hYmem : (toEuclidean (E := E)) (extChartAt I x x) ∈
       chartTargetEuclid (I := I) (M := M) x :=
@@ -509,14 +509,14 @@ private lemma lieArm_U3_readout
       (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![b, c]) x a hYmem
   rw [hround] at h
   rw [← h]
-  have hev1 := lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
+  have hev1 := lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x b c
   unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [hev1.fderiv_eq]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_chartInvGramOnE_center (g : SmoothRiemannianMetric I M) (x : M)
+private lemma lieTerm_chartInvGramOnE_center (g : SmoothRiemannianMetric I M) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I) g x a b
         (extChartAt I x x) =
@@ -528,7 +528,7 @@ private lemma lieArm_chartInvGramOnE_center (g : SmoothRiemannianMetric I M) (x 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_chartGramOnE_center (g : SmoothRiemannianMetric I M) (x : M)
+private lemma lieTerm_chartGramOnE_center (g : SmoothRiemannianMetric I M) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g x a b
         (extChartAt I x x) =
@@ -540,7 +540,7 @@ private lemma lieArm_chartGramOnE_center (g : SmoothRiemannianMetric I M) (x : M
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_chartInvGramMatrix_symm (g : SmoothRiemannianMetric I M) (x : M)
+private lemma lieTerm_chartInvGramMatrix_symm (g : SmoothRiemannianMetric I M) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
     chartInvGramMatrix (I := I) g x x a b = chartInvGramMatrix (I := I) g x x b a := by
   have hherm : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x
@@ -552,7 +552,7 @@ private lemma lieArm_chartInvGramMatrix_symm (g : SmoothRiemannianMetric I M) (x
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_gram_invGram_collapse (g : SmoothRiemannianMetric I M) (x : M)
+private lemma lieTerm_gram_invGram_collapse (g : SmoothRiemannianMetric I M) (x : M)
     (l j : Fin (Module.finrank ℝ E)) :
     (∑ k : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
@@ -573,14 +573,14 @@ private lemma lieArm_gram_invGram_collapse (g : SmoothRiemannianMetric I M) (x :
       chartInvGramMatrix (I := I) g x x l k *
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j from
     Finset.sum_congr rfl (fun k _ => by
-      rw [lieArm_chartInvGramMatrix_symm (I := I) g x k l]; ring)]
+      rw [lieTerm_chartInvGramMatrix_symm (I := I) g x k l]; ring)]
   rw [h]
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma lieArm_partialDeriv2_realizedGramDeriv_swap
+private lemma lieTerm_partialDeriv2_realizedGramDeriv_swap
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -607,7 +607,7 @@ open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 omit [CompactSpace M] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private lemma lieArm_P2_halfCollapse
+private lemma lieTerm_P2_halfCollapse
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -653,7 +653,7 @@ private lemma lieArm_P2_halfCollapse
     rw [chartDeTurckCorrHessBlockRaw]
     refine congrArg (fun t : ℝ => (1 / 2 : ℝ) * t) ?_
     refine Finset.sum_congr rfl (fun l _ => ?_)
-    rw [lieArm_chartInvGramOnE_center (I := I) g₁ x k l]
+    rw [lieTerm_chartInvGramOnE_center (I := I) g₁ x k l]
   have hstep1 : (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g₁ x k e (extChartAt I x x) *
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -678,10 +678,10 @@ private lemma lieArm_P2_halfCollapse
           CIM a b * ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             CIM k l * (pd2 d a l b + pd2 d b l a - pd2 d l a b)) from by
       refine Finset.sum_congr rfl (fun k _ => ?_)
-      rw [lieArm_chartGramOnE_center (I := I) g₁ x k e]
+      rw [lieTerm_chartGramOnE_center (I := I) g₁ x k e]
       refine congrArg (fun t : ℝ => CGM k e * t) ?_
       refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
-      rw [lieArm_chartInvGramOnE_center (I := I) g₁ x a b, hHB k a b]]
+      rw [lieTerm_chartInvGramOnE_center (I := I) g₁ x a b, hHB k a b]]
     simp only [Finset.mul_sum, Finset.sum_mul]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun a _ => ?_)
@@ -699,7 +699,7 @@ private lemma lieArm_P2_halfCollapse
       CIM a b * ((1 / 2 : ℝ) * (pd2 d a e b + pd2 d b e a - pd2 d e a b)) := by
     intro a b
     rw [Finset.sum_congr rfl (fun l _ => by
-        rw [lieArm_gram_invGram_collapse (I := I) g₁ x l e] :
+        rw [lieTerm_gram_invGram_collapse (I := I) g₁ x l e] :
       ∀ l ∈ Finset.univ,
         CIM a b * ((1 / 2 : ℝ) *
           ((∑ k : Fin (Module.finrank ℝ E), CGM k e * CIM k l) *
@@ -720,14 +720,14 @@ private lemma lieArm_P2_halfCollapse
         CIM k₁ l * ((1 / 2 : ℝ) * pd2 d l e k₁) := by
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun l _ => ?_))
-    rw [show CIM l k₁ = CIM k₁ l from lieArm_chartInvGramMatrix_symm (I := I) g₁ x l k₁]
+    rw [show CIM l k₁ = CIM k₁ l from lieTerm_chartInvGramMatrix_symm (I := I) g₁ x l k₁]
   have hterm3 : (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
       CIM a b * ((1 / 2 : ℝ) * pd2 d e a b)) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         CIM k₁ l * ((1 / 2 : ℝ) * pd2 d e l k₁) := by
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun l _ => ?_))
-    rw [show CIM l k₁ = CIM k₁ l from lieArm_chartInvGramMatrix_symm (I := I) g₁ x l k₁]
+    rw [show CIM l k₁ = CIM k₁ l from lieTerm_chartInvGramMatrix_symm (I := I) g₁ x l k₁]
   have hsplit : (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
       CIM a b * ((1 / 2 : ℝ) * (pd2 d a e b + pd2 d b e a - pd2 d e a b))) =
       (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -748,7 +748,7 @@ private lemma lieArm_P2_halfCollapse
   refine Finset.sum_congr rfl (fun l _ => ?_)
   ring
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieArm2PrincipalCoeff deTurckLieArm2PrincipalCoeff_apply_eq
+  (deTurckLieSecondOrderPrincipalCoeff deTurckLieSecondOrderPrincipalCoeff_apply_eq
   cometricFinBasisTrace_eq_chartInvGram_bilin quadrilinearMapSlotBilinearAt
   unitModel4SlotBilin_apply)
 
@@ -758,11 +758,11 @@ def lieTopTail
     (i j : Fin (Module.finrank ℝ E)) : ℝ :=
   ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
     chartInvGramMatrix (I := I) g₁ x x k₁ l *
-      (arm2ReadoutCovDerivPair (I := I) (M := M) g₀
+      (secondOrderCovariantDerivativeCorrection (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![i, l, j, k₁]
-        + arm2ReadoutCovDerivPair (I := I) (M := M) g₀
+        + secondOrderCovariantDerivativeCorrection (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![j, l, i, k₁]
-        - arm2ReadoutCovDerivPair (I := I) (M := M) g₀
+        - secondOrderCovariantDerivativeCorrection (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![i, j, l, k₁])
 
 omit [SigmaCompactSpace M] in
@@ -776,7 +776,7 @@ theorem lieTop_cov_eq_raw
     (g₁ : SmoothRiemannianMetric I M) (x : M) (i j : Fin (Module.finrank ℝ E)) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁)
+          (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀ g₁)
           (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
         ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] =
       chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g₁ x
@@ -791,18 +791,18 @@ theorem lieTop_cov_eq_raw
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l' b'))
       (extChartAt I x x) with hpd2
   set R4 : (Fin 4 → Fin (Module.finrank ℝ E)) → ℝ := fun Jdx =>
-    arm2ReadoutCovDerivPair (I := I) (M := M) g₀
+    secondOrderCovariantDerivativeCorrection (I := I) (M := M) g₀
       (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x Jdx with hR4
   set CIM : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun a b =>
     chartInvGramMatrix (I := I) g₁ x x a b with hCIM
-  rw [lieArm2_operatorFieldApplication_value_invGram (I := I) g₀ g₁
+  rw [lieSecondOrder_operatorFieldApplication_value_invGram (I := I) g₀ g₁
     (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x i j]
   have hU4 : ∀ a b c d : Fin (Module.finrank ℝ E),
       unitModel (I := I) (M := M) g₀ 4
           (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
           ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d] =
         pd2 a b c d + R4 ![a, b, c, d] := fun a b c d =>
-    lieArm_U4_readout (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b c d
+    lieTerm_secondOrderCovariantJet_chartComponent (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b c d
   rw [Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun l _ => by
       rw [hU4 i l j k₁, hU4 j l i k₁, hU4 i j l k₁] :
     ∀ l ∈ Finset.univ,
@@ -869,14 +869,14 @@ theorem lieTop_cov_eq_raw
               chartDeTurckCorrHessBlockRaw (I := I) g₁ x
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) j a b k
                 (extChartAt I x x))]
-  rw [lieArm_P2_halfCollapse (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g₁ x i j,
-    lieArm_P2_halfCollapse (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g₁ x j i]
+  rw [lieTerm_P2_halfCollapse (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g₁ x i j,
+    lieTerm_P2_halfCollapse (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g₁ x j i]
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun k₁ _ => ?_)
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun l _ => ?_)
   simp only [hpd2]
-  rw [lieArm_partialDeriv2_realizedGramDeriv_swap (I := I) g₀ T T'
+  rw [lieTerm_partialDeriv2_realizedGramDeriv_swap (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x i j l k₁]
   ring
 

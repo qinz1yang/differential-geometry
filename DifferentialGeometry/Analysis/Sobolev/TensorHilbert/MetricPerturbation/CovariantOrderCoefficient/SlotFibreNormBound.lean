@@ -83,90 +83,90 @@ private lemma curry_symm_add_aux (s : ℕ) (x : M)
   simp only [ContinuousLinearEquiv.apply_symm_apply]
 
 def bilinearSlotInsertCurriedCLM (s : ℕ) (x : M)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (D : Tensor0SSpace (s + 1) I x) : TangentSpace I x →L[ℝ] Tensor0SSpace (s + 1) I x :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace (s + 1) I x) := inferInstance
   LinearMap.toContinuousLinearMap
-    { toFun := fun v0 => slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Arm v0) D
+    { toFun := fun v0 => slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Term v0) D
       map_add' := fun a b => by
-        rw [map_add (Arm), slotInsertEndoFib_add_left (I := I) (M := M) (s+1) 0 x (Arm a) (Arm b),
+        rw [map_add (Term), slotInsertEndoFib_add_left (I := I) (M := M) (s+1) 0 x (Term a) (Term b),
           add_apply]
       map_smul' := fun c a => by
-        rw [map_smul (Arm)]
-        rw [slotInsertEndoFib_smul_left (I := I) (M := M) (s+1) 0 x c (Arm a)]
+        rw [map_smul (Term)]
+        rw [slotInsertEndoFib_smul_left (I := I) (M := M) (s+1) 0 x c (Term a)]
         rfl }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma armCurryCLM_apply (s : ℕ) (x : M)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+@[simp] lemma termCurryCLM_apply (s : ℕ) (x : M)
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (D : Tensor0SSpace (s + 1) I x) (v0 : TangentSpace I x) :
-    bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm D v0 =
-      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Arm v0) D := by
+    bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Term D v0 =
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Term v0) D := by
   unfold bilinearSlotInsertCurriedCLM
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma armCurryCLM_add (s : ℕ) (x : M)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+lemma termCurryCLM_add (s : ℕ) (x : M)
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (D D' : Tensor0SSpace (s + 1) I x) :
-    bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm (D + D') =
-      bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm D + bilinearSlotInsertCurriedCLM
-        (I := I) (M := M) s x Arm D' := by
+    bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Term (D + D') =
+      bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Term D + bilinearSlotInsertCurriedCLM
+        (I := I) (M := M) s x Term D' := by
   apply ContinuousLinearMap.ext; intro v0
-  simp only [add_apply, armCurryCLM_apply, map_add]
+  simp only [add_apply, termCurryCLM_apply, map_add]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma armCurryCLM_smul (s : ℕ) (x : M) (c : ℝ)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+lemma termCurryCLM_smul (s : ℕ) (x : M) (c : ℝ)
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (D : Tensor0SSpace (s + 1) I x) :
-    bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm (c • D) =
-      c • bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm D := by
+    bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Term (c • D) =
+      c • bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Term D := by
   apply ContinuousLinearMap.ext; intro v0
-  simp only [smul_apply, armCurryCLM_apply, map_smul]
+  simp only [smul_apply, termCurryCLM_apply, map_smul]
 
 def bilinearSlotInsertCLM (s : ℕ) (x : M)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :
     Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace (s + 1) I x) := inferInstance
   LinearMap.toContinuousLinearMap
     { toFun := fun D => (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
-        (bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm D)
+        (bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Term D)
       map_add' := fun D D' => by
-        rw [armCurryCLM_add, curry_symm_add_aux]
+        rw [termCurryCLM_add, curry_symm_add_aux]
       map_smul' := fun c D => by
-        rw [armCurryCLM_smul, curry_symm_smul_aux]; rfl }
+        rw [termCurryCLM_smul, curry_symm_smul_aux]; rfl }
 
-abbrev armSlotFib (s : ℕ) (x : M)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :
+abbrev termSlotFib (s : ℕ) (x : M)
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :
     Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x :=
-  bilinearSlotInsertCLM (I := I) (M := M) s x Arm
+  bilinearSlotInsertCLM (I := I) (M := M) s x Term
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma armSlotFib_apply (s : ℕ) (x : M)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+@[simp] lemma termSlotFib_apply (s : ℕ) (x : M)
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (D : Tensor0SSpace (s + 1) I x) :
-    bilinearSlotInsertCLM (I := I) (M := M) s x Arm D =
+    bilinearSlotInsertCLM (I := I) (M := M) s x Term D =
       (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
-        (bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm D) := rfl
+        (bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Term D) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma armSlotFib_apply_eval (s : ℕ) (x : M)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+lemma termSlotFib_apply_eval (s : ℕ) (x : M)
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (D : Tensor0SSpace (s + 1) I x) (v : Fin (s + 1 + 1) → TangentSpace I x) :
-    Tensor0SSpace.eval (bilinearSlotInsertCLM (I := I) (M := M) s x Arm D) v =
+    Tensor0SSpace.eval (bilinearSlotInsertCLM (I := I) (M := M) s x Term D) v =
       Tensor0SSpace.eval
-        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Arm (v 0)) D) (Matrix.vecTail v) := by
-  rw [armSlotFib_apply]
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Term (v 0)) D) (Matrix.vecTail v) := by
+  rw [termSlotFib_apply]
   have hkey := tensor0S_curry_apply_eval (I := I) (M := M) (n := s + 1)
     (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
-      (bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm D)) (v0 := v 0)
+      (bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Term D)) (v0 := v 0)
         (vs := Matrix.vecTail v)
-  rw [ContinuousLinearEquiv.apply_symm_apply, armCurryCLM_apply] at hkey
+  rw [ContinuousLinearEquiv.apply_symm_apply, termCurryCLM_apply] at hkey
   conv_lhs => rw [show v = Fin.cons (v 0) (Matrix.vecTail v) from (Fin.cons_self_tail v).symm]
   exact hkey.symm
 
@@ -174,33 +174,33 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma fiberComponent_bilinearSlotInsertCLM_eq
     (g₀ : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ i j : Fin n, g₀.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
     (K : Fin (s + 1) → Fin n) (J : Fin (s + 1 + 1) → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g₀ x (s + 1) (s + 1 + 1)
         (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-          TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) n e K J =
-      g₀.inner x (e (K 0)) (Arm (e (J 0)) (e (J (Fin.succ 0)))) *
+          TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) n e K J =
+      g₀.inner x (e (K 0)) (Term (e (J 0)) (e (J (Fin.succ 0)))) *
         ∏ l ∈ Finset.univ.erase (0 : Fin (s + 1)),
           (if K l = J (Fin.succ l) then (1 : ℝ) else 0) := by
   have hcomp : fiberNormSqComponent (I := I) (M := M) g₀ x (s + 1) (s + 1 + 1)
       (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-        TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) n e K J =
+        TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) n e K J =
       Tensor0SSpace.eval
-        (bilinearSlotInsertCLM (I := I) (M := M) s x Arm
+        (bilinearSlotInsertCLM (I := I) (M := M) s x Term
           (coframeS (I := I) (M := M) g₀ x (s + 1) e K))
         (fun l => e (J l)) := by
     unfold fiberNormSqComponent coframeS; rfl
-  rw [hcomp, armSlotFib_apply_eval, slotInsertEndoFib_apply_natural]
+  rw [hcomp, termSlotFib_apply_eval, slotInsertEndoFib_apply_natural]
   change coframeS (I := I) (M := M) g₀ x (s + 1) e K
         (Function.update (Matrix.vecTail (fun l => e (J l))) 0
-          (Arm (e (J 0)) (Matrix.vecTail (fun l => e (J l)) 0))) = _
+          (Term (e (J 0)) (Matrix.vecTail (fun l => e (J l)) 0))) = _
   rw [coframeS_apply]
   rw [← Finset.prod_erase_mul Finset.univ
     (fun k => g₀.inner x (e (K k))
       (Function.update (Matrix.vecTail (fun l => e (J l))) 0
-        (Arm (e (J 0)) (Matrix.vecTail (fun l => e (J l)) 0)) k))
+        (Term (e (J 0)) (Matrix.vecTail (fun l => e (J l)) 0)) k))
     (Finset.mem_univ (0 : Fin (s + 1)))]
   rw [Function.update_self]
   have hvt0 : Matrix.vecTail (fun l => e (J l)) (0 : Fin (s + 1)) = e (J (Fin.succ 0)) := rfl
@@ -215,9 +215,9 @@ private lemma fiberComponent_bilinearSlotInsertCLM_eq
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma sum_compSq_armSlotFib_eq_normSq
+private lemma sum_compSq_termSlotFib_eq_normSq
     (g₀ : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ i j : Fin n, g₀.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
     (hpars : ∀ v : TangentSpace I x, ∑ i : Fin n, g₀.inner x (e i) v ^ 2 = g₀.inner x v v)
@@ -225,19 +225,19 @@ private lemma sum_compSq_armSlotFib_eq_normSq
     (∑ K : Fin (s + 1) → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x (s + 1) (s + 1 + 1)
           (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-            TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) n e K J) ^ 2) =
-      g₀.inner x (Arm (e (J 0)) (e (J (Fin.succ 0)))) (Arm (e (J 0)) (e (J (Fin.succ 0)))) := by
+            TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) n e K J) ^ 2) =
+      g₀.inner x (Term (e (J 0)) (e (J (Fin.succ 0)))) (Term (e (J 0)) (e (J (Fin.succ 0)))) := by
   classical
-  set w : TangentSpace I x := Arm (e (J 0)) (e (J (Fin.succ 0))) with hw_def
+  set w : TangentSpace I x := Term (e (J 0)) (e (J (Fin.succ 0))) with hw_def
   have hcompsq : ∀ K : Fin (s + 1) → Fin n,
       (fiberNormSqComponent (I := I) (M := M) g₀ x (s + 1) (s + 1 + 1)
         (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-          TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) n e K J) ^ 2 =
+          TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) n e K J) ^ 2 =
         (g₀.inner x (e (K 0)) w) ^ 2 *
           ∏ l ∈ Finset.univ.erase (0 : Fin (s + 1)),
             (if K l = J (Fin.succ l) then (1 : ℝ) else 0) := by
     intro K
-    rw [fiberComponent_bilinearSlotInsertCLM_eq (I := I) g₀ x s Arm e horth K J, ← hw_def]
+    rw [fiberComponent_bilinearSlotInsertCLM_eq (I := I) g₀ x s Term e horth K J, ← hw_def]
     rw [mul_pow]
     congr 1
     rw [← Finset.prod_pow]
@@ -304,12 +304,12 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_bilinearSlotInsertCLM_le
     (g₀ : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) (B : ℝ)
-    (hArm : ∀ a b : TangentSpace I x, g₀.inner x a a = 1 → g₀.inner x b b = 1 →
-      g₀.inner x (Arm a b) (Arm a b) ≤ B) :
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) (B : ℝ)
+    (hTerm : ∀ a b : TangentSpace I x, g₀.inner x a a = 1 → g₀.inner x b b = 1 →
+      g₀.inner x (Term a b) (Term a b) ≤ B) :
     riemannianFiberNormSq (I := I) (M := M) g₀ (s + 1) (s + 1 + 1) x
         (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-          TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) ≤
+          TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) ≤
       ((Module.finrank ℝ E : ℝ)) ^ (s + 1 + 1) * B := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
@@ -317,25 +317,25 @@ theorem riemannianFiberNormSq_bilinearSlotInsertCLM_le
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ (s + 1) (s + 1 + 1) x
     (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-      TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) e bse hnE hbse horth]
+      TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) e bse hnE hbse horth]
   rw [Finset.sum_comm]
   have hsumeq : (∑ J : Fin (s + 1 + 1) → Fin n, ∑ K : Fin (s + 1) → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x (s + 1) (s + 1 + 1)
           (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-            TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) n e K J) ^ 2) =
+            TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) n e K J) ^ 2) =
       ∑ J : Fin (s + 1 + 1) → Fin n,
-        g₀.inner x (Arm (e (J 0)) (e (J (Fin.succ 0)))) (Arm (e (J 0)) (e (J (Fin.succ 0)))) := by
+        g₀.inner x (Term (e (J 0)) (e (J (Fin.succ 0)))) (Term (e (J 0)) (e (J (Fin.succ 0)))) := by
     refine Finset.sum_congr rfl (fun J _ => ?_)
-    exact sum_compSq_armSlotFib_eq_normSq (I := I) g₀ x s Arm e horth hpars J
+    exact sum_compSq_termSlotFib_eq_normSq (I := I) g₀ x s Term e horth hpars J
   rw [hsumeq]
   have hJbound : ∀ J : Fin (s + 1 + 1) → Fin n,
-      g₀.inner x (Arm (e (J 0)) (e (J (Fin.succ 0)))) (Arm (e (J 0)) (e (J (Fin.succ 0)))) ≤ B := by
+      g₀.inner x (Term (e (J 0)) (e (J (Fin.succ 0)))) (Term (e (J 0)) (e (J (Fin.succ 0)))) ≤ B := by
     intro J
-    refine hArm (e (J 0)) (e (J (Fin.succ 0))) ?_ ?_
+    refine hTerm (e (J 0)) (e (J (Fin.succ 0))) ?_ ?_
     · rw [horth (J 0) (J 0)]; simp
     · rw [horth (J (Fin.succ 0)) (J (Fin.succ 0))]; simp
   calc (∑ J : Fin (s + 1 + 1) → Fin n,
-          g₀.inner x (Arm (e (J 0)) (e (J (Fin.succ 0)))) (Arm (e (J 0)) (e (J (Fin.succ 0)))))
+          g₀.inner x (Term (e (J 0)) (e (J (Fin.succ 0)))) (Term (e (J 0)) (e (J (Fin.succ 0)))))
       ≤ ∑ _J : Fin (s + 1 + 1) → Fin n, B := Finset.sum_le_sum (fun J _ => hJbound J)
     _ = ((Module.finrank ℝ E : ℝ)) ^ (s + 1 + 1) * B := by
         rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
@@ -344,9 +344,9 @@ theorem riemannianFiberNormSq_bilinearSlotInsertCLM_le
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma riemannianFiberNormSq_armSlotFib_eq_sum_normSq_frame
+private lemma riemannianFiberNormSq_termSlotFib_eq_sum_normSq_frame
     (g₀ : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (bse : Module.Basis (Fin n) ℝ (TangentSpace I x))
     (hn : n = Module.finrank ℝ E) (hbse : ∀ i : Fin n, bse i = e i)
@@ -354,26 +354,26 @@ private lemma riemannianFiberNormSq_armSlotFib_eq_sum_normSq_frame
     (hpars : ∀ v : TangentSpace I x, ∑ i : Fin n, g₀.inner x (e i) v ^ 2 = g₀.inner x v v) :
     riemannianFiberNormSq (I := I) (M := M) g₀ (s + 1) (s + 1 + 1) x
         (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-          TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) =
+          TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) =
       (n : ℝ) ^ s * ∑ p : Fin n × Fin n,
-        g₀.inner x (Arm (e p.1) (e p.2)) (Arm (e p.1) (e p.2)) := by
+        g₀.inner x (Term (e p.1) (e p.2)) (Term (e p.1) (e p.2)) := by
   classical
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ (s + 1) (s + 1 + 1) x
     (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-      TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) e bse hn hbse horth]
+      TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) e bse hn hbse horth]
   rw [Finset.sum_comm]
   have hsumeq : (∑ J : Fin (s + 1 + 1) → Fin n, ∑ K : Fin (s + 1) → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x (s + 1) (s + 1 + 1)
           (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-            TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) n e K J) ^ 2) =
+            TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) n e K J) ^ 2) =
       ∑ J : Fin (s + 1 + 1) → Fin n,
-        g₀.inner x (Arm (e (J 0)) (e (J (Fin.succ 0)))) (Arm (e (J 0)) (e (J (Fin.succ 0)))) :=
-    Finset.sum_congr rfl (fun J _ => sum_compSq_armSlotFib_eq_normSq (I := I) g₀ x s Arm e horth
+        g₀.inner x (Term (e (J 0)) (e (J (Fin.succ 0)))) (Term (e (J 0)) (e (J (Fin.succ 0)))) :=
+    Finset.sum_congr rfl (fun J _ => sum_compSq_termSlotFib_eq_normSq (I := I) g₀ x s Term e horth
       hpars J)
   rw [hsumeq]
-  set F : Fin n → Fin n → ℝ := fun a b => g₀.inner x (Arm (e a) (e b)) (Arm (e a) (e b)) with hF
+  set F : Fin n → Fin n → ℝ := fun a b => g₀.inner x (Term (e a) (e b)) (Term (e a) (e b)) with hF
   have hJF : ∀ J : Fin (s + 1 + 1) → Fin n,
-      g₀.inner x (Arm (e (J 0)) (e (J (Fin.succ 0)))) (Arm (e (J 0)) (e (J (Fin.succ 0)))) =
+      g₀.inner x (Term (e (J 0)) (e (J (Fin.succ 0)))) (Term (e (J 0)) (e (J (Fin.succ 0)))) =
         F (J 0) (J (Fin.succ 0)) := fun J => rfl
   rw [Finset.sum_congr rfl (fun J _ => hJF J)]
   rw [← Fintype.sum_equiv (Fin.consEquiv (fun _ : Fin (s + 1 + 1) => Fin n))
@@ -404,53 +404,53 @@ private lemma riemannianFiberNormSq_armSlotFib_eq_sum_normSq_frame
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_armSlotFib_spectator_eq
+theorem riemannianFiberNormSq_termSlotFib_spectator_eq
     (g₀ : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
-    (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :
+    (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :
     riemannianFiberNormSq (I := I) (M := M) g₀ (s + 1) (s + 1 + 1) x
         (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
-          TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Arm)) =
+          TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x Term)) =
       (Module.finrank ℝ E : ℝ) ^ s *
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + 1) x
           (show TensorRSSpace 1 (1 + 1) I x from
-            TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) 0 x Arm)) := by
+            TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) 0 x Term)) := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
-  rw [riemannianFiberNormSq_armSlotFib_eq_sum_normSq_frame (I := I) g₀ x s Arm e bse hnE hbse horth hpars]
-  rw [riemannianFiberNormSq_armSlotFib_eq_sum_normSq_frame (I := I) g₀ x 0 Arm e bse hnE hbse horth hpars]
+  rw [riemannianFiberNormSq_termSlotFib_eq_sum_normSq_frame (I := I) g₀ x s Term e bse hnE hbse horth hpars]
+  rw [riemannianFiberNormSq_termSlotFib_eq_sum_normSq_frame (I := I) g₀ x 0 Term e bse hnE hbse horth hpars]
   rw [pow_zero, one_mul]
   rw [show ((Module.finrank ℝ E : ℝ)) ^ s = (n : ℝ) ^ s from by rw [hnE]]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem armSlotFib_contMDiff (s : ℕ)
-    (Arm : Π x : M, TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
+theorem termSlotFib_contMDiff (s : ℕ)
+    (Term : Π x : M, TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (harm : ∀ (V0 W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯),
       ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) x
-          (Arm x (V0 x) (W x)))) :
+          (Term x (V0 x) (W x)))) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel (s + 1) (s + 1 + 1) ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel (s + 1) (s + 1 + 1) ℝ E)
         (E := fun z : M => TensorRSSpace (s + 1) (s + 1 + 1) I z) x
-        (TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x (Arm x)))) := by
+        (TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) s x (Term x)))) := by
   classical
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (F₁ := Tensor0SModel (s + 1) ℝ E) (V₁ := fun x : M => Tensor0SSpace (s + 1) I x)
     (F₂ := Tensor0SModel (s + 1 + 1) ℝ E) (V₂ := fun x : M => Tensor0SSpace (s + 1 + 1) I x)
     (φ := fun x : M => (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
-      bilinearSlotInsertCLM (I := I) (M := M) s x (Arm x)))
+      bilinearSlotInsertCLM (I := I) (M := M) s x (Term x)))
   intro D
   let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (s + 1 + 1)
   have hsec : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel (s + 1 + 1) ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel (s + 1 + 1) ℝ E)
         (E := fun z : M => Tensor0SSpace (s + 1 + 1) I z) x
-        (bilinearSlotInsertCLM (I := I) (M := M) s x (Arm x) (D x))) := by
+        (bilinearSlotInsertCLM (I := I) (M := M) s x (Term x) (D x))) := by
     refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
       (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
-      (fun x : M => (bilinearSlotInsertCLM (I := I) (M := M) s x (Arm x) (D x) :
+      (fun x : M => (bilinearSlotInsertCLM (I := I) (M := M) s x (Term x) (D x) :
         Bundle.continuousMultilinearMap ℝ (s + 1 + 1) E (TangentSpace I) x))).mpr ?_
     intro σ x₀
     set b := Module.finBasis ℝ E with hb
@@ -460,16 +460,16 @@ theorem armSlotFib_contMDiff (s : ℕ)
     obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
     have harmField : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) x
-          (Arm x (Y (σ 0) x) (Y (σ 1) x))) := harm (Y (σ 0)) (Y (σ 1))
+          (Term x (Y (σ 0) x) (Y (σ 1) x))) := harm (Y (σ 0)) (Y (σ 1))
     have hscalar : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
         (fun x : M => Tensor0SSpace.eval (D x)
           (Function.update (fun i : Fin (s + 1) => Y (σ (Fin.succ i)) x) 0
-            (Arm x (Y (σ 0) x) (Y (σ 1) x)))) x₀ := by
+            (Term x (Y (σ 0) x) (Y (σ 1) x)))) x₀ := by
       refine TensorMultilinear.contMDiffAt_section_apply (n := s + 1) (x₀ := x₀)
         (fun x : M => D x) (D.contMDiff x₀)
         (fun i : Fin (s + 1) => fun x : M =>
           Function.update (fun j : Fin (s + 1) => Y (σ (Fin.succ j)) x) 0
-            (Arm x (Y (σ 0) x) (Y (σ 1) x)) i) ?_
+            (Term x (Y (σ 0) x) (Y (σ 1) x)) i) ?_
       intro i
       by_cases hi : i = 0
       · subst hi
@@ -486,9 +486,9 @@ theorem armSlotFib_contMDiff (s : ℕ)
       intro k
       rw [hYx (σ k), Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
       exact e₁.symmL_apply hx₁ (b (σ k))
-    change Tensor0SSpace.eval (bilinearSlotInsertCLM (I := I) (M := M) s x (Arm x) (D x))
+    change Tensor0SSpace.eval (bilinearSlotInsertCLM (I := I) (M := M) s x (Term x) (D x))
         (fun j : Fin (s + 1 + 1) => e₁.symmL ℝ x (b (σ j))) = _
-    rw [armSlotFib_apply_eval]
+    rw [termSlotFib_apply_eval]
     rw [slotInsertEndoFib_apply_natural]
     have htail0 : Matrix.vecTail (fun j : Fin (s + 1 + 1) => e₁.symmL ℝ x (b (σ j))) 0 =
         (Y (σ 1)) x := by
@@ -496,10 +496,10 @@ theorem armSlotFib_contMDiff (s : ℕ)
       rw [hframeS (Fin.succ 0)]; rfl
     have hupd : Function.update (Matrix.vecTail
           (fun j : Fin (s + 1 + 1) => e₁.symmL ℝ x (b (σ j)))) 0
-          (Arm x (e₁.symmL ℝ x (b (σ 0)))
+          (Term x (e₁.symmL ℝ x (b (σ 0)))
             (Matrix.vecTail (fun j : Fin (s + 1 + 1) => e₁.symmL ℝ x (b (σ j))) 0)) =
         Function.update (fun i : Fin (s + 1) => (Y (σ (Fin.succ i))) x) 0
-          (Arm x ((Y (σ 0)) x) ((Y (σ 1)) x)) := by
+          (Term x ((Y (σ 0)) x) ((Y (σ 1)) x)) := by
       funext j
       by_cases hj : j = 0
       · subst hj

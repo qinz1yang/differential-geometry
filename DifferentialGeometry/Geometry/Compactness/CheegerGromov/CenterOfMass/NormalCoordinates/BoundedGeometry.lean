@@ -1515,7 +1515,7 @@ theorem center_of_mass_normal_coordinate_data
         z ∈ Metric.ball (0 : E) c.radius ∧
         (∀ i, xi i ∈ Metric.ball (0 : E) c.radius) ∧
         (∀ i, (z, xi i) ∈ e.target) ∧
-        (∀ i, (c.hom z, c.hom (xi i)) ∈ B.chartReadDom c) ∧
+        (∀ i, (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c) ∧
         chartCmEqnC (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k)) x c B z (mu, xi) = 0 := by
   classical
@@ -1629,7 +1629,7 @@ theorem center_of_mass_normal_coordinate_data
     with_unfolding_all
       exact c.restrictBall.right_inv (hptCtrl i).1
   have hreadDom (i : ι) :
-      (c.hom z, c.hom (xi i)) ∈ B.chartReadDom c := by
+      (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c := by
     change (c.hom z, c.hom (xi i)) ∈ B.dom ∧
       c.hom z ∈ c.restrictBall.target
     rw [hyDecode, hptDecode]

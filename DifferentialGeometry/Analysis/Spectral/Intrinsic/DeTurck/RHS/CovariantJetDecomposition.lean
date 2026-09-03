@@ -50,7 +50,7 @@ theorem lieDecomposition2_joint
       (ccTensorBilinSymm (I := I) g T) δ)
     (hδZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 4
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 4
       (lieDecomposition2 (I := I) (M := M) g T hδ hδZ)
       (δ := δ) (δ' := δ) := by
   classical
@@ -77,7 +77,7 @@ theorem lieDecomposition2_joint
   obtain ⟨K, hK, hmain⟩ :=
     exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindow
       (I := I) (M := M) g a ha hR hδ_lt lieDecompositionQ lieDecompositionEps hε
-  simpa only [linearizedRicciThreeArmHjoint, lieDecomposition2] using
+  simpa only [linearizedRicciCovariantJetJointSmoothness, lieDecomposition2] using
     (hmain T le_rfl hδ hδZ hball).1
 
 theorem rhsDecompositionTop_joint
@@ -87,18 +87,18 @@ theorem rhsDecompositionTop_joint
       (ccTensorBilinSymm (I := I) g T) δ)
     (hδZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 4
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 4
       (rhsDecompositionTop (I := I) (M := M) g T hδ hδZ)
       (δ := δ) (δ' := δ) := by
   have hRic0 :=
-    riemannPalatiniDecompositionC2Family_threeArmHjoint
+    riemannPalatiniDecompositionC2Family_covariantJetJointSmoothness
       (I := I) (M := M) g T hδ hδZ ricciDecompositionQA ricciDecompositionQB
-  have hRic := threeArmJoint_smul (I := I) (M := M) g (2 : ℝ) _ hRic0
+  have hRic := covariantJetJoint_smul (I := I) (M := M) g (2 : ℝ) _ hRic0
   have hLie := lieDecomposition2_joint (I := I) (M := M) g T hδ_lt hδ hδZ
-  have hDecomposition := threeArmJoint_add (I := I) (M := M) g _ _ hRic hLie
+  have hDecomposition := covariantJetJoint_add (I := I) (M := M) g _ _ hRic hLie
   have hTop := rhs_top_path_joint (I := I) (M := M) g T 0 hδ hδZ
-  have hAll := threeArmJoint_add (I := I) (M := M) g _ _ hDecomposition hTop
-  simpa only [linearizedRicciThreeArmHjoint, rhsDecompositionTop, rhsDecomposition2,
+  have hAll := covariantJetJoint_add (I := I) (M := M) g _ _ hDecomposition hTop
+  simpa only [linearizedRicciCovariantJetJointSmoothness, rhsDecompositionTop, rhsDecomposition2,
     ricciDecomposition2, lieDecomposition2] using hAll
 
 omit [BoundarylessManifold I M] in
@@ -138,7 +138,7 @@ theorem rhsSlope_decomposition
             (iteratedCovGrad (I := I) g 0 2 2 T)) x
         ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
           tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
-  rw [ricciDeTurckRemainderSlope_eq_arms (I := I) (M := M) g g_bg T 0 hT
+  rw [ricciDeTurckRemainderSlope_eq_terms (I := I) (M := M) g g_bg T 0 hT
     (zero_symm (I := I) (M := M) g) hδ_lt hδ hδ_lt hδZ x v w hs]
   simp only [sub_zero, iteratedCovGrad_zero]
   have hCoeff :

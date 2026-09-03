@@ -65,8 +65,8 @@ theorem principalCometricOperatorH2_apply_smoothCore
     principalCometricOperatorH2 (I := I) (M := M) g₀ g₁
         (ccTensorToHs (I := I) (M := M) g₀ 2 (4 : ℝ) U) =
       ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ)
-        (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ U) := by
-  simpa only [principalCometricOperatorH2, deTurckPrincipalCometricArm] using
+        (deTurckPrincipalCometricTerm (I := I) (M := M) g₀ g₁ U) := by
+  simpa only [principalCometricOperatorH2, deTurckPrincipalCometricTerm] using
     secondCovariantDerivativeApplication_ccTensorToHs (I := I) (M := M) hDim g₀ 2 2
       (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁) U
 

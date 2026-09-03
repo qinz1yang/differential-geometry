@@ -670,11 +670,11 @@ private lemma metricPrincipalDefect_metricPerturbationPath_eq_lie_sub_lichnerowi
       δ')
     (s : ℝ) :
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieSecondOrderPrincipalCoeff
           (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-        - (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
-            + linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) := by
-  rw [deTurckMetricPrincipalDefectTotal, linearizedRicciArm2FieldLichnerowicz]
+        - (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
+            + linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) := by
+  rw [deTurckMetricPrincipalDefectTotal, linearizedRicciSecondOrderFieldLichnerowicz]
   set X : SmoothCcTensor g₀ 4 2 :=
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hX
   set Y : SmoothCcTensor g₀ 4 2 :=
@@ -693,28 +693,28 @@ theorem deTurckMetricPrincipalDefectTotal_jointSmooth_along_metricPerturbationPa
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
       (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)) (δ := δ) (δ' := δ') := by
   have hLie :=
-    deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth
+    deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth
       (I := I) g₀ T T' hδ hδ'
-  have hLich := linearizedRicci_arm2FieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ'
+  have hLich := linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ'
   have hadd := jointTotalSpaceRS_add (I := I) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ =>
-      (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
+      (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
     (fun p : M × ℝ =>
-      (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
+      (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
     hLich hLich
   have hsub := jointTotalSpaceRS_sub (I := I) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ =>
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieArm2PrincipalCoeff
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieSecondOrderPrincipalCoeff
         (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
     (fun p : M × ℝ =>
-      (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1
-        + (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
+      (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1
+        + (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' p.2).toSection p.1)
     hLie hadd
   refine hsub.congr (fun p _ => ?_)
   beta_reduce
@@ -897,9 +897,9 @@ private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
       (le_of_lt (mul_pos h1tδ h1δ)))]
   have hdec_t := deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g_t
   have hdec_0 := deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀
-  set ρA : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
+  set ρA : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA
     with hρA_def
-  set ρAT : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT
+  set ρAT : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
     with hρAT_def
   set A1 : SmoothCcTensor g₀ 4 2 := reindexCoeffGen (I := I) (M := M) g₀ 4 2
     (reindexCoeffGen (I := I) (M := M) g₀ 4 2 Δt traceHessianSlotPerm) ρA with hA1_def
@@ -1107,7 +1107,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T₀) δ) :
     ∃ εCD : ℝ, 0 ≤ εCD ∧
-      (0 ≤ δ → εCD ≤ 3 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εCD ≤ 3 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
       ∀ (T₀ : SmoothCcTensor g₀ 0 2),
         (∀ (x : M) (v w : TangentSpace I x),
           smoothCcTensorBilinForm (I := I) g₀ T₀ x v w = smoothCcTensorBilinForm (I := I) g₀ T₀ x w
@@ -1131,8 +1131,8 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
                     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                     (hδ_fibre T₀ hball))).toSection x) ≤ εCD ^ 2 := by
   classical
-  have hfC_nn : (0 : ℝ) ≤ deTurckArmFibreConst (Module.finrank ℝ E) :=
-    de_turck_arm_fibre_const_nonneg _
+  have hfC_nn : (0 : ℝ) ≤ deTurckTermFibreConst (Module.finrank ℝ E) :=
+    de_turck_term_fibre_const_nonneg _
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
   have h1δ : (0 : ℝ) < 1 - δ := by linarith
   rcases isEmpty_or_nonempty M with hM | hM
@@ -1142,18 +1142,18 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
   · have hδ0 : 0 ≤ δ :=
       delta_nonneg_of_ball_gFibreOpBound (I := I) (M := M) g₀ a hR₀ hδ_fibre
     have hκ_nn : (0 : ℝ) ≤ δ / (1 - δ) := div_nonneg hδ0 (le_of_lt h1δ)
-    refine ⟨(11 / 4 : ℝ) * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)),
+    refine ⟨(11 / 4 : ℝ) * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)),
       mul_nonneg (mul_nonneg (by norm_num) hfC_nn) hκ_nn,
       fun _ => by
         calc
-          (11 / 4 : ℝ) * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) =
-              (11 / 4 : ℝ) * (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) := by ring
-          _ ≤ 3 * (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) :=
+          (11 / 4 : ℝ) * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) =
+              (11 / 4 : ℝ) * (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) := by ring
+          _ ≤ 3 * (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) :=
             mul_le_mul_of_nonneg_right (by norm_num) (mul_nonneg hfC_nn hκ_nn)
-          _ = 3 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) := by ring,
+          _ = 3 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) := by ring,
       ?_⟩
     intro T₀ hTsymm hball x
-    set fC : ℝ := deTurckArmFibreConst (Module.finrank ℝ E) with hfC_def
+    set fC : ℝ := deTurckTermFibreConst (Module.finrank ℝ E) with hfC_def
     have hfC_sqrt : fC = Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) := rfl
     set κ : ℝ := δ / (1 - δ) with hκ_def
     have hδT := hδ_fibre T₀ hball
@@ -1180,7 +1180,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
     set Φ : ℝ → SmoothCcTensor g₀ 4 2 := fun s =>
       deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s) with hΦ_def
-    have hjoint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ
+    have hjoint : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Φ
         (δ := δ) (δ' := δ) :=
       deTurckMetricPrincipalDefectTotal_jointSmooth_along_metricPerturbationPath (I := I) (M := M) g₀ T₀
         (0 : SmoothCcTensor g₀ 0 2) hδT hδZ
@@ -1196,7 +1196,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
           ((Φ p.2).toSection p.1))
         ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
       have h := hjoint
-      rw [linearizedRicciThreeArmHjoint] at h
+      rw [linearizedRicciCovariantJetJointSmoothness] at h
       exact h
     have hslice : ContinuousOn (fun t : ℝ =>
         Tensor0SBundle.TensorRSSpace.toModel ((Φ t).toSection x))
@@ -1278,7 +1278,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
             (fun t => Tensor0SBundle.TensorRSSpace.toModel ((Φ t).toSection x) - Cx)
             (fC * κ) 4 (3 / 2) (hcontIcc.sub continuousOn_const) hsup
       _ = ((11 / 4 : ℝ) * fC * κ) ^ 2 := by ring
-      _ = ((11 / 4 : ℝ) * deTurckArmFibreConst (Module.finrank ℝ E) *
+      _ = ((11 / 4 : ℝ) * deTurckTermFibreConst (Module.finrank ℝ E) *
             (δ / (1 - δ))) ^ 2 := by rw [hfC_def, hκ_def]
 
 end

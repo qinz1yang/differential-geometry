@@ -211,7 +211,7 @@ private theorem deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffO
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem deTurckLieArm1CoreFib_metricPerturbationPath_apply_jointContMDiffOn
+private theorem deTurckLieFirstOrderCoreFib_metricPerturbationPath_apply_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -222,7 +222,7 @@ private theorem deTurckLieArm1CoreFib_metricPerturbationPath_apply_jointContMDif
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-        (deTurckLieArm1CoreFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
+        (deTurckLieFirstOrderCoreFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
           (Y p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
@@ -234,16 +234,16 @@ private theorem deTurckLieArm1CoreFib_metricPerturbationPath_apply_jointContMDif
   have hκA := metricConnectionDifferenceLowered_selfFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
   have hκB := metricConnectionDifferenceLowered_bgFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g_bg
   have hS2 := deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
-    deTurckLieArm1PairPermInnerTwo
+    deTurckLieFirstOrderPairPermInnerTwo
     (fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
     hκA Y
   have hB := deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
-    deTurckLieArm1PairPermCorrection
+    deTurckLieFirstOrderPairPermCorrection
     (fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
     hκB Y
-  have hpermY := domDomCongrField_jointContMDiffOn (I := I) deTurckLieArm1VecSlotPerm
+  have hpermY := domDomCongrField_jointContMDiffOn (I := I) deTurckLieFirstOrderVecSlotPerm
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) (fun p : M × ℝ => Y p.1) hYjoint
   have hW0 := deTurckVF_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ' g₀
   have hT2 := interiorProductField_jointContMDiffOn_vecJoint (I := I) (s := 2)
@@ -251,17 +251,17 @@ private theorem deTurckLieArm1CoreFib_metricPerturbationPath_apply_jointContMDif
     (fun p : M × ℝ => (PDE.DeTurck.deTurckVF (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ : Π b : M, TangentSpace I b) p.1) hW0
     (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := p.1)
-      (ContinuousMultilinearMap.domDomCongr deTurckLieArm1VecSlotPerm
+      (ContinuousMultilinearMap.domDomCongr deTurckLieFirstOrderVecSlotPerm
         (Tensor0SBundle.Tensor0SSpace.toModel (Y p.1)))) hpermY
   have hT3 := deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
-    deTurckLieArm1PairPermOuterZero
+    deTurckLieFirstOrderPairPermOuterZero
     (fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
     hκA Y
   have hT4 := deTurckLieKoszulTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
-    deTurckLieArm1KoszulMidPerm Y
+    deTurckLieFirstOrderKoszulMidPerm Y
   have hT5 := deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
-    deTurckLieArm1PairPermOuterTwo
+    deTurckLieFirstOrderPairPermOuterTwo
     (fun p : M × ℝ => metricConnectionDifferenceLoweredFib (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
     hκA Y
@@ -278,13 +278,13 @@ private theorem deTurckLieArm1CoreFib_metricPerturbationPath_apply_jointContMDif
   refine hs5.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
-  rw [deTurckLieArm1CoreFib]
+  rw [deTurckLieFirstOrderCoreFib]
   simp only [sub_apply, ContinuousLinearMap.comp_apply]
   rw [domDomCongrFibRank_apply]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem deTurckLieArm1Fib_metricPerturbationPath_apply_jointContMDiffOn
+private theorem deTurckLieFirstOrderFib_metricPerturbationPath_apply_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -295,7 +295,7 @@ private theorem deTurckLieArm1Fib_metricPerturbationPath_apply_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-        (deTurckLieArm1Fib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
+        (deTurckLieFirstOrderFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1
           (Y p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
@@ -311,14 +311,14 @@ private theorem deTurckLieArm1Fib_metricPerturbationPath_apply_jointContMDiffOn
     (fun p : M × ℝ => (PDE.DeTurck.deTurckVF (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1) hWbg
     (fun p : M × ℝ => Y p.1) hYjoint
-  have hcore := deTurckLieArm1CoreFib_metricPerturbationPath_apply_jointContMDiffOn (I := I)
+  have hcore := deTurckLieFirstOrderCoreFib_metricPerturbationPath_apply_jointContMDiffOn (I := I)
     g₀ T T' hδ hδ' g_bg Y
   have hcoreswap := domDomCongrField_jointContMDiffOn (I := I) (Equiv.swap (0 : Fin 2) 1)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (fun p : M × ℝ => deTurckLieArm1CoreFib (I := I) g₀
+    (fun p : M × ℝ => deTurckLieFirstOrderCoreFib (I := I) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1 (Y p.1)) hcore
   have hS3 := deTurckLieKoszulTrace_metricPerturbationPath_apply_jointContMDiffOn (I := I)
-    g₀ T T' hδ hδ' deTurckLieArm1KoszulZeroPerm Y
+    g₀ T T' hδ hδ' deTurckLieFirstOrderKoszulZeroPerm Y
   have ha1 := jointTotalSpace0S_add_local (I := I) (d := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hW hcore
   have ha2 := jointTotalSpace0S_add_local (I := I) (d := 2)
@@ -328,13 +328,13 @@ private theorem deTurckLieArm1Fib_metricPerturbationPath_apply_jointContMDiffOn
   refine ha3.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
-  rw [deTurckLieArm1Fib]
+  rw [deTurckLieFirstOrderFib]
   simp only [add_apply, ContinuousLinearMap.comp_apply]
   rw [domDomCongrFibRank_apply]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem deTurckLieArm1Coeff_metricPerturbationPath_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
+theorem deTurckLieFirstOrderCoeff_metricPerturbationPath_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -343,7 +343,7 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_jointContMDiff (g₀ : Smooth
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 3 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z) p.1
-        ((deTurckLieArm1Coeff (I := I) g₀
+        ((deTurckLieFirstOrderCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
@@ -353,27 +353,27 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_jointContMDiff (g₀ : Smooth
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
-      deTurckLieArm1Fib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
+      deTurckLieFirstOrderFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (fun Y => deTurckLieArm1Fib_metricPerturbationPath_apply_jointContMDiffOn (I := I)
+    (fun Y => deTurckLieFirstOrderFib_metricPerturbationPath_apply_jointContMDiffOn (I := I)
       g₀ T T' hδ hδ' g_bg Y)
   refine hCLM.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z) p.1 t) ?_
-  rw [deTurckLieArm1Coeff_toSection]
+  rw [deTurckLieFirstOrderCoeff_toSection]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth (g₀ : SmoothRiemannianMetric I M)
+theorem deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (g_bg : SmoothRiemannianMetric I M) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
-      (fun s => deTurckLieArm1Coeff (I := I) g₀
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3
+      (fun s => deTurckLieFirstOrderCoeff (I := I) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) (δ := δ) (δ' := δ') :=
-  deTurckLieArm1Coeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ' g_bg
+  deTurckLieFirstOrderCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ' g_bg
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -2137,7 +2137,7 @@ theorem deTurckLieCoeffField_metricPerturbationPath_jointSmooth (g₀ : SmoothRi
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (g_bg : SmoothRiemannianMetric I M) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
       (fun s => deTurckLieCoeffField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) (δ := δ) (δ' := δ') :=
   deTurckLieCoeffField_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ' g_bg

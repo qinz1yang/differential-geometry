@@ -807,7 +807,7 @@ private theorem trans_fin
         · simpa only [Function.comp_apply] using hconvbar.comp_subseq hphi1
 
 omit [CompleteSpace E] in
-theorem atomOn_readout
+theorem seqAtomOn_eq_gluingBump_chartTransition_norm_sq
     (inp : MetricCompactCore (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -942,7 +942,7 @@ theorem atomOn_live_conv
   filter_upwards [hread,
     seqCenterD_live inp.decay P L (gamma.1 : Nat) gamma.2] with k hreadK hc
   intro z hz
-  exact atomOn_readout inp d P L r k alpha.1 gamma.1 hc
+  exact seqAtomOn_eq_gluingBump_chartTransition_norm_sq inp d P L r k alpha.1 gamma.1 hc
     (hreadK z hz)
 
 omit [CompleteSpace E] in
@@ -1581,7 +1581,7 @@ theorem exists_supp_data
             (U alpha) := by
           simpa only [hslot] using hsmooth
         exact ContDiffOn.congr hsmooth' fun z hz =>
-          atomOn_readout inp d P Lphi r k alpha.1 gamma hc
+          seqAtomOn_eq_gluingBump_chartTransition_norm_sq inp d P Lphi r k alpha.1 gamma hc
             (hreadK z hz)
       · cases hgamma : L.alive (gamma : Nat) with
         | false =>

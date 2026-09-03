@@ -724,7 +724,7 @@ private theorem connectionDifferenceSection_lowOrder_jetL2_succ_generic
                   ‖iteratedCovGrad (I := I) g₀ 1 1 l T‖ ^ 2) := by
     intro q
     obtain ⟨C, hC_nn, hC⟩ :=
-      exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+      exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
         (I := I) (M := M) g₀ 1 1 2 1 q
     exact ⟨C, hC_nn, fun S T ΛS' ΛT' h1 h2 h3 h4 => hC S T ΛS' ΛT' h1 h2 h3 h4⟩
   choose CT hCT_nn hCT using hTA_ex
@@ -1265,7 +1265,7 @@ private theorem connectionDifferenceVariationTrace_lowOrder_jetL2_succ_generic
                   ‖iteratedCovGrad (I := I) g₀ 0 3 l T‖ ^ 2) := by
     intro q
     obtain ⟨C, hC_nn, hC⟩ :=
-      exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+      exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
         (I := I) (M := M) g₀ 3 0 1 3 q
     exact ⟨C, hC_nn, fun S T ΛS' ΛT' h1 h2 h3 h4 => hC S T ΛS' ΛT' h1 h2 h3 h4⟩
   choose CT hCT_nn hCT using hTA_ex
@@ -1506,7 +1506,7 @@ private theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsertLowered_o
                   ‖iteratedCovGrad (I := I) g₀ 0 1 l T‖ ^ 2) := by
     intro q
     obtain ⟨C, hC_nn, hC⟩ :=
-      exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+      exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
         (I := I) (M := M) g₀ 1 0 2 1 q
     exact ⟨C, hC_nn, fun S T ΛS' ΛT' h1 h2 h3 h4 => hC S T ΛS' ΛT' h1 h2 h3 h4⟩
   choose CT hCT_nn hCT using hTA_ex
@@ -2313,7 +2313,7 @@ private theorem wOmega_L2_topsep
                   ‖iteratedCovGrad (I := I) g₀ 0 3 l T‖ ^ 2) := by
     intro q
     obtain ⟨C, hC_nn, hC⟩ :=
-      exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+      exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
         (I := I) (M := M) g₀ 3 0 1 3 q
     exact ⟨C, hC_nn, fun S T ΛS' ΛT' h1 h2 h3 h4 => hC S T ΛS' ΛT' h1 h2 h3 h4⟩
   choose CT hCT_nn hCT using hTA_ex
@@ -2621,7 +2621,7 @@ private theorem wAlpha_L2_topsep
                   ‖iteratedCovGrad (I := I) g₀ 0 1 l T‖ ^ 2) := by
     intro q
     obtain ⟨C, hC_nn, hC⟩ :=
-      exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+      exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
         (I := I) (M := M) g₀ 1 0 2 1 q
     exact ⟨C, hC_nn, fun S T ΛS' ΛT' h1 h2 h3 h4 => hC S T ΛS' ΛT' h1 h2 h3 h4⟩
   choose CT hCT_nn hCT using hTA_ex

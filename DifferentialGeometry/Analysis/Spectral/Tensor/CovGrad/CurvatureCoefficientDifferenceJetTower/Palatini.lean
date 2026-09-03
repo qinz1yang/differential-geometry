@@ -53,7 +53,7 @@ namespace CurvatureCoefficientDifferenceJetTower
 def quadraticConnectionDifferenceCc (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 1 3 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 1 2 3
-    (armSlotEndoPassZeroCc (I := I) (M := M) g₀ (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
+    (termSlotEndoPassZeroCc (I := I) (M := M) g₀ (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))
     (connectionDifferenceSection (I := I) g₁ g₀)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -72,11 +72,11 @@ lemma quadraticConnectionDifferenceCc_toModel (g₀ g₁ : SmoothRiemannianMetri
         (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁).toSection x) om) =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 1 2 3
-          (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
+          (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+            (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))
           (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) om) from rfl]
-  rw [toModel_operatorFieldComposition_armSlotEndoPassZeroCc_eval (I := I) (M := M) g₀
-    (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁) (connectionDifferenceSection (I := I) g₁ g₀) x om w]
+  rw [toModel_operatorFieldComposition_termSlotEndoPassZeroCc_eval (I := I) (M := M) g₀
+    (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁) (connectionDifferenceSection (I := I) g₁ g₀) x om w]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (connectionDifferenceSection (I := I) g₁ g₀).toSection x) om) =
       connectionDifferencePairing (I := I) g₁ g₀ x om from rfl]
@@ -85,7 +85,7 @@ lemma quadraticConnectionDifferenceCc_toModel (g₀ g₁ : SmoothRiemannianMetri
         (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
           (if j = 0 then
             tangentSpaceModelContinuousLinearEquiv (I := I) x
-              (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁ x
+              (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁ x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1))
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 2)))
           else w 0)) =
@@ -1081,8 +1081,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannLoweredBackgroundDifference
   have hcell : ∀ i' ∈ Finset.range (i + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i') x
           ((iteratedCovGrad (I := I) g₀ 2 3 i'
-            (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-              (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
+            (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+              (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
         ∑ l ∈ Finset.range (i + 1 - i'),
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 1 2 l
@@ -1093,11 +1093,11 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannLoweredBackgroundDifference
       rw [Finset.mem_range] at hi'; omega
     have hA1 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i') x
         ((iteratedCovGrad (I := I) g₀ 2 3 i'
-          (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) ≤
+          (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+            (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))).toSection x) ≤
         (Module.finrank ℝ E : ℝ) *
           (CA i' * ∑ k ∈ Finset.range (i' + 2), Combinatorics.antidiagonalTupleGrid b k) := by
-      refine le_trans (riemannianFiberNormSq_iteratedCovGrad_armSlotPass_connectionDifferenceArm_le
+      refine le_trans (riemannianFiberNormSq_iteratedCovGrad_termSlotPass_connectionDifferenceTerm_le
         (I := I) (M := M) g₀ g₁ i' x) ?_
       refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
       exact hCA g₁ T htie hδ_le hδ0 hbound i' x
@@ -1144,8 +1144,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannLoweredBackgroundDifference
         _ = (CA i' * CA l * gridSumPairCount (i' + 2) (l + 2)) * WW := by ring
     calc riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i') x
           ((iteratedCovGrad (I := I) g₀ 2 3 i'
-            (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-              (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
+            (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+              (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
         ∑ l ∈ Finset.range (i + 1 - i'),
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 1 2 l
@@ -1176,20 +1176,20 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannLoweredBackgroundDifference
         ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) * AA i i') * WW := by
     rw [show quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁ =
         ccOperatorFieldComp (I := I) (M := M) g₀ 1 2 3
-          (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
+          (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+            (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))
           (connectionDifferenceSection (I := I) g₁ g₀) from rfl]
     refine le_trans (riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalProductGrid_rankLeft_le
       (I := I) (M := M) g₀ i 1 2 3
-      (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-        (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
+      (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+        (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))
       (connectionDifferenceSection (I := I) g₁ g₀) x) ?_
     calc operatorFieldApplicationGdiag (E := E) i *
           ∑ i' ∈ Finset.range (i + 1),
             riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i') x
                 ((iteratedCovGrad (I := I) g₀ 2 3 i'
-                  (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-                    (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
+                  (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+                    (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
               ∑ l ∈ Finset.range (i + 1 - i'),
                 riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
                   ((iteratedCovGrad (I := I) g₀ 1 2 l
@@ -2305,7 +2305,7 @@ theorem riemannMixedBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M
     (congrArg TensorRSSpace.ofCLM
       (riemannMixedBiContrFib_eq_fixedFrame_on_nbhd (I := I) g₀ g₁ x₀ hy))
 
-def ricciArmOrder0RiemannMixedCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
+def ricciOrderZeroRiemannMixedCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
@@ -2316,16 +2316,16 @@ def ricciArmOrder0RiemannMixedCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem ricciArmOrder0RiemannMixedCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
-    (ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁).toSection x =
+theorem ricciOrderZeroRiemannMixedCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+    (ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁).toSection x =
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (riemannMixedBiContrFib (I := I) (M := M) g₀ g₁ x)) := rfl
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem ricciArmOrder0RiemannMixedCoeff_self (g₀ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₀ =
-      ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ := by
+theorem ricciOrderZeroRiemannMixedCoeff_self (g₀ : SmoothRiemannianMetric I M) :
+    ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₀ =
+      ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -2335,9 +2335,9 @@ theorem ricciArmOrder0RiemannMixedCoeff_self (g₀ : SmoothRiemannianMetric I M)
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [show ((ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₀).toSection x) D =
+  rw [show ((ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₀).toSection x) D =
       riemannMixedBiContrFib (I := I) (M := M) g₀ g₀ x D from rfl]
-  rw [show ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) D =
+  rw [show ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) D =
       riemannBiContrFib (I := I) g₀ x D from rfl]
   rw [riemannMixedBiContrFib, riemannBiContrFib, riemannMixedBiContrFibFixedFrame_toModel,
     riemannBiContrFibFixedFrame_toModel]

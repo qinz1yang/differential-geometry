@@ -50,16 +50,16 @@ def lieDecompositionEps : Fin 3 → ℝ := ![(-1 : ℝ), -1, 1]
 def ricciDecomposition0
     (g g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2) :
     SmoothCcTensor g 2 2 :=
-  ricciArmOrder0RiemannCoeff (I := I) (M := M) g g +
+  ricciOrderZeroRiemannCoeff (I := I) (M := M) g g +
     (2 : ℝ) •
-      (ricciArmOrder0AACommCoeffField (I := I) (M := M) g g₁ +
+      (ricciOrderZeroAACommCoeffField (I := I) (M := M) g g₁ +
         (ccOperatorFieldComp (I := I) (M := M) g 2 2 2
-            (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g g₁ -
-              ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g g)
+            (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g g₁ -
+              ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g g)
             (ccInputSlotSwapField (I := I) (M := M) g) +
           (1 / 2 : ℝ) •
-            ricciArmSharpGradKoszulResidualField (I := I) (M := M) g g₁ P -
-          ricciArmRicciFoldRemainderField (I := I) (M := M) g g₁ P))
+            ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g g₁ P -
+          ricciContractionRemainderField (I := I) (M := M) g g₁ P))
 
 def ricciDecomposition2
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2) {δ : ℝ}
@@ -79,7 +79,7 @@ def lieDecomposition0
     (hδZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ)
     (s : ℝ) : SmoothCcTensor g 2 2 :=
-  deTurckLieCovariantDerivativeArmField (I := I) (M := M) g g₁ g_bg -
+  deTurckLieCovariantDerivativeTermField (I := I) (M := M) g g₁ g_bg -
     deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδ hδZ
       lieDecompositionQ lieDecompositionEps s
 
@@ -105,7 +105,7 @@ def rhsDecomposition0
   (-2 : ℝ) • ricciPalatiniHalfCoefficient (I := I) (M := M) g g₁ +
     ricciDecomposition0 (I := I) (M := M) g g₁ (s • T) +
     (lieDecomposition0 (I := I) (M := M) g g₁ g_bg T hδ hδZ s +
-      deTurckLieEndoArmField (I := I) (M := M) g g₁ g_bg +
+      deTurckLieEndoTermField (I := I) (M := M) g g₁ g_bg +
       lieCorrectionZeroField (I := I) (M := M) g g₁ g_bg)
 
 def rhsDecomposition2
@@ -127,15 +127,6 @@ private lemma bilin_smul
       c * ccTensorBilin (I := I) g S x v w := by
   rw [ccTensorBilin_apply, ccTensorBilin_apply, ccTensorModel_smul,
     smul_apply, smul_eq_mul]
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma symmS_eq_self
-    (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
-    (hS : ∀ (x : M) (v w : TangentSpace I x),
-      ccTensorBilin (I := I) g S x v w =
-        ccTensorBilin (I := I) g S x w v) :
-    symmS (I := I) (M := M) g S = S := by
-  exact foldSymmS_eq_self (I := I) (M := M) g S hS
 
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
@@ -160,7 +151,7 @@ private lemma ricciDecomposition2_eq
         (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
         (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 := by
   have hsymm : ccTensor02Symm (I := I) (M := M) g T = T :=
-    symmS_eq_self (I := I) (M := M) g T hT
+    ccTensor02Symm_eq_self (I := I) (M := M) g T hT
   rw [ricciDecomposition2,
     riemannPalatiniDecompositionC2Family_eq_symmS_kernel
       (I := I) (M := M) g T hδ hδZ
@@ -181,7 +172,7 @@ theorem ricciDecomposition_app
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ)
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) :
     operatorFieldApply (I := I) (M := M) g 2 2
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ s)) T =
       operatorFieldApply (I := I) (M := M) g 2 2
           (ricciDecomposition0 (I := I) (M := M) g
@@ -204,7 +195,7 @@ theorem ricciDecomposition_app
     intro x v w
     rw [bilin_smul (I := I) (M := M), bilin_smul (I := I) (M := M), hT x v w]
   have hprim :=
-    ricciArmOrder0RiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
+    ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
       (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hδ hδZ s) (s • T) htie hPsymm T
   have hC2 := ricciDecomposition2_eq (I := I) (M := M) g T hT hδ hδZ s
@@ -214,16 +205,16 @@ theorem ricciDecomposition_app
     operatorFieldApplication_smul_right] at hprim
   have htwice :
       operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδ hδZ s)) T -
         operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g g) T =
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g g) T =
       (2 : ℝ) • ((1 / 2 : ℝ) •
         (operatorFieldApply (I := I) (M := M) g 2 2
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hδ hδZ s)) T -
           operatorFieldApply (I := I) (M := M) g 2 2
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g g) T)) := by
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g g) T)) := by
     rw [smul_smul, show (2 : ℝ) * (1 / 2) = 1 by norm_num, one_smul]
   rw [hprim] at htwice
   rw [sub_eq_iff_eq_add] at htwice
@@ -240,13 +231,13 @@ theorem lieDecomposition_app
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ)
     (s : ℝ) :
     operatorFieldApply (I := I) (M := M) g 2 2
-        (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g g₁ g_bg) T =
+        (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g g₁ g_bg) T =
       operatorFieldApply (I := I) (M := M) g 2 2
           (lieDecomposition0 (I := I) (M := M) g g₁ g_bg T hδ hδZ s) T +
         operatorFieldApply (I := I) (M := M) g 4 2
           (lieDecomposition2 (I := I) (M := M) g T hδ hδZ s)
           (iteratedCovGrad (I := I) g 0 2 2 T) := by
-  rw [lieDecomposition0, lieDecomposition2, foldOperatorFieldApplication_sub_left,
+  rw [lieDecomposition0, lieDecomposition2, operatorFieldApplication_sub_left,
     deTurckLieTopOrderPairing_apply (I := I) (M := M) g T hδ hδZ lieDecompositionQ lieDecompositionEps s]
   abel
 
@@ -274,16 +265,16 @@ theorem rhsLow0_decomposition
   have hLie := lieDecomposition_app (I := I) (M := M) g
     (metricPerturbationPath (I := I) g T 0 hδ hδZ s) g_bg T hδ hδZ s
   rw [DeTurckCoefficients.ricciDeTurckRemainderZeroOrderCoefficient, rhsDecomposition0, rhsDecomposition2,
-    deTurckLieCoeffField_eq_covDerivArm_add_endoArm,
+    deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm,
     ricciPalatiniHalfCoefficient]
   change
     operatorFieldApply (I := I) (M := M) g 2 2
         ((-2 : ℝ) •
             linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hδ hδZ s) +
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hδ hδZ s) g_bg +
-            deTurckLieEndoArmField (I := I) (M := M) g
+            deTurckLieEndoTermField (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hδ hδZ s) g_bg +
             lieCorrectionZeroField (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hδ hδZ s) g_bg)) T =

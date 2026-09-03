@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
@@ -31,7 +31,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturba
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieCoefficientApplication
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartReadout
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartComponents
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrderTerm.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.SecondOrderTerm.L2JetBound
@@ -40,7 +40,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomp
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.ConnectionLaplacianJetBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.RicciCoefficientBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrection.TameBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.CurvatureFold
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.CurvatureContraction
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.PathIntegralDeviation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.FirstOrderTermTameEnvelope
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.KernelTameEnvelope
@@ -70,16 +70,16 @@ open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
-  linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero linearizedRicciThreeArmHjoint_add
-  linearizedRicciThreeArmHjoint_add_smul linearizedRicciThreeArmHjoint_smul_add
-  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
-  linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
-  linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
-  linearizedRicciArm1CorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
-  linearizedRicci_arm0Field_jointSmooth linearizedRicci_arm1Field_jointSmooth
-  linearizedRicci_arm2FieldLichnerowicz_jointSmooth ricciArmOrder1KoszulCoeff
-  exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
+  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
+  linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero linearizedRicciCovariantJetJointSmoothness_add
+  linearizedRicciCovariantJetJointSmoothness_add_smul linearizedRicciCovariantJetJointSmoothness_smul_add
+  exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
+  linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
+  linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
+  exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
   symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
@@ -106,14 +106,14 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieArm2PrincipalCoeff deTurckLieArm1Coeff deTurckLieCoeffField
-  deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth
+  (deTurckLieSecondOrderPrincipalCoeff deTurckLieFirstOrderCoeff deTurckLieCoeffField
+  deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth
   deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
   deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib
-  domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieArm2DivSlotPermA
-  deTurckLieArm2DivSlotPermAT traceHessianCoeff_toSection)
+  domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieSecondOrderDivSlotPermA
+  deTurckLieSecondOrderDivSlotPermAT traceHessianCoeff_toSection)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
 
@@ -214,19 +214,19 @@ private lemma reindexCoeffGen_sub (g₀ : SmoothRiemannianMetric I M)
     reindexCoeffFibGen_apply, sub_apply]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-private lemma lieCorrectionZerow_NEndoIns_diff_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+private lemma lieCorrectionZero_NEndoInsertion_difference_decomposition (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
         (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
           lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀) =
       lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g₀ - lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g_bg := by
   rw [slotInsertEndoCc_sub (I := I) (M := M) g₀ 0,
-    lieCorrectionZerob_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g_bg,
-    lieCorrectionZerob_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g₀]
+    lieCorrectionZero_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g_bg,
+    lieCorrectionZero_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g₀]
   abel
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma lieCorrectionZerow_insertField_sub (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+private lemma lieCorrectionZero_insertionField_sub (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg -
         lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g₀ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
@@ -257,14 +257,14 @@ private lemma lieCorrectionZerow_insertField_sub (g₀ g₁ g_bg : SmoothRiemann
             (Equiv.swap (0 : Fin 2) 1) from rfl]
   abel
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmField
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoTermField
   deTurckLieCovariantDerivativeInsertionFib deTurckLieCovariantDerivativeInsertionFib_toModel deTurckVectorFieldCovariantDerivativeEndomorphism) in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem lieCorrectionZerow_insertField_add_endoArmBase (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+private theorem lieCorrectionZero_insertionField_add_baseEndomorphism (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg +
-        deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
+        deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀ =
       lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg -
         lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g₀ := by
   apply SmoothCcTensor.ext
@@ -278,11 +278,11 @@ private theorem lieCorrectionZerow_insertField_add_endoArmBase (g₀ g₁ g_bg :
   beta_reduce
   have hL : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       ((lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg +
-        deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀).toSection x)) D) =
+        deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀).toSection x)) D) =
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg).toSection x) D) +
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀).toSection x) D) := rfl
+        (deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀).toSection x) D) := rfl
   have hR : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       ((lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg -
         lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g₀).toSection x)) D) =
@@ -292,12 +292,12 @@ private theorem lieCorrectionZerow_insertField_add_endoArmBase (g₀ g₁ g_bg :
         (lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g₀).toSection x) D) := rfl
   rw [hL, hR, Tensor0SSpace.toModel_add, Tensor0SSpace.toModel_sub,
     add_apply, sub_apply]
-  rw [lieCorrectionZerob_insert_fiber (I := I) (M := M) g₀ g₁ g_bg x D m,
-    lieCorrectionZerob_insert_fiber (I := I) (M := M) g₀ g₁ g₀ x D m]
+  rw [lieCorrectionZero_insert_fiber (I := I) (M := M) g₀ g₁ g_bg x D m,
+    lieCorrectionZero_insert_fiber (I := I) (M := M) g₀ g₁ g₀ x D m]
   rw [lieCorrectionZeroInsertionFib_toModel (I := I) g₀ g₁ g_bg x D m,
     lieCorrectionZeroInsertionFib_toModel (I := I) g₀ g₁ g₀ x D m]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀).toSection x) D) =
+      (deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀).toSection x) D) =
       deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g₀ x D from rfl]
   rw [deTurckLieCovariantDerivativeInsertionFib_toModel (I := I) g₁ g₀ x D m]
   have hN0 : ∀ v : TangentSpace I x,
@@ -348,12 +348,12 @@ private theorem lieCorrectionZerow_insertField_add_endoArmBase (g₀ g₁ g_bg :
   rw [e0, e1]
   ring
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmField) in
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoTermField) in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private theorem lieCorrectionZerow_lieCorrectionZero_add_endoArmBase_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+private theorem lieCorrectionZero_add_baseEndomorphism_decomposition (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg +
-        deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
+        deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
             lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀)
@@ -366,14 +366,14 @@ private theorem lieCorrectionZerow_lieCorrectionZero_add_endoArmBase_decomp (g�
         + lieCorrectionZeroVectorBundleField (I := I) (M := M) g₀ g₁
         + lieCorrectionZeroMixedConnectionField (I := I) (M := M) g₀ g₁ g_bg
         + lieCorrectionZeroRiemannField (I := I) (M := M) g₀ g₁ := by
-  have h1 := lieCorrectionZerob_total_decomp (I := I) (M := M) g₀ g₁ g_bg
-  have h5 := lieCorrectionZerow_insertField_sub (I := I) (M := M) g₀ g₁ g_bg
-  have h6 := lieCorrectionZerow_insertField_add_endoArmBase (I := I) (M := M) g₀ g₁ g_bg
+  have h1 := lieCorrectionZero_total_decomp (I := I) (M := M) g₀ g₁ g_bg
+  have h5 := lieCorrectionZero_insertionField_sub (I := I) (M := M) g₀ g₁ g_bg
+  have h6 := lieCorrectionZero_insertionField_add_baseEndomorphism (I := I) (M := M) g₀ g₁ g_bg
   rw [h1, ← h5]
   rw [show lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg -
       lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g₀ =
       lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg +
-        deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ from h6.symm]
+        deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀ from h6.symm]
   abel
 
 omit [BoundarylessManifold I M] [CompactSpace M] in
@@ -439,7 +439,7 @@ private theorem operatorFieldComposition_l2JetWindow_le (g₀ : SmoothRiemannian
       ‖iteratedCovGrad (I := I) g₀ p b q (ccOperatorFieldComp (I := I) (M := M) g₀ p a b Φ W)‖ ^ 2 ≤
     (∑ q ∈ Finset.range (i + 1),
       diagonalGridGrowthFactor (E := E) q * (C2 q * (ΛW * KΦ q + ΛΦ * KW q))) * WinVal := by
-  obtain ⟨-, hL2⟩ := lieCorrectionZerob_comp_feed_step (I := I) (M := M) g₀ p a b i Φ W C2 hC2_nn htwo
+  obtain ⟨-, hL2⟩ := lieCorrectionZero_composition_bounds (I := I) (M := M) g₀ p a b i Φ W C2 hC2_nn htwo
     ΛΦ ΛW (fun q => KΦ q * WinVal) (fun q => KW q * WinVal) hΛΦ hΛW hΦ0 hW0 hKΦ hKW
   refine le_trans (hL2 i le_rfl) (le_of_eq ?_)
   rw [Finset.sum_mul]
@@ -464,7 +464,7 @@ private theorem exists_connectionDifferenceSection_coeffJetEnvelope (g₀ : Smoo
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2)) := by
   classical
   obtain ⟨Λ, F, hΛ_nn, hF_nn, hfeed⟩ :=
-    lieCorrectionZerob_cds_feed (I := I) (M := M) g₀ a ha_super hR hδ₀
+    lieCorrectionZero_connectionDifferenceSection_bounds (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Fw, hFw_nn, hFw⟩ :=
     pAO_connectionDifferenceSection_jetL2_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨Λ, fun i => ∑ q ∈ Finset.range (i + 1), Fw q, hΛ_nn,
@@ -505,7 +505,7 @@ private theorem exists_perturbedMetricLoweredConnectionDifference_coeffJetEnvelo
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2)) := by
   classical
   obtain ⟨Λ, F, hΛ_nn, hF_nn, hfeed⟩ :=
-    lieCorrectionZerob_kappa_feed (I := I) (M := M) g₀ gB a ha_super hR hδ₀
+    lieCorrectionZero_kappa_bounds (I := I) (M := M) g₀ gB a ha_super hR hδ₀
   obtain ⟨Fw, hFw_nn, hFw⟩ :=
     pAO_kappa_jetSum_tame (I := I) (M := M) g₀ gB a ha_super hR hδ₀
   refine ⟨Λ, Fw, hΛ_nn, hFw_nn, ?_⟩
@@ -536,14 +536,14 @@ private theorem exists_pureDoubleTraceCoeff_coeffJetEnvelope (g₀ : SmoothRiema
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2)) := by
   classical
   obtain ⟨Λdt, Fdt, hΛdt_nn, hFdt_nn, hdt⟩ :=
-    lieCorrectionZerob_pureDT_feed (I := I) (M := M) g₀ s a ha_super hR hδ₀
+    lieCorrectionZero_pureDoubleTrace_bounds (I := I) (M := M) g₀ s a ha_super hR hδ₀
   obtain ⟨Λsf, Fsf, hΛsf_nn, hFsf_nn, hsf⟩ :=
-    lieCorrectionZerob_sharpFlat_feed (I := I) (M := M) g₀ a ha_super hR hδ₀
+    lieCorrectionZero_sharpFlat_bounds (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Fsfw, hFsfw_nn, hsfw⟩ :=
     pAO_sharpFlat_jetSum_tame (I := I) (M := M) g₀ a ha_super hR hδ₀
-  obtain ⟨c0, hc0_nn, hc0⟩ := lieCorrectionZerob_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ (s + 2) s
+  obtain ⟨c0, hc0_nn, hc0⟩ := lieCorrectionZero_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ (s + 2) s
     (cometricDoubleTraceField (I := I) g₀ s)
-  obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ (s + 2) (s + 2) s (s + 2)
+  obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ (s + 2) (s + 2) s (s + 2)
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfrpow_nn : (0 : ℝ) ≤ fr ^ (s + 1) := by positivity
   set FcDT : ℕ → ℝ := fun q => ∑ q' ∈ Finset.range (q + 1),
@@ -587,7 +587,7 @@ private theorem exists_pureDoubleTraceCoeff_coeffJetEnvelope (g₀ : SmoothRiema
     have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ (s + 1)
       (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁) 0 x
     simp only [iteratedCovGrad_zero] at h
-    rw [← lieCorrectionZerob_sharpFlat_eq_slotInsert_fullRaised (I := I) (M := M) g₀ g₁] at h
+    rw [← lieCorrectionZero_sharpFlat_eq_slotInsert_fullRaised (I := I) (M := M) g₀ g₁] at h
     rw [← hfr_def] at h
     exact le_trans h (mul_le_mul_of_nonneg_left (hsfsup x) hfrpow_nn)
   have hKW : ∀ q : ℕ, q ≤ i →
@@ -600,7 +600,7 @@ private theorem exists_pureDoubleTraceCoeff_coeffJetEnvelope (g₀ : SmoothRiema
         fr ^ (s + 1) *
           ‖iteratedCovGrad (I := I) g₀ 1 1 l (sharpFlatEndoCc (I := I) g₀ g₁)‖ ^ 2 := by
       intro l _
-      refine lieCorrectionZerob_normSq_le_scaled_of_pointwise (I := I) (M := M) g₀
+      refine lieCorrectionZero_normSq_le_scaled_of_pointwise (I := I) (M := M) g₀
         (s + 2) ((s + 2) + l) 1 (1 + l)
         (iteratedCovGrad (I := I) g₀ (s + 2) (s + 2) l Wf)
         (iteratedCovGrad (I := I) g₀ 1 1 l (sharpFlatEndoCc (I := I) g₀ g₁))
@@ -608,7 +608,7 @@ private theorem exists_pureDoubleTraceCoeff_coeffJetEnvelope (g₀ : SmoothRiema
       intro x
       have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ (s + 1)
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁) l x
-      rw [← lieCorrectionZerob_sharpFlat_eq_slotInsert_fullRaised (I := I) (M := M) g₀ g₁] at h
+      rw [← lieCorrectionZero_sharpFlat_eq_slotInsert_fullRaised (I := I) (M := M) g₀ g₁] at h
       rw [← hfr_def] at h
       exact h
     refine le_trans (Finset.sum_le_sum hterm) ?_
@@ -653,12 +653,12 @@ private theorem exists_deTurckVectorFieldFlat_coeffJetEnvelope (g₀ gB : Smooth
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2)) := by
   classical
   obtain ⟨Λvf, Fvf, hΛvf_nn, hFvf_nn, hvf⟩ :=
-    lieCorrectionZerob_vflat_feed (I := I) (M := M) g₀ gB a ha_super hR hδ₀
+    lieCorrectionZero_vflat_bounds (I := I) (M := M) g₀ gB a ha_super hR hδ₀
   obtain ⟨Λdt, Kdt, hΛdt_nn, hKdt_nn, hdt⟩ :=
     exists_pureDoubleTraceCoeff_coeffJetEnvelope (I := I) (M := M) g₀ 1 a ha_super hR hδ₀
   obtain ⟨Λκ, Kκ, hΛκ_nn, hKκ_nn, hκ⟩ :=
     exists_perturbedMetricLoweredConnectionDifference_coeffJetEnvelope (I := I) (M := M) g₀ gB a ha_super hR hδ₀
-  obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ 3 0 1 3
+  obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 3 0 1 3
   refine ⟨Λvf, fun i => ∑ q ∈ Finset.range (i + 1),
       diagonalGridGrowthFactor (E := E) q * (C2 q * (Λκ * Kdt q + Λdt * Kκ q)),
     hΛvf_nn,
@@ -711,12 +711,12 @@ private theorem exists_deTurckVectorFieldInteriorProduct_coeffJetEnvelope
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2)) := by
   classical
   obtain ⟨Λiv, Fiv, hΛiv_nn, hFiv_nn, hiv⟩ :=
-    lieCorrectionZerob_iVField_feed (I := I) (M := M) g₀ gB a ha_super hR hδ₀
+    lieCorrectionZero_iVField_bounds (I := I) (M := M) g₀ gB a ha_super hR hδ₀
   obtain ⟨Λdt, Kdt, hΛdt_nn, hKdt_nn, hdt⟩ :=
     exists_pureDoubleTraceCoeff_coeffJetEnvelope (I := I) (M := M) g₀ 1 a ha_super hR hδ₀
   obtain ⟨Λvf, Kvf, hΛvf_nn, hKvf_nn, hvf⟩ :=
     exists_deTurckVectorFieldFlat_coeffJetEnvelope (I := I) (M := M) g₀ gB a ha_super hR hδ₀
-  obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ 3 2 1 3
+  obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 3 2 1 3
   set fr2 : ℝ := (Module.finrank ℝ E : ℝ) ^ 2 with hfr2_def
   have hfr2_nn : (0 : ℝ) ≤ fr2 := by positivity
   refine ⟨Λiv, fun i => ∑ q ∈ Finset.range (i + 1),
@@ -746,10 +746,10 @@ private theorem exists_deTurckVectorFieldInteriorProduct_coeffJetEnvelope
           (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB)‖ ^ 2 ≤ Kvf q * Win :=
     fun q hq => le_trans (hvfK q) (mul_le_mul_of_nonneg_left
       (l2JetWindow_mono (I := I) (M := M) g₀ P hq) (hKvf_nn q))
-  obtain ⟨hre0, hreL2⟩ := lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 3 1
+  obtain ⟨hre0, hreL2⟩ := lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 3 1
     (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1) lieCorrectionZeroIVPerm Λdt (fun q => Kdt q * Win) i
     hdt0 hdtWin
-  obtain ⟨hse0, hseL2⟩ := lieCorrectionZerob_slotExtendIter_feed_transfer (I := I) (M := M) g₀ 0 1 2
+  obtain ⟨hse0, hseL2⟩ := lieCorrectionZero_slotExtendIter_bounds (I := I) (M := M) g₀ 0 1 2
     (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB) Λvf (fun q => Kvf q * Win) i hvf0 hvfWin
   have hseWin : ∀ q : ℕ, q ≤ i →
       ∑ q' ∈ Finset.range (q + 1),
@@ -794,13 +794,13 @@ private theorem exists_connectionDifferenceAppliedToDeTurckVectorField_coeffJetE
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2)) := by
   classical
   obtain ⟨Λcv, Fcv, hΛcv_nn, hFcv_nn, hcv⟩ :=
-    lieCorrectionZerob_cdVField_feed (I := I) (M := M) g₀ gB a ha_super hR hδ₀
+    lieCorrectionZero_cdVField_bounds (I := I) (M := M) g₀ gB a ha_super hR hδ₀
   obtain ⟨Λiv, Kiv, hΛiv_nn, hKiv_nn, hiv⟩ :=
     exists_deTurckVectorFieldInteriorProduct_coeffJetEnvelope (I := I) (M := M) g₀ gB a ha_super hR
       hδ₀
   obtain ⟨Λcd, Kcd, hΛcd_nn, hKcd_nn, hcd⟩ :=
     exists_connectionDifferenceSection_coeffJetEnvelope (I := I) (M := M) g₀ a ha_super hR hδ₀
-  obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ 2 1 1 2
+  obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 2 1 1 2
   refine ⟨Λcv, fun i => ∑ q ∈ Finset.range (i + 1),
       diagonalGridGrowthFactor (E := E) q * (C2 q * (Λcd * Kiv q + Λiv * Kcd q)),
     hΛcv_nn,
@@ -833,7 +833,7 @@ private theorem exists_connectionDifferenceAppliedToDeTurckVectorField_coeffJetE
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private theorem lieCorrectionZerow_comp_sup (g₀ : SmoothRiemannianMetric I M)
+private theorem lieCorrectionZeroWindow_composition_sup (g₀ : SmoothRiemannianMetric I M)
     (p a b : ℕ) (Φ : SmoothCcTensor g₀ a b) (W : SmoothCcTensor g₀ p a)
     (ΛΦ ΛW : ℝ) (hΛΦ : 0 ≤ ΛΦ)
     (hΦ0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ a b x (Φ.toSection x) ≤ ΛΦ)
@@ -848,7 +848,7 @@ private theorem lieCorrectionZerow_comp_sup (g₀ : SmoothRiemannianMetric I M)
   exact mul_le_mul (hΦ0 x) (hW0 x)
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ p a x _) hΛΦ
 
-private theorem lieCorrectionZerow_vb_feed (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
+private theorem lieCorrectionZeroWindow_vectorBundle_bounds (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
@@ -872,8 +872,8 @@ private theorem lieCorrectionZerow_vb_feed (g₀ : SmoothRiemannianMetric I M) (
   obtain ⟨Λiv, Kiv, hΛiv_nn, hKiv_nn, hiv⟩ :=
     exists_deTurckVectorFieldInteriorProduct_coeffJetEnvelope (I := I) (M := M) g₀ g₀ a ha_super hR
       hδ₀
-  obtain ⟨C2i, hC2i_nn, hC2i⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ 1 2 4 1
-  obtain ⟨C2o, hC2o_nn, hC2o⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ 4 2 2 4
+  obtain ⟨C2i, hC2i_nn, hC2i⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 1 2 4 1
+  obtain ⟨C2o, hC2o_nn, hC2o⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 4 2 2 4
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   set ΛK : ℝ := fr ^ 1 * Λκ with hΛK_def
   have hΛK_nn : 0 ≤ ΛK := mul_nonneg (by positivity) hΛκ_nn
@@ -920,7 +920,7 @@ private theorem lieCorrectionZerow_vb_feed (g₀ : SmoothRiemannianMetric I M) (
           (lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2 ≤ Kiv q * Win :=
     fun q hq => le_trans (hivK q) (mul_le_mul_of_nonneg_left
       (l2JetWindow_mono (I := I) (M := M) g₀ P hq) (hKiv_nn q))
-  obtain ⟨hK0raw, hKL2raw⟩ := lieCorrectionZerob_slotExtendIter_feed_transfer (I := I) (M := M) g₀ 0 3 1
+  obtain ⟨hK0raw, hKL2raw⟩ := lieCorrectionZero_slotExtendIter_bounds (I := I) (M := M) g₀ 0 3 1
     (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀) Λκ (fun q => Kκ q * Win) i hκ0 hκWin
   have hK0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ (0 + 1) (3 + 1) x
       ((slotExtendIter (I := I) (M := M) g₀ 0 3 1
@@ -936,7 +936,7 @@ private theorem lieCorrectionZerow_vb_feed (g₀ : SmoothRiemannianMetric I M) (
       ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 4
         (slotExtendIter (I := I) (M := M) g₀ 0 3 1 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀))
         (lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀)).toSection x) ≤ Λin :=
-    lieCorrectionZerow_comp_sup (I := I) (M := M) g₀ 2 1 4
+    lieCorrectionZeroWindow_composition_sup (I := I) (M := M) g₀ 2 1 4
       (slotExtendIter (I := I) (M := M) g₀ 0 3 1 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀))
       (lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀) ΛK Λiv hΛK_nn hK0 hiv0
   have hinWin : ∀ q : ℕ, q ≤ i →
@@ -955,14 +955,14 @@ private theorem lieCorrectionZerow_vb_feed (g₀ : SmoothRiemannianMetric I M) (
       (fun q' hq' => hivWin q' (le_trans hq' hq))) (le_of_eq (by rw [hKin_def]))
   have htr0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
       ((lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 lieCorrectionZeroVectorBundleTracePermutation).toSection x) ≤ Λdt2 :=
-    (lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 4 2
+    (lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 4 2
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 2) lieCorrectionZeroVectorBundleTracePermutation Λdt2
       (fun q => Kdt2 q * Win) i hdt20 hdt2Win).1
   have htrWin : ∀ q : ℕ, q ≤ i →
       ∑ q' ∈ Finset.range (q + 1),
         ‖iteratedCovGrad (I := I) g₀ 4 2 q'
           (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 lieCorrectionZeroVectorBundleTracePermutation)‖ ^ 2 ≤ Kdt2 q * Win :=
-    fun q hq => (lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 4 2
+    fun q hq => (lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 4 2
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 2) lieCorrectionZeroVectorBundleTracePermutation Λdt2
       (fun q' => Kdt2 q' * Win) i hdt20 hdt2Win).2 q hq
   have hout0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
@@ -972,7 +972,7 @@ private theorem lieCorrectionZerow_vb_feed (g₀ : SmoothRiemannianMetric I M) (
           (slotExtendIter (I := I) (M := M) g₀ 0 3 1
             (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀))
           (lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀))).toSection x) ≤ Λdt2 * Λin :=
-    lieCorrectionZerow_comp_sup (I := I) (M := M) g₀ 2 4 2
+    lieCorrectionZeroWindow_composition_sup (I := I) (M := M) g₀ 2 4 2
       (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 lieCorrectionZeroVectorBundleTracePermutation)
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 4
         (slotExtendIter (I := I) (M := M) g₀ 0 3 1 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀))
@@ -995,7 +995,7 @@ private theorem lieCorrectionZerow_vb_feed (g₀ : SmoothRiemannianMetric I M) (
       C2o hC2o_nn hC2o Λdt2 Λin Kdt2 Kin hΛdt2_nn hΛin_nn htr0 hin0
       (fun q' hq' => htrWin q' (le_trans hq' hq))
       (fun q' hq' => hinWin q' (le_trans hq' hq))) (le_of_eq (by rw [hKout_def]))
-  obtain ⟨-, hsL2⟩ := lieCorrectionZerob_smul_feed_transfer (I := I) (M := M) g₀ 2 2 (2 : ℝ)
+  obtain ⟨-, hsL2⟩ := lieCorrectionZero_smul_bounds (I := I) (M := M) g₀ 2 2 (2 : ℝ)
     (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2 (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 lieCorrectionZeroVectorBundleTracePermutation)
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 4
         (slotExtendIter (I := I) (M := M) g₀ 0 3 1 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀))
@@ -1003,7 +1003,7 @@ private theorem lieCorrectionZerow_vb_feed (g₀ : SmoothRiemannianMetric I M) (
     (Λdt2 * Λin) (fun q => Kout q * Win) i hout0 houtWin
   exact le_trans (hsL2 i le_rfl) (le_of_eq (by ring))
 
-private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem lieCorrectionZeroWindow_mixedConnectionHalf_bounds (g₀ g_bg : SmoothRiemannianMetric I M)
     (σlast : Equiv.Perm (Fin 4)) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1024,7 +1024,7 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2)) := by
   classical
   obtain ⟨Λah, Fah, hΛah_nn, hFah_nn, hah⟩ :=
-    lieCorrectionZerob_amixHalf_feed (I := I) (M := M) g₀ g_bg σlast a ha_super hR hδ₀
+    lieCorrectionZero_amixHalf_bounds (I := I) (M := M) g₀ g_bg σlast a ha_super hR hδ₀
   obtain ⟨Λdt2, Kdt2, hΛdt2_nn, hKdt2_nn, hdt2⟩ :=
     exists_pureDoubleTraceCoeff_coeffJetEnvelope (I := I) (M := M) g₀ 2 a ha_super hR hδ₀
   obtain ⟨Λdt3, Kdt3, hΛdt3_nn, hKdt3_nn, hdt3⟩ :=
@@ -1036,10 +1036,10 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
   obtain ⟨Λκb, Kκb, hΛκb_nn, hKκb_nn, hκbf⟩ :=
     exists_perturbedMetricLoweredConnectionDifference_coeffJetEnvelope (I := I) (M := M) g₀ g_bg a ha_super hR
       hδ₀
-  obtain ⟨C2a, hC2a_nn, hC2a⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ 5 2 3 5
-  obtain ⟨C2b, hC2b_nn, hC2b⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ 3 2 6 3
-  obtain ⟨C2c, hC2c_nn, hC2c⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ 6 2 4 6
-  obtain ⟨C2d, hC2d_nn, hC2d⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ 4 2 2 4
+  obtain ⟨C2a, hC2a_nn, hC2a⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 5 2 3 5
+  obtain ⟨C2b, hC2b_nn, hC2b⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 3 2 6 3
+  obtain ⟨C2c, hC2c_nn, hC2c⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 6 2 4 6
+  obtain ⟨C2d, hC2d_nn, hC2d⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 4 2 2 4
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   set ΛK0 : ℝ := fr ^ 2 * Λκ0 with hΛK0_def
   have hΛK0_nn : 0 ≤ ΛK0 := mul_nonneg (by positivity) hΛκ0_nn
@@ -1120,7 +1120,7 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
           (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤ Kκb q * Win :=
     fun q hq => le_trans (hκbK q) (mul_le_mul_of_nonneg_left
       (l2JetWindow_mono (I := I) (M := M) g₀ P hq) (hKκb_nn q))
-  obtain ⟨hK00raw, hK0L2raw⟩ := lieCorrectionZerob_slotExtendIter_feed_transfer (I := I) (M := M) g₀ 0 3 2
+  obtain ⟨hK00raw, hK0L2raw⟩ := lieCorrectionZero_slotExtendIter_bounds (I := I) (M := M) g₀ 0 3 2
     (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀) Λκ0 (fun q => Kκ0 q * Win) i hκ00 hκ0Win
   have hK00 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ (0 + 2) (3 + 2) x
       ((slotExtendIter (I := I) (M := M) g₀ 0 3 2
@@ -1132,7 +1132,7 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
           (slotExtendIter (I := I) (M := M) g₀ 0 3 2
             (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀))‖ ^ 2 ≤ KK0 q * Win :=
     fun q hq => le_trans (hK0L2raw q hq) (le_of_eq (by rw [hKK0_def]; ring))
-  obtain ⟨hKb0raw, hKbL2raw⟩ := lieCorrectionZerob_slotExtendIter_feed_transfer (I := I) (M := M) g₀ 0 3 3
+  obtain ⟨hKb0raw, hKbL2raw⟩ := lieCorrectionZero_slotExtendIter_bounds (I := I) (M := M) g₀ 0 3 3
     (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg) Λκb (fun q => Kκb q * Win) i hκb0 hκbWin
   have hKb0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ (0 + 3) (3 + 3) x
       ((slotExtendIter (I := I) (M := M) g₀ 0 3 3
@@ -1146,14 +1146,14 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
     fun q hq => le_trans (hKbL2raw q hq) (le_of_eq (by rw [hKKb_def]; ring))
   have htr30 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 5 3 x
       ((lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).toSection x) ≤ Λdt3 :=
-    (lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 5 3
+    (lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 5 3
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 3) lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour Λdt3
       (fun q => Kdt3 q * Win) i hdt30 hdt3Win).1
   have htr3Win : ∀ q : ℕ, q ≤ i →
       ∑ q' ∈ Finset.range (q + 1),
         ‖iteratedCovGrad (I := I) g₀ 5 3 q'
           (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour)‖ ^ 2 ≤ Kdt3 q * Win :=
-    fun q hq => (lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 5 3
+    fun q hq => (lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 5 3
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 3) lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour Λdt3
       (fun q' => Kdt3 q' * Win) i hdt30 hdt3Win).2 q hq
   have h10 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 2 3 x
@@ -1161,7 +1161,7 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
         (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour)
         (slotExtendIter (I := I) (M := M) g₀ 0 3 2
           (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀))).toSection x) ≤ Λ1 :=
-    lieCorrectionZerow_comp_sup (I := I) (M := M) g₀ 2 5 3
+    lieCorrectionZeroWindow_composition_sup (I := I) (M := M) g₀ 2 5 3
       (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour)
       (slotExtendIter (I := I) (M := M) g₀ 0 3 2 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀))
       Λdt3 ΛK0 hΛdt3_nn htr30 hK00
@@ -1187,7 +1187,7 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
           (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour)
           (slotExtendIter (I := I) (M := M) g₀ 0 3 2
             (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀)))).toSection x) ≤ Λ2 :=
-    lieCorrectionZerow_comp_sup (I := I) (M := M) g₀ 2 3 6
+    lieCorrectionZeroWindow_composition_sup (I := I) (M := M) g₀ 2 3 6
       (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg))
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 5 3
         (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour)
@@ -1214,14 +1214,14 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
       (fun q' hq' => h1Win q' (le_trans hq' hq))) (le_of_eq (by rw [hK2_def]))
   have htr40 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 6 4 x
       ((lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).toSection x) ≤ Λdt4 :=
-    (lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 6 4
+    (lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 6 4
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 4) lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne Λdt4
       (fun q => Kdt4 q * Win) i hdt40 hdt4Win).1
   have htr4Win : ∀ q : ℕ, q ≤ i →
       ∑ q' ∈ Finset.range (q + 1),
         ‖iteratedCovGrad (I := I) g₀ 6 4 q'
           (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne)‖ ^ 2 ≤ Kdt4 q * Win :=
-    fun q hq => (lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 6 4
+    fun q hq => (lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 6 4
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 4) lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne Λdt4
       (fun q' => Kdt4 q' * Win) i hdt40 hdt4Win).2 q hq
   have h30 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 2 4 x
@@ -1234,7 +1234,7 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
             (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour)
             (slotExtendIter (I := I) (M := M) g₀ 0 3 2
               (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀))))).toSection x) ≤ Λ3 :=
-    lieCorrectionZerow_comp_sup (I := I) (M := M) g₀ 2 6 4
+    lieCorrectionZeroWindow_composition_sup (I := I) (M := M) g₀ 2 6 4
       (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne)
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 6
         (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg))
@@ -1269,14 +1269,14 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
       (fun q' hq' => h2Win q' (le_trans hq' hq))) (le_of_eq (by rw [hK3_def]))
   have htr20 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
       ((lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 σlast).toSection x) ≤ Λdt2 :=
-    (lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 4 2
+    (lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 4 2
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 2) σlast Λdt2
       (fun q => Kdt2 q * Win) i hdt20 hdt2Win).1
   have htr2Win : ∀ q : ℕ, q ≤ i →
       ∑ q' ∈ Finset.range (q + 1),
         ‖iteratedCovGrad (I := I) g₀ 4 2 q'
           (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 σlast)‖ ^ 2 ≤ Kdt2 q * Win :=
-    fun q hq => (lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 4 2
+    fun q hq => (lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 4 2
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 2) σlast Λdt2
       (fun q' => Kdt2 q' * Win) i hdt20 hdt2Win).2 q hq
   exact operatorFieldComposition_l2JetWindow_le (I := I) (M := M) g₀ 2 4 2 i Win hWin1
@@ -1291,7 +1291,7 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
             (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀)))))
     C2d hC2d_nn hC2d Λdt2 Λ3 Kdt2 K3 hΛdt2_nn hΛ3_nn htr20 h30 htr2Win h3Win
 
-private theorem lieCorrectionZerow_amix_feed (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+private theorem lieCorrectionZeroWindow_mixedConnection_bounds (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
@@ -1309,9 +1309,9 @@ private theorem lieCorrectionZerow_amix_feed (g₀ g_bg : SmoothRiemannianMetric
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨ΛhA, KhA, hΛhA_nn, hKhA_nn, hhA⟩ :=
-    lieCorrectionZerow_amixHalf_feed (I := I) (M := M) g₀ g_bg lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne a ha_super hR hδ₀
+    lieCorrectionZeroWindow_mixedConnectionHalf_bounds (I := I) (M := M) g₀ g_bg lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne a ha_super hR hδ₀
   obtain ⟨ΛhB, KhB, hΛhB_nn, hKhB_nn, hhB⟩ :=
-    lieCorrectionZerow_amixHalf_feed (I := I) (M := M) g₀ g_bg (lieCorrectionZeroSwapOutPerm * lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+    lieCorrectionZeroWindow_mixedConnectionHalf_bounds (I := I) (M := M) g₀ g_bg (lieCorrectionZeroSwapOutPerm * lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
       a ha_super hR hδ₀
   refine ⟨fun i => (2 : ℝ) ^ 2 * (2 * KhA i + 2 * KhB i),
     fun i => mul_nonneg (by norm_num) (by
@@ -1338,11 +1338,11 @@ private theorem lieCorrectionZerow_amix_feed (g₀ g_bg : SmoothRiemannianMetric
             (lieCorrectionZeroSwapOutPerm * lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))‖ ^ 2 ≤ KhB q * Win :=
     fun q hq => le_trans (hhBK q) (mul_le_mul_of_nonneg_left
       (l2JetWindow_mono (I := I) (M := M) g₀ P hq) (hKhB_nn q))
-  obtain ⟨hadd0, haddL2⟩ := lieCorrectionZerob_add_feed_transfer (I := I) (M := M) g₀ 2 2
+  obtain ⟨hadd0, haddL2⟩ := lieCorrectionZero_add_bounds (I := I) (M := M) g₀ 2 2
     (lieCorrectionZeroMixedConnectionHalfField (I := I) (M := M) g₀ g₁ g_bg lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
     (lieCorrectionZeroMixedConnectionHalfField (I := I) (M := M) g₀ g₁ g_bg (lieCorrectionZeroSwapOutPerm * lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
     ΛhA ΛhB (fun q => KhA q * Win) (fun q => KhB q * Win) i hhA0 hhB0 hhAWin hhBWin
-  obtain ⟨-, hsL2⟩ := lieCorrectionZerob_smul_feed_transfer (I := I) (M := M) g₀ 2 2 (2 : ℝ)
+  obtain ⟨-, hsL2⟩ := lieCorrectionZero_smul_bounds (I := I) (M := M) g₀ 2 2 (2 : ℝ)
     (lieCorrectionZeroMixedConnectionHalfField (I := I) (M := M) g₀ g₁ g_bg lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
       + lieCorrectionZeroMixedConnectionHalfField (I := I) (M := M) g₀ g₁ g_bg
         (lieCorrectionZeroSwapOutPerm * lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
@@ -1376,7 +1376,7 @@ private theorem exists_lieDerivativeRiemannCoeff_coeffJetEnvelope (g₀ : Smooth
     ‖iteratedCovGrad (I := I) g₀ 2 4 q'
       (lieCorrectionZeroRiemRestField (I := I) (M := M) g₀)‖ ^ 2 with hFrr_def
   have hFrr_nn : ∀ q, 0 ≤ Frr q := fun q => Finset.sum_nonneg fun _ _ => sq_nonneg _
-  obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZerob_twoArm_fn (I := I) (M := M) g₀ 4 2 2 4
+  obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 4 2 2 4
   refine ⟨fun i => (-1 : ℝ) ^ 2 * ∑ q ∈ Finset.range (i + 1),
       diagonalGridGrowthFactor (E := E) q * (C2 q * (Λrr * Kdt2 q + Λdt2 * Frr q)),
     fun i => mul_nonneg (by positivity)
@@ -1396,14 +1396,14 @@ private theorem exists_lieDerivativeRiemannCoeff_coeffJetEnvelope (g₀ : Smooth
       (l2JetWindow_mono (I := I) (M := M) g₀ P hq) (hKdt2_nn q))
   have htr0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
       ((lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 lieCorrectionZeroRiemPerm2).toSection x) ≤ Λdt2 :=
-    (lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 4 2
+    (lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 4 2
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 2) lieCorrectionZeroRiemPerm2 Λdt2
       (fun q => Kdt2 q * Win) i hdt20 hdt2Win).1
   have htrWin : ∀ q : ℕ, q ≤ i →
       ∑ q' ∈ Finset.range (q + 1),
         ‖iteratedCovGrad (I := I) g₀ 4 2 q'
           (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 lieCorrectionZeroRiemPerm2)‖ ^ 2 ≤ Kdt2 q * Win :=
-    fun q hq => (lieCorrectionZerob_reindex_feed_transfer (I := I) (M := M) g₀ 4 2
+    fun q hq => (lieCorrectionZero_reindex_bounds (I := I) (M := M) g₀ 4 2
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 2) lieCorrectionZeroRiemPerm2 Λdt2
       (fun q' => Kdt2 q' * Win) i hdt20 hdt2Win).2 q hq
   have hFrrWin : ∀ q : ℕ, q ≤ i →
@@ -1443,10 +1443,10 @@ private theorem exists_lieDerivativeRiemannCoeff_coeffJetEnvelope (g₀ : Smooth
       ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
         (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 lieCorrectionZeroRiemPerm2)
         (lieCorrectionZeroRiemRestField (I := I) (M := M) g₀)).toSection x) ≤ Λdt2 * Λrr :=
-    lieCorrectionZerow_comp_sup (I := I) (M := M) g₀ 2 4 2
+    lieCorrectionZeroWindow_composition_sup (I := I) (M := M) g₀ 2 4 2
       (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 lieCorrectionZeroRiemPerm2)
       (lieCorrectionZeroRiemRestField (I := I) (M := M) g₀) Λdt2 Λrr hΛdt2_nn htr0 hΛrr
-  obtain ⟨-, hsL2⟩ := lieCorrectionZerob_smul_feed_transfer (I := I) (M := M) g₀ 2 2 (-1 : ℝ)
+  obtain ⟨-, hsL2⟩ := lieCorrectionZero_smul_bounds (I := I) (M := M) g₀ 2 2 (-1 : ℝ)
     (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
       (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 2 lieCorrectionZeroRiemPerm2)
       (lieCorrectionZeroRiemRestField (I := I) (M := M) g₀))
@@ -1456,8 +1456,8 @@ private theorem exists_lieDerivativeRiemannCoeff_coeffJetEnvelope (g₀ : Smooth
     i hcomp0 hcompWin'
   exact le_trans (hsL2 i le_rfl) (le_of_eq (by ring))
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmField) in
-private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoTermField) in
+private theorem lieDerivativeCorrectionPlusEndoTerm_l2JetWindow
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1472,7 +1472,7 @@ private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (lieCorrectionZeroField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-              + deTurckLieEndoArmField (I := I) (M := M) g₀
+              + deTurckLieEndoTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)‖ ^ 2 ≤
             K i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2) := by
@@ -1486,9 +1486,9 @@ private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
   obtain ⟨Λcb, Kcb, hΛcb_nn, hKcb_nn, hcb⟩ :=
     exists_connectionDifferenceAppliedToDeTurckVectorField_coeffJetEnvelope (I := I) (M := M) g₀ g_bg a ha_super
       hR hδ₁_lt
-  obtain ⟨Kvb, hKvb_nn, hvb⟩ := lieCorrectionZerow_vb_feed (I := I) (M := M) g₀ a ha_super hR hδ₁_lt
+  obtain ⟨Kvb, hKvb_nn, hvb⟩ := lieCorrectionZeroWindow_vectorBundle_bounds (I := I) (M := M) g₀ a ha_super hR hδ₁_lt
   obtain ⟨Kam, hKam_nn, ham⟩ :=
-    lieCorrectionZerow_amix_feed (I := I) (M := M) g₀ g_bg a ha_super hR hδ₁_lt
+    lieCorrectionZeroWindow_mixedConnection_bounds (I := I) (M := M) g₀ g_bg a ha_super hR hδ₁_lt
   obtain ⟨Kri, hKri_nn, hri⟩ := exists_lieDerivativeRiemannCoeff_coeffJetEnvelope (I := I) (M := M)
     g₀ a ha_super hR hδ₁_lt
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
@@ -1524,7 +1524,7 @@ private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
   have hδP_nn : 0 ≤ δP := le_max_right _ _
   have hδP_bound : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ Pc) δP :=
-    lieCorrectionZerob_gFibreOpBound_mono (I := I) (M := M) g₀ _ (le_max_left _ _) hδs_raw
+    lieCorrectionZero_gFibreOpBound_mono (I := I) (M := M) g₀ _ (le_max_left _ _) hδs_raw
   have hδP_le : δP ≤ δ₁ := by
     refine max_le ?_ hδ₁_nn
     rw [abs_of_nonneg h1ms, abs_of_nonneg hs0]
@@ -1542,7 +1542,7 @@ private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
     rw [hPc_def]
     rw [show convexPerturbation (I := I) g₀ T 0 s =
         (1 - s) • (0 : SmoothCcTensor g₀ 0 2) + s • T from rfl,
-      iteratedCovGrad_add, lieCorrectionZerob_iteratedCovGrad_smul, lieCorrectionZerob_iteratedCovGrad_smul, hzgrad, smul_zero, zero_add]
+      iteratedCovGrad_add, lieCorrectionZero_iteratedCovGrad_smul, lieCorrectionZero_iteratedCovGrad_smul, hzgrad, smul_zero, zero_add]
   have hPball : ∀ j : ℕ, j ≤ a + 2 →
       ‖iteratedCovGrad (I := I) g₀ 0 2 j Pc‖ ≤ R := by
     intro j hj
@@ -1574,30 +1574,30 @@ private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
   have hvbK := hvb g₁ Pc htie hδP_le hδP_nn hδP_bound hPball i
   have hamK := ham g₁ Pc htie hδP_le hδP_nn hδP_bound hPball i
   have hriK := hri g₁ Pc htie hδP_le hδP_nn hδP_bound hPball i
-  rw [lieCorrectionZerow_lieCorrectionZero_add_endoArmBase_decomp (I := I) (M := M) g₀ g₁ g_bg]
+  rw [lieCorrectionZero_add_baseEndomorphism_decomposition (I := I) (M := M) g₀ g₁ g_bg]
   set IΔ : SmoothCcTensor g₀ 2 2 := endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
     (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
       lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀) with hIΔ_def
   set IS : SmoothCcTensor g₀ 2 2 := reindexCoeffGen (I := I) (M := M) g₀ 2 2
     (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) IΔ)
     (Equiv.swap (0 : Fin 2) 1) with hIS_def
-  have k1 := lieCorrectionZerob_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i
+  have k1 := lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i
     (IΔ + IS + lieCorrectionZeroVectorBundleField (I := I) (M := M) g₀ g₁
       + lieCorrectionZeroMixedConnectionField (I := I) (M := M) g₀ g₁ g_bg)
     (lieCorrectionZeroRiemannField (I := I) (M := M) g₀ g₁)
-  have k2 := lieCorrectionZerob_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i
+  have k2 := lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i
     (IΔ + IS + lieCorrectionZeroVectorBundleField (I := I) (M := M) g₀ g₁)
     (lieCorrectionZeroMixedConnectionField (I := I) (M := M) g₀ g₁ g_bg)
-  have k3 := lieCorrectionZerob_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i
+  have k3 := lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i
     (IΔ + IS) (lieCorrectionZeroVectorBundleField (I := I) (M := M) g₀ g₁)
-  have k4 := lieCorrectionZerob_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i IΔ IS
+  have k4 := lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i IΔ IS
   have hIΔ_le : ‖iteratedCovGrad (I := I) g₀ 2 2 i IΔ‖ ^ 2 ≤
       fr * ‖iteratedCovGrad (I := I) g₀ 1 1 i
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
             lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀))‖ ^ 2 := by
     rw [hIΔ_def]
-    refine lieCorrectionZerob_normSq_le_scaled_of_pointwise (I := I) (M := M) g₀ 2 (2 + i) 1 (1 + i)
+    refine lieCorrectionZero_normSq_le_scaled_of_pointwise (I := I) (M := M) g₀ 2 (2 + i) 1 (1 + i)
       (iteratedCovGrad (I := I) g₀ 2 2 i
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
@@ -1621,8 +1621,8 @@ private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
         (lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2 +
       2 * ‖iteratedCovGrad (I := I) g₀ 1 1 i
         (lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 := by
-    rw [lieCorrectionZerow_NEndoIns_diff_decomp (I := I) (M := M) g₀ g₁ g_bg]
-    exact lieCorrectionZerob_normSq_iteratedCovGrad_sub_le (I := I) (M := M) g₀ 1 1 i
+    rw [lieCorrectionZero_NEndoInsertion_difference_decomposition (I := I) (M := M) g₀ g₁ g_bg]
+    exact lieCorrectionZero_normSq_iteratedCovGrad_sub_le (I := I) (M := M) g₀ 1 1 i
       (lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g₀)
       (lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g_bg)
   have hc0i : ‖iteratedCovGrad (I := I) g₀ 1 1 i
@@ -1640,7 +1640,7 @@ private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
   have hswap : ‖iteratedCovGrad (I := I) g₀ 2 2 i IS‖ ^ 2 =
       ‖iteratedCovGrad (I := I) g₀ 2 2 i IΔ‖ ^ 2 := by
     rw [hIS_def, hIΔ_def]
-    exact lieCorrectionZerob_normSq_iteratedCovGrad_bothCongr_eq (I := I) (M := M) g₀ 2 2
+    exact lieCorrectionZero_normSq_iteratedCovGrad_bothCongr_eq (I := I) (M := M) g₀ 2 2
       (Equiv.swap (0 : Fin 2) 1) (Equiv.swap (0 : Fin 2) 1)
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
         (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
@@ -1673,8 +1673,8 @@ private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
   nlinarith only [k1, k2, k3, k4, hswap, hIΔ_tot, hvbi, hami, hrii,
     mul_nonneg hfrK hWinT_nn]
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmField) in
-private theorem exists_lieDerivativeCorrectionPlusEndoArm_order0_data
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoTermField) in
+private theorem exists_lieDerivativeCorrectionPlusEndoTerm_order0_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1685,22 +1685,22 @@ private theorem exists_lieDerivativeCorrectionPlusEndoArm_order0_data
         (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
-        linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+        linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
           (fun s => lieCorrectionZeroField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-            + deTurckLieEndoArmField (I := I) (M := M) g₀
+            + deTurckLieEndoTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀) (δ := δ) (δ' := δ) ∧
         (∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
             ((lieCorrectionZeroField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-              + deTurckLieEndoArmField (I := I) (M := M) g₀
+              + deTurckLieEndoTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀).toSection x) ≤ Λ ^ 2) ∧
         (∀ i : ℕ, ∀ s ∈ Set.Icc (0 : ℝ) 1,
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (lieCorrectionZeroField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-              + deTurckLieEndoArmField (I := I) (M := M) g₀
+              + deTurckLieEndoTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)‖ ^ 2 ≤
             K i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
@@ -1712,7 +1712,7 @@ private theorem exists_lieDerivativeCorrectionPlusEndoArm_order0_data
     deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
       (I := I) (M := M) g₀ g₀ a ha_super hR hδ₀
   obtain ⟨K, hK_nn, henv⟩ :=
-    lieDerivativeCorrectionPlusEndoArm_l2JetWindow (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
+    lieDerivativeCorrectionPlusEndoTerm_l2JetWindow (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   have hS_nn : (0 : ℝ) ≤ 2 * ΛL + 2 * Λz := by linarith
   refine ⟨Real.sqrt (2 * ΛL + 2 * Λz), Real.sqrt_nonneg _, K, hK_nn, ?_⟩
   intro T δ hδ_le hδ hδZ hball
@@ -1726,7 +1726,7 @@ private theorem exists_lieDerivativeCorrectionPlusEndoArm_order0_data
     rw [hzero, norm_zero]
     exact hR
   have hEndoEq : ∀ u : ℝ,
-      deTurckLieEndoArmField (I := I) (M := M) g₀
+      deTurckLieEndoTermField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ u) g₀ =
       DifferentialGeometry.Analysis.Sobolev.deTurckLieCovariantDerivativeInsertionField (I := I) (M := M)
         g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ u) g₀ := by
@@ -1737,8 +1737,8 @@ private theorem exists_lieDerivativeCorrectionPlusEndoArm_order0_data
   refine ⟨?_, ?_, fun i s hs => henv T hδ_le hδ hδZ hball i s hs⟩
   · have hjA := lieCorrectionZero_path_joint (I := I) g₀ T 0 hδ hδZ g_bg
     have hjC := deTurckLieCoeffField_metricPerturbationPath_jointSmooth (I := I) g₀ T 0 hδ hδZ g₀
-    have hjD : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-        (fun u => DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieCovariantDerivativeArmField
+    have hjD : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+        (fun u => DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieCovariantDerivativeTermField
           (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ u) g₀)
         (δ := δ) (δ' := δ) := by
       have h :=
@@ -1746,53 +1746,53 @@ private theorem exists_lieDerivativeCorrectionPlusEndoArm_order0_data
           (I := I) g₀ T 0 hδ hδZ g₀
       refine h.congr (fun p _ => ?_)
       rfl
-    have hjB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-        (fun u => deTurckLieEndoArmField (I := I) (M := M) g₀
+    have hjB : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+        (fun u => deTurckLieEndoTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ u) g₀) (δ := δ) (δ' := δ) := by
       have hsub := jointTotalSpaceRS_sub (I := I) (r := 2) (s := 2)
         (S := metricPerturbationPathDomain (δ := δ) (δ' := δ))
         (fun p : M × ℝ => (deTurckLieCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g₀).toSection p.1)
         (fun p : M × ℝ =>
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieCovariantDerivativeArmField
+          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieCovariantDerivativeTermField
             (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g₀).toSection p.1)
         hjC hjD
       refine hsub.congr (fun p _ => ?_)
       refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1 t) ?_
       beta_reduce
-      have hsplit : deTurckLieEndoArmField (I := I) (M := M) g₀
+      have hsplit : deTurckLieEndoTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g₀ =
           deTurckLieCoeffField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g₀
-            - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieCovariantDerivativeArmField
+            - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.deTurckLieCovariantDerivativeTermField
               (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g₀ := by
         rw [eq_sub_iff_add_eq, add_comm]
         exact
-          (Analysis.Parabolic.TensorSpectral.deTurckLieCoeffField_eq_covDerivArm_add_endoArm
+          (Analysis.Parabolic.TensorSpectral.deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm
           (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g₀).symm
       rw [hsplit, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
-    exact linearizedRicciThreeArmHjoint_add (I := I) (M := M) g₀ 2 _ _ hjA hjB
+    exact linearizedRicciCovariantJetJointSmoothness_add (I := I) (M := M) g₀ 2 _ _ hjA hjB
   · intro s hs x
     try dsimp only
     rw [Real.sq_sqrt hS_nn]
     have h1 := hsupL T 0 hδ_le hδ hδ_le hδZ hball hZball s hs x
     have h2 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((deTurckLieEndoArmField (I := I) (M := M) g₀
+        ((deTurckLieEndoTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀).toSection x) ≤ Λz := by
       rw [hEndoEq s]
       exact hsupz T 0 hδ_le hδ hδ_le hδZ hball hZball s hs x
-    refine le_trans (lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2
+    refine le_trans (lieCorrectionZero_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2
       (lieCorrectionZeroField (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg)
-      (deTurckLieEndoArmField (I := I) (M := M) g₀
+      (deTurckLieEndoTermField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀) x) ?_
     linarith
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmField
-  deTurckLieCovariantDerivativeArmField deTurckLieCoeffField_eq_covDerivArm_add_endoArm
-  exists_deTurckLieCovariantDerivativeArm_curvatureDecomposition_data
-  exists_deTurckLieEndoArm_backgroundDifference_order0_data) in
-private theorem exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_data
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoTermField
+  deTurckLieCovariantDerivativeTermField deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm
+  exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_data
+  exists_deTurckLieEndoTerm_backgroundDifference_order0_data) in
+private theorem exists_lieDerivativeCorrection_curvatureDecomposition_termSplit_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (hδ₀_half : δ₀ ≤ 1 / 2) :
@@ -1806,8 +1806,8 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_d
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∃ (C0lc : ℝ → SmoothCcTensor g₀ 2 2) (C2lc : ℝ → SmoothCcTensor g₀ 4 2),
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 C0lc (δ := δ) (δ' := δ) ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 C2lc (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 C0lc (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 C2lc (δ := δ) (δ' := δ) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1,
             operatorFieldApply (I := I) (M := M) g₀ 2 2
                 (deTurckLieCoeffField (I := I) (M := M) g₀
@@ -1824,7 +1824,7 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_d
               Λlc ^ 2) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x ((C2lc s).toSection x) ≤
-              (max (10 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2) ∧
+              (max (10 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2) ∧
           (∀ i : ℕ, ∀ s ∈ Set.Icc (0 : ℝ) 1,
             ‖iteratedCovGrad (I := I) g₀ 2 2 i (C0lc s)‖ ^ 2 ≤
               Klc i * (1 + ∑ j ∈ Finset.range (i + 2),
@@ -1835,13 +1835,13 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_d
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨Λda, -, Kda, hKda_nn, hDA⟩ :=
-    exists_deTurckLieCovariantDerivativeArm_curvatureDecomposition_data (I := I) (M := M) g₀ g_bg a
+    exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_data (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   obtain ⟨Λdf, -, Kdf, hKdf_nn, hDF⟩ :=
-    exists_deTurckLieEndoArm_backgroundDifference_order0_data (I := I) (M := M) g₀ g_bg
+    exists_deTurckLieEndoTerm_backgroundDifference_order0_data (I := I) (M := M) g₀ g_bg
       a ha_super hR hδ₀
   obtain ⟨Λrs, -, Krs, hKrs_nn, hRS⟩ :=
-    exists_lieDerivativeCorrectionPlusEndoArm_order0_data (I := I) (M := M) g₀ g_bg a ha_super hR
+    exists_lieDerivativeCorrectionPlusEndoTerm_order0_data (I := I) (M := M) g₀ g_bg a ha_super hR
       hδ₀
   have hS_nn : (0 : ℝ) ≤ 4 * Λda ^ 2 + 4 * Λdf ^ 2 + 2 * Λrs ^ 2 := by positivity
   refine ⟨Real.sqrt (4 * Λda ^ 2 + 4 * Λdf ^ 2 + 2 * Λrs ^ 2), Real.sqrt_nonneg _,
@@ -1858,22 +1858,22 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_d
   obtain ⟨hjrs, hsuprs, henvrs⟩ := hRS T hδ_le hδ hδZ hball
   set fam := metricPerturbationPath (I := I) g₀ T 0 hδ hδZ
   refine ⟨fun s => C0da s
-      + (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-        - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)
+      + (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+        - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)
       + (lieCorrectionZeroField (I := I) (M := M) g₀ (fam s) g_bg
-        + deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀),
+        + deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀),
     C2da, ?_, hj2da, ?_, ?_, ?_, ?_, ?_⟩
-  · exact linearizedRicciThreeArmHjoint_add (I := I) (M := M) g₀ 2 _ _
-      (linearizedRicciThreeArmHjoint_add (I := I) (M := M) g₀ 2 _ _ hj0da hjdf) hjrs
+  · exact linearizedRicciCovariantJetJointSmoothness_add (I := I) (M := M) g₀ 2 _ _
+      (linearizedRicciCovariantJetJointSmoothness_add (I := I) (M := M) g₀ 2 _ _ hj0da hjdf) hjrs
   · intro s hs
     have hsplit : deTurckLieCoeffField (I := I) (M := M) g₀ (fam s) g_bg
         + lieCorrectionZeroField (I := I) (M := M) g₀ (fam s) g_bg =
-        deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀ (fam s) g_bg
-        + (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-          - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)
+        deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀ (fam s) g_bg
+        + (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+          - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)
         + (lieCorrectionZeroField (I := I) (M := M) g₀ (fam s) g_bg
-          + deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀) := by
-      rw [deTurckLieCoeffField_eq_covDerivArm_add_endoArm (I := I) (M := M) g₀
+          + deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀) := by
+      rw [deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm (I := I) (M := M) g₀
         (fam s) g_bg]
       abel
     try dsimp only
@@ -1891,12 +1891,12 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_d
     refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 2 x _ _) ?_
     have h12 := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 2 x
       ((C0da s).toSection x)
-      ((deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-        - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀).toSection x)
+      ((deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+        - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀).toSection x)
     linarith [h1, h2, h3, h12]
   · intro s hs x
     refine le_trans (hcapda s hs x) ?_
-    have hfC := de_turck_arm_fibre_const_nonneg (Module.finrank ℝ E)
+    have hfC := de_turck_term_fibre_const_nonneg (Module.finrank ℝ E)
     have hδ_half : δ ≤ 1 / 2 := hδ_le.trans hδ₀_half
     have h1mδ_pos : (0 : ℝ) < 1 - δ := by linarith
     refine pow_le_pow_left₀ (le_max_right _ _) ?_ 2
@@ -1908,16 +1908,16 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_d
       nlinarith [mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 3) hfC)
         (neg_nonneg.mpr hq)]
     · refine le_trans ?_ (le_max_left _ _)
-      rw [show (3 : ℝ) * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)
-            = 3 * deTurckArmFibreConst (Module.finrank ℝ E) * δ / (1 - δ) ^ 2 from by
+      rw [show (3 : ℝ) * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)
+            = 3 * deTurckTermFibreConst (Module.finrank ℝ E) * δ / (1 - δ) ^ 2 from by
           ring,
-        show (10 : ℝ) * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))
-            = 10 * deTurckArmFibreConst (Module.finrank ℝ E) * δ / (1 - δ) from by
+        show (10 : ℝ) * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))
+            = 10 * deTurckTermFibreConst (Module.finrank ℝ E) * δ / (1 - δ) from by
           ring,
         div_le_div_iff₀ (by positivity) h1mδ_pos]
-      have hP : (0 : ℝ) ≤ deTurckArmFibreConst (Module.finrank ℝ E) * δ * (1 - δ) :=
+      have hP : (0 : ℝ) ≤ deTurckTermFibreConst (Module.finrank ℝ E) * δ * (1 - δ) :=
         mul_nonneg (mul_nonneg hfC hδ0.le) h1mδ_pos.le
-      have hQ : (0 : ℝ) ≤ deTurckArmFibreConst (Module.finrank ℝ E) * δ * (1 - δ)
+      have hQ : (0 : ℝ) ≤ deTurckTermFibreConst (Module.finrank ℝ E) * δ * (1 - δ)
           * (1 / 2 - δ) := mul_nonneg hP (by linarith)
       nlinarith [hP, hQ]
   · intro i s hs
@@ -1929,67 +1929,67 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_d
     try dsimp only
     have e1 := iteratedCovGrad_add (I := I) (g := g₀) (r := 2) (s := 2) (j := i)
       (C0da s
-        + (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-          - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀))
+        + (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+          - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀))
       (lieCorrectionZeroField (I := I) (M := M) g₀ (fam s) g_bg
-        + deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)
+        + deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)
     have e2 := iteratedCovGrad_add (I := I) (g := g₀) (r := 2) (s := 2) (j := i)
       (C0da s)
-      (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-        - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)
+      (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+        - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)
     rw [e1, e2]
     have htri : ‖iteratedCovGrad (I := I) g₀ 2 2 i (C0da s)
           + iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-              - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)
+            (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+              - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)
           + iteratedCovGrad (I := I) g₀ 2 2 i
             (lieCorrectionZeroField (I := I) (M := M) g₀ (fam s) g_bg
-              + deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)‖
+              + deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)‖
         ≤ ‖iteratedCovGrad (I := I) g₀ 2 2 i (C0da s)‖
           + ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-                - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)‖
+              (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+                - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)‖
           + ‖iteratedCovGrad (I := I) g₀ 2 2 i
               (lieCorrectionZeroField (I := I) (M := M) g₀ (fam s) g_bg
-                + deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)‖ := by
+                + deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)‖ := by
       have t1 := norm_add_le
         (iteratedCovGrad (I := I) g₀ 2 2 i (C0da s)
           + iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-              - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀))
+            (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+              - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀))
         (iteratedCovGrad (I := I) g₀ 2 2 i
           (lieCorrectionZeroField (I := I) (M := M) g₀ (fam s) g_bg
-            + deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀))
+            + deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀))
       have t2 := norm_add_le
         (iteratedCovGrad (I := I) g₀ 2 2 i (C0da s))
         (iteratedCovGrad (I := I) g₀ 2 2 i
-          (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-            - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀))
+          (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+            - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀))
       linarith [t1, t2]
     refine le_trans (pow_le_pow_left₀ (norm_nonneg _) htri 2) ?_
     nlinarith [ha, hb, hc, mul_nonneg (hKda_nn i) hW, mul_nonneg (hKdf_nn i) hW,
       mul_nonneg (hKrs_nn i) hW,
       sq_nonneg (‖iteratedCovGrad (I := I) g₀ 2 2 i (C0da s)‖
         - ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-              - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)‖),
+            (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+              - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)‖),
       sq_nonneg (‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-              - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)‖
+            (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+              - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)‖
         - ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (lieCorrectionZeroField (I := I) (M := M) g₀ (fam s) g_bg
-              + deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)‖),
+              + deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)‖),
       sq_nonneg (‖iteratedCovGrad (I := I) g₀ 2 2 i (C0da s)‖
         - ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (lieCorrectionZeroField (I := I) (M := M) g₀ (fam s) g_bg
-              + deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)‖),
+              + deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)‖),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i (C0da s)),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i
-        (deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g_bg
-          - deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀)),
+        (deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g_bg
+          - deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀)),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i
         (lieCorrectionZeroField (I := I) (M := M) g₀ (fam s) g_bg
-          + deTurckLieEndoArmField (I := I) (M := M) g₀ (fam s) g₀))]
+          + deTurckLieEndoTermField (I := I) (M := M) g₀ (fam s) g₀))]
   · intro i s hs
     have hW : (0 : ℝ) ≤ 1 + ∑ j ∈ Finset.range (i + 2),
         ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 := by positivity
@@ -2012,8 +2012,8 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_data
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∃ (C0lc : ℝ → SmoothCcTensor g₀ 2 2) (C2lc : ℝ → SmoothCcTensor g₀ 4 2),
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 C0lc (δ := δ) (δ' := δ) ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 C2lc (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 C0lc (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 C2lc (δ := δ) (δ' := δ) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1,
             operatorFieldApply (I := I) (M := M) g₀ 2 2
                 (deTurckLieCoeffField (I := I) (M := M) g₀
@@ -2030,7 +2030,7 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_data
               Λlc ^ 2) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x ((C2lc s).toSection x) ≤
-              (max (10 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2) ∧
+              (max (10 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2) ∧
           (∀ i : ℕ, ∀ s ∈ Set.Icc (0 : ℝ) 1,
             ‖iteratedCovGrad (I := I) g₀ 2 2 i (C0lc s)‖ ^ 2 ≤
               Klc i * (1 + ∑ j ∈ Finset.range (i + 2),
@@ -2039,7 +2039,7 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_data
             ‖iteratedCovGrad (I := I) g₀ 4 2 i (C2lc s)‖ ^ 2 ≤
               Klc i * (1 + ∑ j ∈ Finset.range (i + 2),
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) :=
-  exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_data (I := I) (M := M) g₀ g_bg a ha_super
+  exists_lieDerivativeCorrection_curvatureDecomposition_termSplit_data (I := I) (M := M) g₀ g_bg a ha_super
     hR hδ₀
     hδ₀_half
 
@@ -2057,19 +2057,19 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∃ (C0f : ℝ → SmoothCcTensor g₀ 2 2) (C2f : ℝ → SmoothCcTensor g₀ 4 2),
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 C0f (δ := δ) (δ' := δ) ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 C2f (δ := δ) (δ' := δ) ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-            (fun s => linearizedRicciArm0CorrField (I := I) g₀ T 0 hδ hδZ s
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 C0f (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 C2f (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+            (fun s => linearizedRicciOrderZeroCorrField (I := I) g₀ T 0 hδ hδZ s
               + (3 / 2 : ℝ) •
-                DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+                DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                   (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-              - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+              - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
                   (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
             (δ := δ) (δ' := δ) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1,
             operatorFieldApply (I := I) (M := M) g₀ 2 2
-                (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+                (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                     (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
                   + (deTurckLieCoeffField (I := I) (M := M) g₀
                       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
@@ -2085,12 +2085,12 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
               Λrl ^ 2) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-              ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+              ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x) ≤ Λrl ^ 2) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x ((C2f s).toSection x) ≤
-              (max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2) ∧
+              (max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2) ∧
           (∀ i : ℕ, ∀ s ∈ Set.Icc (0 : ℝ) 1,
             ‖iteratedCovGrad (I := I) g₀ 2 2 i (C0f s)‖ ^ 2 ≤
               Krl i * (1 + ∑ j ∈ Finset.range (i + 2),
@@ -2120,38 +2120,38 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
   have hsum_nn : (0 : ℝ) ≤ 3 * Λra ^ 2 + 2 * Λlc ^ 2 := by positivity
   refine ⟨fun s => C0ra s + C0lc s, fun s => C2ra s + C2lc s,
     ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · exact linearizedRicciThreeArmHjoint_add (I := I) (M := M) g₀ 2 C0ra C0lc hjC0ra hjC0lc
-  · exact linearizedRicciThreeArmHjoint_add (I := I) (M := M) g₀ 4 C2ra C2lc hjC2ra hjC2lc
-  · have hfun : (fun s => linearizedRicciArm0CorrField (I := I) g₀ T 0 hδ hδZ s
+  · exact linearizedRicciCovariantJetJointSmoothness_add (I := I) (M := M) g₀ 2 C0ra C0lc hjC0ra hjC0lc
+  · exact linearizedRicciCovariantJetJointSmoothness_add (I := I) (M := M) g₀ 4 C2ra C2lc hjC2ra hjC2lc
+  · have hfun : (fun s => linearizedRicciOrderZeroCorrField (I := I) g₀ T 0 hδ hδZ s
         + (3 / 2 : ℝ) •
-          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
             (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-        - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+        - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
             (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)) =
-        (fun s => linearizedRicciArm0Field (I := I) g₀ T 0 hδ hδZ s
+        (fun s => linearizedRicciOrderZeroField (I := I) g₀ T 0 hδ hδZ s
           + (1 / 2 : ℝ) •
-            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
               (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)) := by
       funext s
-      rw [show linearizedRicciArm0Field (I := I) g₀ T 0 hδ hδZ s =
-          linearizedRicciArm0BaseCoeff (I := I) g₀ T 0 hδ hδZ s
-            + linearizedRicciArm0CorrField (I := I) g₀ T 0 hδ hδZ s from rfl]
-      rw [show linearizedRicciArm0BaseCoeff (I := I) g₀ T 0 hδ hδZ s =
-          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+      rw [show linearizedRicciOrderZeroField (I := I) g₀ T 0 hδ hδZ s =
+          linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T 0 hδ hδZ s
+            + linearizedRicciOrderZeroCorrField (I := I) g₀ T 0 hδ hδZ s from rfl]
+      rw [show linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T 0 hδ hδZ s =
+          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
               (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-            - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+            - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
               (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) from rfl]
       module
     rw [hfun]
-    have hRmJ : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+    have hRmJ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
         (fun s =>
-          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
             (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
         (δ := δ) (δ' := δ) :=
-      Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff_metricPerturbationPath_jointContMDiff
+      Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff_metricPerturbationPath_jointContMDiff
         (I := I) (M := M) g₀ T 0 hδ hδZ
-    exact linearizedRicciThreeArmHjoint_add_smul (I := I) (M := M) g₀ 2 (1 / 2 : ℝ) _ _
-      (linearizedRicci_arm0Field_jointSmooth (I := I) g₀ T 0 hδ hδZ) hRmJ
+    exact linearizedRicciCovariantJetJointSmoothness_add_smul (I := I) (M := M) g₀ 2 (1 / 2 : ℝ) _ _
+      (linearizedRicci_orderZeroField_jointSmooth (I := I) g₀ T 0 hδ hδZ) hRmJ
   · intro s hs
     rw [operatorFieldApplication_add_left, hidRA s hs, hidLC s hs]
     try dsimp only
@@ -2159,7 +2159,7 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
     abel
   · intro s hs x
     try dsimp only
-    have hadd := lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2 (C0ra s) (C0lc s) x
+    have hadd := lieCorrectionZero_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2 (C0ra s) (C0lc s) x
     have h1 := hsupC0ra s hs x
     have h2 := hsupC0lc s hs x
     have h3 := sq_nonneg Λra
@@ -2173,29 +2173,29 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
     linarith
   · intro s hs x
     try dsimp only
-    have hadd := lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 4 2 (C2ra s) (C2lc s) x
+    have hadd := lieCorrectionZero_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 4 2 (C2ra s) (C2lc s) x
     have h8 := hsupC2ra s hs x
     have h10 := hsupC2lc s hs x
-    rcases le_or_gt 0 (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) with hu | hu
-    · have e8 : max (8 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 =
-          8 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) :=
+    rcases le_or_gt 0 (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) with hu | hu
+    · have e8 : max (8 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 =
+          8 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) :=
         max_eq_left (by nlinarith)
-      have e10 : max (10 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 =
-          10 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) :=
+      have e10 : max (10 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 =
+          10 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) :=
         max_eq_left (by nlinarith)
-      have e19 : max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 =
-          19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) :=
+      have e19 : max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 =
+          19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) :=
         max_eq_left (by nlinarith)
       rw [e19]
       rw [e8] at h8
       rw [e10] at h10
       nlinarith [hadd, h8, h10, hu,
-        sq_nonneg (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)))]
-    · have e8 : max (8 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 = 0 :=
+        sq_nonneg (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)))]
+    · have e8 : max (8 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 = 0 :=
         max_eq_right (by nlinarith)
-      have e10 : max (10 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 = 0 :=
+      have e10 : max (10 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 = 0 :=
         max_eq_right (by nlinarith)
-      have e19 : max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 = 0 :=
+      have e19 : max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 = 0 :=
         max_eq_right (by nlinarith)
       rw [e19]
       rw [e8] at h8
@@ -2203,7 +2203,7 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
       nlinarith [hadd, h8, h10]
   · intro i s hs
     try dsimp only
-    have hadd := lieCorrectionZerob_normSq_iteratedCovGrad_add_le (I := I) g₀ 2 2 i (C0ra s) (C0lc s)
+    have hadd := lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) g₀ 2 2 i (C0ra s) (C0lc s)
     have h1 := henvC0ra i s hs
     have h2 := henvC0lc i s hs
     have hexp : (2 * Kra i + 2 * Klc i) * (1 + ∑ j ∈ Finset.range (i + 2),
@@ -2216,7 +2216,7 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
     linarith
   · intro i s hs
     try dsimp only
-    have hadd := lieCorrectionZerob_normSq_iteratedCovGrad_add_le (I := I) g₀ 4 2 i (C2ra s) (C2lc s)
+    have hadd := lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) g₀ 4 2 i (C2ra s) (C2lc s)
     have h1 := henvC2ra i s hs
     have h2 := henvC2lc i s hs
     have hexp : (2 * Kra i + 2 * Klc i) * (1 + ∑ j ∈ Finset.range (i + 2),
@@ -2300,8 +2300,8 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     ∃ Λ₀ : ℝ, 0 ≤ Λ₀ ∧
     ∃ ε₀ : ℝ, 0 ≤ ε₀ ∧
       3 * Real.sqrt (Module.finrank ℝ E) * ε₀ ≤
-        32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-          28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 ∧
+        32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+          28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 ∧
     ∃ K₀c : ℕ → ℝ, (∀ i, 0 ≤ K₀c i) ∧
       ∀ (T₀ : SmoothCcTensor g₀ 0 2),
         (∀ (x : M) (v w : TangentSpace I x),
@@ -2324,7 +2324,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
             riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x (C₀.toSection x) ≤ Λ₀ ^ 2) ∧
           (∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (C₂r.toSection x) ≤
-              (max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2) ∧
+              (max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2) ∧
           (∀ i : ℕ,
             ‖iteratedCovGrad (I := I) g₀ 2 2 i C₀‖ ^ 2 ≤
               K₀c i * (1 + ∑ j ∈ Finset.range (i + 2),
@@ -2346,24 +2346,24 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     exists_riemannLieDerivativeCorrection_curvatureDecomposition_data (I := I) (M := M) g₀ g_bg a
       ha_super hR_nn h13 (by norm_num : (1 : ℝ) / 3 ≤ 1 / 2)
   obtain ⟨Kcb, hKcb_nn, ε, hε_nn, hε_cap, hKcb⟩ :=
-    linearizedRicciArm0CorrField_allOrder_tameEnvelope_interface (I := I) (M := M) g₀ a
+    linearizedRicciOrderZeroCorrField_allOrder_tameEnvelope_interface (I := I) (M := M) g₀ a
       ha_super hR_nn h13 (by norm_num : (1 : ℝ) / 3 ≤ 1 / 2)
   have hε₀_cap : 3 * Real.sqrt (Module.finrank ℝ E) * (3 * ε) ≤
-      32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-        28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 := by
+      32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+        28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 := by
     have h23 : (1 : ℝ) - 1 / 3 = 2 / 3 := by norm_num
     have hcap18 : 18 * (Real.sqrt (Module.finrank ℝ E) * ε) ≤
-        2 * (32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-          28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2) := by
+        2 * (32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+          28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2) := by
       calc 18 * (Real.sqrt (Module.finrank ℝ E) * ε)
           = 27 * Real.sqrt (Module.finrank ℝ E) * ((1 : ℝ) - 1 / 3) * ε := by
             rw [h23]; ring
-        _ ≤ 2 * (32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-            28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2) := hε_cap
+        _ ≤ 2 * (32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+            28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2) := hε_cap
     calc 3 * Real.sqrt (Module.finrank ℝ E) * (3 * ε)
         = 9 * (Real.sqrt (Module.finrank ℝ E) * ε) := by ring
-      _ ≤ 32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-          28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 := by linarith
+      _ ≤ 32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+          28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 := by linarith
   refine ⟨Real.sqrt (8 * (2 * ΛC ^ 2 + 1 / 2 * Λrl ^ 2) + 4 * Λrl ^ 2), Real.sqrt_nonneg _,
     3 * ε, by linarith, hε₀_cap,
     fun i => (∑ q ∈ Finset.range (i + 1), (8 * Kcb q + 3 * Krl q)) + 8 * ε ^ 2,
@@ -2419,13 +2419,13 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
   obtain ⟨C0f, C2f, hjC0, hjC2, hjCombo, hids, hsupC0, hsupRm, hsupC2, henvC0, henvC2⟩ :=
     hchild T₀ hsymm hδ_le hδT hδZ hTball
   set Ψ₀ : ℝ → SmoothCcTensor g₀ 2 2 := fun s =>
-    (-2 : ℝ) • linearizedRicciArm0Field (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
+    (-2 : ℝ) • linearizedRicciOrderZeroField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
       + (deTurckLieCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s) g_bg
         + lieCorrectionZeroField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s) g_bg)
     with hΨ₀def
-  have hj0 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Ψ₀ (δ := δ) (δ' := δ) := by
+  have hj0 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Ψ₀ (δ := δ) (δ' := δ) := by
     rw [hΨ₀def]
     exact deTurckPhiZero_jointSmooth (I := I) (M := M) g₀ g_bg T₀
       (0 : SmoothCcTensor g₀ 0 2) hδT hδZ
@@ -2435,20 +2435,20 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     jointContMDiff_toModel_continuous_slice (I := I) g₀ 2 2 Ψ₀
       (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hj0 x
   set Φ₀ : ℝ → SmoothCcTensor g₀ 2 2 := fun s =>
-    (-2 : ℝ) • (linearizedRicciArm0CorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+    (-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
           hδT hδZ s
         + (3 / 2 : ℝ) •
-          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
             (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)
-        - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+        - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
             (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s))
       + C0f s with hΦ₀def
-  have hjΦ₀ : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Φ₀
+  have hjΦ₀ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Φ₀
       (δ := δ) (δ' := δ) := by
     rw [hΦ₀def]
-    exact linearizedRicciThreeArmHjoint_smul_add (I := I) (M := M) g₀ 2 (-2 : ℝ) _ _ hjCombo hjC0
+    exact linearizedRicciCovariantJetJointSmoothness_smul_add (I := I) (M := M) g₀ 2 (-2 : ℝ) _ _ hjCombo hjC0
   have hcΦ : ∀ x : M, ContinuousOn (fun t : ℝ =>
       Tensor0SBundle.TensorRSSpace.toModel ((Φ₀ t).toSection x))
       (metricPerturbationPathDomain (δ := δ) (δ' := δ)) := fun x =>
@@ -2470,16 +2470,16 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     unfold deTurckPhiZeroPathIntegral
     congr 1
   have halg : ∀ s : ℝ, Ψ₀ s =
-      (-2 : ℝ) • (linearizedRicciArm0CorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+      (-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
             hδT hδZ s
           + (3 / 2 : ℝ) •
-            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
               (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)
-          - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+          - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
               (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s))
-        + (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+        + (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
             (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)
           + (deTurckLieCoeffField (I := I) (M := M) g₀
@@ -2488,16 +2488,16 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s) g_bg)) := by
     intro s
     simp only [hΨ₀def]
-    rw [show linearizedRicciArm0Field (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s =
-        linearizedRicciArm0BaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
-          + linearizedRicciArm0CorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+    rw [show linearizedRicciOrderZeroField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s =
+        linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
+          + linearizedRicciOrderZeroCorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
               hδT hδZ s from rfl]
-    rw [show linearizedRicciArm0BaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+    rw [show linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
           hδT hδZ s =
-        DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+        DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
             (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)
-          - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+          - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
             (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s) from rfl]
     module
@@ -2521,9 +2521,9 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
       (iteratedCovGrad (I := I) g₀ 0 2 2 T₀)
       (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hjC2 hcC2 x v]
     rw [← intervalIntegral.integral_add
-      (threeArm_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 2 Φ₀
+      (covariantJet_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 2 Φ₀
         (iteratedCovGrad (I := I) g₀ 0 2 0 T₀) hSI hcΦ x v)
-      (threeArm_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 4 C2f
+      (covariantJet_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 4 C2f
         (iteratedCovGrad (I := I) g₀ 0 2 2 T₀) hSI hcC2 x v)]
     apply intervalIntegral.integral_congr
     intro s hs
@@ -2548,182 +2548,182 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
       intro t ht
       refine Real.sqrt_le_sqrt ?_
       have hΛrl_sq : (0 : ℝ) ≤ Λrl ^ 2 := sq_nonneg _
-      have hadd1 := lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2
-        ((-2 : ℝ) • (linearizedRicciArm0CorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+      have hadd1 := lieCorrectionZero_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2
+        ((-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
             hδT hδZ t
           + (3 / 2 : ℝ) •
-            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
               (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)
-          - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+          - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
               (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)))
         (C0f t) x
       have hsm : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-          (((-2 : ℝ) • (linearizedRicciArm0CorrField (I := I) g₀ T₀
+          (((-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
             + (3 / 2 : ℝ) •
-              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)
-            - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+            - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t))).toSection
             x) =
           4 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((linearizedRicciArm0CorrField (I := I) g₀ T₀
+            ((linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
               + (3 / 2 : ℝ) •
-                DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+                DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                   (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)
-              - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+              - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
                   (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)).toSection
               x) := by
-        rw [show (((-2 : ℝ) • (linearizedRicciArm0CorrField (I := I) g₀ T₀
+        rw [show (((-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
             + (3 / 2 : ℝ) •
-              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)
-            - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+            - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t))).toSection
               x) =
-            (-2 : ℝ) • ((linearizedRicciArm0CorrField (I := I) g₀ T₀
+            (-2 : ℝ) • ((linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
               + (3 / 2 : ℝ) •
-                DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+                DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                   (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)
-              - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+              - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
                   (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)).toSection
                 x) from by
           rw [SmoothCcTensor.toSection_smul]; rfl]
         rw [riemannianFiberNormSq_smul_value_tame]
         norm_num
-      have hcombo_eq : linearizedRicciArm0CorrField (I := I) g₀ T₀
+      have hcombo_eq : linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
             (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
           + (3 / 2 : ℝ) •
-            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
               (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)
-          - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+          - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
               (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t) =
-          linearizedRicciArm0Field (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
+          linearizedRicciOrderZeroField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
             + (1 / 2 : ℝ) •
-              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t) := by
-        rw [show linearizedRicciArm0Field (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+        rw [show linearizedRicciOrderZeroField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
               hδT hδZ t =
-            linearizedRicciArm0BaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+            linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
                 hδT hδZ t
-              + linearizedRicciArm0CorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+              + linearizedRicciOrderZeroCorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
                 hδT hδZ t from rfl]
-        rw [show linearizedRicciArm0BaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+        rw [show linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
               hδT hδZ t =
-            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)
-              - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+              - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t) from rfl]
         module
       have hcombo_split : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-          ((linearizedRicciArm0CorrField (I := I) g₀ T₀
+          ((linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
             + (3 / 2 : ℝ) •
-              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)
-            - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+            - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)).toSection
             x) ≤
           2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((linearizedRicciArm0Field (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+            ((linearizedRicciOrderZeroField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
               hδT hδZ t).toSection x) +
           2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
             (((1 / 2 : ℝ) •
-              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
                   hδT hδZ t)).toSection x) := by
         rw [hcombo_eq]
-        exact lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2 _ _ x
+        exact lieCorrectionZero_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2 _ _ x
       have hsm2 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
           (((1 / 2 : ℝ) •
-            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
               (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
                 hδT hδZ t)).toSection x) =
           1 / 4 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+            ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
               (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
                 hδT hδZ t)).toSection x) := by
         rw [show (((1 / 2 : ℝ) •
-              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+              DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
                   hδT hδZ t)).toSection x) =
             (1 / 2 : ℝ) •
-              ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+              ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
                   hδT hδZ t)).toSection x) from by
           rw [SmoothCcTensor.toSection_smul]; rfl]
         rw [riemannianFiberNormSq_smul_value_tame]
         norm_num
-      have hArm0 := le_sq_of_sqrt_le
+      have hTerm0 := le_sq_of_sqrt_le
         (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 2 x _)
         ((hC0r T₀ (0 : SmoothCcTensor g₀ 0 2) hδ_le hδT hδ_le hδZ hTball hZball t ht x).1)
       have hRm := hsupRm t ht x
       have hC0fb := hsupC0 t ht x
       simp only [hΦ₀def]
-      linarith [hadd1, hsm, hcombo_split, hsm2, hArm0, hRm, hC0fb]
+      linarith [hadd1, hsm, hcombo_split, hsm2, hTerm0, hRm, hC0fb]
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M)
       g₀ 2 2 Φ₀ (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hjΦ₀ x
       (Real.sqrt (8 * (2 * ΛC ^ 2 + 1 / 2 * Λrl ^ 2) + 4 * Λrl ^ 2))
       ((hcΦ x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt)) hsup
   · intro x
     have hb_nn : (0 : ℝ) ≤
-        max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 :=
+        max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 :=
       le_max_right _ _
     have hsup : ∀ t ∈ Set.Icc (0 : ℝ) 1,
         Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
           ((C2f t).toSection x)) ≤
-          max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 := by
+          max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 := by
       intro t ht
       have h := hsupC2 t ht x
       calc Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
             ((C2f t).toSection x))
-          ≤ Real.sqrt ((max (19 * deTurckArmFibreConst (Module.finrank ℝ E) *
+          ≤ Real.sqrt ((max (19 * deTurckTermFibreConst (Module.finrank ℝ E) *
               (δ / (1 - δ))) 0) ^ 2) := Real.sqrt_le_sqrt h
-        _ = max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 :=
+        _ = max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 :=
             Real.sqrt_sq hb_nn
     have hPIle := riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M)
       g₀ 4 2 C2f (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hjC2 x
-      (max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0)
+      (max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0)
       ((hcC2 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt)) hsup
     refine le_trans hPIle ?_
     refine pow_le_pow_left₀ hb_nn ?_ 2
     refine max_le ?_ (le_max_right _ _)
-    rcases le_or_gt 0 (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) with h | h
-    · calc 19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))
-          = 19 * (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) := by ring
-        _ ≤ 19 * (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) := by linarith
-        _ = 19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) := by ring
-        _ ≤ max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 :=
+    rcases le_or_gt 0 (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) with h | h
+    · calc 19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))
+          = 19 * (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) := by ring
+        _ ≤ 19 * (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) := by linarith
+        _ = 19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) := by ring
+        _ ≤ max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 :=
             le_max_left _ _
-    · calc 19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))
-          = 19 * (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) := by ring
+    · calc 19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))
+          = 19 * (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) := by ring
         _ ≤ 0 := by linarith
-        _ ≤ max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 :=
+        _ ≤ max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0 :=
             le_max_right _ _
   · intro i
     have hW_nn : (0 : ℝ) ≤ 1 + ∑ j ∈ Finset.range (i + 2),
@@ -2782,36 +2782,36 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
           (mul_le_mul_of_nonneg_left (hwin q hq_le) (hKrl_nn q))
         have h1 : ‖iteratedCovGrad (I := I) g₀ 2 2 q (Φ₀ s)‖ ^ 2 ≤
             2 * ‖iteratedCovGrad (I := I) g₀ 2 2 q
-              ((-2 : ℝ) • (linearizedRicciArm0CorrField (I := I) g₀ T₀
+              ((-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
                   (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
                 + (3 / 2 : ℝ) •
-                  DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+                  DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                     (I := I) (M := M) g₀
                     (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)
-                - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+                - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
                     (I := I) (M := M) g₀
                     (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)))‖ ^ 2 +
             2 * ‖iteratedCovGrad (I := I) g₀ 2 2 q (C0f s)‖ ^ 2 := by
           simp only [hΦ₀def]
-          exact lieCorrectionZerob_normSq_iteratedCovGrad_add_le (I := I) g₀ 2 2 q _ _
+          exact lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) g₀ 2 2 q _ _
         have h2 : ‖iteratedCovGrad (I := I) g₀ 2 2 q
-            ((-2 : ℝ) • (linearizedRicciArm0CorrField (I := I) g₀ T₀
+            ((-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
               + (3 / 2 : ℝ) •
-                DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+                DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                   (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)
-              - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+              - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
                   (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)))‖ ^ 2 =
             4 * ‖iteratedCovGrad (I := I) g₀ 2 2 q
-              (linearizedRicciArm0CorrField (I := I) g₀ T₀
+              (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
                   (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
                 + (3 / 2 : ℝ) •
-                  DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0RiemannCoeff
+                  DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                     (I := I) (M := M) g₀
                     (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)
-                - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder0CurvCoeff
+                - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroCurvCoeff
                     (I := I) (M := M) g₀
                     (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s))‖ ^ 2 := by
           rw [iteratedCovGrad_smul, norm_smul,
@@ -2986,16 +2986,16 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
     uniform_C0_bound_concrete_lichnerowicz_coeffFields (I := I) (M := M) g₀ a
       ha_super hR_nn h13
   obtain ⟨ΛL1, hΛL1_nn, hL1r⟩ :=
-    deTurckLieArm1Coeff_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
+    deTurckLieFirstOrderCoeff_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
       ha_super hR_nn h13
   obtain ⟨KB, hKB_nn, hKB⟩ :=
-    linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_perOrder_tameEnvelope (I := I) (M := M)
+    linearizedRicciFirstOrderBaseCoeff_metricPerturbationPath_jetL2_perOrder_tameEnvelope (I := I) (M := M)
       g₀ a ha_super hR_nn h13
   obtain ⟨KL, hKL_nn, hKL⟩ :=
-    deTurckLieArm1Coeff_metricPerturbationPath_allOrder_tameEnvelope (I := I) (M := M) g₀ g_bg a
+    deTurckLieFirstOrderCoeff_metricPerturbationPath_allOrder_tameEnvelope (I := I) (M := M) g₀ g_bg a
       ha_super hR_nn h13
   obtain ⟨KC, hKC_nn, hKC⟩ :=
-    linearizedRicciArm1CorrField_allOrder_tameEnvelope_interface (I := I) (M := M) g₀ a
+    linearizedRicciFirstOrderCorrField_allOrder_tameEnvelope_interface (I := I) (M := M) g₀ a
       ha_super hR_nn h13
   refine ⟨Real.sqrt (8 * ΛCr ^ 2 + 2 * ΛL1), Real.sqrt_nonneg _,
     fun i => ∑ q ∈ Finset.range (i + 1), (16 * KB q + 16 * KC q + 2 * KL q),
@@ -3046,11 +3046,11 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ)) := metricPerturbationPathDomain_isOpen
   set Ψ₁ : ℝ → SmoothCcTensor g₀ 3 2 := fun s =>
-    (-2 : ℝ) • linearizedRicciArm1Field (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
-      + deTurckLieArm1Coeff (I := I) (M := M) g₀
+    (-2 : ℝ) • linearizedRicciFirstOrderField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
+      + deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s) g_bg
     with hΨ₁def
-  have hj1 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Ψ₁ (δ := δ) (δ' := δ) := by
+  have hj1 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3 Ψ₁ (δ := δ) (δ' := δ) := by
     rw [hΨ₁def]
     exact deTurckPhiOne_jointSmooth (I := I) (M := M) g₀ g_bg T₀
       (0 : SmoothCcTensor g₀ 0 2) hδT hδZ
@@ -3076,20 +3076,20 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
       intro t ht
       refine Real.sqrt_le_sqrt ?_
       simp only [hΨ₁def]
-      have hadd := lieCorrectionZerob_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 3 2
-        ((-2 : ℝ) • linearizedRicciArm1Field (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+      have hadd := lieCorrectionZero_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 3 2
+        ((-2 : ℝ) • linearizedRicciFirstOrderField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
           hδT hδZ t)
-        (deTurckLieArm1Coeff (I := I) (M := M) g₀
+        (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t) g_bg) x
       have hsm : riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
-          (((-2 : ℝ) • linearizedRicciArm1Field (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+          (((-2 : ℝ) • linearizedRicciFirstOrderField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
             hδT hδZ t).toSection x) =
           4 * riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
-            ((linearizedRicciArm1Field (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+            ((linearizedRicciFirstOrderField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
               hδT hδZ t).toSection x) := by
-        rw [show (((-2 : ℝ) • linearizedRicciArm1Field (I := I) g₀ T₀
+        rw [show (((-2 : ℝ) • linearizedRicciFirstOrderField (I := I) g₀ T₀
             (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t).toSection x) =
-            (-2 : ℝ) • ((linearizedRicciArm1Field (I := I) g₀ T₀
+            (-2 : ℝ) • ((linearizedRicciFirstOrderField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t).toSection x) from by
           rw [SmoothCcTensor.toSection_smul]; rfl]
         rw [riemannianFiberNormSq_smul_value_tame]
@@ -3165,39 +3165,39 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
           (mul_le_mul_of_nonneg_left (hwin q hq_le) (hKC_nn q))
         have h1 : ‖iteratedCovGrad (I := I) g₀ 3 2 q (Ψ₁ s)‖ ^ 2 ≤
             2 * ‖iteratedCovGrad (I := I) g₀ 3 2 q
-              ((-2 : ℝ) • linearizedRicciArm1Field (I := I) g₀ T₀
+              ((-2 : ℝ) • linearizedRicciFirstOrderField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)‖ ^ 2 +
             2 * ‖iteratedCovGrad (I := I) g₀ 3 2 q
-              (deTurckLieArm1Coeff (I := I) (M := M) g₀
+              (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)
                 g_bg)‖ ^ 2 := by
           simp only [hΨ₁def]
-          exact lieCorrectionZerob_normSq_iteratedCovGrad_add_le (I := I) g₀ 3 2 q _ _
+          exact lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) g₀ 3 2 q _ _
         have h2 : ‖iteratedCovGrad (I := I) g₀ 3 2 q
-            ((-2 : ℝ) • linearizedRicciArm1Field (I := I) g₀ T₀
+            ((-2 : ℝ) • linearizedRicciFirstOrderField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)‖ ^ 2 =
             4 * ‖iteratedCovGrad (I := I) g₀ 3 2 q
-              (linearizedRicciArm1Field (I := I) g₀ T₀
+              (linearizedRicciFirstOrderField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)‖ ^ 2 := by
           rw [iteratedCovGrad_smul, norm_smul,
             show ‖(-2 : ℝ)‖ = 2 from by rw [Real.norm_eq_abs]; norm_num]
           ring
         have h3 : ‖iteratedCovGrad (I := I) g₀ 3 2 q
-            (linearizedRicciArm1Field (I := I) g₀ T₀
+            (linearizedRicciFirstOrderField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)‖ ^ 2 ≤
             2 * ‖iteratedCovGrad (I := I) g₀ 3 2 q
-              (linearizedRicciArm1BaseCoeff (I := I) g₀ T₀
+              (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)‖ ^ 2 +
             2 * ‖iteratedCovGrad (I := I) g₀ 3 2 q
-              (linearizedRicciArm1CorrField (I := I) g₀ T₀
+              (linearizedRicciFirstOrderCorrField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)‖ ^ 2 := by
-          rw [show linearizedRicciArm1Field (I := I) g₀ T₀
+          rw [show linearizedRicciFirstOrderField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s =
-              linearizedRicciArm1BaseCoeff (I := I) g₀ T₀
+              linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s +
-              linearizedRicciArm1CorrField (I := I) g₀ T₀
+              linearizedRicciFirstOrderCorrField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s from rfl]
-          exact lieCorrectionZerob_normSq_iteratedCovGrad_add_le (I := I) g₀ 3 2 q _ _
+          exact lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) g₀ 3 2 q _ _
         have hexp : (16 * KB q + 16 * KC q + 2 * KL q) *
             (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2) =
@@ -3235,7 +3235,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
     rw [Real.sq_sqrt hprod_nn] at hfin
     exact hfin
 
-theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffSup_jetEnvelope_of_symm
+theorem exists_deTurckRHSCovariantTermDifference_zero_canonicalTop_curvatureDecomposition_coeffSup_jetEnvelope_of_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -3243,12 +3243,12 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffS
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T₀) δ) :
     ∃ εCr : ℝ, 0 ≤ εCr ∧
-      (0 ≤ δ → εCr ≤ 19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εCr ≤ 19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
     ∃ εar : ℝ, 0 ≤ εar ∧
       3 * Real.sqrt (Module.finrank ℝ E) * εar ≤
-        32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-          28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 ∧
+        32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+          28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 ∧
     ∃ Λ₁ : ℝ, 0 ≤ Λ₁ ∧
       ∀ (T₀ : SmoothCcTensor g₀ 0 2),
         (∀ (x : M) (v w : TangentSpace I x),
@@ -3257,9 +3257,9 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffS
         ∀ (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         ∃ (C₀ : SmoothCcTensor g₀ (2 + 0) 2) (C₁ : SmoothCcTensor g₀ (2 + 1) 2)
           (C₂r : SmoothCcTensor g₀ (2 + 2) 2),
-          (deTurckRHSArmG0 (I := I) g₀ g_bg T₀
+          (deTurckRHSTermG0 (I := I) g₀ g_bg T₀
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball) -
-              deTurckRHSArmG0 (I := I) g₀ g_bg (0 : SmoothCcTensor g₀ 0 2)
+              deTurckRHSTermG0 (I := I) g₀ g_bg (0 : SmoothCcTensor g₀ 0 2)
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                 (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
                   (norm_smoothCcToTensorHs_zero_le (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀))) =
@@ -3304,13 +3304,13 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffS
   obtain ⟨Λ₁', hΛ₁'_nn, K₁c, hK₁c_nn, hN3⟩ :=
     deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope (I := I) (M := M)
       g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
-  refine ⟨max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0,
+  refine ⟨max (19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0,
     le_max_right _ _, ?_, fun i => K₀c i + K₁c i,
     fun i => add_nonneg (hK₀c_nn i) (hK₁c_nn i), ε₀, hε₀_nn, hε₀_cap, max Λ₀ Λ₁',
     le_trans hΛ₀_nn (le_max_left _ _), ?_⟩
   · intro hδ_nn
     refine max_le (le_refl _) ?_
-    have hfc : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) := Real.sqrt_nonneg _
+    have hfc : 0 ≤ deTurckTermFibreConst (Module.finrank ℝ E) := Real.sqrt_nonneg _
     have hκ : 0 ≤ δ / (1 - δ) := div_nonneg hδ_nn (by linarith)
     positivity
   · intro T₀ hT₀symm hball
@@ -3321,7 +3321,7 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffS
       rw [ccTensorBilin_zero, ccTensorBilin_zero]
     obtain ⟨C₀dd, C₂r, hdecomposition, hC₀sup, hC₂rsup, hC₀env, hC₂renv⟩ := hN2 T₀ hT₀symm hball
     obtain ⟨hC₁sup, hC₁env⟩ := hN3 T₀ hT₀symm hball
-    have hN1 := deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm (I := I) (M := M)
+    have hN1 := deTurckRHSCovariantTermDifference_eq_pathIntegralCoeff_triple_of_symm (I := I) (M := M)
       g₀ g_bg T₀ (0 : SmoothCcTensor g₀ 0 2)
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))

@@ -57,11 +57,11 @@ def ricciPalatiniHalfCoefficient (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g g₁ +
     (1 / 2 : Real) •
-      ricciArmOrder0RiemannCoeff (I := I) (M := M) g g₁
+      ricciOrderZeroRiemannCoeff (I := I) (M := M) g g₁
 
-def ricciPalatiniZeroOrderFold (g g₁ g_bg : SmoothRiemannianMetric I M) :
+def ricciPalatiniZeroOrderContraction (g g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
-  ((deTurckLieEndoArmField (I := I) (M := M) g g₁ g_bg +
+  ((deTurckLieEndoTermField (I := I) (M := M) g g₁ g_bg +
       lieCorrectionZeroField (I := I) (M := M) g g₁ g_bg) +
     metricPrincipalDefectCurvCoeff (I := I) g g₁) -
       backgroundZeroOrderCoefficient (I := I) (M := M) g g_bg
@@ -73,7 +73,7 @@ def ricciPalatiniTopOrderDecomposition (g g₁ g_bg : SmoothRiemannianMetric I M
       (ricciPalatiniHalfCoefficient (I := I) (M := M) g g₁) W +
     operatorFieldApply (I := I) (M := M) g 2 2 C₀ W +
     operatorFieldApply (I := I) (M := M) g 2 2
-      (ricciPalatiniZeroOrderFold (I := I) (M := M) g g₁ g_bg) W +
+      (ricciPalatiniZeroOrderContraction (I := I) (M := M) g g₁ g_bg) W +
     operatorFieldApply (I := I) (M := M) g 3 2
       (metricDependentFirstOrderCoefficient (I := I) (M := M) g g₁ g_bg)
       (iteratedCovGrad (I := I) g 0 2 1 W) +
@@ -423,7 +423,7 @@ def topOrderPairingCoefficient (g gm : SmoothRiemannianMetric I M)
     SmoothCcTensor g 2 2 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 6 2
     (secondMetricPairTraceOperator (I := I) (M := M) g gm)
-    (rsDomDomCongrSection (I := I) (M := M) g 2 6 ricciFoldRemainderSlotPerm
+    (rsDomDomCongrSection (I := I) (M := M) g 2 6 ricciContractionRemainderSlotPerm
       (slotExtendIter (I := I) (M := M) g 0 4 2
         (domDomCongrSection (I := I) g
           (σ.trans (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3)) G)))
@@ -694,7 +694,7 @@ private lemma edgeEvalCLM_apply (s : Nat) (x : M) (v : Fin s → E)
     (D : Tensor0SSpace s I x) :
     edgeEvalCLM (I := I) (M := M) s x v D = Tensor0SSpace.toModel D v := rfl
 
-private def edgeFeedCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
+private def edgePairEvaluationCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) :
     TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real :=
   let split : Fin (s + 2) ≃ Fin 2 ⊕ Fin s :=
@@ -711,10 +711,10 @@ private def edgeFeedCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma edgeFeedCLM_apply (s : Nat) (x : M)
+private lemma edgePairEvaluationCLM_apply (s : Nat) (x : M)
     (G : Tensor0SSpace (s + 2) I x) (v : Fin s → E)
     (p q : TangentSpace I x) :
-    edgeFeedCLM (I := I) (M := M) s x G v p q =
+    edgePairEvaluationCLM (I := I) (M := M) s x G v p q =
       Tensor0SSpace.toModel G
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)) := by
@@ -903,11 +903,11 @@ private theorem edgePair_point (g gm : SmoothRiemannianMetric I M)
       (show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace 4 I x from G.toSection x)
         (unitTensor (I := I) (M := M) x)
     have hm := edge_bitrace_move (I := I) (M := M) g gm x
-      (edgeFeedCLM (I := I) (M := M) 0 x Sx ![])
-      (edgeFeedCLM (I := I) (M := M) 2 x
+      (edgePairEvaluationCLM (I := I) (M := M) 0 x Sx ![])
+      (edgePairEvaluationCLM (I := I) (M := M) 2 x
         (tensorRank4PermuteCLM (I := I) (M := M) x σ Gx) ![em i, em j])
       e horth
-    simpa only [edgeFeedCLM_apply, slotPerm4Fib_toModel,
+    simpa only [edgePairEvaluationCLM_apply, slotPerm4Fib_toModel,
       ContinuousMultilinearMap.domDomCongr_apply, Sx, Gx, unitModel,
       em, fm, cm, tangentLinearMapToModel_apply,
       ContinuousLinearEquiv.symm_apply_apply] using hm
@@ -1387,7 +1387,7 @@ theorem exists_ricciDeTurck_top_order_pairing_decomposition
                   (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s)) W +
               operatorFieldApply (I := I) (M := M) g 2 2 (C₀ s) W +
               operatorFieldApply (I := I) (M := M) g 2 2
-                (ricciPalatiniZeroOrderFold (I := I) (M := M) g
+                (ricciPalatiniZeroOrderContraction (I := I) (M := M) g
                   (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s) g_bg) W +
               operatorFieldApply (I := I) (M := M) g 3 2
                 (metricDependentFirstOrderCoefficient (I := I) (M := M) g
@@ -1401,9 +1401,9 @@ theorem exists_ricciDeTurck_top_order_pairing_decomposition
         (∀ s ∈ Set.Icc (0 : Real) 1, ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g 4 2 x
               ((C₂ s).toSection x) ≤
-            2 * (max (8 * deTurckArmFibreConst (Module.finrank Real E) *
+            2 * (max (8 * deTurckTermFibreConst (Module.finrank Real E) *
                 (delta / (1 - delta))) 0) ^ 2 +
-              2 * (max (3 * deTurckArmFibreConst (Module.finrank Real E) *
+              2 * (max (3 * deTurckTermFibreConst (Module.finrank Real E) *
                 (delta / (1 - delta) ^ 2)) 0) ^ 2) ∧
         (∀ s ∈ Set.Icc (0 : Real) 1,
           (⟪W, (metricDependentLowOrderAction (I := I) (M := M) g
@@ -1414,7 +1414,7 @@ theorem exists_ricciDeTurck_top_order_pairing_decomposition
                     (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s)) W⟫_ℝ +
               ⟪W, operatorFieldApply (I := I) (M := M) g 2 2 (C₀ s) W⟫_ℝ +
               ⟪W, operatorFieldApply (I := I) (M := M) g 2 2
-                (ricciPalatiniZeroOrderFold (I := I) (M := M) g
+                (ricciPalatiniZeroOrderContraction (I := I) (M := M) g
                   (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s) g_bg) W⟫_ℝ +
               ⟪W, operatorFieldApply (I := I) (M := M) g 3 2
                 (metricDependentFirstOrderCoefficient (I := I) (M := M) g
@@ -1445,7 +1445,7 @@ theorem exists_ricciDeTurck_top_order_pairing_decomposition
     exists_riemannPalatini_decomposition_identity_data (I := I) (M := M)
       g a ha hR hhalf_lt
   obtain ⟨LambdaD, hLambdaD, KD, hKD, q, epsilon, hepsilon, hDmain⟩ :=
-    exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data (I := I) (M := M)
+    exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_data (I := I) (M := M)
       g g_bg a ha hR hhalf_lt
   obtain ⟨C0R, hjR, hidR, hsupR, henvR⟩ :=
     hRmain W hWsymm hdelta_half hdelta hdeltaZ hball
@@ -1472,7 +1472,7 @@ theorem exists_ricciDeTurck_top_order_pairing_decomposition
               (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s)) W +
           operatorFieldApply (I := I) (M := M) g 2 2 (C₀ s) W +
           operatorFieldApply (I := I) (M := M) g 2 2
-            (ricciPalatiniZeroOrderFold (I := I) (M := M) g
+            (ricciPalatiniZeroOrderContraction (I := I) (M := M) g
               (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s) g_bg) W +
           operatorFieldApply (I := I) (M := M) g 3 2
             (metricDependentFirstOrderCoefficient (I := I) (M := M) g
@@ -1504,10 +1504,10 @@ theorem exists_ricciDeTurck_top_order_pairing_decomposition
       simp only [ricciPalatiniHalfCoefficient, operatorFieldApplication_add_left, operatorFieldApplication_smul_left]
       module
     simp only [metricDependentLowOrderAction, firstOrderCoefficientAction, metricDependentZeroOrderCoefficient,
-      deTurckLieCoeffField_eq_covDerivArm_add_endoArm,
+      deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm,
       operatorFieldApplication_add_left, operatorFieldApplication_sub_left, operatorFieldApplication_smul_left]
     rw [hriemInsert, hlie]
-    simp only [ricciPalatiniZeroOrderFold, C₀, C₂,
+    simp only [ricciPalatiniZeroOrderContraction, C₀, C₂,
       operatorFieldApplication_add_left, operatorFieldApplication_sub_left, operatorFieldApplication_smul_left]
     module
   have hBsq : 0 ≤ 2 * LambdaR ^ 2 + 2 * LambdaD ^ 2 := by positivity
@@ -1562,9 +1562,9 @@ theorem exists_ricciDeTurck_top_order_pairing_lipschitz_bound
         (∀ s ∈ Set.Icc (0 : Real) 1, ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g 4 2 x
               ((C₂ s).toSection x) ≤
-            2 * (max (8 * deTurckArmFibreConst (Module.finrank Real E) *
+            2 * (max (8 * deTurckTermFibreConst (Module.finrank Real E) *
                 (delta / (1 - delta))) 0) ^ 2 +
-              2 * (max (3 * deTurckArmFibreConst (Module.finrank Real E) *
+              2 * (max (3 * deTurckTermFibreConst (Module.finrank Real E) *
                 (delta / (1 - delta) ^ 2)) 0) ^ 2) ∧
         ∀ (x : M) (v w : TangentSpace I x) {s : Real},
           s ∈ Set.Ioo (0 : Real) 1 →
@@ -1574,7 +1574,7 @@ theorem exists_ricciDeTurck_top_order_pairing_lipschitz_bound
               (zero_metricPerturbation_bound (I := I) (M := M) g) x v w s =
             unitModel (I := I) (M := M) g 2
               ((rawTensorConnLapSmooth (I := I) g 0 2 W +
-                  deTurckPrincipalCometricArm (I := I) (M := M) g
+                  deTurckPrincipalCometricTerm (I := I) (M := M) g
                     (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s) W) +
                 (backgroundLowOrderAction (I := I) (M := M) g g_bg W +
                   ricciPalatiniTopOrderDecomposition (I := I) (M := M) g

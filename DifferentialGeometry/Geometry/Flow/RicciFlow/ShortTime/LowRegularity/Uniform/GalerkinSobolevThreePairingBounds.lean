@@ -117,7 +117,7 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_for_smaller_metri
     dsimp only [T]
     exact symmS_idem (I := I) (M := M) g _
   have hmain := hpairG T hTsymm hdelta_lt hT hZ hR hRR0 hT2
-  have hdiag := galArmPair3_diag (I := I) (M := M) g gBase hR
+  have hdiag := galTermPair3_diag (I := I) (M := M) g gBase hR
     hdelta_lt hdelta.le hdeltathird hreal F c
   have hT3 : ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ ≤
       Real.sqrt E3 := by

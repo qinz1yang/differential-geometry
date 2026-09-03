@@ -103,7 +103,7 @@ theorem smoothN_h1_uniform
     R hR hRρ hT2c hT2c'
   rw [deTurckSmoothN_sub_eq_smoothCcToTensorHs_remainderSub
     (I := I) (M := M) g gBase 1 T T' hδ₀_lt hδ hδ₀_lt hδ']
-  rw [deTurckSmoothRemainderDiff_eq_armDiff_sub_connLapDiff
+  rw [deTurckSmoothRemainderDiff_eq_termDiff_sub_connLapDiff
     (I := I) g gBase T T' hδ₀_lt hδ hδ₀_lt hδ']
   simp only [smoothHs_eq_ccHs']
   convert hraw using 1

@@ -17,7 +17,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.In
 import DifferentialGeometry.Geometry.Curvature.MetricPerturbationPathCurvatureJetBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RealizeMetricChartGramDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.FibreNorm
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.CovariantDerivativeReadout
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.CovariantDerivativeComponents
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.JointSmoothness
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.CoefficientBounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.CorrectionFields
@@ -72,12 +72,12 @@ theorem exists_linearizedRicciOrder1DivCoeff (g₀ : SmoothRiemannianMetric I M)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
     ∃ (Φ₀ : ℝ → SmoothCcTensor g₀ 2 2) (Φ₁ : ℝ → SmoothCcTensor g₀ 3 2)
       (Φ₂ : ℝ → SmoothCcTensor g₀ 4 2),
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
       ∀ (s : ℝ), s ∈ Set.Ioo (0 : ℝ) 1 →
         ∀ (x : M) (v : Fin 2 → TangentSpace I x),
           linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (v 0) (v 1) s =
@@ -91,34 +91,34 @@ theorem exists_linearizedRicciOrder1DivCoeff (g₀ : SmoothRiemannianMetric I M)
               (tangentModel (I := I) x v) := by
   classical
   obtain ⟨_, _, _, hident, _, _⟩ :=
-    (exists_arm0_arm1_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
-  refine ⟨linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ',
-    linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ',
-    linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ',
-    linearizedRicci_arm0Field_jointSmooth (I := I) g₀ T T' hδ hδ',
-    linearizedRicci_arm1Field_jointSmooth (I := I) g₀ T T' hδ hδ',
-    linearizedRicci_arm2FieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ',
+    (exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
+  refine ⟨linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ',
+    linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ',
+    linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ',
+    linearizedRicci_orderZeroField_jointSmooth (I := I) g₀ T T' hδ hδ',
+    linearizedRicci_firstOrderField_jointSmooth (I := I) g₀ T T' hδ hδ',
+    linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ',
     ?_, ?_, ?_, ?_⟩
   · intro x
     exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 2 2
-      (linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ')
+      (linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ')
       (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-      (linearizedRicci_arm0Field_jointSmooth (I := I) g₀ T T' hδ hδ') x
+      (linearizedRicci_orderZeroField_jointSmooth (I := I) g₀ T T' hδ hδ') x
   · intro x
     exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 3 2
-      (linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ')
+      (linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ')
       (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-      (linearizedRicci_arm1Field_jointSmooth (I := I) g₀ T T' hδ hδ') x
+      (linearizedRicci_firstOrderField_jointSmooth (I := I) g₀ T T' hδ hδ') x
   · intro x
     exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 4 2
-      (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ')
+      (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ')
       (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-      (linearizedRicci_arm2FieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ') x
+      (linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ') x
   · intro s hs x v
     with_unfolding_all
       exact hident hTsymm hT'symm s hs x v hδ_lt hδ'_lt
 
-theorem linearizedRicci_lichnerowicz_arm1_identity (g₀ : SmoothRiemannianMetric I M)
+theorem linearizedRicci_lichnerowicz_firstOrder_identity (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -130,12 +130,12 @@ theorem linearizedRicci_lichnerowicz_arm1_identity (g₀ : SmoothRiemannianMetri
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
     ∃ (Φ₀ : ℝ → SmoothCcTensor g₀ 2 2) (Φ₁ : ℝ → SmoothCcTensor g₀ 3 2)
       (Φ₂ : ℝ → SmoothCcTensor g₀ 4 2),
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
       ∀ (s : ℝ), s ∈ Set.Ioo (0 : ℝ) 1 →
         ∀ (x : M) (v : Fin 2 → TangentSpace I x),
           linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (v 0) (v 1) s =
@@ -149,7 +149,7 @@ theorem linearizedRicci_lichnerowicz_arm1_identity (g₀ : SmoothRiemannianMetri
               (tangentModel (I := I) x v) :=
   exists_linearizedRicciOrder1DivCoeff (I := I) g₀ T T' hTsymm hT'symm hδ_lt hδ hδ'_lt hδ'
 
-theorem exists_linearizedRicci_threeArm_coeffFields
+theorem exists_linearizedRicci_covariantJet_coeffFields
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -161,12 +161,12 @@ theorem exists_linearizedRicci_threeArm_coeffFields
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
     ∃ (Φ₀ : ℝ → SmoothCcTensor g₀ 2 2) (Φ₁ : ℝ → SmoothCcTensor g₀ 3 2)
       (Φ₂ : ℝ → SmoothCcTensor g₀ 4 2),
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
-      linearizedRicciThreeArmHcont (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 2 Φ₀ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 3 Φ₁ (δ := δ) (δ' := δ') ∧
+      linearizedRicciCovariantJetJointContinuity (I := I) (M := M) g₀ 4 Φ₂ (δ := δ) (δ' := δ') ∧
       ∀ (s : ℝ), s ∈ Set.Ioo (0 : ℝ) 1 →
         ∀ (x : M) (v : Fin 2 → TangentSpace I x),
           linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (v 0) (v 1) s =
@@ -178,11 +178,11 @@ theorem exists_linearizedRicci_threeArm_coeffFields
                 + operatorFieldApply (I := I) (M := M) g₀ 4 2 (Φ₂ s)
                   (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
               (tangentModel (I := I) x v) := by
-  exact linearizedRicci_lichnerowicz_arm1_identity (I := I) g₀ T T'
+  exact linearizedRicci_lichnerowicz_firstOrder_identity (I := I) g₀ T T'
     hTsymm hT'symm hδ_lt hδ hδ'_lt hδ'
 
 
-theorem exists_ricciArmOrder1Coeff
+theorem exists_ricciFirstOrderCoeff
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -207,7 +207,7 @@ theorem exists_ricciArmOrder1Coeff
             (tangentModel (I := I) x v) := by
   classical
   obtain ⟨Φ₀, Φ₁, Φ₂, hj0, hj1, hj2, hc0, hc1, hc2, hid⟩ :=
-    exists_linearizedRicci_threeArm_coeffFields (I := I) (M := M) g₀ T T'
+    exists_linearizedRicci_covariantJet_coeffFields (I := I) (M := M) g₀ T T'
       hTsymm hT'symm hδ_lt hδ hδ'_lt hδ'
   have hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ') := by
     rw [Set.uIcc_of_le (zero_le_one)]
@@ -256,21 +256,21 @@ theorem exists_ricciArmOrder1Coeff
         (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Φ₀ s) W₀) x
         (tangentModel (I := I) x v))
       MeasureTheory.volume 0 1 :=
-    threeArm_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 2 Φ₀ W₀ hSI hc0 x
+    covariantJet_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 2 Φ₀ W₀ hSI hc0 x
       (tangentModel (I := I) x v)
   have hI1 : IntervalIntegrable
       (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 3 2 (Φ₁ s) W₁) x
         (tangentModel (I := I) x v))
       MeasureTheory.volume 0 1 :=
-    threeArm_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 3 Φ₁ W₁ hSI hc1 x
+    covariantJet_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 3 Φ₁ W₁ hSI hc1 x
       (tangentModel (I := I) x v)
   have hI2 : IntervalIntegrable
       (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2 (Φ₂ s) W₂) x
         (tangentModel (I := I) x v))
       MeasureTheory.volume 0 1 :=
-    threeArm_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 4 Φ₂ W₂ hSI hc2 x
+    covariantJet_unitModel_operatorFieldApplication_intervalIntegrable (I := I) g₀ 4 Φ₂ W₂ hSI hc2 x
       (tangentModel (I := I) x v)
   rw [intervalIntegral.integral_add (hI0.add hI1) hI2,
     intervalIntegral.integral_add hI0 hI1]
@@ -289,7 +289,7 @@ theorem exists_ricciArmOrder1Coeff
   rw [← he0, ← he1, ← he2, unitModel_add2_apply, unitModel_add2_apply]
 
 
-theorem ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
+theorem ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -317,7 +317,7 @@ theorem ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
             (tangentModel (I := I) x v) := by
   classical
   obtain ⟨R₀, R₁, R₂, hR⟩ :=
-    exists_ricciArmOrder1Coeff (I := I) (M := M) g₀ T T'
+    exists_ricciFirstOrderCoeff (I := I) (M := M) g₀ T T'
       hTsymm hT'symm hδ_lt hδ hδ'_lt hδ'
   refine ⟨(-2 : ℝ) • R₀, (-2 : ℝ) • R₁, (-2 : ℝ) • R₂, fun x v => ?_⟩
   set A₀ : SmoothCcTensor g₀ 0 2 :=

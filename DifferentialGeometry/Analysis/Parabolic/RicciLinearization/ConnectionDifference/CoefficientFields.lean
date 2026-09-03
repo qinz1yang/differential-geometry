@@ -505,9 +505,9 @@ theorem linearizedRicciConnectionDifferenceOrder0Coeff_eq_base_add_sub
       δ')
     (s : ℝ) :
     linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s =
-      linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s
+      linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s
         + (linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s
-            - linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s) := by
+            - linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s) := by
   abel
 
 
@@ -520,9 +520,9 @@ theorem linearizedRicciConnectionDifferenceOrder1Coeff_eq_base_add_sub
       δ')
     (s : ℝ) :
     linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s =
-      linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s
+      linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s
         + (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s
-            - linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s) := by
+            - linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s) := by
   abel
 
 end TensorSpectral

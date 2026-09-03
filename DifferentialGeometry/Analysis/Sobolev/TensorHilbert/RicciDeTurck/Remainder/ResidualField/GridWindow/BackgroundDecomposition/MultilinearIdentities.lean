@@ -151,12 +151,12 @@ private lemma reindexCoeffGen_one_eq (r s : ℕ) (R : SmoothCcTensor g₀ r s) :
   rw [Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   rfl
 
-def ricciFoldRemainderSlotPerm : Equiv.Perm (Fin 6) :=
+def ricciContractionRemainderSlotPerm : Equiv.Perm (Fin 6) :=
   ⟨fun i => (![1, 3, 4, 5, 0, 2] : Fin 6 → Fin 6) i,
    fun i => (![4, 0, 5, 1, 2, 3] : Fin 6 → Fin 6) i,
    by decide, by decide⟩
 
-def ricciFoldWeightBPerm : Equiv.Perm (Fin 6) :=
+def ricciContractionWeightBPerm : Equiv.Perm (Fin 6) :=
   ⟨fun i => (![5, 0, 2, 1, 4, 3] : Fin 6 → Fin 6) i,
    fun i => (![1, 3, 2, 5, 4, 0] : Fin 6 → Fin 6) i,
    by decide, by decide⟩

@@ -51,7 +51,7 @@ section TopOrderSeparatedResidualIntegrator
 
 
 
-theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
+theorem ricciOrderZeroBaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -70,22 +70,22 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
                   ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x)) ∧
             ‖Hd‖ ^ 2 ≤ Ktop * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 ∧
             ‖iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁) - Hd‖ ^ 2 ≤
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁) - Hd‖ ^ 2 ≤
               Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨KtCr, hKtCr_nn, KcCr, hKcCr_nn, hCr⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_topOrderSeparated_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_topOrderSeparated_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨KtCu, hKtCu_nn, KcCu, hKcCu_nn, hCu⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0CurvCoeff_backgroundDifference_topOrderSeparated_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_backgroundDifference_topOrderSeparated_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 2 2
-    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-      ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)
+    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+      ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)
   obtain ⟨KI, hKI_nn, hKI⟩ := boundedFactorGridWindow_integral_ballUniform_flat_allOrders
     (I := I) (M := M) g₀ a ha_super hR
   refine ⟨2 * KtCr + 2 * KtCu, by linarith, ?_⟩
@@ -178,61 +178,61 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
             (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P),
           tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M)
             g₀ 0 (2 + (i + 2)) (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P)]]
-    · have harm0 : ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ =
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-            ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) +
-          ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-              ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) -
-            (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-              ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)) := by abel
+    · have harm0 : ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ =
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+            ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) +
+          ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+              ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) -
+            (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+              ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)) := by abel
       have hdiff : iteratedCovGrad (I := I) g₀ 2 2 i
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-              ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁) - (HdCr - HdCu) =
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+              ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁) - (HdCr - HdCu) =
           iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) +
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) +
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
               (iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) - HdCu)) := by
+                (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) - HdCu)) := by
         rw [harm0]
         rw [show iteratedCovGrad (I := I) g₀ 2 2 i
-              ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) +
-              ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) -
-                (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀))) =
+              ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) +
+              ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) -
+                (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀))) =
             iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) +
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) +
             (iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) -
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) -
              iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)) from by
+              (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)) from by
           rw [iteratedCovGrad_add (I := I) g₀ 2 2 i
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-              ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)
-            ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) -
-              (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀))]
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+              ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)
+            ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) -
+              (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀))]
           rw [iteratedCovGrad_sub (I := I) g₀ 2 2 i
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-              ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)
-            (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-              ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)]]
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+              ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)
+            (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+              ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)]]
         abel
       have hpt : ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
               ((iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁) -
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁) -
                 (HdCr - HdCu)).toSection x) ≤
             (2 * cbg i + 4 * KcCr i + 4 * KcCu i) *
               Combinatorics.boundedFactorGridWindow
@@ -249,67 +249,67 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
           linarith
         rw [hdiff]
         rw [show ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) +
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) +
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
               (iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) - HdCu))).toSection x) =
+                (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) - HdCu))).toSection x) =
             (iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)).toSection x +
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)).toSection x +
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
               (iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) - HdCu)).toSection x
+                (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) - HdCu)).toSection x
             from by rw [SmoothCcTensor.toSection_add]; rfl]
         refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i)
           x _ _) ?_
         have h1 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)).toSection x) ≤
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)).toSection x) ≤
             cbg i := hcbg i x
         have h2 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             (((iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
               (iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) - HdCu)).toSection x) ≤
+                (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) - HdCu)).toSection x) ≤
             2 * (KcCr i * Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3)) +
               2 * (KcCu i * Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3)) := by
           rw [show (((iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
               (iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) - HdCu)).toSection x) =
+                (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) - HdCu)).toSection x) =
               (iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr).toSection x -
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr).toSection x -
               (iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                  ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) - HdCu).toSection x
+                (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                  ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) - HdCu).toSection x
               from by rw [SmoothCcTensor.toSection_sub]; rfl]
           refine le_trans (riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
           exact add_le_add (mul_le_mul_of_nonneg_left (hCr_res x) (by norm_num))
             (mul_le_mul_of_nonneg_left (hCu_res x) (by norm_num))
         calc 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
               ((iteratedCovGrad (I := I) g₀ 2 2 i
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-                  ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)).toSection x) +
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+                  ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)).toSection x) +
             2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
               (((iteratedCovGrad (I := I) g₀ 2 2 i
-                  (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                    ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
+                  (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                    ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) - HdCr) -
                 (iteratedCovGrad (I := I) g₀ 2 2 i
-                  (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                    ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) - HdCu)).toSection x)
+                  (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                    ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) - HdCu)).toSection x)
             ≤ 2 * cbg i +
               2 * (2 * (KcCr i * Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3)) +
                 2 * (KcCu i * Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3))) := by
@@ -344,8 +344,8 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
       have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M)
         g₀ 2 (2 + i)
         (iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-            ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁) - (HdCr - HdCu))
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+            ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁) - (HdCr - HdCu))
         _ hF_int hpt
       refine le_trans key ?_
       rw [MeasureTheory.integral_const_mul]
@@ -371,8 +371,8 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
       have := sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖
       nlinarith only [hKtCr_nn, hKtCu_nn]
     · have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-            ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁) -
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+            ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁) -
           (0 : SmoothCcTensor g₀ 2 (2 + i))‖ = 0 := by
         rw [SmoothCcTensor.norm_def, tensorL2Norm_def, tensorL2Inner,
           MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]

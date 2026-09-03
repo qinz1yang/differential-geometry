@@ -534,10 +534,10 @@ lemma bdSGK_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
     (P S : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w) :
-    ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ S =
+    ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ S =
       (2 : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 P S +
                   sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 P S) -
@@ -556,7 +556,7 @@ lemma bdSGK_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
   have hRHSsmul : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       (((2 : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 P S +
                   sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 P S) -
@@ -565,7 +565,7 @@ lemma bdSGK_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
                     x)) D) =
       (2 : ℝ) • ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 P S +
                   sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 P S) -
@@ -574,7 +574,7 @@ lemma bdSGK_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
                     x) D) := by
     rw [show ((((2 : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 P S +
                   sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 P S) -
@@ -584,7 +584,7 @@ lemma bdSGK_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
         (2 : ℝ) •
           ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 P S +
                     sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 P S) -
@@ -600,7 +600,7 @@ lemma bdSGK_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
       (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau3 P S +
         sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau4 P S)) x D v]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ S).toSection x) D) =
+      (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ S).toSection x) D) =
       sharpGradKoszulBiContrFib (I := I) g₀ g₁ S x D from rfl]
   rw [show sharpGradKoszulBiContrFib (I := I) g₀ g₁ S x =
       sharpGradKoszulBiContrFibFixedFrame (I := I) g₀ g₁ S
@@ -774,36 +774,36 @@ private lemma bdXiChain_toModel (g₀ : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) (w : Fin 6 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D) w =
       Tensor0SSpace.toModel D
-          ![(fun i => w (armPairTraceSlotPerm6 i)) 0, (fun i => w (armPairTraceSlotPerm6 i)) 1] *
+          ![(fun i => w (termPairTraceSlotPerm6 i)) 0, (fun i => w (termPairTraceSlotPerm6 i)) 1] *
         unitModel (I := I) (M := M) g₀ 4 X x
-          (fun k : Fin 4 => (fun i => w (armPairTraceSlotPerm6 i)) (Fin.natAdd 2 k)) := by
+          (fun k : Fin 4 => (fun i => w (termPairTraceSlotPerm6 i)) (Fin.natAdd 2 k)) := by
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D) =
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-        tensorRSDomDomCongr armPairTraceSlotPerm6
+        tensorRSDomDomCongr termPairTraceSlotPerm6
           ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x)) D) from by
     rw [rsDomDomCongrSection_toSection]]
-  rw [toModel_rsDomDomCongr_apply (I := I) (M := M) armPairTraceSlotPerm6
+  rw [toModel_rsDomDomCongr_apply (I := I) (M := M) termPairTraceSlotPerm6
     ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x) D]
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   exact bdSlotExtendIter_two_toModel (I := I) (M := M) g₀ X x D
-    (fun i => w (armPairTraceSlotPerm6 i))
+    (fun i => w (termPairTraceSlotPerm6 i))
 
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 lemma bdSGKXi_smul (g₀ g₁ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (c : ℝ) :
-    rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+    rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 (c • T) (c • T) +
             sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 (c • T) (c • T)) -
           (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau3 (c • T) (c • T) +
             sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau4 (c • T) (c • T)))) =
-    (c * c) • rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+    (c * c) • rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 T T +
             sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 T T) -
@@ -820,7 +820,7 @@ lemma bdSGKXi_smul (g₀ g₁ : SmoothRiemannianMetric I M)
   apply ContinuousMultilinearMap.ext
   intro w
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-      (((c * c) • rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      (((c * c) • rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 T T +
               sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 T T) -
@@ -828,20 +828,20 @@ lemma bdSGKXi_smul (g₀ g₁ : SmoothRiemannianMetric I M)
               sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau4 T T)))).toSection x)) D)
                 =
       (c * c) • ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 T T +
                 sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 T T) -
               (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau3 T T +
                 sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau4 T T)))).toSection x)
                   D) from by
-    rw [show ((((c * c) • rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+    rw [show ((((c * c) • rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 T T +
               sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 T T) -
             (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau3 T T +
               sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau4 T T)))).toSection x)) =
-        (c * c) • ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (c * c) • ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 T T +
                 sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau2 T T) -
@@ -892,10 +892,10 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
 private lemma bdSGKProd_toSection (g₀ : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D =
       Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-        (ContinuousMultilinearMap.domDomCongr armPairTraceSlotPerm6
+        (ContinuousMultilinearMap.domDomCongr termPairTraceSlotPerm6
           (Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 x D
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x)
               (unitTensor (I := I) (M := M) x))))) := by
@@ -911,11 +911,11 @@ private lemma bdSGKProd_toSection (g₀ : SmoothRiemannianMetric I M)
     funext k
     fin_cases k <;> rfl
   · rw [show unitModel (I := I) (M := M) g₀ 4 X x
-        (fun k : Fin 4 => (fun i => w (armPairTraceSlotPerm6 i)) (Fin.natAdd 2 k)) =
+        (fun k : Fin 4 => (fun i => w (termPairTraceSlotPerm6 i)) (Fin.natAdd 2 k)) =
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x)
             (unitTensor (I := I) (M := M) x))
-          (fun k : Fin 4 => (fun i => w (armPairTraceSlotPerm6 i)) (Fin.natAdd 2 k)) from rfl]
+          (fun k : Fin 4 => (fun i => w (termPairTraceSlotPerm6 i)) (Fin.natAdd 2 k)) from rfl]
     refine congrArg _ ?_
     funext k
     fin_cases k <;> rfl
@@ -1060,13 +1060,13 @@ private theorem bdTensorProdField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
 
 
 omit [SigmaCompactSpace M] in
-theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoint
+theorem ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_covariantJetJointSmoothness
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-      (fun s => ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+      (fun s => ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)) (δ := δ) (δ' := δ) := by
   classical
   have hperY : ∀ (Y : Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun x : M => Tensor0SSpace 2 I x⟯),
@@ -1178,7 +1178,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
                   (koszulCovGradRaw (I := I) (M := M) g₀ T))
                 (koszulCovecCc (I := I) g₀ T))) q.1))))
       hYj hX
-    have hRX := domDomCongrField_jointContMDiffOn (I := I) (M := M) (d := 6) armPairTraceSlotPerm6
+    have hRX := domDomCongrField_jointContMDiffOn (I := I) (M := M) (d := 6) termPairTraceSlotPerm6
       (S := metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (fun q : M × ℝ => tensorProdWithCLM (I := I) 2 4 q.1 (Y q.1)
         ((cometricDoubleTraceFib (I := I)
@@ -1217,7 +1217,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
     have hDT4 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
       g₀ T 0 hδ hδZ
       (fun q : M × ℝ => Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := q.1)
-          (ContinuousMultilinearMap.domDomCongr armPairTraceSlotPerm6
+          (ContinuousMultilinearMap.domDomCongr termPairTraceSlotPerm6
             (Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 q.1 (Y q.1)
               ((cometricDoubleTraceFib (I := I)
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
@@ -1257,7 +1257,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
       (fun q : M × ℝ => cometricDoubleTraceFib (I := I)
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
         (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := q.1)
-          (ContinuousMultilinearMap.domDomCongr armPairTraceSlotPerm6
+          (ContinuousMultilinearMap.domDomCongr termPairTraceSlotPerm6
             (Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 q.1 (Y q.1)
               ((cometricDoubleTraceFib (I := I)
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
@@ -1302,7 +1302,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
         (cometricDoubleTraceFib (I := I)
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
         (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := q.1)
-          (ContinuousMultilinearMap.domDomCongr armPairTraceSlotPerm6
+          (ContinuousMultilinearMap.domDomCongr termPairTraceSlotPerm6
             (Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 q.1 (Y q.1)
               ((cometricDoubleTraceFib (I := I)
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
@@ -1353,7 +1353,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
         (show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
           (((2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau1 (q.2 • T) (q.2 • T) +
@@ -1371,7 +1371,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
     rw [bdSGKXi_smul (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) T q.2]
     rw [operatorFieldComposition_smul_right (I := I) (M := M) g₀ 2 6 2 (q.2 * q.2)
       (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau1 T T +
@@ -1384,7 +1384,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
     rw [show ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
         (((2 : ℝ) • (q.2 * q.2) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau1 T T +
@@ -1399,7 +1399,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
           ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
             ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau1 T T +
@@ -1412,7 +1412,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
                     (Y q.1)) from by
       rw [show ((((2 : ℝ) • (q.2 * q.2) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau1 T T +
@@ -1424,7 +1424,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau4 T T))))).toSection q.1)) =
           (2 : ℝ) • (q.2 * q.2) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau1 T T +
@@ -1437,7 +1437,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
         rw [SmoothCcTensor.toSection_smul, SmoothCcTensor.toSection_smul]; rfl]
       rw [show (((2 : ℝ) • (q.2 * q.2) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau1 T T +
@@ -1449,7 +1449,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau4 T T))))).toSection q.1)) : _) =
           ((2 : ℝ) * (q.2 * q.2)) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau1 T T +
@@ -1465,7 +1465,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
     rw [show ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
         ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau1 T T +
@@ -1479,7 +1479,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
         cometricDoubleTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 2 q.1
           (cometricDoubleTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
             ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) bdSGKTau1 T T +
@@ -1505,7 +1505,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 2 q.1
       (cometricDoubleTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1 t)) ?_
     refine congrArg (fun t => Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := q.1)
-      (ContinuousMultilinearMap.domDomCongr armPairTraceSlotPerm6
+      (ContinuousMultilinearMap.domDomCongr termPairTraceSlotPerm6
         (Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 q.1 (Y q.1) t)))) ?_
     rw [show ((show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
         (((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
@@ -1639,20 +1639,20 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
 
 
 omit [SigmaCompactSpace M] in
-theorem ricciArmRicciFoldRemainderField_metricPerturbationPath_threeArmHjoint
+theorem ricciContractionRemainderField_metricPerturbationPath_covariantJetJointSmoothness
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-      (fun s => ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+      (fun s => ricciContractionRemainderField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)) (δ := δ) (δ' := δ) := by
   classical
   have hperY : ∀ (Y : Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun x : M => Tensor0SSpace 2 I x⟯),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
         (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
           (E := fun z : M => Tensor0SSpace 2 I z) p.1
-          (ricciFoldBiContrFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2)
+          (ricciContractionBiContrFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2)
             (p.2 • T) p.1 (Y p.1)))
         ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
     intro Y
@@ -1660,41 +1660,41 @@ theorem ricciArmRicciFoldRemainderField_metricPerturbationPath_threeArmHjoint
         (fun x : M => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
           (E := fun z : M => Tensor0SSpace 6 I z) x
           ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                  palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection x) (Y x))) :=
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection x) (Y x))) :=
       ContMDiff.clm_bundle_apply (b := id)
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-            (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-              palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection.contMDiff Y.contMDiff
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection.contMDiff Y.contMDiff
     have hXiJoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 6 ℝ E)) ∞
         (fun q : M × ℝ => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
           (E := fun z : M => Tensor0SSpace 6 I z) q.1
           ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                  palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1)))
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1)))
         ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) :=
       (hXiApp.comp_contMDiffOn contMDiffOn_fst).mono (Set.subset_univ _)
     have hcdtf4 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
       g₀ T 0 hδ hδZ
       (fun q : M × ℝ => (show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-            (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-              palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1)) hXiJoint
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1)) hXiJoint
     have hcdtf2 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 2)
       g₀ T 0 hδ hδZ
       (fun q : M × ℝ => cometricDoubleTraceFib (I := I)
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
         ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1))) hcdtf4
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1))) hcdtf4
     have hsmul := bdJointTotalSpace0S_smulFun_local (I := I) (M := M) (d := 2)
       (S := metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (f := fun s : ℝ => (-(1 / 2) : ℝ) * s)
@@ -1705,99 +1705,99 @@ theorem ricciArmRicciFoldRemainderField_metricPerturbationPath_threeArmHjoint
         (cometricDoubleTraceFib (I := I)
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
           ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                  palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1))))
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1))))
       hcdtf2
     refine hsmul.congr (fun q _ => ?_)
     refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
       (E := fun z : M => Tensor0SSpace 2 I z) q.1 t) ?_
-    have h1 : ricciFoldBiContrFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2)
+    have h1 : ricciContractionBiContrFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2)
         (q.2 • T) q.1 (Y q.1) =
         (show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
           (((-(1 / 2) : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (palatiniRicciFoldWeightA (I := I) (M := M) g₀ (q.2 • T) +
-                  palatiniRicciFoldWeightB (I := I) (M := M) g₀ (q.2 • T))))).toSection q.1))
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ (q.2 • T) +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ (q.2 • T))))).toSection q.1))
           (Y q.1) := by
-      rw [← bdRicciFold_eq_decomposition (I := I) (M := M) g₀
+      rw [← bdRicciContraction_eq_decomposition (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) (q.2 • T)]
       rfl
     rw [h1]
-    rw [bdRicciFoldXi_smul (I := I) (M := M) g₀ T q.2]
+    rw [bdRicciContractionXi_smul (I := I) (M := M) g₀ T q.2]
     rw [operatorFieldComposition_smul_right (I := I) (M := M) g₀ 2 6 2 q.2
       (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-          (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-            palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))]
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))]
     rw [show ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
         (((-(1 / 2) : ℝ) • q.2 • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) (Y q.1)) =
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) (Y q.1)) =
         ((-(1 / 2) : ℝ) * q.2) • ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
           ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                  palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) (Y q.1))
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) (Y q.1))
                     from by
       rw [show ((((-(1 / 2) : ℝ) • q.2 • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) =
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) =
           (-(1 / 2) : ℝ) • q.2 • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                  palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection q.1) from by
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1) from by
         rw [SmoothCcTensor.toSection_smul, SmoothCcTensor.toSection_smul]; rfl]
       rw [show (((-(1 / 2) : ℝ) • q.2 • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) : _) =
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) : _) =
           ((-(1 / 2) : ℝ) * q.2) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                  palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection q.1) from by
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1) from by
         rw [smul_smul]]
       rfl]
     refine congrArg (fun t => ((-(1 / 2) : ℝ) * q.2) • t) ?_
     rw [show ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
         ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                palatiniRicciFoldWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) (Y q.1)) =
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) (Y q.1)) =
         cometricDoubleTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 2 q.1
           (cometricDoubleTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
             ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                  (palatiniRicciFoldWeightA (I := I) (M := M) g₀ T +
-                    palatiniRicciFoldWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1)))
+                  (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                    palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1)))
                       from by
       rw [operatorFieldComposition_toSection]
       rfl]
   have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun x : M => Tensor0SSpace 2 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
-    (φ := fun p : M × ℝ => ricciFoldBiContrFib (I := I) g₀
+    (φ := fun p : M × ℝ => ricciContractionBiContrFib (I := I) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) (p.2 • T) p.1)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) hperY
   refine hCLM.congr (fun p _ => ?_)

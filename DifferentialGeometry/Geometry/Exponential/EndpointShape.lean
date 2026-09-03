@@ -570,7 +570,7 @@ theorem branchEnergy_hess
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u w₁ w₂ : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source) :
     let γ : Real → M := intrinsicGeodesic (I := I) g hEnorm p u
@@ -766,7 +766,7 @@ theorem branchHess_jacobi
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u w₁ w₂ : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source)
     (hu_pos : 0 < g.inner p u u) :
@@ -1014,7 +1014,7 @@ theorem branchHess_shape
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u w₁ w₂ : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source)
     (hu_pos : 0 < g.inner p u u)
@@ -1042,7 +1042,7 @@ theorem intrinsicJacobi_li
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source)
     (v : ι → TangentSpace I p)

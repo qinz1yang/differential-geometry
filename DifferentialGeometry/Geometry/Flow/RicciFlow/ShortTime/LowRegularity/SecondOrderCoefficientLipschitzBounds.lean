@@ -963,18 +963,6 @@ private theorem jet3_smul_c2
   rw [iteratedCovGrad_smul, norm_smul, Real.norm_eq_abs]
   rw [mul_pow, sq_abs]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_sub_right_c2
-    (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ : SmoothCcTensor g r s) (A B : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s Φ (A - B) =
-      operatorFieldApply (I := I) (M := M) g r s Φ A -
-        operatorFieldApply (I := I) (M := M) g r s Φ B := by
-  rw [sub_eq_add_neg, operatorFieldApplication_add_right]
-  rw [show -B = (-1 : ℝ) • B by simp, operatorFieldApplication_smul_right]
-  module
-
 private theorem insert1_iteratedCovGrad_le
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (i : ℕ)
@@ -2678,7 +2666,7 @@ private theorem daWeight_pair_lip
           operatorFieldApply (I := I) (M := M) g 2 2 (F gU) U =
         Q₁ + Q₂
     dsimp only [Q₁, Q₂]
-    rw [operatorFieldApplication_sub_left, operatorFieldApplication_sub_right_c2]
+    rw [operatorFieldApplication_sub_left, operatorFieldApplication_sub_right]
     abel
   have hdiff :
       secondOrderCoefficientJetNormSq (I := I) (M := M) g
@@ -3875,9 +3863,9 @@ private noncomputable def phiDiff
     (g gT gU : SmoothRiemannianMetric I M) : SmoothCcTensor g 4 2 :=
   let H := traceDiff (I := I) (M := M) g gT gU
   reindexCoeffGen (I := I) (M := M) g 4 2 H
-      (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA) +
+      (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA) +
     reindexCoeffGen (I := I) (M := M) g 4 2 H
-      (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT) -
+      (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT) -
     ricci2Diff (I := I) (M := M) g gT gU
 
 private theorem sub_base_alg
@@ -3973,13 +3961,13 @@ private theorem metricPrincipalDefect_diff_eq
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gT -
           deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gU =
         (reindexCoeffGen (I := I) (M := M) g 4 2 HT
-            (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA) -
+            (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA) -
           reindexCoeffGen (I := I) (M := M) g 4 2 HU
-            (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)) +
+            (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)) +
         (reindexCoeffGen (I := I) (M := M) g 4 2 HT
-            (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT) -
+            (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT) -
           reindexCoeffGen (I := I) (M := M) g 4 2 HU
-            (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)) -
+            (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)) -
         ((RT + RT) - (RU + RU)) := by
       rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g gT,
         deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g gU]
@@ -3987,9 +3975,9 @@ private theorem metricPrincipalDefect_diff_eq
       exact tri_sub_alg _ _ _ _ _ _
     _ =
         reindexCoeffGen (I := I) (M := M) g 4 2 (HT - HU)
-            (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA) +
+            (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA) +
           reindexCoeffGen (I := I) (M := M) g 4 2 (HT - HU)
-            (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT) -
+            (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT) -
           ((RT + RT) - (RU + RU)) := by
       rw [reindex_sub_c2, reindex_sub_c2]
     _ = phiDiff (I := I) (M := M) g gT gU := by
@@ -4024,9 +4012,9 @@ private theorem metricPrincipalDefect_pair_lip
   let D := pccDiff (I := I) (M := M) g gT gU
   let Hc := traceDiff (I := I) (M := M) g gT gU
   let A := reindexCoeffGen (I := I) (M := M) g 4 2 Hc
-    (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)
+    (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)
   let B := reindexCoeffGen (I := I) (M := M) g 4 2 Hc
-    (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)
+    (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)
   let R1 := reindexCoeffGen (I := I) (M := M) g 4 2 D koszulSlotPerm
   let R2 := reindexCoeffGen (I := I) (M := M) g 4 2
     (rsDomDomCongrSection (I := I) (M := M) g 4 2
@@ -4137,10 +4125,10 @@ private theorem secondOrderCoefficientPathKernel_joint
     (hZδ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g
         (0 : SmoothCcTensor g 0 2)) δ) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g 4
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 4
       (secondOrderCoefficientPathKernel (I := I) (M := M) g T hTδ hZδ)
       (δ := δ) (δ' := δ) := by
-  exact threeArmJoint_add (I := I) (M := M) g _ _
+  exact covariantJetJoint_add (I := I) (M := M) g _ _
     (rhsDecompositionTop_joint (I := I) (M := M)
       g T hδlt hTδ hZδ)
     (RicciDeTurckLowOrder.selfTop_joint (I := I) (M := M)
@@ -4200,7 +4188,7 @@ noncomputable def secondOrderCoefficientDifference
     (by
       rw [Set.uIcc_of_le zero_le_one]
       exact Icc_subset_metricPerturbationPathDomain hδlt hδlt)
-    (threeArmJoint_sub (I := I) (M := M) g _ _
+    (covariantJetJoint_sub (I := I) (M := M) g _ _
       (secondOrderCoefficientPathKernel_joint (I := I) (M := M)
         g T hδlt hTδ hZδ)
       (secondOrderCoefficientPathKernel_joint (I := I) (M := M)
@@ -4517,10 +4505,10 @@ private theorem secondOrderCoefficientDifference_h2_bound
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδlt hδlt
   have hjoint :
-      linearizedRicciThreeArmHjoint (I := I) (M := M) g 4 Φ
+      linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 4 Φ
         (δ := δ) (δ' := δ) := by
     dsimp only [Φ]
-    exact threeArmJoint_sub (I := I) (M := M) g _ _
+    exact covariantJetJoint_sub (I := I) (M := M) g _ _
       (secondOrderCoefficientPathKernel_joint (I := I) (M := M)
         g T hδlt hTδ hZδ)
       (secondOrderCoefficientPathKernel_joint (I := I) (M := M)

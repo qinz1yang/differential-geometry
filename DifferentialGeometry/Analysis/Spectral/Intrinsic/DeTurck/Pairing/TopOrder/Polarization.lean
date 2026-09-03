@@ -194,7 +194,7 @@ private lemma edgeEvalCLM_apply (s : Nat) (x : M) (v : Fin s → E)
     (D : Tensor0SSpace s I x) :
     edgeEvalCLM (I := I) (M := M) s x v D = Tensor0SSpace.toModel D v := rfl
 
-private def edgeFeedCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
+private def edgePairEvaluationCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) :
     TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real :=
   haveI : FiniteDimensional Real (TangentSpace I x) :=
@@ -212,14 +212,14 @@ private def edgeFeedCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
           map_smul] }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma edgeFeedCLM_apply (s : Nat) (x : M)
+private lemma edgePairEvaluationCLM_apply (s : Nat) (x : M)
     (G : Tensor0SSpace (s + 2) I x) (v : Fin s → E)
     (p q : TangentSpace I x) :
-    edgeFeedCLM (I := I) (M := M) s x G v p q =
+    edgePairEvaluationCLM (I := I) (M := M) s x G v p q =
       Tensor0SSpace.toModel G
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)) := by
-  rw [edgeFeedCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
+  rw [edgePairEvaluationCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
     AddHom.coe_mk, ContinuousLinearMap.comp_apply, edgeEvalCLM_apply,
     TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
       (T := tensor0SCurry (𝕜 := Real) (I := I) (M := M) (s + 1) x G p)
@@ -413,11 +413,11 @@ theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
       (show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace 4 I x from G.toSection x)
         (unitTensor (I := I) (M := M) x)
     have hm := edge_bitrace_move (I := I) (M := M) g gm x
-      (edgeFeedCLM (I := I) (M := M) 0 x Px ![])
-      (edgeFeedCLM (I := I) (M := M) 2 x
+      (edgePairEvaluationCLM (I := I) (M := M) 0 x Px ![])
+      (edgePairEvaluationCLM (I := I) (M := M) 2 x
         (slotPerm4Fib (I := I) (M := M) x σ Gx) ![eE i, eE j])
       e horth
-    simp only [edgeFeedCLM_apply, slotPerm4Fib_toModel,
+    simp only [edgePairEvaluationCLM_apply, slotPerm4Fib_toModel,
       ContinuousMultilinearMap.domDomCongr_apply] at hm
     have hPx (v : Fin 2 → E) : Tensor0SSpace.toModel Px v =
         unitModel (I := I) (M := M) g 2 P x v := by

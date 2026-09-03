@@ -601,21 +601,21 @@ private lemma slotEndo_fiberComponent_slotk_eq
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private lemma ricciArm_fiberComponent_eq
+private lemma ricciCovariantTerm_fiberComponent_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (K J : Fin 2 → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I) g₁ x)) n e K J =
+          TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x)) n e K J =
       g₀.inner x (e (K 0)) (ricEndoRaisedFib (I := I) g₁ x (e (J 0))) *
           (if K 1 = J 1 then (1 : ℝ) else 0) +
         g₀.inner x (e (K 1)) (ricEndoRaisedFib (I := I) g₁ x (e (J 1))) *
           (if K 0 = J 0 then (1 : ℝ) else 0) := by
   classical
   have hsplit : (show TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I) g₁ x)) =
+        TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x)) =
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x
           (ricEndoRaisedFib (I := I) g₁ x))) +
@@ -637,7 +637,7 @@ private lemma ricciArm_fiberComponent_eq
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma ricciArm_component_abs_le
+private lemma ricciCovariantTerm_component_abs_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
@@ -664,7 +664,7 @@ private lemma ricciArm_component_abs_le
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of_jetEnvelope
+theorem exists_ricciOrderZeroCurvCoeffFib_perturbed_frameComponentSlice_sq_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -686,7 +686,7 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of
             (∑ J : Fin 2 → Fin (Module.finrank ℝ E),
               (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
                 (show TensorRSSpace 2 2 I x from
-                  TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I) g₁ x))
+                  TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x))
                 (Module.finrank ℝ E) e K J) ^ 2) ≤ C ^ 2 := by
   classical
   obtain ⟨C0, hC0_nn, hC0⟩ :=
@@ -700,19 +700,19 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of
     fun v => hC0 g₁ P hδ_le hδ htie x henv v
   have habs0 : ∀ J : Fin 2 → Fin (Module.finrank ℝ E),
       |g₀.inner x (e (K 0)) (ricEndoRaisedFib (I := I) g₁ x (e (J 0)))| ≤ C0 :=
-    fun J => ricciArm_component_abs_le (I := I) (M := M) g₀ g₁ x e horth C0 hC0_nn hR1 0 K J
+    fun J => ricciCovariantTerm_component_abs_le (I := I) (M := M) g₀ g₁ x e horth C0 hC0_nn hR1 0 K J
   have habs1 : ∀ J : Fin 2 → Fin (Module.finrank ℝ E),
       |g₀.inner x (e (K 1)) (ricEndoRaisedFib (I := I) g₁ x (e (J 1)))| ≤ C0 :=
-    fun J => ricciArm_component_abs_le (I := I) (M := M) g₀ g₁ x e horth C0 hC0_nn hR1 1 K J
+    fun J => ricciCovariantTerm_component_abs_le (I := I) (M := M) g₀ g₁ x e horth C0 hC0_nn hR1 1 K J
   have hterm : ∀ J : Fin 2 → Fin (Module.finrank ℝ E),
       (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I) g₁ x))
+          TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x))
         (Module.finrank ℝ E) e K J) ^ 2 ≤
         2 * C0 ^ 2 * (if K 1 = J 1 then (1 : ℝ) else 0)
           + 2 * C0 ^ 2 * (if K 0 = J 0 then (1 : ℝ) else 0) := by
     intro J
-    rw [ricciArm_fiberComponent_eq (I := I) (M := M) g₀ g₁ x e horth K J]
+    rw [ricciCovariantTerm_fiberComponent_eq (I := I) (M := M) g₀ g₁ x e horth K J]
     set s0 : ℝ := g₀.inner x (e (K 0)) (ricEndoRaisedFib (I := I) g₁ x (e (J 0))) with hs0
     set s1 : ℝ := g₀.inner x (e (K 1)) (ricEndoRaisedFib (I := I) g₁ x (e (J 1))) with hs1
     have hs0sq : s0 ^ 2 ≤ C0 ^ 2 := by
@@ -735,7 +735,7 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of
   calc (∑ J : Fin 2 → Fin (Module.finrank ℝ E),
           (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
             (show TensorRSSpace 2 2 I x from
-              TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I) g₁ x))
+              TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x))
             (Module.finrank ℝ E) e K J) ^ 2)
       ≤ ∑ J : Fin 2 → Fin (Module.finrank ℝ E),
           (2 * C0 ^ 2 * (if K 1 = J 1 then (1 : ℝ) else 0)
@@ -764,7 +764,7 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_riemannianFiberNormSq_le_of_jetEnvelope
+theorem exists_ricciOrderZeroCurvCoeffFib_perturbed_riemannianFiberNormSq_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -781,15 +781,15 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_riemannianFiberNormSq_le_of_
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
               (show TensorRSSpace 2 2 I x from
-                TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I) g₁ x)) ≤ C ^ 2 := by
+                TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x)) ≤ C ^ 2 := by
   classical
   obtain ⟨C, hC_nn, hC⟩ :=
-    exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of_jetEnvelope
+    exists_ricciOrderZeroCurvCoeffFib_perturbed_frameComponentSlice_sq_le_of_jetEnvelope
       (I := I) (M := M) g₀ hδ₀ B hB
   refine ⟨(Module.finrank ℝ E : ℝ) * C, by positivity, ?_⟩
   intro g₁ P δ hδ_le hδ htie x henv
   have hred := riemannianFiberNormSq_le_of_componentSlice_sq_sum_le (I := I) (M := M) g₀ x
-    (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I) g₁ x))
+    (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x))
     C hC_nn (fun e horth K => hC g₁ P hδ_le hδ htie x henv e horth K)
   refine le_trans hred (le_of_eq ?_)
   rw [mul_pow]
@@ -834,7 +834,7 @@ theorem exists_riemannBiContrFib_perturbed_frameComponent_sum_sq_le_of_jetEnvelo
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponent_sum_sq_le_of_jetEnvelope
+theorem exists_ricciOrderZeroCurvCoeffFib_perturbed_frameComponent_sum_sq_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -856,18 +856,18 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponent_sum_sq_le_of_
             (∑ J : Fin 2 → Fin (Module.finrank ℝ E),
               (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
                 (show TensorRSSpace 2 2 I x from
-                  TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I) g₁ x))
+                  TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x))
                 (Module.finrank ℝ E) e K J) ^ 2) ≤ C ^ 2 := by
   classical
   obtain ⟨C, hC_nn, hC⟩ :=
-    exists_ricciArmOrder0CurvCoeffFib_perturbed_riemannianFiberNormSq_le_of_jetEnvelope
+    exists_ricciOrderZeroCurvCoeffFib_perturbed_riemannianFiberNormSq_le_of_jetEnvelope
       (I := I) (M := M) g₀ hδ₀ B hB
   refine ⟨C, hC_nn, ?_⟩
   intro g₁ P δ hδ_le hδ htie x henv e horth K
   refine le_trans
     (componentSlice_sq_sum_le_riemannianFiberNormSq (I := I) (M := M) g₀ x
       (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM
-        (ricciArmOrder0CurvCoeffFib (I := I) g₁ x))
+        (ricciOrderZeroCurvCoeffFib (I := I) g₁ x))
       e horth K)
     (hC g₁ P hδ_le hδ htie x henv)
 

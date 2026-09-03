@@ -95,8 +95,8 @@ omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem mixedCoeff_backgroundDifference_eq_pairTrace
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
-        ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ =
+    ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
+        ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ =
       (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (pairTraceKernel (I := I) (M := M) g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 pairTraceKernelSlotPerm

@@ -442,9 +442,9 @@ theorem lowRegularityPrincipalOperatorH2_apply_smoothCore
                   (iteratedCovGrad (I := I) g₀ 0 2 2 W))) := by
                     exact traceH2_core (I := I) (M := M) g₀ _
         _ = ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ)
-              (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ W) := by
+              (deTurckPrincipalCometricTerm (I := I) (M := M) g₀ g₁ W) := by
                     congr 1
-                    rw [deTurckPrincipalCometricArm,
+                    rw [deTurckPrincipalCometricTerm,
                       deTurckPrincipalCometricCoeff_eq_operatorFieldComposition_doubleTrace_slotInsertEndo]
                     change operatorFieldApply (I := I) (M := M) g₀ 4 2
                         (cometricDoubleTraceField (I := I) g₀ 2)

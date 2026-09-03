@@ -281,7 +281,7 @@ theorem exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background
     have hsplit : ∀ i ∈ F, force i = arm.coeff i + seed.coeff i := by
       intro i hi
       dsimp only [force, arm, seed]
-      rw [galForceArmBackground (I := I) (M := M) g gBase hδ hδ0 hδ3 hCtop hB1 hρ hP
+      rw [galForceTermBackground (I := I) (M := M) g gBase hδ hδ0 hδ3 hCtop hB1 hρ hP
         hreal hcore F (U N t) i, if_pos hi]
       simp only [galerkinActionVectorBackground]
       module
@@ -334,13 +334,13 @@ theorem exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background
         le_abs_self (∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) *
             (U N t i * seed.coeff i))]
-    generalize hArmPair : (2 * |∑ i ∈ F,
+    generalize hTermPair : (2 * |∑ i ∈ F,
       tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) *
-        (U N t i * arm.coeff i)|) = armPair at harm hsigned
+        (U N t i * arm.coeff i)|) = termPair at harm hsigned
     generalize hSeedPair : (2 * |∑ i ∈ F,
       tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) *
         (U N t i * seed.coeff i)|) = seedPair at hstatPair' hsigned
-    generalize hArmBound :
+    generalize hTermBound :
       (∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (5 : ℝ) *
           (U N t i) ^ 2) +
         G * ((∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) *
@@ -350,11 +350,11 @@ theorem exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background
             (∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) *
               (U N t i) ^ 2) +
           (∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
-            (U N t i) ^ 2) ^ 2) = armBound at harm
+            (U N t i) ^ 2) ^ 2) = termBound at harm
     generalize hSeedBound : (2 * Cseed 4 * Real.sqrt (∑ i ∈ F,
       tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) *
         (U N t i) ^ 2)) = seedBound at hstatPair'
-    have hbound : armPair + seedPair ≤ armBound + seedBound :=
+    have hbound : termPair + seedPair ≤ termBound + seedBound :=
       add_le_add harm hstatPair'
     let E3 : ℝ := galerkinEnergy (I := I) (M := M) F (U N) 3 t
     let E4 : ℝ := galerkinEnergy (I := I) (M := M) F (U N) 4 t
@@ -373,10 +373,10 @@ theorem exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background
     unfold galerkinEnergy at hshape ⊢
     norm_num only [one_mul, zero_mul, add_zero, Nat.cast_ofNat] at hshape ⊢
     calc
-      _ ≤ armPair + seedPair := by
+      _ ≤ termPair + seedPair := by
         dsimp only [F, force] at hsigned ⊢
         exact hsigned
-      _ ≤ armBound + seedBound := hbound
+      _ ≤ termBound + seedBound := hbound
       _ = (∑ i ∈ F,
             tensorSobolevWeight (I := I) (M := M) i (5 : ℝ) * (U N t i) ^ 2) +
           G * ((∑ i ∈ F,
@@ -389,7 +389,7 @@ theorem exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background
               tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (U N t i) ^ 2) ^ 2) +
           2 * Cseed 4 * Real.sqrt (∑ i ∈ F,
             tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) * (U N t i) ^ 2) := by
-        rw [← hArmBound, ← hSeedBound]
+        rw [← hTermBound, ← hSeedBound]
       _ ≤ (∑ i ∈ F,
             tensorSobolevWeight (I := I) (M := M) i (5 : ℝ) * (U N t i) ^ 2) +
           G * ((1 + Φ3) * (∑ i ∈ F,

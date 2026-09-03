@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-import DifferentialGeometry.Geometry.Exponential.DiagInvBranch
-import DifferentialGeometry.Geometry.Exponential.NormalBallHome
+import DifferentialGeometry.Geometry.Exponential.DiagonalInverseBranch
+import DifferentialGeometry.Geometry.Exponential.NormalBallHomeomorphism
 
 set_option autoImplicit false
 
@@ -14,7 +14,7 @@ namespace Geometry
 namespace Riemannian
 open NormalCoordinates
 namespace Exponential
-namespace DiagInvBranch
+namespace DiagonalInverseBranch
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -30,41 +30,41 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-noncomputable def diagReadout
+noncomputable def diagonalInverseCoordinates
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p)
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p)
     (y : M × M) : E :=
   (trivializationAt E (TangentSpace I) p (B.inv y)).2
 
-def readDom
+def coordinateDomain
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p) : Set (M × M) :=
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p) : Set (M × M) :=
   B.dom ∩ Prod.fst ⁻¹' (trivializationAt E (TangentSpace I) p).baseSet
 
 omit [ConnectedSpace M] in
-theorem readoutDomInf
+theorem diagonalInverseCoordinates_properties
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p) :
-    IsOpen B.readDom ∧
-      (p, p) ∈ B.readDom ∧
-      ContMDiffOn (I.prod I) 𝓘(ℝ, E) ∞ (diagReadout B) B.readDom ∧
-      ∀ y ∈ B.readDom,
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p) :
+    IsOpen B.coordinateDomain ∧
+      (p, p) ∈ B.coordinateDomain ∧
+      ContMDiffOn (I.prod I) 𝓘(ℝ, E) ∞ (diagonalInverseCoordinates B) B.coordinateDomain ∧
+      ∀ y ∈ B.coordinateDomain,
         diagExp (I := I) g hEnorm (B.inv y) = y ∧
         (B.inv y).proj = y.1 ∧
         expMapIntrinsic (I := I) g hEnorm y.1 (B.inv y).snd = y.2 := by
   let e := trivializationAt E (TangentSpace I) p
-  have hopen : IsOpen B.readDom :=
+  have hopen : IsOpen B.coordinateDomain :=
     B.hom.open_target.inter (e.open_baseSet.preimage continuous_fst)
-  have hp : (p, p) ∈ B.readDom :=
+  have hp : (p, p) ∈ B.coordinateDomain :=
     ⟨B.center_mem, mem_baseSet_trivializationAt E (TangentSpace I) p⟩
   have hsmooth : ContMDiffOn (I.prod I) 𝓘(ℝ, E) ∞
-      (diagReadout B) B.readDom := by
+      (diagonalInverseCoordinates B) B.coordinateDomain := by
     intro y hy
     have hbranchAt : ContMDiffAt (I.prod I) I.tangent ∞ B.inv y :=
       (B.inv_inf y hy.1).contMDiffAt (B.hom.open_target.mem_nhds hy.1)
@@ -72,7 +72,7 @@ theorem readoutDomInf
       rw [B.proj_eq hy.1]
       exact hy.2
     have hreadAt : ContMDiffAt (I.prod I) 𝓘(ℝ, E) ∞
-        (diagReadout B) y := by
+        (diagonalInverseCoordinates B) y := by
       have hreadAt' := ((e.contMDiffAt_iff (e.mem_source.2 hbase)).mp hbranchAt).2
       refine hreadAt'.congr_of_eventuallyEq ?_
       exact Filter.Eventually.of_forall fun _ => rfl
@@ -81,7 +81,7 @@ theorem readoutDomInf
   intro y hy
   exact ⟨B.right_inv hy.1, B.proj_eq hy.1, B.exp_eq hy.1⟩
 
-section ChartReadout
+section ChartCoordinates
 
 variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
   [FiniteDimensional ℝ E'] [NeZero (Module.finrank ℝ E')]
@@ -93,48 +93,48 @@ variable [RiemannianBundle (fun x : M' ↦ TangentSpace I' x)]
 variable [PseudoEMetricSpace M'] [IsRiemannianManifold I' M'] [CompleteSpace M']
   [IsContinuousRiemannianBundle E' (fun x : M' ↦ TangentSpace I' x)]
 
-noncomputable def chartReadout
+noncomputable def chartDiagonalInverseCoordinates
     {g : SmoothRiemannianMetric I' M'}
     {hEnorm : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖₊ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M'} (B : DiagInvBranch (I := I') g hEnorm p)
+    {p : M'} (B : DiagonalInverseBranch (I := I') g hEnorm p)
     (c : NormalBallChart (I := I') p) (y : M' × M') : E' :=
   (c.tangentHome.symm (B.inv y)).2
 
-def chartReadDom
+def chartCoordinateDomain
     {g : SmoothRiemannianMetric I' M'}
     {hEnorm : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖₊ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M'} (B : DiagInvBranch (I := I') g hEnorm p)
+    {p : M'} (B : DiagonalInverseBranch (I := I') g hEnorm p)
     (c : NormalBallChart (I := I') p) : Set (M' × M') :=
   B.dom ∩ Prod.fst ⁻¹' c.restrictBall.target
 
 omit [ConnectedSpace M'] in
-theorem chartReadoutInf
+theorem chartDiagonalInverseCoordinates_properties
     {g : SmoothRiemannianMetric I' M'}
     {hEnorm : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖₊ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M'} (B : DiagInvBranch (I := I') g hEnorm p)
+    {p : M'} (B : DiagonalInverseBranch (I := I') g hEnorm p)
     (c : NormalBallChart (I := I') p) :
-    IsOpen (B.chartReadDom c) ∧
-      (p, p) ∈ B.chartReadDom c ∧
+    IsOpen (B.chartCoordinateDomain c) ∧
+      (p, p) ∈ B.chartCoordinateDomain c ∧
       ContMDiffOn (I'.prod I') 𝓘(ℝ, E') ∞
-        (B.chartReadout c) (B.chartReadDom c) ∧
-      ∀ y ∈ B.chartReadDom c,
+        (B.chartDiagonalInverseCoordinates c) (B.chartCoordinateDomain c) ∧
+      ∀ y ∈ B.chartCoordinateDomain c,
         diagExp (I := I') g hEnorm (B.inv y) = y ∧
         (B.inv y).proj = y.1 ∧
         expMapIntrinsic (I := I') g hEnorm y.1 (B.inv y).snd = y.2 := by
-  have hopen : IsOpen (B.chartReadDom c) :=
+  have hopen : IsOpen (B.chartCoordinateDomain c) :=
     B.hom.open_target.inter (c.restrictBall.open_target.preimage continuous_fst)
   have hpTarget : p ∈ c.restrictBall.target := by
     refine ⟨0, ?_, ?_⟩
     · change (0 : E') ∈ Metric.ball 0 c.radius
       simpa only [Metric.mem_ball, dist_self] using c.radius_pos
     · simpa only [NormalBallChart.restrict_ball_apply] using c.map_zero
-  have hp : (p, p) ∈ B.chartReadDom c :=
+  have hp : (p, p) ∈ B.chartCoordinateDomain c :=
     ⟨B.center_mem, hpTarget⟩
   have hsmooth : ContMDiffOn (I'.prod I') 𝓘(ℝ, E') ∞
-      (B.chartReadout c) (B.chartReadDom c) := by
+      (B.chartDiagonalInverseCoordinates c) (B.chartCoordinateDomain c) := by
     intro y hy
     have hbranchAt : ContMDiffAt (I'.prod I') I'.tangent ∞ B.inv y :=
       (B.inv_inf y hy.1).contMDiffAt (B.hom.open_target.mem_nhds hy.1)
@@ -149,7 +149,7 @@ theorem chartReadoutInf
         (c.tangentHome.open_target.mem_nhds hinTarget) |>.comp y hbranchAt
     rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod] at hcoordsAt
     have hreadAt : ContMDiffAt (I'.prod I') 𝓘(ℝ, E') ∞
-        (B.chartReadout c) y := by
+        (B.chartDiagonalInverseCoordinates c) y := by
       have hreadAt' := contMDiffAt_snd.comp y hcoordsAt
       refine hreadAt'.congr_of_eventuallyEq ?_
       exact Filter.Eventually.of_forall fun _ => rfl
@@ -158,9 +158,9 @@ theorem chartReadoutInf
   intro y hy
   exact ⟨B.right_inv hy.1, B.proj_eq hy.1, B.exp_eq hy.1⟩
 
-end ChartReadout
+end ChartCoordinates
 
-end DiagInvBranch
+end DiagonalInverseBranch
 end Exponential
 end Riemannian
 end Geometry

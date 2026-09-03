@@ -2149,7 +2149,7 @@ theorem actual_cm_tail
 
 end BoundedGeometryNormalChartData
 
-def HasStageRootReadout
+def HasStageRootChartEquation
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -2263,8 +2263,8 @@ theorem HasSuppConvData.stage_root_tail
     (Phi3 : Nat → Nat → Nat → E → E)
     (hroot : HasStageRootCube inp.toCore P L hr phi hphi C1 alpha e
       W PhiInf rootRho Phi3) :
-    HasStageRootReadout inp.toCore P L hr phi hphi C0 alpha Phi3 := by
-  dsimp only [HasStageRootReadout]
+    HasStageRootChartEquation inp.toCore P L hr phi hphi C0 alpha Phi3 := by
+  dsimp only [HasStageRootChartEquation]
   rcases hroot with
     ⟨_hW, _hWcpt, hC1W, hrootRho, hPhiInf, _htriple,
       Nroot, hrootTail⟩
@@ -2513,7 +2513,7 @@ theorem HasSuppConvData.stage_root_tail
       exact centerOfMass.min hcm y
   have hmapC : stageComparisonMap inp.toCore P Lphi r hr k l x = c := by
     exact hmap.trans hcGlobal.symm
-  have hchartReadout :
+  have hchartDiagonalInverseCoordinates :
       chiL (stageComparisonMap inp.toCore P Lphi r hr k l x) =
         Phi3 l k l z := by
     rw [hmapC]
@@ -2565,7 +2565,7 @@ theorem HasSuppConvData.stage_root_tail
         hExpSrc').symm
     rw [hchiL]
     exact (c2RadiusNormalBallChart (I := I) Yl x0).hom.map_source hExpSrc
-  exact ⟨hchartReadout, hrootBall, hmapDecode, htarget⟩
+  exact ⟨hchartDiagonalInverseCoordinates, hrootBall, hmapDecode, htarget⟩
 
 theorem HasSuppConvData.stage_jet_of_root
     (inp : MetricCompactnessInputs (I := I) X)
@@ -2585,7 +2585,7 @@ theorem HasSuppConvData.stage_jet_of_root
     (Phi3 : Nat → Nat → Nat → E → E)
     (hroot : HasStageRootCube inp P L hr phi hphi C1 alpha e
       W PhiInf rootRho Phi3)
-    (hread : HasStageRootReadout inp P L hr phi hphi C0 alpha Phi3)
+    (hread : HasStageRootChartEquation inp P L hr phi hphi C0 alpha Phi3)
     (R : Real) (hRr : R < r)
     (p : Nat) (eps : Real) (heps : 0 < eps) :
     ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ z ∈ C0 alpha,
@@ -2648,7 +2648,7 @@ theorem HasSuppConvData.stage_jet_of_root
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
     z ∈ interior (C0 alpha) ∧
       chiK.symm z ∈ Lphi.hatSourceBall inp.decay P R k
-  dsimp only [HasStageRootReadout] at hread
+  dsimp only [HasStageRootChartEquation] at hread
   obtain ⟨Nread, hreadTail⟩ := hread
   have hEq : ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ z ∈ C0 alpha,
       S k z → Psi k l =ᶠ[nhds z] Phi3 l k l := by
@@ -2914,7 +2914,7 @@ theorem HasSuppConvData.stage_jet_tail
     (hroot : ∀ alpha, HasStageRootCube inp P L hr phi hphi C1 alpha
       (e alpha) (W alpha) (PhiInf alpha) (rootRho alpha) (Phi3 alpha))
     (hread : ∀ alpha,
-      HasStageRootReadout inp P L hr phi hphi C0 alpha (Phi3 alpha))
+      HasStageRootChartEquation inp P L hr phi hphi C0 alpha (Phi3 alpha))
     (R : Real) (hRr : R < r)
     (p : Nat) (eps : Real) (heps : 0 < eps) :
     HasStageJetTail inp P L hr phi hphi C0 R p eps := by
@@ -3060,7 +3060,7 @@ theorem HasSuppConvData.exists_stage_tail
       (∀ alpha, HasStageRootCube inp P L hr phi hphi C1 alpha
         (e alpha) (W alpha) (PhiInf alpha) (rootRho alpha) (Phi3 alpha)) ∧
       (∀ alpha,
-        HasStageRootReadout inp P L hr phi hphi C0 alpha (Phi3 alpha)) ∧
+        HasStageRootChartEquation inp P L hr phi hphi C0 alpha (Phi3 alpha)) ∧
       ∀ R, R < r → ∀ p eps, 0 < eps →
         HasStageJetTail inp P L hr phi hphi C0 R p eps := by
   classical
@@ -3080,7 +3080,7 @@ theorem HasSuppConvData.exists_stage_tail
       Jinf Jbarinf alpha (hpair alpha) (by simpa using hC1q alpha)
   choose W PhiInf rootRho Phi3 hroot using hcube
   have hread : ∀ alpha : LiveSlot L inp.pack r,
-      HasStageRootReadout inp P L hr phi hphi C0 alpha
+      HasStageRootChartEquation inp P L hr phi hphi C0 alpha
         (Phi3 alpha) := by
     intro alpha
     have hdiag : ∀ n, IsNormalDiag (I := I) (X.obj (Lphi.φ n))

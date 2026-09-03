@@ -112,7 +112,7 @@ private theorem integrable_riemannianFiberNormSq_mul
     (continuous_riemannianFiberNormSq g r₂ s₂ T)).integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 
-private theorem young_arm_split
+private theorem young_term_split
     (wi wl CS CT ΛS ΛT NS NT Iφp Iψq : ℝ)
     (hwi_nn : 0 ≤ wi) (hwl_nn : 0 ≤ wl) (hwsum : wi + wl = 1)
     (hCS : 0 ≤ CS) (hCT : 0 ≤ CT) (hΛS : 0 ≤ ΛS) (hΛT : 0 ≤ ΛT)
@@ -148,7 +148,7 @@ private theorem young_arm_split
     _ ≤ CS * CT * (wi * (ΛT ^ 2 * NS ^ 2) + wl * (ΛS ^ 2 * NT ^ 2)) :=
         mul_le_mul_of_nonneg_left hyoung (by positivity)
 
-theorem exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_le
+theorem exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_le
     (g : SmoothRiemannianMetric I M) (s₁ s₂ k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : Integral.L2.SmoothCcTensor g 0 s₁) (T : Integral.L2.SmoothCcTensor g 0 s₂)
@@ -412,7 +412,7 @@ theorem exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_le
           rw [hIφp]; exact integral_nonneg (fun x => Real.rpow_nonneg (hSj_nn i x) _)
         have hIψq_nn : 0 ≤ Iψq := by
           rw [hIψq]; exact integral_nonneg (fun x => Real.rpow_nonneg (hTj_nn l x) _)
-        have hys := young_arm_split wi wl (CSf m) (CTf m) ΛS ΛT
+        have hys := young_term_split wi wl (CSf m) (CTf m) ΛS ΛT
           ‖DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad (I := I) g 0 s₁ m S‖
           ‖DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad (I := I) g 0 s₂ m T‖
           Iφp Iψq hwi_nn hwl_nn hwsum (hCSf_nn m) (hCTf_nn m) hΛS hΛT
@@ -554,7 +554,7 @@ theorem exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_le
     rw [hc]
     ring
 
-theorem exists_integrated_diagonalProductGrid_twoArm_pair_le
+theorem exists_integrated_diagonalProductGrid_twoTerm_pair_le
     (g : SmoothRiemannianMetric I M) (s₁ s₂ k j : ℕ) :
     ∃ Cd : ℝ, 0 ≤ Cd ∧
       ∀ (U W : Integral.L2.SmoothCcTensor g 0 s₁)
@@ -589,7 +589,7 @@ theorem exists_integrated_diagonalProductGrid_twoArm_pair_le
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ
   obtain ⟨C, hC0, hsym⟩ :=
-    exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_le (I := I) (M := M) g s₁ s₂ k
+    exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_le (I := I) (M := M) g s₁ s₂ k
   refine ⟨2 * C, by positivity, ?_⟩
   intro U W T₁ T₂ Cmid ΛW ΛT hCmid hΛW hΛT hWsup hT₁sup hT₂sup hgrid
   set Wj : ℕ → M → ℝ := fun a x =>
@@ -751,7 +751,7 @@ theorem exists_integrated_diagonalProductGrid_twoArm_pair_le
           positivity
         linarith
 
-private theorem young_arm_split_scaled
+private theorem young_term_split_scaled
     (wi wl CS CT ΛS ΛT NS NT Iφp Iψq t : ℝ) (k : ℕ)
     (hwi_pos : 0 < wi) (hwl_pos : 0 < wl) (hwsum : wi + wl = 1) (hwk : wi / wl ≤ (k : ℝ))
     (hCS : 0 ≤ CS) (hCT : 0 ≤ CT) (hΛS : 0 ≤ ΛS) (hΛT : 0 ≤ ΛT)
@@ -816,7 +816,7 @@ private theorem young_arm_split_scaled
     _ ≤ CS * CT * (t * X + (1 / t) ^ k * Y) :=
         mul_le_mul_of_nonneg_left hXY (by positivity)
 
-theorem exists_integrated_iteratedCovGrad_antiDiagGrid_topArm_scaled_le
+theorem exists_integrated_iteratedCovGrad_antiDiagGrid_topTerm_scaled_le
     (g : SmoothRiemannianMetric I M) (s₁ s₂ k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : Integral.L2.SmoothCcTensor g 0 s₁) (T : Integral.L2.SmoothCcTensor g 0 s₂)
@@ -1047,7 +1047,7 @@ theorem exists_integrated_iteratedCovGrad_antiDiagGrid_topArm_scaled_le
         rw [hIφp]; exact integral_nonneg (fun x => Real.rpow_nonneg (hSj_nn i x) _)
       have hIψq_nn : 0 ≤ Iψq := by
         rw [hIψq]; exact integral_nonneg (fun x => Real.rpow_nonneg (hTj_nn l x) _)
-      have hys := young_arm_split_scaled wi wl CS CT ΛS ΛT NS NT Iφp Iψq tt k
+      have hys := young_term_split_scaled wi wl CS CT ΛS ΛT NS NT Iφp Iψq tt k
         hwi_pos hwl_pos hwsum hwk hCS_nn hCT_nn hΛS hΛT
         (by rw [hNSdef]; exact norm_nonneg _) (by rw [hNTdef]; exact norm_nonneg _)
         hIφp_nn hIψq_nn htt0 htt1 hSe hTe

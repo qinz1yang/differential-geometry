@@ -931,7 +931,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
             (aInf alpha gamma) := by
           refine hraw.congr (hUopen alpha) (fun k z hz => ?_) (fun z _hz => ?_)
           · simpa only [gluingAtomChart, gluingAtomOn, c2_radius_normal_ball_chart_apply, hslot] using
-              (gluing_atom_readout (I := I) (X.obj (Lphi.φ k)) (beta k)
+              (gluingAtom_expMapDiffeo_apply (I := I) (X.obj (Lphi.φ k)) (beta k)
                 (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
                 (L.lamInf (gamma : Nat))
                 (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))

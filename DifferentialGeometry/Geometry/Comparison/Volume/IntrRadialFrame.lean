@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.IntrinsicSmooth
+import DifferentialGeometry.Geometry.Exponential.IntrinsicGeodesicSmoothness
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 open DifferentialGeometry.Geometry.Curvature

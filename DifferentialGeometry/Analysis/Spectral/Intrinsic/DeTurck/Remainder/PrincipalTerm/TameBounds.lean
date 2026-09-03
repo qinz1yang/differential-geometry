@@ -59,7 +59,7 @@ section BalLadder
 variable (g₀ : SmoothRiemannianMetric I M)
 
 
-lemma DeTurckRemainderPrincipalArm.grid_core (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
+lemma DeTurckRemainderPrincipalTerm.grid_core (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (T₀ : SmoothCcTensor g₀ 0 2)
     (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀)
@@ -402,13 +402,13 @@ section BalLadder
 variable (g₀ : SmoothRiemannianMetric I M)
 
 
-lemma DeTurckRemainderPrincipalArm.smoothCcToTensorHs_norm_natCast_congr (g₀ : SmoothRiemannianMetric I M)
+lemma DeTurckRemainderPrincipalTerm.smoothCcToTensorHs_norm_natCast_congr (g₀ : SmoothRiemannianMetric I M)
     (T₀ : SmoothCcTensor g₀ 0 2) {k k' : ℕ} (h : k = k') :
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℕ) : ℝ) T₀‖ =
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k' : ℕ) : ℝ) T₀‖ := by
   subst h; rfl
 
-lemma DeTurckRemainderPrincipalArm.principal_block (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
+lemma DeTurckRemainderPrincipalTerm.principal_block (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (Kc : ℕ → ℝ) (hKc_nn : ∀ i, 0 ≤ Kc i) (εa : ℝ) (hεa_nn : 0 ≤ εa) :
     ∃ CB : ℕ → ℕ → ℝ, (∀ q j, 0 ≤ CB q j) ∧
@@ -443,7 +443,7 @@ lemma DeTurckRemainderPrincipalArm.principal_block (g₀ : SmoothRiemannianMetri
           ((∑ l ∈ Finset.range (j + 1), (CDS l) ^ 2) * (1 + R₀) ^ 2))),
     fun q j => Real.sqrt_nonneg _, ?_⟩
   intro C₀ T₀ hball henv q j
-  refine DeTurckRemainderPrincipalArm.grid_core (I := I) (M := M) g₀ a ha_super hR₀ T₀ hball q j 0 2
+  refine DeTurckRemainderPrincipalTerm.grid_core (I := I) (M := M) g₀ a ha_super hR₀ T₀ hball q j 0 2
     (Module.finrank ℝ E / 2 + 3) (by omega) (by omega) (by omega) (by omega)
     (iteratedCovGrad (I := I) g₀ 0 2 j
       (operatorFieldApply (I := I) (M := M) g₀ 2 2
@@ -461,17 +461,17 @@ lemma DeTurckRemainderPrincipalArm.principal_block (g₀ : SmoothRiemannianMetri
     (fun l => ?_) (fun l x => ?_)
     (diagonalGridGrowthFactor (E := E) j) (operatorFieldApplicationGdiag_nonneg (E := E) j)
     (fun x => ?_)
-  · rw [DeTurckRemainderPrincipalArm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀ (show 0 + i + 2 * q + 2 = i + 2 * q + 2
+  · rw [DeTurckRemainderPrincipalTerm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀ (show 0 + i + 2 * q + 2 = i + 2 * q + 2
       from by omega)]
     exact hCC C₀ T₀ henv i q
   · have h := hCCS C₀ T₀ henv i q x
-    rw [DeTurckRemainderPrincipalArm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
+    rw [DeTurckRemainderPrincipalTerm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
       (show 0 + i + (Module.finrank ℝ E / 2 + 2) + 2 * q + 1 =
         i + (Module.finrank ℝ E / 2 + 2) + 2 * q + 1 from by omega)]
     exact h
   · exact hCDL T₀ l
   · have h := hCDS T₀ l x
-    rw [DeTurckRemainderPrincipalArm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
+    rw [DeTurckRemainderPrincipalTerm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
       (show l + (Module.finrank ℝ E / 2 + 3) = l + (Module.finrank ℝ E / 2 + 2) + 1
         from by omega)]
     exact h
@@ -479,7 +479,7 @@ lemma DeTurckRemainderPrincipalArm.principal_block (g₀ : SmoothRiemannianMetri
       (oneMinusConnLapSmoothIter (I := I) g₀ 2 2 q C₀)
       (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀) j x
 
-lemma DeTurckRemainderPrincipalArm.cometricDoubleTraceField_jet_bound (g₀ : SmoothRiemannianMetric I M) :
+lemma DeTurckRemainderPrincipalTerm.cometricDoubleTraceField_jet_bound (g₀ : SmoothRiemannianMetric I M) :
     ∃ CDT : ℝ, 0 ≤ CDT ∧ ∀ (Y : SmoothCcTensor g₀ 0 (2 + 2)) (j : ℕ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 0 2 j
@@ -637,7 +637,7 @@ private lemma convolution_grid_mono {A B : ℕ → ℝ} (hA : ∀ i, 0 ≤ A i) 
     (fun y hy => Finset.mem_range.mpr (by have := Finset.mem_range.mp hy; omega))
     (fun β _ _ => hB β)
 
-lemma DeTurckRemainderPrincipalArm.mixed_blocks (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
+lemma DeTurckRemainderPrincipalTerm.mixed_blocks (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (Kc : ℕ → ℝ) (hKc_nn : ∀ i, 0 ≤ Kc i) (εa : ℝ) (hεa_nn : 0 ≤ εa) :
     ∃ CB : ℕ → ℕ → ℝ, (∀ q j, 0 ≤ CB q j) ∧
@@ -678,7 +678,7 @@ lemma DeTurckRemainderPrincipalArm.mixed_blocks (g₀ : SmoothRiemannianMetric I
   obtain ⟨CJ, hCJ_nn, hCJ⟩ := exists_iteratedCovGrad_le_const_mul_tensorHs (I := I) (M := M) g₀
   obtain ⟨CDS0, hCDS0_nn, hCDS0⟩ := riemannianFiberNormSq_iteratedCovGrad_le_sq_tensorHs (I := I)
     (M := M) g₀
-  obtain ⟨CDT, hCDT_nn, hCDT⟩ := DeTurckRemainderPrincipalArm.cometricDoubleTraceField_jet_bound (I := I) (M := M) g₀
+  obtain ⟨CDT, hCDT_nn, hCDT⟩ := DeTurckRemainderPrincipalTerm.cometricDoubleTraceField_jet_bound (I := I) (M := M) g₀
   set n : ℕ := Module.finrank ℝ E with hn_def
   set G : ℕ → ℝ := fun j => diagonalGridGrowthFactor (E := E) j * CDT *
     ((j + 1 : ℕ) * (diagonalGridGrowthFactor (E := E) j * n)) with hG_def
@@ -711,7 +711,7 @@ lemma DeTurckRemainderPrincipalArm.mixed_blocks (g₀ : SmoothRiemannianMetric I
             ((∑ l ∈ Finset.range (j + 1), (CDS0 (1 + l)) ^ 2) * (1 + R₀) ^ 2))) *
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((j + 2 * q + 3 : ℕ) : ℝ) T₀‖ := by
     intro sz Z hpt
-    refine DeTurckRemainderPrincipalArm.grid_core (I := I) (M := M) g₀ a ha_super hR₀ T₀ hball q j 1 1
+    refine DeTurckRemainderPrincipalTerm.grid_core (I := I) (M := M) g₀ a ha_super hR₀ T₀ hball q j 1 1
       (Module.finrank ℝ E / 2 + 2) (by omega) (by omega) (by omega) (by omega)
       Z (fun i => 2 + (1 + i))
       (fun i => iteratedCovGrad (I := I) g₀ 2 2 (1 + i) Ĉq)
@@ -724,17 +724,17 @@ lemma DeTurckRemainderPrincipalArm.mixed_blocks (g₀ : SmoothRiemannianMetric I
       (fun l => hCJ_nn (1 + l))
       (fun l => ?_) (fun l x => ?_)
       (G j) (hG_nn j) hpt
-    · rw [DeTurckRemainderPrincipalArm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
+    · rw [DeTurckRemainderPrincipalTerm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
         (show 1 + i + 2 * q + 2 = (1 + i) + 2 * q + 2 from by omega)]
       exact hCC C₀ T₀ henv (1 + i) q
-    · rw [DeTurckRemainderPrincipalArm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
+    · rw [DeTurckRemainderPrincipalTerm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
         (show 1 + i + (Module.finrank ℝ E / 2 + 2) + 2 * q + 1 =
           (1 + i) + (Module.finrank ℝ E / 2 + 2) + 2 * q + 1 from by omega)]
       exact hCCS C₀ T₀ henv (1 + i) q x
-    · rw [DeTurckRemainderPrincipalArm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
+    · rw [DeTurckRemainderPrincipalTerm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
         (show (l + 1 : ℕ) = 1 + l from by omega)]
       exact hCJ (1 + l) T₀
-    · rw [DeTurckRemainderPrincipalArm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
+    · rw [DeTurckRemainderPrincipalTerm.smoothCcToTensorHs_norm_natCast_congr (I := I) (M := M) g₀ T₀
         (show l + (Module.finrank ℝ E / 2 + 2) =
           (1 + l) + (Module.finrank ℝ E / 2 + 1) from by omega)]
       exact hCDS0 T₀ (1 + l) x
@@ -982,7 +982,7 @@ private lemma two_mul_add_one_natCast_high_order (p : ℕ) :
   push_cast
   ring
 
-lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_sobolevHs_bound_of_high_order
+lemma DeTurckRemainderPrincipalTerm.connLapIterate_operatorFieldApplication_sobolevHs_bound_of_high_order
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (Kc : ℕ → ℝ) (hKc_nn : ∀ i, 0 ≤ Kc i) (εa : ℝ) (hεa_nn : 0 ≤ εa)
@@ -1294,7 +1294,7 @@ section BalLadder
 variable (g₀ : SmoothRiemannianMetric I M)
 
 
-lemma DeTurckRemainderPrincipalArm.slotExtend_norm_bound (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
+lemma DeTurckRemainderPrincipalTerm.slotExtend_norm_bound (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g₀ r s) :
     ‖slotExtend (I := I) (M := M) g₀ r s Φ‖ ≤
       Real.sqrt (Module.finrank ℝ E) * ‖Φ‖ := by
@@ -1343,7 +1343,7 @@ lemma exists_connLapIterate_operatorFieldApplication_sobolevHs_bound (g₀ : Smo
   obtain ⟨CJ, hCJ_nn, hCJ⟩ := exists_iteratedCovGrad_le_const_mul_tensorHs (I := I) (M := M) g₀
   obtain ⟨CDS0, hCDS0_nn, hCDS0⟩ := riemannianFiberNormSq_iteratedCovGrad_le_sq_tensorHs (I := I)
     (M := M) g₀
-  obtain ⟨c22, hc22_nn, hc22⟩ := DeTurckRemainderPrincipalArm.connLapIterate_jet_bound (I := I) (M := M) g₀ 2 2
+  obtain ⟨c22, hc22_nn, hc22⟩ := DeTurckRemainderPrincipalTerm.connLapIterate_jet_bound (I := I) (M := M) g₀ 2 2
   have hgapfam := fun k : ℕ => exists_iteratedCovGrad_succ_le_tensorHs_add_mul_tensorHs (I := I)
                                  (M := M) g₀ k
   choose Cg hCg_nn hCg using hgapfam
@@ -1448,7 +1448,7 @@ lemma exists_connLapIterate_operatorFieldApplication_sobolevHs_bound (g₀ : Smo
               (CDS0 0 * R₀ * εa * Cg (2 * p + 1) +
               CDS0 0 * (1 + R₀) * KE1 p)) * fT (2 * p + 1) := by
           nlinarith only [htot, hBεa_nn, hrest_nn]
-  · exact DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_sobolevHs_bound_of_high_order
+  · exact DeTurckRemainderPrincipalTerm.connLapIterate_operatorFieldApplication_sobolevHs_bound_of_high_order
       (I := I) (M := M) (g₀ := g₀) (a := a) (ha_super := ha_super)
       (hR₀ := hR₀) (Kc := Kc) (hKc_nn := hKc_nn) (εa := εa)
       (hεa_nn := hεa_nn) (CCS := CCS) (hCCS_nn := hCCS_nn)
@@ -1506,7 +1506,7 @@ section BalLadder
 
 variable (g₀ : SmoothRiemannianMetric I M)
 
-lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_of_low_order
+lemma DeTurckRemainderPrincipalTerm.connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_of_low_order
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (Kc : ℕ → ℝ) (εa : ℝ) (hεa_nn : 0 ≤ εa)
     (CC : ℕ → ℕ → ℝ) (hCC_nn : ∀ γ q, 0 ≤ CC γ q)
@@ -1860,7 +1860,7 @@ private lemma sqrt_pair_composite_bound
   rw [hring]
   linarith
 
-lemma DeTurckRemainderPrincipalArm.high_order_pair_bound
+lemma DeTurckRemainderPrincipalTerm.high_order_pair_bound
     (x₀ x₁ B Bm εa u₂ u₃ f₁ f₂ f₃ R₀ KE1 KE2 CDS00 CDS01 sqrtN CC0 D c₁ c₂ : ℝ)
     (hx₀_nn : 0 ≤ x₀) (hx₁_nn : 0 ≤ x₁) (hBm_nn : 0 ≤ Bm)
     (hεa_nn : 0 ≤ εa) (hu₂_nn : 0 ≤ u₂) (hu₃_nn : 0 ≤ u₃)
@@ -1913,7 +1913,7 @@ private lemma connLapIterate_composed_bound
     _ ≤ (εa * u + KE * (1 + f)) * Bm := mul_le_mul_of_nonneg_right hφ' hBm_nn
     _ = Bm * εa * u + Bm * (KE * (1 + f)) := by ring
 
-lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_of_high_order
+lemma DeTurckRemainderPrincipalTerm.connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_of_high_order
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (Kc : ℕ → ℝ) (hKc_nn : ∀ i, 0 ≤ Kc i) (εa : ℝ) (hεa_nn : 0 ≤ εa)
@@ -2238,7 +2238,7 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGr
         (mul_nonneg (hCDS0_nn 1) (hfT_nn _)) hdsup
       have hse : ‖slotExtend (I := I) (M := M) g₀ 2 2 Φp‖ ≤
           Real.sqrt n * ‖Φp‖ := by
-        simpa [hn_def] using DeTurckRemainderPrincipalArm.slotExtend_norm_bound (I := I) (M := M) g₀ 2 2 Φp
+        simpa [hn_def] using DeTurckRemainderPrincipalTerm.slotExtend_norm_bound (I := I) (M := M) g₀ 2 2 Φp
       have hΦpl2 : ‖Φp‖ ≤ CC 0 p * (1 + fT (0 + 2 * p + 2)) := by
         have h := hCC C₀ T₀ henv 0 p
         rw [show iteratedCovGrad (I := I) g₀ 2 2 0 Φp = Φp from
@@ -2313,7 +2313,7 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGr
     have ha3 : (0:ℝ) ≤ Real.sqrt n * CCS 0 p * CJ 1 :=
       mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) (hCCS_nn 0 p)) (hCJ_nn 1)
     linarith
-  have hfinal := DeTurckRemainderPrincipalArm.high_order_pair_bound
+  have hfinal := DeTurckRemainderPrincipalTerm.high_order_pair_bound
     (x₀ := ‖Xp‖) (x₁ := ‖covGrad (I := I) (M := M) g₀ 0 2 Xp‖)
     (B := B) (Bm := Bm) (εa := εa) (u₂ := u₂) (u₃ := u₃)
     (f₁ := ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * p + 1 : ℕ) : ℝ) T₀‖)
@@ -2462,7 +2462,7 @@ lemma exists_connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_odd
   obtain ⟨CJ, hCJ_nn, hCJ⟩ := exists_iteratedCovGrad_le_const_mul_tensorHs (I := I) (M := M) g₀
   obtain ⟨CDS0, hCDS0_nn, hCDS0⟩ := riemannianFiberNormSq_iteratedCovGrad_le_sq_tensorHs (I := I)
     (M := M) g₀
-  obtain ⟨c22, hc22_nn, hc22⟩ := DeTurckRemainderPrincipalArm.connLapIterate_jet_bound (I := I) (M := M) g₀ 2 2
+  obtain ⟨c22, hc22_nn, hc22⟩ := DeTurckRemainderPrincipalTerm.connLapIterate_jet_bound (I := I) (M := M) g₀ 2 2
   have hgapfam := fun k : ℕ =>
     exists_iteratedCovGrad_l2NormSq_le_smoothCcToTensorHs_succ_add_lower
       (I := I) (M := M) g₀ k
@@ -2523,7 +2523,7 @@ lemma exists_connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_odd
     exact add_nonneg h1 (add_nonneg (add_nonneg h2 h3) h4)
   intro C₀ T₀ B hB hball hdata henv p
   by_cases hcase : w + 2 * p + 2 ≤ a + 2
-  · exact DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_of_low_order
+  · exact DeTurckRemainderPrincipalTerm.connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_of_low_order
       (I := I) (M := M) (g₀ := g₀) (a := a) (hR₀ := hR₀)
       (Kc := Kc) (εa := εa) (hεa_nn := hεa_nn)
       (CC := CC) (hCC_nn := hCC_nn) (CCS := CCS) (hCCS_nn := hCCS_nn)
@@ -2533,7 +2533,7 @@ lemma exists_connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_odd
       (KE1 := KE1) (KE2 := KE2) (hKE1_nn := hKE1_nn) (hKE2_nn := hKE2_nn)
       (C₀ := C₀) (T₀ := T₀) (B := B) (hB := hB)
       (hball := hball) (henv := henv) (p := p) (hcase := hcase)
-  · exact DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_of_high_order
+  · exact DeTurckRemainderPrincipalTerm.connLapIterate_operatorFieldApplication_covGrad_sobolevHs_bound_of_high_order
       (I := I) (M := M) (g₀ := g₀) (a := a) (ha_super := ha_super) (hR₀ := hR₀)
       (Kc := Kc) (hKc_nn := hKc_nn) (εa := εa) (hεa_nn := hεa_nn)
       (CC := CC) (hCC_nn := hCC_nn) (hCC := hCC)
@@ -2645,11 +2645,11 @@ lemma exists_deTurckRemainder_connLapIterate_sobolevHs_bound (g₀ : SmoothRiema
             KZ q m * ‖smoothCcToTensorHs (I := I) (M := M) g₀
               ((2 * m + 2 * q + 4 : ℕ) : ℝ) T₀‖ := by
   classical
-  obtain ⟨CB1, hCB1_nn, hCB1⟩ := DeTurckRemainderPrincipalArm.principal_block (I := I) (M := M) g₀ a ha_super hR₀
+  obtain ⟨CB1, hCB1_nn, hCB1⟩ := DeTurckRemainderPrincipalTerm.principal_block (I := I) (M := M) g₀ a ha_super hR₀
     Kc hKc_nn εa hεa_nn
-  obtain ⟨CB23, hCB23_nn, hCB23⟩ := DeTurckRemainderPrincipalArm.mixed_blocks (I := I) (M := M) g₀ a ha_super hR₀
+  obtain ⟨CB23, hCB23_nn, hCB23⟩ := DeTurckRemainderPrincipalTerm.mixed_blocks (I := I) (M := M) g₀ a ha_super hR₀
     Kc hKc_nn εa hεa_nn
-  obtain ⟨c02, hc02_nn, hc02⟩ := DeTurckRemainderPrincipalArm.connLapIterate_jet_bound (I := I) (M := M) g₀ 0 2
+  obtain ⟨c02, hc02_nn, hc02⟩ := DeTurckRemainderPrincipalTerm.connLapIterate_jet_bound (I := I) (M := M) g₀ 0 2
   set CBtot : ℕ → ℕ → ℝ := fun q j => CB1 q j + 2 * CB23 q j with hCBtot_def
   have hCBtot_nn : ∀ q j, 0 ≤ CBtot q j := fun q j => by
     have := hCB1_nn q j
@@ -2966,7 +2966,7 @@ theorem smoothCcToTensorHs_rawTensorConnLapSmooth_le
     nlinarith [mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hbase hwpos) hc2]
   exact le_of_sq_le_sq hsq hnn
 
-theorem exists_smoothCcToTensorHs_deTurckPrincipalCometricArm_opNorm_le
+theorem exists_smoothCcToTensorHs_deTurckPrincipalCometricTerm_opNorm_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -2977,16 +2977,16 @@ theorem exists_smoothCcToTensorHs_deTurckPrincipalCometricArm_opNorm_le
       ∀ (m : ℕ) (T₀ : SmoothCcTensor g₀ 0 2)
         (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
-            (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+            (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
               (tensorSectionRealizeMetric (I := I) g₀ T₀
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                 (hδ_fibre T₀ hball)) T₀)‖ ≤
-          deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+          deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 2) T₀‖ +
             Clower m * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 1) T₀‖ := by
   classical
   obtain ⟨Clower, hClower_nn, hbound⟩ :=
-    exists_smoothCcToTensorHs_deTurckPrincipalCometricArm_principal_le
+    exists_smoothCcToTensorHs_deTurckPrincipalCometricTerm_principal_le
       (I := I) (M := M) g₀ a ha_super hR₀ hδ_le hδ_fibre
   refine ⟨Clower, hClower_nn, fun m T₀ hball => ?_⟩
   rcases isEmpty_or_nonempty M with hM | hM
@@ -3008,17 +3008,17 @@ theorem exists_smoothCcToTensorHs_deTurckPrincipalCometricArm_opNorm_le
       delta_nonneg_of_ball_gFibreOpBound (I := I) (M := M) g₀ a hR₀ hδ_fibre
     have hδ_lt1 : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)
     have hκ_nn : 0 ≤ δ / (1 - δ) := div_nonneg hδ_nn (by linarith)
-    have hCEκ_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) :=
-      mul_nonneg (de_turck_arm_fibre_const_nonneg _) hκ_nn
+    have hCEκ_nn : 0 ≤ deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) :=
+      mul_nonneg (de_turck_term_fibre_const_nonneg _) hκ_nn
     refine le_trans (hbound m T₀ hball) ?_
     have hshift : ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ ≤
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 2) T₀‖ :=
       smoothCcToTensorHs_rawTensorConnLapSmooth_le (I := I) (M := M) g₀ (m : ℝ) T₀
-    have htop : deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+    have htop : deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
             (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ ≤
-        deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+        deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 2) T₀‖ :=
       mul_le_mul_of_nonneg_left hshift hCEκ_nn
     linarith
@@ -3254,47 +3254,47 @@ theorem exists_smoothCcToTensorHs_real_le_of_iteratedCovGrad_jet_window
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a + k - 1 + 1 : ℕ) : ℝ) V‖ := by
           ring
 
-def deTurckPrincipalArmContractionThreshold (n : ℕ) : ℝ :=
-  1 / (1 + 2 * (deTurckArmFibreConst n + deTurckArmFibreConst n ^ 3))
+def deTurckPrincipalTermContractionThreshold (n : ℕ) : ℝ :=
+  1 / (1 + 2 * (deTurckTermFibreConst n + deTurckTermFibreConst n ^ 3))
 
-lemma de_turck_principal_arm_contraction_threshold_le_contraction_threshold {n : ℕ} (hn : 1 ≤ n) :
-    deTurckPrincipalArmContractionThreshold n ≤ deTurckContractionThreshold n := by
-  have hC := one_le_de_turck_arm_fibre_const hn
-  unfold deTurckPrincipalArmContractionThreshold deTurckContractionThreshold
-  have hC3 : 0 ≤ deTurckArmFibreConst n ^ 3 := by positivity
+lemma de_turck_principal_term_contraction_threshold_le_contraction_threshold {n : ℕ} (hn : 1 ≤ n) :
+    deTurckPrincipalTermContractionThreshold n ≤ deTurckContractionThreshold n := by
+  have hC := one_le_de_turck_term_fibre_const hn
+  unfold deTurckPrincipalTermContractionThreshold deTurckContractionThreshold
+  have hC3 : 0 ≤ deTurckTermFibreConst n ^ 3 := by positivity
   apply one_div_le_one_div_of_le (by linarith)
   linarith
 
-lemma de_turck_principal_arm_contraction_threshold_le_third {n : ℕ} (hn : 1 ≤ n) :
-    deTurckPrincipalArmContractionThreshold n ≤ 1 / 3 :=
-  le_trans (de_turck_principal_arm_contraction_threshold_le_contraction_threshold hn)
+lemma de_turck_principal_term_contraction_threshold_le_third {n : ℕ} (hn : 1 ≤ n) :
+    deTurckPrincipalTermContractionThreshold n ≤ 1 / 3 :=
+  le_trans (de_turck_principal_term_contraction_threshold_le_contraction_threshold hn)
     (de_turck_contraction_threshold_le_third hn)
 
-lemma de_turck_principal_arm_contraction_threshold_lt_one {n : ℕ} (hn : 1 ≤ n) :
-    deTurckPrincipalArmContractionThreshold n < 1 :=
-  lt_of_le_of_lt (de_turck_principal_arm_contraction_threshold_le_third hn)
+lemma de_turck_principal_term_contraction_threshold_lt_one {n : ℕ} (hn : 1 ≤ n) :
+    deTurckPrincipalTermContractionThreshold n < 1 :=
+  lt_of_le_of_lt (de_turck_principal_term_contraction_threshold_le_third hn)
     (by norm_num : (1 : ℝ) / 3 < 1)
 
-lemma de_turck_principal_arm_contraction_threshold_le_third_of_ne_zero (n : ℕ) [NeZero n] :
-    deTurckPrincipalArmContractionThreshold n ≤ 1 / 3 :=
-  de_turck_principal_arm_contraction_threshold_le_third (Nat.one_le_iff_ne_zero.mpr (NeZero.ne n))
+lemma de_turck_principal_term_contraction_threshold_le_third_of_ne_zero (n : ℕ) [NeZero n] :
+    deTurckPrincipalTermContractionThreshold n ≤ 1 / 3 :=
+  de_turck_principal_term_contraction_threshold_le_third (Nat.one_le_iff_ne_zero.mpr (NeZero.ne n))
 
-lemma de_turck_principal_arm_contraction_threshold_lt_one_of_ne_zero (n : ℕ) [NeZero n] :
-    deTurckPrincipalArmContractionThreshold n < 1 :=
-  de_turck_principal_arm_contraction_threshold_lt_one (Nat.one_le_iff_ne_zero.mpr (NeZero.ne n))
+lemma de_turck_principal_term_contraction_threshold_lt_one_of_ne_zero (n : ℕ) [NeZero n] :
+    deTurckPrincipalTermContractionThreshold n < 1 :=
+  de_turck_principal_term_contraction_threshold_lt_one (Nat.one_le_iff_ne_zero.mpr (NeZero.ne n))
 
-lemma de_turck_arm_fibre_const_cube_mul_div_le {n : ℕ} (hn : 1 ≤ n) {δ : ℝ}
-    (hδ_le : δ ≤ deTurckPrincipalArmContractionThreshold n) :
-    deTurckArmFibreConst n ^ 3 * (δ / (1 - δ)) ≤
-      deTurckArmFibreConst n ^ 2 / (2 * (1 + deTurckArmFibreConst n ^ 2)) := by
-  have hC := one_le_de_turck_arm_fibre_const hn
-  set C := deTurckArmFibreConst n with hC_def
+lemma de_turck_term_fibre_const_cube_mul_div_le {n : ℕ} (hn : 1 ≤ n) {δ : ℝ}
+    (hδ_le : δ ≤ deTurckPrincipalTermContractionThreshold n) :
+    deTurckTermFibreConst n ^ 3 * (δ / (1 - δ)) ≤
+      deTurckTermFibreConst n ^ 2 / (2 * (1 + deTurckTermFibreConst n ^ 2)) := by
+  have hC := one_le_de_turck_term_fibre_const hn
+  set C := deTurckTermFibreConst n with hC_def
   set K : ℝ := C + C ^ 3 with hK_def
   have hC3_nn : (0 : ℝ) ≤ C ^ 3 := by positivity
   have hK1 : 1 ≤ K := by rw [hK_def]; linarith
   have hden : (0 : ℝ) < 1 + 2 * K := by linarith
-  have hthr_lt : deTurckPrincipalArmContractionThreshold n < 1 :=
-    de_turck_principal_arm_contraction_threshold_lt_one hn
+  have hthr_lt : deTurckPrincipalTermContractionThreshold n < 1 :=
+    de_turck_principal_term_contraction_threshold_lt_one hn
   have hδ_lt1 : δ < 1 := lt_of_le_of_lt hδ_le hthr_lt
   have h1δ_pos : (0 : ℝ) < 1 - δ := by linarith
   have hRHS_pos : (0 : ℝ) <
@@ -3322,21 +3322,21 @@ lemma de_turck_arm_fibre_const_cube_mul_div_le {n : ℕ} (hn : 1 ≤ n) {δ : �
       _ = C ^ 2 / (2 * (1 + C ^ 2)) := hkey
 
 lemma de_turck_budget_half_add_lt_one (n : ℕ) :
-    (1 / 2 : ℝ) + deTurckArmFibreConst n ^ 2 / (2 * (1 + deTurckArmFibreConst n ^ 2)) < 1 := by
-  have hC2 : (0 : ℝ) ≤ deTurckArmFibreConst n ^ 2 := sq_nonneg _
-  have hden : (0 : ℝ) < 2 * (1 + deTurckArmFibreConst n ^ 2) := by linarith
-  have hlt : deTurckArmFibreConst n ^ 2 / (2 * (1 + deTurckArmFibreConst n ^ 2)) <
+    (1 / 2 : ℝ) + deTurckTermFibreConst n ^ 2 / (2 * (1 + deTurckTermFibreConst n ^ 2)) < 1 := by
+  have hC2 : (0 : ℝ) ≤ deTurckTermFibreConst n ^ 2 := sq_nonneg _
+  have hden : (0 : ℝ) < 2 * (1 + deTurckTermFibreConst n ^ 2) := by linarith
+  have hlt : deTurckTermFibreConst n ^ 2 / (2 * (1 + deTurckTermFibreConst n ^ 2)) <
       1 / 2 := by
     rw [div_lt_div_iff₀ hden (by norm_num : (0:ℝ) < 2)]
     linarith
   linarith
 
-lemma de_turck_arm_fibre_const_cube_mul_div_le_thirty_two {n : ℕ} (hn : 1 ≤ n) {δ : ℝ}
+lemma de_turck_term_fibre_const_cube_mul_div_le_thirty_two {n : ℕ} (hn : 1 ≤ n) {δ : ℝ}
     (hδ_le : δ ≤ deTurckRemainderContractionThreshold n) :
-    32 * deTurckArmFibreConst n ^ 3 * (δ / (1 - δ)) ≤
-      32 * deTurckArmFibreConst n ^ 2 / (2 * (1 + 32 * deTurckArmFibreConst n ^ 2)) := by
-  have hC := one_le_de_turck_arm_fibre_const hn
-  set C := deTurckArmFibreConst n with hC_def
+    32 * deTurckTermFibreConst n ^ 3 * (δ / (1 - δ)) ≤
+      32 * deTurckTermFibreConst n ^ 2 / (2 * (1 + 32 * deTurckTermFibreConst n ^ 2)) := by
+  have hC := one_le_de_turck_term_fibre_const hn
+  set C := deTurckTermFibreConst n with hC_def
   set K : ℝ := C + 32 * C ^ 3 with hK_def
   have hC3_nn : (0 : ℝ) ≤ C ^ 3 := by positivity
   have hK1 : 1 ≤ K := by rw [hK_def]; nlinarith
@@ -3369,12 +3369,12 @@ lemma de_turck_arm_fibre_const_cube_mul_div_le_thirty_two {n : ℕ} (hn : 1 ≤ 
       _ = 32 * C ^ 2 / (2 * (1 + 32 * C ^ 2)) := hkey
 
 lemma de_turck_budget_half_add_thirty_two_lt_one (n : ℕ) :
-    (1 / 2 : ℝ) + 32 * deTurckArmFibreConst n ^ 2 /
-        (2 * (1 + 32 * deTurckArmFibreConst n ^ 2)) < 1 := by
-  have hC2 : (0 : ℝ) ≤ 32 * deTurckArmFibreConst n ^ 2 := by positivity
-  have hden : (0 : ℝ) < 2 * (1 + 32 * deTurckArmFibreConst n ^ 2) := by linarith
-  have hlt : 32 * deTurckArmFibreConst n ^ 2 /
-      (2 * (1 + 32 * deTurckArmFibreConst n ^ 2)) < 1 / 2 := by
+    (1 / 2 : ℝ) + 32 * deTurckTermFibreConst n ^ 2 /
+        (2 * (1 + 32 * deTurckTermFibreConst n ^ 2)) < 1 := by
+  have hC2 : (0 : ℝ) ≤ 32 * deTurckTermFibreConst n ^ 2 := by positivity
+  have hden : (0 : ℝ) < 2 * (1 + 32 * deTurckTermFibreConst n ^ 2) := by linarith
+  have hlt : 32 * deTurckTermFibreConst n ^ 2 /
+      (2 * (1 + 32 * deTurckTermFibreConst n ^ 2)) < 1 / 2 := by
     rw [div_lt_div_iff₀ hden (by norm_num : (0:ℝ) < 2)]
     linarith
   linarith
@@ -4377,11 +4377,11 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
           reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)
             + reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)
             - ((ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
                 - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)
               + (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
@@ -4389,18 +4389,18 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
         rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₁,
           deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
           reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _
-            (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA),
+            (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA),
           reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _
-            (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)]
+            (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)]
         abel
       have hreiA := norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2
         (traceHessianCoeff (I := I) (M := M) g₀ g₁
           - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-        (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA) i
+        (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA) i
       have hreiB := norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2
         (traceHessianCoeff (I := I) (M := M) g₀ g₁
           - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-        (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT) i
+        (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT) i
       have hth := hCth g₁ i
       have hr := hCr g₁ i
       have htri : ‖iteratedCovGrad (I := I) g₀ 4 2 i
@@ -4410,12 +4410,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA))‖ +
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA))‖ +
           ‖iteratedCovGrad (I := I) g₀ 4 2 i
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT))‖ +
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT))‖ +
           2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
             (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
               - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)‖ := by
@@ -4425,12 +4425,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)) +
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)) +
             iteratedCovGrad (I := I) g₀ 4 2 i
               (reindexCoeffGen (I := I) (M := M) g₀ 4 2
                 (traceHessianCoeff (I := I) (M := M) g₀ g₁
                   - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-                (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)))
+                (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)))
           (iteratedCovGrad (I := I) g₀ 4 2 i
             (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
               - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀) +
@@ -4442,12 +4442,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)))
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)))
           (iteratedCovGrad (I := I) g₀ 4 2 i
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)))
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)))
         have h3 := norm_add_le
           (iteratedCovGrad (I := I) g₀ 4 2 i
             (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
@@ -4463,12 +4463,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA))‖ ^ 2 +
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA))‖ ^ 2 +
           3 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT))‖ ^ 2 +
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT))‖ ^ 2 +
           12 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
             (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
               - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)‖ ^ 2 := by
@@ -4480,12 +4480,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA))))
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA))))
           (norm_nonneg (iteratedCovGrad (I := I) g₀ 4 2 i
             (reindexCoeffGen (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-              (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT))))
+              (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT))))
           (norm_nonneg (iteratedCovGrad (I := I) g₀ 4 2 i
             (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
               - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀))) htri
@@ -4496,12 +4496,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
               (reindexCoeffGen (I := I) (M := M) g₀ 4 2
                 (traceHessianCoeff (I := I) (M := M) g₀ g₁
                   - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-                (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA))‖ ^ 2 +
+                (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA))‖ ^ 2 +
             3 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
               (reindexCoeffGen (I := I) (M := M) g₀ 4 2
                 (traceHessianCoeff (I := I) (M := M) g₀ g₁
                   - traceHessianCoeff (I := I) (M := M) g₀ g₀)
-                (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT))‖ ^ 2 +
+                (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT))‖ ^ 2 +
             12 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
               (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
                 - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)‖ ^ 2 := hsq
@@ -4576,7 +4576,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
         (1 + ∑ l ∈ Finset.range (i + 2),
           ‖iteratedCovGrad (I := I) g₀ 0 2 l T₀‖ ^ 2)) ^ 2 = _
       exact Real.sq_sqrt hprod2_nn
-    have hj2' : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Φ
+    have hj2' : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Φ
         (δ := δ) (δ' := δ) := by
       simpa only [Φ] using hj2
     have hΦjet : ∀ s ∈ Set.Icc (0 : ℝ) 1,
@@ -4584,7 +4584,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
       intro s hs
       rw [hB₂_sq]
       exact hbare s hs
-    have htower := armField_pathIntegral_jetL2_perOrder_le (I := I) (M := M) g₀ 4 Φ
+    have htower := termField_pathIntegral_jetL2_perOrder_le (I := I) (M := M) g₀ 4 Φ
       hSI hSopen hj2' i (B := B₂) hΦjet
     rw [hB₂_sq] at htower
     have hPeq : deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T₀
@@ -4867,7 +4867,7 @@ theorem
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T₀) δ) :
     ∃ εCD : ℝ, 0 ≤ εCD ∧
-      (0 ≤ δ → εCD ≤ 3 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εCD ≤ 3 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (T₀ : SmoothCcTensor g₀ 0 2),
         (∀ (x : M) (v w : TangentSpace I x),
@@ -4920,7 +4920,7 @@ theorem
   exact ⟨εCD, hεCD_nn, hεCD_cap, Kc, hKc_nn, fun T₀ hTsymm hball =>
     ⟨hsup T₀ hTsymm hball, henv T₀ hTsymm hball⟩⟩
 
-theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResidual_coeffJetEnvelope
+theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricTerm_endpointResidual_coeffJetEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -4928,12 +4928,12 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T₀) δ) :
     ∃ εCr : ℝ, 0 ≤ εCr ∧
-      (0 ≤ δ → εCr ≤ 19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εCr ≤ 19 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
     ∃ εa : ℝ, 0 ≤ εa ∧
       2 * Real.sqrt (Module.finrank ℝ E) * εa ≤
-        32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-          28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 ∧
+        32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+          28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 ∧
     ∃ Λ : ℝ, 0 ≤ Λ ∧
       ∀ (T₀ : SmoothCcTensor g₀ 0 2),
         (∀ (x : M) (v w : TangentSpace I x),
@@ -4953,7 +4953,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
                         from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                       tensorHs_norm_smul]
                     simpa using hR₀)) -
-              deTurckPrincipalCometricArm (I := I) (M := M) g₀
+              deTurckPrincipalCometricTerm (I := I) (M := M) g₀
                 (tensorSectionRealizeMetric (I := I) g₀ T₀
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                   (hδ_fibre T₀ hball)) T₀) =
@@ -5003,19 +5003,19 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2)) := by
   classical
   obtain ⟨εCr, hεCr_nn, hεCr_cap, Kc1, hKc1_nn, εar, hεar_nn, hεar_cap, Λ₁, hΛ₁_nn, harm⟩ :=
-    exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffSup_jetEnvelope_of_symm
+    exists_deTurckRHSCovariantTermDifference_zero_canonicalTop_curvatureDecomposition_coeffSup_jetEnvelope_of_symm
       (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
   obtain ⟨K₀, hK₀fold⟩ :=
-    exists_deTurckMetricPrincipalDefectTotal_background_curvatureFold_of_symm (I := I) (M := M) g₀
+    exists_deTurckMetricPrincipalDefectTotal_background_curvatureContraction_of_symm (I := I) (M := M) g₀
   obtain ⟨ΛK, hΛK_nn, hΛK⟩ :=
     exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 2 2 K₀
   have hεa_cap : 2 * Real.sqrt (Module.finrank ℝ E) * ((3 : ℝ) / 2 * εar) ≤
-      32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-        28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 := by
+      32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+        28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 := by
     calc 2 * Real.sqrt (Module.finrank ℝ E) * ((3 : ℝ) / 2 * εar)
         = 3 * Real.sqrt (Module.finrank ℝ E) * εar := by ring
-      _ ≤ 32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-          28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 := hεar_cap
+      _ ≤ 32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+          28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 := hεar_cap
   refine ⟨εCr, hεCr_nn, hεCr_cap,
     fun i => 2 * Kc1 i + 2 * ‖iteratedCovGrad (I := I) g₀ (2 + 0) 2 i K₀‖ ^ 2,
     fun i => add_nonneg (mul_nonneg (by norm_num) (hKc1_nn i)) (by positivity),
@@ -5023,13 +5023,13 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
     Real.sqrt (2 * Λ₁ ^ 2 + 2 * ΛK) + Λ₁,
     add_nonneg (Real.sqrt_nonneg _) hΛ₁_nn,
     fun T₀ hTsymm hball => ?_⟩
-  obtain ⟨C₀k, C₁k, C₂r, hidArm, hC₀sup, hC₁sup, hC₂rsup, hC₀env, hC₁env, hC₂renv⟩ :=
+  obtain ⟨C₀k, C₁k, C₂r, hidTerm, hC₀sup, hC₁sup, hC₂rsup, hC₀env, hC₁env, hC₂renv⟩ :=
     harm T₀ hTsymm hball
   have hsqA : Real.sqrt (2 * Λ₁ ^ 2 + 2 * ΛK) ^ 2 = 2 * Λ₁ ^ 2 + 2 * ΛK :=
     Real.sq_sqrt (add_nonneg (mul_nonneg (by norm_num) (sq_nonneg Λ₁))
       (mul_nonneg (by norm_num) hΛK_nn))
   refine ⟨C₀k + K₀, C₁k, C₂r, ?_, hC₂rsup, ?_, ?_, ?_, ?_, ?_⟩
-  · have h884 := deTurckSmoothRemainderDiff_eq_armDiff_sub_connLapDiff (I := I) g₀ g_bg T₀
+  · have h884 := deTurckSmoothRemainderDiff_eq_termDiff_sub_connLapDiff (I := I) g₀ g_bg T₀
       (0 : SmoothCcTensor g₀ 0 2)
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)
       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
@@ -5040,9 +5040,9 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
                 tensorHs_norm_smul]
               simpa using hR₀))
     rw [sub_zero] at h884
-    have hidArm' : deTurckRHSArmG0 (I := I) g₀ g_bg T₀
+    have hidTerm' : deTurckRHSTermG0 (I := I) g₀ g_bg T₀
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball) -
-        deTurckRHSArmG0 (I := I) g₀ g_bg (0 : SmoothCcTensor g₀ 0 2)
+        deTurckRHSTermG0 (I := I) g₀ g_bg (0 : SmoothCcTensor g₀ 0 2)
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
           (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
             (by
@@ -5068,7 +5068,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
             (iteratedCovGrad (I := I) g₀ 0 2 2 T₀) +
           operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂r
             (iteratedCovGrad (I := I) g₀ 0 2 2 T₀) :=
-      hidArm
+      hidTerm
     have hfold := hK₀fold T₀ hTsymm
     have hfold' : operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2
           (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)
@@ -5093,7 +5093,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
       exact
         rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace
           (I := I) (M := M) g₀ T₀ x v
-    have hArm : deTurckPrincipalCometricArm (I := I) (M := M) g₀
+    have hTerm : deTurckPrincipalCometricTerm (I := I) (M := M) g₀
         (tensorSectionRealizeMetric (I := I) g₀ T₀
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
           (hδ_fibre T₀ hball)) T₀ =
@@ -5114,7 +5114,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
             (hδ_fibre T₀ hball)) -
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.cometricDoubleTraceCoefficient
           (I := I) (M := M) g₀ g₀ := rfl
-    rw [h884, hlift, hArm, hidArm']
+    rw [h884, hlift, hTerm, hidTerm']
     rw [operatorFieldApplication_add_left (I := I) (M := M) g₀ (2 + 0) 2 C₀k K₀
       (iteratedCovGrad (I := I) g₀ 0 2 0 T₀)]
     rw [operatorFieldApplication_add_left (I := I) (M := M) g₀ (2 + 2) 2 _ C₂r
@@ -5223,7 +5223,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
     linarith
 
 theorem
-    exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_threeArmCoeffAction_coeffJetEnvelope
+    exists_deTurckSmoothRemainderDiff_sub_principalCometricTerm_covariantJetCoeffAction_coeffJetEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -5231,13 +5231,13 @@ theorem
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T₀) δ) :
     ∃ εC : ℝ, 0 ≤ εC ∧
-      (0 ≤ δ → εC ≤ 32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ))) ∧
-      (0 ≤ δ → εC ≤ 28 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εC ≤ 32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εC ≤ 28 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
     ∃ εa : ℝ, 0 ≤ εa ∧
       2 * Real.sqrt (Module.finrank ℝ E) * εa ≤
-        32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-          28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 ∧
+        32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+          28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 ∧
     ∃ Λ : ℝ, 0 ≤ Λ ∧
       ∀ (T₀ : SmoothCcTensor g₀ 0 2),
         (∀ (x : M) (v w : TangentSpace I x),
@@ -5257,7 +5257,7 @@ theorem
                         from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                       tensorHs_norm_smul]
                     simpa using hR₀)) -
-              deTurckPrincipalCometricArm (I := I) (M := M) g₀
+              deTurckPrincipalCometricTerm (I := I) (M := M) g₀
                 (tensorSectionRealizeMetric (I := I) g₀ T₀
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                   (hδ_fibre T₀ hball)) T₀) =
@@ -5294,12 +5294,12 @@ theorem
     exists_deTurckPhiTotPathIntegral_sub_bg_sub_principalCometricCoeff_fibreSmall_coeffJetEnvelope
       (I := I) (M := M) g₀ a ha_super hR₀ hδ_le hδ_fibre
   obtain ⟨εCr, hεCr_nn, hεCr_cap, Kc1, hKc1_nn, εa, hεa_nn, hεa_cap, Λ1, hΛ1_nn, hK1⟩ :=
-    exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResidual_coeffJetEnvelope
+    exists_deTurckSmoothRemainderDiff_sub_principalCometricTerm_endpointResidual_coeffJetEnvelope
       (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
   have hn1 : 1 ≤ Module.finrank ℝ E :=
     Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Module.finrank ℝ E))
-  have hC1 : (1 : ℝ) ≤ deTurckArmFibreConst (Module.finrank ℝ E) :=
-    one_le_de_turck_arm_fibre_const hn1
+  have hC1 : (1 : ℝ) ≤ deTurckTermFibreConst (Module.finrank ℝ E) :=
+    one_le_de_turck_term_fibre_const hn1
   refine ⟨Real.sqrt (2 * εCD ^ 2 + 2 * εCr ^ 2), Real.sqrt_nonneg _,
     fun hδ_nn => ?_, fun hδ_nn => ?_,
     fun i => 3 * Kc1 i + 2 * KcD i,
@@ -5308,7 +5308,7 @@ theorem
     Λ1, hΛ1_nn, fun T₀ hTsymm hball => ?_⟩
   · have hδ_lt1 : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)
     have hκ_nn : 0 ≤ δ / (1 - δ) := div_nonneg hδ_nn (by linarith)
-    set C : ℝ := deTurckArmFibreConst (Module.finrank ℝ E) with hC_def
+    set C : ℝ := deTurckTermFibreConst (Module.finrank ℝ E) with hC_def
     set κ : ℝ := δ / (1 - δ) with hκ_def
     have hd := hεCD_cap hδ_nn
     have hr := hεCr_cap hδ_nn
@@ -5324,22 +5324,22 @@ theorem
       _ = 32 * C ^ 2 * (δ / (1 - δ)) := by rw [hκ_def]
   · have hδ_lt1 : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)
     have hκ_nn : 0 ≤ δ / (1 - δ) := div_nonneg hδ_nn (by linarith)
-    have hC_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) :=
-      de_turck_arm_fibre_const_nonneg _
+    have hC_nn : 0 ≤ deTurckTermFibreConst (Module.finrank ℝ E) :=
+      de_turck_term_fibre_const_nonneg _
     have hd := hεCD_cap hδ_nn
     have hr := hεCr_cap hδ_nn
     have h28_nn : (0 : ℝ) ≤
-        28 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) := by positivity
+        28 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) := by positivity
     have hsq : 2 * εCD ^ 2 + 2 * εCr ^ 2 ≤
-        (28 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ^ 2 := by
+        (28 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ^ 2 := by
       have hd_sq := pow_le_pow_left₀ hεCD_nn hd 2
       have hr_sq := pow_le_pow_left₀ hεCr_nn hr 2
       nlinarith only [hd_sq, hr_sq,
-        sq_nonneg (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)))]
+        sq_nonneg (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)))]
     calc Real.sqrt (2 * εCD ^ 2 + 2 * εCr ^ 2)
-        ≤ Real.sqrt ((28 * deTurckArmFibreConst (Module.finrank ℝ E) *
+        ≤ Real.sqrt ((28 * deTurckTermFibreConst (Module.finrank ℝ E) *
             (δ / (1 - δ))) ^ 2) := Real.sqrt_le_sqrt hsq
-      _ = 28 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) :=
+      _ = 28 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) :=
           Real.sqrt_sq h28_nn
   obtain ⟨hDsup, hDenv⟩ := hK2 T₀ hTsymm hball
   obtain ⟨C₀, C₁, C₂r, hid, hC₂r_sup, hC₀sup, hC₁sup, hC₀env, hC₁env, hC₂r_env⟩ :=
@@ -5838,7 +5838,7 @@ theorem exists_coeffAction_iteratedCovGrad_l2_coeffJetEnvelope_dataJetWindow_le_
                 ‖iteratedCovGrad (I := I) g₀ (2 + m) 2 i Φ‖ ^ 2
               + ΛΦ ^ 2 * ∑ l ∈ Finset.range (q + 1),
                 ‖iteratedCovGrad (I := I) g₀ 0 (2 + m) l W‖ ^ 2) :=
-    fun m q => ccTensorContract_topOrder_l2_twoArm_mixed_le (I := I) (M := M) g₀ (2 + m) 2 q
+    fun m q => ccTensorContract_topOrder_l2_twoTerm_mixed_le (I := I) (M := M) g₀ (2 + m) 2 q
   choose CE hCE_nn hCE using hE
   have hB : ∀ m : ℕ, ∃ Csh : ℝ, 0 ≤ Csh ∧
       ∀ (T : SmoothCcTensor g₀ 0 (2 + m)) (x : M),
@@ -6067,7 +6067,7 @@ alias exists_operatorFieldApplication_iteratedCovGrad_l2_coeffJetEnvelope_dataJe
   exists_coeffAction_iteratedCovGrad_l2_coeffJetEnvelope_dataJetWindow_le
 
 theorem
-    exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_smallThirdArm_iteratedCovGrad_jet_le
+    exists_deTurckSmoothRemainderDiff_sub_principalCometricTerm_smallThirdTerm_iteratedCovGrad_jet_le
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -6075,13 +6075,13 @@ theorem
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T₀) δ) :
     ∃ εC : ℝ, 0 ≤ εC ∧
-      (0 ≤ δ → εC ≤ 32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ))) ∧
-      (0 ≤ δ → εC ≤ 28 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εC ≤ 32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εC ≤ 28 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
     ∃ εa : ℝ, 0 ≤ εa ∧
       2 * Real.sqrt (Module.finrank ℝ E) * εa ≤
-        32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-          28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 ∧
+        32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+          28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 ∧
     ∃ Λa : ℝ, 0 ≤ Λa ∧
     ∃ Clow : ℕ → ℝ, (∀ q, 0 ≤ Clow q) ∧
       ∀ (T₀ : SmoothCcTensor g₀ 0 2)
@@ -6117,7 +6117,7 @@ theorem
                             from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                           tensorHs_norm_smul]
                         simpa using hR₀)) -
-                  deTurckPrincipalCometricArm (I := I) (M := M) g₀
+                  deTurckPrincipalCometricTerm (I := I) (M := M) g₀
                     (tensorSectionRealizeMetric (I := I) g₀ T₀
                       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                       (hδ_fibre T₀ hball)) T₀ -
@@ -6129,7 +6129,7 @@ theorem
                 ‖iteratedCovGrad (I := I) g₀ 0 2 i T₀‖ ^ 2) := by
   classical
   obtain ⟨εC, hεC_nn, hεC_cap, hεC_cap', Kc, hKc_nn, εa, hεa_nn, hεa_cap, Λ, hΛ_nn, hL1⟩ :=
-    exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_threeArmCoeffAction_coeffJetEnvelope
+    exists_deTurckSmoothRemainderDiff_sub_principalCometricTerm_covariantJetCoeffAction_coeffJetEnvelope
       (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
   obtain ⟨Cm, hCm_nn, hM2⟩ :=
     exists_coeffAction_iteratedCovGrad_l2_coeffJetEnvelope_dataJetWindow_le
@@ -6151,7 +6151,7 @@ theorem
                     from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                   tensorHs_norm_smul]
                 simpa using hR₀)) -
-          deTurckPrincipalCometricArm (I := I) (M := M) g₀
+          deTurckPrincipalCometricTerm (I := I) (M := M) g₀
             (tensorSectionRealizeMetric (I := I) g₀ T₀
               (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
               (hδ_fibre T₀ hball)) T₀ -
@@ -6167,7 +6167,7 @@ theorem
   exact hM2 1 (by omega) C₁ T₀ hball hC₁sup hC₁jet q
 
 theorem
-    exists_smoothCcToTensorHs_deTurckRemainderDiff_sub_principalCometricArm_smallThirdArm_tame_le
+    exists_smoothCcToTensorHs_deTurckRemainderDiff_sub_principalCometricTerm_smallThirdTerm_tame_le
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -6175,13 +6175,13 @@ theorem
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T₀) δ) :
     ∃ εC : ℝ, 0 ≤ εC ∧
-      (0 ≤ δ → εC ≤ 32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ))) ∧
-      (0 ≤ δ → εC ≤ 28 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εC ≤ 32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εC ≤ 28 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ∧
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
     ∃ εa : ℝ, 0 ≤ εa ∧
       2 * Real.sqrt (Module.finrank ℝ E) * εa ≤
-        32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-          28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 ∧
+        32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+          28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 ∧
     ∃ Λa : ℝ, 0 ≤ Λa ∧
     ∃ Ctame : ℕ → ℝ, (∀ k, 0 ≤ Ctame k) ∧
       ∀ (T₀ : SmoothCcTensor g₀ 0 2)
@@ -6217,7 +6217,7 @@ theorem
                             from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                           tensorHs_norm_smul]
                         simpa using hR₀)) -
-                  deTurckPrincipalCometricArm (I := I) (M := M) g₀
+                  deTurckPrincipalCometricTerm (I := I) (M := M) g₀
                     (tensorSectionRealizeMetric (I := I) g₀ T₀
                       (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                       (hδ_fibre T₀ hball)) T₀ -
@@ -6229,7 +6229,7 @@ theorem
   classical
   obtain ⟨εC, hεC_nn, hεC_cap, hεC_cap', Kc, hKc_nn, εa, hεa_nn, hεa_cap, Λa, hΛa_nn,
     Clow, hClow_nn, hjet⟩ :=
-    exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_smallThirdArm_iteratedCovGrad_jet_le
+    exists_deTurckSmoothRemainderDiff_sub_principalCometricTerm_smallThirdTerm_iteratedCovGrad_jet_le
       (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
   obtain ⟨Ctame, hCtame_nn, hCtame⟩ :=
     exists_smoothCcToTensorHs_real_le_of_iteratedCovGrad_jet_window
@@ -6255,7 +6255,7 @@ theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le_zero
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ (0 : ℝ)
             (operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂
               (iteratedCovGrad (I := I) g₀ 0 2 2 T₀))‖ ≤
-          deTurckArmFibreConst (Module.finrank ℝ E) * εC *
+          deTurckTermFibreConst (Module.finrank ℝ E) * εC *
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ (2 : ℝ) T₀‖ +
             Cop * ‖smoothCcToTensorHs (I := I) (M := M) g₀ (1 : ℝ) T₀‖ := by
   classical
@@ -6383,8 +6383,8 @@ theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le_zero
       rw [hnGrad_def, h1, SmoothCcTensor.norm_def]
     rw [h0]
     exact hjets1 1 (by norm_num)
-  have hfibre1 : (1 : ℝ) ≤ deTurckArmFibreConst (Module.finrank ℝ E) :=
-    one_le_de_turck_arm_fibre_const (Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Module.finrank ℝ E)))
+  have hfibre1 : (1 : ℝ) ≤ deTurckTermFibreConst (Module.finrank ℝ E) :=
+    one_le_de_turck_term_fibre_const (Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Module.finrank ℝ E)))
   have hHs2_nn : 0 ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ (2 : ℝ) T₀‖ := norm_nonneg _
   have hHs1_nn : 0 ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ (1 : ℝ) T₀‖ := norm_nonneg _
   have hchain : ‖smoothCcToTensorHs (I := I) (M := M) g₀ (0 : ℝ) P‖ ≤
@@ -6410,14 +6410,14 @@ theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le_zero
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ (1 : ℝ) T₀‖ := by ring
   rw [hexpand]
   have h1 : εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ (2 : ℝ) T₀‖ ≤
-      deTurckArmFibreConst (Module.finrank ℝ E) * εC *
+      deTurckTermFibreConst (Module.finrank ℝ E) * εC *
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ (2 : ℝ) T₀‖ := by
-    have h2 : (1 : ℝ) * εC ≤ deTurckArmFibreConst (Module.finrank ℝ E) * εC :=
+    have h2 : (1 : ℝ) * εC ≤ deTurckTermFibreConst (Module.finrank ℝ E) * εC :=
       mul_le_mul_of_nonneg_right hfibre1 hεC_nn
     have h3 := mul_le_mul_of_nonneg_right h2 hHs2_nn
     calc εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ (2 : ℝ) T₀‖
         = 1 * εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ (2 : ℝ) T₀‖ := by ring
-      _ ≤ deTurckArmFibreConst (Module.finrank ℝ E) * εC *
+      _ ≤ deTurckTermFibreConst (Module.finrank ℝ E) * εC *
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ (2 : ℝ) T₀‖ := h3
   linarith [h1]
 
@@ -6438,7 +6438,7 @@ theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le_succ
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 1)
               (operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂
                 (iteratedCovGrad (I := I) g₀ 0 2 2 T₀))‖ ≤
-            deTurckArmFibreConst (Module.finrank ℝ E) * εC *
+            deTurckTermFibreConst (Module.finrank ℝ E) * εC *
                 ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 3) T₀‖ +
               Cop m * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 2) T₀‖ := by
   classical
@@ -6470,27 +6470,27 @@ theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le_succ
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 2) T₀‖ :=
     smoothCcToTensorHs_norm_order_congr (I := I) (M := M) g₀ (by push_cast; ring) T₀
   rw [hcastL, hcastQ] at hbase
-  have hfibre1 : (1 : ℝ) ≤ deTurckArmFibreConst (Module.finrank ℝ E) :=
-    one_le_de_turck_arm_fibre_const (Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Module.finrank ℝ E)))
+  have hfibre1 : (1 : ℝ) ≤ deTurckTermFibreConst (Module.finrank ℝ E) :=
+    one_le_de_turck_term_fibre_const (Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Module.finrank ℝ E)))
   have hH3_nn : 0 ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 3) T₀‖ :=
     norm_nonneg _
   have htop : εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m + 1 : ℕ) : ℝ)
       (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ ≤
-      deTurckArmFibreConst (Module.finrank ℝ E) * εC *
+      deTurckTermFibreConst (Module.finrank ℝ E) * εC *
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 3) T₀‖ := by
     have hstep1 : εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m + 1 : ℕ) : ℝ)
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ ≤
         εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 3) T₀‖ :=
       mul_le_mul_of_nonneg_left hΔ hεC_nn
     have hstep2 : εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 3) T₀‖ ≤
-        deTurckArmFibreConst (Module.finrank ℝ E) * εC *
+        deTurckTermFibreConst (Module.finrank ℝ E) * εC *
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 3) T₀‖ := by
-      have h2 : (1 : ℝ) * εC ≤ deTurckArmFibreConst (Module.finrank ℝ E) * εC :=
+      have h2 : (1 : ℝ) * εC ≤ deTurckTermFibreConst (Module.finrank ℝ E) * εC :=
         mul_le_mul_of_nonneg_right hfibre1 hεC_nn
       have h3 := mul_le_mul_of_nonneg_right h2 hH3_nn
       calc εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 3) T₀‖
           = 1 * εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 3) T₀‖ := by ring
-        _ ≤ deTurckArmFibreConst (Module.finrank ℝ E) * εC *
+        _ ≤ deTurckTermFibreConst (Module.finrank ℝ E) * εC *
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 3) T₀‖ := h3
     exact le_trans hstep1 hstep2
   linarith [hbase, htop]
@@ -6512,7 +6512,7 @@ theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
               (operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂
                 (iteratedCovGrad (I := I) g₀ 0 2 2 T₀))‖ ≤
-            deTurckArmFibreConst (Module.finrank ℝ E) * εC *
+            deTurckTermFibreConst (Module.finrank ℝ E) * εC *
                 ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 2) T₀‖ +
               Cop m * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 1) T₀‖ := by
   classical
@@ -6697,7 +6697,7 @@ private lemma riemannianFiberNormSq_le_of_ccTensorBilinSymm_gFibreOpBound
     _ = (Module.finrank ℝ E : ℝ) * δ ^ 2 := by
         rw [show n = Module.finrank ℝ E from hn]
 
-private lemma coeffAction_arm0_oneMinusConnLapIter_l2_le
+private lemma coeffAction_orderZero_oneMinusConnLapIter_l2_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (Kc : ℕ → ℝ) (hKc_nn : ∀ i, 0 ≤ Kc i)
@@ -6760,7 +6760,7 @@ private lemma coeffAction_arm0_oneMinusConnLapIter_l2_le
     smoothCcToTensorHs_norm_mono_of_le (I := I) (M := M) g₀ T₀ h
   have hKZsum_nn : (0:ℝ) ≤ ∑ q ∈ Finset.range p, KZ q (p - 1 - q) :=
     Finset.sum_nonneg (fun q _ => hKZ_nn q (p - 1 - q))
-  have htransport := DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_decomposition (I := I) (M := M) g₀ C₀ T₀ p
+  have htransport := DeTurckRemainderPrincipalTerm.connLapIterate_operatorFieldApplication_decomposition (I := I) (M := M) g₀ C₀ T₀ p
   have hA_eq : oneMinusConnLapSmoothIter (I := I) g₀ 0 2 p
       (operatorFieldApply (I := I) (M := M) g₀ (2 + 0) 2 C₀
         (iteratedCovGrad (I := I) g₀ 0 2 0 T₀)) =
@@ -6957,7 +6957,7 @@ private lemma coeffAction_arm0_oneMinusConnLapIter_l2_le
     rw [hsq]
     exact pow_le_pow_left₀ (Real.sqrt_nonneg _) hchain 2
 
-private lemma exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le_of_dataBound
+private lemma exists_smoothCcToTensorHs_coeffAction_orderZero_opNorm_le_of_dataBound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (Kc : ℕ → ℝ) (hKc_nn : ∀ i, 0 ≤ Kc i)
@@ -6984,7 +6984,7 @@ private lemma exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le_of_dataBound
               Cop m * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 1) T₀‖ := by
   classical
   obtain ⟨Kop, hKop_nn, hKop⟩ :=
-    coeffAction_arm0_oneMinusConnLapIter_l2_le (I := I) (M := M) g₀ a ha_super hR₀
+    coeffAction_orderZero_oneMinusConnLapIter_l2_le (I := I) (M := M) g₀ a ha_super hR₀
       Kc hKc_nn εa hεa_nn Λa hΛa_nn
   refine ⟨fun m => Kop (m / 2), fun m => hKop_nn (m / 2),
     fun C₀ T₀ B hB_nn hball hdata hsup henv m => ?_⟩
@@ -7034,7 +7034,7 @@ private lemma exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le_of_dataBound
       _ ≤ Real.sqrt (R ^ 2) := Real.sqrt_le_sqrt hsq
       _ = R := Real.sqrt_sq hR_nn
 
-private lemma exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le_of_gFibreOpBound
+private lemma exists_smoothCcToTensorHs_coeffAction_orderZero_opNorm_le_of_gFibreOpBound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (Kc : ℕ → ℝ) (hKc_nn : ∀ i, 0 ≤ Kc i)
@@ -7063,7 +7063,7 @@ private lemma exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le_of_gFibreOpBo
               Cop m * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 1) T₀‖ := by
   classical
   obtain ⟨Cop, hCop_nn, hcore⟩ :=
-    exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le_of_dataBound (I := I) (M := M) g₀ a
+    exists_smoothCcToTensorHs_coeffAction_orderZero_opNorm_le_of_dataBound (I := I) (M := M) g₀ a
       ha_super hR₀ Kc hKc_nn
       εa hεa_nn Λa hΛa_nn
   refine ⟨Cop, hCop_nn, fun C₀ T₀ δ hδ_nn hball hTsymm hfibre hsup hjet m => ?_⟩
@@ -7101,7 +7101,7 @@ private lemma exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le_of_gFibreOpBo
     rw [htop] at hmain
     exact hmain
 
-private theorem exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le
+private theorem exists_smoothCcToTensorHs_coeffAction_orderZero_opNorm_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (Kc : ℕ → ℝ) (hKc_nn : ∀ i, 0 ≤ Kc i)
@@ -7131,7 +7131,7 @@ private theorem exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le
               Cop m * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 1) T₀‖ := by
   classical
   obtain ⟨Cop, hCop_nn, hcore⟩ :=
-    exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le_of_gFibreOpBound (I := I) (M := M) g₀ a
+    exists_smoothCcToTensorHs_coeffAction_orderZero_opNorm_le_of_gFibreOpBound (I := I) (M := M) g₀ a
       ha_super hR₀
       Kc hKc_nn εa hεa_nn Λa hΛa_nn
   refine ⟨Real.sqrt (Module.finrank ℝ E) * εa * max δ 0,
@@ -7163,7 +7163,7 @@ private theorem exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le
       rw [max_eq_left hδ_nn]
       exact hcore C₀ T₀ δ hδ_nn hball hTsymm hfibre hsup hjet m
 
-theorem exists_deTurckSmoothRemainderDiff_eq_principalCometricArm_add_smallThirdArm_add_tame
+theorem exists_deTurckSmoothRemainderDiff_eq_principalCometricTerm_add_smallThirdTerm_add_tame
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -7171,7 +7171,7 @@ theorem exists_deTurckSmoothRemainderDiff_eq_principalCometricArm_add_smallThird
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T₀) δ) :
     ∃ εwrap : ℝ, 0 ≤ εwrap ∧
-      (0 ≤ δ → εwrap ≤ 32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 * (δ / (1 - δ))) ∧
+      (0 ≤ δ → εwrap ≤ 32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 * (δ / (1 - δ))) ∧
     ∃ Cthird Ctame : ℕ → ℝ, (∀ k, 0 ≤ Cthird k) ∧ (∀ k, 0 ≤ Ctame k) ∧
       ∀ (T₀ : SmoothCcTensor g₀ 0 2)
         (_hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -7190,7 +7190,7 @@ theorem exists_deTurckSmoothRemainderDiff_eq_principalCometricArm_add_smallThird
                       from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                     tensorHs_norm_smul]
                   simpa using hR₀)) =
-            deTurckPrincipalCometricArm (I := I) (M := M) g₀
+            deTurckPrincipalCometricTerm (I := I) (M := M) g₀
               (tensorSectionRealizeMetric (I := I) g₀ T₀
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)) T₀
               + third + tame ∧
@@ -7204,16 +7204,16 @@ theorem exists_deTurckSmoothRemainderDiff_eq_principalCometricArm_add_smallThird
   classical
   obtain ⟨εC, hεC_nn, hεC_cap, hεC_cap', Kc, hKc_nn, εa, hεa_nn, hεa_cap, Λa, hΛa_nn,
     Ctame, hCtame_nn, htame⟩ :=
-    exists_smoothCcToTensorHs_deTurckRemainderDiff_sub_principalCometricArm_smallThirdArm_tame_le
+    exists_smoothCcToTensorHs_deTurckRemainderDiff_sub_principalCometricTerm_smallThirdTerm_tame_le
       (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
   obtain ⟨Cop, hCop_nn, hH3⟩ :=
     exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le
       (I := I) (M := M) g₀ a ha_super hR₀ εC hεC_nn Kc hKc_nn
   obtain ⟨εB, hεB_nn, hεB_cap, CopB, hCopB_nn, hB'⟩ :=
-    exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le
+    exists_smoothCcToTensorHs_coeffAction_orderZero_opNorm_le
       (I := I) (M := M) g₀ a ha_super hR₀ (δ := δ) Kc hKc_nn εa hεa_nn Λa hΛa_nn
-  refine ⟨deTurckArmFibreConst (Module.finrank ℝ E) * εC + εB,
-    add_nonneg (mul_nonneg (de_turck_arm_fibre_const_nonneg _) hεC_nn) hεB_nn,
+  refine ⟨deTurckTermFibreConst (Module.finrank ℝ E) * εC + εB,
+    add_nonneg (mul_nonneg (de_turck_term_fibre_const_nonneg _) hεC_nn) hεB_nn,
     fun hδ_nn => ?_,
     fun k => Cop (a + k - 1) + CopB (a + k - 1), Ctame,
     fun k => add_nonneg (hCop_nn _) (hCopB_nn _), hCtame_nn, fun T₀ hTsymm hball => ?_⟩
@@ -7222,32 +7222,32 @@ theorem exists_deTurckSmoothRemainderDiff_eq_principalCometricArm_add_smallThird
     have hδκ : δ ≤ δ / (1 - δ) := by
       rw [le_div_iff₀ (by linarith : (0 : ℝ) < 1 - δ)]
       nlinarith [sq_nonneg δ]
-    have hf_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) :=
-      de_turck_arm_fibre_const_nonneg _
-    have h1 : deTurckArmFibreConst (Module.finrank ℝ E) * εC ≤
-        28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ)) := by
-      calc deTurckArmFibreConst (Module.finrank ℝ E) * εC
-          ≤ deTurckArmFibreConst (Module.finrank ℝ E) *
-              (28 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) :=
+    have hf_nn : 0 ≤ deTurckTermFibreConst (Module.finrank ℝ E) :=
+      de_turck_term_fibre_const_nonneg _
+    have h1 : deTurckTermFibreConst (Module.finrank ℝ E) * εC ≤
+        28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ)) := by
+      calc deTurckTermFibreConst (Module.finrank ℝ E) * εC
+          ≤ deTurckTermFibreConst (Module.finrank ℝ E) *
+              (28 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) :=
             mul_le_mul_of_nonneg_left (hεC_cap' hδ_nn) hf_nn
-        _ = 28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ)) := by ring
+        _ = 28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ)) := by ring
     have h2sq_nn : (0 : ℝ) ≤ 2 * Real.sqrt (Module.finrank ℝ E) * εa :=
       mul_nonneg (mul_nonneg (by norm_num) (Real.sqrt_nonneg _)) hεa_nn
-    have h2 : εB ≤ (32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-        28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2) * (δ / (1 - δ)) := by
+    have h2 : εB ≤ (32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+        28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2) * (δ / (1 - δ)) := by
       refine le_trans (hεB_cap hδ_nn) ?_
       calc 2 * Real.sqrt (Module.finrank ℝ E) * εa * δ
           ≤ 2 * Real.sqrt (Module.finrank ℝ E) * εa * (δ / (1 - δ)) :=
             mul_le_mul_of_nonneg_left hδκ h2sq_nn
-        _ ≤ (32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-              28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2) * (δ / (1 - δ)) :=
+        _ ≤ (32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+              28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2) * (δ / (1 - δ)) :=
             mul_le_mul_of_nonneg_right hεa_cap hκ_nn
-    calc deTurckArmFibreConst (Module.finrank ℝ E) * εC + εB
-        ≤ 28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ)) +
-            (32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 -
-              28 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 2) * (δ / (1 - δ)) :=
+    calc deTurckTermFibreConst (Module.finrank ℝ E) * εC + εB
+        ≤ 28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ)) +
+            (32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
+              28 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 2) * (δ / (1 - δ)) :=
           add_le_add h1 h2
-      _ = 32 * deTurckArmFibreConst (Module.finrank ℝ E) ^ 3 * (δ / (1 - δ)) := by ring
+      _ = 32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 * (δ / (1 - δ)) := by ring
   obtain ⟨C₂, C₀, hC₂sup, hC₂jet, hC₀sup, hC₀jet, hHsbound⟩ := htame T₀ hTsymm hball
   refine ⟨operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂
     (iteratedCovGrad (I := I) g₀ 0 2 2 T₀) +
@@ -7263,7 +7263,7 @@ theorem exists_deTurckSmoothRemainderDiff_eq_principalCometricArm_add_smallThird
                 from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
               tensorHs_norm_smul]
             simpa using hR₀)) -
-      deTurckPrincipalCometricArm (I := I) (M := M) g₀
+      deTurckPrincipalCometricTerm (I := I) (M := M) g₀
         (tensorSectionRealizeMetric (I := I) g₀ T₀
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)) T₀ -
       operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂ (iteratedCovGrad (I := I) g₀ 0 2 2 T₀) -
@@ -7315,7 +7315,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
-theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_norm_le
+theorem deTurckPrincipalCometricTerm_realize_ballUniform_Hs_norm_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -7326,11 +7326,11 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_norm_le
       ∀ (k : ℕ) (T₀ : SmoothCcTensor g₀ 0 2)
         (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-            (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+            (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
               (tensorSectionRealizeMetric (I := I) g₀ T₀
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                 (hδ_fibre T₀ hball)) T₀)‖ ≤
-          deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+          deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
                 (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ +
             Clower k * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ)) T₀‖ := by
@@ -7339,7 +7339,7 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_norm_le
     have h1 := Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Module.finrank ℝ E))
     omega
   obtain ⟨Clower, hCl_nn, hb⟩ :=
-    exists_smoothCcToTensorHs_deTurckPrincipalCometricArm_principal_le
+    exists_smoothCcToTensorHs_deTurckPrincipalCometricTerm_principal_le
       (I := I) (M := M) g₀ a ha_super hR₀ hδ_le hδ_fibre
   refine ⟨fun k => Clower (a - 1 + k), fun k => hCl_nn _, fun k T₀ hball => ?_⟩
   have hσ : ((a - 1 + k : ℕ) : ℝ) = (a : ℝ) + (k : ℝ) - 1 := by
@@ -7349,7 +7349,7 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_norm_le
   have hσ1 : ((a - 1 + k : ℕ) : ℝ) + 1 = (a : ℝ) + (k : ℝ) := by rw [hσ]; ring
   have hbk := hb (a - 1 + k) T₀ hball
   have h1 := smoothCcToTensorHs_norm_order_congr (I := I) (M := M) g₀ hσ
-    (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+    (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
       (tensorSectionRealizeMetric (I := I) g₀ T₀
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball)) T₀)
   have h2 := smoothCcToTensorHs_norm_order_congr (I := I) (M := M) g₀ hσ
@@ -7358,7 +7358,7 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_norm_le
   rw [h1, h2, h3] at hbk
   exact hbk
 
-theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_inner_le
+theorem deTurckPrincipalCometricTerm_realize_ballUniform_Hs_inner_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)
@@ -7370,11 +7370,11 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_inner_le
         (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         (inner ℝ (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1) φ)
             (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-              (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+              (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
                 (tensorSectionRealizeMetric (I := I) g₀ T₀
                   (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                   (hδ_fibre T₀ hball)) T₀)) : ℝ) ≤
-          deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+          deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
                 (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ *
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1) φ‖ +
@@ -7382,14 +7382,14 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_inner_le
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1) φ‖ := by
   classical
   obtain ⟨Clower, hCl_nn, hnorm⟩ :=
-    deTurckPrincipalCometricArm_realize_ballUniform_Hs_norm_le (I := I) (M := M)
+    deTurckPrincipalCometricTerm_realize_ballUniform_Hs_norm_le (I := I) (M := M)
       g₀ a ha_super hR₀ hδ_le hδ_fibre
   refine ⟨Clower, hCl_nn, fun k φ T₀ hball => ?_⟩
   have hb := hnorm k T₀ hball
   have hCS := real_inner_le_norm
     (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1) φ)
     (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-      (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+      (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
         (tensorSectionRealizeMetric (I := I) g₀ T₀
           (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
           (hδ_fibre T₀ hball)) T₀))
@@ -7397,23 +7397,23 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_inner_le
     norm_nonneg _
   calc (inner ℝ (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1) φ)
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-          (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+          (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
             (tensorSectionRealizeMetric (I := I) g₀ T₀
               (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
               (hδ_fibre T₀ hball)) T₀)) : ℝ)
       ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1) φ‖ *
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-            (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+            (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
               (tensorSectionRealizeMetric (I := I) g₀ T₀
                 (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
                 (hδ_fibre T₀ hball)) T₀)‖ := hCS
     _ ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1) φ‖ *
-          (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+          (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
                 (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ +
             Clower k * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ)) T₀‖) :=
         mul_le_mul_of_nonneg_left hb hφ_nn
-    _ = deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+    _ = deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
               (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ *
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1) φ‖ +
@@ -7421,7 +7421,7 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_inner_le
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1) φ‖ := by
         ring
 
-theorem deTurckPrincipalCometricArm_realize_ballUniform_spectralShift_le
+theorem deTurckPrincipalCometricTerm_realize_ballUniform_spectralShift_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ deTurckContractionThreshold (Module.finrank ℝ E))
@@ -7432,7 +7432,7 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_spectralShift_le
       ∀ (k : ℕ) (T₀ : SmoothCcTensor g₀ 0 2)
         (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀),
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-            (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+            (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
               (tensorSectionRealizeMetric (I := I) g₀ T₀
                 (lt_of_le_of_lt hδ_le
                   (de_turck_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
@@ -7444,12 +7444,12 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_spectralShift_le
   have hδ_le13 : δ ≤ 1 / 3 :=
     le_trans hδ_le (de_turck_contraction_threshold_le_third_of_ne_zero (Module.finrank ℝ E))
   obtain ⟨Clower, hCl_nn, hnorm⟩ :=
-    deTurckPrincipalCometricArm_realize_ballUniform_Hs_norm_le (I := I) (M := M)
+    deTurckPrincipalCometricTerm_realize_ballUniform_Hs_norm_le (I := I) (M := M)
       g₀ a ha_super hR₀ hδ_le13 hδ_fibre
   refine ⟨Clower, hCl_nn, fun k T₀ hball => ?_⟩
   have hb := hnorm k T₀ hball
-  have hhalf : deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) ≤ 1 / 2 :=
-    de_turck_arm_fibre_const_mul_div_le_half
+  have hhalf : deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) ≤ 1 / 2 :=
+    de_turck_term_fibre_const_mul_div_le_half
       (Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Module.finrank ℝ E))) hδ_le
   have hR_nn : 0 ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
       (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ := norm_nonneg _
@@ -7461,24 +7461,24 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_spectralShift_le
         ((a : ℝ) + (k : ℝ) - 1) T₀) ?_
     exact le_of_eq (smoothCcToTensorHs_norm_order_congr (I := I) (M := M) g₀
       (show (a : ℝ) + (k : ℝ) - 1 + 2 = (a : ℝ) + (k : ℝ) + 1 by ring) T₀)
-  have htop : deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+  have htop : deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ ≤
       (1 / 2 : ℝ) * ‖smoothCcToTensorHs (I := I) (M := M) g₀
           ((a : ℝ) + (k : ℝ) + 1) T₀‖ :=
     mul_le_mul hhalf hRB hR_nn (by norm_num)
   calc ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-        (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+        (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
           (tensorSectionRealizeMetric (I := I) g₀ T₀
             (lt_of_le_of_lt hδ_le
               (de_turck_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
             (hδ_fibre T₀ hball)) T₀)‖
       = ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-          (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+          (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
             (tensorSectionRealizeMetric (I := I) g₀ T₀
               (lt_of_le_of_lt hδ_le13 (by norm_num : (1 : ℝ) / 3 < 1))
               (hδ_fibre T₀ hball)) T₀)‖ := rfl
-    _ ≤ deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
+    _ ≤ deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
               (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ +
           Clower k * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ)) T₀‖ :=
@@ -7532,14 +7532,14 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
   have hδ_le13 : δ ≤ 1 / 3 :=
     le_trans hδ_le (de_turck_remainder_contraction_threshold_le_third hn1)
   set Cbudget : ℝ :=
-    32 * deTurckArmFibreConst n ^ 2 / (2 * (1 + 32 * deTurckArmFibreConst n ^ 2))
+    32 * deTurckTermFibreConst n ^ 2 / (2 * (1 + 32 * deTurckTermFibreConst n ^ 2))
     with hCbudget_def
   have hCbudget_nn : 0 ≤ Cbudget := by rw [hCbudget_def]; positivity
   obtain ⟨εwrap, hεw_nn, hεw_cap, Cthird, Ctame, hCth_nn, hCt_nn, hmain⟩ :=
-    exists_deTurckSmoothRemainderDiff_eq_principalCometricArm_add_smallThirdArm_add_tame
+    exists_deTurckSmoothRemainderDiff_eq_principalCometricTerm_add_smallThirdTerm_add_tame
       (I := I) (M := M) g₀ g_bg a (by omega) hR₀ hδ_le13 hδ_fibre
   obtain ⟨Clower, hCl_nn, harm⟩ :=
-    deTurckPrincipalCometricArm_realize_ballUniform_spectralShift_le
+    deTurckPrincipalCometricTerm_realize_ballUniform_spectralShift_le
       (I := I) (M := M) g₀ a ha_super hR₀ hδ_le_thr hδ_fibre
   refine ⟨1 / 2 + Cbudget, fun k => Cthird k + Ctame k + Clower k,
     by linarith, ?_, fun k => by have := hCth_nn k; have := hCt_nn k; have := hCl_nn k; linarith,
@@ -7567,7 +7567,7 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
     have hεw_le : εwrap ≤ Cbudget := by
       refine le_trans (hεw_cap hδ_nn) ?_
       rw [hCbudget_def]
-      exact de_turck_arm_fibre_const_cube_mul_div_le_thirty_two hn1 hδ_le
+      exact de_turck_term_fibre_const_cube_mul_div_le_thirty_two hn1 hδ_le
     obtain ⟨third, tame, hid, hthird, htame⟩ := hmain T₀ hTsymm hball
     have hb3 := hthird k
     have hbt := htame k
@@ -7590,7 +7590,7 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
                     tensorHs_norm_smul]
                   simpa using hR₀)))‖
         = ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-            (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+            (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
                 (tensorSectionRealizeMetric (I := I) g₀ T₀
                   (lt_of_le_of_lt hδ_le13 (by norm_num : (1 : ℝ) / 3 < 1))
                   (hδ_fibre T₀ hball)) T₀
@@ -7609,13 +7609,13 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
                         from (zero_smul _ _).symm, smoothCcToTensorHs_smul,
                       tensorHs_norm_smul]
                     simpa using hR₀))) =
-            deTurckPrincipalCometricArm (I := I) (M := M) g₀
+            deTurckPrincipalCometricTerm (I := I) (M := M) g₀
                 (tensorSectionRealizeMetric (I := I) g₀ T₀
                   (lt_of_le_of_lt hδ_le13 (by norm_num : (1 : ℝ) / 3 < 1))
                   (hδ_fibre T₀ hball)) T₀
               + third + tame from hid]
       _ ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-              (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+              (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
                 (tensorSectionRealizeMetric (I := I) g₀ T₀
                   (lt_of_le_of_lt hδ_le13 (by norm_num : (1 : ℝ) / 3 < 1))
                   (hδ_fibre T₀ hball)) T₀)‖ +
@@ -7625,7 +7625,7 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
           exact le_trans (norm_add_le _ _) (by
             have := norm_add_le
               (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-                (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+                (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
                   (tensorSectionRealizeMetric (I := I) g₀ T₀
                     (lt_of_le_of_lt hδ_le13 (by norm_num : (1 : ℝ) / 3 < 1))
                     (hδ_fibre T₀ hball)) T₀))
@@ -7638,7 +7638,7 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
               Cthird k * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ)) T₀‖) +
             Ctame k * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ)) T₀‖ := by
           have harm' : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
-              (deTurckPrincipalCometricArm (I := I) (M := M) g₀
+              (deTurckPrincipalCometricTerm (I := I) (M := M) g₀
                 (tensorSectionRealizeMetric (I := I) g₀ T₀
                   (lt_of_le_of_lt hδ_le13 (by norm_num : (1 : ℝ) / 3 < 1))
                   (hδ_fibre T₀ hball)) T₀)‖ ≤

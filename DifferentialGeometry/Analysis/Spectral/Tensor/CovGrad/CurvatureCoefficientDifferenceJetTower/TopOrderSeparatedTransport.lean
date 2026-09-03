@@ -964,20 +964,20 @@ theorem exists_quadraticConnectionDifferenceCc_iteratedCovGrad_riemannianFiberNo
   have hWfin_nn : 0 ≤ Wfin := Combinatorics.boundedFactorGridWindow_nonneg b hb (m + 1) (m + 3)
   have hquad : quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 1 2 3
-        (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-          (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
+        (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+          (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))
         (connectionDifferenceSection (I := I) g₁ g₀) := rfl
   rw [hquad]
   refine le_trans (riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalProductGrid_rankLeft_le
     (I := I) (M := M) g₀ m 1 2 3
-    (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-      (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
+    (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+      (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))
     (connectionDifferenceSection (I := I) g₁ g₀) x) ?_
   have hterm : ∀ a ∈ Finset.range (m + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + a) x
           ((iteratedCovGrad (I := I) g₀ 2 3 a
-            (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-              (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
+            (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+              (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
         (∑ l ∈ Finset.range (m + 1 - a),
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 1 2 l
@@ -989,11 +989,11 @@ theorem exists_quadraticConnectionDifferenceCc_iteratedCovGrad_riemannianFiberNo
     rw [Finset.mem_range] at ha
     have hΦ : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + a) x
         ((iteratedCovGrad (I := I) g₀ 2 3 a
-          (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) ≤
+          (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+            (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))).toSection x) ≤
         ((Module.finrank ℝ E : ℝ) * CA a) *
           Combinatorics.boundedFactorGridWindow b (m + 1) (a + 2) := by
-      refine le_trans (riemannianFiberNormSq_iteratedCovGrad_armSlotPass_connectionDifferenceArm_le (I := I) (M := M)
+      refine le_trans (riemannianFiberNormSq_iteratedCovGrad_termSlotPass_connectionDifferenceTerm_le (I := I) (M := M)
         g₀ g₁ a x) ?_
       rw [mul_assoc]
       refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
@@ -1023,8 +1023,8 @@ theorem exists_quadraticConnectionDifferenceCc_iteratedCovGrad_riemannianFiberNo
       omega
     calc riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + a) x
             ((iteratedCovGrad (I := I) g₀ 2 3 a
-              (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-                (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
+              (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+                (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
           (∑ l ∈ Finset.range (m + 1 - a),
             riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 1 2 l
@@ -1052,8 +1052,8 @@ theorem exists_quadraticConnectionDifferenceCc_iteratedCovGrad_riemannianFiberNo
       (∑ a ∈ Finset.range (m + 1),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + a) x
             ((iteratedCovGrad (I := I) g₀ 2 3 a
-              (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-                (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
+              (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+                (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
           ∑ l ∈ Finset.range (m + 1 - a),
             riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 1 2 l

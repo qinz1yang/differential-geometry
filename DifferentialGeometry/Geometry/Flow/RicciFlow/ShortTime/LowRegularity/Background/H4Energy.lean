@@ -614,7 +614,7 @@ private theorem exists_galerkin_energy_four_bound_of_three_bound_parameters_raw_
             hδ hCtop hB1 hρ hP hreal
             ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i := by
       intro i hi
-      rw [galForceArmBackground (I := I) (M := M) g₀ g_bg hδ hδ0 hδ3
+      rw [galForceTermBackground (I := I) (M := M) g₀ g_bg hδ hδ0 hδ3
         hCtop hB1 hρ hP hreal hcore
         (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i, if_pos hi]
       simp only [galerkinActionVectorBackground]

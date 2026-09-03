@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Metric.Completeness
-import DifferentialGeometry.Geometry.Exponential.IntrinsicExp
-import DifferentialGeometry.Geometry.Exponential.IntrinsicExpContinuity
+import DifferentialGeometry.Geometry.Exponential.IntrinsicExponential
+import DifferentialGeometry.Geometry.Exponential.IntrinsicExponentialContinuity
 import DifferentialGeometry.Geometry.Exponential.GaussLemma
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation

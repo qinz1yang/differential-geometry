@@ -1285,7 +1285,7 @@ theorem ricEndoRaisedFib_metricPerturbationPath_jointContMDiffOn [BoundarylessMa
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem ricciArmOrder0CurvCoeffFibSlot0_metricPerturbationPath_jointContMDiffOn [BoundarylessManifold I M]
+theorem ricciOrderZeroCurvCoeffFibSlot0_metricPerturbationPath_jointContMDiffOn [BoundarylessManifold I M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1294,7 +1294,7 @@ theorem ricciArmOrder0CurvCoeffFibSlot0_metricPerturbationPath_jointContMDiffOn 
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1
         (Tensor0SBundle.TensorRSSpace.ofCLM
-          (ricciArmOrder0CurvCoeffFibSlot (I := I)
+          (ricciOrderZeroCurvCoeffFibSlot (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 0 p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
@@ -1303,7 +1303,7 @@ theorem ricciArmOrder0CurvCoeffFibSlot0_metricPerturbationPath_jointContMDiffOn 
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
-    (φ := fun p : M × ℝ => ricciArmOrder0CurvCoeffFibSlot (I := I)
+    (φ := fun p : M × ℝ => ricciOrderZeroCurvCoeffFibSlot (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 0 p.1)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
   intro Y
@@ -1320,11 +1320,11 @@ theorem ricciArmOrder0CurvCoeffFibSlot0_metricPerturbationPath_jointContMDiffOn 
     (Λ := fun p : M × ℝ => ricEndoRaisedFib (I := I) (g_s p.2) p.1) hric
     (A := fun p : M × ℝ => Y p.1) hYjoint
   refine happ.congr (fun p _ => ?_)
-  rw [ricciArmOrder0CurvCoeffFibSlot]
+  rw [ricciOrderZeroCurvCoeffFibSlot]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem ricciArmOrder0CurvCoeffFibSlot1_metricPerturbationPath_jointContMDiffOn [BoundarylessManifold I M]
+theorem ricciOrderZeroCurvCoeffFibSlot1_metricPerturbationPath_jointContMDiffOn [BoundarylessManifold I M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1333,7 +1333,7 @@ theorem ricciArmOrder0CurvCoeffFibSlot1_metricPerturbationPath_jointContMDiffOn 
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1
         (Tensor0SBundle.TensorRSSpace.ofCLM
-          (ricciArmOrder0CurvCoeffFibSlot (I := I)
+          (ricciOrderZeroCurvCoeffFibSlot (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 1 p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
@@ -1342,7 +1342,7 @@ theorem ricciArmOrder0CurvCoeffFibSlot1_metricPerturbationPath_jointContMDiffOn 
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
-    (φ := fun p : M × ℝ => ricciArmOrder0CurvCoeffFibSlot (I := I)
+    (φ := fun p : M × ℝ => ricciOrderZeroCurvCoeffFibSlot (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 1 p.1)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
   intro Y
@@ -1359,10 +1359,10 @@ theorem ricciArmOrder0CurvCoeffFibSlot1_metricPerturbationPath_jointContMDiffOn 
     (Λ := fun p : M × ℝ => ricEndoRaisedFib (I := I) (g_s p.2) p.1) hric
     (A := fun p : M × ℝ => Y p.1) hYjoint
   refine happ.congr (fun p _ => ?_)
-  rw [ricciArmOrder0CurvCoeffFibSlot]
+  rw [ricciOrderZeroCurvCoeffFibSlot]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem ricciArmOrder0CurvCoeffFib_metricPerturbationPath_jointContMDiffOn [BoundarylessManifold I M]
+theorem ricciOrderZeroCurvCoeffFib_metricPerturbationPath_jointContMDiffOn [BoundarylessManifold I M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1371,24 +1371,24 @@ theorem ricciArmOrder0CurvCoeffFib_metricPerturbationPath_jointContMDiffOn [Boun
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1
         (Tensor0SBundle.TensorRSSpace.ofCLM
-          (ricciArmOrder0CurvCoeffFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1)))
+          (ricciOrderZeroCurvCoeffFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hslot0 := ricciArmOrder0CurvCoeffFibSlot0_metricPerturbationPath_jointContMDiffOn
+  have hslot0 := ricciOrderZeroCurvCoeffFibSlot0_metricPerturbationPath_jointContMDiffOn
     (I := I) g₀ T T' hδ hδ'
-  have hslot1 := ricciArmOrder0CurvCoeffFibSlot1_metricPerturbationPath_jointContMDiffOn
+  have hslot1 := ricciOrderZeroCurvCoeffFibSlot1_metricPerturbationPath_jointContMDiffOn
     (I := I) g₀ T T' hδ hδ'
   have hadd := jointTotalSpaceRS_add (I := I) (r := 2) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (A := fun p : M × ℝ => Tensor0SBundle.TensorRSSpace.ofCLM
-      (ricciArmOrder0CurvCoeffFibSlot (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 0 p.1))
+      (ricciOrderZeroCurvCoeffFibSlot (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 0 p.1))
     (B := fun p : M × ℝ => Tensor0SBundle.TensorRSSpace.ofCLM
-      (ricciArmOrder0CurvCoeffFibSlot (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 1 p.1))
+      (ricciOrderZeroCurvCoeffFibSlot (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 1 p.1))
     hslot0 hslot1
   refine hadd.congr (fun p _ => ?_)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem ricciArmOrder0CurvCoeff_metricPerturbationPath_jointContMDiff [BoundarylessManifold I M]
+theorem ricciOrderZeroCurvCoeff_metricPerturbationPath_jointContMDiff [BoundarylessManifold I M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1396,15 +1396,15 @@ theorem ricciArmOrder0CurvCoeff_metricPerturbationPath_jointContMDiff [Boundaryl
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1
-        ((ricciArmOrder0CurvCoeff (I := I) g₀
+        ((ricciOrderZeroCurvCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hfib := ricciArmOrder0CurvCoeffFib_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+  have hfib := ricciOrderZeroCurvCoeffFib_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
   refine hfib.congr (fun p _ => ?_)
-  rw [ricciArmOrder0CurvCoeff_toSection]
+  rw [ricciOrderZeroCurvCoeff_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem ricciArmOrder0CurvCoeff_metricPerturbationPath_toModel_continuous [BoundarylessManifold I M]
+theorem ricciOrderZeroCurvCoeff_metricPerturbationPath_toModel_continuous [BoundarylessManifold I M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1412,13 +1412,13 @@ theorem ricciArmOrder0CurvCoeff_metricPerturbationPath_toModel_continuous [Bound
     (x : M) :
     ContinuousOn (fun t : ℝ =>
       Tensor0SBundle.TensorRSSpace.toModel
-        ((ricciArmOrder0CurvCoeff (I := I) g₀
+        ((ricciOrderZeroCurvCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t)).toSection x))
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hjoint := ricciArmOrder0CurvCoeff_metricPerturbationPath_jointContMDiff
+  have hjoint := ricciOrderZeroCurvCoeff_metricPerturbationPath_jointContMDiff
     (I := I) g₀ T T' hδ hδ'
   exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 2 2
-    (fun t => ricciArmOrder0CurvCoeff (I := I) g₀
+    (fun t => ricciOrderZeroCurvCoeff (I := I) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t)) (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hjoint x
 
 end RicciLinearization

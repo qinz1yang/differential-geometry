@@ -464,7 +464,7 @@ private lemma fiberNormSqComponent_covGrad_raisedKoszul
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 omit [FiniteDimensional ℝ E] in
-private lemma sqrt_g0_inner_add_le_arm
+private lemma sqrt_g0_inner_add_le
     (g₀ : SmoothRiemannianMetric I M) (x : M) (a b : TangentSpace I x) :
     Real.sqrt (g₀.inner x (a + b) (a + b)) ≤
       Real.sqrt (g₀.inner x a a) + Real.sqrt (g₀.inner x b b) := by
@@ -1557,7 +1557,7 @@ private lemma sqrt_inner_covDerivConnectionDifference_le
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma sqrt_inner_covDerivRaisedKoszul_endoArm_le
+private lemma sqrt_inner_covDerivRaisedKoszul_endoTerm_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
       (T : SmoothCcTensor g₀ 0 2)
@@ -1650,7 +1650,7 @@ private lemma sqrt_inner_covDerivRaisedKoszulVec_le
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   obtain ⟨Carm, hCarm0, harm⟩ :=
-    sqrt_inner_covDerivRaisedKoszul_endoArm_le (I := I) (M := M) g₀ hδ₀0 hδ₀
+    sqrt_inner_covDerivRaisedKoszul_endoTerm_le (I := I) (M := M) g₀ hδ₀0 hδ₀
   obtain ⟨Ccdc, hCcdc0, hcdc⟩ :=
     sqrt_inner_covDerivConnectionDifference_le (I := I) (M := M) g₀ hδ₀0 hδ₀
   refine ⟨Carm + (1 + δ₀) * Ccdc, by positivity, ?_⟩
@@ -1704,7 +1704,7 @@ private lemma sqrt_inner_covDerivRaisedKoszulVec_le
       (Real.sqrt (g₀.inner x D D)) hδ0 hδ hCcdc0 hR1Q_nn hneumann hDbound'
   have htri : Real.sqrt (g₀.inner x (A + B) (A + B)) ≤ NA + NB := by
     rw [hNA_def, hNB_def]
-    exact sqrt_g0_inner_add_le_arm (I := I) (M := M) g₀ x A B
+    exact sqrt_g0_inner_add_le (I := I) (M := M) g₀ x A B
   rw [hsplit]
   refine htri.trans ?_
   have hG1sq_le := sq_le_one_add_mul_of_le G1 Q R hG1_nn hR0 hjet' hG1_le_Q
@@ -1851,36 +1851,36 @@ theorem riemannianFiberNormSq_iteratedCovGrad_one_raisedKoszul_le_of_lt_one
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-private lemma fiberNormSqComponent_flatArmCc
+private lemma fiberNormSqComponent_flatTermCc
     (g₀ g₁ : SmoothRiemannianMetric I M) (kind : Bool) (x : M) {n : ℕ}
     (e : Fin n → TangentSpace I x)
     (K : Fin 1 → Fin n) (J : Fin 2 → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g₀ x 1 2
-        ((flatArmCc (I := I) g₀ g₁ kind).toSection x) n e K J =
+        ((flatTermCc (I := I) g₀ g₁ kind).toSection x) n e K J =
       g₀.inner x
-        (flatArmVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))) (e (J 0)))
+        (flatTermVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))) (e (J 0)))
         (e (J 1)) := by
   rw [show fiberNormSqComponent (I := I) (M := M) g₀ x 1 2
-        ((flatArmCc (I := I) g₀ g₁ kind).toSection x) n e K J =
+        ((flatTermCc (I := I) g₀ g₁ kind).toSection x) n e K J =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (flatArmCc (I := I) g₀ g₁ kind).toSection x)
+          (flatTermCc (I := I) g₀ g₁ kind).toSection x)
         (coframeS (I := I) (M := M) g₀ x 1 e K))
         (fun k => e (J k)) from rfl]
   rw [coframeS_one_eq_g0FlatCLM (I := I) (M := M) g₀ x e K]
-  rw [flatArmCc_toSection]
+  rw [flatTermCc_toSection]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        flatArmFib (I := I) g₀ g₁ kind x) (g0FlatCLM (I := I) g₀ x (e (K 0)))
-      = flatArmPairing (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))) from rfl]
-  rw [show (flatArmPairing (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))))
+        flatTermFib (I := I) g₀ g₁ kind x) (g0FlatCLM (I := I) g₀ x (e (K 0)))
+      = flatTermPairing (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))) from rfl]
+  rw [show (flatTermPairing (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))))
         (fun k => e (J k))
       = g₀.inner x
-          (flatArmVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))) (e (J 0)))
-          (e (J 1)) from flatArmPairing_apply (I := I) g₀ g₁ kind x _ _]
+          (flatTermVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))) (e (J 0)))
+          (e (J 1)) from flatTermPairing_apply (I := I) g₀ g₁ kind x _ _]
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma sqrt_inner_flatArmVec_le
+private lemma sqrt_inner_flatTermVec_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
     ∃ Carm : ℝ, 0 ≤ Carm ∧ ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
       (_h : ∀ y v w, g₁.inner y v w =
@@ -1893,8 +1893,8 @@ private lemma sqrt_inner_flatArmVec_le
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
         Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       Real.sqrt (g₀.inner x
-          (flatArmVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x w) v0)
-          (flatArmVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x w) v0)) ≤
+          (flatTermVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x w) v0)
+          (flatTermVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x w) v0)) ≤
         Carm *
           ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
               Tensor0SBundle.TensorRSSpace 0 3 I x)‖ *
@@ -1931,14 +1931,14 @@ private lemma sqrt_inner_flatArmVec_le
   have hge1 : (1 : ℝ) ≤ 1 / (1 - δ₀) := by
     rw [le_div_iff₀ hceil0]; linarith
   have hbound_target : Real.sqrt (g₀.inner x
-      (flatArmVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x w) v0)
-      (flatArmVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x w) v0)) ≤
+      (flatTermVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x w) v0)
+      (flatTermVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x w) v0)) ≤
       C₀ * G * (1 / (1 - δ₀)) ^ 2 * Nv0 := by
     cases kind with
     | true =>
-        have hval : flatArmVec (I := I) g₀ g₁ true x (g0FlatCLM (I := I) g₀ x w) v0 =
+        have hval : flatTermVec (I := I) g₀ g₁ true x (g0FlatCLM (I := I) g₀ x w) v0 =
             - PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x s v0 := by
-          rw [flatArmVec, if_pos rfl, hs_def]
+          rw [flatTermVec, if_pos rfl, hs_def]
         rw [hval]
         rw [show g₀.inner x (- PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x s v0)
               (- PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x s v0) =
@@ -1962,9 +1962,9 @@ private lemma sqrt_inner_flatArmVec_le
         set Dfun : TangentSpace I x →L[ℝ] ℝ :=
           (-(cotangentToCLM (I := I) (g0FlatCLM (I := I) g₀ x w)).comp
               ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).flip v0)) with hDfun_def
-        have hval : flatArmVec (I := I) g₀ g₁ false x (g0FlatCLM (I := I) g₀ x w) v0 =
+        have hval : flatTermVec (I := I) g₀ g₁ false x (g0FlatCLM (I := I) g₀ x w) v0 =
             inverseMetricSharpFib (I := I) g₁ x (dualToCotangent (I := I) Dfun.toLinearMap) := by
-          rw [flatArmVec, if_neg (by decide : ¬ (false = true)), hDfun_def]
+          rw [flatTermVec, if_neg (by decide : ¬ (false = true)), hDfun_def]
         rw [hval]
         set p : TangentSpace I x :=
           inverseMetricSharpFib (I := I) g₀ x (dualToCotangent (I := I) Dfun.toLinearMap)
@@ -2053,7 +2053,7 @@ private lemma sqrt_inner_flatArmVec_le
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_flatArmCc_le_of_lt_one
+theorem riemannianFiberNormSq_flatTermCc_le_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) (kind : Bool) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
       (T : SmoothCcTensor g₀ 0 2)
@@ -2066,7 +2066,7 @@ theorem riemannianFiberNormSq_flatArmCc_le_of_lt_one
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
         Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x
-          ((flatArmCc (I := I) g₀ g₁ kind).toSection x) ≤
+          ((flatTermCc (I := I) g₀ g₁ kind).toSection x) ≤
         C ^ 2 * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
             Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ^ 2 := by
   classical
@@ -2074,7 +2074,7 @@ theorem riemannianFiberNormSq_flatArmCc_le_of_lt_one
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨Carm, hCarm0, harm⟩ :=
-    sqrt_inner_flatArmVec_le (I := I) (M := M) g₀ hδ₀0 hδ₀
+    sqrt_inner_flatTermVec_le (I := I) (M := M) g₀ hδ₀0 hδ₀
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * Carm, by positivity, ?_⟩
   intro g₁ T h δ hδ hδ0 hbound x
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
@@ -2084,15 +2084,15 @@ theorem riemannianFiberNormSq_flatArmCc_le_of_lt_one
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hG_def
   have hG_nn : 0 ≤ G := norm_nonneg _
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ 1 2 x
-    ((flatArmCc (I := I) g₀ g₁ kind).toSection x) e bse hnE hbse horth]
+    ((flatTermCc (I := I) g₀ g₁ kind).toSection x) e bse hnE hbse horth]
   have heach : ∀ (K : Fin 1 → Fin n) (J : Fin 2 → Fin n),
       (fiberNormSqComponent (I := I) (M := M) g₀ x 1 2
-        ((flatArmCc (I := I) g₀ g₁ kind).toSection x) n e K J) ^ 2 ≤
+        ((flatTermCc (I := I) g₀ g₁ kind).toSection x) n e K J) ^ 2 ≤
         Carm ^ 2 * G ^ 2 := by
     intro K J
-    rw [fiberNormSqComponent_flatArmCc (I := I) g₀ g₁ kind x e K J]
+    rw [fiberNormSqComponent_flatTermCc (I := I) g₀ g₁ kind x e K J]
     set u : TangentSpace I x :=
-      flatArmVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))) (e (J 0))
+      flatTermVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))) (e (J 0))
       with hu_def
     have hcs := metric_inner_cauchy_schwarz_sq (I := I) (M := M) g₀ x u (e (J 1))
     have hJ1 : g₀.inner x (e (J 1)) (e (J 1)) = 1 := by rw [horth (J 1) (J 1)]; simp
@@ -2115,7 +2115,7 @@ theorem riemannianFiberNormSq_flatArmCc_le_of_lt_one
       _ = Carm ^ 2 * G ^ 2 := by ring
   calc ∑ K : Fin 1 → Fin n, ∑ J : Fin 2 → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x 1 2
-          ((flatArmCc (I := I) g₀ g₁ kind).toSection x) n e K J) ^ 2
+          ((flatTermCc (I := I) g₀ g₁ kind).toSection x) n e K J) ^ 2
       ≤ ∑ K : Fin 1 → Fin n, ∑ J : Fin 2 → Fin n, Carm ^ 2 * G ^ 2 :=
         Finset.sum_le_sum (fun K _ => Finset.sum_le_sum (fun J _ => heach K J))
     _ = (Fintype.card (Fin 1 → Fin n) : ℝ) * (Fintype.card (Fin 2 → Fin n) : ℝ) *
@@ -2161,15 +2161,15 @@ theorem riemannianFiberNormSq_iteratedCovGrad_one_sharpFlatEndoCc_le_of_lt_one
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨Ctrue, hCtrue0, harmTrue⟩ :=
-    riemannianFiberNormSq_flatArmCc_le_of_lt_one (I := I) (M := M) g₀ hδ₀0 hδ₀ true
+    riemannianFiberNormSq_flatTermCc_le_of_lt_one (I := I) (M := M) g₀ hδ₀0 hδ₀ true
   obtain ⟨Cfalse, hCfalse0, harmFalse⟩ :=
-    riemannianFiberNormSq_flatArmCc_le_of_lt_one (I := I) (M := M) g₀ hδ₀0 hδ₀ false
+    riemannianFiberNormSq_flatTermCc_le_of_lt_one (I := I) (M := M) g₀ hδ₀0 hδ₀ false
   refine ⟨Real.sqrt (2 * Ctrue ^ 2 + 2 * Cfalse ^ 2), by positivity, ?_⟩
   intro g₁ T h δ hδ hδ0 hbound x
   set G : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hG_def
   have hG_nn : 0 ≤ G := norm_nonneg _
-  have harms := riemannianFiberNormSq_iteratedCovGrad_sharpFlatEndoCc_succ_le_arms (I := I) (M := M)
+  have harms := riemannianFiberNormSq_iteratedCovGrad_sharpFlatEndoCc_succ_le_terms (I := I) (M := M)
     g₀ g₁ 0 x
   rw [iteratedCovGrad_zero, iteratedCovGrad_zero] at harms
   have hbtrue := harmTrue g₁ T h hδ hδ0 hbound x
@@ -2177,14 +2177,14 @@ theorem riemannianFiberNormSq_iteratedCovGrad_one_sharpFlatEndoCc_le_of_lt_one
   rw [← hG_def] at hbtrue hbfalse
   refine harms.trans ?_
   have hcombine : 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 ((1 + 1) + 0) x
-        ((flatArmCc (I := I) g₀ g₁ true).toSection x) +
+        ((flatTermCc (I := I) g₀ g₁ true).toSection x) +
       2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 ((1 + 1) + 0) x
-        ((flatArmCc (I := I) g₀ g₁ false).toSection x) ≤
+        ((flatTermCc (I := I) g₀ g₁ false).toSection x) ≤
       2 * (Ctrue ^ 2 * G ^ 2) + 2 * (Cfalse ^ 2 * G ^ 2) := by
     have hbtrue' : riemannianFiberNormSq (I := I) (M := M) g₀ 1 ((1 + 1) + 0) x
-        ((flatArmCc (I := I) g₀ g₁ true).toSection x) ≤ Ctrue ^ 2 * G ^ 2 := hbtrue
+        ((flatTermCc (I := I) g₀ g₁ true).toSection x) ≤ Ctrue ^ 2 * G ^ 2 := hbtrue
     have hbfalse' : riemannianFiberNormSq (I := I) (M := M) g₀ 1 ((1 + 1) + 0) x
-        ((flatArmCc (I := I) g₀ g₁ false).toSection x) ≤ Cfalse ^ 2 * G ^ 2 := hbfalse
+        ((flatTermCc (I := I) g₀ g₁ false).toSection x) ≤ Cfalse ^ 2 * G ^ 2 := hbfalse
     linarith [hbtrue', hbfalse']
   refine hcombine.trans ?_
   have hCsq : Real.sqrt (2 * Ctrue ^ 2 + 2 * Cfalse ^ 2) ^ 2 = 2 * Ctrue ^ 2 + 2 * Cfalse ^ 2 :=

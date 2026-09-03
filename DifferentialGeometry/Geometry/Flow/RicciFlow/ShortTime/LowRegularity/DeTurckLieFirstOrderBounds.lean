@@ -234,7 +234,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem fix_eq_neg
     (g₀ gB : SmoothRiemannianMetric I M) :
-    lieArm1FixCd (I := I) (M := M) g₀ gB =
+    lieFirstOrderFixCd (I := I) (M := M) g₀ gB =
       -(connectionDifferenceSection (I := I) gB g₀) := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -321,7 +321,7 @@ theorem lieFix_h2_uniform
         MetricCovDerivOrderBoundOn (I := I) Set.univ 3 g₀ gBase Λ →
         (∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g₀ 1 2 j
-            (lieArm1FixCd (I := I) (M := M) g₀ gBase)‖ ^ 2) ≤ F ^ 2 := by
+            (lieFirstOrderFixCd (I := I) (M := M) g₀ gBase)‖ ^ 2) ≤ F ^ 2 := by
   obtain ⟨F, hF, hfix⟩ :=
     connFix_h2_uniform (E := E) (H := H) (I := I) (M := M) hDim gBase hΛ
   refine ⟨F, hF, ?_⟩
@@ -384,10 +384,10 @@ theorem pbLow_h2_uniform
     (Finset.sum_le_sum hWterm).trans hP
   have hFix : (∑ j ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 1 2 j
-        (lieArm1FixCd (I := I) (M := M) g₀ gBase)‖ ^ 2) ≤ F ^ 2 := by
+        (lieFirstOrderFixCd (I := I) (M := M) g₀ gBase)‖ ^ 2) ≤ F ^ 2 := by
     exact hfix g₀ hEq hjet1 hjet2 hjet3
   have hout := hprod g₀ hEq hjet1 hjet2
-    (lieArm1FixCd (I := I) (M := M) g₀ gBase) W F R
+    (lieFirstOrderFixCd (I := I) (M := M) g₀ gBase) W F R
     hF hR hFix hW
   have heq : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i
@@ -395,7 +395,7 @@ theorem pbLow_h2_uniform
       ∑ i ∈ Finset.range 3,
         ‖iteratedCovGrad (I := I) g₀ 1 2 i
           (ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 2
-            (lieArm1FixCd (I := I) (M := M) g₀ gBase) W)‖ ^ 2 := by
+            (lieFirstOrderFixCd (I := I) (M := M) g₀ gBase) W)‖ ^ 2 := by
     apply Finset.sum_congr rfl
     intro i hi
     rw [SmoothCcTensor.norm_def, SmoothCcTensor.norm_def,
@@ -549,16 +549,16 @@ private theorem lie_kappa_unit
     (g₀ g₁ gB : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 3 → E) :
     unitModel (I := I) (M := M) g₀ 3
-        (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB) x m =
+        (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB) x m =
       g₁.inner x (PDE.DeTurck.connectionDifference (I := I) gB g₁ x
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1)))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2)) := by
   rw [unitModel]
   change Tensor0SSpace.toModel
-      (((deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB).toSection x)
+      (((deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB).toSection x)
         (unitTensor (I := I) (M := M) x)) m = _
-  rw [show ((deTurckLieArmOneBackgroundLoweredConnectionDifference
+  rw [show ((deTurckLieFirstOrderBackgroundLoweredConnectionDifference
       (I := I) (M := M) g₀ g₁ gB).toSection x)
       (unitTensor (I := I) (M := M) x) =
       (MixedSection.eval₀ (F := E)
@@ -575,7 +575,7 @@ private theorem lie_kappa_unit
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem lie_kappa_eq
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
-    deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB =
+    deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB =
       -(lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ gB) := by
   rw [show -(lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ gB) =
       lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ gB -
@@ -866,7 +866,7 @@ private theorem psi_h2_tame
         jet (I := I) (M := M) g₀ 0 2 3 P ≤ R ^ 2 →
         jet (I := I) (M := M) g₀ 0 2 4 P ≤ A ^ 2 →
         jet (I := I) (M := M) g₀ 1 2 3
-          (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB) ≤
+          (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB) ≤
             (B0 R + B1 R * A) ^ 2 := by
   classical
   obtain ⟨BP, hBP, hpb⟩ :=
@@ -926,18 +926,18 @@ private theorem psi_h2_tame
       simp only [K0, K1] ; ring
   let Raised : SmoothCcTensor g₀ 1 2 :=
     cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
-      (domDomCongrSection (I := I) g₀ lieArm1RhoSlot0
-        (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB))
+      (domDomCongrSection (I := I) g₀ lieFirstOrderRhoSlot0
+        (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB))
   have hRaised : jet (I := I) (M := M) g₀ 1 2 3 Raised ≤
       (K0 R + K1 R * A) ^ 2 := by
     calc
       _ = jet (I := I) (M := M) g₀ 0 3 3
-          (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB) := by
+          (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB) := by
         apply Finset.sum_congr rfl
         intro i hi
         simpa only [Raised] using
-          raise_dom_normSq (I := I) (M := M) g₀ lieArm1RhoSlot0
-            (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB) i
+          raise_dom_normSq (I := I) (M := M) g₀ lieFirstOrderRhoSlot0
+            (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB) i
       _ = jet (I := I) (M := M) g₀ 0 3 3
           (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ gB) := by
         apply Finset.sum_congr rfl
@@ -950,7 +950,7 @@ private theorem psi_h2_tame
     (K0 R + K1 R * A) (BS R)
     (add_nonneg (hK0 R hR) (mul_nonneg (hK1 R hR) hA))
     (hBS R hR) hRaised hSharp
-  have hdef : deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB =
+  have hdef : deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB =
       ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 2 Raised
         (sharpFlatEndoCc (I := I) g₀ g₁) := by
     rfl
@@ -988,7 +988,7 @@ private theorem psi_h2_unif
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) ≤ A ^ 2 →
           (∑ i ∈ Finset.range 3,
             ‖iteratedCovGrad (I := I) g₀ 1 2 i
-              (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase)‖ ^ 2) ≤
+              (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase)‖ ^ 2) ≤
             (B0 R + B1 R * A) ^ 2 := by
   classical
   have hΛ0 : 0 ≤ Λ := le_trans (by norm_num) hΛ
@@ -1060,18 +1060,18 @@ private theorem psi_h2_unif
         ring
   let Raised : SmoothCcTensor g₀ 1 2 :=
     cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
-      (domDomCongrSection (I := I) g₀ lieArm1RhoSlot0
-        (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gBase))
+      (domDomCongrSection (I := I) g₀ lieFirstOrderRhoSlot0
+        (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gBase))
   have hRaised : jet (I := I) (M := M) g₀ 1 2 3 Raised ≤
       (K0 R + K1 R * A) ^ 2 := by
     calc
       _ = jet (I := I) (M := M) g₀ 0 3 3
-          (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gBase) := by
+          (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gBase) := by
         apply Finset.sum_congr rfl
         intro i hi
         simpa only [Raised] using
-          raise_dom_normSq (I := I) (M := M) g₀ lieArm1RhoSlot0
-            (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gBase) i
+          raise_dom_normSq (I := I) (M := M) g₀ lieFirstOrderRhoSlot0
+            (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gBase) i
       _ = jet (I := I) (M := M) g₀ 0 3 3
           (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ gBase) := by
         apply Finset.sum_congr rfl
@@ -1086,7 +1086,7 @@ private theorem psi_h2_unif
     (K0 R + K1 R * A) (BS R)
     (add_nonneg (hK0 R hR) (mul_nonneg (hK1 R hR) hA))
     (hBS R hR) hRaised hSharp
-  have hdef : deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase =
+  have hdef : deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase =
       ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 2 Raised
         (sharpFlatEndoCc (I := I) g₀ g₁) := by
     rfl
@@ -1240,7 +1240,7 @@ theorem deTurckLieFirstOrder_h2_tame_bound
           ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) ≤ A ^ 2 →
         (∑ i ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-            (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ gB)‖ ^ 2) ≤
+            (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ gB)‖ ^ 2) ≤
           (B0 R + B1 R * A) ^ 2 := by
   classical
   obtain ⟨Bt, hBt, htrace⟩ :=
@@ -1254,7 +1254,7 @@ theorem deTurckLieFirstOrder_h2_tame_bound
   let S : ℝ := Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 2)
   have hS : 0 ≤ S := Real.sqrt_nonneg _
   let FixCd : SmoothCcTensor g₀ 1 2 :=
-    lieArm1FixCd (I := I) (M := M) g₀ gB
+    lieFirstOrderFixCd (I := I) (M := M) g₀ gB
   let QF : ℝ := jet (I := I) (M := M) g₀ 1 2 3 FixCd
   have hQF : 0 ≤ QF := Finset.sum_nonneg fun i _ => sq_nonneg _
   let AF : ℝ := Real.sqrt QF
@@ -1327,7 +1327,7 @@ theorem deTurckLieFirstOrder_h2_tame_bound
           (traceHessianCoeff (I := I) (M := M) g₀ g₁) := by
         apply Finset.sum_congr rfl
         intro i hi
-        exact lieArm1_normSq_iteratedCovGrad_dLTC_eq
+        exact lieFirstOrder_normSq_iteratedCovGrad_dLTC_eq
           (I := I) (M := M) g₀ g₁ σ i
       _ ≤ (Bt R) ^ 2 := hTraceH
   let Qc : ℝ := Bc0 R + Bc1 R * A
@@ -1348,7 +1348,7 @@ theorem deTurckLieFirstOrder_h2_tame_bound
   have hQp : 0 ≤ Qp :=
     add_nonneg (hBp0 R hR) (mul_nonneg (hBp1 R hR) hA)
   have hPsi : jet (I := I) (M := M) g₀ 1 2 3
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB) ≤ Qp ^ 2 :=
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB) ≤ Qp ^ 2 :=
     hpsi g₁ P htie hδ_le hδ_nonneg hbound R A hR hA hP2 hP3
   let Qg : ℝ := D0 R + D1 R * A
   have hQg : 0 ≤ Qg :=
@@ -1357,8 +1357,8 @@ theorem deTurckLieFirstOrder_h2_tame_bound
     (connectionDifferenceSection (I := I) g₁ g₀) FixCd Qc AF
     hQc hAF hConn hFix
   have hBackground : jet (I := I) (M := M) g₀ 1 2 3
-      (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gB) ≤ Qg ^ 2 := by
-    rw [lieArm1_connectionDifferenceBackground_decomp (I := I) (M := M) g₀ g₁ gB]
+      (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gB) ≤ Qg ^ 2 := by
+    rw [lieFirstOrder_connectionDifferenceBackground_decomp (I := I) (M := M) g₀ g₁ gB]
     convert hBackgroundRaw using 1 ; simp only [Qg, D0, D1, Qc] ; ring
   let Ac : ℝ := C0 R + C1 R * A
   let Ap : ℝ := P0 R + P1 R * A
@@ -1380,93 +1380,93 @@ theorem deTurckLieFirstOrder_h2_tame_bound
   have hPp : ∀ (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
       jet (I := I) (M := M) g₀ 3 2 3
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ σ ρ
-          (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB)) ≤ Ap ^ 2 := by
+          (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB)) ≤ Ap ^ 2 := by
     intro σ ρ
     have h := hpiece g₁ σ ρ
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB)
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB)
       (Bt R) Qp (hBt R hR) hQp (hTrace σ) hPsi
     convert h using 1 ; simp only [Ap, P0, P1, S, Qp] ; ring
   have hPg : ∀ (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
       jet (I := I) (M := M) g₀ 3 2 3
         (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ σ ρ
-          (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gB)) ≤ Ag ^ 2 := by
+          (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gB)) ≤ Ag ^ 2 := by
     intro σ ρ
     have h := hpiece g₁ σ ρ
-      (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gB)
+      (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gB)
       (Bt R) Qg (hBt R hR) hQg (hTrace σ) hBackground
     convert h using 1 ; simp only [Ag, G0, G1, S, Qg] ; ring
   let Z0 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC lieArm1RhoSlot0
-      (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gB)
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaC lieFirstOrderRhoSlot0
+      (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gB)
   let Z1 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaA
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z2 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaA
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaA
       (Equiv.refl (Fin 3))
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB)
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB)
   let Z3 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaC
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z4 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaD lieArm1RhoSlot0
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaD lieFirstOrderRhoSlot0
       (connectionDifferenceSection (I := I) g₁ g₀)
   let Z5 : SmoothCcTensor g₀ 3 2 :=
     deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4))
-      lieArm1RhoSlot1 (connectionDifferenceSection (I := I) g₁ g₀)
+      lieFirstOrderRhoSlot1 (connectionDifferenceSection (I := I) g₁ g₀)
   let Z6 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaF
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaF
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z7 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaASwap
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z8 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaASwap
       (Equiv.refl (Fin 3))
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB)
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gB)
   let Z9 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaCSwap
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaCSwap
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z10 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaDSwap lieArm1RhoSlot0
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaDSwap lieFirstOrderRhoSlot0
       (connectionDifferenceSection (I := I) g₁ g₀)
   let Z11 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaESwap lieArm1RhoSlot1
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaESwap lieFirstOrderRhoSlot1
       (connectionDifferenceSection (I := I) g₁ g₀)
   let Z12 : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaFSwap
+    deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaFSwap
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z13 : SmoothCcTensor g₀ 3 2 :=
     deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4))
-      lieArm1RhoSlot0 (connectionDifferenceSection (I := I) g₁ g₀)
+      lieFirstOrderRhoSlot0 (connectionDifferenceSection (I := I) g₁ g₀)
   have hZ0 : jet (I := I) (M := M) g₀ 3 2 3 Z0 ≤ Ag ^ 2 :=
-    hPg lieArm1SigmaC lieArm1RhoSlot0
+    hPg lieFirstOrderSigmaC lieFirstOrderRhoSlot0
   have hZ1 : jet (I := I) (M := M) g₀ 3 2 3 Z1 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaA (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaA (Equiv.refl (Fin 3))
   have hZ2 : jet (I := I) (M := M) g₀ 3 2 3 Z2 ≤ Ap ^ 2 :=
-    hPp lieArm1SigmaA (Equiv.refl (Fin 3))
+    hPp lieFirstOrderSigmaA (Equiv.refl (Fin 3))
   have hZ3 : jet (I := I) (M := M) g₀ 3 2 3 Z3 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaC (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaC (Equiv.refl (Fin 3))
   have hZ4 : jet (I := I) (M := M) g₀ 3 2 3 Z4 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaD lieArm1RhoSlot0
+    hPc lieFirstOrderSigmaD lieFirstOrderRhoSlot0
   have hZ5 : jet (I := I) (M := M) g₀ 3 2 3 Z5 ≤ Ac ^ 2 :=
-    hPc (Equiv.refl (Fin 4)) lieArm1RhoSlot1
+    hPc (Equiv.refl (Fin 4)) lieFirstOrderRhoSlot1
   have hZ6 : jet (I := I) (M := M) g₀ 3 2 3 Z6 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaF (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaF (Equiv.refl (Fin 3))
   have hZ7 : jet (I := I) (M := M) g₀ 3 2 3 Z7 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaASwap (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaASwap (Equiv.refl (Fin 3))
   have hZ8 : jet (I := I) (M := M) g₀ 3 2 3 Z8 ≤ Ap ^ 2 :=
-    hPp lieArm1SigmaASwap (Equiv.refl (Fin 3))
+    hPp lieFirstOrderSigmaASwap (Equiv.refl (Fin 3))
   have hZ9 : jet (I := I) (M := M) g₀ 3 2 3 Z9 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaCSwap (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaCSwap (Equiv.refl (Fin 3))
   have hZ10 : jet (I := I) (M := M) g₀ 3 2 3 Z10 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaDSwap lieArm1RhoSlot0
+    hPc lieFirstOrderSigmaDSwap lieFirstOrderRhoSlot0
   have hZ11 : jet (I := I) (M := M) g₀ 3 2 3 Z11 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaESwap lieArm1RhoSlot1
+    hPc lieFirstOrderSigmaESwap lieFirstOrderRhoSlot1
   have hZ12 : jet (I := I) (M := M) g₀ 3 2 3 Z12 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaFSwap (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaFSwap (Equiv.refl (Fin 3))
   have hZ13 : jet (I := I) (M := M) g₀ 3 2 3 Z13 ≤ Ac ^ 2 :=
-    hPc (Equiv.refl (Fin 4)) lieArm1RhoSlot0
+    hPc (Equiv.refl (Fin 4)) lieFirstOrderRhoSlot0
   let Q2 : ℝ := 2 * (Ac + Ap)
   let Q3 : ℝ := 2 * (Q2 + Ac)
   let Q4 : ℝ := 2 * (Q3 + Ac)
@@ -1521,7 +1521,7 @@ theorem deTurckLieFirstOrder_h2_tame_bound
     (Z0 + (Z1 + Z2 - Z3 - Z4 - Z5 - Z6) +
       (Z7 + Z8 - Z9 - Z10 - Z11 - Z12)) Z13
     Q8 Ac hQ8 hAc (by simpa only [Q8] using hOuter2) hZ13
-  rw [deTurckLieArm1Coeff_eq_lieArm1Piece_sum
+  rw [deTurckLieFirstOrderCoeff_eq_lieFirstOrderPiece_sum
     (I := I) (M := M) g₀ g₁ gB]
   change jet (I := I) (M := M) g₀ 3 2 3
       (Z0 + (Z1 + Z2 - Z3 - Z4 - Z5 - Z6) +
@@ -1561,7 +1561,7 @@ theorem deTurckLieFirstOrder_h2_uniform_bound
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) ≤ A ^ 2 →
           (∑ i ∈ Finset.range 3,
             ‖iteratedCovGrad (I := I) g₀ 3 2 i
-              (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ gBase)‖ ^ 2) ≤
+              (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ gBase)‖ ^ 2) ≤
             (B0 R + B1 R * A) ^ 2 := by
   classical
   have hΛ0 : 0 ≤ Λ := le_trans (by norm_num) hΛ
@@ -1629,7 +1629,7 @@ theorem deTurckLieFirstOrder_h2_uniform_bound
   intro g₀ hEq hjet1 hjet2 hjet3 g₁ P htie δ hδ_le hδ_nonneg hbound
     R A hR hA hP2 hP3
   let FixCd : SmoothCcTensor g₀ 1 2 :=
-    lieArm1FixCd (I := I) (M := M) g₀ gBase
+    lieFirstOrderFixCd (I := I) (M := M) g₀ gBase
   have hFix : jet (I := I) (M := M) g₀ 1 2 3 FixCd ≤ F ^ 2 := by
     simpa only [FixCd] using hfix g₀ hEq hjet1 hjet2 hjet3
   have hTraceH : jet (I := I) (M := M) g₀ 4 2 3
@@ -1647,7 +1647,7 @@ theorem deTurckLieFirstOrder_h2_uniform_bound
           (traceHessianCoeff (I := I) (M := M) g₀ g₁) := by
         apply Finset.sum_congr rfl
         intro i hi
-        exact lieArm1_normSq_iteratedCovGrad_dLTC_eq
+        exact lieFirstOrder_normSq_iteratedCovGrad_dLTC_eq
           (I := I) (M := M) g₀ g₁ σ i
       _ ≤ (Bt R) ^ 2 := hTraceH
   let Qc : ℝ := Bc0 R + Bc1 R * A
@@ -1668,7 +1668,7 @@ theorem deTurckLieFirstOrder_h2_uniform_bound
   have hQp : 0 ≤ Qp :=
     add_nonneg (hBp0 R hR) (mul_nonneg (hBp1 R hR) hA)
   have hPsi : jet (I := I) (M := M) g₀ 1 2 3
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase) ≤ Qp ^ 2 :=
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase) ≤ Qp ^ 2 :=
     hpsi g₀ hEq hjet1 hjet2 hjet3 g₁ P htie hδ_le hδ_nonneg hbound
       R A hR hA hP2 hP3
   let Qg : ℝ := D0 R + D1 R * A
@@ -1678,8 +1678,8 @@ theorem deTurckLieFirstOrder_h2_uniform_bound
     (connectionDifferenceSection (I := I) g₁ g₀) FixCd Qc F
     hQc hF hConn hFix
   have hBackground : jet (I := I) (M := M) g₀ 1 2 3
-      (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gBase) ≤ Qg ^ 2 := by
-    rw [lieArm1_connectionDifferenceBackground_decomp (I := I) (M := M) g₀ g₁ gBase]
+      (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gBase) ≤ Qg ^ 2 := by
+    rw [lieFirstOrder_connectionDifferenceBackground_decomp (I := I) (M := M) g₀ g₁ gBase]
     convert hBackgroundRaw using 1
     all_goals simp only [Qg, D0, D1, Qc]
     all_goals ring
@@ -1694,7 +1694,7 @@ theorem deTurckLieFirstOrder_h2_uniform_bound
     add_nonneg (hG0 R hR) (mul_nonneg (hG1 R hR) hA)
   have hPc : ∀ (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
       jet (I := I) (M := M) g₀ 3 2 3
-        (lieArm1Piece (I := I) (M := M) g₀ g₁ σ ρ
+        (lieFirstOrderPiece (I := I) (M := M) g₀ g₁ σ ρ
           (connectionDifferenceSection (I := I) g₁ g₀)) ≤ Ac ^ 2 := by
     intro σ ρ
     have h := hpiece g₀ hEq hjet1 hjet2 g₁ σ ρ
@@ -1705,98 +1705,98 @@ theorem deTurckLieFirstOrder_h2_uniform_bound
     all_goals ring
   have hPp : ∀ (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
       jet (I := I) (M := M) g₀ 3 2 3
-        (lieArm1Piece (I := I) (M := M) g₀ g₁ σ ρ
-          (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase)) ≤ Ap ^ 2 := by
+        (lieFirstOrderPiece (I := I) (M := M) g₀ g₁ σ ρ
+          (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase)) ≤ Ap ^ 2 := by
     intro σ ρ
     have h := hpiece g₀ hEq hjet1 hjet2 g₁ σ ρ
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase)
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase)
       (Bt R) Qp (hBt R hR) hQp (hTrace σ) hPsi
     convert h using 1
     all_goals simp only [Ap, P0, P1, S, Qp]
     all_goals ring
   have hPg : ∀ (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
       jet (I := I) (M := M) g₀ 3 2 3
-        (lieArm1Piece (I := I) (M := M) g₀ g₁ σ ρ
-          (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gBase)) ≤ Ag ^ 2 := by
+        (lieFirstOrderPiece (I := I) (M := M) g₀ g₁ σ ρ
+          (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gBase)) ≤ Ag ^ 2 := by
     intro σ ρ
     have h := hpiece g₀ hEq hjet1 hjet2 g₁ σ ρ
-      (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gBase)
+      (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gBase)
       (Bt R) Qg (hBt R hR) hQg (hTrace σ) hBackground
     convert h using 1
     all_goals simp only [Ag, G0, G1, S, Qg]
     all_goals ring
   let Z0 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaC lieArm1RhoSlot0
-      (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gBase)
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaC lieFirstOrderRhoSlot0
+      (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ gBase)
   let Z1 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaA
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaA
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z2 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaA
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaA
       (Equiv.refl (Fin 3))
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase)
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase)
   let Z3 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaC
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaC
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z4 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaD lieArm1RhoSlot0
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaD lieFirstOrderRhoSlot0
       (connectionDifferenceSection (I := I) g₁ g₀)
   let Z5 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4))
-      lieArm1RhoSlot1 (connectionDifferenceSection (I := I) g₁ g₀)
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4))
+      lieFirstOrderRhoSlot1 (connectionDifferenceSection (I := I) g₁ g₀)
   let Z6 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaF
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaF
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z7 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaASwap
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z8 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaASwap
       (Equiv.refl (Fin 3))
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase)
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ gBase)
   let Z9 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaCSwap
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaCSwap
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z10 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaDSwap lieArm1RhoSlot0
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaDSwap lieFirstOrderRhoSlot0
       (connectionDifferenceSection (I := I) g₁ g₀)
   let Z11 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaESwap lieArm1RhoSlot1
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaESwap lieFirstOrderRhoSlot1
       (connectionDifferenceSection (I := I) g₁ g₀)
   let Z12 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaFSwap
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaFSwap
       (Equiv.refl (Fin 3)) (connectionDifferenceSection (I := I) g₁ g₀)
   let Z13 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4))
-      lieArm1RhoSlot0 (connectionDifferenceSection (I := I) g₁ g₀)
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4))
+      lieFirstOrderRhoSlot0 (connectionDifferenceSection (I := I) g₁ g₀)
   have hZ0 : jet (I := I) (M := M) g₀ 3 2 3 Z0 ≤ Ag ^ 2 :=
-    hPg lieArm1SigmaC lieArm1RhoSlot0
+    hPg lieFirstOrderSigmaC lieFirstOrderRhoSlot0
   have hZ1 : jet (I := I) (M := M) g₀ 3 2 3 Z1 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaA (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaA (Equiv.refl (Fin 3))
   have hZ2 : jet (I := I) (M := M) g₀ 3 2 3 Z2 ≤ Ap ^ 2 :=
-    hPp lieArm1SigmaA (Equiv.refl (Fin 3))
+    hPp lieFirstOrderSigmaA (Equiv.refl (Fin 3))
   have hZ3 : jet (I := I) (M := M) g₀ 3 2 3 Z3 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaC (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaC (Equiv.refl (Fin 3))
   have hZ4 : jet (I := I) (M := M) g₀ 3 2 3 Z4 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaD lieArm1RhoSlot0
+    hPc lieFirstOrderSigmaD lieFirstOrderRhoSlot0
   have hZ5 : jet (I := I) (M := M) g₀ 3 2 3 Z5 ≤ Ac ^ 2 :=
-    hPc (Equiv.refl (Fin 4)) lieArm1RhoSlot1
+    hPc (Equiv.refl (Fin 4)) lieFirstOrderRhoSlot1
   have hZ6 : jet (I := I) (M := M) g₀ 3 2 3 Z6 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaF (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaF (Equiv.refl (Fin 3))
   have hZ7 : jet (I := I) (M := M) g₀ 3 2 3 Z7 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaASwap (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaASwap (Equiv.refl (Fin 3))
   have hZ8 : jet (I := I) (M := M) g₀ 3 2 3 Z8 ≤ Ap ^ 2 :=
-    hPp lieArm1SigmaASwap (Equiv.refl (Fin 3))
+    hPp lieFirstOrderSigmaASwap (Equiv.refl (Fin 3))
   have hZ9 : jet (I := I) (M := M) g₀ 3 2 3 Z9 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaCSwap (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaCSwap (Equiv.refl (Fin 3))
   have hZ10 : jet (I := I) (M := M) g₀ 3 2 3 Z10 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaDSwap lieArm1RhoSlot0
+    hPc lieFirstOrderSigmaDSwap lieFirstOrderRhoSlot0
   have hZ11 : jet (I := I) (M := M) g₀ 3 2 3 Z11 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaESwap lieArm1RhoSlot1
+    hPc lieFirstOrderSigmaESwap lieFirstOrderRhoSlot1
   have hZ12 : jet (I := I) (M := M) g₀ 3 2 3 Z12 ≤ Ac ^ 2 :=
-    hPc lieArm1SigmaFSwap (Equiv.refl (Fin 3))
+    hPc lieFirstOrderSigmaFSwap (Equiv.refl (Fin 3))
   have hZ13 : jet (I := I) (M := M) g₀ 3 2 3 Z13 ≤ Ac ^ 2 :=
-    hPc (Equiv.refl (Fin 4)) lieArm1RhoSlot0
+    hPc (Equiv.refl (Fin 4)) lieFirstOrderRhoSlot0
   let Q2 : ℝ := 2 * (Ac + Ap)
   let Q3 : ℝ := 2 * (Q2 + Ac)
   let Q4 : ℝ := 2 * (Q3 + Ac)
@@ -1851,7 +1851,7 @@ theorem deTurckLieFirstOrder_h2_uniform_bound
     (Z0 + (Z1 + Z2 - Z3 - Z4 - Z5 - Z6) +
       (Z7 + Z8 - Z9 - Z10 - Z11 - Z12)) Z13
     Q8 Ac hQ8 hAc (by simpa only [Q8] using hOuter2) hZ13
-  rw [deTurckLieArm1Coeff_eq_lieArm1Piece_sum
+  rw [deTurckLieFirstOrderCoeff_eq_lieFirstOrderPiece_sum
     (I := I) (M := M) g₀ g₁ gBase]
   change jet (I := I) (M := M) g₀ 3 2 3
       (Z0 + (Z1 + Z2 - Z3 - Z4 - Z5 - Z6) +
@@ -1882,7 +1882,7 @@ theorem deTurckLieFirstOrder_h2_bound
           ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) ≤ A ^ 2 →
         (∑ i ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-            (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ gB)‖ ^ 2) ≤
+            (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ gB)‖ ^ 2) ≤
           (B A) ^ 2 := by
   obtain ⟨B0, B1, hB0, hB1, htame⟩ :=
     deTurckLieFirstOrder_h2_tame_bound (I := I) (M := M) hDim g₀ gB hδ₀

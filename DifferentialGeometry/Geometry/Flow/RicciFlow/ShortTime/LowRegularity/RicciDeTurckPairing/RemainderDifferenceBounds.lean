@@ -45,7 +45,7 @@ private theorem deTurckSmoothRemainder_self_low_order_decomposition
       ((((-2 : ℝ) •
             RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient
               (I := I) (M := M) g gm (s • T) +
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g -
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδ hδZ
               lieDecompositionQ lieDecompositionEps s)) +
         lieCorrectionZeroVectorBundle (I := I) (M := M) g gm) +
@@ -59,15 +59,15 @@ private theorem deTurckSmoothRemainder_self_low_order_decomposition
   have hlie :
       deTurckLieCoeffField (I := I) (M := M) g gm g +
             lieCorrectionZeroField (I := I) (M := M) g gm g - Q =
-        (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g - Q) +
-          (deTurckLieEndoArmField (I := I) (M := M) g gm g -
-            deTurckLieEndoArmField (I := I) (M := M) g gm g) +
+        (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g - Q) +
+          (deTurckLieEndoTermField (I := I) (M := M) g gm g -
+            deTurckLieEndoTermField (I := I) (M := M) g gm g) +
           ((((lieCorrectionZeroInsertion (I := I) (M := M) g gm g -
                 lieCorrectionZeroInsertion (I := I) (M := M) g gm g) +
               lieCorrectionZeroVectorBundle (I := I) (M := M) g gm) +
             lieCorrectionZeroMixedConnection (I := I) (M := M) g gm g) +
           lieCorrectionZeroRiemann (I := I) (M := M) g gm) := by
-    rw [deTurckLieCoeffField_eq_covDerivArm_add_endoArm]
+    rw [deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm]
     rw [← tail_base_split (I := I) (M := M) g gm g]
     abel
   calc
@@ -81,9 +81,9 @@ private theorem deTurckSmoothRemainder_self_low_order_decomposition
     _ = (-2 : ℝ) •
           RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient
             (I := I) (M := M) g gm (s • T) +
-        ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g - Q) +
-          (deTurckLieEndoArmField (I := I) (M := M) g gm g -
-            deTurckLieEndoArmField (I := I) (M := M) g gm g) +
+        ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g - Q) +
+          (deTurckLieEndoTermField (I := I) (M := M) g gm g -
+            deTurckLieEndoTermField (I := I) (M := M) g gm g) +
           ((((lieCorrectionZeroInsertion (I := I) (M := M) g gm g -
                 lieCorrectionZeroInsertion (I := I) (M := M) g gm g) +
               lieCorrectionZeroVectorBundle (I := I) (M := M) g gm) +
@@ -121,11 +121,11 @@ private theorem deTurckSmoothRemainder_self_low_order_sub_decomposition
                 (metricPerturbationPath (I := I) g T 0 hδT hδZ s) (s • T) -
               RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g
                 (metricPerturbationPath (I := I) g U 0 hδU hδZ s) (s • U)) +
-          ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+          ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδT hδZ
               lieDecompositionQ lieDecompositionEps s) -
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
               (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g U hδU hδZ
               lieDecompositionQ lieDecompositionEps s))) +
@@ -314,10 +314,10 @@ theorem exists_pathIntegrand_covariantJetNormSq_tame_difference_bound
       RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU (s • U)
     with hY1
   set Y2 : SmoothCcTensor g 2 2 :=
-    (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmT g -
+    (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gmT g -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδT hδZ
           lieDecompositionQ lieDecompositionEps s) -
-      (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmU g -
+      (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gmU g -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g U hδU hδZ
           lieDecompositionQ lieDecompositionEps s) with hY2
   set Y3 : SmoothCcTensor g 2 2 :=
@@ -431,7 +431,7 @@ theorem exists_ricciDeTurckLowOrderDifference_covariantJetNormSq_tame_bound
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjoint :=
-    threeArmJoint_sub (I := I) (M := M) g _ _
+    covariantJetJoint_sub (I := I) (M := M) g _ _
       (RicciDeTurckLowOrder.selfLow_joint
         (I := I) (M := M) g g T hδT hδZ)
       (RicciDeTurckLowOrder.selfLow_joint
@@ -612,11 +612,11 @@ private theorem exists_pathIntegrand_covariantJetNormSq_difference_bound
             (add_nonneg (by norm_num) (sq_nonneg A))))
       _ = 2 * K * F := by simp only [F]; ring
   have hXl : covariantJetNormSq (I := I) (M := M) g 2
-      ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+      ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g -
           deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδT hδZ
             lieDecompositionQ lieDecompositionEps s) -
-        (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+        (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
             (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g -
           deTurckLieTopOrderPairingFamily (I := I) (M := M) g U hδU hδZ
             lieDecompositionQ lieDecompositionEps s)) ≤ Zl ^ 2 := by
@@ -661,10 +661,10 @@ private theorem exists_pathIntegrand_covariantJetNormSq_difference_bound
     RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmT (s • T) -
       RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU (s • U) with hY1_def
   set Y2 : SmoothCcTensor g 2 2 :=
-    (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmT g -
+    (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gmT g -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδT hδZ
           lieDecompositionQ lieDecompositionEps s) -
-      (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmU g -
+      (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gmU g -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g U hδU hδZ
           lieDecompositionQ lieDecompositionEps s) with hY2_def
   set Y3 : SmoothCcTensor g 2 2 :=
@@ -751,7 +751,7 @@ theorem exists_ricciDeTurckLowOrderDifference_covariantJetNormSq_bound
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjoint :=
-    threeArmJoint_sub (I := I) (M := M) g _ _
+    covariantJetJoint_sub (I := I) (M := M) g _ _
       (RicciDeTurckLowOrder.selfLow_joint
         (I := I) (M := M) g g T hδT hδZ)
       (RicciDeTurckLowOrder.selfLow_joint

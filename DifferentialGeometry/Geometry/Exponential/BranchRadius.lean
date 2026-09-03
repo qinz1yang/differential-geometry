@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-import DifferentialGeometry.Geometry.Exponential.ExpInvBranch
+import DifferentialGeometry.Geometry.Exponential.ExponentialInverseBranch
 import DifferentialGeometry.Geometry.Exponential.IntrinsicGauss
 import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
@@ -60,7 +60,7 @@ private lemma modelMetricInner_apply
 noncomputable def branchEnergy
     (g : SmoothRiemannianMetric I M)
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p)
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p)
     (z : M) : Real :=
   (1 / 2 : Real) *
     modelMetricInner (I := I) g p (B.inv z) (B.inv z)
@@ -68,7 +68,7 @@ noncomputable def branchEnergy
 noncomputable def branchRadius
     (g : SmoothRiemannianMetric I M)
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p)
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p)
     (z : M) : Real :=
   Real.sqrt
     (modelMetricInner (I := I) g p (B.inv z) (B.inv z))
@@ -76,7 +76,7 @@ noncomputable def branchRadius
 theorem branchRadius_eq
     (g : SmoothRiemannianMetric I M)
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p) :
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) :
     branchRadius (I := I) g B =
       fun z => Real.sqrt (2 * branchEnergy (I := I) g B z) := by
   funext z
@@ -88,7 +88,7 @@ theorem branchEnergy_exp
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source) :
     branchEnergy (I := I) g B
@@ -106,7 +106,7 @@ theorem branchRadius_exp
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source) :
     branchRadius (I := I) g B
@@ -120,11 +120,11 @@ theorem branchRadius_exp
   rw [hinv, modelMetricInner_apply,
     ContinuousLinearEquiv.symm_apply_apply]
 
-theorem ExpInvBranch.edist_le_radius
+theorem ExponentialInverseBranch.edist_le_radius
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p y : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     (hy : y ∈ B.dom) :
     riemannianEDist I p y ≤
       ENNReal.ofReal (branchRadius (I := I) g B y) := by
@@ -143,7 +143,7 @@ theorem branchRadius_ray
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {x : TangentSpace I p} {t : Real}
     (ht : 0 < t)
     (hsrc : t • tangentSpaceModelContinuousLinearEquiv (I := I) p x ∈ B.hom.source) :
@@ -202,7 +202,7 @@ theorem branchEnergy_deriv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p q : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     (hq : q ∈ B.dom) :
     let invf : M → E := B.inv
     HasMFDerivAt I 𝓘(Real, Real)
@@ -237,7 +237,7 @@ private theorem exp_inv_mfderiv_legacy
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p q : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     (hq : q ∈ B.dom)
     (Y : TangentSpace I q) :
     let uB : E := B.inv q
@@ -285,7 +285,7 @@ theorem exp_inv_mfderiv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p q : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     (hq : q ∈ B.dom)
     (Y : TangentSpace I q) :
     let uB : E := B.inv q
@@ -349,7 +349,7 @@ theorem inv_exp_mfderiv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : E}
     (hu : u ∈ B.hom.source)
     (w : E) :
@@ -419,7 +419,7 @@ theorem branchRadius_infAt
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source)
     (hu_pos : 0 < g.inner p u u) :
@@ -472,7 +472,7 @@ theorem branchRadius_open
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source)
     (hu_pos : 0 < g.inner p u u) :
@@ -533,7 +533,7 @@ theorem grad_branchEnergy
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source) :
     gradientFun (I := I) g
@@ -612,7 +612,7 @@ theorem branchRadius_diff
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source)
     (hu_pos : 0 < g.inner p u u) :
@@ -647,7 +647,7 @@ theorem grad_branchRadius
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
     (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source)
     (hu_pos : 0 < g.inner p u u) :

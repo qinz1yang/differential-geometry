@@ -138,33 +138,33 @@ theorem bilin_symm_of_symmS (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem swap_deTurckRHSArm (g₀ g_bg : SmoothRiemannianMetric I M)
+theorem swap_deTurckRHSTerm (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
     domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-        (deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ) =
-      deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ := by
+        (deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ) =
+      deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ := by
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
   rw [domDomCongrSection_unitModel (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-    (deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ) x]
+    (deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ) x]
   refine ContinuousMultilinearMap.ext (fun v => ?_)
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   have h1 := unitModel_of_deTurckRHSSection_realize (I := I) (M := M) g₀ g_bg T
-    hδ_lt hδ (deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ) rfl x
+    hδ_lt hδ (deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ) rfl x
     (fun i => v ((Equiv.swap (0 : Fin 2) 1) i))
   have h2 := unitModel_of_deTurckRHSSection_realize (I := I) (M := M) g₀ g_bg T
-    hδ_lt hδ (deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ) rfl x v
+    hδ_lt hδ (deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ) rfl x v
   rw [h1, h2]
   simp only [Equiv.swap_apply_left, Equiv.swap_apply_right]
   exact deTurckRicciRHS_symm (I := I) g_bg
     (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x (v 1) (v 0)
 
 omit [SigmaCompactSpace M] in
-private theorem smoothRem_eq_arm_sub (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem smoothRem_eq_term_sub (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
     deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ =
-      deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ -
+      deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ -
         rawTensorConnLapSmooth (I := I) g₀ 0 2 T :=
   rfl
 
@@ -176,9 +176,9 @@ theorem swap_smoothRem (g₀ g_bg : SmoothRiemannianMetric I M)
     domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
         (deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ) =
       deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ := by
-  rw [smoothRem_eq_arm_sub (I := I) (M := M) g₀ g_bg T hδ_lt hδ,
+  rw [smoothRem_eq_term_sub (I := I) (M := M) g₀ g_bg T hδ_lt hδ,
     ddc_swap_sub (I := I) (M := M) g₀,
-    swap_deTurckRHSArm (I := I) (M := M) g₀ g_bg T hδ_lt hδ,
+    swap_deTurckRHSTerm (I := I) (M := M) g₀ g_bg T hδ_lt hδ,
     ← rawTensorConnLapSmooth_domDomCongrSection (I := I) (M := M) g₀
       (Equiv.swap (0 : Fin 2) 1) T,
     hT]

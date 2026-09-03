@@ -399,21 +399,6 @@ private lemma iteratedCovGrad_slotExtend_norm_le (g₀ : SmoothRiemannianMetric 
   rw [mul_pow, Real.sq_sqrt (by positivity : (0:ℝ) ≤ (Module.finrank ℝ E : ℝ))]
   exact hsq
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
-private lemma operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ : SmoothCcTensor g r s) (W₁ W₂ : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s Φ (W₁ - W₂) =
-      operatorFieldApply (I := I) (M := M) g r s Φ W₁ - operatorFieldApply (I := I) (M := M) g r s Φ
-        W₂ := by
-  have h : operatorFieldApply (I := I) (M := M) g r s Φ (W₁ - W₂) +
-      operatorFieldApply (I := I) (M := M) g r s Φ W₂ = operatorFieldApply (I := I) (M := M) g r s Φ
-        W₁ := by
-    rw [← operatorFieldApplication_add_right]
-    congr 1
-    abel
-  exact eq_sub_of_add_eq h
-
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in

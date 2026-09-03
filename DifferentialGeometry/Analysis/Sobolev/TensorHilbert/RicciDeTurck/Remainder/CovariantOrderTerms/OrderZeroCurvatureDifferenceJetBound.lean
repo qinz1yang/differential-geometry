@@ -20,7 +20,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (ricciArmOrder0RiemannCoeff ricciArmOrder0CurvCoeff)
+  (ricciOrderZeroRiemannCoeff ricciOrderZeroCurvCoeff)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -35,7 +35,7 @@ private theorem sq_le_two_add (t u v c1 c2 : ℝ) (ht : 0 ≤ t) (hu : 0 ≤ u) 
   have huv : 0 ≤ u + v := by linarith
   nlinarith [mul_le_mul htri htri ht huv, sq_nonneg (u - v), h1, h2, hu, hv]
 
-private theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_ballUniform_g1
+private theorem ricciOrderZeroRiemannCoeff_backgroundDifference_perOrder_l2_ballUniform_g1
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -48,12 +48,12 @@ private theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_ball
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁
-              - ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤ K i :=
-  ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_ballUniform
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁
+              - ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤ K i :=
+  ricciOrderZeroRiemannCoeff_backgroundDifference_perOrder_l2_ballUniform
     (I := I) (M := M) g₀ a ha_super hR hδ₀
 
-private theorem ricciArmOrder0CurvCoeff_backgroundDifference_perOrder_l2_ballUniform_g1
+private theorem ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_ballUniform_g1
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -66,12 +66,12 @@ private theorem ricciArmOrder0CurvCoeff_backgroundDifference_perOrder_l2_ballUni
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁
-              - ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤ K i :=
-  ricciArmOrder0CurvCoeff_backgroundDifference_perOrder_l2_ballUniform
+            (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁
+              - ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤ K i :=
+  ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_ballUniform
     (I := I) (M := M) g₀ a ha_super hR hδ₀
 
-private theorem ricciArmOrder0RiemannCoeff_perOrder_l2_ballUniform_g1
+private theorem ricciOrderZeroRiemannCoeff_perOrder_l2_ballUniform_g1
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -84,44 +84,44 @@ private theorem ricciArmOrder0RiemannCoeff_perOrder_l2_ballUniform_g1
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤ K i := by
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤ K i := by
   obtain ⟨KD, hKD_nn, hKD⟩ :=
-    ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_ballUniform_g1
+    ricciOrderZeroRiemannCoeff_backgroundDifference_perOrder_l2_ballUniform_g1
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨fun i => 2 * (‖iteratedCovGrad (I := I) g₀ 2 2 i
-      (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 + KD i),
+      (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 + KD i),
     fun i => by
       linarith [hKD_nn i, sq_nonneg ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖], ?_⟩
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)‖], ?_⟩
   intro g₁ P δ hδ_le hδ htie hPball i hi
   have hD := hKD g₁ P hδ_le hδ htie hPball i hi
-  have hsplit : ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ =
-      ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ +
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁
-          - ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) := by
+  have hsplit : ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ =
+      ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ +
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁
+          - ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) := by
     abel
   rw [hsplit, iteratedCovGrad_add (I := I) g₀ 2 2 i
-    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)
-    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁
-      - ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)]
+    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)
+    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁
+      - ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)]
   exact sq_le_two_add
     ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)
       + iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁
-          - ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁
+          - ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)‖
     ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)‖
     ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁
-          - ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁
+          - ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)‖
     (‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2)
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2)
     (KD i)
     (norm_nonneg _) (norm_nonneg _) (norm_nonneg _)
     (norm_add_le _ _) le_rfl hD
 
-private theorem ricciArmOrder0CurvCoeff_perOrder_l2_ballUniform_g1
+private theorem ricciOrderZeroCurvCoeff_perOrder_l2_ballUniform_g1
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -134,44 +134,44 @@ private theorem ricciArmOrder0CurvCoeff_perOrder_l2_ballUniform_g1
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤ K i := by
+            (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤ K i := by
   obtain ⟨KD, hKD_nn, hKD⟩ :=
-    ricciArmOrder0CurvCoeff_backgroundDifference_perOrder_l2_ballUniform_g1
+    ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_ballUniform_g1
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨fun i => 2 * (‖iteratedCovGrad (I := I) g₀ 2 2 i
-      (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 + KD i),
+      (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 + KD i),
     fun i => by
       linarith [hKD_nn i, sq_nonneg ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖], ?_⟩
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖], ?_⟩
   intro g₁ P δ hδ_le hδ htie hPball i hi
   have hD := hKD g₁ P hδ_le hδ htie hPball i hi
-  have hsplit : ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ =
-      ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀ +
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁
-          - ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) := by
+  have hsplit : ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ =
+      ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀ +
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁
+          - ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) := by
     abel
   rw [hsplit, iteratedCovGrad_add (I := I) g₀ 2 2 i
-    (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)
-    (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁
-      - ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)]
+    (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)
+    (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁
+      - ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)]
   exact sq_le_two_add
     ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)
       + iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁
-          - ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁
+          - ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖
     ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖
     ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁
-          - ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁
+          - ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖
     (‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2)
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2)
     (KD i)
     (norm_nonneg _) (norm_nonneg _) (norm_nonneg _)
     (norm_add_le _ _) le_rfl hD
 
-theorem ricciArmOrder0BaseCoeff_perOrder_l2_ballUniform_generic
+theorem ricciOrderZeroBaseCoeff_perOrder_l2_ballUniform_generic
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -184,30 +184,30 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_ballUniform_generic
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁
-              - ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤ K i := by
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁
+              - ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤ K i := by
   obtain ⟨KR, hKR_nn, hKR⟩ :=
-    ricciArmOrder0RiemannCoeff_perOrder_l2_ballUniform_g1
+    ricciOrderZeroRiemannCoeff_perOrder_l2_ballUniform_g1
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨KC, hKC_nn, hKC⟩ :=
-    ricciArmOrder0CurvCoeff_perOrder_l2_ballUniform_g1
+    ricciOrderZeroCurvCoeff_perOrder_l2_ballUniform_g1
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨fun i => 2 * (KR i + KC i), fun i => by linarith [hKR_nn i, hKC_nn i], ?_⟩
   intro g₁ P δ hδ_le hδ htie hPball i hi
   have hR2 := hKR g₁ P hδ_le hδ htie hPball i hi
   have hC2 := hKC g₁ P hδ_le hδ htie hPball i hi
   rw [iteratedCovGrad_sub (I := I) g₀ 2 2 i
-    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁)
-    (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)]
+    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁)
+    (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)]
   exact sq_le_two_add
     ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁)
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁)
       - iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖
     ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁)‖
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁)‖
     ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖
     (KR i) (KC i)
     (norm_nonneg _) (norm_nonneg _) (norm_nonneg _)
     (norm_sub_le _ _) hR2 hC2

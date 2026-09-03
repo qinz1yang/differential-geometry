@@ -96,7 +96,7 @@ omit [NeZero (Module.finrank ℝ E)]
 omit [SigmaCompactSpace M] in
 theorem insert_base (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg +
-        deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
+        deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀ =
       lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg -
         lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀ := by
   apply SmoothCcTensor.ext
@@ -196,7 +196,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem tail_base_split (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg +
-        deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
+        deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀ =
       (((lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg -
             lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀) +
           lieCorrectionZeroVectorBundle (I := I) (M := M) g₀ g₁) +

@@ -38,27 +38,27 @@ def ricBackgroundSlotCoeff (g₀ : SmoothRiemannianMetric I M) : SmoothCcTensor 
           (ricEndoRaisedFib_contMDiff (I := I) g₀) }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-def ricBackgroundArmCoeffField (g₀ : SmoothRiemannianMetric I M) :
+def ricBackgroundTermCoeffField (g₀ : SmoothRiemannianMetric I M) :
     ∀ r : ℕ, SmoothCcTensor g₀ (r + 0) (r + 0) :=
   fun r => match r with
     | 2 => ricBackgroundSlotCoeff (I := I) g₀
     | _ => 0
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-theorem ricBackgroundArm_iteratedCovGrad_singleSum_le
+theorem ricBackgroundTerm_iteratedCovGrad_singleSum_le
     (g₀ : SmoothRiemannianMetric I M) (x₀ : M) (W : SmoothCcTensor g₀ 0 2) (a : ℕ) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + a) x₀
         ((iteratedCovGrad g₀ 0 2 a
           ((fixedCoeffDiffOp (I := I) (M := M) g₀
-            (ricBackgroundArmCoeffField (I := I) g₀)).op 0 2 W)).toSection x₀) ≤
+            (ricBackgroundTermCoeffField (I := I) g₀)).op 0 2 W)).toSection x₀) ≤
       ((4 : ℝ) ^ a * gridWindowSum
           (fixedCoeffDiffOp (I := I) (M := M) g₀
-            (ricBackgroundArmCoeffField (I := I) g₀)).kappa 0 2 a) *
+            (ricBackgroundTermCoeffField (I := I) g₀)).kappa 0 2 a) *
         ∑ q ∈ Finset.range (a + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + q) x₀
             ((iteratedCovGrad g₀ 0 2 q W).toSection x₀) :=
   fixedCoeffDiffOp_iteratedCovGrad_singleSum_le (I := I) (M := M) g₀
-    (ricBackgroundArmCoeffField (I := I) g₀) x₀ 2 W a
+    (ricBackgroundTermCoeffField (I := I) g₀) x₀ 2 W a
 
 end Spectral
 end Analysis

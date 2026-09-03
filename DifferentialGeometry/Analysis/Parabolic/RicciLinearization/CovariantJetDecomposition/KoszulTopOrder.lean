@@ -21,7 +21,7 @@ open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ricciArmOrder1KoszulCoeff raisedKoszul)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ricciFirstOrderKoszulCoeff raisedKoszul)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -32,7 +32,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma arm1NormSq_eq_integral (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private lemma firstOrderNormSq_eq_integral (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (C : SmoothCcTensor g r s) :
     ‖C‖ ^ 2 = ∫ x, riemannianFiberNormSq (I := I) (M := M) g r s x (C.toSection x)
       ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
@@ -240,7 +240,7 @@ private lemma riemannianFiberNormSq_operatorFieldComposition_coeffLower_general_
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g p (a + (k + 1)) x _)
   exact riemannianFiberNormSq_iteratedCovGrad_operatorFieldApplicationLeibnizPsi_window_le (I := I) (M := M) g a b Φ i (k + 1) 0 hk_le x
 
-theorem ricciArmOrder1KoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allOrders
+theorem ricciFirstOrderKoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allOrders
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -253,7 +253,7 @@ theorem ricciArmOrder1KoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allO
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ≤ R) →
         ∀ (i : ℕ),
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-                (ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀ g₁) -
+                (ricciFirstOrderKoszulCoeff (I := I) (M := M) g₀ g₁) -
               ccOperatorFieldComp (I := I) (M := M) g₀ 3 1 (2 + i)
                 (iteratedCovGrad (I := I) g₀ 1 2 i (raisedKoszul (I := I) g₀ g₁))
                 (cometricDoubleTraceCastG0 (I := I) g₀ g₁)‖ ^ 2 ≤
@@ -277,7 +277,7 @@ theorem ricciArmOrder1KoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allO
     positivity
   · intro g₁ P δ hδ_le hδ htie hPball i
     have hdiff : iteratedCovGrad (I := I) g₀ 3 2 i
-      (ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀ g₁) -
+      (ricciFirstOrderKoszulCoeff (I := I) (M := M) g₀ g₁) -
           ccOperatorFieldComp (I := I) (M := M) g₀ 3 1 (2 + i)
             (iteratedCovGrad (I := I) g₀ 1 2 i (raisedKoszul (I := I) g₀ g₁))
             (cometricDoubleTraceCastG0 (I := I) g₀ g₁) =
@@ -287,7 +287,7 @@ theorem ricciArmOrder1KoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allO
               (iteratedCovGrad (I := I) g₀ 3 1 (k + 1)
                 (cometricDoubleTraceCastG0 (I := I) g₀ g₁)) := by
       have hsum : iteratedCovGrad (I := I) g₀ 3 2 i
-            (ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀ g₁) =
+            (ricciFirstOrderKoszulCoeff (I := I) (M := M) g₀ g₁) =
           (∑ k ∈ Finset.range i,
             ccOperatorFieldComp (I := I) (M := M) g₀ 3 (1 + (k + 1)) (2 + i)
               (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g₀ 1 2 (raisedKoszul (I := I) g₀ g₁) i (k + 1))
@@ -296,7 +296,7 @@ theorem ricciArmOrder1KoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allO
             ccOperatorFieldComp (I := I) (M := M) g₀ 3 1 (2 + i)
               (iteratedCovGrad (I := I) g₀ 1 2 i (raisedKoszul (I := I) g₀ g₁))
               (cometricDoubleTraceCastG0 (I := I) g₀ g₁) := by
-        rw [ricciArmOrder1KoszulCoeff_eq_raisedKoszul_contract_cometricDoubleTraceCastG0 (I := I) g₀
+        rw [ricciFirstOrderKoszulCoeff_eq_raisedKoszul_contract_cometricDoubleTraceCastG0 (I := I) g₀
           g₁,
           iteratedCovGrad_operatorFieldComposition_eq (I := I) (M := M) g₀ 3 1 2 (raisedKoszul (I := I) g₀ g₁)
             (cometricDoubleTraceCastG0 (I := I) g₀ g₁) i,
@@ -472,7 +472,7 @@ theorem ricciArmOrder1KoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allO
         Finset.sum_nonneg (fun j _ => sq_nonneg _)
       positivity
 
-theorem ricciArmOrder1KoszulCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
+theorem ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -491,7 +491,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_topOrderSeparated_generic_allOrder
                   ((iteratedCovGrad (I := I) g₀ 0 2 (i + 1) P).toSection x)) ∧
             ‖Hd‖ ^ 2 ≤ Ktop * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 1) P‖ ^ 2 ∧
             ‖iteratedCovGrad (I := I) g₀ 3 2 i
-                (ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀ g₁) - Hd‖ ^ 2 ≤
+                (ricciFirstOrderKoszulCoeff (I := I) (M := M) g₀ g₁) - Hd‖ ^ 2 ≤
               Kc i * (1 + ∑ j ∈ Finset.range (i + 1),
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) +
                 Kleak * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 1) P‖ ^ 2 := by
@@ -502,7 +502,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_topOrderSeparated_generic_allOrder
     cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Kc, hKc_nn, Kleak, hKleak_nn, hleaf⟩ :=
-    ricciArmOrder1KoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allOrders
+    ricciFirstOrderKoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allOrders
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨10 * ΛB ^ 2, by positivity, Kc, hKc_nn, Kleak, hKleak_nn, ?_⟩
   intro g₁ P δ hδ_le hδ htie hPball i
@@ -558,7 +558,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_topOrderSeparated_generic_allOrder
       _ hF_int hheadpt
     refine le_trans key ?_
     rw [MeasureTheory.integral_const_mul]
-    rw [← arm1NormSq_eq_integral (I := I) (M := M) g₀ 0 (2 + (i + 1))
+    rw [← firstOrderNormSq_eq_integral (I := I) (M := M) g₀ 0 (2 + (i + 1))
       (iteratedCovGrad (I := I) g₀ 0 2 (i + 1) P)]
   · exact hleaf g₁ P hδ_le hδ htie hPball i
 

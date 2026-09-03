@@ -72,7 +72,7 @@ theorem deTurck_pushforward_slot_hasDerivWithinAt
           (deTurckVF (I := I) (g_DT t) g_bg) (Φ_fam t x)
           (mfderiv I I (Φ_fam t : M → M) x v)
           (mfderiv I I (Φ_fam t : M → M) x w)) (Set.Ici 0) t :=
-  (variational_flow_feeds_cartan_witness (I := I) (g_DT t)
+  (hasDerivAt_metric_inner_of_rawVariationalIdentity (I := I) (g_DT t)
     (deTurckVF (I := I) (g_DT t) g_bg) Φ_fam t x v w hv_raw hw_raw).hasDerivWithinAt
 
 omit [NeZero (Module.finrank ℝ E)] in

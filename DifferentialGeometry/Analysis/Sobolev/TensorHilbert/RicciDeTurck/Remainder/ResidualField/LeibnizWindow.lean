@@ -34,9 +34,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
-section RicciFoldRemainderLeibnizDiagonal
+section RicciContractionRemainderLeibnizDiagonal
 
-private def ricciFoldRemainderPermutationValue (i v : ℕ) : ℕ :=
+private def ricciContractionRemainderPermutationValue (i v : ℕ) : ℕ :=
   if v = 0 then i + 1
   else if v = 1 then i + 3
   else if v < i + 2 then v - 2
@@ -45,30 +45,30 @@ private def ricciFoldRemainderPermutationValue (i v : ℕ) : ℕ :=
   else if v = i + 4 then i
   else i + 2
 
-private lemma ricciFoldRemainderPermutationValue_lt (i v : ℕ) (_hv : v < i + 6) : ricciFoldRemainderPermutationValue i v < 6 + i := by
-  unfold ricciFoldRemainderPermutationValue
+private lemma ricciContractionRemainderPermutationValue_lt (i v : ℕ) (_hv : v < i + 6) : ricciContractionRemainderPermutationValue i v < 6 + i := by
+  unfold ricciContractionRemainderPermutationValue
   split_ifs <;> omega
 
-private lemma ricciFoldRemainderPermutationValue_eq_sub_two (i v : ℕ) (h2 : 2 ≤ v) (h : v < i + 2) :
-    ricciFoldRemainderPermutationValue i v = v - 2 := by
-  unfold ricciFoldRemainderPermutationValue
+private lemma ricciContractionRemainderPermutationValue_eq_sub_two (i v : ℕ) (h2 : 2 ≤ v) (h : v < i + 2) :
+    ricciContractionRemainderPermutationValue i v = v - 2 := by
+  unfold ricciContractionRemainderPermutationValue
   rw [if_neg (by omega), if_neg (by omega), if_pos h]
 
-private lemma ricciFoldRemainderPermutationValue_at_order_add_two (i : ℕ) : ricciFoldRemainderPermutationValue i (i + 2) = i + 4 := by
-  unfold ricciFoldRemainderPermutationValue
+private lemma ricciContractionRemainderPermutationValue_at_order_add_two (i : ℕ) : ricciContractionRemainderPermutationValue i (i + 2) = i + 4 := by
+  unfold ricciContractionRemainderPermutationValue
   rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_pos rfl]
 
-private lemma ricciFoldRemainderPermutationValue_at_order_add_three (i : ℕ) : ricciFoldRemainderPermutationValue i (i + 3) = i + 5 := by
-  unfold ricciFoldRemainderPermutationValue
+private lemma ricciContractionRemainderPermutationValue_at_order_add_three (i : ℕ) : ricciContractionRemainderPermutationValue i (i + 3) = i + 5 := by
+  unfold ricciContractionRemainderPermutationValue
   rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega), if_pos rfl]
 
-private lemma ricciFoldRemainderPermutationValue_at_order_add_four (i : ℕ) : ricciFoldRemainderPermutationValue i (i + 4) = i := by
-  unfold ricciFoldRemainderPermutationValue
+private lemma ricciContractionRemainderPermutationValue_at_order_add_four (i : ℕ) : ricciContractionRemainderPermutationValue i (i + 4) = i := by
+  unfold ricciContractionRemainderPermutationValue
   rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega),
     if_neg (by omega), if_pos rfl]
 
-private lemma ricciFoldRemainderPermutationValue_at_order_add_five (i : ℕ) : ricciFoldRemainderPermutationValue i (i + 5) = i + 2 := by
-  unfold ricciFoldRemainderPermutationValue
+private lemma ricciContractionRemainderPermutationValue_at_order_add_five (i : ℕ) : ricciContractionRemainderPermutationValue i (i + 5) = i + 2 := by
+  unfold ricciContractionRemainderPermutationValue
   rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega),
     if_neg (by omega), if_neg (by omega)]
 
@@ -102,13 +102,13 @@ private lemma swap_zero_one_val {m : ℕ} (j : Fin (m + 2)) :
       rw [if_neg (fun hv => h0 (Fin.ext (by simpa using hv))),
         if_neg (fun hv => h1 (Fin.ext (by simpa using hv)))]
 
-private lemma ricciFoldRemainderPermutationValue_succ {m : ℕ} (τ : Equiv.Perm (Fin (m + 2))) (i : ℕ)
-    (hτ : ∀ j : Fin (m + 2), ((τ j : Fin (m + 2)) : ℕ) = ricciFoldRemainderPermutationValue i (j : ℕ))
+private lemma ricciContractionRemainderPermutationValue_succ {m : ℕ} (τ : Equiv.Perm (Fin (m + 2))) (i : ℕ)
+    (hτ : ∀ j : Fin (m + 2), ((τ j : Fin (m + 2)) : ℕ) = ricciContractionRemainderPermutationValue i (j : ℕ))
     (hm : m = 4 + i) (j : Fin (m + 3)) :
     ((((Equiv.Perm.decomposeFin.symm (0, Equiv.swap (0 : Fin (m + 2)) 1)).trans
           ((Equiv.swap (0 : Fin (m + 3)) 1).trans
             (Equiv.Perm.decomposeFin.symm (0, τ)))) j : Fin (m + 3)) : ℕ) =
-      ricciFoldRemainderPermutationValue (i + 1) (j : ℕ) := by
+      ricciContractionRemainderPermutationValue (i + 1) (j : ℕ) := by
   rw [Equiv.trans_apply, Equiv.trans_apply]
   have hj1 := decomposeFin_symm_val (Equiv.swap (0 : Fin (m + 2)) 1) j
   set j1 : Fin (m + 3) := (Equiv.Perm.decomposeFin.symm (0, Equiv.swap (0 : Fin (m + 2)) 1)) j
@@ -128,7 +128,7 @@ private lemma ricciFoldRemainderPermutationValue_succ {m : ℕ} (τ : Equiv.Perm
     have harg0 : ((⟨(j2 : ℕ) - 1, by omega⟩ : Fin (m + 2)) : ℕ) = 0 := by
       simp [hj2vv]
     rw [harg0]
-    unfold ricciFoldRemainderPermutationValue
+    unfold ricciContractionRemainderPermutationValue
     simp only [h0]
     split_ifs <;> omega
   · rw [dif_neg h0] at hj1
@@ -145,7 +145,7 @@ private lemma ricciFoldRemainderPermutationValue_succ {m : ℕ} (τ : Equiv.Perm
       have harg1 : ((⟨(j2 : ℕ) - 1, by omega⟩ : Fin (m + 2)) : ℕ) = 1 := by
         simp [hj2vv]
       rw [harg1]
-      unfold ricciFoldRemainderPermutationValue
+      unfold ricciContractionRemainderPermutationValue
       simp only [h1]
       split_ifs <;> omega
     · by_cases h2 : (j : ℕ) = 2
@@ -155,7 +155,7 @@ private lemma ricciFoldRemainderPermutationValue_succ {m : ℕ} (τ : Equiv.Perm
         have hj2vv : (j2 : ℕ) = 0 := by
           rw [hj2_def, hj2v, if_neg (by omega), if_pos hj1v]
         rw [dif_pos hj2vv]
-        unfold ricciFoldRemainderPermutationValue
+        unfold ricciContractionRemainderPermutationValue
         simp only [h2]
         split_ifs <;> omega
       · have hj1v : (j1 : ℕ) = (j : ℕ) := by
@@ -169,7 +169,7 @@ private lemma ricciFoldRemainderPermutationValue_succ {m : ℕ} (τ : Equiv.Perm
         have harg : ((⟨(j2 : ℕ) - 1, by omega⟩ : Fin (m + 2)) : ℕ) = (j : ℕ) - 1 := by
           simp [hj2vv]
         rw [harg]
-        unfold ricciFoldRemainderPermutationValue
+        unfold ricciContractionRemainderPermutationValue
         split_ifs <;> omega
 
 omit [BoundarylessManifold I M] in
@@ -401,13 +401,13 @@ private lemma covGrad_slotExtend (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma exists_iteratedCovGrad_ricciFoldRemainderArgument_eq (g₀ : SmoothRiemannianMetric I M)
+private lemma exists_iteratedCovGrad_ricciContractionRemainderArgument_eq (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 4) (i : ℕ) :
     ∃ τ : Equiv.Perm (Fin (((4 + i) + 1) + 1)),
       (∀ j : Fin (((4 + i) + 1) + 1),
-        ((τ j : Fin (((4 + i) + 1) + 1)) : ℕ) = ricciFoldRemainderPermutationValue i (j : ℕ)) ∧
+        ((τ j : Fin (((4 + i) + 1) + 1)) : ℕ) = ricciContractionRemainderPermutationValue i (j : ℕ)) ∧
       iteratedCovGrad (I := I) g₀ 2 6 i
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2 V)) =
         castCcTensorRank g₀ 2 (by omega : ((4 + i) + 1) + 1 = 6 + i)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 (((4 + i) + 1) + 1) τ
@@ -416,7 +416,7 @@ private lemma exists_iteratedCovGrad_ricciFoldRemainderArgument_eq (g₀ : Smoot
                 (iteratedCovGrad (I := I) g₀ 0 4 i V)))) := by
   induction i with
   | zero =>
-      refine ⟨ricciFoldRemainderSlotPerm, by decide, ?_⟩
+      refine ⟨ricciContractionRemainderSlotPerm, by decide, ?_⟩
       rw [iteratedCovGrad_zero, iteratedCovGrad_zero]
       rfl
   | succ i ih =>
@@ -426,7 +426,7 @@ private lemma exists_iteratedCovGrad_ricciFoldRemainderArgument_eq (g₀ : Smoot
           ((Equiv.swap (0 : Fin ((((4 + i) + 1) + 1) + 1)) 1).trans
             (Equiv.Perm.decomposeFin.symm (0, τ))), ?_, ?_⟩
       · intro j
-        exact ricciFoldRemainderPermutationValue_succ (m := 4 + i) τ i hτ rfl j
+        exact ricciContractionRemainderPermutationValue_succ (m := 4 + i) τ i hτ rfl j
       · rw [iteratedCovGrad_succ, hEq]
         rw [covGrad_castCcTensorRank]
         rw [covGrad_rsDomDomCongrSection]
@@ -507,22 +507,22 @@ private lemma slotExtend_two_toModel (g₀ : SmoothRiemannianMetric I M) (c : �
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma iteratedCovGrad_ricciFoldRemainderArgument_toModel (g₀ : SmoothRiemannianMetric I M)
+private lemma iteratedCovGrad_ricciContractionRemainderArgument_toModel (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 4) (i : ℕ) (x : M) (D : Tensor0SSpace 2 I x)
     (w : Fin (6 + i) → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (6 + i) I x from
           (iteratedCovGrad (I := I) g₀ 2 6 i
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2 V))).toSection x) D)
         w =
       Tensor0SSpace.toModel D ![w ⟨i + 1, by omega⟩, w ⟨i + 3, by omega⟩] *
         unitModel (I := I) (M := M) g₀ (4 + i) (iteratedCovGrad (I := I) g₀ 0 4 i V) x
           (fun q : Fin (4 + i) =>
-            w ⟨ricciFoldRemainderPermutationValue i ((q : ℕ) + 2),
-              ricciFoldRemainderPermutationValue_lt i _ (by have := q.isLt; omega)⟩) := by
+            w ⟨ricciContractionRemainderPermutationValue i ((q : ℕ) + 2),
+              ricciContractionRemainderPermutationValue_lt i _ (by have := q.isLt; omega)⟩) := by
   classical
-  obtain ⟨τ, hτ, hEq⟩ := exists_iteratedCovGrad_ricciFoldRemainderArgument_eq (I := I) (M := M) g₀ V i
+  obtain ⟨τ, hτ, hEq⟩ := exists_iteratedCovGrad_ricciContractionRemainderArgument_eq (I := I) (M := M) g₀ V i
   rw [hEq]
   rw [castCcTensorRank_toModel (I := I) (M := M) g₀ 2
     (by omega : ((4 + i) + 1) + 1 = 6 + i)
@@ -973,7 +973,7 @@ private lemma tensor0SModel_update_sum {m : ℕ} (Zm : Tensor0SModel m ℝ E)
         rw [smul_eq_mul]
   exact hgen Finset.univ
 
-private def ricciFoldRemainderFrameIndex (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n) :
+private def ricciContractionRemainderFrameIndex (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n) :
     Fin (4 + i) → Fin n := fun t =>
   if h : (t : ℕ) < 2 + i then J ⟨(t : ℕ), h⟩
   else if (t : ℕ) = 2 + i then p
@@ -1034,13 +1034,13 @@ private lemma secondMetricPairTraceFrameTuple_apply_secondInput (g₁ : SmoothRi
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma secondMetricPairTraceFrameTuple_ricciFoldPermutation_eq_update (g₁ : SmoothRiemannianMetric I M) (x : M) (i : ℕ)
+private lemma secondMetricPairTraceFrameTuple_ricciContractionPermutation_eq_update (g₁ : SmoothRiemannianMetric I M) (x : M) (i : ℕ)
     {n : ℕ} (e : Fin n → TangentSpace I x) (J : Fin (2 + i) → Fin n)
     (a b : Fin (Module.finrank ℝ E)) :
     (fun q' : Fin (4 + i) =>
         secondMetricPairTraceFrameTuple (I := I) (M := M) g₁ x i (fun k => e (J k)) a b
-          ⟨ricciFoldRemainderPermutationValue i ((q' : ℕ) + 2),
-            ricciFoldRemainderPermutationValue_lt i ((q' : ℕ) + 2) (by have := q'.isLt; omega)⟩) =
+          ⟨ricciContractionRemainderPermutationValue i ((q' : ℕ) + 2),
+            ricciContractionRemainderPermutationValue_lt i ((q' : ℕ) + 2) (by have := q'.isLt; omega)⟩) =
       Function.update
         (Function.update
           (fun t : Fin (4 + i) =>
@@ -1058,60 +1058,60 @@ private lemma secondMetricPairTraceFrameTuple_ricciFoldPermutation_eq_update (g�
   rw [Function.update_apply, Function.update_apply]
   by_cases h3 : (t : ℕ) = 3 + i
   · rw [if_pos (Fin.ext h3 : t = ⟨3 + i, by omega⟩)]
-    have hidx : (⟨ricciFoldRemainderPermutationValue i ((t : ℕ) + 2),
-        ricciFoldRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
+    have hidx : (⟨ricciContractionRemainderPermutationValue i ((t : ℕ) + 2),
+        ricciContractionRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
         ⟨i + 2, by omega⟩ := by
       refine Fin.ext ?_
-      change ricciFoldRemainderPermutationValue i ((t : ℕ) + 2) = i + 2
+      change ricciContractionRemainderPermutationValue i ((t : ℕ) + 2) = i + 2
       rw [show (t : ℕ) + 2 = i + 5 from by omega]
-      exact ricciFoldRemainderPermutationValue_at_order_add_five i
+      exact ricciContractionRemainderPermutationValue_at_order_add_five i
     rw [hidx]
     exact secondMetricPairTraceFrameTuple_apply_secondFrame (I := I) (M := M) g₁ x i (fun k => e (J k)) a b _ (Or.inl rfl)
   · rw [if_neg (fun ht' => h3 (by rw [ht']))]
     by_cases h2 : (t : ℕ) = 2 + i
     · rw [if_pos (Fin.ext h2 : t = ⟨2 + i, by omega⟩)]
-      have hidx : (⟨ricciFoldRemainderPermutationValue i ((t : ℕ) + 2),
-          ricciFoldRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
+      have hidx : (⟨ricciContractionRemainderPermutationValue i ((t : ℕ) + 2),
+          ricciContractionRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
           ⟨i, by omega⟩ := by
         refine Fin.ext ?_
-        change ricciFoldRemainderPermutationValue i ((t : ℕ) + 2) = i
+        change ricciContractionRemainderPermutationValue i ((t : ℕ) + 2) = i
         rw [show (t : ℕ) + 2 = i + 4 from by omega]
-        exact ricciFoldRemainderPermutationValue_at_order_add_four i
+        exact ricciContractionRemainderPermutationValue_at_order_add_four i
       rw [hidx]
       exact secondMetricPairTraceFrameTuple_apply_firstFrame (I := I) (M := M) g₁ x i (fun k => e (J k)) a b _ (Or.inl rfl)
     · rw [if_neg (fun ht' => h2 (by rw [ht']))]
       have ht : (t : ℕ) < 2 + i := by have := t.isLt; omega
       with_unfolding_all rw [dif_pos ht]
       by_cases hlt : (t : ℕ) < i
-      · have hidx : (⟨ricciFoldRemainderPermutationValue i ((t : ℕ) + 2),
-            ricciFoldRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
+      · have hidx : (⟨ricciContractionRemainderPermutationValue i ((t : ℕ) + 2),
+            ricciContractionRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
             ⟨(t : ℕ), by omega⟩ := by
           refine Fin.ext ?_
-          change ricciFoldRemainderPermutationValue i ((t : ℕ) + 2) = (t : ℕ)
-          rw [ricciFoldRemainderPermutationValue_eq_sub_two i ((t : ℕ) + 2) (by omega) (by omega)]
+          change ricciContractionRemainderPermutationValue i ((t : ℕ) + 2) = (t : ℕ)
+          rw [ricciContractionRemainderPermutationValue_eq_sub_two i ((t : ℕ) + 2) (by omega) (by omega)]
           omega
         rw [hidx]
         rw [secondMetricPairTraceFrameTuple_apply_initial (I := I) (M := M) g₁ x i (fun k => e (J k)) a b _
           (show ((⟨(t : ℕ), by omega⟩ : Fin (6 + i)) : ℕ) < i from hlt)]
       · by_cases hi : (t : ℕ) = i
-        · have hidx : (⟨ricciFoldRemainderPermutationValue i ((t : ℕ) + 2),
-              ricciFoldRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
+        · have hidx : (⟨ricciContractionRemainderPermutationValue i ((t : ℕ) + 2),
+              ricciContractionRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
               ⟨i + 4, by omega⟩ := by
             refine Fin.ext ?_
-            change ricciFoldRemainderPermutationValue i ((t : ℕ) + 2) = i + 4
+            change ricciContractionRemainderPermutationValue i ((t : ℕ) + 2) = i + 4
             rw [show (t : ℕ) + 2 = i + 2 from by omega]
-            exact ricciFoldRemainderPermutationValue_at_order_add_two i
+            exact ricciContractionRemainderPermutationValue_at_order_add_two i
           rw [hidx]
           rw [secondMetricPairTraceFrameTuple_apply_firstInput (I := I) (M := M) g₁ x i (fun k => e (J k)) a b _ rfl]
           exact congrArg e (congrArg J (Fin.ext hi.symm))
         · have hi1 : (t : ℕ) = i + 1 := by omega
-          have hidx : (⟨ricciFoldRemainderPermutationValue i ((t : ℕ) + 2),
-              ricciFoldRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
+          have hidx : (⟨ricciContractionRemainderPermutationValue i ((t : ℕ) + 2),
+              ricciContractionRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
               ⟨i + 5, by omega⟩ := by
             refine Fin.ext ?_
-            change ricciFoldRemainderPermutationValue i ((t : ℕ) + 2) = i + 5
+            change ricciContractionRemainderPermutationValue i ((t : ℕ) + 2) = i + 5
             rw [show (t : ℕ) + 2 = i + 3 from by omega]
-            exact ricciFoldRemainderPermutationValue_at_order_add_three i
+            exact ricciContractionRemainderPermutationValue_at_order_add_three i
           rw [hidx]
           rw [secondMetricPairTraceFrameTuple_apply_secondInput (I := I) (M := M) g₁ x i (fun k => e (J k)) a b _
             (le_refl (i + 5))]
@@ -1119,7 +1119,7 @@ private lemma secondMetricPairTraceFrameTuple_ricciFoldPermutation_eq_update (g�
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma frameIndexUpdates_eq_ricciFoldRemainderFrameIndex (x : M) (i : ℕ)
+private lemma frameIndexUpdates_eq_ricciContractionRemainderFrameIndex (x : M) (i : ℕ)
     {n : ℕ} (e : Fin n → TangentSpace I x) (J : Fin (2 + i) → Fin n) (p q : Fin n) :
     Function.update
         (Function.update
@@ -1130,11 +1130,11 @@ private lemma frameIndexUpdates_eq_ricciFoldRemainderFrameIndex (x : M) (i : ℕ
           ⟨2 + i, by omega⟩ (tangentSpaceModelContinuousLinearEquiv (I := I) x (e p)))
         ⟨3 + i, by omega⟩ (tangentSpaceModelContinuousLinearEquiv (I := I) x (e q)) =
       fun t : Fin (4 + i) => tangentSpaceModelContinuousLinearEquiv (I := I) x
-        (e (ricciFoldRemainderFrameIndex i J p q t)) := by
+        (e (ricciContractionRemainderFrameIndex i J p q t)) := by
   classical
   funext t
   rw [Function.update_apply, Function.update_apply]
-  unfold ricciFoldRemainderFrameIndex
+  unfold ricciContractionRemainderFrameIndex
   by_cases h3 : (t : ℕ) = 3 + i
   · rw [if_pos (Fin.ext h3 : t = ⟨3 + i, by omega⟩), dif_neg (by omega), if_neg (by omega)]
   · rw [if_neg (fun ht' => h3 (by rw [ht']))]
@@ -1144,22 +1144,22 @@ private lemma frameIndexUpdates_eq_ricciFoldRemainderFrameIndex (x : M) (i : ℕ
       have ht : (t : ℕ) < 2 + i := by have := t.isLt; omega
       with_unfolding_all rw [dif_pos ht, dif_pos ht]
 
-private lemma ricciFoldRemainderFrameIndex_apply_initial (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n)
+private lemma ricciContractionRemainderFrameIndex_apply_initial (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n)
     (t : Fin (4 + i)) (h : (t : ℕ) < 2 + i) :
-    ricciFoldRemainderFrameIndex i J p q t = J ⟨(t : ℕ), h⟩ := by
-  unfold ricciFoldRemainderFrameIndex
+    ricciContractionRemainderFrameIndex i J p q t = J ⟨(t : ℕ), h⟩ := by
+  unfold ricciContractionRemainderFrameIndex
   rw [dif_pos h]
 
-private lemma ricciFoldRemainderFrameIndex_apply_penultimate (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n)
+private lemma ricciContractionRemainderFrameIndex_apply_penultimate (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n)
     (t : Fin (4 + i)) (h : (t : ℕ) = 2 + i) :
-    ricciFoldRemainderFrameIndex i J p q t = p := by
-  unfold ricciFoldRemainderFrameIndex
+    ricciContractionRemainderFrameIndex i J p q t = p := by
+  unfold ricciContractionRemainderFrameIndex
   rw [dif_neg (by omega), if_pos h]
 
-private lemma ricciFoldRemainderFrameIndex_apply_last (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n)
+private lemma ricciContractionRemainderFrameIndex_apply_last (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n)
     (t : Fin (4 + i)) (h2 : ¬ (t : ℕ) < 2 + i) (h3 : ¬ (t : ℕ) = 2 + i) :
-    ricciFoldRemainderFrameIndex i J p q t = q := by
-  unfold ricciFoldRemainderFrameIndex
+    ricciContractionRemainderFrameIndex i J p q t = q := by
+  unfold ricciContractionRemainderFrameIndex
   rw [dif_neg h2, if_neg h3]
 
 omit [BoundarylessManifold I M] in
@@ -1214,7 +1214,7 @@ private lemma doubleFrameSum_reindex {d m : ℕ} (A B : Fin d → ℝ) (C D : Fi
 
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert in
 omit [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricciFoldRemainder_le
+theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricciContractionRemainder_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
@@ -1226,7 +1226,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
           (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g₀ 6 2
             (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁) i i)
           (iteratedCovGrad (I := I) g₀ 2 6 i
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (domDomCongrSection (I := I) g₀
                   (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
@@ -1248,7 +1248,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
     with hZm_def
   set Zc : (Fin (2 + i) → Fin n) → Fin n → Fin n → ℝ := fun J p q =>
     Zm (fun t => tangentSpaceModelContinuousLinearEquiv (I := I) x
-      (e (ricciFoldRemainderFrameIndex i J p q t))) with hZc_def
+      (e (ricciContractionRemainderFrameIndex i J p q t))) with hZc_def
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt (I := I) (M := M) g₀ 2 (2 + i) x _ e hnE horth]
   have hexp_fa : ∀ c : Fin (Module.finrank ℝ E),
       tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -1266,7 +1266,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
           (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g₀ 6 2
             (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁) i i)
           (iteratedCovGrad (I := I) g₀ 2 6 i
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2 V)))).toSection x) n e K J =
         ∑ q : Fin n,
           g₀.inner x (e (K 1)) (metricComparisonEndomorphism (I := I) g₀ g₁ x (e q)) *
@@ -1280,7 +1280,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
           (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g₀ 6 2
             (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁) i i)
           (iteratedCovGrad (I := I) g₀ 2 6 i
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2 V)))).toSection x) n e K J =
         Tensor0SSpace.toModel
           ((slotExtendIteratedPointwise (I := I) (M := M) g₀ 6 2 x
@@ -1288,7 +1288,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
               (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁).toSection x) i)
             ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (6 + i) I x from
               (iteratedCovGrad (I := I) g₀ 2 6 i
-                (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+                (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
                   (slotExtendIter (I := I) (M := M) g₀ 0 4 2 V))).toSection x)
               (coframeS (I := I) (M := M) g₀ x 2 e K)))
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J k))) := by
@@ -1298,7 +1298,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
     refine Eq.trans (slotExtendIteratedPointwise_secondMetricPairTraceOperator_toModel g₀ g₁ x i
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (6 + i) I x from
         (iteratedCovGrad (I := I) g₀ 2 6 i
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2 V))).toSection x)
         (coframeS (I := I) (M := M) g₀ x 2 e K))
       (fun k => e (J k))) ?_
@@ -1306,7 +1306,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
         Tensor0SSpace.toModel
             ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (6 + i) I x from
               (iteratedCovGrad (I := I) g₀ 2 6 i
-                (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+                (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
                   (slotExtendIter (I := I) (M := M) g₀ 0 4 2 V))).toSection x)
               (coframeS (I := I) (M := M) g₀ x 2 e K))
             (secondMetricPairTraceFrameTuple (I := I) (M := M) g₁ x i (fun k => e (J k)) aa bb) =
@@ -1316,7 +1316,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
               ∑ p : Fin n, g₀.inner x (e p) (smoothOrthoFrame (I := I) g₁ x aa x) *
                 Zc J p q := by
       intro bb aa
-      refine Eq.trans (iteratedCovGrad_ricciFoldRemainderArgument_toModel (I := I) (M := M) g₀ V i x
+      refine Eq.trans (iteratedCovGrad_ricciContractionRemainderArgument_toModel (I := I) (M := M) g₀ V i x
         (coframeS (I := I) (M := M) g₀ x 2 e K)
         (fun k => secondMetricPairTraceFrameTuple (E := E) (I := I) (M := M) g₁ x i
           (fun k' => e (J k')) aa bb k)) ?_
@@ -1345,7 +1345,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
         rfl
       rw [hcof]
       refine congrArg _ ?_
-      refine Eq.trans (congrArg Zm (secondMetricPairTraceFrameTuple_ricciFoldPermutation_eq_update (I := I) (M := M) g₁ x i e J
+      refine Eq.trans (congrArg Zm (secondMetricPairTraceFrameTuple_ricciContractionPermutation_eq_update (I := I) (M := M) g₁ x i e J
         aa bb)) ?_
       conv_lhs => rw [show tangentSpaceModelContinuousLinearEquiv (I := I) x
           (smoothOrthoFrame (I := I) g₁ x bb x) =
@@ -1368,7 +1368,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
       refine Finset.sum_congr rfl fun p _ => ?_
       refine congrArg _ ?_
       rw [Function.update_comm (Ne.symm hupdcomm)]
-      rw [frameIndexUpdates_eq_ricciFoldRemainderFrameIndex (I := I) (M := M) x i e J p q]
+      rw [frameIndexUpdates_eq_ricciContractionRemainderFrameIndex (I := I) (M := M) x i e J p q]
     refine Eq.trans (Finset.sum_congr rfl fun bb _ => Finset.sum_congr rfl fun aa _ =>
       hterm bb aa) ?_
     refine Eq.trans (doubleFrameSum_reindex
@@ -1478,7 +1478,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
       exact Finset.sum_congr rfl fun J _ =>
         (Fintype.sum_prod_type (fun y : Fin n × Fin n => (Zc J y.2 y.1) ^ 2)).symm]
     refine Fintype.sum_bijective
-      (fun tr : (Fin (2 + i) → Fin n) × Fin n × Fin n => ricciFoldRemainderFrameIndex i tr.1 tr.2.2 tr.2.1) ?_ _ _
+      (fun tr : (Fin (2 + i) → Fin n) × Fin n × Fin n => ricciContractionRemainderFrameIndex i tr.1 tr.2.2 tr.2.1) ?_ _ _
       (fun tr => by rw [hZc_def])
     refine Function.bijective_iff_has_inverse.mpr
       ⟨fun R => (fun j => R ⟨(j : ℕ), by have := j.isLt; omega⟩,
@@ -1486,23 +1486,23 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
     · rintro ⟨J', qq, pp⟩
       refine Prod.ext ?_ (Prod.ext ?_ ?_)
       · funext j
-        refine Eq.trans (ricciFoldRemainderFrameIndex_apply_initial i J' pp qq ⟨(j : ℕ), by have := j.isLt; omega⟩
+        refine Eq.trans (ricciContractionRemainderFrameIndex_apply_initial i J' pp qq ⟨(j : ℕ), by have := j.isLt; omega⟩
           j.isLt) ?_
         exact congrArg J' (Fin.ext rfl)
-      · exact ricciFoldRemainderFrameIndex_apply_last i J' pp qq ⟨3 + i, by omega⟩
+      · exact ricciContractionRemainderFrameIndex_apply_last i J' pp qq ⟨3 + i, by omega⟩
           (by change ¬(3 + i < 2 + i); omega) (by change ¬(3 + i = 2 + i); omega)
-      · exact ricciFoldRemainderFrameIndex_apply_penultimate i J' pp qq ⟨2 + i, by omega⟩ rfl
+      · exact ricciContractionRemainderFrameIndex_apply_penultimate i J' pp qq ⟨2 + i, by omega⟩ rfl
     · intro R
       funext t
-      change ricciFoldRemainderFrameIndex i (fun j => R ⟨(j : ℕ), by have := j.isLt; omega⟩)
+      change ricciContractionRemainderFrameIndex i (fun j => R ⟨(j : ℕ), by have := j.isLt; omega⟩)
         (R ⟨2 + i, by omega⟩) (R ⟨3 + i, by omega⟩) t = R t
       by_cases hlt : (t : ℕ) < 2 + i
-      · refine Eq.trans (ricciFoldRemainderFrameIndex_apply_initial i _ _ _ t hlt) ?_
+      · refine Eq.trans (ricciContractionRemainderFrameIndex_apply_initial i _ _ _ t hlt) ?_
         exact congrArg R (Fin.ext rfl)
       · by_cases heq2 : (t : ℕ) = 2 + i
-        · refine Eq.trans (ricciFoldRemainderFrameIndex_apply_penultimate i _ _ _ t heq2) ?_
+        · refine Eq.trans (ricciContractionRemainderFrameIndex_apply_penultimate i _ _ _ t heq2) ?_
           exact congrArg R (Fin.ext (by simpa using heq2.symm))
-        · refine Eq.trans (ricciFoldRemainderFrameIndex_apply_last i _ _ _ t hlt heq2) ?_
+        · refine Eq.trans (ricciContractionRemainderFrameIndex_apply_last i _ _ _ t hlt heq2) ?_
           have heq3 : (t : ℕ) = 3 + i := by have := t.isLt; omega
           exact congrArg R (Fin.ext (by simpa using heq3.symm))
   rw [hbij]
@@ -1580,7 +1580,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContract
                 (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g₀ 6 2
                   (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁) i i)
                 (iteratedCovGrad (I := I) g₀ 2 6 i
-                  (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+                  (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
                     (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                       (domDomCongrSection (I := I) g₀
                         (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
@@ -1604,7 +1604,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContract
   have hb_nn : ∀ l, 0 ≤ b l :=
     fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _
   set Xarg : SmoothCcTensor g₀ 2 6 :=
-    rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
+    rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciContractionRemainderSlotPerm
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (domDomCongrSection (I := I) g₀
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
@@ -1659,7 +1659,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContract
     intro k
     rw [hX_def]
     rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongrSection_eq (I := I) (M := M) g₀ 2 6
-      ricciFoldRemainderSlotPerm _ k x]
+      ricciContractionRemainderSlotPerm _ k x]
     rw [show slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (domDomCongrSection (I := I) g₀
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
@@ -1739,7 +1739,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContract
         rw [← Finset.sum_mul]
         ring
 
-end RicciFoldRemainderLeibnizDiagonal
+end RicciContractionRemainderLeibnizDiagonal
 
 end TensorSpectral
 end Parabolic

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-import DifferentialGeometry.Geometry.Exponential.DiagInvBranch
+import DifferentialGeometry.Geometry.Exponential.DiagonalInverseBranch
 import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
 
 set_option autoImplicit false
@@ -13,7 +13,7 @@ namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
 namespace Exponential
-namespace DiagInvBranch
+namespace DiagonalInverseBranch
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -30,94 +30,94 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-def fixedPD
+def fixedBasePartialDiffeomorph
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p) :
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p) :
     PartialDiffeomorph 𝓘(ℝ, E) I E M ∞ :=
   (B.fixed p).hom
 
 @[simp]
-theorem fixedPD_apply
+theorem fixedBasePartialDiffeomorph_apply
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p) (u : E) :
-    B.fixedPD u =
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p) (u : E) :
+    B.fixedBasePartialDiffeomorph u =
       expMapIntrinsic (I := I) g hEnorm p
         (show TangentSpace I p from u) :=
   rfl
 
 @[simp]
-theorem fixedPD_source
+theorem fixedBasePartialDiffeomorph_source
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p) :
-    B.fixedPD.source =
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p) :
+    B.fixedBasePartialDiffeomorph.source =
       (fun u : E => (⟨p, u⟩ : TangentBundle I M)) ⁻¹' B.hom.source :=
   rfl
 
 @[simp]
-theorem fixedPD_target
+theorem fixedBasePartialDiffeomorph_target
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p) :
-    B.fixedPD.target =
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p) :
+    B.fixedBasePartialDiffeomorph.target =
       (fun q : M => (p, q)) ⁻¹' B.dom :=
   rfl
 
 @[simp]
-theorem fixedPD_inv_apply
+theorem fixedBasePartialDiffeomorph_symm_apply
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p) (q : M) :
-    B.fixedPD.symm q = ((B.inv (p, q)).snd : E) :=
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p) (q : M) :
+    B.fixedBasePartialDiffeomorph.symm q = ((B.inv (p, q)).snd : E) :=
   rfl
 
-theorem fixedPD_zero_mem
+theorem fixedBasePartialDiffeomorph_zero_mem_source
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p) :
-    (0 : E) ∈ B.fixedPD.source := by
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p) :
+    (0 : E) ∈ B.fixedBasePartialDiffeomorph.source := by
   exact B.zero_mem
 
-theorem fixedPD_center_mem
+theorem fixedBasePartialDiffeomorph_center_mem_target
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p) :
-    p ∈ B.fixedPD.target := by
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p) :
+    p ∈ B.fixedBasePartialDiffeomorph.target := by
   have hmap :=
-    B.fixedPD.map_source B.fixedPD_zero_mem
+    B.fixedBasePartialDiffeomorph.map_source B.fixedBasePartialDiffeomorph_zero_mem_source
   have hzero :
       expMapIntrinsic (I := I) g hEnorm p
         (show TangentSpace I p from (0 : E)) = p :=
     expMapIntrinsic_zero (I := I) g hEnorm p
-  simpa only [fixedPD_apply, hzero] using hmap
+  simpa only [fixedBasePartialDiffeomorph_apply, hzero] using hmap
 
-theorem fixedPD_symm_center
+theorem fixedBasePartialDiffeomorph_symm_center
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p) :
-    B.fixedPD.symm p = (0 : E) := by
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p) :
+    B.fixedBasePartialDiffeomorph.symm p = (0 : E) := by
   have hleft :=
-    B.fixedPD.left_inv B.fixedPD_zero_mem
+    B.fixedBasePartialDiffeomorph.left_inv B.fixedBasePartialDiffeomorph_zero_mem_source
   have hzero :
       expMapIntrinsic (I := I) g hEnorm p
         (show TangentSpace I p from (0 : E)) = p :=
     expMapIntrinsic_zero (I := I) g hEnorm p
-  change B.fixedPD.symm.toPartialEquiv p = (0 : E)
-  change B.fixedPD.symm.toPartialEquiv (B.fixedPD (0 : E)) = (0 : E) at hleft
-  rw [show B.fixedPD (0 : E) = p by simpa only [fixedPD_apply] using hzero] at hleft
+  change B.fixedBasePartialDiffeomorph.symm.toPartialEquiv p = (0 : E)
+  change B.fixedBasePartialDiffeomorph.symm.toPartialEquiv (B.fixedBasePartialDiffeomorph (0 : E)) = (0 : E) at hleft
+  rw [show B.fixedBasePartialDiffeomorph (0 : E) = p by simpa only [fixedBasePartialDiffeomorph_apply] using hzero] at hleft
   exact hleft
 
-end DiagInvBranch
+end DiagonalInverseBranch
 end Exponential
 end Riemannian
 end Geometry

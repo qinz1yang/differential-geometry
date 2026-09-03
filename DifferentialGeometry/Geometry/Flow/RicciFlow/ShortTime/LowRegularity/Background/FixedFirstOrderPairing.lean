@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.BackgroundDifferenceFirstDerivativePairingBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.GalerkinForcingArms
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.GalerkinForcingTerms
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3FirstOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2PointwiseUnif
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.FiniteSpectralPairing
@@ -97,7 +97,7 @@ def galerkinFirstOrderActionRemainderVectorBackground
       operatorFieldApply (I := I) (M := M) g 3 2 AS.firstOrderCoefficient
         (iteratedCovGrad (I := I) g 0 2 1 T))
 
-theorem galArmVecBackground_split
+theorem galTermVecBackground_split
     (g gBase : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1)
     (hreal : ∀ T : SmoothCcTensor g 0 2,
@@ -131,7 +131,7 @@ def galerkinFirstOrderActionRemainderPairingBackground
     (c i * (galerkinFirstOrderActionRemainderVectorBackground (I := I) (M := M) g gBase
       hR hδ hreal F c).coeff i)
 
-theorem galArmPair3_split
+theorem galTermPair3_split
     (g gBase : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1)
     (hreal : ∀ T : SmoothCcTensor g 0 2,
@@ -148,11 +148,11 @@ theorem galArmPair3_split
           hR hδ hreal F c 3 +
         galerkinFirstOrderActionFixedPairingBackground (I := I) (M := M) g gBase
           hR hδ hreal F c 3 := by
-  rw [galArmVecBackground_split (I := I) (M := M) g gBase hR hδ hreal F c]
+  rw [galTermVecBackground_split (I := I) (M := M) g gBase hR hδ hreal F c]
   simp only [TensorHs.add_coeff, mul_add, Finset.sum_add_distrib,
     galerkinFirstOrderActionRemainderPairingBackground, galerkinFirstOrderActionFixedPairingBackground]
 
-private theorem lowArm_symm
+private theorem lowTerm_symm
     (g gBase : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hTsymm : symmS (I := I) (M := M) g T = T)
     {δ : ℝ} (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
@@ -191,7 +191,7 @@ private theorem lowArm_symm
           (0 : SmoothCcTensor g 0 2) hδ hZ) = _
   rw [symmS_sub, hsT, hsZ]
 
-theorem galArmPair3_diag
+theorem galTermPair3_diag
     (g gBase : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hreal : ∀ T : SmoothCcTensor g 0 2,
@@ -232,7 +232,7 @@ theorem galArmPair3_diag
   have hA : symmS (I := I) (M := M) g
       (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T) =
         A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T := by
-    exact lowArm_symm (I := I) (M := M) g gBase T hTfix hδ hδ0 hδ3 hT hZ
+    exact lowTerm_symm (I := I) (M := M) g gBase T hTfix hδ hδ0 hδ3 hT hZ
   have hrep : T = θ • symmS (I := I) (M := M) g
       (finiteEigenCombo (I := I) (M := M) g F c) := by
     dsimp only [T, θ]
@@ -272,7 +272,7 @@ theorem galArmPair3_diag
   rw [hAfold]
   exact hpair
 
-theorem galArmPair4_diag
+theorem galTermPair4_diag
     (g gBase : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hreal : ∀ T : SmoothCcTensor g 0 2,
@@ -313,7 +313,7 @@ theorem galArmPair4_diag
   have hA : symmS (I := I) (M := M) g
       (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T) =
         A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T := by
-    exact lowArm_symm (I := I) (M := M) g gBase T hTfix hδ hδ0 hδ3 hT hZ
+    exact lowTerm_symm (I := I) (M := M) g gBase T hTfix hδ hδ0 hδ3 hT hZ
   have hrep : T = θ • symmS (I := I) (M := M) g
       (finiteEigenCombo (I := I) (M := M) g F c) := by
     dsimp only [T, θ]

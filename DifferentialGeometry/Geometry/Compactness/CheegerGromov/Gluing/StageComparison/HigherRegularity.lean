@@ -131,9 +131,9 @@ theorem stage_root_tail
     (Phi3 : Nat → Nat → Nat → E → E)
     (hroot : HasStageRootCube inp P L hr phi hphi C1 alpha e
       W PhiInf rootRho Phi3 (chart := d.chart)) :
-    HasStageRootReadout inp P L hr phi hphi C0 alpha Phi3
+    HasStageRootChartEquation inp P L hr phi hphi C0 alpha Phi3
       (chart := d.chart) := by
-  dsimp only [HasStageRootReadout]
+  dsimp only [HasStageRootChartEquation]
   rcases hroot with
     ⟨_hW, _hWcpt, hC1W, hrootRho, hPhiInf, _htriple,
       Nroot, hrootTail⟩
@@ -383,7 +383,7 @@ theorem stage_root_tail
       stageComparisonMap inp P Lphi r hr k l x
           (chart := d.chart) = c :=
     hmap.trans hcGlobal.symm
-  have hchartReadout :
+  have hchartDiagonalInverseCoordinates :
       chiL.inv
           (stageComparisonMap inp P Lphi r hr k l x
             (chart := d.chart)) =
@@ -412,7 +412,7 @@ theorem stage_root_tail
           (chart := d.chart) ∈ chiL.hom.target := by
     rw [hmapDecode]
     exact chiL.hom.map_source (chiL.ball_subset hrootBall)
-  exact ⟨hchartReadout, hrootBall, hmapDecode, htarget⟩
+  exact ⟨hchartDiagonalInverseCoordinates, hrootBall, hmapDecode, htarget⟩
 
 end BoundedGeometryNormalChartData
 
@@ -435,7 +435,7 @@ theorem HasSuppConvDataOn.stage_jet_of_root
     (Phi3 : Nat → Nat → Nat → E → E)
     (hroot : HasStageRootCube inp P L hr phi hphi C1 alpha e
       W PhiInf rootRho Phi3 (chart := chart))
-    (hread : HasStageRootReadout inp P L hr phi hphi C0 alpha Phi3
+    (hread : HasStageRootChartEquation inp P L hr phi hphi C0 alpha Phi3
       (chart := chart))
     (R : Real) (hRr : R < r)
     (p : Nat) (eps : Real) (heps : 0 < eps) :
@@ -501,7 +501,7 @@ theorem HasSuppConvDataOn.stage_jet_of_root
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
     z ∈ interior (C0 alpha) ∧
       chiK.hom z ∈ Lphi.hatSourceBall inp.decay P R k
-  dsimp only [HasStageRootReadout] at hread
+  dsimp only [HasStageRootChartEquation] at hread
   obtain ⟨Nread, hreadTail⟩ := hread
   have hEq : ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ z ∈ C0 alpha,
       S k z → Psi k l =ᶠ[nhds z] Phi3 l k l := by
@@ -613,7 +613,7 @@ theorem HasSuppConvDataOn.stage_jet_tail
       (e alpha) (W alpha) (PhiInf alpha) (rootRho alpha) (Phi3 alpha)
       (chart := chart))
     (hread : ∀ alpha,
-      HasStageRootReadout inp P L hr phi hphi C0 alpha
+      HasStageRootChartEquation inp P L hr phi hphi C0 alpha
         (Phi3 alpha) (chart := chart))
     (R : Real) (hRr : R < r)
     (p : Nat) (eps : Real) (heps : 0 < eps) :

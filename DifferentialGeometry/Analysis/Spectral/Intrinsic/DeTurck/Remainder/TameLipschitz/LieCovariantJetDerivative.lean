@@ -30,7 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [SigmaCompactSpace M] in
-theorem linearizedDeTurckLieAt_eq_threeArm_of_symm
+theorem linearizedDeTurckLieAt_eq_covariantJet_of_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -53,11 +53,11 @@ theorem linearizedDeTurckLieAt_eq_threeArm_of_symm
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))
           + operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (deTurckLieArm1Coeff (I := I) (M := M) g₀
+            (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
           + operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (deTurckLieArm2PrincipalCoeff (I := I) g₀
+            (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
   let vt : Fin 2 → TangentSpace I x := fun i =>
@@ -83,11 +83,11 @@ theorem linearizedDeTurckLieAt_eq_threeArm_of_symm
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))
           + operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (deTurckLieArm1Coeff (I := I) (M := M) g₀
+            (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
           + operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (deTurckLieArm2PrincipalCoeff (I := I) g₀
+            (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
         ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i,
@@ -95,7 +95,7 @@ theorem linearizedDeTurckLieAt_eq_threeArm_of_symm
     intro i j
     rw [deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope (I := I) g₀ T T'
       hδ_lt hδ hδ'_lt hδ' g_bg x i j hs]
-    have h := lieArm_chartSlope_center_value_eq_threeArm (I := I) g₀ g_bg T T'
+    have h := lieTerm_chartSlope_center_value_eq_covariantJet (I := I) g₀ g_bg T T'
       hδ_lt hδ hδ'_lt hδ' s x i j
     rw [hSsymmS] at h
     exact h
@@ -107,11 +107,11 @@ theorem linearizedDeTurckLieAt_eq_threeArm_of_symm
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
         (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))
       + operatorFieldApply (I := I) (M := M) g₀ 3 2
-        (deTurckLieArm1Coeff (I := I) (M := M) g₀
+        (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
         (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
       + operatorFieldApply (I := I) (M := M) g₀ 4 2
-        (deTurckLieArm2PrincipalCoeff (I := I) g₀
+        (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
         (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T')) with hWbase
   calc (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),

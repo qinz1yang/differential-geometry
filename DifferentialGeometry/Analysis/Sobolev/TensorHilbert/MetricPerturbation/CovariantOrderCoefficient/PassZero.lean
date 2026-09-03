@@ -176,39 +176,39 @@ lemma rsDomDomCongr_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 end NormedDomReindexing
 
-def armSlotEndoPassZeroCc (g : SmoothRiemannianMetric I M)
-    (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
+def termSlotEndoPassZeroCc (g : SmoothRiemannianMetric I M)
+    (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
     SmoothCcTensor g 2 3 :=
   rsDomDomCongrSection (I := I) (M := M) g 2 3 (finRotate 3)
-    (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm)
+    (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Term)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-@[simp] lemma armSlotEndoPassZeroCc_toSection (g : SmoothRiemannianMetric I M)
-    (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
+@[simp] lemma termSlotEndoPassZeroCc_toSection (g : SmoothRiemannianMetric I M)
+    (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)))
     (x : M) :
-    (armSlotEndoPassZeroCc (I := I) (M := M) g Arm).toSection x =
+    (termSlotEndoPassZeroCc (I := I) (M := M) g Term).toSection x =
       tensorRSDomDomCongr (finRotate 3)
-        ((bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm).toSection x) := rfl
+        ((bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Term).toSection x) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem toModel_operatorFieldComposition_armSlotEndoPassZeroCc_eval (g : SmoothRiemannianMetric I M)
-    (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
+theorem toModel_operatorFieldComposition_termSlotEndoPassZeroCc_eval (g : SmoothRiemannianMetric I M)
+    (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)))
     (W : SmoothCcTensor g 1 2) (x : M) (om : Tensor0SSpace 1 I x)
     (v : Fin 3 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (ccOperatorFieldComp (I := I) (M := M) g 1 2 3
-            (armSlotEndoPassZeroCc (I := I) (M := M) g Arm) W).toSection x) om) v =
+            (termSlotEndoPassZeroCc (I := I) (M := M) g Term) W).toSection x) om) v =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om)
         (fun j : Fin 2 => if j = 0 then
           tangentSpaceModelContinuousLinearEquiv (I := I) x
-            (Arm x
+            (Term x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 2)))
         else v 0) := by
@@ -217,42 +217,42 @@ theorem toModel_operatorFieldComposition_armSlotEndoPassZeroCc_eval (g : SmoothR
     fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)
   have hcomp : (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (ccOperatorFieldComp (I := I) (M := M) g 1 2 3
-          (armSlotEndoPassZeroCc (I := I) (M := M) g Arm) W).toSection x) om =
+          (termSlotEndoPassZeroCc (I := I) (M := M) g Term) W).toSection x) om =
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (armSlotEndoPassZeroCc (I := I) (M := M) g Arm).toSection x)
+        (termSlotEndoPassZeroCc (I := I) (M := M) g Term).toSection x)
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om) := by
     rw [operatorFieldComposition_toSection]
     rfl
-  rw [hcomp, armSlotEndoPassZeroCc_toSection]
+  rw [hcomp, termSlotEndoPassZeroCc_toSection]
   change Tensor0SSpace.eval
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         tensorRSDomDomCongr (finRotate 3)
-          ((bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm).toSection x))
+          ((bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Term).toSection x))
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om)) vt =
     Tensor0SSpace.eval
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om)
-      (fun j : Fin 2 => if j = 0 then Arm x (vt 1) (vt 2) else vt 0)
+      (fun j : Fin 2 => if j = 0 then Term x (vt 1) (vt 2) else vt 0)
   rw [rsDomDomCongr_apply_eval]
-  rw [armSlotEndoCc_toSection]
+  rw [termSlotEndoCc_toSection]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) 1 x (Arm x)))
+        TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) 1 x (Term x)))
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om) =
-      bilinearSlotInsertCLM (I := I) (M := M) 1 x (Arm x)
+      bilinearSlotInsertCLM (I := I) (M := M) 1 x (Term x)
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om) from rfl]
-  rw [armSlotFib_apply_eval]
+  rw [termSlotFib_apply_eval]
   have hslot := slotInsertEndoFib_apply_eval (I := I) (M := M) (1 + 1) 0 x
-    ((Arm x) (vt ((finRotate 3) 0)))
+    ((Term x) (vt ((finRotate 3) 0)))
     ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om)
     (Matrix.vecTail fun k => vt ((finRotate 3) k))
   change Tensor0SSpace.eval
       (slotInsertEndoFib (I := I) (M := M) (1 + 1) 0 x
-        ((Arm x) (vt ((finRotate 3) 0)))
+        ((Term x) (vt ((finRotate 3) 0)))
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om))
       (Matrix.vecTail fun k => vt ((finRotate 3) k)) =
     Tensor0SSpace.eval
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om)
       (Function.update (Matrix.vecTail fun k => vt ((finRotate 3) k)) 0
-        (((Arm x) (vt ((finRotate 3) 0)))
+        (((Term x) (vt ((finRotate 3) 0)))
           ((Matrix.vecTail fun k => vt ((finRotate 3) k)) 0))) at hslot
   rw [hslot]
   have hr0 : finRotate 3 (0 : Fin 3) = 1 := by decide
@@ -262,7 +262,7 @@ theorem toModel_operatorFieldComposition_armSlotEndoPassZeroCc_eval (g : SmoothR
   funext j
   refine Fin.cases ?_ ?_ j
   · rw [Function.update_self, if_pos rfl]
-    change Arm x (vt (finRotate 3 0)) (vt (finRotate 3 1)) = Arm x (vt 1) (vt 2)
+    change Term x (vt (finRotate 3 0)) (vt (finRotate 3 1)) = Term x (vt 1) (vt 2)
     rw [hr0, hr1]
   · intro i
     have hi : i = 0 := Subsingleton.elim i 0
@@ -273,25 +273,25 @@ theorem toModel_operatorFieldComposition_armSlotEndoPassZeroCc_eval (g : SmoothR
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma exists_iteratedCovGrad_armSlotEndoPassZeroCc_toSection_eq
+private lemma exists_iteratedCovGrad_termSlotEndoPassZeroCc_toSection_eq
     (g : SmoothRiemannianMetric I M)
-    (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
+    (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)))
     (j : ℕ) :
     ∃ τ : Equiv.Perm (Fin (3 + j)), ∀ (x : M) (d : Tensor0SSpace 2 I x),
       Tensor0SSpace.toModel
           ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (3 + j) I x from
             (iteratedCovGrad (I := I) g 2 3 j
-              (armSlotEndoPassZeroCc (I := I) (M := M) g Arm)).toSection x) d) =
+              (termSlotEndoPassZeroCc (I := I) (M := M) g Term)).toSection x) d) =
         ContinuousMultilinearMap.domDomCongr τ
           (Tensor0SSpace.toModel
             ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (3 + j) I x from
               (iteratedCovGrad (I := I) g 2 3 j
-                (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm)).toSection x) d)) := by
+                (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Term)).toSection x) d)) := by
   induction j with
   | zero =>
     refine ⟨finRotate 3, fun x d => ?_⟩
-    rw [iteratedCovGrad_zero, iteratedCovGrad_zero, armSlotEndoPassZeroCc_toSection,
+    rw [iteratedCovGrad_zero, iteratedCovGrad_zero, termSlotEndoPassZeroCc_toSection,
       toModel_rsDomDomCongr_apply]
   | succ j ih =>
     obtain ⟨τ, hτ⟩ := ih
@@ -300,42 +300,42 @@ private lemma exists_iteratedCovGrad_armSlotEndoPassZeroCc_toSection_eq
     apply ContinuousMultilinearMap.ext
     intro v
     exact covGrad_rs_toModel_domDomCongr (I := I) (M := M) g 2 (3 + j) τ
-      (iteratedCovGrad (I := I) g 2 3 j (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm))
-      (iteratedCovGrad (I := I) g 2 3 j (armSlotEndoPassZeroCc (I := I) (M := M) g Arm))
+      (iteratedCovGrad (I := I) g 2 3 j (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Term))
+      (iteratedCovGrad (I := I) g 2 3 j (termSlotEndoPassZeroCc (I := I) (M := M) g Term))
       hτ x d v
 
 omit [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_iteratedCovGrad_armSlotEndoPassZeroCc_eq
+theorem riemannianFiberNormSq_iteratedCovGrad_termSlotEndoPassZeroCc_eq
     (g : SmoothRiemannianMetric I M)
-    (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
+    (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)))
     (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 2 (3 + j) x
         ((iteratedCovGrad (I := I) g 2 3 j
-          (armSlotEndoPassZeroCc (I := I) (M := M) g Arm)).toSection x) =
+          (termSlotEndoPassZeroCc (I := I) (M := M) g Term)).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g 2 (3 + j) x
         ((iteratedCovGrad (I := I) g 2 3 j
-          (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm)).toSection x) := by
+          (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Term)).toSection x) := by
   classical
-  obtain ⟨τ, hτ⟩ := exists_iteratedCovGrad_armSlotEndoPassZeroCc_toSection_eq
-    (I := I) (M := M) g Arm j
+  obtain ⟨τ, hτ⟩ := exists_iteratedCovGrad_termSlotEndoPassZeroCc_toSection_eq
+    (I := I) (M := M) g Term j
   have hsec : (iteratedCovGrad (I := I) g 2 3 j
-        (armSlotEndoPassZeroCc (I := I) (M := M) g Arm)).toSection x =
+        (termSlotEndoPassZeroCc (I := I) (M := M) g Term)).toSection x =
       tensorRSDomDomCongr τ
         ((iteratedCovGrad (I := I) g 2 3 j
-          (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm)).toSection x) := by
+          (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Term)).toSection x) := by
     apply ContinuousLinearMap.ext
     intro d
     apply Tensor0SSpace.toModel_injective
     change Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (3 + j) I x from
           (iteratedCovGrad (I := I) g 2 3 j
-            (armSlotEndoPassZeroCc (I := I) (M := M) g Arm)).toSection x) d) =
+            (termSlotEndoPassZeroCc (I := I) (M := M) g Term)).toSection x) d) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (3 + j) I x from
           tensorRSDomDomCongr τ
             ((iteratedCovGrad (I := I) g 2 3 j
-              (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Arm)).toSection x)) d)
+              (bilinearSlotInsertionCoefficient (I := I) (M := M) g 1 Term)).toSection x)) d)
     rw [toModel_rsDomDomCongr_apply]
     exact hτ x d
   rw [hsec]

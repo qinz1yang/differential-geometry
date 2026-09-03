@@ -68,22 +68,6 @@ def deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (g₀ g₁ 
 def deTurckVectorFieldCovariantDerivativeLowered (g₀ g₁ g_bg : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0 2 :=
   deTurckVectorFieldCovariantDerivativeLoweredBase (I := I) (M := M) g₀ g₁ g_bg + deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ : SmoothCcTensor g r s) (W₁ W₂ : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s Φ (W₁ - W₂) =
-      operatorFieldApply (I := I) (M := M) g r s Φ W₁ - operatorFieldApply (I := I) (M := M) g r s Φ W₂ := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((operatorFieldApply (I := I) (M := M) g r s Φ W₁ - operatorFieldApply (I := I) (M := M) g r s Φ W₂).toSection x) =
-      (operatorFieldApply (I := I) (M := M) g r s Φ W₁).toSection x -
-        (operatorFieldApply (I := I) (M := M) g r s Φ W₂).toSection x from rfl]
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection, operatorFieldApplication_toSection]
-  rw [show ((W₁ - W₂).toSection x : TensorRSSpace 0 r I x) = W₁.toSection x - W₂.toSection x from by
-    rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [ContinuousLinearMap.comp_sub]
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in

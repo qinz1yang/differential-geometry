@@ -81,7 +81,7 @@ theorem operatorFieldApplication_split_env
   choose Csp hCsp hsp using fun k : ℕ => hs_le_jet (I := I) (M := M) g c (k + 1)
   obtain ⟨Cin, hCin, hin⟩ := iteratedCovGrad2_jet_le (I := I) (M := M) g s
   choose Cg hCg hgrid using fun j : ℕ =>
-    exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g (s + 2) 0 c (s + 2) j
   refine ⟨fun k => Csp k *
     (∑ j ∈ Finset.range (k + 2),

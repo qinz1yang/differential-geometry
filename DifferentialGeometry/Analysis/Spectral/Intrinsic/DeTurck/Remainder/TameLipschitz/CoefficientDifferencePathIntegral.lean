@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.CovariantDerivativePathIntegral
@@ -30,7 +30,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturba
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieCoefficientApplication
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartReadout
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartComponents
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrderTerm.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.SecondOrderTerm.L2JetBound
@@ -60,15 +60,15 @@ open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
-  linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero
-  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
-  linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
-  linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
-  linearizedRicciArm1CorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
-  linearizedRicci_arm0Field_jointSmooth linearizedRicci_arm1Field_jointSmooth
-  linearizedRicci_arm2FieldLichnerowicz_jointSmooth ricciArmOrder1KoszulCoeff
-  exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
+  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
+  linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero
+  exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
+  linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
+  linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
+  exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
   symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
@@ -164,7 +164,7 @@ private theorem mixed_real_holder_two_nonneg
   exact (ENNReal.ofReal_le_ofReal_iff hrhs_nn).mp hHolder
 
 
-private theorem mixed_young_arm_split
+private theorem mixed_young_term_split
     (wi wl CS CT ΛS ΛT NS NT Iφp Iψq : ℝ)
     (hwi_nn : 0 ≤ wi) (hwl_nn : 0 ≤ wl) (hwsum : wi + wl = 1)
     (hCS : 0 ≤ CS) (hCT : 0 ≤ CT) (hΛS : 0 ≤ ΛS) (hΛT : 0 ≤ ΛT)
@@ -201,7 +201,7 @@ private theorem mixed_young_arm_split
         mul_le_mul_of_nonneg_left hyoung (by positivity)
 
 open DifferentialGeometry.Analysis.Sobolev.Tensor in
-private theorem operatorFieldApplication_integrated_grid_twoArm_mixed
+private theorem operatorFieldApplication_integrated_grid_twoTerm_mixed
     (g : SmoothRiemannianMetric I M) (r s₁ s₂ k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : Integral.L2.SmoothCcTensor g r s₁) (T : Integral.L2.SmoothCcTensor g 0 s₂)
@@ -461,7 +461,7 @@ private theorem operatorFieldApplication_integrated_grid_twoArm_mixed
           rw [hIφp]; exact integral_nonneg (fun x => Real.rpow_nonneg (hSj_nn i x) _)
         have hIψq_nn : 0 ≤ Iψq := by
           rw [hIψq]; exact integral_nonneg (fun x => Real.rpow_nonneg (hTj_nn l x) _)
-        have hys := mixed_young_arm_split wi wl (CSf m) (CTf m) ΛS ΛT
+        have hys := mixed_young_term_split wi wl (CSf m) (CTf m) ΛS ΛT
           ‖iteratedCovGrad (I := I) g r s₁ m S‖
           ‖iteratedCovGrad (I := I) g 0 s₂ m T‖
           Iφp Iψq hwi_nn hwl_nn hwsum (hCSf_nn m) (hCTf_nn m) hΛS hΛT
@@ -576,7 +576,7 @@ private theorem operatorFieldApplication_integrated_grid_twoArm_mixed
   rw [hc]
   ring
 
-theorem ccTensorContract_topOrder_l2_twoArm_mixed_ballUniform
+theorem ccTensorContract_topOrder_l2_twoTerm_mixed_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (b₀ s₀ k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (Φ : SmoothCcTensor g₀ b₀ s₀) (W : SmoothCcTensor g₀ 0 b₀) (ΛΦ ΛW : ℝ),
@@ -597,7 +597,7 @@ theorem ccTensorContract_topOrder_l2_twoArm_mixed_ballUniform
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Cgrid, hCgrid_nn, hCgrid⟩ :=
-    operatorFieldApplication_integrated_grid_twoArm_mixed (I := I) g₀ b₀ s₀ b₀ k
+    operatorFieldApplication_integrated_grid_twoTerm_mixed (I := I) g₀ b₀ s₀ b₀ k
   set Gk : ℝ := diagonalGridGrowthFactor (E := E) k with hGk
   have hGk_nn : 0 ≤ Gk := operatorFieldApplicationGdiag_nonneg (E := E) k
   refine ⟨Gk * Cgrid, by positivity, ?_⟩
@@ -694,7 +694,7 @@ lemma jetTowerSum_add_le (g₀ : SmoothRiemannianMetric I M) (r s n : ℕ)
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem armField_covGrad_step_jointSmooth
+private theorem termField_covGrad_step_jointSmooth
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
     (Ψ : ℝ → SmoothCcTensor g₀ r sIdx) (S : Set ℝ)
     (hjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel r sIdx ℝ E)) ∞
@@ -712,7 +712,7 @@ private theorem armField_covGrad_step_jointSmooth
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem armField_jointSmooth_riemannianFiberNormSq_jointContinuous
+private theorem termField_jointSmooth_riemannianFiberNormSq_jointContinuous
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
     (Ψ : ℝ → SmoothCcTensor g₀ r sIdx) (S : Set ℝ)
     (hSI : Set.Icc (0 : ℝ) 1 ⊆ S)
@@ -773,7 +773,7 @@ private theorem armField_jointSmooth_riemannianFiberNormSq_jointContinuous
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem armField_covGrad_pathIntegral_comm
+private theorem termField_covGrad_pathIntegral_comm
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
     (Ψ : ℝ → SmoothCcTensor g₀ r sIdx) (S : Set ℝ) (hS : IsOpen S)
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
@@ -817,7 +817,7 @@ private theorem pathIntegralCoeffField_congr
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem armField_iteratedCovGrad_jointSmooth
+private theorem termField_iteratedCovGrad_jointSmooth
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r sIdx) (S : Set ℝ)
     (hjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel r sIdx ℝ E)) ∞
@@ -832,12 +832,12 @@ private theorem armField_iteratedCovGrad_jointSmooth
   induction i with
   | zero => exact hjoint
   | succ j ih =>
-    exact armField_covGrad_step_jointSmooth (I := I) g₀ r (sIdx + j)
+    exact termField_covGrad_step_jointSmooth (I := I) g₀ r (sIdx + j)
       (fun t => iteratedCovGrad (I := I) g₀ r sIdx j (Φ t)) S ih
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem armField_iteratedCovGrad_riemannianFiberNormSq_jointContinuous
+private theorem termField_iteratedCovGrad_riemannianFiberNormSq_jointContinuous
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r sIdx) (S : Set ℝ)
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
@@ -849,13 +849,13 @@ private theorem armField_iteratedCovGrad_riemannianFiberNormSq_jointContinuous
       riemannianFiberNormSq (I := I) (M := M) g₀ r (sIdx + i) p.2
         ((iteratedCovGrad (I := I) g₀ r sIdx i (Φ p.1)).toSection p.2))
       (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M)) :=
-  armField_jointSmooth_riemannianFiberNormSq_jointContinuous (I := I) g₀ r (sIdx + i)
+  termField_jointSmooth_riemannianFiberNormSq_jointContinuous (I := I) g₀ r (sIdx + i)
     (fun t => iteratedCovGrad (I := I) g₀ r sIdx i (Φ t)) S
     (by rw [Set.uIcc_of_le (zero_le_one (α := ℝ))] at hSI; exact hSI)
-    (armField_iteratedCovGrad_jointSmooth (I := I) g₀ r sIdx i Φ S hjoint)
+    (termField_iteratedCovGrad_jointSmooth (I := I) g₀ r sIdx i Φ S hjoint)
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem armField_iteratedCovGrad_normSq_intervalIntegrable
+private theorem termField_iteratedCovGrad_normSq_intervalIntegrable
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r sIdx) (S : Set ℝ)
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
@@ -877,7 +877,7 @@ private theorem armField_iteratedCovGrad_normSq_intervalIntegrable
     riemannianFiberNormSq (I := I) (M := M) g₀ r (sIdx + i) p.2
       ((iteratedCovGrad (I := I) g₀ r sIdx i (Φ p.1)).toSection p.2) with hF
   have hFcont : ContinuousOn F (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M)) :=
-    armField_iteratedCovGrad_riemannianFiberNormSq_jointContinuous (I := I) g₀ r sIdx i Φ S hSI hjoint
+    termField_iteratedCovGrad_riemannianFiberNormSq_jointContinuous (I := I) g₀ r sIdx i Φ S hSI hjoint
   have hnormsq : ∀ t : ℝ,
       ‖iteratedCovGrad (I := I) g₀ r sIdx i (Φ t)‖ ^ 2 = ∫ x, F (t, x) ∂μ := by
     intro t
@@ -901,7 +901,7 @@ private theorem armField_iteratedCovGrad_normSq_intervalIntegrable
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem armField_iteratedCovGrad_pathIntegral_comm
+private theorem termField_iteratedCovGrad_pathIntegral_comm
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r sIdx) (S : Set ℝ) (hS : IsOpen S)
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
@@ -930,7 +930,7 @@ private theorem armField_iteratedCovGrad_pathIntegral_comm
           (E := fun z : M => TensorRSSpace r (sIdx + j) I z) q.1
           ((iteratedCovGrad (I := I) g₀ r sIdx j (Φ q.2)).toSection q.1))
         ((Set.univ : Set M) ×ˢ S) :=
-      armField_iteratedCovGrad_jointSmooth (I := I) g₀ r sIdx j Φ S hjoint
+      termField_iteratedCovGrad_jointSmooth (I := I) g₀ r sIdx j Φ S hjoint
     have hjgsucc : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
         (I.prod 𝓘(ℝ, TensorRSModel r (sIdx + j + 1) ℝ E)) ∞
         (fun q : M × ℝ => TotalSpace.mk' (TensorRSModel r (sIdx + j + 1) ℝ E)
@@ -938,10 +938,10 @@ private theorem armField_iteratedCovGrad_pathIntegral_comm
           ((covGrad (I := I) (M := M) g₀ r (sIdx + j)
               (iteratedCovGrad (I := I) g₀ r sIdx j (Φ q.2))).toSection q.1))
         ((Set.univ : Set M) ×ˢ S) :=
-      armField_covGrad_step_jointSmooth (I := I) g₀ r (sIdx + j)
+      termField_covGrad_step_jointSmooth (I := I) g₀ r (sIdx + j)
         (fun t => iteratedCovGrad (I := I) g₀ r sIdx j (Φ t)) S hjg_j
     rw [iteratedCovGrad_succ, ih hjg_j]
-    rw [armField_covGrad_pathIntegral_comm (I := I) g₀ r (sIdx + j)
+    rw [termField_covGrad_pathIntegral_comm (I := I) g₀ r (sIdx + j)
       (fun t => iteratedCovGrad (I := I) g₀ r sIdx j (Φ t)) S hS hSI hjg_j hjgsucc]
     exact pathIntegralCoeffField_congr (I := I) g₀ r (sIdx + j + 1)
       (fun t => covGrad (I := I) (M := M) g₀ r (sIdx + j)
@@ -955,7 +955,7 @@ theorem pathIntegralCoeffField_jetL2_tower_le
     (Φ : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ')))
-    (hjoint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r Φ (δ := δ) (δ' := δ'))
+    (hjoint : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r Φ (δ := δ) (δ' := δ'))
     {B : ℝ}
     (hΦjet : ∀ s ∈ Set.Icc (0 : ℝ) 1,
       (∑ i ∈ Finset.range (a + 1),
@@ -974,7 +974,7 @@ theorem pathIntegralCoeffField_jetL2_tower_le
           (E := fun z : M => TensorRSSpace r (2 + i) I z) q.1
           ((iteratedCovGrad (I := I) g₀ r 2 i (Φ q.2)).toSection q.1))
         ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
-    fun i _ => armField_iteratedCovGrad_jointSmooth (I := I) g₀ r 2 i Φ
+    fun i _ => termField_iteratedCovGrad_jointSmooth (I := I) g₀ r 2 i Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hjointC
   have hci : ∀ i ∈ Finset.range (a + 1), ∀ x : M,
       ContinuousOn (fun t : ℝ =>
@@ -990,12 +990,12 @@ theorem pathIntegralCoeffField_jetL2_tower_le
         riemannianFiberNormSq (I := I) (M := M) g₀ r (2 + i) p.2
           ((iteratedCovGrad (I := I) g₀ r 2 i (Φ p.1)).toSection p.2))
         (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M)) :=
-    fun i _ => armField_iteratedCovGrad_riemannianFiberNormSq_jointContinuous (I := I) g₀ r 2 i Φ
+    fun i _ => termField_iteratedCovGrad_riemannianFiberNormSq_jointContinuous (I := I) g₀ r 2 i Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSI hjointC
   have hii : ∀ i ∈ Finset.range (a + 1),
       IntervalIntegrable
         (fun t : ℝ => ‖iteratedCovGrad (I := I) g₀ r 2 i (Φ t)‖ ^ 2) volume 0 1 :=
-    fun i _ => armField_iteratedCovGrad_normSq_intervalIntegrable (I := I) g₀ r 2 i Φ
+    fun i _ => termField_iteratedCovGrad_normSq_intervalIntegrable (I := I) g₀ r 2 i Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSI hjointC
   have hcomm : ∀ (i : ℕ) (hi : i ∈ Finset.range (a + 1)),
       iteratedCovGrad (I := I) g₀ r 2 i
@@ -1004,7 +1004,7 @@ theorem pathIntegralCoeffField_jetL2_tower_le
         pathIntegralCoeffField (I := I) (M := M) g₀ r (2 + i)
           (fun t => iteratedCovGrad (I := I) g₀ r 2 i (Φ t))
           (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI (hji i hi) :=
-    fun i hi => armField_iteratedCovGrad_pathIntegral_comm (I := I) g₀ r 2 i Φ
+    fun i hi => termField_iteratedCovGrad_pathIntegral_comm (I := I) g₀ r 2 i Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjointC (hji i hi)
   exact iteratedCovGrad_pathIntegralCoeffField_jetL2_le (I := I) (M := M) g₀ r 2 a Φ B
     (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjoint hΦjet hji hci hri hii hcomm

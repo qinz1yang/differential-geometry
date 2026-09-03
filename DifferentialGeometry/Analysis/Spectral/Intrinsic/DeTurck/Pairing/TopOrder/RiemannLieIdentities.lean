@@ -33,7 +33,7 @@ theorem riemannTopOrderPairing_cancellation
     (C₀ : SmoothCcTensor g 2 2) (C₂ : SmoothCcTensor g 4 2)
     (hdecomposition :
       operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g gm) W =
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g gm) W =
         operatorFieldApply (I := I) (M := M) g 2 2 C₀ W +
           operatorFieldApply (I := I) (M := M) g 4 2 C₂
             (iteratedCovGrad (I := I) g 0 2 2 W)) :
@@ -134,7 +134,7 @@ theorem exists_deTurckLie_top_order_pairing_decomposition
                   (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s)) W +
               operatorFieldApply (I := I) (M := M) g 2 2 (C₀ s) W +
               operatorFieldApply (I := I) (M := M) g 2 2
-                (ricciPalatiniZeroOrderFold (I := I) (M := M) g
+                (ricciPalatiniZeroOrderContraction (I := I) (M := M) g
                   (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s) g_bg) W +
               operatorFieldApply (I := I) (M := M) g 3 2
                 (metricDependentFirstOrderCoefficient (I := I) (M := M) g
@@ -167,7 +167,7 @@ theorem exists_deTurckLie_top_order_pairing_decomposition
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta :=
     metricPerturbation_zero_bound_at (I := I) (M := M) g hdelta_nn
   obtain ⟨LambdaD, hLambdaD, KD, hKD, q, epsilon, hepsilon, hDmain⟩ :=
-    exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data (I := I) (M := M)
+    exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_data (I := I) (M := M)
       g g_bg a ha hR hhalf_lt
   obtain ⟨C0D, hjD, hidD, hsupD, henvD⟩ :=
     hDmain W hWsymm hdelta_half hdelta hdeltaZ hball
@@ -180,7 +180,7 @@ theorem exists_deTurckLie_top_order_pairing_decomposition
               (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s)) W +
           operatorFieldApply (I := I) (M := M) g 2 2 (C0D s) W +
           operatorFieldApply (I := I) (M := M) g 2 2
-            (ricciPalatiniZeroOrderFold (I := I) (M := M) g
+            (ricciPalatiniZeroOrderContraction (I := I) (M := M) g
               (metricPerturbationPathFromZero (I := I) (M := M) g W hdelta s) g_bg) W +
           operatorFieldApply (I := I) (M := M) g 3 2
             (metricDependentFirstOrderCoefficient (I := I) (M := M) g
@@ -198,10 +198,10 @@ theorem exists_deTurckLie_top_order_pairing_decomposition
       g W hdelta hdeltaZ q epsilon s
     rw [hmetric]
     simp only [metricDependentLowOrderAction, firstOrderCoefficientAction, metricDependentZeroOrderCoefficient,
-      deTurckLieCoeffField_eq_covDerivArm_add_endoArm,
+      deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm,
       operatorFieldApplication_add_left, operatorFieldApplication_sub_left, operatorFieldApplication_smul_left]
     rw [hlie, ← hlieApply]
-    simp only [ricciPalatiniZeroOrderFold, operatorFieldApplication_add_left, operatorFieldApplication_sub_left]
+    simp only [ricciPalatiniZeroOrderContraction, operatorFieldApplication_add_left, operatorFieldApplication_sub_left]
     module
   refine ⟨LambdaD, hLambdaD, C0D, q, epsilon, hepsilon, hnormal, ?_⟩
   exact hsupD

@@ -28,26 +28,26 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem threeArmJoint_const
+theorem covariantJetJoint_const
     (g : SmoothRiemannianMetric I M) {r : ℕ}
     (A : SmoothCcTensor g r 2) {δ δ' : ℝ} :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun _ => A) (δ := δ) (δ' := δ') :=
   (A.toSection.contMDiff.comp_contMDiffOn contMDiffOn_fst).mono
     (Set.subset_univ _)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem threeArmJoint_add
+theorem covariantJetJoint_add
     (g : SmoothRiemannianMetric I M) {r : ℕ}
     (A B : ℝ → SmoothCcTensor g r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g r A
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r A
       (δ := δ) (δ' := δ'))
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g r B
+    (hB : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r B
       (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun s => A s + B s) (δ := δ) (δ' := δ') := by
-  rw [linearizedRicciThreeArmHjoint] at hA hB ⊢
+  rw [linearizedRicciCovariantJetJointSmoothness] at hA hB ⊢
   have h := joint_rs_add (I := I) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (A p.2).toSection p.1)
@@ -59,16 +59,16 @@ theorem threeArmJoint_add
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem threeArmJoint_sub
+theorem covariantJetJoint_sub
     (g : SmoothRiemannianMetric I M) {r : ℕ}
     (A B : ℝ → SmoothCcTensor g r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g r A
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r A
       (δ := δ) (δ' := δ'))
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g r B
+    (hB : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r B
       (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun s => A s - B s) (δ := δ) (δ' := δ') := by
-  rw [linearizedRicciThreeArmHjoint] at hA hB ⊢
+  rw [linearizedRicciCovariantJetJointSmoothness] at hA hB ⊢
   have h := joint_rs_sub (I := I) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (A p.2).toSection p.1)
@@ -80,14 +80,14 @@ theorem threeArmJoint_sub
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem threeArmJoint_smul
+theorem covariantJetJoint_smul
     (g : SmoothRiemannianMetric I M) {r : ℕ}
     (c : ℝ) (A : ℝ → SmoothCcTensor g r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g r A
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r A
       (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun s => c • A s) (δ := δ) (δ' := δ') := by
-  rw [linearizedRicciThreeArmHjoint] at hA ⊢
+  rw [linearizedRicciCovariantJetJointSmoothness] at hA ⊢
   let := tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) r 2
   intro p₀ hp₀
@@ -120,16 +120,16 @@ theorem threeArmJoint_smul
         c ((A p₀.2).toSection p₀.1)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem threeArmJoint_comp
+theorem covariantJetJoint_comp
     (g : SmoothRiemannianMetric I M) {a b : ℕ}
     (A : ℝ → SmoothCcTensor g b 2) (B : SmoothCcTensor g a b)
     {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g b A
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g b A
       (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g a
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g a
       (fun t => ccOperatorFieldComp (I := I) (M := M) g a b 2 (A t) B)
       (δ := δ) (δ' := δ') := by
-  rw [linearizedRicciThreeArmHjoint] at hA ⊢
+  rw [linearizedRicciCovariantJetJointSmoothness] at hA ⊢
   apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel a ℝ E)
     (V₁ := fun x : M => Tensor0SSpace a I x)

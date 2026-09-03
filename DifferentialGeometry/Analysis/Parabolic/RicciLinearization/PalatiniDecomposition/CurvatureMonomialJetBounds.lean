@@ -119,7 +119,7 @@ lemma toModel_unitValue_symmS_abs_le (g₀ : SmoothRiemannianMetric I M)
 
 private def curvatureDecompositionSlotPerm (σ : Equiv.Perm (Fin 4)) : Equiv.Perm (Fin 6) :=
   ((finSumFinEquiv (m := 4) (n := 2)).permCongr
-    (Equiv.sumCongr σ (Equiv.refl (Fin 2)))).trans armPairTraceSlotPerm6
+    (Equiv.sumCongr σ (Equiv.refl (Fin 2)))).trans termPairTraceSlotPerm6
 
 private lemma curvatureDecompositionSlotPerm_castAdd (σ : Equiv.Perm (Fin 4)) (j : Fin 4) :
     curvatureDecompositionSlotPerm σ (Fin.castAdd 2 j) = (![1, 3, 4, 5] : Fin 4 → Fin 6) (σ j) := by
@@ -130,7 +130,7 @@ private lemma curvatureDecompositionSlotPerm_castAdd (σ : Equiv.Perm (Fin 4)) (
     rfl
   rw [curvatureDecompositionSlotPerm, Equiv.trans_apply, hpad]
   exact (by decide : ∀ k : Fin 4,
-    armPairTraceSlotPerm6 (Fin.castAdd 2 k) = (![1, 3, 4, 5] : Fin 4 → Fin 6) k) (σ j)
+    termPairTraceSlotPerm6 (Fin.castAdd 2 k) = (![1, 3, 4, 5] : Fin 4 → Fin 6) k) (σ j)
 
 private lemma curvatureDecompositionSlotPerm_natAdd (σ : Equiv.Perm (Fin 4)) (k : Fin 2) :
     curvatureDecompositionSlotPerm σ (Fin.natAdd 4 k) = (![0, 2] : Fin 2 → Fin 6) k := by
@@ -141,7 +141,7 @@ private lemma curvatureDecompositionSlotPerm_natAdd (σ : Equiv.Perm (Fin 4)) (k
     rfl
   rw [curvatureDecompositionSlotPerm, Equiv.trans_apply, hpad]
   exact (by decide : ∀ k' : Fin 2,
-    armPairTraceSlotPerm6 (Fin.natAdd 4 k') = (![0, 2] : Fin 2 → Fin 6) k') k
+    termPairTraceSlotPerm6 (Fin.natAdd 4 k') = (![0, 2] : Fin 2 → Fin 6) k') k
 
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in

@@ -91,38 +91,6 @@ theorem iteratedCovGrad_covGrad_comm_heq' (g : SmoothRiemannianMetric I M) (r s 
       rw [iteratedCovGrad_succ (g := g) (r := r) (s := s) (j := k + 1) X]
       exact covGrad_heq_congr' g r (by omega : (s + 1) + k = s + (k + 1)) ih
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] [CompleteSpace E] in
-theorem operatorFieldApplication_zero_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) (g := g) r s (0 : SmoothCcTensor g r s) W = 0 := by
-  have h := operatorFieldApplication_add_left (I := I) (M := M) g r s (0 : SmoothCcTensor g r s) 0 W
-  rw [add_zero] at h
-  have h2 : operatorFieldApply (I := I) (M := M) (g := g) r s (0 : SmoothCcTensor g r s) W -
-      operatorFieldApply (I := I) (M := M) (g := g) r s (0 : SmoothCcTensor g r s) W =
-      operatorFieldApply (I := I) (M := M) (g := g) r s (0 : SmoothCcTensor g r s) W := by
-    nth_rewrite 1 [h]; abel
-  rwa [sub_self] at h2
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] [CompleteSpace E] in
-theorem operatorFieldApplication_neg_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) (g := g) r s (-Φ) W = -operatorFieldApply (I := I) (M := M)
-      (g := g) r s Φ W := by
-  have h := operatorFieldApplication_add_left (I := I) (M := M) g r s Φ (-Φ) W
-  rw [add_neg_cancel, operatorFieldApplication_zero_left] at h
-  exact (neg_eq_of_add_eq_zero_right h.symm).symm
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] [CompleteSpace E] in
-theorem operatorFieldApplication_sub_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ₁ Φ₂ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) (g := g) r s (Φ₁ - Φ₂) W =
-      operatorFieldApply (I := I) (M := M) (g := g) r s Φ₁ W - operatorFieldApply (I := I) (M := M)
-        (g := g) r s Φ₂ W := by
-  rw [sub_eq_add_neg, operatorFieldApplication_add_left, operatorFieldApplication_neg_left, sub_eq_add_neg]
-
 def IsIteratedCovGradNormalForm (g : SmoothRiemannianMetric I M)
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
     (p r : ℕ) : Prop :=

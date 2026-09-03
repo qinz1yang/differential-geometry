@@ -84,23 +84,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_smul_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (c : ℝ) (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s (c • Φ) W =
-      c • operatorFieldApply (I := I) (M := M) g r s Φ W := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((c • operatorFieldApply (I := I) (M := M) g r s Φ W).toSection x) =
-      c • (operatorFieldApply (I := I) (M := M) g r s Φ W).toSection x from rfl]
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection]
-  rw [show ((c • Φ).toSection x : TensorRSSpace r s I x) = c • Φ.toSection x from by
-    rw [SmoothCcTensor.toSection_smul]; rfl]
-  rw [ContinuousLinearMap.smul_comp]
-
-
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem symmAbsorbedPrincipalCoeff_operatorFieldApplication_eq
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
@@ -238,22 +221,6 @@ theorem connectionDifference_endpoint_cocycle (g₀ g₁ g₁' : SmoothRiemannia
   rw [e₁, e₂, e₃]
   abel
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_smul_left_normed (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (c : ℝ) (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s (c • Φ) W =
-      c • operatorFieldApply (I := I) (M := M) g r s Φ W := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((c • operatorFieldApply (I := I) (M := M) g r s Φ W).toSection x) =
-      c • (operatorFieldApply (I := I) (M := M) g r s Φ W).toSection x from rfl]
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection]
-  rw [show ((c • Φ).toSection x : TensorRSSpace r s I x) = c • Φ.toSection x from by
-    rw [SmoothCcTensor.toSection_smul]; rfl]
-  rw [ContinuousLinearMap.smul_comp]
-
 noncomputable def symmAbsorbedCoeff (g₀ : SmoothRiemannianMetric I M) (i : ℕ)
     (R : SmoothCcTensor g₀ (2 + i) 2)
     (σ' : Equiv.Perm (Fin (2 + i))) : SmoothCcTensor g₀ (2 + i) 2 :=
@@ -297,7 +264,9 @@ theorem symmAbsorbedCoeff_operatorFieldApplication_eq (g₀ : SmoothRiemannianMe
         ((1 / 2 : ℝ) • R + (1 / 2 : ℝ) • reindexCoeffGen (I := I) (M := M) g₀ (2 + i) 2 R σ')
         (iteratedCovGrad (I := I) g₀ 0 2 i S)) x v =
       (1 / 2 : ℝ) * uR + (1 / 2 : ℝ) * uRein := by
-    rw [operatorFieldApplication_add_left, operatorFieldApplication_smul_left_normed, operatorFieldApplication_smul_left_normed, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add,
+    rw [operatorFieldApplication_add_left, operatorFieldApplication_smul_left,
+      operatorFieldApplication_smul_left,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add,
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_smul, add_apply,
       smul_apply, smul_apply]
     rw [huR, huRein]
@@ -418,7 +387,7 @@ theorem cotangentCov_leviCivita_diff_endpoint
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem oArm_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
+theorem oTerm_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     (Z Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (dir : TangentSpace I x) :
     inverseMetricSharpFib (I := I) g₁ x
           (dualToCotangent (I := I)
@@ -456,7 +425,7 @@ theorem oArm_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem oArm_leg_eq_connectionDifference (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
+theorem oTerm_leg_eq_connectionDifference (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     (Z Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (dir : TangentSpace I x) :
     dualToCotangent (I := I)
           ((cotangentCov (LeviCivita (I := I) g₁)).toFun
@@ -495,7 +464,7 @@ theorem connectionDifference_bilinear_diff_split (g₀ g₁ g₁' : SmoothRieman
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem quadArm_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (x : M)
+theorem quadTerm_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (x : M)
     (q q' dir : TangentSpace I x) :
     PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q dir
         - PDE.DeTurck.connectionDifference (I := I) g₁' g₀ x q' dir =
@@ -507,7 +476,7 @@ theorem quadArm_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (x : M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem combinedLowerArm_extension_free
+theorem combinedLowerTerm_extension_free
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hg₁ : ∀ (b : M) (u w : TangentSpace I b),
       g₁.inner b u w = g₀.inner b u w + ccTensorBilinSymm (I := I) g₀ T b u w)
@@ -1543,7 +1512,7 @@ theorem order1CocycleLeg_flat_eq_explicit
   have eZXY := (hcg Ze X Y).trans (hval (S - S') Ze Ze X Xe Y Ye rfl hXex.symm hYex.symm)
   linarith [eXY, eYX, eZXY]
 
-noncomputable def ricciArmSubleadingCoeff (g₀ g₁ g₁' : SmoothRiemannianMetric I M) :
+noncomputable def ricciCovariantTermSubleadingCoeff (g₀ g₁ g₁' : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 :=
   (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
       - ricciDeTurckPrincipalCoefficientZSlot (I := I) (M := M) g₀ g₁)
@@ -1553,12 +1522,12 @@ noncomputable def ricciArmSubleadingCoeff (g₀ g₁ g₁' : SmoothRiemannianMet
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem ricciArmSubleadingCoeff_operatorFieldApplication_eq
+theorem ricciCovariantTermSubleadingCoeff_operatorFieldApplication_eq
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
     (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (ricciArmSubleadingCoeff (I := I) (M := M) g₀ g₁ g₁') W) x v =
+          (ricciCovariantTermSubleadingCoeff (I := I) (M := M) g₀ g₁ g₁') W) x v =
       ((1 / 2 : ℝ) *
           ∑ k : Fin (Module.finrank ℝ E),
             (unitModel (I := I) (M := M) g₀ 4 W x
@@ -1641,7 +1610,7 @@ theorem ricciArmSubleadingCoeff_operatorFieldApplication_eq
       (I := I) (M := M) g₀ g₁' W x
         (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
   simp only [ContinuousLinearEquiv.apply_symm_apply] at hZ hZ'
-  rw [ricciArmSubleadingCoeff, hsub, hsub, hsub,
+  rw [ricciCovariantTermSubleadingCoeff, hsub, hsub, hsub,
     ricciDeTurckPrincipalCoefficient_operatorFieldApplication_eq_combinedTrace (I := I) (M := M) g₀ g₁ W x v,
     hZ,
     ricciDeTurckPrincipalCoefficient_operatorFieldApplication_eq_combinedTrace (I := I) (M := M) g₀ g₁' W x v,
@@ -1660,101 +1629,101 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-noncomputable def ricciArmOrder0CurvCoeffFibSlot (g₁ : SmoothRiemannianMetric I M)
+noncomputable def ricciOrderZeroCurvCoeffFibSlot (g₁ : SmoothRiemannianMetric I M)
     (k : Fin 2) (x : M) :
     Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
   slotInsertEndoFib (I := I) (M := M) 2 k x (ricEndoRaisedFib (I := I) g₁ x)
 
-noncomputable def ricciArmOrder0CurvCoeffFib (g₁ : SmoothRiemannianMetric I M) (x : M) :
+noncomputable def ricciOrderZeroCurvCoeffFib (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
-  ricciArmOrder0CurvCoeffFibSlot (I := I) (M := M) g₁ 0 x +
-    ricciArmOrder0CurvCoeffFibSlot (I := I) (M := M) g₁ 1 x
+  ricciOrderZeroCurvCoeffFibSlot (I := I) (M := M) g₁ 0 x +
+    ricciOrderZeroCurvCoeffFibSlot (I := I) (M := M) g₁ 1 x
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem ricciArmOrder0CurvCoeffFibSlot_toModel (g₁ : SmoothRiemannianMetric I M)
+@[simp] theorem ricciOrderZeroCurvCoeffFibSlot_toModel (g₁ : SmoothRiemannianMetric I M)
     (k : Fin 2) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
-        (ricciArmOrder0CurvCoeffFibSlot (I := I) g₁ k x D) v =
+        (ricciOrderZeroCurvCoeffFibSlot (I := I) g₁ k x D) v =
       Tensor0SBundle.Tensor0SSpace.toModel D
         (Function.update v k
           (tangentLinearMapToModel (ricEndoRaisedFib (I := I) g₁ x) (v k))) := by
-  rw [ricciArmOrder0CurvCoeffFibSlot]
+  rw [ricciOrderZeroCurvCoeffFibSlot]
   exact slotInsertEndoFib_apply_eval (I := I) (M := M) 2 k x
     (ricEndoRaisedFib (I := I) g₁ x) D v
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem ricciArmOrder0CurvCoeffFib_toModel (g₁ : SmoothRiemannianMetric I M) (x : M)
+@[simp] theorem ricciOrderZeroCurvCoeffFib_toModel (g₁ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace 2 I x) (v : Fin 2 → E) :
-    Tensor0SBundle.Tensor0SSpace.toModel (ricciArmOrder0CurvCoeffFib (I := I) g₁ x D) v =
+    Tensor0SBundle.Tensor0SSpace.toModel (ricciOrderZeroCurvCoeffFib (I := I) g₁ x D) v =
       Tensor0SBundle.Tensor0SSpace.toModel D
           (Function.update v 0
             (tangentLinearMapToModel (ricEndoRaisedFib (I := I) g₁ x) (v 0))) +
         Tensor0SBundle.Tensor0SSpace.toModel D
           (Function.update v 1
             (tangentLinearMapToModel (ricEndoRaisedFib (I := I) g₁ x) (v 1))) := by
-  rw [ricciArmOrder0CurvCoeffFib, add_apply,
+  rw [ricciOrderZeroCurvCoeffFib, add_apply,
     Tensor0SBundle.Tensor0SSpace.toModel_add, add_apply,
-    ricciArmOrder0CurvCoeffFibSlot_toModel, ricciArmOrder0CurvCoeffFibSlot_toModel]
+    ricciOrderZeroCurvCoeffFibSlot_toModel, ricciOrderZeroCurvCoeffFibSlot_toModel]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-theorem ricciArmOrder0CurvCoeffFibSlot_contMDiff (g₁ : SmoothRiemannianMetric I M) (k : Fin 2) :
+theorem ricciOrderZeroCurvCoeffFibSlot_contMDiff (g₁ : SmoothRiemannianMetric I M) (k : Fin 2) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) x
-        (TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFibSlot (I := I) g₁ k x))) := by
+        (TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFibSlot (I := I) g₁ k x))) := by
   exact slotInsertEndoFib_contMDiff (I := I) (M := M) g₁ 2 k
     (fun x : M => ricEndoRaisedFib (I := I) g₁ x)
     (ricEndoRaisedFib_contMDiff (I := I) g₁)
 
-noncomputable def ricciArmOrder0CurvCoeffSlot (g₀ g₁ : SmoothRiemannianMetric I M) (k : Fin 2) :
+noncomputable def ricciOrderZeroCurvCoeffSlot (g₀ g₁ : SmoothRiemannianMetric I M) (k : Fin 2) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
         (show Tensor0SBundle.TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFibSlot (I := I) g₁ k x))
-      contMDiff_toFun := ricciArmOrder0CurvCoeffFibSlot_contMDiff (I := I) g₁ k }
+          TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFibSlot (I := I) g₁ k x))
+      contMDiff_toFun := ricciOrderZeroCurvCoeffFibSlot_contMDiff (I := I) g₁ k }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-@[simp] theorem ricciArmOrder0CurvCoeffSlot_toSection (g₀ g₁ : SmoothRiemannianMetric I M)
+@[simp] theorem ricciOrderZeroCurvCoeffSlot_toSection (g₀ g₁ : SmoothRiemannianMetric I M)
     (k : Fin 2) (x : M) :
-    (ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ k).toSection x =
+    (ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ k).toSection x =
       (show Tensor0SBundle.TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFibSlot (I := I) g₁ k x)) := rfl
+        TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFibSlot (I := I) g₁ k x)) := rfl
 
-noncomputable def ricciArmOrder0CurvCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
+noncomputable def ricciOrderZeroCurvCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 :=
-  ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 +
-    ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1
+  ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 +
+    ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 1
 
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-@[simp] theorem ricciArmOrder0CurvCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
-    (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁).toSection x =
+@[simp] theorem ricciOrderZeroCurvCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+    (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁).toSection x =
       (show Tensor0SBundle.TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I) g₁ x)) := by
-  rw [ricciArmOrder0CurvCoeff, SmoothCcTensor.toSection_add, ContMDiffSection.coe_add,
-    Pi.add_apply, ricciArmOrder0CurvCoeffSlot_toSection, ricciArmOrder0CurvCoeffSlot_toSection]
+        TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x)) := by
+  rw [ricciOrderZeroCurvCoeff, SmoothCcTensor.toSection_add, ContMDiffSection.coe_add,
+    Pi.add_apply, ricciOrderZeroCurvCoeffSlot_toSection, ricciOrderZeroCurvCoeffSlot_toSection]
   rfl
 
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-theorem ricciArmOrder0CurvCoeff_operatorFieldApplication_eq_curvatureAction
+theorem ricciOrderZeroCurvCoeff_operatorFieldApplication_eq_curvatureAction
     (g₀ g₁ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 2)
     (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-          (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁) W) x v =
+          (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁) W) x v =
       unitModel (I := I) (M := M) g₀ 2 W x
           (Function.update v 0
             (tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -1767,23 +1736,23 @@ theorem ricciArmOrder0CurvCoeff_operatorFieldApplication_eq_curvatureAction
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))))) := by
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁).toSection x).comp
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁).toSection x).comp
         (show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
           W.toSection x)) (unitTensor (I := I) (M := M) x) =
       (show Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁).toSection x)
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁).toSection x)
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
           W.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
-  rw [ricciArmOrder0CurvCoeff_toSection]
+  rw [ricciOrderZeroCurvCoeff_toSection]
   rw [show (show Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
         (show Tensor0SBundle.TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (ricciArmOrder0CurvCoeffFib (I := I) g₁ x)))
+          TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x)))
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
           W.toSection x) (unitTensor (I := I) (M := M) x)) =
-      ricciArmOrder0CurvCoeffFib (I := I) g₁ x
+      ricciOrderZeroCurvCoeffFib (I := I) g₁ x
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
           W.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
-  rw [ricciArmOrder0CurvCoeffFib_toModel]
+  rw [ricciOrderZeroCurvCoeffFib_toModel]
   rfl
 
 end NormedCurvatureCoeff

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Exponential.DiagInvReadout
-import DifferentialGeometry.Geometry.Exponential.NormalBallHome
+import DifferentialGeometry.Geometry.Exponential.DiagonalInverseCoordinates
+import DifferentialGeometry.Geometry.Exponential.NormalBallHomeomorphism
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.Phase
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Existence
@@ -646,7 +646,7 @@ noncomputable def toBranch
       (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    DiagInvBranch (I := I) Y.metric (normal_enorm (I := I) Y) x := by
+    DiagonalInverseBranch (I := I) Y.metric (normal_enorm (I := I) Y) x := by
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
@@ -958,7 +958,7 @@ theorem full_transport
       exact huRest.1
   have htargetTransport : P '' e.target =
       (toBranch (I := I) Y hcomplete hconn x hq h).dom := by
-    unfold DiagInvBranch.dom
+    unfold DiagonalInverseBranch.dom
     rw [toBranch_hom]
     ext y
     constructor
@@ -988,7 +988,7 @@ theorem full_transport
     change e.symm w ∈ c.tangentHome.source at hzA
     rw [c.tangentHome_source] at hzA
     exact hzA
-  unfold DiagInvBranch.inv
+  unfold DiagonalInverseBranch.inv
   rw [toBranch_hom]
   change (chartDiagHome (I := I) Y x c e).symm
       (c.pair w) = c.tangent (e.symm w)
@@ -998,7 +998,7 @@ theorem full_transport
   rw [P.left_inv hwP]
   exact c.tangentHome_apply (e.symm w) hzNormal
 
-theorem chart_readout
+theorem chartDiagonalInverseCoordinates_normalPair
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1029,7 +1029,7 @@ theorem chart_readout
       (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    (toBranch (I := I) Y hcomplete hconn x hq h).chartReadout c
+    (toBranch (I := I) Y hcomplete hconn x hq h).chartDiagonalInverseCoordinates c
         (normalPair (I := I) Y x w (c := c)) =
       (e.symm w).2 := by
   let : TopologicalSpace Y.M := Y.topology
@@ -1075,7 +1075,7 @@ theorem chart_readout
   have hzSource : e.symm w ∈ c.tangentHome.source := by
     rw [c.tangentHome_source]
     exact hzNormal
-  unfold DiagInvBranch.chartReadout
+  unfold DiagonalInverseBranch.chartDiagonalInverseCoordinates
   rw [(full_transport (I := I) Y hcomplete hconn x hq h hf).2.2 w hw]
   change (c.tangentHome.symm (c.tangent (e.symm w))).2 = (e.symm w).2
   rw [← c.tangentHome_apply (e.symm w) hzNormal]
@@ -1355,7 +1355,7 @@ theorem target_of_pair_mem
   intro w hw hdom
   let A := chartTanHome (I := I) Y x c
   let P := chartPairHome (I := I) Y x c
-  unfold DiagInvBranch.dom at hdom
+  unfold DiagonalInverseBranch.dom at hdom
   rw [toBranch_hom (I := I) Y hcomplete hconn x hq h] at hdom
   change P w ∈ (A.symm.trans (e.trans P)).target at hdom
   rw [OpenPartialHomeomorph.trans_target] at hdom
@@ -1644,7 +1644,7 @@ theorem pair_mem_of_closed
     change dist (e.symm w).1 0 < c.radius
     rw [dist_zero_right]
     exact (norm_fst_le (e.symm w)).trans_lt (hwinvNorm.trans hqExp)
-  unfold DiagInvBranch.dom
+  unfold DiagonalInverseBranch.dom
   change c.pair w ∈ (chartDiagHome (I := I) Y x c e).target
   rw [← c.pairHome_apply w]
   exact pair_mem_target A e P hwP hwe hwA
@@ -1762,7 +1762,7 @@ theorem exists_pair_branch
     ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
       (∀ i, max (riemannianEDist I x (a i)) (riemannianEDist I x (b i)) <
         ENNReal.ofReal (ρ / 2)) →
-      ∃ B : DiagInvBranch (I := I) (X.obj k).metric
+      ∃ B : DiagonalInverseBranch (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k)) x,
         ∀ i, (a i, b i) ∈ B.dom := by
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1866,7 +1866,7 @@ theorem exists_pair_branch
   rw [← hnormalPair]
   exact hclosed (wa, wb) hwClosed
 
-theorem exists_pair_readout
+theorem exists_branch_containing_pairs
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
@@ -1902,9 +1902,9 @@ theorem exists_pair_readout
     ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
       (∀ i, max (riemannianEDist I x (a i)) (riemannianEDist I x (b i)) <
         ENNReal.ofReal (ρ / 2)) →
-      ∃ B : DiagInvBranch (I := I) (X.obj k).metric
+      ∃ B : DiagonalInverseBranch (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k)) x,
-        ∀ i, (a i, b i) ∈ B.readDom := by
+        ∀ i, (a i, b i) ∈ B.coordinateDomain := by
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
   let : ChartedSpace H (X.obj k).M := (X.obj k).charted
   let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
@@ -1952,7 +1952,7 @@ end HasNormalBranchDom
 
 namespace NormalChartData
 
-theorem exists_pair_readout
+theorem exists_branch_containing_pairs
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     (d : NormalChartData (I := I) X hd) (k : Nat)
@@ -1990,9 +1990,9 @@ theorem exists_pair_readout
     ρ / 2 < (d.chart k x).radius →
       (∀ i, max (riemannianEDist I x (a i)) (riemannianEDist I x (b i)) <
         ENNReal.ofReal (ρ / 2)) →
-      ∃ B : DiagInvBranch (I := I) (X.obj k).metric
+      ∃ B : DiagonalInverseBranch (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k)) x,
-        ∀ i, (a i, b i) ∈ B.chartReadDom (d.chart k x) := by
+        ∀ i, (a i, b i) ∈ B.chartCoordinateDomain (d.chart k x) := by
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
   let : ChartedSpace H (X.obj k).M := (X.obj k).charted
   let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth

@@ -213,7 +213,7 @@ private theorem connectionDifference_app_joint
     intro σ
     have hscal := conn_pair_joint (I := I) g_fam hG q om α (σ 0) (σ 1)
     have hscalAt := (hscal p₀ ⟨by simpa only [α] using hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
-    have hreadout : ∀ {z : M × ℝ}, z.1 ∈ e.baseSet →
+    have hcoordinates : ∀ {z : M × ℝ}, z.1 ∈ e.baseSet →
         Bcmm.repr
             (e ⟨z.1, (show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from
               (connectionDifferenceSection (I := I) (g_fam z.2) q).toSection z.1) (om z.1)⟩).2 σ =
@@ -256,8 +256,8 @@ private theorem connectionDifference_app_joint
       have hzbase : z.1 ∈ e.baseSet := by
         rw [he]
         exact hzbaseT
-      exact hreadout hzbase
-    · exact hreadout hαbase
+      exact hcoordinates hzbase
+    · exact hcoordinates hαbase
   have hcoordVec : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ) ∞
       (fun p : M × ℝ => fun σ : Fin 2 → Fin (Module.finrank ℝ E) =>

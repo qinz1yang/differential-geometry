@@ -740,7 +740,7 @@ theorem linearizedRicciConnectionDifferenceOrder0Coeff_jointContMDiffOn_smallPer
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
       (linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
   have h := linearizedRicciConnectionDifferenceOrder0Fib_metricPerturbationPath_jointContMDiffOn
     (I := I) g₀ T T' hδ hδ'
@@ -753,7 +753,7 @@ theorem linearizedRicciConnectionDifferenceOrder1Coeff_jointContMDiffOn_smallPer
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3
       (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
   have h := linearizedRicciConnectionDifferenceOrder1Fib_metricPerturbationPath_jointContMDiffOn
     (I := I) g₀ T T' hδ hδ'

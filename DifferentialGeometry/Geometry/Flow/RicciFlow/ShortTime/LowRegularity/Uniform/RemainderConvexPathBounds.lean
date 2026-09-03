@@ -397,7 +397,7 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_h2_uniform_bound
     (C.h2C * R) (C.h3C * A) hlow hhigh hP2 hP3
   have hLie : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g 3 2 i
-        (deTurckLieArm1Coeff (I := I) (M := M) g g₁ gBase)‖ ^ 2) ≤
+        (deTurckLieFirstOrderCoeff (I := I) (M := M) g g₁ gBase)‖ ^ 2) ≤
       LB ^ 2 := by
     simpa only [LB, L0, L1, mul_assoc] using hLieRaw
   have hraw := rhs_one_coefficient_sobolev_two_bound (I := I) (M := M) g gBase T T' hδ hδ'

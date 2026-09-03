@@ -339,14 +339,14 @@ theorem metricLoweredConnectionDifferenceCoefficient_fiber_norm_sq_eq
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma flatArmCoeffCc_true_eq_cometricRaiseSlot0Field
+private lemma flatTermCoeffCc_true_eq_cometricRaiseSlot0Field
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    flatArmCoeffCc (I := I) g₀ g₁ true =
+    flatTermCoeffCc (I := I) g₀ g₁ true =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1 (-metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) := by
   apply Integral.L2.SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [flatArmCoeffCc_toSection, cometricRaiseSlot0Field_toSection]
+  rw [flatTermCoeffCc_toSection, cometricRaiseSlot0Field_toSection]
   apply tensorRSSpace_ext 1 2 x
   intro om
   apply ContinuousMultilinearMap.ext
@@ -358,7 +358,7 @@ private lemma flatArmCoeffCc_true_eq_cometricRaiseSlot0Field
   have hLHS : Tensor0SSpace.eval
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (flatArmCc (I := I) g₀ g₁ true).toSection x).comp
+            (flatTermCc (I := I) g₀ g₁ true).toSection x).comp
           (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
             (omRecoverEndoCc (I := I) g₀ g₁).toSection x))) om) YZ =
       - g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u (YZ 0)) (YZ 1) := by
@@ -367,12 +367,12 @@ private lemma flatArmCoeffCc_true_eq_cometricRaiseSlot0Field
           (omRecoverEndoCc (I := I) g₀ g₁).toSection x) om =
         g0FlatCLM (I := I) g₁ x (inverseMetricSharpFib (I := I) g₀ x om) from by
       rw [omRecoverEndoCc_toSection]; rfl]
-    rw [Tensor0SSpace.eval_eq, flatArmCc_toSection, flatArmFib_apply, flatArmPairing_apply]
-    rw [show flatArmVec (I := I) g₀ g₁ true x
+    rw [Tensor0SSpace.eval_eq, flatTermCc_toSection, flatTermFib_apply, flatTermPairing_apply]
+    rw [show flatTermVec (I := I) g₀ g₁ true x
           (g0FlatCLM (I := I) g₁ x (inverseMetricSharpFib (I := I) g₀ x om)) (YZ 0) =
         - PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
             (inverseMetricSharpFib (I := I) g₀ x om) (YZ 0) from by
-      simp only [flatArmVec, if_true]
+      simp only [flatTermVec, if_true]
       rw [inverseMetricSharpFib_g0FlatCLM]]
     rw [map_neg, neg_apply, ← hu]
   have hRHS : Tensor0SSpace.eval
@@ -389,7 +389,7 @@ private lemma flatArmCoeffCc_true_eq_cometricRaiseSlot0Field
   change Tensor0SSpace.eval
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (flatArmCc (I := I) g₀ g₁ true).toSection x).comp
+          (flatTermCc (I := I) g₀ g₁ true).toSection x).comp
         (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
           (omRecoverEndoCc (I := I) g₀ g₁).toSection x))) om) YZ =
     Tensor0SSpace.eval
@@ -424,20 +424,20 @@ private lemma flatArmCoeffCc_true_eq_cometricRaiseSlot0Field
     Matrix.cons_val_two, Matrix.tail_cons, ContinuousLinearEquiv.symm_apply_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_iteratedCovGrad_flatArmCoefficient_eq_connectionDifference
+theorem riemannianFiberNormSq_iteratedCovGrad_flatTermCoefficient_eq_connectionDifference
     (g₀ g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 1 2 i
-          (flatArmCoeffCc (I := I) g₀ g₁ true)).toSection x) =
+          (flatTermCoeffCc (I := I) g₀ g₁ true)).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 1 2 i (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) := by
   calc riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i) x
-          ((iteratedCovGrad (I := I) g₀ 1 2 i (flatArmCoeffCc (I := I) g₀ g₁ true)).toSection x)
+          ((iteratedCovGrad (I := I) g₀ 1 2 i (flatTermCoeffCc (I := I) g₀ g₁ true)).toSection x)
       = riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i) x
           ((iteratedCovGrad (I := I) g₀ 1 2 i
             (cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
               (-metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))).toSection x) := by
-        rw [flatArmCoeffCc_true_eq_cometricRaiseSlot0Field]
+        rw [flatTermCoeffCc_true_eq_cometricRaiseSlot0Field]
     _ = riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x
           ((iteratedCovGrad (I := I) g₀ 0 3 i
             (-metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)).toSection x) :=

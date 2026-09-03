@@ -61,7 +61,7 @@ theorem lieCorrectionZeroRiemCap (g₀ : SmoothRiemannianMetric I M)
   intro g₁ P htie δ hδ_le hδ0 hδ hP0 hP1
   have hLive : HasCapWin (I := I) (M := M) g₀ P
       (reindexedCometricDoubleTrace (I := I) (M := M) g₀ g₁) KLive := by
-    refine capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _
+    refine capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _
       (fun i => mul_nonneg hfr_nn (hKcg_nn i)) (fun m y => ?_)
     have hbnn := covariantJetFiberNormSqGrid_nonneg (I := I) (M := M) g₀ P y
     refine le_trans (riemannianFiberNormSq_iteratedCovGrad_reindexedCometricDoubleTrace_le (I := I) (M := M) g₀ g₁ m y) ?_
@@ -148,7 +148,7 @@ theorem lieCorrectionZeroMixedConnectionCap (g₀ g_bg : SmoothRiemannianMetric 
         HasCapWin (I := I) (M := M) g₀ P (reindexedPureTrace (I := I) (M := M) g₀ g₁ p σ)
           (fun i => C i * antidiagonalTupleGridWindowShiftConstant Λ (i + 1)) := by
     intro p C hC hbd σ
-    refine capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hC (fun i y => ?_)
+    refine capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hC (fun i y => ?_)
     have hbnn := covariantJetFiberNormSqGrid_nonneg (I := I) (M := M) g₀ P y
     refine le_trans (hbd σ i y) ?_
     refine mul_le_mul_of_nonneg_left ?_ (hC i)
@@ -181,7 +181,7 @@ theorem lieCorrectionZeroMixedConnectionCap (g₀ g_bg : SmoothRiemannianMetric 
         (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ gb)
         (fun i => Km i * antidiagonalTupleGridWindowShiftConstant Λ (i + 1)) := by
     intro gb Km hKm hbd
-    exact capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hKm (fun i y => hbd i y)
+    exact capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hKm (fun i y => hbd i y)
   have hM0 : HasCapWin (I := I) (M := M) g₀ P
       (slotExtendIter (I := I) (M := M) g₀ 0 3 2
         (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀)) KM0 :=
@@ -266,7 +266,7 @@ theorem aaKerSplit (g₀ g₁ : SmoothRiemannianMetric I M) :
     · rfl
   · rfl
 
-theorem exists_ricciConnectionDifferenceQuadraticArm_capWindow (g₀ : SmoothRiemannianMetric I M)
+theorem exists_ricciConnectionDifferenceQuadraticTerm_capWindow (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ : ℝ} (hΛ1 : 1 ≤ Λ) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -277,7 +277,7 @@ theorem exists_ricciConnectionDifferenceQuadraticArm_capWindow (g₀ : SmoothRie
         (_hP0 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 0 ≤ Λ)
         (_hP1 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 1 ≤ Λ),
         HasCapWin (I := I) (M := M) g₀ P
-          (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g₀ g₁) K := by
+          (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g₀ g₁) K := by
   classical
   have hΛ0 : (0 : ℝ) ≤ Λ := le_trans zero_le_one hΛ1
   obtain ⟨Cins, hCins_nn, hins⟩ := insertAntidiagonalTupleGridWindow (I := I) (M := M) g₀ hδ₀
@@ -344,14 +344,14 @@ theorem exists_ricciConnectionDifferenceQuadraticArm_capWindow (g₀ : SmoothRie
       (fun r _ => hS3_nn r i) (Finset.mem_univ ρ)
   have hIns : HasCapWin (I := I) (M := M) g₀ P
       (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁) KIns :=
-    capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hCins_nn
+    capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hCins_nn
       (fun l y => hins g₁ P htie hδ_le hδ0 hδ l y)
   have hInn : HasCapWin (I := I) (M := M) g₀ P
       (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁) KInn := by
     have hcdcap : HasCapWin (I := I) (M := M) g₀ P
         (connectionDifferenceSection (I := I) g₁ g₀)
         (fun i => Ccd i * antidiagonalTupleGridWindowShiftConstant Λ (i + 1)) :=
-      capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hCcd_nn
+      capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hCcd_nn
         (fun l y => hcd g₁ P htie hδ_le hδ0 hδ l y)
     refine capCongr (I := I) (M := M) g₀ P
       (connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend (I := I) (M := M) g₀ g₁) ?_
@@ -394,7 +394,7 @@ theorem exists_ricciConnectionDifferenceQuadraticArm_capWindow (g₀ : SmoothRie
     exact le_of_eq (by ring)
   have hFT : HasCapWin (I := I) (M := M) g₀ P
       (ricciCometricFourTraceCastG0 (I := I) g₀ g₁) KFT := by
-    refine capOfArm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hKft_nn (fun n y => ?_)
+    refine capOfTerm (I := I) (M := M) g₀ P hΛ1 hP0 hP1 _ hKft_nn (fun n y => ?_)
     have hbnn := covariantJetFiberNormSqGrid_nonneg (I := I) (M := M) g₀ P y
     refine le_trans (hft g₁ P htie hδ_le hδ0 hδ n y) ?_
     refine mul_le_mul_of_nonneg_left ?_ (hKft_nn n)

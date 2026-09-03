@@ -47,7 +47,7 @@ theorem operatorFieldComposition_hn_sup_bound (g : SmoothRiemannianMetric I M) (
                 ‖iteratedCovGrad (I := I) g p r j W‖ ^ 2) := by
   classical
   choose G hG hgrid using fun j : ℕ =>
-    exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g r p c r j
   refine ⟨fun n => ∑ j ∈ Finset.range (n + 1), operatorFieldApplicationGdiag (E := E) j * G j, ?_, ?_⟩
   · intro n

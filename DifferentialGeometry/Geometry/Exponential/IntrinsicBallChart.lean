@@ -35,13 +35,13 @@ variable [PseudoEMetricSpace M]
   [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
 
 namespace Exponential
-namespace ExpInvBranch
+namespace ExponentialInverseBranch
 
 noncomputable def framed
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p) :
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) :
     PartialDiffeomorph (modelWithCornersSelf Real E) I E M ∞ := by
   let L := intrFrameCLE (I := I) g p
   exact
@@ -80,7 +80,7 @@ omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p) :
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) :
     B.framed.source =
       intrFrameCLE (I := I) g p ⁻¹' B.hom.source :=
   rfl
@@ -90,7 +90,7 @@ omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p) (z : E) :
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) (z : E) :
     B.framed z = B.hom (intrFrameCLE (I := I) g p z) :=
   rfl
 
@@ -99,7 +99,7 @@ theorem framed_eq_intr
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p) :
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) :
     EqOn (intrinsicFramedExp (I := I) g hEnorm p) B.framed
       B.framed.source := by
   intro z hz
@@ -114,7 +114,7 @@ theorem framed_eq_intr
   exact (congrArg (expMapIntrinsic (I := I) g hEnorm p) hframe.symm).trans
     (B.hom_eq hz)
 
-end ExpInvBranch
+end ExponentialInverseBranch
 end Exponential
 
 namespace NormalCoordinates
@@ -126,7 +126,7 @@ theorem intrFrame_localAt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
-    (p : M) (B : ExpInvBranch (I := I) g hEnorm p) {z : E}
+    (p : M) (B : ExponentialInverseBranch (I := I) g hEnorm p) {z : E}
     (hz : (normalFrame (I := I) g p z : E) ∈ B.hom.source) :
     IsLocalDiffeomorphAt (modelWithCornersSelf Real E) I ∞
       (intrinsicFramedExp (I := I) g hEnorm p) z := by
@@ -141,7 +141,7 @@ theorem intrFrame_localOn
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
     (p : M) (U : Set E)
-    (hbranch : ∀ z ∈ U, ∃ B : ExpInvBranch (I := I) g hEnorm p,
+    (hbranch : ∀ z ∈ U, ∃ B : ExponentialInverseBranch (I := I) g hEnorm p,
       (normalFrame (I := I) g p z : E) ∈ B.hom.source) :
     IsLocalDiffeomorphOn (modelWithCornersSelf Real E) I ∞
       (intrinsicFramedExp (I := I) g hEnorm p) U := by

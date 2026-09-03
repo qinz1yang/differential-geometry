@@ -846,7 +846,7 @@ theorem exists_intr_branches
         exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) (X.obj k).metric y w
       ∀ z ∈ Metric.ball (0 : E) r₀,
-        ∃ B : ExpInvBranch (I := I) (X.obj k).metric hEnorm x,
+        ∃ B : ExponentialInverseBranch (I := I) (X.obj k).metric hEnorm x,
           (normalFrame (I := I) (X.obj k).metric x z : E) ∈
             B.hom.source := by
   obtain ⟨r₀, hr₀, hmetric⟩ :=
@@ -886,7 +886,7 @@ theorem exists_intr_branches
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
       (I := I) (X.obj k).metric y w
   change ∀ z ∈ Metric.ball (0 : E) r₀,
-    ∃ B : ExpInvBranch (I := I) (X.obj k).metric hEnorm x,
+    ∃ B : ExponentialInverseBranch (I := I) (X.obj k).metric hEnorm x,
       (normalFrame (I := I) (X.obj k).metric x z : E) ∈ B.hom.source
   intro z hz
   have hlower : ∀ v : E, (1 / 2 : Real) * ‖v‖ ^ 2 ≤

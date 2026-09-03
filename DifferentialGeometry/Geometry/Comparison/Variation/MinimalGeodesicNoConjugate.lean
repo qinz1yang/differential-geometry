@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrameIndex
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimiser
 import DifferentialGeometry.Geometry.Comparison.Variation.VariationFieldSmooth
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint
-import DifferentialGeometry.Geometry.Exponential.IntrinsicSmooth
+import DifferentialGeometry.Geometry.Exponential.IntrinsicGeodesicSmoothness
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

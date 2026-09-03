@@ -421,8 +421,8 @@ omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem mixedCoeff_backgroundDifference_eq_pairTrace
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
-        ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ =
+    ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
+        ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ =
       (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
@@ -438,8 +438,8 @@ theorem mixedCoeff_backgroundDifference_eq_pairTrace
   intro v
   have hLHS : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) D) v =
+        (ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) D) v =
       2 * ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4
             (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁) x
@@ -450,14 +450,14 @@ theorem mixedCoeff_backgroundDifference_eq_pairTrace
             ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₀ x a x),
               tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₀ x b x)] := by
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) D) =
+        (ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) D) =
         (riemannMixedBiContrFib (I := I) (M := M) g₀ g₁ x D -
           riemannBiContrFib (I := I) g₀ x D) from by
-      rw [show ((ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) =
-        (ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁).toSection x -
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x from by
+      rw [show ((ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x) =
+        (ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁).toSection x -
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x from by
         rw [SmoothCcTensor.toSection_sub]; rfl]
       rfl]
     rw [Tensor0SSpace.toModel_sub, sub_apply]
@@ -605,8 +605,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannMixedCoeff_backgroundDiffer
       ∀ (g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
-                ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)).toSection x) ≤
+              (ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
+                ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)).toSection x) ≤
           C i * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
             ((iteratedCovGrad (I := I) g₀ 0 4 i
               (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)).toSection x) := by
@@ -1828,7 +1828,7 @@ lemma pairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem riemannCoeff_eq_pairTrace_L11 (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ =
+    ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ =
       (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₁)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
@@ -1869,7 +1869,7 @@ theorem riemannCoeff_eq_pairTrace_L11 (g₀ g₁ : SmoothRiemannianMetric I M) :
   rw [pairTraceOp_apply_toModel (I := I) (M := M) g₀ g₁
     (riemannLoweredCc (I := I) (M := M) g₀ g₁ g₁) x D v]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁).toSection x) D) =
+      (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁).toSection x) D) =
       riemannBiContrFib (I := I) g₁ x D from rfl]
   rw [show riemannBiContrFib (I := I) g₁ x =
       riemannBiContrFibFixedFrame (I := I) g₁ (smoothOrthoFrame (I := I) g₁ x) x from rfl]
@@ -1889,7 +1889,7 @@ theorem riemannCoeff_eq_pairTrace_L11 (g₀ g₁ : SmoothRiemannianMetric I M) :
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem riemannMixedCoeff_eq_pairTrace_L01 (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ =
+    ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁ =
       (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
@@ -1930,7 +1930,7 @@ theorem riemannMixedCoeff_eq_pairTrace_L01 (g₀ g₁ : SmoothRiemannianMetric I
   rw [pairTraceOp_apply_toModel (I := I) (M := M) g₀ g₀
     (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁) x D v]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁).toSection x) D) =
+      (ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁).toSection x) D) =
       riemannMixedBiContrFib (I := I) (M := M) g₀ g₁ x D from rfl]
   rw [show riemannMixedBiContrFib (I := I) (M := M) g₀ g₁ x =
       riemannMixedBiContrFibFixedFrame (I := I) g₀ g₁

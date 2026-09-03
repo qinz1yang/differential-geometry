@@ -54,9 +54,9 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem covDerivArmField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField
+theorem covariantDerivativeTermField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
-    deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀ g₁ g_bg =
+    deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀ g₁ g_bg =
       deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg := by
   apply SmoothCcTensor.ext
   refine ContMDiffSection.ext (fun x => ?_)
@@ -66,9 +66,9 @@ theorem covDerivArmField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem endoArmField_eq_deTurckLieCovariantDerivativeInsertionCoeffField
+theorem endomorphismTermField_eq_deTurckLieCovariantDerivativeInsertionCoeffField
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
-    deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg =
+    deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g_bg =
       deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg := by
   apply SmoothCcTensor.ext
   refine ContMDiffSection.ext (fun x => ?_)
@@ -77,11 +77,11 @@ theorem endoArmField_eq_deTurckLieCovariantDerivativeInsertionCoeffField
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem threeArmHjoint_add_local (g₀ : SmoothRiemannianMetric I M) {r : ℕ}
+theorem covariantJetJointSmoothness_add_local (g₀ : SmoothRiemannianMetric I M) {r : ℕ}
     (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
+    (hB : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r
       (fun s => A s + B s) (δ := δ) (δ' := δ') := by
   have hadd := jointTotalSpaceRS_add_local (I := I) (M := M) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
@@ -96,11 +96,11 @@ theorem threeArmHjoint_add_local (g₀ : SmoothRiemannianMetric I M) {r : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem threeArmHjoint_sub_local (g₀ : SmoothRiemannianMetric I M) {r : ℕ}
+theorem covariantJetJointSmoothness_sub_local (g₀ : SmoothRiemannianMetric I M) {r : ℕ}
     (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
-    (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
-    (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r
+    (hA : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
+    (hB : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r
       (fun s => A s - B s) (δ := δ) (δ' := δ') := by
   have hsub := jointTotalSpaceRS_sub_local (I := I) (M := M) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
@@ -114,14 +114,14 @@ theorem threeArmHjoint_sub_local (g₀ : SmoothRiemannianMetric I M) {r : ℕ}
 
 
 omit [SigmaCompactSpace M] in
-theorem covDerivArmField_metricPerturbationPath_threeArmHjoint
+theorem covariantDerivativeTermField_metricPerturbationPath_covariantJetJointSmoothness
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ)
     (g_bg : SmoothRiemannianMetric I M) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-      (fun s => deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+      (fun s => deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg) (δ := δ) (δ' := δ) := by
   have h := deTurckLieConnectionDifferenceDerivativeBiContrFib_metricPerturbationPath_jointContMDiffOn (I := I) (M := M)
     g₀ T 0 hδ hδZ g_bg
@@ -130,43 +130,43 @@ theorem covDerivArmField_metricPerturbationPath_threeArmHjoint
 
 
 omit [SigmaCompactSpace M] in
-theorem endoArmField_metricPerturbationPath_threeArmHjoint
+theorem endomorphismTermField_metricPerturbationPath_covariantJetJointSmoothness
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ)
     (g_bg : SmoothRiemannianMetric I M) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-      (fun s => deTurckLieEndoArmField (I := I) (M := M) g₀
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+      (fun s => deTurckLieEndoTermField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg) (δ := δ) (δ' := δ) := by
   have hC := deTurckLieCoeffField_metricPerturbationPath_jointContMDiff (I := I)
     g₀ T 0 hδ hδZ g_bg
-  have hA := covDerivArmField_metricPerturbationPath_threeArmHjoint (I := I) (M := M)
+  have hA := covariantDerivativeTermField_metricPerturbationPath_covariantJetJointSmoothness (I := I) (M := M)
     g₀ T hδ hδZ g_bg
   have hsub := jointTotalSpaceRS_sub_local (I := I) (M := M) (r := 2) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ))
     (fun p : M × ℝ => (deTurckLieCoeffField (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g_bg).toSection p.1)
-    (fun p : M × ℝ => (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+    (fun p : M × ℝ => (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g_bg).toSection p.1)
     hC hA
   refine hsub.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1 t) ?_
-  change (deTurckLieEndoArmField (I := I) (M := M) g₀
+  change (deTurckLieEndoTermField (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g_bg).toSection p.1 =
     (deTurckLieCoeffField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g_bg).toSection p.1
-      - (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+      - (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g_bg).toSection p.1
-  have hsplit : deTurckLieEndoArmField (I := I) (M := M) g₀
+  have hsplit : deTurckLieEndoTermField (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g_bg =
       deTurckLieCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g_bg
-        - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g_bg := by
     rw [eq_sub_iff_add_eq, add_comm]
-    exact (deTurckLieCoeffField_eq_covDerivArm_add_endoArm (I := I) (M := M) g₀
+    exact (deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) g_bg).symm
   rw [hsplit, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
 

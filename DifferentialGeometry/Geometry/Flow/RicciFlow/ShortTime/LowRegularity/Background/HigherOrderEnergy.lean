@@ -265,7 +265,7 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five_background
             K.outer_pos K.realize_pos hsol.hreal
             ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i := by
       intro i hi
-      rw [galForceArmBackground (I := I) (M := M) g₀ g_bg K.threshold_lt hsol.hδ0 hsol.hδ3
+      rw [galForceTermBackground (I := I) (M := M) g₀ g_bg K.threshold_lt hsol.hδ0 hsol.hδ3
         K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos hsol.hreal hsol.hcore
         (eigenIdxFinset (I := I) (M := M) g₀ N)
         (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t) i, if_pos hi]

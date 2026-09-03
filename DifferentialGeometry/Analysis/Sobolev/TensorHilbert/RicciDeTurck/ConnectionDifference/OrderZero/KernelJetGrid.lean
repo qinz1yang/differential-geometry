@@ -525,7 +525,7 @@ private theorem reindexCoeffFibGen_innerContractionSwapPerm_eq_comp
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem order0KernelField_eq_arm_combination (g₀ g₁ : SmoothRiemannianMetric I M) :
+private theorem order0KernelField_eq_term_combination (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder0KernelField (I := I) g₀ g₁ =
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermCc0 (I := I) (M := M) g₀ kOut0Perm3201)
@@ -602,7 +602,7 @@ private theorem order0KernelField_eq_arm_combination (g₀ g₁ : SmoothRiemanni
   simp only [ContinuousLinearMap.comp_assoc]
 
 omit [SigmaCompactSpace M] in
-private theorem armOuter24_riemannianFiberNormSq_eq (g₀ : SmoothRiemannianMetric I M)
+private theorem termOuter24_riemannianFiberNormSq_eq (g₀ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (W : SmoothCcTensor g₀ 2 4) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 2 4 q
@@ -622,7 +622,7 @@ private theorem armOuter24_riemannianFiberNormSq_eq (g₀ : SmoothRiemannianMetr
   rw [hy, slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
 omit [SigmaCompactSpace M] in
-private theorem armOuter23_riemannianFiberNormSq_eq (g₀ : SmoothRiemannianMetric I M)
+private theorem termOuter23_riemannianFiberNormSq_eq (g₀ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 3)) (W : SmoothCcTensor g₀ 2 3) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + q) x
         ((iteratedCovGrad (I := I) g₀ 2 3 q
@@ -665,7 +665,7 @@ private lemma o0RiemannianFiberNormSq_smul (g : SmoothRiemannianMetric I M) (r s
   ring
 
 omit [SigmaCompactSpace M] in
-private theorem quadArm_riemannianFiberNormSq_windowGrid_le (g₀ : SmoothRiemannianMetric I M)
+private theorem quadTerm_riemannianFiberNormSq_windowGrid_le (g₀ : SmoothRiemannianMetric I M)
     (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
     (core : SmoothCcTensor g₀ 3 4) (W23 : SmoothCcTensor g₀ 2 3)
     (CA : ℕ → ℝ) (hCA_nn : ∀ j, 0 ≤ CA j) {fr : ℝ} (hfr : 0 ≤ fr)
@@ -759,7 +759,7 @@ private theorem quadArm_riemannianFiberNormSq_windowGrid_le (g₀ : SmoothRieman
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma riemannianFiberNormSq_eightArm_cascade (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
+private lemma riemannianFiberNormSq_eightTerm_cascade (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (v1 v2 v3 v4 v5 v6 v7 v8 : TensorRSSpace r s I x) {Q L w : ℝ}
     (h1 : riemannianFiberNormSq (I := I) (M := M) g r s x v1 ≤ Q * w)
     (h2 : riemannianFiberNormSq (I := I) (M := M) g r s x v2 ≤ Q * w)
@@ -827,7 +827,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
   refine ⟨fun l => 376 * CQ l + 6 * CL l,
     fun l => by have := hCQ_nn l; have := hCL_nn l; linarith, ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hbound l x
-  have hcomb := order0KernelField_eq_arm_combination (I := I) (M := M) g₀ g₁
+  have hcomb := order0KernelField_eq_term_combination (I := I) (M := M) g₀ g₁
   set b : ℕ → ℝ := fun j' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j') x
     ((iteratedCovGrad (I := I) g₀ 0 2 j' P).toSection x) with hb_def
   have hb : ∀ j', 0 ≤ b j' :=
@@ -939,7 +939,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
             (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))).toSection x) ≤
       fr * CA m * Combinatorics.antidiagonalTupleGridWindow b (m + 2) := by
     intro ρ m
-    rw [armOuter23_riemannianFiberNormSq_eq (I := I) (M := M) g₀ ρ
+    rw [termOuter23_riemannianFiberNormSq_eq (I := I) (M := M) g₀ ρ
       (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁) m x]
     exact hInner m
   have hQuadPerm : ∀ (ρ : Equiv.Perm (Fin 3)),
@@ -952,7 +952,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     intro ρ
     rw [hCQ_def]
-    exact quadArm_riemannianFiberNormSq_windowGrid_le (I := I) (M := M) g₀ b hb
+    exact quadTerm_riemannianFiberNormSq_windowGrid_le (I := I) (M := M) g₀ b hb
       (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 3 (slotPermCc0 (I := I) (M := M) g₀ ρ)
         (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))
@@ -963,7 +963,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
           (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))).toSection x) ≤
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     rw [hCQ_def]
-    exact quadArm_riemannianFiberNormSq_windowGrid_le (I := I) (M := M) g₀ b hb
+    exact quadTerm_riemannianFiberNormSq_windowGrid_le (I := I) (M := M) g₀ b hb
       (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)
       (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁)
       CA hCA_nn hfr l x (fun n _ => hCore34 n) (fun m _ => hInner m)
@@ -977,7 +977,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
               (slotPermCc0 (I := I) (M := M) g₀ kMid0Perm102)
               (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))))).toSection x) ≤
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3201 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3201 _ l x]
     exact hQuadPerm kMid0Perm102
   have hB2 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -993,7 +993,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4 _
       innerContractionSwapPerm l x]
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2301 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2301 _ l x]
     exact hQuadPerm kMid0Perm102
   have hB3 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1005,7 +1005,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
               (slotPermCc0 (I := I) (M := M) g₀ kMid0Perm120)
               (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))))).toSection x) ≤
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3102 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3102 _ l x]
     exact hQuadPerm kMid0Perm120
   have hB4 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1019,7 +1019,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4 _
       innerContractionSwapPerm l x]
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm1302 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm1302 _ l x]
     exact hQuadPlain
   have hB5 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1029,7 +1029,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
             (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)
             (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁)))).toSection x) ≤
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm1203 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm1203 _ l x]
     exact hQuadPlain
   have hB6 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1045,7 +1045,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4 _
       innerContractionSwapPerm l x]
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2103 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2103 _ l x]
     exact hQuadPerm kMid0Perm120
   have hB7 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1053,7 +1053,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
           (slotPermCc0 (I := I) (M := M) g₀ kOut0Perm3012)
           (connectionDifferenceGradContrInsertionField (I := I) g₀ g₁))).toSection x) ≤
       CL l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3012 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3012 _ l x]
     exact hGrad l
   have hB8 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1065,7 +1065,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
       CL l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4 _
       innerContractionSwapPerm l x]
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2013 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2013 _ l x]
     exact hGrad l
   have hsec : (iteratedCovGrad (I := I) g₀ 2 4 l
       (linearizedRicciConnectionDifferenceOrder0KernelField (I := I) g₀ g₁)).toSection x =
@@ -1142,7 +1142,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
         Combinatorics.antidiagonalTupleGridWindow b (l + 3) from rfl]
     ring
   rw [hgoal]
-  exact riemannianFiberNormSq_eightArm_cascade (I := I) (M := M) g₀ 2 (4 + l) x
+  exact riemannianFiberNormSq_eightTerm_cascade (I := I) (M := M) g₀ 2 (4 + l) x
     _ _ _ _ _ _ _ _ hB1 hB2 hB3 hB4 hB5 hB6 hB7 hB8
 
 theorem riemannianFiberNormSq_iteratedCovGrad_ricciCometricFourTraceCastG0_diagonalProductGrid_le
@@ -1439,7 +1439,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
   refine ⟨fun l => 376 * CQ l + 6 * CL l,
     fun l => by have := hCQ_nn l; have := hCL_nn l; linarith, ?_⟩
   intro g₀ g₁ P htie δ hδ_le hδ0 hbound l x
-  have hcomb := order0KernelField_eq_arm_combination (I := I) (M := M) g₀ g₁
+  have hcomb := order0KernelField_eq_term_combination (I := I) (M := M) g₀ g₁
   set b : ℕ → ℝ := fun j' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j') x
     ((iteratedCovGrad (I := I) g₀ 0 2 j' P).toSection x) with hb_def
   have hb : ∀ j', 0 ≤ b j' :=
@@ -1551,7 +1551,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
             (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))).toSection x) ≤
       fr * CA m * Combinatorics.antidiagonalTupleGridWindow b (m + 2) := by
     intro ρ m
-    rw [armOuter23_riemannianFiberNormSq_eq (I := I) (M := M) g₀ ρ
+    rw [termOuter23_riemannianFiberNormSq_eq (I := I) (M := M) g₀ ρ
       (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁) m x]
     exact hInner m
   have hQuadPerm : ∀ (ρ : Equiv.Perm (Fin 3)),
@@ -1563,7 +1563,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     intro ρ
     rw [hCQ_def]
-    exact quadArm_riemannianFiberNormSq_windowGrid_le (I := I) (M := M) g₀ b hb
+    exact quadTerm_riemannianFiberNormSq_windowGrid_le (I := I) (M := M) g₀ b hb
       (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 3 (slotPermCc0 (I := I) (M := M) g₀ ρ)
         (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))
@@ -1574,7 +1574,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
           (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))).toSection x) ≤
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     rw [hCQ_def]
-    exact quadArm_riemannianFiberNormSq_windowGrid_le (I := I) (M := M) g₀ b hb
+    exact quadTerm_riemannianFiberNormSq_windowGrid_le (I := I) (M := M) g₀ b hb
       (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)
       (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁)
       CA hCA_nn hfr l x (fun n _ => hCore34 n) (fun m _ => hInner m)
@@ -1586,7 +1586,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
               (slotPermCc0 (I := I) (M := M) g₀ kMid0Perm102)
               (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))))).toSection x) ≤
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3201 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3201 _ l x]
     exact hQuadPerm kMid0Perm102
   have hB2 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1601,7 +1601,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4 _
       innerCoreInPerm10 l x]
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2301 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2301 _ l x]
     exact hQuadPerm kMid0Perm102
   have hB3 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1611,7 +1611,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
               (slotPermCc0 (I := I) (M := M) g₀ kMid0Perm120)
               (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))))).toSection x) ≤
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3102 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3102 _ l x]
     exact hQuadPerm kMid0Perm120
   have hB4 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1624,7 +1624,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4 _
       innerCoreInPerm10 l x]
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm1302 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm1302 _ l x]
     exact hQuadPlain
   have hB5 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1632,7 +1632,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4 (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)
             (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁)))).toSection x) ≤
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm1203 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm1203 _ l x]
     exact hQuadPlain
   have hB6 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1647,14 +1647,14 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
       CQ l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4 _
       innerCoreInPerm10 l x]
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2103 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2103 _ l x]
     exact hQuadPerm kMid0Perm120
   have hB7 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4 (slotPermCc0 (I := I) (M := M) g₀ kOut0Perm3012)
           (connectionDifferenceGradContrInsertionField (I := I) g₀ g₁))).toSection x) ≤
       CL l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3012 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm3012 _ l x]
     exact hGrad l
   have hB8 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + l) x
       ((iteratedCovGrad (I := I) g₀ 2 4 l
@@ -1666,7 +1666,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
       CL l * Combinatorics.antidiagonalTupleGridWindow b (l + 3) := by
     rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4 _
       innerCoreInPerm10 l x]
-    rw [armOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2013 _ l x]
+    rw [termOuter24_riemannianFiberNormSq_eq (I := I) (M := M) g₀ kOut0Perm2013 _ l x]
     exact hGrad l
   have hsec : (iteratedCovGrad (I := I) g₀ 2 4 l
       (linearizedRicciConnectionDifferenceOrder0KernelField (I := I) g₀ g₁)).toSection x =
@@ -1733,7 +1733,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
         Combinatorics.antidiagonalTupleGridWindow b (l + 3) from rfl]
     ring
   rw [hgoal]
-  exact riemannianFiberNormSq_eightArm_cascade (I := I) (M := M) g₀ 2 (4 + l) x
+  exact riemannianFiberNormSq_eightTerm_cascade (I := I) (M := M) g₀ 2 (4 + l) x
     _ _ _ _ _ _ _ _ hB1 hB2 hB3 hB4 hB5 hB6 hB7 hB8
 
 end TensorSpectral

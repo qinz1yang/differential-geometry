@@ -23,7 +23,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieEndoArmField deTurckLieEndoArmField_toSection deTurckLieCovariantDerivativeInsertionFib
+  (deTurckLieEndoTermField deTurckLieEndoTermField_toSection deTurckLieCovariantDerivativeInsertionFib
     reindexCoeffGen reindexCoeffGen_toSection reindexCoeffFibGen reindexCoeffFibGen_apply
     iteratedCovGrad_reindexCoeffGen norm_reindexCoeffGen_eq
     domDomCongrFibRank domDomCongrFibRank_apply tensor0SProdKappaFib
@@ -204,7 +204,7 @@ private lemma lieCorrectionZeroRiem_perOrder_rf
   obtain ⟨KP, hKP_nn, hKP⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 2 4 (lieCorrectionZeroRiemannLift (I := I) g₀)
   choose Cint hCint_nn hCint using
-    (fun k : ℕ => exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    (fun k : ℕ => exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g₀ 4 2 2 4 k)
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr
   have hfr_nn : (0 : ℝ) ≤ fr := Nat.cast_nonneg _
@@ -1624,22 +1624,6 @@ theorem metricLoweredConnectionDifferenceCorrection_sobolev_two_mul_bound
         nlinarith
   simpa only [b4Jet2, W] using hcorr
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_sub_right_local
-    (g₀ : SmoothRiemannianMetric I M)
-    (Φ : SmoothCcTensor g₀ 3 3)
-    (W V : SmoothCcTensor g₀ 0 3) :
-    operatorFieldApply (I := I) (M := M) g₀ 3 3 Φ (W - V) =
-      operatorFieldApply (I := I) (M := M) g₀ 3 3 Φ W -
-        operatorFieldApply (I := I) (M := M) g₀ 3 3 Φ V := by
-  rw [sub_eq_add_neg, operatorFieldApplication_add_right]
-  have hneg := operatorFieldApplication_smul_right (I := I) (M := M) g₀ 3 3
-    (-1 : ℝ) Φ V
-  simp only [neg_one_smul] at hneg
-  rw [hneg]
-  rfl
-
 theorem metricLoweredConnectionDifferenceCorrection_metric_difference_sobolev_two_bound
     (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) :
@@ -1674,7 +1658,7 @@ theorem metricLoweredConnectionDifferenceCorrection_metric_difference_sobolev_tw
           operatorFieldApply (I := I) (M := M) g₀ 3 3
             (b4Phi (I := I) (M := M) g₀ P b4PermA) W₂ := by
     simpa only [W] using
-      operatorFieldApplication_sub_right_local (I := I) (M := M) g₀
+      operatorFieldApplication_sub_right (I := I) (M := M) g₀ 3 3
         (b4Phi (I := I) (M := M) g₀ P b4PermA) W₁ W₂
   have hB :
       operatorFieldApply (I := I) (M := M) g₀ 3 3
@@ -1684,7 +1668,7 @@ theorem metricLoweredConnectionDifferenceCorrection_metric_difference_sobolev_tw
           operatorFieldApply (I := I) (M := M) g₀ 3 3
             (b4Phi (I := I) (M := M) g₀ P b4PermB) W₂ := by
     simpa only [W] using
-      operatorFieldApplication_sub_right_local (I := I) (M := M) g₀
+      operatorFieldApplication_sub_right (I := I) (M := M) g₀ 3 3
         (b4Phi (I := I) (M := M) g₀ P b4PermB) W₁ W₂
   have heq :
       metricLoweredConnectionDifferenceCorrection (I := I) (M := M) g₀ g₁ g_bg P -

@@ -231,7 +231,7 @@ def deTurckPrincipalCometricCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
   cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁
     - cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₀
 
-def deTurckPrincipalCometricArm (g₀ g₁ : SmoothRiemannianMetric I M)
+def deTurckPrincipalCometricTerm (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 0 2 :=
   operatorFieldApply (I := I) (M := M) g₀ 4 2
     (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)
@@ -252,10 +252,10 @@ private lemma unitModel_operatorFieldApplication_sub_distrib
     sub_apply, Tensor0SSpace.toModel_sub, sub_apply]
 
 omit [SigmaCompactSpace M] in
-theorem deTurckPrincipalCometricArm_unitModel_eq_gInvDiffContraction
+theorem deTurckPrincipalCometricTerm_unitModel_eq_gInvDiffContraction
     (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (x : M) (v : Fin 2 → E) :
-    unitModel (I := I) (M := M) g₀ 2 (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ S) x v =
+    unitModel (I := I) (M := M) g₀ 2 (deTurckPrincipalCometricTerm (I := I) (M := M) g₀ g₁ S) x v =
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 S) x
           (Fin.cons
@@ -267,7 +267,7 @@ theorem deTurckPrincipalCometricArm_unitModel_eq_gInvDiffContraction
                       ((Module.finBasis ℝ E).cDualBasis k))))))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   classical
-  rw [deTurckPrincipalCometricArm, deTurckPrincipalCometricCoeff,
+  rw [deTurckPrincipalCometricTerm, deTurckPrincipalCometricCoeff,
     unitModel_operatorFieldApplication_sub_distrib (I := I) (M := M) g₀
       (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁)
       (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₀)
@@ -675,7 +675,7 @@ theorem riemannianFiberNormSq_deTurckPrincipalCometricCoeff_le
     _ = (Module.finrank ℝ E : ℝ) ^ 3 * r ^ 2 := by rw [← hnE]; ring
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_deTurckPrincipalCometricArm_le
+theorem riemannianFiberNormSq_deTurckPrincipalCometricTerm_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -683,7 +683,7 @@ theorem riemannianFiberNormSq_deTurckPrincipalCometricArm_le
     {δ : ℝ} (hδ_lt : δ < 1) (hδ_nn : 0 ≤ δ)
     (hδ : metricCauchySchwarzBound (I := I) g₀ h δ) (S : SmoothCcTensor g₀ 0 2) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-        ((deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ S).toSection x) ≤
+        ((deTurckPrincipalCometricTerm (I := I) (M := M) g₀ g₁ S).toSection x) ≤
       (Module.finrank ℝ E : ℝ) ^ 3 * (δ / (1 - δ)) ^ 2 *
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 4 x
           ((iteratedCovGrad (I := I) g₀ 0 2 2 S).toSection x) := by
@@ -692,13 +692,13 @@ theorem riemannianFiberNormSq_deTurckPrincipalCometricArm_le
       (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁).toSection x)
     (show TensorRSSpace 0 4 I x from
       (iteratedCovGrad (I := I) g₀ 0 2 2 S).toSection x)
-  have harm_sec : (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ S).toSection x =
+  have harm_sec : (deTurckPrincipalCometricTerm (I := I) (M := M) g₀ g₁ S).toSection x =
       (show TensorRSSpace 0 2 I x from
         (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
           (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁).toSection x).comp
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from
             (iteratedCovGrad (I := I) g₀ 0 2 2 S).toSection x)) := by
-    rw [deTurckPrincipalCometricArm,
+    rw [deTurckPrincipalCometricTerm,
       operatorFieldApplication_toSection (I := I) (M := M) g₀ 4 2
         (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)
         (iteratedCovGrad (I := I) g₀ 0 2 2 S) x]

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.PolarBij
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundIntrinsic
-import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
-import DifferentialGeometry.Geometry.Exponential.DiagInvFixed
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponentialDerivative
+import DifferentialGeometry.Geometry.Exponential.FixedBasePartialDiffeomorph
 
 
 open DifferentialGeometry.Geometry.Curvature
@@ -276,7 +276,7 @@ private theorem log_eq_branch
     (p : sphere (0 : E) 1) :
     roundLog (n := n) p =ᶠ[𝓝 p]
       (stdBranch (I := 𝓡 n) (roundMetric (E := E) (n := n))
-        hEnorm p).fixedPD.symm := by
+        hEnorm p).fixedBasePartialDiffeomorph.symm := by
   let B :=
     stdBranch (I := 𝓡 n) (roundMetric (E := E) (n := n)) hEnorm p
   have hpneg : p ≠ -p := ne_neg_of_mem_unit_sphere ℝ p
@@ -286,19 +286,19 @@ private theorem log_eq_branch
       exact isOpen_compl_singleton
     exact hopen.mem_nhds hpneg
   have hsource :
-      ∀ᶠ x in 𝓝 p, roundLog (n := n) p x ∈ B.fixedPD.source :=
+      ∀ᶠ x in 𝓝 p, roundLog (n := n) p x ∈ B.fixedBasePartialDiffeomorph.source :=
     roundLog_tendsto (n := n) p
-      (B.fixedPD.open_source.mem_nhds B.fixedPD_zero_mem)
+      (B.fixedBasePartialDiffeomorph.open_source.mem_nhds B.fixedBasePartialDiffeomorph_zero_mem_source)
   filter_upwards [hnotneg, hsource] with x hxneg hxsrc
   by_cases hxp : x = p
   · subst x
-    change roundLog (n := n) p p = B.fixedPD.symm p
+    change roundLog (n := n) p p = B.fixedBasePartialDiffeomorph.symm p
     rw [roundLog_self]
-    exact B.fixedPD_symm_center.symm
+    exact B.fixedBasePartialDiffeomorph_symm_center.symm
   · have hexp :=
       round_exp_log hEnorm p x hxp hxneg
     have hmap :
-        B.fixedPD (roundLog (n := n) p x) = x := by
+        B.fixedBasePartialDiffeomorph (roundLog (n := n) p x) = x := by
       change expMapIntrinsic (I := 𝓡 n)
           (roundMetric (E := E) (n := n)) hEnorm p
             ((tangentSpaceModelContinuousLinearEquiv (I := 𝓡 n) p).symm
@@ -310,7 +310,7 @@ private theorem log_eq_branch
             (roundMetric (E := E) (n := n)) hEnorm p v)
         (tangentSpaceModelContinuousLinearEquiv_symm_apply
           (I := 𝓡 n) p (roundLog (n := n) p x))
-    have hleft := B.fixedPD.left_inv hxsrc
+    have hleft := B.fixedBasePartialDiffeomorph.left_inv hxsrc
     rw [hmap] at hleft
     exact hleft.symm
 
@@ -327,9 +327,9 @@ theorem roundLog_smooth
   · subst x
     have hB :
         ContMDiffAt (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞
-          B.fixedPD.symm p :=
-      B.fixedPD.symm.contMDiffOn_toFun.contMDiffAt
-        (B.fixedPD.open_target.mem_nhds B.fixedPD_center_mem)
+          B.fixedBasePartialDiffeomorph.symm p :=
+      B.fixedBasePartialDiffeomorph.symm.contMDiffOn_toFun.contMDiffAt
+        (B.fixedBasePartialDiffeomorph.open_target.mem_nhds B.fixedBasePartialDiffeomorph_center_mem_target)
     exact
       (hB.congr_of_eventuallyEq
         (log_eq_branch (n := n) hEnorm p)).contMDiffWithinAt

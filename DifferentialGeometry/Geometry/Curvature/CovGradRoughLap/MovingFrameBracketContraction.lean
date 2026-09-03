@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.MovingFrameRemainderCarrierSection
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.MovingFrameRemainderDivergenceForm
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.MovingFrameFoldPieces
+import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.MovingFrameContractionTerms
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

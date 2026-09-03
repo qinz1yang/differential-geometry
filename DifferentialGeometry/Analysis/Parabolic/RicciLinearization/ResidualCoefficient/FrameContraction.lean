@@ -405,7 +405,7 @@ private lemma kcToModelEvalCLM_apply (s : ℕ) (x : M) (v : Fin s → E)
     (D : Tensor0SSpace s I x) :
     kcToModelEvalCLM (I := I) (M := M) s x v D = Tensor0SSpace.toModel (𝕜 := ℝ) D v := rfl
 
-private def kcPairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
+private def kcPairEvaluationScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
@@ -422,11 +422,11 @@ private def kcPairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma kcPairFeedScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
+private lemma kcPairEvaluationScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) (p q : TangentSpace I x) :
-    kcPairFeedScalarCLM (I := I) (M := M) s x G v p q =
+    kcPairEvaluationScalarCLM (I := I) (M := M) s x G v p q =
       Tensor0SSpace.toModel (𝕜 := ℝ) G (Fin.cons (p : E) (Fin.cons (q : E) v)) := by
-  rw [kcPairFeedScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
+  rw [kcPairEvaluationScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     ContinuousLinearMap.comp_apply, kcToModelEvalCLM_apply,
     TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
       (T := (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p) (v0 := q) (vs := v),
@@ -471,20 +471,20 @@ theorem decompositionKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd
             (fun i => (Fin.cons ((Bf a : E)) (Fin.cons ((Bf b : E)) v) : Fin 4 → E)
               (σ i)) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        kcPairFeedScalarCLM (I := I) (M := M) 0 y D ![] (Bf a) (Bf b) *
-          kcPairFeedScalarCLM (I := I) (M := M) 2 y
+        kcPairEvaluationScalarCLM (I := I) (M := M) 0 y D ![] (Bf a) (Bf b) *
+          kcPairEvaluationScalarCLM (I := I) (M := M) 2 y
             (tensorRank4PermuteCLM (I := I) (M := M) y σ (Gs y)) v (Bf a) (Bf b) := by
     intro Bf
     refine Finset.sum_congr rfl (fun a _ => ?_)
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [kcPairFeedScalarCLM_apply, kcPairFeedScalarCLM_apply, slotPerm4Fib_toModel,
+    rw [kcPairEvaluationScalarCLM_apply, kcPairEvaluationScalarCLM_apply, slotPerm4Fib_toModel,
       ContinuousMultilinearMap.domDomCongr_apply]
     rfl
   rw [hrewrite (fun a => smoothOrthoFrame (I := I) g₁ y a y),
     hrewrite (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)]
   exact kc_double_frame_bilin_trace_indep (I := I) g₁ y
-    (kcPairFeedScalarCLM (I := I) (M := M) 0 y D ![])
-    (kcPairFeedScalarCLM (I := I) (M := M) 2 y (tensorRank4PermuteCLM (I := I) (M := M) y σ (Gs y))
+    (kcPairEvaluationScalarCLM (I := I) (M := M) 0 y D ![])
+    (kcPairEvaluationScalarCLM (I := I) (M := M) 2 y (tensorRank4PermuteCLM (I := I) (M := M) y σ (Gs y))
       v)
     (fun a => smoothOrthoFrame (I := I) g₁ y a y)
     (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)
@@ -737,7 +737,7 @@ theorem decompositionKernelContractionField_zero_argument (g₀ g₁ : SmoothRie
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem foldIteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ)
+private theorem residual_iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (c : ℝ) (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) =
       c • iteratedCovGrad (I := I) g r s j w := by
@@ -748,11 +748,11 @@ private theorem foldIteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma foldIteratedCovGrad_zero_arg (g₀ : SmoothRiemannianMetric I M) (r s j : ℕ) :
+private lemma residual_iteratedCovGrad_zero_arg (g₀ : SmoothRiemannianMetric I M) (r s j : ℕ) :
     iteratedCovGrad (I := I) g₀ r s j (0 : SmoothCcTensor g₀ r s) = 0 := by
   rw [show (0 : SmoothCcTensor g₀ r s) = (0 : ℝ) • (0 : SmoothCcTensor g₀ r s) from
       (zero_smul ℝ _).symm,
-    foldIteratedCovGrad_smul_real, zero_smul]
+    residual_iteratedCovGrad_smul_real, zero_smul]
 
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
@@ -760,7 +760,7 @@ theorem decompositionKernelContractionField_zero_weight (g₀ g₁ : SmoothRiema
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) :
     decompositionKernelContractionField (I := I) (M := M) g₀ g₁
       (iteratedCovGrad (I := I) g₀ 0 2 2 (0 : SmoothCcTensor g₀ 0 2)) σ₁ σ₂ σ₃ σ₄ = 0 := by
-  rw [foldIteratedCovGrad_zero_arg (I := I) (M := M) g₀ 0 2 2,
+  rw [residual_iteratedCovGrad_zero_arg (I := I) (M := M) g₀ 0 2 2,
     decompositionKernelContractionField_zero_argument]
 
 omit [SigmaCompactSpace M] in

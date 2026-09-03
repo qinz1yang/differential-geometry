@@ -519,7 +519,7 @@ theorem ricciCovariantDerivativeConnectionDifference_path_pairing_le
         s ∈ Set.Icc (0 : Real) 1 →
         (-2 : Real) *
             (⟪W, operatorFieldApply (I := I) (M := M) g 2 2
-              (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g
+              (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g
                 (metricPerturbationPathFromZero (I := I) (M := M) g W hWbound s)) W⟫_ℝ : Real) ≤
           (1 / 8 : Real) *
               ‖iteratedCovGrad (I := I) g 0 2 1 W‖ ^ 2 +
@@ -701,11 +701,11 @@ theorem ricciCovariantDerivativeConnectionDifference_path_pairing_le
       _ = Cb * ‖D‖ := by ring
   have hgreen :
       (⟪W, operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W⟫_ℝ : Real) =
+          (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W⟫_ℝ : Real) =
         -⟪Adj, Base⟫_ℝ := by
     change tensorL2Inner (I := I) (M := M) g 0 2 W.toFun
         (operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W).toFun =
+          (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W).toFun =
       -tensorL2Inner (I := I) (M := M) g 0 3 Adj.toFun Base.toFun
     simpa only [Adj, S, R, Base, ricciCovariantDerivativeConnectionDifferenceAdjoint] using
       ricciCovariantDerivativeConnectionDifference_green_identity (I := I) (M := M) g gm W hWsymm
@@ -721,13 +721,13 @@ theorem ricciCovariantDerivativeConnectionDifference_path_pairing_le
   have hpair :
       (-2 : Real) *
           (⟪W, operatorFieldApply (I := I) (M := M) g 2 2
-            (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W⟫_ℝ : Real) ≤
+            (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W⟫_ℝ : Real) ≤
         G * delta * ‖W‖ * ‖D‖ +
           Hc * delta * ‖D‖ ^ 2 := by
     calc
       (-2 : Real) *
           (⟪W, operatorFieldApply (I := I) (M := M) g 2 2
-            (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g gm) W⟫_ℝ : Real) =
+            (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g gm) W⟫_ℝ : Real) =
         2 * ⟪Adj, Base⟫_ℝ := by rw [hgreen]; ring
       _ ≤ 2 * |⟪Adj, Base⟫_ℝ| :=
         mul_le_mul_of_nonneg_left (le_abs_self _) (by norm_num)
@@ -779,7 +779,7 @@ theorem ricciCovariantDerivativeConnectionDifference_path_pairing_le
   calc
     (-2 : Real) *
         (⟪W, operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciCovariantDerivativeConnectionDifferenceArm (I := I) (M := M) g
+          (ricciCovariantDerivativeConnectionDifferenceTerm (I := I) (M := M) g
             (metricPerturbationPathFromZero (I := I) (M := M) g W hWbound s)) W⟫_ℝ : Real) ≤
       G * delta * ‖W‖ *
           ‖iteratedCovGrad (I := I) g 0 2 1 W‖ +

@@ -252,7 +252,7 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
             hsol.hρ hsol.hP hsol.hreal
             ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i := by
       intro i hi
-      rw [galForceArm (I := I) (M := M) g₀ hsol.hδ hsol.hδ0 hsol.hδ3
+      rw [galForceTerm (I := I) (M := M) g₀ hsol.hδ hsol.hδ0 hsol.hδ3
         hsol.hCtop hsol.hB1 hsol.hρ hsol.hP hsol.hreal hsol.hcore
         (eigenIdxFinset (I := I) (M := M) g₀ N)
         (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t) i, if_pos hi]

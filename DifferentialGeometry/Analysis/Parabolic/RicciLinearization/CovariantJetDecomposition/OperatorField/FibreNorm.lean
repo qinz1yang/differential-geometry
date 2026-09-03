@@ -295,7 +295,7 @@ private lemma cometric_dualsum_inner_collapse (g₀ g₁ : SmoothRiemannianMetri
     _ = g₀.inner x a (inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x c)) := by
         rw [hsumeq]
 
-private lemma ricciArm_compSq_le_indicator {A C R : ℝ} (hAbound : |A| ≤ R) (hCbound : |C| ≤ R)
+private lemma ricciCovariantTerm_compSq_le_indicator {A C R : ℝ} (hAbound : |A| ≤ R) (hCbound : |C| ≤ R)
     {nn : ℕ} (K : Fin 4 → Fin nn) (J : Fin 2 → Fin nn) :
     ((1 / 2 : ℝ) *
         (A * ((if K 1 = J 0 then (1 : ℝ) else 0) * (if K 2 = J 1 then (1 : ℝ) else 0))
@@ -324,7 +324,7 @@ private lemma ricciArm_compSq_le_indicator {A C R : ℝ} (hAbound : |A| ≤ R) (
     rw [ha, hb, hc] <;> nlinarith [hA2, hC2, hR2nn, sq_nonneg (A - C),
       sq_nonneg (A + A), sq_nonneg (A + A - C), sq_nonneg A, sq_nonneg C]
 
-private lemma ricciArm_indicatorSum_le {nn : ℕ} (K : Fin 4 → Fin nn) (R : ℝ) :
+private lemma ricciCovariantTerm_indicatorSum_le {nn : ℕ} (K : Fin 4 → Fin nn) (R : ℝ) :
     (∑ J : Fin 2 → Fin nn,
         (3 / 4 : ℝ) * R ^ 2 *
           ((if K 1 = J 0 then (1 : ℝ) else 0) * (if K 2 = J 1 then (1 : ℝ) else 0)
@@ -377,7 +377,7 @@ private lemma ricciArm_indicatorSum_le {nn : ℕ} (K : Fin 4 → Fin nn) (R : �
   rw [hfinal]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma ricciArm_dim1_compSq_le {A C R : ℝ} (hAbound : |A| ≤ R)
+private lemma ricciCovariantTerm_dim1_compSq_le {A C R : ℝ} (hAbound : |A| ≤ R)
     (hAeqC : A = C)
     (hfr : Module.finrank ℝ E = 1) (K : Fin 4 → Fin (Module.finrank ℝ E)) :
     (∑ J : Fin 2 → Fin (Module.finrank ℝ E),
@@ -599,7 +599,7 @@ theorem ricciDeTurckPrincipalCoefficientFiber_fiberComponent_Ksum_sq_le
         have hsub : Subsingleton (Fin (Module.finrank ℝ E)) := by rw [hfr]; infer_instance
         have hK13 : K 1 = K 3 := Subsingleton.elim _ _
         rw [hA, hC, hfA, hfC, hK13]
-      refine (ricciArm_dim1_compSq_le (A := A) (C := C) (R := R) hAbound hAeqC hfr
+      refine (ricciCovariantTerm_dim1_compSq_le (A := A) (C := C) (R := R) hAbound hAeqC hfr
         (K := K)).trans ?_
       have hfrR : (Module.finrank ℝ E : ℝ) = 1 := by rw [hfr]; norm_num
       rw [hfrR]; rw [one_mul]
@@ -611,8 +611,8 @@ theorem ricciDeTurckPrincipalCoefficientFiber_fiberComponent_Ksum_sq_le
                   (if K 3 = J 1 then (1 : ℝ) else 0)))) ^ 2)
           ≤ (9 / 4 : ℝ) * R ^ 2 :=
         (Finset.sum_le_sum (fun J _ =>
-          ricciArm_compSq_le_indicator (A := A) (C := C) (R := R) hAbound hCbound
-            (K := K) (J := J))).trans (ricciArm_indicatorSum_le (K := K) (R := R))
+          ricciCovariantTerm_compSq_le_indicator (A := A) (C := C) (R := R) hAbound hCbound
+            (K := K) (J := J))).trans (ricciCovariantTerm_indicatorSum_le (K := K) (R := R))
       refine hstep.trans ?_
       have hge2R : (2 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := by exact_mod_cast hge2
       have hfin2 : (4 : ℝ) ≤ (Module.finrank ℝ E : ℝ) ^ 2 := by nlinarith [hge2R]

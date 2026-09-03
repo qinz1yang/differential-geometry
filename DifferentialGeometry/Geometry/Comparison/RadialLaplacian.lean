@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.BranchRadius
 import DifferentialGeometry.Geometry.Exponential.EndpointShape
-import DifferentialGeometry.Geometry.Exponential.IntrinsicSmooth
-import DifferentialGeometry.Geometry.Exponential.RawIntrinsicC2
+import DifferentialGeometry.Geometry.Exponential.IntrinsicGeodesicSmoothness
+import DifferentialGeometry.Geometry.Exponential.IntrinsicExponentialAgreement
 import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiShape
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialGronwall
@@ -52,7 +52,7 @@ theorem branchDeriv2_zero
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {x : TangentSpace I p} {t : Real}
     (ht : 0 < t)
     (hsrc : t • (x : E) ∈ B.hom.source) :
@@ -84,7 +84,7 @@ theorem branchHess_radial
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
     (hu : (u : E) ∈ B.hom.source)
     (hu_pos : 0 < g.inner p u u) :
@@ -139,7 +139,7 @@ theorem branchLap_eq_mean
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     (u : TangentSpace I p)
     (v : ι → TangentSpace I p)
     (hu : (u : E) ∈ B.hom.source)
@@ -436,7 +436,7 @@ theorem radialLap_eq_mean
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {p : M}
-    (B : ExpInvBranch (I := I) g hEnorm p)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
     (x : E) (v : ι → E) (t : Real)
     (ht : 0 < t)
     (hx_pos : 0 < g.inner p x x)

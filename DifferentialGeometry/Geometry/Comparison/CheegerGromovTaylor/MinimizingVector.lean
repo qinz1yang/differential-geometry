@@ -192,7 +192,7 @@ private def intrCoreDistGermProp
           (I := 𝓘(Real, E)) gExt z v
     let u :=
       minimizingVec (I := 𝓘(Real, E)) gExt hExt (pt : E) (q : E)
-    ∃ B : ExpInvBranch (I := 𝓘(Real, E)) gExt hExt (pt : E),
+    ∃ B : ExponentialInverseBranch (I := 𝓘(Real, E)) gExt hExt (pt : E),
       (u : E) ∈ B.hom.source ∧
       branchEnergy (I := 𝓘(Real, E)) gExt B =ᶠ[𝓝 (q : E)]
         (fun z =>

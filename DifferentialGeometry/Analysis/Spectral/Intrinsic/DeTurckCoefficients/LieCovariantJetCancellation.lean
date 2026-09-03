@@ -29,7 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [BoundarylessManifold I M]
 
 omit [SigmaCompactSpace M] in
-theorem lieSlope_eq_arms
+theorem lieSlope_eq_terms
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -47,12 +47,12 @@ theorem lieSlope_eq_arms
               (iteratedCovGrad (I := I) g₀ 0 2 0
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
             operatorFieldApply (I := I) (M := M) g₀ 3 2
-              (deTurckLieArm1Coeff (I := I) (M := M) g₀
+              (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 1
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
             operatorFieldApply (I := I) (M := M) g₀ 4 2
-              (deTurckLieArm2PrincipalCoeff (I := I) g₀
+              (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
@@ -64,7 +64,7 @@ theorem lieSlope_eq_arms
   have hsplit := lieDeTurckChartSlope_eq_orderSplit (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' g_bg x i j s hy
   have h0 := lie0_order0_eq (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg s x i j
-  have h1 := lieArm_arm1_value_eq_order1Raw_add_tail (I := I) g₀ g_bg T T'
+  have h1 := lieTerm_firstOrder_value_eq_order1Raw_add_tail (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' s x i j
   have h2 := lieTop_cov_eq_raw (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j

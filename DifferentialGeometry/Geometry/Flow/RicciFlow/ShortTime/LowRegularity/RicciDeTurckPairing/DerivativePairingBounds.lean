@@ -1869,7 +1869,7 @@ theorem lowerScalePathIntegral_apply_decomposition
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjΨ : JointlySmoothCcTensorFamily (I := I) g 2 2 S Ψ := by
-    change linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Ψ
+    change linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2 Ψ
       (δ := δ) (δ' := δ)
     simpa only [S, Ψ] using
       RicciDeTurckLowOrder.selfLow_joint (I := I) (M := M)
@@ -1982,7 +1982,7 @@ theorem lowerScalePathIntegral_apply_affine_decomposition
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjΨ : JointlySmoothCcTensorFamily (I := I) g 2 2 S Ψ := by
-    change linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Ψ
+    change linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2 Ψ
       (δ := δ) (δ' := δ)
     simpa only [S, Ψ] using
       RicciDeTurckLowOrder.selfLow_joint (I := I) (M := M)

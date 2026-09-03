@@ -482,7 +482,7 @@ theorem ricciConnectionDifferenceQuadraticCoefficient_fiberNormSq_le (g : Smooth
           (ccTensorBilinSymm (I := I) g P) delta →
         ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g 2 2 x
-              ((ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gm).toSection x) ≤
+              ((ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gm).toSection x) ≤
             C ^ 2 *
               riemannianFiberNormSq (I := I) (M := M) g 0 3 x
                 ((iteratedCovGrad (I := I) g 0 2 1 P).toSection x) ^ 2 := by
@@ -542,7 +542,7 @@ theorem ricciConnectionDifferenceQuadraticCoefficient_fiberNormSq_le (g : Smooth
     (I := I) (M := M) g 2 4 2 x
     ((ricciCometricFourTraceCastG0 (I := I) g gm).toSection x)
     ((ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g gm).toSection x)
-  rw [ricciConnectionDifferenceQuadraticArm, operatorFieldComposition_toSection]
+  rw [ricciConnectionDifferenceQuadraticTerm, operatorFieldComposition_toSection]
   calc
     _ ≤ Tr * Kr := by simpa only [Tr, Kr] using hcomp
     _ ≤ Tr * (94 * d ^ 3 * Ac ^ 2) :=
@@ -668,7 +668,7 @@ theorem ricciConnectionDifferenceQuadratic_path_pairing_le (g : SmoothRiemannian
         s ∈ Set.Icc (0 : Real) 1 →
         (-2 : Real) * tensorL2Inner (I := I) (M := M) g 0 2 W.toFun
             (operatorFieldApply (I := I) (M := M) g 2 2
-              (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g
+              (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g
                 (metricPerturbationPathFromZero (I := I) (M := M) g W hWbound s)) W).toFun ≤
           eta * ‖iteratedCovGrad (I := I) g 0 2 1 W‖ ^ 2 := by
   classical
@@ -707,7 +707,7 @@ theorem ricciConnectionDifferenceQuadratic_path_pairing_le (g : SmoothRiemannian
     metricPerturbationPathFromZero (I := I) (M := M) g W hWbound s
   let D : SmoothCcTensor g 0 3 :=
     iteratedCovGrad (I := I) g 0 2 1 W
-  let F : SmoothCcTensor g 2 2 := ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gm
+  let F : SmoothCcTensor g 2 2 := ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gm
   let U : SmoothCcTensor g 0 2 :=
     operatorFieldApply (I := I) (M := M) g 2 2 F W
   let mu := riemannianVolumeMeasure (I := I) (M := M) g
@@ -842,15 +842,15 @@ theorem ricciConnectionDifferenceQuadratic_path_pairing_le (g : SmoothRiemannian
   calc
     (-2 : Real) * tensorL2Inner (I := I) (M := M) g 0 2 W.toFun
         (operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g
+          (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g
             (metricPerturbationPathFromZero (I := I) (M := M) g W hWbound s)) W).toFun ≤
       2 * |tensorL2Inner (I := I) (M := M) g 0 2 W.toFun
         (operatorFieldApply (I := I) (M := M) g 2 2
-          (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g
+          (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g
             (metricPerturbationPathFromZero (I := I) (M := M) g W hWbound s)) W).toFun| := by
         nlinarith [neg_le_abs (tensorL2Inner (I := I) (M := M) g 0 2 W.toFun
           (operatorFieldApply (I := I) (M := M) g 2 2
-            (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g
+            (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g
               (metricPerturbationPathFromZero (I := I) (M := M) g W hWbound s)) W).toFun)]
     _ ≤ 2 * (C * delta ^ 2 *
         ‖iteratedCovGrad (I := I) g 0 2 1 W‖ ^ 2) :=

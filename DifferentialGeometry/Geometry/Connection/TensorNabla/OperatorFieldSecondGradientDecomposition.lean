@@ -44,19 +44,16 @@ def tensorLeadingSlotEvalCLM (s : ℕ) (x : M) (p : TangentSpace I x) :
         rw [map_smul]
         rfl }
 
-abbrev slotFeedFib (s : ℕ) (x : M) (p : TangentSpace I x) :=
-  tensorLeadingSlotEvalCLM (I := I) (M := M) s x p
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
-@[simp] lemma slotFeedFib_apply (s : ℕ) (x : M) (p : TangentSpace I x)
+@[simp] lemma tensorLeadingSlotEvalCLM_apply (s : ℕ) (x : M) (p : TangentSpace I x)
     (G : Tensor0SSpace (s + 1) I x) :
     tensorLeadingSlotEvalCLM (I := I) (M := M) s x p G =
       (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) s x) G p := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
-lemma slotFeedFib_toModel (s : ℕ) (x : M) (p : TangentSpace I x)
+lemma tensorLeadingSlotEvalCLM_toModel (s : ℕ) (x : M) (p : TangentSpace I x)
     (G : Tensor0SSpace (s + 1) I x) (v : Fin s → E) :
     Tensor0SSpace.toModel (tensorLeadingSlotEvalCLM (I := I) (M := M) s x p G) v =
       Tensor0SSpace.toModel G
@@ -69,19 +66,16 @@ def tensorLeadingPairSlotEvalCLM (s : ℕ) (x : M) (p q : TangentSpace I x) :
   (tensorLeadingSlotEvalCLM (I := I) (M := M) s x q).comp
     (tensorLeadingSlotEvalCLM (I := I) (M := M) (s + 1) x p)
 
-abbrev leadingPairFeedFib (s : ℕ) (x : M) (p q : TangentSpace I x) :=
-  tensorLeadingPairSlotEvalCLM (I := I) (M := M) s x p q
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
-lemma leadingPairFeedFib_toModel (s : ℕ) (x : M) (p q : TangentSpace I x)
+lemma tensorLeadingPairSlotEvalCLM_toModel (s : ℕ) (x : M) (p q : TangentSpace I x)
     (G : Tensor0SSpace (s + 2) I x) (v : Fin s → E) :
     Tensor0SSpace.toModel (tensorLeadingPairSlotEvalCLM (I := I) (M := M) s x p q G) v =
       Tensor0SSpace.toModel G
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)) := by
-  rw [tensorLeadingPairSlotEvalCLM, ContinuousLinearMap.comp_apply, slotFeedFib_toModel,
-    slotFeedFib_toModel]
+  rw [tensorLeadingPairSlotEvalCLM, ContinuousLinearMap.comp_apply, tensorLeadingSlotEvalCLM_toModel,
+    tensorLeadingSlotEvalCLM_toModel]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
@@ -216,7 +210,7 @@ lemma curvatureDecompositionMonomialFib_toModel (x : M) (tw : ℝ) (σ : Equiv.P
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v) : Fin 4 → E)
             (σ i)) := by
   rw [curvatureDecompositionMonomialFib_apply, Tensor0SSpace.toModel_smul,
-    smul_apply, smul_eq_mul, leadingPairFeedFib_toModel,
+    smul_apply, smul_eq_mul, tensorLeadingPairSlotEvalCLM_toModel,
     slotPerm4Fib_toModel, ContinuousMultilinearMap.domDomCongr_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -383,7 +377,7 @@ private lemma toModelEvalCLM_apply (s : ℕ) (x : M) (v : Fin s → E)
     (D : Tensor0SSpace s I x) :
     toModelEvalCLM (I := I) (M := M) s x v D = Tensor0SSpace.toModel (𝕜 := ℝ) D v := rfl
 
-private def pairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
+private def pairEvaluationScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
@@ -400,13 +394,13 @@ private def pairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
-private lemma pairFeedScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
+private lemma pairEvaluationScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) (p q : TangentSpace I x) :
-    pairFeedScalarCLM (I := I) (M := M) s x G v p q =
+    pairEvaluationScalarCLM (I := I) (M := M) s x G v p q =
       Tensor0SSpace.toModel (𝕜 := ℝ) G
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)) := by
-  rw [pairFeedScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
+  rw [pairEvaluationScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     ContinuousLinearMap.comp_apply, toModelEvalCLM_apply,
     TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
       (T := (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p)
@@ -616,20 +610,20 @@ theorem curvatureDecompositionMonomialBiContrFib_eq_fixedFrame_on_nbhd
               (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf b)) v) :
                 Fin 4 → E) (σ i)) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        pairFeedScalarCLM (I := I) (M := M) 0 y (W y) ![] (Bf a) (Bf b) *
-          pairFeedScalarCLM (I := I) (M := M) 2 y
+        pairEvaluationScalarCLM (I := I) (M := M) 0 y (W y) ![] (Bf a) (Bf b) *
+          pairEvaluationScalarCLM (I := I) (M := M) 2 y
             (tensorRank4PermuteCLM (I := I) (M := M) y σ G) v (Bf a) (Bf b) := by
     intro Bf
     refine Finset.sum_congr rfl (fun a _ => ?_)
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [pairFeedScalarCLM_apply, pairFeedScalarCLM_apply, slotPerm4Fib_toModel,
+    rw [pairEvaluationScalarCLM_apply, pairEvaluationScalarCLM_apply, slotPerm4Fib_toModel,
       ContinuousMultilinearMap.domDomCongr_apply]
     rfl
   rw [hrewrite (fun a => smoothOrthoFrame (I := I) g₁ y a y),
     hrewrite (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)]
   exact double_frame_bilin_trace_indep (I := I) g₁ y
-    (pairFeedScalarCLM (I := I) (M := M) 0 y (W y) ![])
-    (pairFeedScalarCLM (I := I) (M := M) 2 y (tensorRank4PermuteCLM (I := I) (M := M) y σ G) v)
+    (pairEvaluationScalarCLM (I := I) (M := M) 0 y (W y) ![])
+    (pairEvaluationScalarCLM (I := I) (M := M) 2 y (tensorRank4PermuteCLM (I := I) (M := M) y σ G) v)
     (fun a => smoothOrthoFrame (I := I) g₁ y a y)
     (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₁ y i j)

@@ -20,7 +20,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieEndoArmField deTurckLieEndoArmField_toSection deTurckLieCovariantDerivativeInsertionFib)
+  (deTurckLieEndoTermField deTurckLieEndoTermField_toSection deTurckLieCovariantDerivativeInsertionFib)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (metricPerturbationPath)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -33,13 +33,13 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private theorem deTurckLieEndomorphismArm_eq_covariantDerivativeInsertion (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
-    deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg =
+private theorem deTurckLieEndomorphismTerm_eq_covariantDerivativeInsertion (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+    deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g_bg =
       deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [deTurckLieEndoArmField_toSection, deTurckLieCovariantDerivativeInsertionField_toSection]
+  rw [deTurckLieEndoTermField_toSection, deTurckLieCovariantDerivativeInsertionField_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -48,7 +48,7 @@ private theorem lieCorrectionZeroInsertion_base_eq_neg_covariantDerivativeInsert
       -deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀ := by
   have h := insert_base (I := I) (M := M) g₀ g₁ g₀
   rw [sub_self] at h
-  rw [eq_neg_of_add_eq_zero_left h, deTurckLieEndomorphismArm_eq_covariantDerivativeInsertion]
+  rw [eq_neg_of_add_eq_zero_left h, deTurckLieEndomorphismTerm_eq_covariantDerivativeInsertion]
 
 private theorem lieCorrectionZeroInsertionBase_metricPerturbationPath_perOrder_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)

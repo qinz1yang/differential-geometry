@@ -10,7 +10,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatu
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.KoszulSecondCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.PrincipalEndomorphismTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.SymmetrizedReindexedCoefficient
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ReindexingArmDecomposition
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ReindexingTermDecomposition
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -631,7 +631,7 @@ theorem riemannBiContrFib_contMDiff (g₁ : SmoothRiemannianMetric I M) :
     (congrArg TensorRSSpace.ofCLM
       (riemannBiContrFib_eq_fixedFrame_on_nbhd (I := I) g₁ x₀ hy))
 
-def ricciArmOrder0RiemannCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
+def ricciOrderZeroRiemannCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
@@ -640,14 +640,14 @@ def ricciArmOrder0RiemannCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-@[simp] theorem ricciArmOrder0RiemannCoeffField_toSection (g₀ g₁ : SmoothRiemannianMetric I M)
+@[simp] theorem ricciOrderZeroRiemannCoeffField_toSection (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) :
-    (ricciArmOrder0RiemannCoeffField (I := I) (M := M) g₀ g₁).toSection x =
+    (ricciOrderZeroRiemannCoeffField (I := I) (M := M) g₀ g₁).toSection x =
       (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM (riemannBiContrFib (I := I) g₁ x)) :=
   rfl
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-theorem exists_ricciArmOrder0RiemannCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
+theorem exists_ricciOrderZeroRiemannCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ∃ R_Rm : SmoothCcTensor g₀ 2 2,
       ∀ (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x),
         unitModel (I := I) (M := M) g₀ 2
@@ -662,17 +662,17 @@ theorem exists_ricciArmOrder0RiemannCoeff (g₀ g₁ : SmoothRiemannianMetric I 
                   else smoothOrthoFrame (I := I) g₁ x b x) :=
   by
   classical
-  refine ⟨ricciArmOrder0RiemannCoeffField (I := I) (M := M) g₀ g₁, fun W x v => ?_⟩
+  refine ⟨ricciOrderZeroRiemannCoeffField (I := I) (M := M) g₀ g₁, fun W x v => ?_⟩
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (ricciArmOrder0RiemannCoeffField (I := I) (M := M) g₀ g₁).toSection x).comp
+        (ricciOrderZeroRiemannCoeffField (I := I) (M := M) g₀ g₁).toSection x).comp
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x))
         (unitTensor (I := I) (M := M) x) =
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (ricciArmOrder0RiemannCoeffField (I := I) (M := M) g₀ g₁).toSection x)
+        (ricciOrderZeroRiemannCoeffField (I := I) (M := M) g₀ g₁).toSection x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x)
           (unitTensor (I := I) (M := M) x)) from rfl]
-  rw [ricciArmOrder0RiemannCoeffField_toSection]
+  rw [ricciOrderZeroRiemannCoeffField_toSection]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM (riemannBiContrFib (I := I) g₁ x)))
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x)
@@ -696,23 +696,23 @@ theorem exists_ricciArmOrder0RiemannCoeff (g₀ g₁ : SmoothRiemannianMetric I 
   funext j
   fin_cases j <;> simp
 
-noncomputable def ricciArmOrder0RiemannCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
+noncomputable def ricciOrderZeroRiemannCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 :=
-  ricciArmOrder0RiemannCoeffField (I := I) (M := M) g₀ g₁
+  ricciOrderZeroRiemannCoeffField (I := I) (M := M) g₀ g₁
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-@[simp] theorem ricciArmOrder0RiemannCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
-    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁).toSection x =
+@[simp] theorem ricciOrderZeroRiemannCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁).toSection x =
       (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM (riemannBiContrFib (I := I) g₁ x)) :=
   rfl
 
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-theorem ricciArmOrder0RiemannCoeff_operatorFieldApplication_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+theorem ricciOrderZeroRiemannCoeff_operatorFieldApplication_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁) W) x v =
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁) W) x v =
       2 * ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         g₁.inner x
             (riemannOp (LeviCivita (I := I) g₁) x (v 0)
@@ -723,14 +723,14 @@ theorem ricciArmOrder0RiemannCoeff_operatorFieldApplication_eq (g₀ g₁ : Smoo
               else smoothOrthoFrame (I := I) g₁ x b x) := by
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁).toSection x).comp
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁).toSection x).comp
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x))
         (unitTensor (I := I) (M := M) x) =
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁).toSection x)
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁).toSection x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x)
           (unitTensor (I := I) (M := M) x)) from rfl]
-  rw [ricciArmOrder0RiemannCoeff_toSection]
+  rw [ricciOrderZeroRiemannCoeff_toSection]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM (riemannBiContrFib (I := I) g₁ x)))
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x)
@@ -796,7 +796,7 @@ theorem symmAbsorbedPrincipalCoeffPure_operatorFieldApplication_eq (g₀ g₁ : 
 noncomputable def symmAbsorbedOrder0CurvCoeff (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 2 2 :=
   symmAbsorbedCoeff (I := I) (M := M) g₀ 0
-    (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)
+    (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)
     (Classical.choose (exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀
       (Equiv.swap (0 : Fin 2) 1) S 0))
 
@@ -810,10 +810,10 @@ theorem symmAbsorbedOrder0CurvCoeff_operatorFieldApplication_eq (g₀ g₁ : Smo
           (iteratedCovGrad (I := I) g₀ 0 2 0 S)) x v =
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-          (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)
+          (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)
           (iteratedCovGrad (I := I) g₀ 0 2 0 (ccTensor02Symm (I := I) (M := M) g₀ S))) x v := by
   exact symmAbsorbedCoeff_operatorFieldApplication_eq (I := I) (M := M) g₀ 0 S
-    (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)
+    (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)
     (Classical.choose (exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀
       (Equiv.swap (0 : Fin 2) 1) S 0))
     (Classical.choose_spec (exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀
@@ -822,7 +822,7 @@ theorem symmAbsorbedOrder0CurvCoeff_operatorFieldApplication_eq (g₀ g₁ : Smo
 noncomputable def symmAbsorbedOrder0RiemannCoeff (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 2 2 :=
   symmAbsorbedCoeff (I := I) (M := M) g₀ 0
-    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁)
+    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁)
     (Classical.choose (exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀
       (Equiv.swap (0 : Fin 2) 1) S 0))
 
@@ -836,10 +836,10 @@ theorem symmAbsorbedOrder0RiemannCoeff_operatorFieldApplication_eq (g₀ g₁ : 
           (iteratedCovGrad (I := I) g₀ 0 2 0 S)) x v =
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁)
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁)
           (iteratedCovGrad (I := I) g₀ 0 2 0 (ccTensor02Symm (I := I) (M := M) g₀ S))) x v := by
   exact symmAbsorbedCoeff_operatorFieldApplication_eq (I := I) (M := M) g₀ 0 S
-    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁)
+    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁)
     (Classical.choose (exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀
       (Equiv.swap (0 : Fin 2) 1) S 0))
     (Classical.choose_spec (exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀

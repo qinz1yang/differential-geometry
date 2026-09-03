@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDef
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
@@ -35,7 +35,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturba
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieCoefficientApplication
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartReadout
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionChartComponents
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrderTerm.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.SecondOrderTerm.L2JetBound
@@ -47,7 +47,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLi
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.LieTermChartValue
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.LieCovariantJetDerivative
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrection.TameBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.CurvatureFold
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.CurvatureContraction
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.Deviation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.InverseMetricDifference
 open DifferentialGeometry.Analysis.Sobolev
@@ -75,15 +75,15 @@ open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
-  linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero linearizedRicciThreeArmHjoint_smul_add
-  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
-  linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
-  linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
-  linearizedRicciArm1CorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
-  linearizedRicci_arm0Field_jointSmooth linearizedRicci_arm1Field_jointSmooth
-  linearizedRicci_arm2FieldLichnerowicz_jointSmooth ricciArmOrder1KoszulCoeff
-  exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
+  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
+  linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero linearizedRicciCovariantJetJointSmoothness_smul_add
+  exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
+  linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
+  linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
+  exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
   symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
@@ -110,14 +110,14 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieArm2PrincipalCoeff deTurckLieArm1Coeff deTurckLieCoeffField
-  deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth
+  (deTurckLieSecondOrderPrincipalCoeff deTurckLieFirstOrderCoeff deTurckLieCoeffField
+  deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth
   deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
   deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib
-  domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieArm2DivSlotPermA
-  deTurckLieArm2DivSlotPermAT traceHessianCoeff_toSection)
+  domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieSecondOrderDivSlotPermA
+  deTurckLieSecondOrderDivSlotPermAT traceHessianCoeff_toSection)
 
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
@@ -189,8 +189,8 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt
   have hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := metricPerturbationPathDomain_isOpen
-  set ρA : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA with hρA_def
-  set ρAT : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT
+  set ρA : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA with hρA_def
+  set ρAT : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
     with hρAT_def
   set Ψdev : ℝ → SmoothCcTensor g₀ 4 2 := fun s =>
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
@@ -216,11 +216,11 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
       reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρA,
       reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρAT]
     abel
-  have hj2 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
+  have hj2 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
       (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)) (δ := δ) (δ' := δ') :=
     deTurckMetricPrincipalDefectTotal_metricPerturbationPath_jointSmooth (I := I) (M := M) g₀ T T' hδ hδ'
-  have hjdev : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Ψdev
+  have hjdev : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Ψdev
       (δ := δ) (δ' := δ') := by
     have hconst : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
         (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 4 2 ℝ E)) ∞
@@ -238,7 +238,7 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
         ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
       have h := hj2
-      rw [linearizedRicciThreeArmHjoint] at h
+      rw [linearizedRicciCovariantJetJointSmoothness] at h
       exact h
     have hsub := jointTotalSpaceRS_sub (I := I) (r := 4) (s := 2)
       (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
@@ -260,7 +260,7 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro x
     have h := hj2
-    rw [linearizedRicciThreeArmHjoint] at h
+    rw [linearizedRicciCovariantJetJointSmoothness] at h
     exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 4 2
       (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
@@ -460,7 +460,7 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
     exact pathIntegralCoeffField_jetL2_tower_le (I := I) g₀ 4 a Ψdev hSI hSopen hjdev
       hjet
 
-theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_fibreWeighted_ballUniform_of_symm
+theorem deTurckSmoothRemainderDiff_covariantJet_coeffC0_jetL2_fibreWeighted_ballUniform_of_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (hδ₀_nn : 0 ≤ δ₀) :
@@ -499,9 +499,9 @@ theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_fibreWeighted_ballUnif
           (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i C₂‖ ^ 2) ≤ Γ ^ 2 := by
   classical
   obtain ⟨K₀, hK₀fold⟩ :=
-    exists_deTurckMetricPrincipalDefectTotal_background_curvatureFold_of_symm (I := I) (M := M) g₀
+    exists_deTurckMetricPrincipalDefectTotal_background_curvatureContraction_of_symm (I := I) (M := M) g₀
   obtain ⟨ΛA, ΓA, hΛA_nn, hΓA_nn, harm⟩ :=
-    deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_symm
+    deTurckRHSCovariantTermDifference_covariantJet_canonicalTop_coeffC0_jetL2_ballUniform_of_symm
       (I := I) g₀ g_bg a ha_super hR hδ₀
   obtain ⟨cD, ΓD, hcD_nn, hΓD_nn, hdev⟩ :=
     deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
@@ -523,7 +523,7 @@ theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_fibreWeighted_ballUnif
     le_trans (Real.sqrt_nonneg _) (le_max_left _ _), ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTsymm hT'symm βT βT' hβT_nn hβT'_nn hβT hβT'
     hTball hT'ball
-  obtain ⟨C₀, C₁, hidArm, hC₀sup, hC₁sup, hC₀jet, hC₁jet⟩ :=
+  obtain ⟨C₀, C₁, hidTerm, hC₀sup, hC₁sup, hC₀jet, hC₁jet⟩ :=
     harm T T' hδ_le hδ hδ'_le hδ' hTsymm hT'symm hTball hT'ball
   obtain ⟨hdevsup, hdevjet⟩ :=
     hdev T T' hδ_le hδ hδ'_le hδ' hβT_nn hβT'_nn hβT hβT' hTball hT'ball
@@ -560,8 +560,8 @@ theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_fibreWeighted_ballUnif
     deTurckPhiTotPathIntegral (I := I) (M := M) g₀ T T'
         (lt_of_le_of_lt hδ_le hδ₀) hδ (lt_of_le_of_lt hδ'_le hδ₀) hδ'
       - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · rw [deTurckSmoothRemainderDiff_eq_armDiff_sub_connLapDiff (I := I) g₀ g_bg T T'
-      (lt_of_le_of_lt hδ_le hδ₀) hδ (lt_of_le_of_lt hδ'_le hδ₀) hδ', hidArm, hlift,
+  · rw [deTurckSmoothRemainderDiff_eq_termDiff_sub_connLapDiff (I := I) g₀ g_bg T T'
+      (lt_of_le_of_lt hδ_le hδ₀) hδ (lt_of_le_of_lt hδ'_le hδ₀) hδ', hidTerm, hlift,
       operatorFieldApplication_add_left, operatorFieldApplication_sub_left, ← hKfold']
     abel
   · intro x
@@ -569,7 +569,7 @@ theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_fibreWeighted_ballUnif
         Real.sqrt ΛK ^ 2 := by
       rw [Real.sq_sqrt hΛK_nn]
       exact hΛK x
-    exact (threeArmCoeffSum_riemannianFiberNormSq_le (I := I) g₀ C₀ K₀ ΛA (Real.sqrt ΛK) x (hC₀sup x) h1).trans
+    exact (covariantJetCoeffSum_riemannianFiberNormSq_le (I := I) g₀ C₀ K₀ ΛA (Real.sqrt ΛK) x (hC₀sup x) h1).trans
       (hsq_mono _ _ (Real.sqrt_nonneg _) (le_max_left _ _))
   · intro x
     exact (hC₁sup x).trans
@@ -600,14 +600,14 @@ theorem deTurckPhiZero_jointSmooth (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-      (fun s => (-2 : ℝ) • linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ' s
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+      (fun s => (-2 : ℝ) • linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s
         + (deTurckLieCoeffField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
           + lieCorrectionZeroField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)) (δ := δ) (δ' := δ') :=
-  linearizedRicciThreeArmHjoint_smul_add (I := I) (M := M) g₀ 2 (-2 : ℝ) _ _
-    (linearizedRicci_arm0Field_jointSmooth (I := I) g₀ T T' hδ hδ')
+  linearizedRicciCovariantJetJointSmoothness_smul_add (I := I) (M := M) g₀ 2 (-2 : ℝ) _ _
+    (linearizedRicci_orderZeroField_jointSmooth (I := I) g₀ T T' hδ hδ')
     (deTurckLieCoeffField_add_deTurckLieRemainderField_metricPerturbationPath_jointSmooth (I := I) g₀ T T' hδ
       hδ' g_bg)
 
@@ -616,13 +616,13 @@ theorem deTurckPhiOne_jointSmooth (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
-      (fun s => (-2 : ℝ) • linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ' s
-        + deTurckLieArm1Coeff (I := I) (M := M) g₀
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3
+      (fun s => (-2 : ℝ) • linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s
+        + deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) (δ := δ) (δ' := δ') :=
-  linearizedRicciThreeArmHjoint_smul_add (I := I) (M := M) g₀ 3 (-2 : ℝ) _ _
-    (linearizedRicci_arm1Field_jointSmooth (I := I) g₀ T T' hδ hδ')
-    (deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth (I := I) g₀ T T' hδ hδ' g_bg)
+  linearizedRicciCovariantJetJointSmoothness_smul_add (I := I) (M := M) g₀ 3 (-2 : ℝ) _ _
+    (linearizedRicci_firstOrderField_jointSmooth (I := I) g₀ T T' hδ hδ')
+    (deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth (I := I) g₀ T T' hδ hδ' g_bg)
 
 noncomputable def deTurckPhiZeroPathIntegral (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -632,7 +632,7 @@ noncomputable def deTurckPhiZeroPathIntegral (g₀ g_bg : SmoothRiemannianMetric
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
     SmoothCcTensor g₀ 2 2 :=
   pathIntegralCoeffField (I := I) (M := M) g₀ 2 2
-    (fun s => (-2 : ℝ) • linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ' s
+    (fun s => (-2 : ℝ) • linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s
       + (deTurckLieCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
         + lieCorrectionZeroField (I := I) (M := M) g₀
@@ -649,14 +649,14 @@ noncomputable def deTurckPhiOnePathIntegral (g₀ g_bg : SmoothRiemannianMetric 
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
     SmoothCcTensor g₀ 3 2 :=
   pathIntegralCoeffField (I := I) (M := M) g₀ 3 2
-    (fun s => (-2 : ℝ) • linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ' s
-      + deTurckLieArm1Coeff (I := I) (M := M) g₀
+    (fun s => (-2 : ℝ) • linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s
+      + deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
     (metricPerturbationPathDomain (δ := δ) (δ' := δ')) metricPerturbationPathDomain_isOpen
     (by rw [Set.uIcc_of_le zero_le_one]; exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)
     (deTurckPhiOne_jointSmooth (I := I) (M := M) g₀ g_bg T T' hδ hδ')
 
-theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
+theorem deTurckRHSCovariantTermDifference_eq_pathIntegralCoeff_triple_of_symm
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -667,8 +667,8 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
     (hT'symm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T' x v w = smoothCcTensorBilinForm (I := I) g₀ T' x w v) :
-    deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ -
-        deTurckRHSArmG0 (I := I) g₀ g_bg T' hδ'_lt hδ' =
+    deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ -
+        deTurckRHSTermG0 (I := I) g₀ g_bg T' hδ'_lt hδ' =
       operatorFieldApply (I := I) (M := M) g₀ 2 2
           (deTurckPhiZeroPathIntegral (I := I) (M := M) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ')
           (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
@@ -690,30 +690,30 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt
   have hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := metricPerturbationPathDomain_isOpen
   set Ψ₀ : ℝ → SmoothCcTensor g₀ 2 2 := fun s =>
-    (-2 : ℝ) • linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ' s
+    (-2 : ℝ) • linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s
       + (deTurckLieCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
         + lieCorrectionZeroField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) with hΨ₀def
   set Ψ₁ : ℝ → SmoothCcTensor g₀ 3 2 := fun s =>
-    (-2 : ℝ) • linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ' s
-      + deTurckLieArm1Coeff (I := I) (M := M) g₀
+    (-2 : ℝ) • linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s
+      + deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg with hΨ₁def
   set Ψ₂ : ℝ → SmoothCcTensor g₀ 4 2 := fun s =>
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hΨ₂def
-  have hj0 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 Ψ₀ (δ := δ) (δ' := δ') := by
+  have hj0 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 Ψ₀ (δ := δ) (δ' := δ') := by
     rw [hΨ₀def]
-    exact linearizedRicciThreeArmHjoint_smul_add (I := I) (M := M) g₀ 2 (-2 : ℝ) _ _
-      (linearizedRicci_arm0Field_jointSmooth (I := I) g₀ T T' hδ hδ')
+    exact linearizedRicciCovariantJetJointSmoothness_smul_add (I := I) (M := M) g₀ 2 (-2 : ℝ) _ _
+      (linearizedRicci_orderZeroField_jointSmooth (I := I) g₀ T T' hδ hδ')
       (deTurckLieCoeffField_add_deTurckLieRemainderField_metricPerturbationPath_jointSmooth (I := I) g₀ T T' hδ
         hδ' g_bg)
-  have hj1 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3 Ψ₁ (δ := δ) (δ' := δ') := by
+  have hj1 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3 Ψ₁ (δ := δ) (δ' := δ') := by
     rw [hΨ₁def]
-    exact linearizedRicciThreeArmHjoint_smul_add (I := I) (M := M) g₀ 3 (-2 : ℝ) _ _
-      (linearizedRicci_arm1Field_jointSmooth (I := I) g₀ T T' hδ hδ')
-      (deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth (I := I) g₀ T T' hδ hδ' g_bg)
-  have hj2 : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 Ψ₂ (δ := δ) (δ' := δ') := by
+    exact linearizedRicciCovariantJetJointSmoothness_smul_add (I := I) (M := M) g₀ 3 (-2 : ℝ) _ _
+      (linearizedRicci_firstOrderField_jointSmooth (I := I) g₀ T T' hδ hδ')
+      (deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth (I := I) g₀ T T' hδ hδ' g_bg)
+  have hj2 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 Ψ₂ (δ := δ) (δ' := δ') := by
     rw [hΨ₂def]
     exact deTurckMetricPrincipalDefectTotal_metricPerturbationPath_jointSmooth (I := I) (M := M) g₀ T T' hδ hδ'
   have hc0 : ∀ x : M, ContinuousOn (fun t : ℝ =>
@@ -751,15 +751,15 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
   set g₁' := tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ' with hg₁'
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub (I := I) g₀ 2 _ _ x, sub_apply]
   rw [show (unitModel (I := I) (M := M) g₀ 2
-        (deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ) x) v =
+        (deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ) x) v =
       deTurckRicciRHS (I := I) g_bg g₁ x (vt 0) (vt 1) from
     unitModel_of_deTurckRHSSection_realize (I := I) g₀ g_bg T hδ_lt hδ
-      (deTurckRHSArmG0 (I := I) g₀ g_bg T hδ_lt hδ) rfl x v]
+      (deTurckRHSTermG0 (I := I) g₀ g_bg T hδ_lt hδ) rfl x v]
   rw [show (unitModel (I := I) (M := M) g₀ 2
-        (deTurckRHSArmG0 (I := I) g₀ g_bg T' hδ'_lt hδ') x) v =
+        (deTurckRHSTermG0 (I := I) g₀ g_bg T' hδ'_lt hδ') x) v =
       deTurckRicciRHS (I := I) g_bg g₁' x (vt 0) (vt 1) from
     unitModel_of_deTurckRHSSection_realize (I := I) g₀ g_bg T' hδ'_lt hδ'
-      (deTurckRHSArmG0 (I := I) g₀ g_bg T' hδ'_lt hδ') rfl x v]
+      (deTurckRHSTermG0 (I := I) g₀ g_bg T' hδ'_lt hδ') rfl x v]
   have hsplit : ∀ (g : SmoothRiemannianMetric I M),
       deTurckRicciRHS (I := I) g_bg g x (vt 0) (vt 1) =
         ((-2 : ℝ) • ricciTensor (I := I) g x (vt 0) (vt 1)) +
@@ -821,29 +821,29 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
     have hRid : linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) s =
         unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 2 2
-              (linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ' s)
+              (linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s)
               (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))
             + operatorFieldApply (I := I) (M := M) g₀ 3 2
-              (linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ' s)
+              (linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s)
               (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))
             + operatorFieldApply (I := I) (M := M) g₀ 4 2
-              (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+              (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
               (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
       obtain ⟨_, _, _, hident, _, _⟩ :=
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_arm0_arm1_corrField_data
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
           (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
       exact hident hTsymm hT'symm s hsIoo x v hδ_lt hδ'_lt
-    have hLid := linearizedDeTurckLieAt_eq_threeArm_of_symm (I := I) (M := M)
+    have hLid := linearizedDeTurckLieAt_eq_covariantJet_of_symm (I := I) (M := M)
       g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' hSsymm hsIoo x v
     have hRid' : linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) s =
         unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ' s)
+            (linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))) x v
           + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ' s)
+            (linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x v
           + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+            (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
       rw [hRid, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
     have hLid' : linearizedDeTurckLieAt (I := I) g₀ g_bg T T'
@@ -855,18 +855,18 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))) x v
           + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (deTurckLieArm1Coeff (I := I) (M := M) g₀
+            (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x v
           + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (deTurckLieArm2PrincipalCoeff (I := I) g₀
+            (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
       rw [hLid, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
     have e0 : unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Ψ₀ s)
           (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))) x v =
         (-2 : ℝ) * unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (linearizedRicciArm0Field (I := I) g₀ T T' hδ hδ' s)
+            (linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))) x v
           + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2
             (deTurckLieCoeffField (I := I) (M := M) g₀
@@ -882,10 +882,10 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
     have e1 : unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 3 2 (Ψ₁ s)
           (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x v =
         (-2 : ℝ) * unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (linearizedRicciArm1Field (I := I) g₀ T T' hδ hδ' s)
+            (linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x v
           + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 3 2
-            (deTurckLieArm1Coeff (I := I) (M := M) g₀
+            (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
             (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x v := by
       simp only [hΨ₁def]
@@ -896,10 +896,10 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
     have e2 : unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2 (Ψ₂ s)
           (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v =
         (-2 : ℝ) * unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
+            (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v
           + unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (deTurckLieArm2PrincipalCoeff (I := I) g₀
+            (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
       simp only [hΨ₂def]
@@ -915,17 +915,17 @@ theorem deTurckRHSArmDiff_eq_pathIntegralCoeff_triple_of_symm
   have hI0 : IntervalIntegrable (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Ψ₀ s)
         (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))) x v) MeasureTheory.volume 0 1 :=
-    threeArm_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 2 Ψ₀
+    covariantJet_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 2 Ψ₀
       (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) hSI hc0 x v
   have hI1 : IntervalIntegrable (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ 3 2 (Ψ₁ s)
         (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x v) MeasureTheory.volume 0 1 :=
-    threeArm_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 3 Ψ₁
+    covariantJet_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 3 Ψ₁
       (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T')) hSI hc1 x v
   have hI2 : IntervalIntegrable (fun s : ℝ => unitModel (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ 4 2 (Ψ₂ s)
         (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v) MeasureTheory.volume 0 1 :=
-    threeArm_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 4 Ψ₂
+    covariantJet_unitModel_operatorFieldApplication_intervalIntegrable_tame (I := I) g₀ 4 Ψ₂
       (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T')) hSI hc2 x v
   rw [intervalIntegral.integral_add (hI0.add hI1) hI2, intervalIntegral.integral_add hI0 hI1]
   have he0 := pathIntegralCoeffField_operatorFieldApplication_eq (I := I) (M := M) g₀ 2 2 Ψ₀

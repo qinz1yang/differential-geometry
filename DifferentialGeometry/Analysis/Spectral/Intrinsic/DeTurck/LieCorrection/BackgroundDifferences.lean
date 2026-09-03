@@ -96,8 +96,8 @@ theorem lieCorrectionZeroNEndoSec_sub_insert_eq_lieCorrectionZeroCdVField_sub
       lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g₀ -
         lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ gB := by
   rw [endoSlotZeroCcTensor_sub (I := I) (M := M) g₀ 0,
-    lieCorrectionZerob_NEndoIns_decomp (I := I) (M := M) g₀ g₁ gB,
-    lieCorrectionZerob_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g₀]
+    lieCorrectionZero_NEndoIns_decomp (I := I) (M := M) g₀ g₁ gB,
+    lieCorrectionZero_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g₀]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in

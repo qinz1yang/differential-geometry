@@ -109,17 +109,17 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma curvCoeffSlot_zero_backgroundDifference_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 -
-        ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 0 =
+    ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 -
+        ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 0 =
       slotInsertEndoCc (I := I) (M := M) g₀ 1
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁) := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 -
-        ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x) =
-      (ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0).toSection x -
-        (ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x from by
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 -
+        ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x) =
+      (ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 0).toSection x -
+        (ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
   apply ContinuousLinearMap.ext
   intro D
@@ -128,11 +128,11 @@ lemma curvCoeffSlot_zero_backgroundDifference_eq
   apply ContinuousMultilinearMap.ext
   intro m
   simp only [Tensor0SSpace.toModel_sub, sub_apply]
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0).toSection x) D =
-      ricciArmOrder0CurvCoeffFibSlot (I := I) g₁ 0 x D from rfl]
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x) D =
-      ricciArmOrder0CurvCoeffFibSlot (I := I) g₀ 0 x D from rfl]
-  rw [ricciArmOrder0CurvCoeffFibSlot_toModel, ricciArmOrder0CurvCoeffFibSlot_toModel]
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 0).toSection x) D =
+      ricciOrderZeroCurvCoeffFibSlot (I := I) g₁ 0 x D from rfl]
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x) D =
+      ricciOrderZeroCurvCoeffFibSlot (I := I) g₀ 0 x D from rfl]
+  rw [ricciOrderZeroCurvCoeffFibSlot_toModel, ricciOrderZeroCurvCoeffFibSlot_toModel]
   rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ 1
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)).toSection x) D =
       slotInsertEndoFib (I := I) (M := M) 2 0 x
@@ -146,8 +146,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma curvCoeffSlot_one_backgroundDifference_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1 -
-        ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 1 =
+    ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 1 -
+        ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 1 =
       reindexCoeffGen (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
@@ -157,10 +157,10 @@ lemma curvCoeffSlot_one_backgroundDifference_eq
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1 -
-        ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x) =
-      (ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1).toSection x -
-        (ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x from by
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 1 -
+        ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x) =
+      (ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 1).toSection x -
+        (ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
   apply ContinuousLinearMap.ext
   intro D
@@ -169,11 +169,11 @@ lemma curvCoeffSlot_one_backgroundDifference_eq
   apply ContinuousMultilinearMap.ext
   intro m
   simp only [Tensor0SSpace.toModel_sub, sub_apply]
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1).toSection x) D =
-      ricciArmOrder0CurvCoeffFibSlot (I := I) g₁ 1 x D from rfl]
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x) D =
-      ricciArmOrder0CurvCoeffFibSlot (I := I) g₀ 1 x D from rfl]
-  rw [ricciArmOrder0CurvCoeffFibSlot_toModel, ricciArmOrder0CurvCoeffFibSlot_toModel]
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 1).toSection x) D =
+      ricciOrderZeroCurvCoeffFibSlot (I := I) g₁ 1 x D from rfl]
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x) D =
+      ricciOrderZeroCurvCoeffFibSlot (I := I) g₀ 1 x D from rfl]
+  rw [ricciOrderZeroCurvCoeffFibSlot_toModel, ricciOrderZeroCurvCoeffFibSlot_toModel]
   rw [show ((reindexCoeffGen (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
@@ -209,10 +209,10 @@ end CurvatureCoefficientDifferenceJetTower
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-theorem ricciArmOrder0CurvCoeff_backgroundDifference_decomp
+theorem ricciOrderZeroCurvCoeff_backgroundDifference_decomp
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-        ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀ =
+    ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+        ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀ =
       slotInsertEndoCc (I := I) (M := M) g₀ 1
           (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁) +
         reindexCoeffGen (I := I) (M := M) g₀ 2 2
@@ -222,7 +222,7 @@ theorem ricciArmOrder0CurvCoeff_backgroundDifference_decomp
           (Equiv.swap (0 : Fin 2) 1) := by
   rw [← curvCoeffSlot_one_backgroundDifference_eq (I := I) (M := M) g₀ g₁,
     ← curvCoeffSlot_zero_backgroundDifference_eq (I := I) (M := M) g₀ g₁,
-    ricciArmOrder0CurvCoeff, ricciArmOrder0CurvCoeff]
+    ricciOrderZeroCurvCoeff, ricciOrderZeroCurvCoeff]
   abel
 
 namespace CurvatureCoefficientDifferenceJetTower

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.EndpointShape
-import DifferentialGeometry.Geometry.Exponential.ExpInvBranch
+import DifferentialGeometry.Geometry.Exponential.ExponentialInverseBranch
 import DifferentialGeometry.Geometry.Exponential.IntrinsicFramedCoordinates
 
 set_option autoImplicit false

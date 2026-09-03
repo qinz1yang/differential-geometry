@@ -18,7 +18,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (linearizedRicciArm0BaseCoeff linearizedRicciArm1BaseCoeff ricciDeTurckPrincipalCoefficient
+  (linearizedRicciOrderZeroBaseCoeff linearizedRicciFirstOrderBaseCoeff ricciDeTurckPrincipalCoefficient
     traceHessianCoeff)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (metricPerturbationPath)
 

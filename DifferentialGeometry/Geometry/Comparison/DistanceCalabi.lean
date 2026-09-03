@@ -3,8 +3,8 @@ import DifferentialGeometry.Geometry.Comparison.Variation.MinimizingNoConj
 import DifferentialGeometry.Geometry.Comparison.RadialLaplacian
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopIntrinsic
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopIntrinsicLocal
-import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
-import DifferentialGeometry.Geometry.Exponential.ExpInvBranch
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponentialDerivative
+import DifferentialGeometry.Geometry.Exponential.ExponentialInverseBranch
 import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
@@ -46,7 +46,7 @@ structure CalabiTailData
   u : TangentSpace I p
   left : Real
   ell : Real
-  branch : ExpInvBranch (I := I) g hEnorm p
+  branch : ExponentialInverseBranch (I := I) g hEnorm p
   b : Real
   left_pos : 0 < left
   left_nonneg : 0 ≤ left
@@ -1004,7 +1004,7 @@ theorem calabi_tail_of
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (O x : M) (hOx : riemannianEDist I O x ≠ ⊤)
-    (B : DiagInvBranch (I := I) g hEnorm x) :
+    (B : DiagonalInverseBranch (I := I) g hEnorm x) :
     ∃ (v : TangentSpace I O) (s₀ : Real),
       expMapIntrinsic (I := I) g hEnorm O v = x ∧
       Real.sqrt (g.inner O v v) = (riemannianEDist I O x).toReal ∧

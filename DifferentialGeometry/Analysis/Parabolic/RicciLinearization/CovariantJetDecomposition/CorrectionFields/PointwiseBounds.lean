@@ -732,7 +732,7 @@ theorem backgroundRiemannBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetri
     (congrArg TensorRSSpace.ofCLM
       (backgroundRiemannBiContrFib_eq_fixedFrame_on_nbhd (I := I) g₀ g₁ x₀ hy))
 
-def ricciArmOrder0BackgroundCurvatureCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
+def ricciOrderZeroBackgroundCurvatureCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
@@ -742,10 +742,10 @@ def ricciArmOrder0BackgroundCurvatureCoeffField (g₀ g₁ : SmoothRiemannianMet
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-@[simp] theorem ricciArmOrder0BackgroundCurvatureCoeffField_toSection
+@[simp] theorem ricciOrderZeroBackgroundCurvatureCoeffField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) :
-    (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁).toSection x =
+    (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₁).toSection x =
       (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM
         (backgroundRiemannBiContrFib (I := I) g₀ g₁ x)) :=
   rfl
@@ -922,7 +922,7 @@ theorem riemannianFiberNormSq_backgroundRiemannBiContrFib_le
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem
-    exists_ricciArmOrder0BackgroundCurvatureCoeffField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
+    exists_ricciOrderZeroBackgroundCurvatureCoeffField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     {R : ℝ}
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -936,7 +936,7 @@ theorem
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 → ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-              ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) g₀
+              ((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x) ≤ Λ := by
   classical
   obtain ⟨C, hC0, hbnd⟩ :=
@@ -974,7 +974,7 @@ theorem
     nlinarith [hle', hprod]
   have hmain := hbnd (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
     (convexPerturbation (I := I) g₀ T T' s) htie (le_of_eq hm_def.symm) hm0 hδs x
-  rw [ricciArmOrder0BackgroundCurvatureCoeffField_toSection]
+  rw [ricciOrderZeroBackgroundCurvatureCoeffField_toSection]
   exact hmain
 
 end TensorSpectral

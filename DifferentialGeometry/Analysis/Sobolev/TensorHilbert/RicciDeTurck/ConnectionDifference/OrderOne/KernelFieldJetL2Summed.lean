@@ -86,7 +86,7 @@ private def lieJetSlotPermCc (g₀ : SmoothRiemannianMetric I M) {d : ℕ} (ρ :
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem lieJetKernelField_eq_neg_arm_combination (g₀ g₁ : SmoothRiemannianMetric I M) :
+private theorem lieJetKernelField_eq_neg_term_combination (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder1KernelField (I := I) g₀ g₁ =
       -(reindexCoeffGen (I := I) (M := M) g₀ 3 4
           (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4 (lieJetSlotPermCc (I := I)
@@ -113,7 +113,7 @@ private theorem lieJetKernelField_eq_neg_arm_combination (g₀ g₁ : SmoothRiem
   rfl
 
 omit [SigmaCompactSpace M] in
-private theorem armOuter_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem termOuter_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 3 4 q
@@ -137,7 +137,7 @@ private theorem armOuter_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianM
   rw [hy, slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
 omit [SigmaCompactSpace M] in
-private theorem armFull_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem termFull_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 3 4 q
@@ -150,14 +150,14 @@ private theorem armFull_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMe
   rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 3 4
     (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4 (lieJetSlotPermCc (I := I) (M := M) g₀ σ)
       (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ρ q x]
-  exact armOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ q x
+  exact termOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ q x
 
 private lemma c3_norm_eq_of_sq_eq {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (h : a ^ 2 = b ^ 2) : a = b := by
   have hs := congrArg Real.sqrt h
   rwa [Real.sqrt_sq_eq_abs, Real.sqrt_sq_eq_abs, abs_of_nonneg ha, abs_of_nonneg hb] at hs
 
-private theorem armOuter_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem termOuter_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (q : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ 3 4 q
         (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4 (lieJetSlotPermCc (I := I) (M := M) g₀ σ)
@@ -178,10 +178,10 @@ private theorem armOuter_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
       (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 3 4 q
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)).toSection x)) :=
-    funext fun x => armOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ q x
+    funext fun x => termOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ q x
   rw [hpt]
 
-private theorem armFull_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem termFull_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (q : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ 3 4 q
         (reindexCoeffGen (I := I) (M := M) g₀ 3 4
@@ -205,7 +205,7 @@ private theorem armFull_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
       (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 3 4 q
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)).toSection x)) :=
-    funext fun x => armFull_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ ρ q x
+    funext fun x => termFull_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ ρ q x
   rw [hpt]
 
 private lemma c3_norm_five_le {V : Type*} [SeminormedAddCommGroup V] {a b c d e : V} {n : ℝ}
@@ -226,14 +226,14 @@ private theorem lie_normSq_le_25 (g₀ g₁ : SmoothRiemannianMetric I M) (i : �
       (linearizedRicciConnectionDifferenceOrder1KernelField (I := I) g₀ g₁)‖ ≤
       5 * ‖iteratedCovGrad (I := I) g₀ 3 4 i
         (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)‖ := by
-    rw [lieJetKernelField_eq_neg_arm_combination (I := I) g₀ g₁, iteratedCovGrad_neg, norm_neg,
+    rw [lieJetKernelField_eq_neg_term_combination (I := I) g₀ g₁, iteratedCovGrad_neg, norm_neg,
       iteratedCovGrad_add, iteratedCovGrad_add, iteratedCovGrad_add, iteratedCovGrad_add]
     exact c3_norm_five_le
-      (armFull_norm_eq (I := I) (M := M) g₀ g₁ lieJetKOutPerm0312 lieJetKInPerm102 i)
-      (armFull_norm_eq (I := I) (M := M) g₀ g₁ lieJetKOutPerm0213 lieJetKInPerm120 i)
-      (armOuter_norm_eq (I := I) (M := M) g₀ g₁ lieJetKOutPerm2301 i)
-      (armFull_norm_eq (I := I) (M := M) g₀ g₁ lieJetKOutPerm1302 lieJetKInPerm102 i)
-      (armFull_norm_eq (I := I) (M := M) g₀ g₁ lieJetKOutPerm1203 lieJetKInPerm120 i)
+      (termFull_norm_eq (I := I) (M := M) g₀ g₁ lieJetKOutPerm0312 lieJetKInPerm102 i)
+      (termFull_norm_eq (I := I) (M := M) g₀ g₁ lieJetKOutPerm0213 lieJetKInPerm120 i)
+      (termOuter_norm_eq (I := I) (M := M) g₀ g₁ lieJetKOutPerm2301 i)
+      (termFull_norm_eq (I := I) (M := M) g₀ g₁ lieJetKOutPerm1302 lieJetKInPerm102 i)
+      (termFull_norm_eq (I := I) (M := M) g₀ g₁ lieJetKOutPerm1203 lieJetKInPerm120 i)
   have hsq := pow_le_pow_left₀ (norm_nonneg (iteratedCovGrad (I := I) g₀ 3 4 i
     (linearizedRicciConnectionDifferenceOrder1KernelField (I := I) g₀ g₁))) h5 2
   calc ‖iteratedCovGrad (I := I) g₀ 3 4 i

@@ -41,7 +41,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVF_metricPerturbationPath_jointContMDiffOn metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
   metricConnectionDifferenceLowered_bgFam_jointContMDiffOn jointTensor0SProd_local
   deTurckVectorFieldCovariantDerivativeEndomorphism_metricPerturbationPath_jointContMDiffOn deTurckLieCoeffField
-  deTurckLieCoeffField_metricPerturbationPath_jointSmooth linearizedRicciThreeArmHjoint)
+  deTurckLieCoeffField_metricPerturbationPath_jointSmooth linearizedRicciCovariantJetJointSmoothness)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn
   cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn)
@@ -771,10 +771,10 @@ theorem lieCorrectionZero_path_joint
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (g_bg : SmoothRiemannianMetric I M) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
       (fun s => lieCorrectionZeroField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) (δ := δ) (δ' := δ') := by
-  rw [linearizedRicciThreeArmHjoint]
+  rw [linearizedRicciCovariantJetJointSmoothness]
   have hCLM := lieCorrectionZeroPathTotalFib_jointContMDiffOn (I := I) g₀ T T'
     hδ hδ' g_bg
   refine hCLM.congr (fun pp _ => ?_)

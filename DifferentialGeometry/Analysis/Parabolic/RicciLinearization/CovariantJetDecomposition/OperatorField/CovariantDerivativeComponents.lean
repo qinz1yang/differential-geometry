@@ -56,178 +56,10 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-namespace ChartModelBasisCoercion
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
-theorem unitModel_basisChart_eq_tensorChartComponentRaw (g : SmoothRiemannianMetric I M)
-    (s : ℕ) (W : SmoothCcTensor g 0 s) (x : M)
-    (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    unitModel (I := I) (M := M) g s W x (fun k => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) =
-      tensorChartComponentRaw (I := I) (M := M) g 0 s W x ![] Jdx x := by
-  rw [tensorChartComponentRaw_def, tensorChartComponentProjection_apply]
-  unfold tensorTrivProj
-  rw [DifferentialGeometry.Tensor.tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
-        (I := I) (M := M) 0 s x (b := x) rfl (mem_chart_source H x)
-        (W.toSection x) (dualCoordinateProductMultilinearMap (E := E) 0 ![])]
-  unfold unitModel
-  congr 2
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
-theorem unitModel_basisChart_eq_tensorChartComponent (g : SmoothRiemannianMetric I M)
-    (W : SmoothCcTensor g 0 2) (x : M) (k i : Fin (Module.finrank ℝ E)) :
-    unitModel (I := I) (M := M) g 2 W x ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i] =
-      tensorChartComponentRaw (I := I) (M := M) g 0 2 W x ![] ![k, i] x := by
-  have h := unitModel_basisChart_eq_tensorChartComponentRaw (I := I) (M := M) g 2 W x ![k, i]
-  have hfun : (fun j : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (![k, i] j)) =
-      ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i] := by
-    funext j; fin_cases j <;> rfl
-  rwa [hfun] at h
-
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
-    (g₁ : SmoothRiemannianMetric I M) (x : M) (k : Fin (Module.finrank ℝ E)) :
-    cometricLmodel (I := I) g₁ x (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
-        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis k)) =
-      ∑ l : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) g₁ x x k l • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l : TangentSpace I x) := by
-  classical
-  have hxbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt' x
-  have hself : ∀ t : Fin (Module.finrank ℝ E),
-      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x t x = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E t := fun t =>
-    by
-      rw [chartBasisVecFiber_self (I := I) x t, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply,
-        DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply]
-  apply DifferentialGeometry.Geometry.Operator.metricFlatLinear_injective (I := I) g₁ x
-  ext u
-  change g₁.inner x (cometricLmodel (I := I) g₁ x
-      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis k))) u =
-    g₁.inner x (∑ l : Fin (Module.finrank ℝ E),
-      chartInvGramMatrix (I := I) g₁ x x k l • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l : TangentSpace I x)) u
-  rw [cometricLmodel_covectorOfCLM_inner (I := I) g₁ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis k) u]
-  have hu : u = ∑ m : Fin (Module.finrank ℝ E),
-      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
-          ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x u)) m •
-        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x :=
-    chartBasisVecFiber_recompose (I := I) x hxbase u
-  set c : Fin (Module.finrank ℝ E) → ℝ := fun m =>
-    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
-        ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x u)) m with hc_def
-  have hRHS_inner :
-      g₁.inner x (∑ l : Fin (Module.finrank ℝ E),
-          chartInvGramMatrix (I := I) g₁ x x k l • DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) u =
-        ∑ m : Fin (Module.finrank ℝ E),
-          c m * (if k = m then (1 : ℝ) else 0) := by
-    with_unfolding_all
-      rw [map_sum (g₁.inner x), sum_apply]
-    rw [show ∑ l : Fin (Module.finrank ℝ E),
-            (g₁.inner x (chartInvGramMatrix (I := I) g₁ x x k l •
-                DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)) u =
-          ∑ l : Fin (Module.finrank ℝ E),
-            chartInvGramMatrix (I := I) g₁ x x k l *
-              g₁.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) u from ?_]
-    swap
-    · refine Finset.sum_congr rfl (fun l _ => ?_)
-      rw [map_smul, smul_apply, smul_eq_mul]
-    rw [show ∑ l : Fin (Module.finrank ℝ E),
-            chartInvGramMatrix (I := I) g₁ x x k l *
-              g₁.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) u =
-          ∑ l : Fin (Module.finrank ℝ E),
-            chartInvGramMatrix (I := I) g₁ x x k l *
-              g₁.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)
-                (∑ m : Fin (Module.finrank ℝ E), c m • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x) from ?_]
-    swap
-    · refine Finset.sum_congr rfl (fun l _ => ?_)
-      refine congrArg (fun t : TangentSpace I x => chartInvGramMatrix (I := I) g₁ x x k l *
-        g₁.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) t) ?_
-      exact hu
-    rw [show ∑ l : Fin (Module.finrank ℝ E),
-            chartInvGramMatrix (I := I) g₁ x x k l *
-              g₁.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)
-                (∑ m : Fin (Module.finrank ℝ E), c m • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x) =
-          ∑ l : Fin (Module.finrank ℝ E),
-            (∑ m : Fin (Module.finrank ℝ E),
-              chartInvGramMatrix (I := I) g₁ x x k l * (c m *
-                g₁.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)
-                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x))) from ?_]
-    swap
-    · refine Finset.sum_congr rfl (fun l _ => ?_)
-      rw [map_sum, Finset.mul_sum]
-      refine Finset.sum_congr rfl (fun m _ => ?_)
-      rw [map_smul, smul_eq_mul]
-    rw [Finset.sum_comm]
-    rw [show ∑ m : Fin (Module.finrank ℝ E),
-            (∑ l : Fin (Module.finrank ℝ E),
-              chartInvGramMatrix (I := I) g₁ x x k l * (c m *
-                g₁.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)
-                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x))) =
-          ∑ m : Fin (Module.finrank ℝ E), c m *
-            (∑ l : Fin (Module.finrank ℝ E),
-              chartInvGramMatrix (I := I) g₁ x x k l *
-                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ x x l m) from ?_]
-    swap
-    · refine Finset.sum_congr rfl (fun m _ => ?_)
-      rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl (fun l _ => ?_)
-      rw [show g₁.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)
-              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x) =
-            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ x x l m from ?_]
-      · ring
-      · rw [show DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l =
-            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x l x from (chartBasisVecFiber_self (I := I) x l).symm]
-        rw [g_inner_eq_chartGramMatrix_basis (I := I) g₁ x x l m]
-    refine Finset.sum_congr rfl (fun m _ => ?_)
-    refine congrArg (fun t : ℝ => c m * t) ?_
-    have hkron : (∑ l : Fin (Module.finrank ℝ E),
-          chartInvGramMatrix (I := I) g₁ x x k l *
-            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ x x l m) =
-        (chartInvGramMatrix (I := I) g₁ x x * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ x x) k m := by
-      rw [Matrix.mul_apply]
-    rw [hkron, chartInvGramMatrix_mul_chartGramMatrix (I := I) g₁ x hxbase, Matrix.one_apply]
-  have hmodel_sum : (∑ l : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) g₁ x x k l • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l : TangentSpace I x)) =
-      ∑ l : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) g₁ x x k l • DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l := by
-    refine Finset.sum_congr rfl (fun l _ => ?_)
-    refine congrArg (fun v : TangentSpace I x =>
-      chartInvGramMatrix (I := I) g₁ x x k l • v) ?_
-    exact (hself l).symm.trans (chartBasisVecFiber_self (I := I) x l)
-  have hRHS_model :
-      g₁.inner x (∑ l : Fin (Module.finrank ℝ E),
-          chartInvGramMatrix (I := I) g₁ x x k l • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l : TangentSpace I x)) u =
-        ∑ m : Fin (Module.finrank ℝ E), c m * (if k = m then (1 : ℝ) else 0) :=
-    (congrArg (fun v : TangentSpace I x => g₁.inner x v u) hmodel_sum).trans hRHS_inner
-  apply Eq.trans ?_ hRHS_model.symm
-  rw [Module.Basis.cDualBasis, Module.Basis.map_apply]
-  rw [show (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).dualBasis k = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord k from
-    congrFun (Module.Basis.coe_dualBasis (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) k]
-  change ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
-      (tangentSpaceModelContinuousLinearEquiv (I := I) x u)) k =
-    ∑ m : Fin (Module.finrank ℝ E), c m * (if k = m then (1 : ℝ) else 0)
-  have hc : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
-      (tangentSpaceModelContinuousLinearEquiv (I := I) x u)) k = c k := by
-    rw [hc_def, ← DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply (I := I) x u]
-    rw [show DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x u =
-        (trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x u from
-      congrFun ((trivializationAt E (TangentSpace I) x).coe_continuousLinearEquivAt_eq
-        (R := ℝ) hxbase) u]
-  rw [hc]
-  rw [Finset.sum_eq_single k]
-  · simp only [if_pos, mul_one]
-  · intro m _ hmk
-    rw [if_neg hmk.symm, mul_zero]
-  · simp only [Finset.mem_univ, not_true_eq_false, IsEmpty.forall_iff]
-
-end ChartModelBasisCoercion
-
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem iteratedCovGrad2_chartComponent_readout (g₀ : SmoothRiemannianMetric I M)
+theorem iteratedCovGrad2_chartComponent_decomposition (g₀ : SmoothRiemannianMetric I M)
     (h : SmoothCcTensor g₀ 0 2) (x : M)
     (Jdx : Fin (2 + 2) → Fin (Module.finrank ℝ E)) :
     tensorChartComponentRaw (I := I) (M := M) g₀ 0 (2 + 2)
@@ -264,7 +96,7 @@ private lemma euclidPartial_add_local
   rw [euclidPartial_def, euclidPartial_def, euclidPartial_def, fderiv_fun_add hf hh,
     add_apply]
 
-noncomputable def arm2ReadoutCovDerivPair (g₀ : SmoothRiemannianMetric I M)
+noncomputable def secondOrderCovariantDerivativeCorrection (g₀ : SmoothRiemannianMetric I M)
     (h : SmoothCcTensor g₀ 0 2) (x : M)
     (Jdx : Fin (2 + 2) → Fin (Module.finrank ℝ E)) : ℝ :=
   euclidPartial (E := E) (Jdx 0)
@@ -279,7 +111,7 @@ noncomputable def arm2ReadoutCovDerivPair (g₀ : SmoothRiemannianMetric I M)
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem iteratedCovGrad1_chartComponent_readout (g₀ : SmoothRiemannianMetric I M)
+theorem iteratedCovGrad1_chartComponent_decomposition (g₀ : SmoothRiemannianMetric I M)
     (h : SmoothCcTensor g₀ 0 2) (x : M)
     (Jdx : Fin (2 + 1) → Fin (Module.finrank ℝ E)) :
     tensorChartComponentRaw (I := I) (M := M) g₀ 0 (2 + 1)
@@ -302,7 +134,7 @@ theorem iteratedCovGrad1_chartComponent_readout (g₀ : SmoothRiemannianMetric I
   rw [hcg]
   exact tensorChartComponentRaw_covGrad (I := I) (M := M) g₀ 0 2 h x ![] Jdx hy
 
-noncomputable def arm1ReadoutCovDeriv (g₀ : SmoothRiemannianMetric I M)
+noncomputable def firstOrderCovariantDerivativeCorrection (g₀ : SmoothRiemannianMetric I M)
     (h : SmoothCcTensor g₀ 0 2) (x : M)
     (Jdx : Fin (2 + 1) → Fin (Module.finrank ℝ E)) : ℝ :=
   covDerivLowerOrderTerm (I := I) (M := M) g₀ 0 2 h x
@@ -791,10 +623,10 @@ private lemma valueCoeff02_center_eq
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M] in
-lemma arm1ReadoutCovDeriv_center_eq
+lemma firstOrderCovariantDerivativeCorrection_center_eq
     (g₀ : SmoothRiemannianMetric I M) (h : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c : Fin (Module.finrank ℝ E)) :
-    arm1ReadoutCovDeriv (I := I) (M := M) g₀ h x ![a, b, c] =
+    firstOrderCovariantDerivativeCorrection (I := I) (M := M) g₀ h x ![a, b, c] =
       (- ∑ r : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g₀ x a b r (extChartAt I x x) *
             tensorChartComponentRaw (I := I) (M := M) g₀ 0 2 h x ![] ![r, c] x)
@@ -802,7 +634,7 @@ lemma arm1ReadoutCovDeriv_center_eq
           chartChristoffel (I := I) g₀ x a c r (extChartAt I x x) *
             tensorChartComponentRaw (I := I) (M := M) g₀ 0 2 h x ![] ![b, r] x) := by
   classical
-  rw [arm1ReadoutCovDeriv]
+  rw [firstOrderCovariantDerivativeCorrection]
   rw [show (Matrix.vecTail (![a, b, c] : Fin (2 + 1) → Fin (Module.finrank ℝ E))) = ![b, c] from by
     funext j; fin_cases j <;> rfl]
   rw [show (![a, b, c] : Fin (2 + 1) → Fin (Module.finrank ℝ E)) 0 = a from rfl]
@@ -907,7 +739,7 @@ private lemma sum_two_slot_indicator_collapse
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-private lemma arm2ReadoutPairTerm1_center_eq
+private lemma secondOrderCovariantDerivativePairTerm1_center_eq
     (g₀ : SmoothRiemannianMetric I M) (h : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : Fin (Module.finrank ℝ E)) :
     euclidPartial (E := E) a
@@ -1057,7 +889,7 @@ private lemma rawCompCovGrad03_center_eq
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma arm2ReadoutPairTerm2_center_eq
+private lemma secondOrderCovariantDerivativePairTerm2_center_eq
     (g₀ : SmoothRiemannianMetric I M) (h : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : Fin (Module.finrank ℝ E)) :
     covDerivLowerOrderTerm (I := I) (M := M) g₀ 0 3
@@ -1160,10 +992,10 @@ private lemma arm2ReadoutPairTerm2_center_eq
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma arm2ReadoutCovDerivPair_center_eq
+lemma secondOrderCovariantDerivativeCorrection_center_eq
     (g₀ : SmoothRiemannianMetric I M) (h : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : Fin (Module.finrank ℝ E)) :
-    arm2ReadoutCovDerivPair (I := I) (M := M) g₀ h x ![a, b, c, d] =
+    secondOrderCovariantDerivativeCorrection (I := I) (M := M) g₀ h x ![a, b, c, d] =
       (((- ∑ r : Fin (Module.finrank ℝ E),
               euclidPartial (E := E) a
                   (chartChristoffelEuclid (I := I) g₀ x c b r)
@@ -1224,7 +1056,7 @@ lemma arm2ReadoutCovDerivPair_center_eq
                           tensorChartComponentRaw (I := I) (M := M) g₀ 0 2 h x ![] ![c, t]
                             x)))))) := by
   classical
-  rw [arm2ReadoutCovDerivPair]
+  rw [secondOrderCovariantDerivativeCorrection]
   rw [show (Matrix.vecTail (![a, b, c, d] : Fin (2 + 2) → Fin (Module.finrank ℝ E))) = ![b, c, d]
     from by
     funext j; fin_cases j <;> rfl]
@@ -1232,8 +1064,8 @@ lemma arm2ReadoutCovDerivPair_center_eq
     funext j; fin_cases j <;> rfl]
   rw [show (![a, b, c, d] : Fin (2 + 2) → Fin (Module.finrank ℝ E)) 0 = a from rfl]
   rw [show (![b, c, d] : Fin (2 + 1) → Fin (Module.finrank ℝ E)) 0 = b from rfl]
-  rw [arm2ReadoutPairTerm1_center_eq (I := I) (M := M) g₀ h x a b c d]
-  rw [arm2ReadoutPairTerm2_center_eq (I := I) (M := M) g₀ h x a b c d]
+  rw [secondOrderCovariantDerivativePairTerm1_center_eq (I := I) (M := M) g₀ h x a b c d]
+  rw [secondOrderCovariantDerivativePairTerm2_center_eq (I := I) (M := M) g₀ h x a b c d]
   ring
 
 end TensorSpectral

@@ -225,7 +225,7 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
     have hsplit : ∀ i ∈ F, force i = arm.coeff i + seed.coeff i := by
       intro i hi
       dsimp only [force, arm, seed]
-      rw [galForceArmBackground (I := I) (M := M) g gBase K.threshold_lt hsol.hδ0 hsol.hδ3
+      rw [galForceTermBackground (I := I) (M := M) g gBase K.threshold_lt hsol.hδ0 hsol.hδ3
         K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos hsol.hreal hsol.hcore F (U N t) i,
         if_pos hi]
       simp only [galerkinActionVectorBackground]

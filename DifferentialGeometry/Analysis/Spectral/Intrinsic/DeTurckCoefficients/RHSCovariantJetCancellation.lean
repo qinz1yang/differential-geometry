@@ -108,11 +108,11 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
 private theorem hjoint_smul
     (g : SmoothRiemannianMetric I M) (r : ℕ)
     (Φ : ℝ → SmoothCcTensor g r 2) {δ δ' : ℝ} (c : ℝ)
-    (hΦ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Φ
+    (hΦ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Φ
       (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun s => c • Φ s) (δ := δ) (δ' := δ') := by
-  rw [linearizedRicciThreeArmHjoint] at hΦ ⊢
+  rw [linearizedRicciCovariantJetJointSmoothness] at hΦ ⊢
   have h := jointRS_smul (I := I) (M := M) c
     (fun p : M × ℝ => (Φ p.2).toSection p.1) hΦ
   refine h.congr (fun p _ => ?_)
@@ -125,13 +125,13 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
 private theorem hjoint_add
     (g : SmoothRiemannianMetric I M) (r : ℕ)
     (Φ Ψ : ℝ → SmoothCcTensor g r 2) {δ δ' : ℝ}
-    (hΦ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Φ
+    (hΦ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Φ
       (δ := δ) (δ' := δ'))
-    (hΨ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Ψ
+    (hΨ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r Ψ
       (δ := δ) (δ' := δ')) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g r
       (fun s => Φ s + Ψ s) (δ := δ) (δ' := δ') := by
-  rw [linearizedRicciThreeArmHjoint] at hΦ hΨ ⊢
+  rw [linearizedRicciCovariantJetJointSmoothness] at hΦ hΨ ⊢
   have h := joint_rs_add (I := I) (r := r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (Φ p.2).toSection p.1)
@@ -233,7 +233,7 @@ private theorem lieSlope_symm
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t) g_bg x i j (extChartAt I x x)
 
 omit [SigmaCompactSpace M] in
-theorem lieSum_eq_arms
+theorem lieSum_eq_terms
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -250,12 +250,12 @@ theorem lieSum_eq_arms
               (iteratedCovGrad (I := I) g₀ 0 2 0
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
             operatorFieldApply (I := I) (M := M) g₀ 3 2
-              (deTurckLieArm1Coeff (I := I) (M := M) g₀
+              (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 1
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
             operatorFieldApply (I := I) (M := M) g₀ 4 2
-              (deTurckLieArm2PrincipalCoeff (I := I) g₀
+              (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
@@ -271,12 +271,12 @@ theorem lieSum_eq_arms
           (iteratedCovGrad (I := I) g₀ 0 2 0
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
         operatorFieldApply (I := I) (M := M) g₀ 3 2
-          (deTurckLieArm1Coeff (I := I) (M := M) g₀
+          (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
           (iteratedCovGrad (I := I) g₀ 0 2 1
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
         operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (deTurckLieArm2PrincipalCoeff (I := I) g₀
+          (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))
@@ -305,7 +305,7 @@ theorem lieSum_eq_arms
           unitModel (I := I) (M := M) g₀ 2 W x
             ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
-      rw [lieSlope_eq_arms (I := I) g₀ g_bg T T'
+      rw [lieSlope_eq_terms (I := I) g₀ g_bg T T'
         hδ_lt hδ hδ'_lt hδ' s x k i]
     _ = _ := unitModel_basis_expand_two (I := I) (M := M) g₀ W x
       ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
@@ -333,7 +333,7 @@ def ricciDeTurckRemainderFirstOrderCoefficient
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (s : ℝ) : SmoothCcTensor g₀ 3 2 :=
   (-2 : ℝ) • linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s +
-    deTurckLieArm1Coeff (I := I) (M := M) g₀
+    deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
 
 omit [SigmaCompactSpace M] in
@@ -343,7 +343,7 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_path_joint
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
       (fun s => ricciDeTurckRemainderZeroOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
       (δ := δ) (δ' := δ') := by
   have hR := linearizedRicciConnectionDifferenceOrder0Coeff_jointContMDiffOn_smallPerturbationSet
@@ -363,18 +363,18 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_path_joint
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3
       (fun s => ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
       (δ := δ) (δ' := δ') := by
   have hR := linearizedRicciConnectionDifferenceOrder1Coeff_jointContMDiffOn_smallPerturbationSet
     (I := I) g₀ T T' hδ hδ'
-  have hL := deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth
+  have hL := deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth
     (I := I) g₀ T T' hδ hδ' g_bg
   have hR' := hjoint_smul (I := I) (M := M) g₀ 3 _ (-2 : ℝ) hR
   simpa only [ricciDeTurckRemainderFirstOrderCoefficient] using hjoint_add (I := I) (M := M) g₀ 3 _ _ hR' hL
 
 omit [SigmaCompactSpace M] in
-theorem ricciDeTurckRemainderLowOrder_eq_arms
+theorem ricciDeTurckRemainderLowOrder_eq_terms
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -403,7 +403,7 @@ theorem ricciDeTurckRemainderLowOrder_eq_arms
     rw [ccTensorBilin_sub, ccTensorBilin_sub, hTsymm y u z, hT'symm y u z]
   have hsymmS : ccTensor02Symm (I := I) (M := M) g₀ (T - T') = T - T' :=
     symmS_eq_self_local (I := I) (M := M) g₀ (T - T') hsubsymm
-  have hLie := lieSum_eq_arms (I := I) g₀ g_bg T T'
+  have hLie := lieSum_eq_terms (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' x v w hs
   have hLieSplit := lieSum_eq_split (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' x v w s
@@ -423,7 +423,7 @@ theorem ricciDeTurckRemainderLowOrder_eq_arms
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
             operatorFieldApply (I := I) (M := M) g₀ 3 2
-              (deTurckLieArm1Coeff (I := I) (M := M) g₀
+              (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
               (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x
           ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
@@ -431,15 +431,15 @@ theorem ricciDeTurckRemainderLowOrder_eq_arms
     simp only [unitModel_add_app] at hLie ⊢
     linear_combination hLie - hLieSplit - hTop
   have hR0 :
-      linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s +
+      linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s +
           (linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s -
-            linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s) =
+            linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s) =
         linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s := by
     abel
   have hR1 :
-      linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s +
+      linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s +
           (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s -
-            linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s) =
+            linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s) =
         linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s := by
     abel
   unfold rhsLowTerm ricciDeTurckRemainderZeroOrderCoefficient ricciDeTurckRemainderFirstOrderCoefficient
@@ -450,7 +450,7 @@ theorem ricciDeTurckRemainderLowOrder_eq_arms
   linear_combination hLower
 
 omit [SigmaCompactSpace M] in
-theorem ricciDeTurckRemainderSlope_eq_arms
+theorem ricciDeTurckRemainderSlope_eq_terms
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
@@ -477,7 +477,7 @@ theorem ricciDeTurckRemainderSlope_eq_arms
           tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
   rw [rhsSlope_eq_split (I := I) g₀ g_bg T T' hTsymm hT'symm
     hδ_lt hδ hδ'_lt hδ' x v w hs]
-  rw [ricciDeTurckRemainderLowOrder_eq_arms (I := I) g₀ g_bg T T' hTsymm hT'symm
+  rw [ricciDeTurckRemainderLowOrder_eq_terms (I := I) g₀ g_bg T T' hTsymm hT'symm
     hδ_lt hδ hδ'_lt hδ' x v w hs]
   unfold rhsTopTerm
   simp only [unitModel_add_app, tangent_model_pair_eq]

@@ -75,7 +75,7 @@ def backgroundZeroOrderCoefficient (g g_bg : SmoothRiemannianMetric I M) :
 
 def backgroundFirstOrderCoefficient (g g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 3 2 :=
-  deTurckLieArm1Coeff (I := I) (M := M) g g g_bg
+  deTurckLieFirstOrderCoeff (I := I) (M := M) g g g_bg
 
 def metricDependentZeroOrderCoefficient (g g1 g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
@@ -90,7 +90,7 @@ def metricDependentFirstOrderCoefficient (g g1 g_bg : SmoothRiemannianMetric I M
     SmoothCcTensor g 3 2 :=
   (-2 : Real) •
       linearizedRicciConnectionDifferenceOrder1CoeffField (I := I) (M := M) g g1 +
-    deTurckLieArm1Coeff (I := I) (M := M) g g1 g_bg -
+    deTurckLieFirstOrderCoeff (I := I) (M := M) g g1 g_bg -
     backgroundFirstOrderCoefficient (I := I) (M := M) g g_bg
 
 def backgroundLowOrderAction (g g_bg : SmoothRiemannianMetric I M)
@@ -128,7 +128,7 @@ theorem principalCoefficientAction_decomposition
         (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g1)
         (iteratedCovGrad (I := I) g 0 2 2 W) =
       (rawTensorConnLapSmooth (I := I) g 0 2 W +
-          deTurckPrincipalCometricArm (I := I) (M := M) g g1 W) +
+          deTurckPrincipalCometricTerm (I := I) (M := M) g g1 W) +
         operatorFieldApply (I := I) (M := M) g 2 2
           (metricPrincipalDefectCurvCoeff (I := I) g g1) W := by
   have hlap : rawTensorConnLapSmooth (I := I) g 0 2 W =
@@ -146,8 +146,8 @@ theorem principalCoefficientAction_decomposition
         (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g1 -
           cometricDoubleTraceCoefficient (I := I) (M := M) g g1) by abel]
   rw [operatorFieldApplication_add_left,
-    metricPrincipalDefect_curv_fold (I := I) (M := M) g g1 W,
-    iteratedCovGrad_zero, deTurckPrincipalCometricArm,
+    metricPrincipalDefect_curvature_contraction (I := I) (M := M) g g1 W,
+    iteratedCovGrad_zero, deTurckPrincipalCometricTerm,
     deTurckPrincipalCometricCoeff, operatorFieldApplication_sub_left, hlap]
   abel
 
@@ -167,7 +167,7 @@ def ricciDeTurckLowOrderAction (g g₁ : SmoothRiemannianMetric I M)
     (C₀ : SmoothCcTensor g 2 2) (C₁ : SmoothCcTensor g 3 2)
     (W : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 2 :=
   (rawTensorConnLapSmooth (I := I) g 0 2 W +
-      deTurckPrincipalCometricArm (I := I) (M := M) g g₁ W) +
+      deTurckPrincipalCometricTerm (I := I) (M := M) g g₁ W) +
     firstOrderCoefficientAction (I := I) (M := M) g C₀ C₁ W
 
 omit [SigmaCompactSpace M] in
@@ -185,7 +185,7 @@ theorem ricciDeTurckRhsSlope_decomposition
         (zero_metricPerturbation_bound (I := I) (M := M) g) x v w s =
       unitModel (I := I) (M := M) g 2
         ((rawTensorConnLapSmooth (I := I) g 0 2 W +
-            deTurckPrincipalCometricArm (I := I) (M := M) g
+            deTurckPrincipalCometricTerm (I := I) (M := M) g
               (metricPerturbationPathFromZero (I := I) (M := M) g W hδ s) W) +
           (backgroundLowOrderAction (I := I) (M := M) g g_bg W +
             metricDependentLowOrderAction (I := I) (M := M) g
@@ -219,7 +219,7 @@ theorem ricciDeTurckRhsSlope_decomposition
             (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs)
             (iteratedCovGrad (I := I) g 0 2 2 W) =
         (rawTensorConnLapSmooth (I := I) g 0 2 W +
-            deTurckPrincipalCometricArm (I := I) (M := M) g gs W) +
+            deTurckPrincipalCometricTerm (I := I) (M := M) g gs W) +
           (backgroundLowOrderAction (I := I) (M := M) g g_bg W +
             metricDependentLowOrderAction (I := I) (M := M) g gs g_bg W) := by
     rw [htop]
@@ -228,17 +228,17 @@ theorem ricciDeTurckRhsSlope_decomposition
             operatorFieldApply (I := I) (M := M) g 3 2 R1
               (iteratedCovGrad (I := I) g 0 2 1 W) +
             ((rawTensorConnLapSmooth (I := I) g 0 2 W +
-                deTurckPrincipalCometricArm (I := I) (M := M) g gs W) +
+                deTurckPrincipalCometricTerm (I := I) (M := M) g gs W) +
               operatorFieldApply (I := I) (M := M) g 2 2
                 (metricPrincipalDefectCurvCoeff (I := I) g gs) W) =
           (rawTensorConnLapSmooth (I := I) g 0 2 W +
-              deTurckPrincipalCometricArm (I := I) (M := M) g gs W) +
+              deTurckPrincipalCometricTerm (I := I) (M := M) g gs W) +
             firstOrderCoefficientAction (I := I) (M := M) g
               (R0 + metricPrincipalDefectCurvCoeff (I := I) g gs) R1 W := by
                 simp only [firstOrderCoefficientAction, operatorFieldApplication_add_left]
                 abel
       _ = (rawTensorConnLapSmooth (I := I) g 0 2 W +
-              deTurckPrincipalCometricArm (I := I) (M := M) g gs W) +
+              deTurckPrincipalCometricTerm (I := I) (M := M) g gs W) +
             firstOrderCoefficientAction (I := I) (M := M) g
               (backgroundZeroOrderCoefficient (I := I) (M := M) g g_bg +
                 metricDependentZeroOrderCoefficient (I := I) (M := M) g gs g_bg)
@@ -246,12 +246,12 @@ theorem ricciDeTurckRhsSlope_decomposition
                 metricDependentFirstOrderCoefficient (I := I) (M := M) g gs g_bg) W := by
                   rw [hlow0, hlow1]
       _ = (rawTensorConnLapSmooth (I := I) g 0 2 W +
-              deTurckPrincipalCometricArm (I := I) (M := M) g gs W) +
+              deTurckPrincipalCometricTerm (I := I) (M := M) g gs W) +
             (backgroundLowOrderAction (I := I) (M := M) g g_bg W +
               metricDependentLowOrderAction (I := I) (M := M) g gs g_bg W) := by
                   rw [edgeLower_add]
                   rfl
-  have hslope := DeTurckCoefficients.ricciDeTurckRemainderSlope_eq_arms
+  have hslope := DeTurckCoefficients.ricciDeTurckRemainderSlope_eq_terms
     (I := I) g g_bg W 0 hWsymm (zero_metricPerturbation_symmetric (I := I) (M := M) g)
       hδ_lt hδ (show (0 : Real) < 1 by norm_num)
       (zero_metricPerturbation_bound (I := I) (M := M) g) x v w hs
@@ -370,14 +370,14 @@ theorem ricciDeTurckLowOrderAction_pairing_bound
           (ricciDeTurckLowOrderAction (I := I) (M := M) g g₁ C₀ C₁ W).toFun =
         tensorL2Inner (I := I) (M := M) g 0 2 W.toFun
             (rawTensorConnLapSmooth (I := I) g 0 2 W +
-              deTurckPrincipalCometricArm (I := I) (M := M) g g₁ W).toFun +
+              deTurckPrincipalCometricTerm (I := I) (M := M) g g₁ W).toFun +
           tensorL2Inner (I := I) (M := M) g 0 2 W.toFun
             (firstOrderCoefficientAction (I := I) (M := M) g C₀ C₁ W).toFun := by
     rw [← SmoothCcTensor.inner_def (I := I) (M := M) W
       (ricciDeTurckLowOrderAction (I := I) (M := M) g g₁ C₀ C₁ W),
       ← SmoothCcTensor.inner_def (I := I) (M := M) W
         (rawTensorConnLapSmooth (I := I) g 0 2 W +
-          deTurckPrincipalCometricArm (I := I) (M := M) g g₁ W),
+          deTurckPrincipalCometricTerm (I := I) (M := M) g g₁ W),
       ← SmoothCcTensor.inner_def (I := I) (M := M) W
         (firstOrderCoefficientAction (I := I) (M := M) g C₀ C₁ W)]
     simp only [ricciDeTurckLowOrderAction, inner_add_right]

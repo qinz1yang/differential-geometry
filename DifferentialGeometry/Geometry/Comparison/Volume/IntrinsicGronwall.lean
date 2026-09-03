@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.CovariantGronwall
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Curvature.Rm04OperatorBound
 import DifferentialGeometry.Geometry.Exponential.EndpointShape
-import DifferentialGeometry.Geometry.Exponential.IntrinsicSmooth
+import DifferentialGeometry.Geometry.Exponential.IntrinsicGeodesicSmoothness
 
 set_option autoImplicit false
 

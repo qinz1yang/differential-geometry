@@ -66,7 +66,7 @@ private theorem bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operat
     (S : SmoothCcTensor g₀ 0 2) (G : SmoothCcTensor g₀ 0 4) (σ : Equiv.Perm (Fin 4)) :
     operatorFieldApply (I := I) (M := M) g₀ 2 2
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (domDomCongrSection (I := I) g₀
                 (σ.trans (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3)) G)))) S =
@@ -932,7 +932,7 @@ def connectionDifferenceQuadraticComposedTensor (g₀ gm : SmoothRiemannianMetri
       (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-private lemma lrArmSlotTuple (g₀ gm : SmoothRiemannianMetric I M) (x : M)
+private lemma lrTermSlotTuple (g₀ gm : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 4 → TangentSpace I x) :
     Function.update
         (fun i : Fin 3 => tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -987,14 +987,14 @@ private lemma lrQB_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
     rw [connectionDifferenceQuadraticPairedTensor, operatorFieldComposition_toSection]
     rfl]
   rw [Tensor0SSpace.toModel_apply_tangent]
-  rw [armSlotFib_apply_eval (I := I) (M := M) 2 x
+  rw [termSlotFib_apply_eval (I := I) (M := M) 2 x
     (connectionDifferenceEndomorphism (I := I) (M := M) g₀ gm x)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm).toSection x)
       (unitTensor (I := I) (M := M) x)) m]
   rw [← Tensor0SSpace.toModel_apply_tangent]
   rw [slotInsertEndoFib_apply_eval]
-  rw [lrArmSlotTuple (I := I) (M := M) g₀ gm x m]
+  rw [lrTermSlotTuple (I := I) (M := M) g₀ gm x m]
   rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm).toSection x)
@@ -1024,7 +1024,7 @@ private lemma lrQA_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
     rw [connectionDifferenceQuadraticComposedTensor, operatorFieldComposition_toSection]
     rfl]
   rw [Tensor0SSpace.toModel_apply_tangent]
-  rw [armSlotFib_apply_eval (I := I) (M := M) 2 x
+  rw [termSlotFib_apply_eval (I := I) (M := M) 2 x
     (connectionDifferenceEndomorphism (I := I) (M := M) g₀ gm x)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 3) 1)
@@ -1032,7 +1032,7 @@ private lemma lrQA_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
       (unitTensor (I := I) (M := M) x)) m]
   rw [← Tensor0SSpace.toModel_apply_tangent]
   rw [slotInsertEndoFib_apply_eval]
-  rw [lrArmSlotTuple (I := I) (M := M) g₀ gm x m]
+  rw [lrTermSlotTuple (I := I) (M := M) g₀ gm x m]
   rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 3) 1)
@@ -2252,7 +2252,7 @@ private theorem lrSummand (g₀ : SmoothRiemannianMetric I M)
   linear_combination (s / 2) * hric + (s / 2) * hswap
 
 omit [SigmaCompactSpace M] in
-theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
+theorem lrTerm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -2260,7 +2260,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) :
-    deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+    deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀
       - deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
         ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -2269,7 +2269,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
         ![(-1 : ℝ), -1, 1] s =
       (-1 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s))) := by
   classical
@@ -2338,7 +2338,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
     rw [sub_apply, Tensor0SSpace.toModel_sub, sub_apply]
   have hARM : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀).toSection x)) D) v =
       (-1 : ℝ) * ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         ((metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s).inner x
@@ -2355,7 +2355,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
             ![(smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x a x : E),
               (smoothOrthoFrame (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x b x : E)] := by
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀).toSection x)) D) =
       connectionDifferenceCovDerivBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀ x D from rfl]
     rw [show (connectionDifferenceCovDerivBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀ x :
@@ -2373,7 +2373,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
       s • ((-1 : ℝ) • ((1 / 2 : ℝ) •
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     ((Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2).trans
@@ -2381,7 +2381,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
                     (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
             + ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     (((Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2).trans
@@ -2391,7 +2391,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
         + (-1 : ℝ) • ((1 / 2 : ℝ) •
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     ((Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
@@ -2400,7 +2400,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
                     (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
             + ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     (((Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
@@ -2411,7 +2411,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
         + (1 : ℝ) • ((1 / 2 : ℝ) •
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     ((Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3).trans
@@ -2419,7 +2419,7 @@ theorem lrArm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
                     (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
             + ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     (((Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3).trans
@@ -2809,7 +2809,7 @@ theorem lieCov_residual (g₀ : SmoothRiemannianMetric I M)
       smoothCcTensorBilinForm (I := I) g₀ T x v w =
         smoothCcTensorBilinForm (I := I) g₀ T x w v)
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) :
-    deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+    deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀ -
       deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M)
         g₀ T hδ hδZ
@@ -2825,7 +2825,7 @@ theorem lieCov_residual (g₀ : SmoothRiemannianMetric I M)
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s))) := by
   simpa only [cometricDoublePairTraceCoefficient, deTurckLieCovariantDerivativePairTracePermutation, deTurckLieCovariantDerivativeRemainderTensor] using
-    lrArm_sub_family_eq_pairTrace (I := I) (M := M)
+    lrTerm_sub_family_eq_pairTrace (I := I) (M := M)
       g₀ T hδ_lt hδ hδZ hTsymm hs
 
 end TensorSpectral

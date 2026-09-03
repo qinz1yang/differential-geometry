@@ -1058,11 +1058,11 @@ theorem RicciDeTurckLowOrder.exists_deTurckLieCovariantDerivative_covariantJetNo
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
       covariantJetNormSq (I := I) (M := M) g 2
-          ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+          ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδT hδZ
               lieDecompositionQ lieDecompositionEps s) -
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
               (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g U hδU hδZ
               lieDecompositionQ lieDecompositionEps s)) ≤
@@ -1141,7 +1141,7 @@ theorem RicciDeTurckLowOrder.exists_deTurckLieCovariantDerivative_covariantJetNo
   have hD3le : D3 ^ 2 ≤ u := by simp only [u]; linarith [sq_nonneg N]
   have hNu : N ^ 2 ≤ u := by simp only [u]; linarith [sq_nonneg D3]
   have hUT :
-      deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmT g -
+      deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gmT g -
         deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M)
           g T hδT hδZ
             ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -1157,7 +1157,7 @@ theorem RicciDeTurckLowOrder.exists_deTurckLieCovariantDerivative_covariantJetNo
     rw [hgmT]
     exact lieCov_residual (I := I) (M := M) g T hδ_lt hδT hδZ hT hs
   have hUU :
-      deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmU g -
+      deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gmU g -
         deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M)
           g U hδU hδZ
             ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,

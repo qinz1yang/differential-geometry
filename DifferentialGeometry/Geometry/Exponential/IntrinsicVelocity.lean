@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.CompactTrajectory
-import DifferentialGeometry.Geometry.Exponential.IntrinsicExpContinuity
+import DifferentialGeometry.Geometry.Exponential.IntrinsicExponentialContinuity
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

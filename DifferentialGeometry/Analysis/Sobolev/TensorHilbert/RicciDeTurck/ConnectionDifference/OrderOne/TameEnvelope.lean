@@ -782,7 +782,7 @@ omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem kernelField_eq_neg_arm_combination (g₀ g₁ : SmoothRiemannianMetric I M) :
+theorem kernelField_eq_neg_term_combination (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder1KernelField (I := I) g₀ g₁ =
       -(reindexCoeffGen (I := I) (M := M) g₀ 3 4
           (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4
@@ -809,7 +809,7 @@ theorem kernelField_eq_neg_arm_combination (g₀ g₁ : SmoothRiemannianMetric I
   rfl
 
 omit [SigmaCompactSpace M] in
-private theorem armOuter_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem termOuter_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 3 4 q
@@ -833,7 +833,7 @@ private theorem armOuter_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianM
   rw [hy, slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
 omit [SigmaCompactSpace M] in
-private theorem armFull_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem termFull_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 3 4 q
@@ -846,21 +846,21 @@ private theorem armFull_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMe
   rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 3 4
     (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4 (slotPermCc (I := I) (M := M) g₀ σ)
       (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ρ q x]
-  exact armOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ q x
+  exact termOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ q x
 
 omit [SigmaCompactSpace M] in
-private theorem armOuter_riemannianFiberNormSq0_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem termOuter_riemannianFiberNormSq0_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
         ((ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4 (slotPermCc (I := I) (M := M) g₀ σ)
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
         ((connectionDifferenceContravariantInsertionField (I := I) g₀ g₁).toSection x) := by
-  have h := armOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ 0 x
+  have h := termOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ 0 x
   simpa only [iteratedCovGrad_zero] using h
 
 omit [SigmaCompactSpace M] in
-private theorem armFull_riemannianFiberNormSq0_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem termFull_riemannianFiberNormSq0_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
         ((reindexCoeffGen (I := I) (M := M) g₀ 3 4
@@ -868,7 +868,7 @@ private theorem armFull_riemannianFiberNormSq0_eq (g₀ g₁ : SmoothRiemannianM
             (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ρ).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
         ((connectionDifferenceContravariantInsertionField (I := I) g₀ g₁).toSection x) := by
-  have h := armFull_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ ρ 0 x
+  have h := termFull_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ ρ 0 x
   simpa only [iteratedCovGrad_zero] using h
 
 private lemma c3_norm_eq_of_sq_eq {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
@@ -876,7 +876,7 @@ private lemma c3_norm_eq_of_sq_eq {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
   have hs := congrArg Real.sqrt h
   rwa [Real.sqrt_sq_eq_abs, Real.sqrt_sq_eq_abs, abs_of_nonneg ha, abs_of_nonneg hb] at hs
 
-private theorem armOuter_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem termOuter_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (q : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ 3 4 q
         (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4 (slotPermCc (I := I) (M := M) g₀ σ)
@@ -897,10 +897,10 @@ private theorem armOuter_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
       (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 3 4 q
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)).toSection x)) :=
-    funext fun x => armOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ q x
+    funext fun x => termOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ q x
   rw [hpt]
 
-private theorem armFull_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem termFull_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (q : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ 3 4 q
         (reindexCoeffGen (I := I) (M := M) g₀ 3 4
@@ -924,7 +924,7 @@ private theorem armFull_norm_eq (g₀ g₁ : SmoothRiemannianMetric I M)
       (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 3 4 q
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)).toSection x)) :=
-    funext fun x => armFull_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ ρ q x
+    funext fun x => termFull_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ ρ q x
   rw [hpt]
 
 private lemma c3_norm_five_le {V : Type*} [SeminormedAddCommGroup V] {a b c d e : V} {n : ℝ}
@@ -1321,7 +1321,7 @@ theorem linearizedRicciConnectionDifferenceOrder1KernelField_order0sup_perOrder_
     mul_nonneg (Real.sqrt_nonneg _) hΛc, fun l => by linarith [hKc_nn l], ?_⟩
   intro g₁ P δ hδ_le hδ htie hPball
   obtain ⟨hcsup, hctame⟩ := hcfeed g₁ P hδ_le hδ htie hPball
-  have hcomb := kernelField_eq_neg_arm_combination (I := I) g₀ g₁
+  have hcomb := kernelField_eq_neg_term_combination (I := I) g₀ g₁
   refine ⟨?_, ?_⟩
   · intro x
     have hL2 : (Real.sqrt 46 * Λc) ^ 2 = 46 * Λc ^ 2 := by
@@ -1378,26 +1378,26 @@ theorem linearizedRicciConnectionDifferenceOrder1KernelField_order0sup_perOrder_
     have e1 : riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x b1 =
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
           ((connectionDifferenceContravariantInsertionField (I := I) g₀ g₁).toSection x) := by
-      rw [hb1]; exact armFull_riemannianFiberNormSq0_eq (I := I) (M := M) g₀ g₁ kOutPerm0312
+      rw [hb1]; exact termFull_riemannianFiberNormSq0_eq (I := I) (M := M) g₀ g₁ kOutPerm0312
         kernelInnerSlotSwap01Perm x
     have e2 : riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x b2 =
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
           ((connectionDifferenceContravariantInsertionField (I := I) g₀ g₁).toSection x) := by
-      rw [hb2]; exact armFull_riemannianFiberNormSq0_eq (I := I) (M := M) g₀ g₁ kOutPerm0213 kernelInnerSlotCyclePerm
+      rw [hb2]; exact termFull_riemannianFiberNormSq0_eq (I := I) (M := M) g₀ g₁ kOutPerm0213 kernelInnerSlotCyclePerm
         x
     have e3 : riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x b3 =
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
           ((connectionDifferenceContravariantInsertionField (I := I) g₀ g₁).toSection x) := by
-      rw [hb3]; exact armOuter_riemannianFiberNormSq0_eq (I := I) (M := M) g₀ g₁ kOutPerm2301 x
+      rw [hb3]; exact termOuter_riemannianFiberNormSq0_eq (I := I) (M := M) g₀ g₁ kOutPerm2301 x
     have e4 : riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x b4 =
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
           ((connectionDifferenceContravariantInsertionField (I := I) g₀ g₁).toSection x) := by
-      rw [hb4]; exact armFull_riemannianFiberNormSq0_eq (I := I) (M := M) g₀ g₁ kOutPerm1302
+      rw [hb4]; exact termFull_riemannianFiberNormSq0_eq (I := I) (M := M) g₀ g₁ kOutPerm1302
         kernelInnerSlotSwap01Perm x
     have e5 : riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x b5 =
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
           ((connectionDifferenceContravariantInsertionField (I := I) g₀ g₁).toSection x) := by
-      rw [hb5]; exact armFull_riemannianFiberNormSq0_eq (I := I) (M := M) g₀ g₁ kOutPerm1203 kernelInnerSlotCyclePerm
+      rw [hb5]; exact termFull_riemannianFiberNormSq0_eq (I := I) (M := M) g₀ g₁ kOutPerm1203 kernelInnerSlotCyclePerm
         x
     have hA1 := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 3 4 x b1 b2
     have hA2 := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 3 4 x (b1 + b2) b3
@@ -1415,11 +1415,11 @@ theorem linearizedRicciConnectionDifferenceOrder1KernelField_order0sup_perOrder_
       rw [hcomb, iteratedCovGrad_neg, norm_neg, iteratedCovGrad_add, iteratedCovGrad_add,
         iteratedCovGrad_add, iteratedCovGrad_add]
       exact c3_norm_five_le
-        (armFull_norm_eq (I := I) (M := M) g₀ g₁ kOutPerm0312 kernelInnerSlotSwap01Perm l)
-        (armFull_norm_eq (I := I) (M := M) g₀ g₁ kOutPerm0213 kernelInnerSlotCyclePerm l)
-        (armOuter_norm_eq (I := I) (M := M) g₀ g₁ kOutPerm2301 l)
-        (armFull_norm_eq (I := I) (M := M) g₀ g₁ kOutPerm1302 kernelInnerSlotSwap01Perm l)
-        (armFull_norm_eq (I := I) (M := M) g₀ g₁ kOutPerm1203 kernelInnerSlotCyclePerm l)
+        (termFull_norm_eq (I := I) (M := M) g₀ g₁ kOutPerm0312 kernelInnerSlotSwap01Perm l)
+        (termFull_norm_eq (I := I) (M := M) g₀ g₁ kOutPerm0213 kernelInnerSlotCyclePerm l)
+        (termOuter_norm_eq (I := I) (M := M) g₀ g₁ kOutPerm2301 l)
+        (termFull_norm_eq (I := I) (M := M) g₀ g₁ kOutPerm1302 kernelInnerSlotSwap01Perm l)
+        (termFull_norm_eq (I := I) (M := M) g₀ g₁ kOutPerm1203 kernelInnerSlotCyclePerm l)
     have hsq := pow_le_pow_left₀ (norm_nonneg (iteratedCovGrad (I := I) g₀ 3 4 l
       (linearizedRicciConnectionDifferenceOrder1KernelField (I := I) g₀ g₁))) h5 2
     have h25 : (5 * ‖iteratedCovGrad (I := I) g₀ 3 4 l

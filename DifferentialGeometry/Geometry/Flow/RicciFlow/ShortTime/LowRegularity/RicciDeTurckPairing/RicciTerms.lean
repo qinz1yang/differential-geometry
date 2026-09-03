@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 open DifferentialGeometry.Analysis (sq_add_sq_le_sq_add_of_nonneg)
 open DifferentialGeometry.Analysis.Spectral (ccOperatorFieldComp operatorFieldComposition_sub_left operatorFieldComposition_sub_right ccInputSlotSymm
   ccInputSlotSymm_sub ccSlotSwapField ccTensorToHs ccTensorToHs_smul covGrad_sub metricComparisonEndomorphismField permCoeff
-  pureTrace pureTrace_toSection ricciConnectionDifferenceQuadraticArm ricciConnectionDifferenceQuadraticKernel rsDomDomCongr slotExtend slotExtendIter slotExtend_sub)
+  pureTrace pureTrace_toSection ricciConnectionDifferenceQuadraticTerm ricciConnectionDifferenceQuadraticKernel rsDomDomCongr slotExtend slotExtendIter slotExtend_sub)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Integral.L2
@@ -1649,7 +1649,7 @@ private theorem exists_ccInputSlotSymm_covariantJetNormSq_bound
   norm_num
   nlinarith only [ha, hsum, hC0, hsum0]
 
-private theorem exists_ricciQuadraticConnectionArm_fourthOrder_tame_difference_bound
+private theorem exists_ricciQuadraticConnectionTerm_fourthOrder_tame_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B0 B1 : ℝ → ℝ,
@@ -1688,8 +1688,8 @@ private theorem exists_ricciQuadraticConnectionArm_fourthOrder_tame_difference_b
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
       covariantJetNormSq (I := I) (M := M) g 2
-          (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gT -
-            ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gU) ≤
+          (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gT -
+            ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gU) ≤
         (B0 R * (1 + A) * (D3 + D2 + N) +
           B1 R * A4 * (D3 + N)) ^ 2 := by
   obtain ⟨ρb, Fb, hρb, hFb, htraceB⟩ :=
@@ -1793,11 +1793,11 @@ private theorem exists_ricciQuadraticConnectionArm_fourthOrder_tame_difference_b
     hkerD gT gU T U hT hU hTtie hUtie hδ_le hδ0 hδT hδU hδZ
       R Ap D3 D3 hR hAp hD3 hD3 hT2 hU2 hT3i hU3i hTU2 hTU3
   have heq :
-      ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gT -
-          ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gU =
+      ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gT -
+          ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gU =
         ccOperatorFieldComp (I := I) (M := M) g 2 4 2 (FT - FU) KT +
           ccOperatorFieldComp (I := I) (M := M) g 2 4 2 FU (KT - KU) := by
-    simp only [ricciConnectionDifferenceQuadraticArm, FT, FU, KT, KU, operatorFieldComposition_sub_left,
+    simp only [ricciConnectionDifferenceQuadraticTerm, FT, FU, KT, KU, operatorFieldComposition_sub_left,
       operatorFieldComposition_sub_right]
     module
   let x : ℝ := α R * N * (1 + Ap) ^ 2
@@ -1996,7 +1996,7 @@ private theorem exists_ricciQuadraticConnectionArm_fourthOrder_tame_difference_b
       _ = Z := rfl
   exact pow_le_pow_left₀ (add_nonneg hx0 hy0) hlin 2
 
-private theorem exists_ricciConnectionDerivativeArm_fourthOrder_tame_difference_bound
+private theorem exists_ricciConnectionDerivativeTerm_fourthOrder_tame_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ B0 B1 : ℝ → ℝ,
@@ -2614,9 +2614,9 @@ by
   obtain ⟨Ks, hKs, hsymm⟩ :=
     exists_ccInputSlotSymm_covariantJetNormSq_bound (I := I) (M := M) hDim g
   obtain ⟨ρA, BA0, BA1, hρA, hBA0, hBA1, haa⟩ :=
-    exists_ricciQuadraticConnectionArm_fourthOrder_tame_difference_bound (I := I) (M := M) hDim g
+    exists_ricciQuadraticConnectionTerm_fourthOrder_tame_difference_bound (I := I) (M := M) hDim g
   obtain ⟨BD0, BD1, hBD0, hBD1, hda⟩ :=
-    exists_ricciConnectionDerivativeArm_fourthOrder_tame_difference_bound (I := I) (M := M) hDim g
+    exists_ricciConnectionDerivativeTerm_fourthOrder_tame_difference_bound (I := I) (M := M) hDim g
   let Cs : ℝ := Real.sqrt (2 * Ks)
   have hCs : 0 ≤ Cs := Real.sqrt_nonneg _
   have hCsSq : Cs ^ 2 = 2 * Ks := by
@@ -2764,8 +2764,8 @@ by
         (mul_nonneg (hBD1 R hR) hA4) hD3)
   have hAA :
       covariantJetNormSq (I := I) (M := M) g 2
-          (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT -
-            ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU) ≤ SA ^ 2 := by
+          (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT -
+            ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU) ≤ SA ^ 2 := by
     simpa only [SA] using
       haa gmT gmU P Q hPsymm hQsymm hPtie hQtie
         hδ_le hδ0 hδP hδQ hδZ
@@ -2783,17 +2783,17 @@ by
         hP2 hQ2 hP4 hQ4 hPQ3
   have hlowT :
       RicciDeTurckLowOrder.ricciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmT P =
-        ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT +
+        ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT +
           RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmT P := rfl
   have hlowU :
       RicciDeTurckLowOrder.ricciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU Q =
-        ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU +
+        ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU +
           RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmU Q := rfl
   have hlow :
       RicciDeTurckLowOrder.ricciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmT P -
           RicciDeTurckLowOrder.ricciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU Q =
-        (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT -
-            ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU) +
+        (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT -
+            ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU) +
           (RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmT P -
             RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmU Q) := by
     rw [hlowT, hlowU]
@@ -2802,8 +2802,8 @@ by
       RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmT P -
           RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU Q =
         ccInputSlotSymm (I := I) (M := M) g
-          ((ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT -
-              ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU) +
+          ((ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT -
+              ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU) +
             (RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmT P -
               RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmU Q)) := by
     change
@@ -2885,13 +2885,13 @@ by
   calc
     covariantJetNormSq (I := I) (M := M) g 2
         (ccInputSlotSymm (I := I) (M := M) g
-          ((ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT -
-              ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU) +
+          ((ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT -
+              ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU) +
             (RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmT P -
               RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmU Q))) ≤
       Ks * covariantJetNormSq (I := I) (M := M) g 2
-        ((ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT -
-            ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU) +
+        ((ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT -
+            ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU) +
           (RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmT P -
             RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmU Q)) :=
       hsymm _
@@ -2916,7 +2916,7 @@ by
       apply congrArg (fun x : ℝ => x ^ 2)
       ring
 
-private theorem exists_ricciQuadraticConnectionArm_thirdOrder_tame_difference_bound
+private theorem exists_ricciQuadraticConnectionTerm_thirdOrder_tame_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B : ℝ → ℝ,
@@ -2955,8 +2955,8 @@ private theorem exists_ricciQuadraticConnectionArm_thirdOrder_tame_difference_bo
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
       covariantJetNormSq (I := I) (M := M) g 2
-          (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gT -
-            ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gU) ≤
+          (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gT -
+            ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gU) ≤
         (B R * (1 + A) ^ 2 * (D3 + D2 + N)) ^ 2 := by
   obtain ⟨ρb, Fb, hρb, hFb, htraceB⟩ :=
     exists_ricciCometricFourTraceCastG0_covariantJetNormSq_bound (I := I) (M := M) hDim g
@@ -3008,11 +3008,11 @@ private theorem exists_ricciQuadraticConnectionArm_thirdOrder_tame_difference_bo
     hkerD gT gU T U hT hU hTtie hUtie hδ_le hδ0 hδT hδU hδZ
       R A D2 D3 hR hA hD2 hD3 hT2 hU2 hT3 hU3 hTU2 hTU3
   have heq :
-      ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gT -
-          ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gU =
+      ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gT -
+          ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gU =
         ccOperatorFieldComp (I := I) (M := M) g 2 4 2 (FT - FU) KT +
           ccOperatorFieldComp (I := I) (M := M) g 2 4 2 FU (KT - KU) := by
-    simp only [ricciConnectionDifferenceQuadraticArm, FT, FU, KT, KU, operatorFieldComposition_sub_left,
+    simp only [ricciConnectionDifferenceQuadraticTerm, FT, FU, KT, KU, operatorFieldComposition_sub_left,
       operatorFieldComposition_sub_right]
     module
   let Q : ℝ := 1 + A
@@ -3112,7 +3112,7 @@ private theorem exists_ricciQuadraticConnectionArm_thirdOrder_tame_difference_bo
   simpa only [Q, S] using
     pow_le_pow_left₀ (add_nonneg hx0 hy0) hxy 2
 
-private theorem exists_ricciConnectionDerivativeArm_thirdOrder_tame_difference_bound
+private theorem exists_ricciConnectionDerivativeTerm_thirdOrder_tame_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ B : ℝ → ℝ, (∀ R : ℝ, 0 ≤ R → 0 ≤ B R) ∧
@@ -3624,9 +3624,9 @@ theorem RicciDeTurckLowOrder.exists_symmetricRicciTerm_covariantJetNormSq_differ
   obtain ⟨Ks, hKs, hsymm⟩ :=
     exists_ccInputSlotSymm_covariantJetNormSq_bound (I := I) (M := M) hDim g
   obtain ⟨ρA, BA, hρA, hBA, haa⟩ :=
-    exists_ricciQuadraticConnectionArm_thirdOrder_tame_difference_bound (I := I) (M := M) hDim g
+    exists_ricciQuadraticConnectionTerm_thirdOrder_tame_difference_bound (I := I) (M := M) hDim g
   obtain ⟨BD, hBD, hda⟩ :=
-    exists_ricciConnectionDerivativeArm_thirdOrder_tame_difference_bound (I := I) (M := M) hDim g
+    exists_ricciConnectionDerivativeTerm_thirdOrder_tame_difference_bound (I := I) (M := M) hDim g
   let Cs : ℝ := Real.sqrt (2 * Ks)
   let B : ℝ → ℝ := fun R => Cs * (2 * BA R + BD R)
   have hCs : 0 ≤ Cs := Real.sqrt_nonneg _
@@ -3758,8 +3758,8 @@ theorem RicciDeTurckLowOrder.exists_symmetricRicciTerm_covariantJetNormSq_differ
     mul_nonneg
       (mul_nonneg (hBD R hR) (add_nonneg (by norm_num) (sq_nonneg A))) hD3
   have hAA : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT -
-        ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU) ≤ SA ^ 2 := by
+      (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT -
+        ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU) ≤ SA ^ 2 := by
     simpa only [SA, S] using
       haa gmT gmU P Q hPsymm hQsymm hPtie hQtie
         hδ_le hδ0 hδP hδQ hδZ R A D2 D3 N
@@ -3773,17 +3773,17 @@ theorem RicciDeTurckLowOrder.exists_symmetricRicciTerm_covariantJetNormSq_differ
         hP2 hQ2 hP3 hQ3 hPQ3
   have hlowT :
       RicciDeTurckLowOrder.ricciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmT P =
-        ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT +
+        ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT +
           RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmT P := rfl
   have hlowU :
       RicciDeTurckLowOrder.ricciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU Q =
-        ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU +
+        ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU +
           RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmU Q := rfl
   have hlow :
       RicciDeTurckLowOrder.ricciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmT P -
           RicciDeTurckLowOrder.ricciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU Q =
-        (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT -
-            ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU) +
+        (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT -
+            ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU) +
           (RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmT P -
             RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmU Q) := by
     rw [hlowT, hlowU]
@@ -3792,8 +3792,8 @@ theorem RicciDeTurckLowOrder.exists_symmetricRicciTerm_covariantJetNormSq_differ
       RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmT P -
           RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU Q =
         ccInputSlotSymm (I := I) (M := M) g
-          ((ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT -
-              ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU) +
+          ((ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT -
+              ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU) +
             (RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmT P -
               RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmU Q)) := by
     change ccInputSlotSymm (I := I) (M := M) g
@@ -3834,13 +3834,13 @@ theorem RicciDeTurckLowOrder.exists_symmetricRicciTerm_covariantJetNormSq_differ
   calc
     covariantJetNormSq (I := I) (M := M) g 2
         (ccInputSlotSymm (I := I) (M := M) g
-          ((ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT -
-              ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU) +
+          ((ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT -
+              ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU) +
             (RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmT P -
               RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmU Q))) ≤
       Ks * covariantJetNormSq (I := I) (M := M) g 2
-        ((ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmT -
-            ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g gmU) +
+        ((ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmT -
+            ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gmU) +
           (RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmT P -
             RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g gmU Q)) := hsymm _
     _ ≤ Ks * (2 * (SA ^ 2 + SD ^ 2)) := by

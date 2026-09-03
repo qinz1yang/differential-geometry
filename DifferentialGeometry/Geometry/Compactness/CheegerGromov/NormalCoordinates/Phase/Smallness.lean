@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
-import DifferentialGeometry.Analysis.ODE.PhaseFlowSmallness
-import DifferentialGeometry.Analysis.ODE.PhaseEndpointInverse
+import DifferentialGeometry.Analysis.ODE.PhaseFlow.Smallness
+import DifferentialGeometry.Analysis.ODE.PhaseFlow.EndpointInverse
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.RadiusProfile
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.Flow
 open DifferentialGeometry.Geometry.Curvature

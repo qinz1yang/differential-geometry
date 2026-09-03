@@ -1077,7 +1077,7 @@ theorem lowRegularityPrincipalOperatorH1_apply_smoothCore
               (ccTensorToHs (I := I) (M := M) g₀ 2 (3 : ℝ) U) =
             ccTensorToHs (I := I) (M := M) g₀ 2
               ((1 : ℕ) : ℝ)
-              (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ U) := by
+              (deTurckPrincipalCometricTerm (I := I) (M := M) g₀ g₁ U) := by
   obtain ⟨ρc, hρc, hcomm⟩ :=
     lowRegularityPrincipalOperators_commute (I := I) (M := M) hDim g₀
   obtain ⟨ρh, _, hρh, _, hhigh⟩ :=
@@ -1130,11 +1130,11 @@ theorem lowRegularityPrincipalOperatorH1_apply_smoothCore
       rw [hcore']
     _ = inc21 (I := I) (M := M) g₀
         (ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ)
-          (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ U)) := by
+          (deTurckPrincipalCometricTerm (I := I) (M := M) g₀ g₁ U)) := by
       rw [hop]
     _ = ccTensorToHs (I := I) (M := M) g₀ 2
         ((1 : ℕ) : ℝ)
-        (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ U) := by
+        (deTurckPrincipalCometricTerm (I := I) (M := M) g₀ g₁ U) := by
       rw [inc21, incl_core (I := I) (M := M) g₀
         (by norm_num : ((1 : ℕ) : ℝ) ≤ (2 : ℝ))]
 

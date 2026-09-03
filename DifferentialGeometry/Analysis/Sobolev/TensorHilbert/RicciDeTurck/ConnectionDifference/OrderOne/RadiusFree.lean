@@ -69,7 +69,7 @@ theorem linearizedRicciConnectionDifferenceOrderOneKernel_expansion (g₀ g₁ :
         + reindexCoeffGen (I := I) (M := M) g₀ 3 4
             (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm1203
               (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) kInPerm120) := by
-  rw [kernelField_eq_neg_arm_combination (I := I) (M := M) g₀ g₁]
+  rw [kernelField_eq_neg_term_combination (I := I) (M := M) g₀ g₁]
   simp only [permAppEqRs, kInPerm102, kInPerm120]
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
@@ -107,7 +107,7 @@ private lemma riemannianFiberNormSqNegIteratedCovGrad (g : SmoothRiemannianMetri
   norm_num
 
 omit [SigmaCompactSpace M] in
-private lemma riemannianFiberNormSqArmEq (g₀ g₁ : SmoothRiemannianMetric I M)
+private lemma riemannianFiberNormSqTermEq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (l : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + l) x
         ((iteratedCovGrad (I := I) g₀ 3 4 l
@@ -221,10 +221,10 @@ theorem ricciKerAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) 
     simp only [hF_def]
     rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 3 4
       (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 σ O) ρ l x]
-    exact riemannianFiberNormSqArmEq (I := I) (M := M) g₀ g₁ σ l x
+    exact riemannianFiberNormSqTermEq (I := I) (M := M) g₀ g₁ σ l x
   have h0 : F A0 = F O := harm _ _
   have h1 : F A1 = F O := harm _ _
-  have h2 : F A2 = F O := riemannianFiberNormSqArmEq (I := I) (M := M) g₀ g₁ kOutPerm2301 l x
+  have h2 : F A2 = F O := riemannianFiberNormSqTermEq (I := I) (M := M) g₀ g₁ kOutPerm2301 l x
   have h3 : F A3 = F O := harm _ _
   have h4 : F A4 = F O := harm _ _
   have hOnn : 0 ≤ F O := hFnn O

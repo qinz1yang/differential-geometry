@@ -38,7 +38,7 @@ theorem lieCorrectionZeroInsertion_eq_lieCorrectionZeroInsertionField
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
-  exact (lieCorrectionZerob_insert_fiber (I := I) (M := M) g₀ g₁ g_bg x D m).symm
+  exact (lieCorrectionZero_insert_fiber (I := I) (M := M) g₀ g₁ g_bg x D m).symm
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -51,7 +51,7 @@ theorem lieCorrectionZeroVectorBundle_eq_field (g₀ g₁ : SmoothRiemannianMetr
   apply ContinuousLinearMap.ext
   intro D
   change lieCorrectionZeroVBFib (I := I) g₀ g₁ x D = _
-  exact (lieCorrectionZerob_vb_fiber (I := I) (M := M) g₀ g₁ x D).symm
+  exact (lieCorrectionZero_vb_fiber (I := I) (M := M) g₀ g₁ x D).symm
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -64,7 +64,7 @@ theorem lieCorrectionZeroMixedConnection_eq_lieCorrectionZeroMixedConnectionFiel
   apply ContinuousLinearMap.ext
   intro D
   change lieCorrectionZeroMixedConnectionFib (I := I) g₀ g₁ g_bg x D = _
-  exact (lieCorrectionZerob_amix_fiber (I := I) (M := M) g₀ g₁ g_bg x D).symm
+  exact (lieCorrectionZero_amix_fiber (I := I) (M := M) g₀ g₁ g_bg x D).symm
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -77,7 +77,7 @@ theorem lieCorrectionZeroRiemann_eq_field (g₀ g₁ : SmoothRiemannianMetric I 
   apply ContinuousLinearMap.ext
   intro D
   change TensorRSSpace.ofCLM (lieCorrectionZeroRiemFib (I := I) g₀ g₁ x) D = _
-  exact (lieCorrectionZerob_riem_fiber (I := I) (M := M) g₀ g₁ x D).symm
+  exact (lieCorrectionZero_riem_fiber (I := I) (M := M) g₀ g₁ x D).symm
 
 end DifferentialGeometry.Analysis.Spectral
 

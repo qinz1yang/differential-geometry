@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.ArmJets
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.TermJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.VectorBundle.Expansion
 
 noncomputable section
@@ -780,7 +780,7 @@ theorem lieCorrectionZeroMixedConnectionJetBackground (hDim : Module.finrank ℝ
     ‖iteratedCovGrad (I := I) g₀ 2 2 i (D + A)‖ ^ 2
         ≤ 2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i D‖ ^ 2 +
             2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i A‖ ^ 2 :=
-      lieArm1_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i D A
+      lieFirstOrder_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i D A
     _ ≤ 2 * (KD i * JS) + 2 * ((K0d i + K2d i * H3) * JS) :=
       add_le_add (mul_le_mul_of_nonneg_left hD zero_le_two)
         (mul_le_mul_of_nonneg_left hA zero_le_two)

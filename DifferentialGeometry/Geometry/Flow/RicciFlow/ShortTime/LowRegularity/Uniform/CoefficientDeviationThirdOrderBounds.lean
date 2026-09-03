@@ -196,9 +196,9 @@ theorem phi_dev_h3_uniform
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g₁ -
       deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
   let ρA : Equiv.Perm (Fin 4) :=
-    traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA
+    traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA
   let ρAT : Equiv.Perm (Fin 4) :=
-    traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT
+    traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
   have hdev_eq : Dev =
       reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρA +
         reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρAT -

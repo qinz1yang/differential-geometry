@@ -323,8 +323,8 @@ theorem kappaAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 1 2 l
               (cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
-                (domDomCongrSection (I := I) g₀ lieArm1RhoSlot0
-                  (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))).toSection x) ≤
+                (domDomCongrSection (I := I) g₀ lieFirstOrderRhoSlot0
+                  (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))).toSection x) ≤
           Kκ l * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (l + 2) := by
   classical
@@ -334,17 +334,17 @@ theorem kappaAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M
   have hraise : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
       ((iteratedCovGrad (I := I) g₀ 1 2 l
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
-          (domDomCongrSection (I := I) g₀ lieArm1RhoSlot0
-            (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))).toSection x) =
+          (domDomCongrSection (I := I) g₀ lieFirstOrderRhoSlot0
+            (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + l) x
         ((iteratedCovGrad (I := I) g₀ 0 3 l
-          (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)).toSection x) := by
+          (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)).toSection x) := by
     rw [riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 1
-      (domDomCongrSection (I := I) g₀ lieArm1RhoSlot0
-        (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)) l x]
+      (domDomCongrSection (I := I) g₀ lieFirstOrderRhoSlot0
+        (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)) l x]
     exact riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
-      lieArm1RhoSlot0 (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg) l x
-  have hsign : deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg =
+      lieFirstOrderRhoSlot0 (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg) l x
+  have hsign : deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg =
       -metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g_bg := by
     rw [metricConnectionDifferenceLoweredCoefficient_eq_neg_kappa (I := I) (M := M) g₀ g₁ g_bg, neg_neg]
   rw [hraise, hsign,
@@ -368,7 +368,7 @@ theorem psiBAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
         (n : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
             ((iteratedCovGrad (I := I) g₀ 1 2 n
-              (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+              (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
           Kψ n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) := by
   classical
@@ -381,8 +381,8 @@ theorem psiBAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i') y
           ((iteratedCovGrad (I := I) g₀ 1 2 i'
             (cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
-              (domDomCongrSection (I := I) g₀ lieArm1RhoSlot0
-                (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))).toSection y) ≤
+              (domDomCongrSection (I := I) g₀ lieFirstOrderRhoSlot0
+                (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))).toSection y) ≤
         Kκ i' * Combinatorics.antidiagonalTupleGridWindow
           (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P y) (i' + 1 + 1) := by
     intro i' y
@@ -403,16 +403,16 @@ theorem psiBAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     exact h
   have hfold := operatorFieldComposition_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ (p := 1) (a := 1) (b := 2) 1 0
     (cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
-      (domDomCongrSection (I := I) g₀ lieArm1RhoSlot0
-        (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))
+      (domDomCongrSection (I := I) g₀ lieFirstOrderRhoSlot0
+        (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))
     (sharpFlatEndoCc (I := I) g₀ g₁) P hKκ_nn hKsf_nn hΦw hWw n x
   have hidx : n + 1 + 0 + 1 = n + 2 := by omega
   rw [hidx] at hfold
-  have hdef : deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg =
+  have hdef : deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg =
       ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 2
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
-          (domDomCongrSection (I := I) g₀ lieArm1RhoSlot0
-            (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))
+          (domDomCongrSection (I := I) g₀ lieFirstOrderRhoSlot0
+            (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)))
         (sharpFlatEndoCc (I := I) g₀ g₁) := rfl
   rw [hdef]
   exact hfold
@@ -423,7 +423,7 @@ theorem fixCdAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M
       ∀ (P : SmoothCcTensor g₀ 0 2) (n : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
             ((iteratedCovGrad (I := I) g₀ 1 2 n
-              (lieArm1FixCd (I := I) (M := M) g₀ g_bg)).toSection x) ≤
+              (lieFirstOrderFixCd (I := I) (M := M) g₀ g_bg)).toSection x) ≤
           Kfx n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) := by
   classical
@@ -431,7 +431,7 @@ theorem fixCdAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M
     exists_bound_riemannianFiberNormSq_smoothCcTensor
       (I := I) (M := M) g₀ 1 (2 + n)
         (iteratedCovGrad (I := I) g₀ 1 2 n
-          (lieArm1FixCd (I := I) (M := M) g₀ g_bg))
+          (lieFirstOrderFixCd (I := I) (M := M) g₀ g_bg))
   refine ⟨Kfx, hKfx_nn, ?_⟩
   intro P n x
   have hb : ∀ j, 0 ≤ covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x j :=
@@ -454,7 +454,7 @@ theorem bgCcAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
         (n : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
             ((iteratedCovGrad (I := I) g₀ 1 2 n
-              (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+              (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
           Kbg n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) := by
   classical
@@ -480,9 +480,9 @@ theorem bgCcAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     exact h
   have hfx' : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
       ((iteratedCovGrad (I := I) g₀ 1 2 n
-        (lieArm1FixCd (I := I) (M := M) g₀ g_bg)).toSection x) ≤ Kfx n * W := by
+        (lieFirstOrderFixCd (I := I) (M := M) g₀ g_bg)).toSection x) ≤ Kfx n * W := by
     simpa only [W] using hfx P n x
-  rw [lieArm1_connectionDifferenceBackground_decomp (I := I) (M := M) g₀ g₁ g_bg,
+  rw [lieFirstOrder_connectionDifferenceBackground_decomp (I := I) (M := M) g₀ g₁ g_bg,
     iteratedCovGrad_add, SmoothCcTensor.toSection_add, ContMDiffSection.coe_add,
     Pi.add_apply]
   refine le_trans
@@ -493,13 +493,13 @@ theorem bgCcAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
             (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) +
         2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
           ((iteratedCovGrad (I := I) g₀ 1 2 n
-            (lieArm1FixCd (I := I) (M := M) g₀ g_bg)).toSection x)
+            (lieFirstOrderFixCd (I := I) (M := M) g₀ g_bg)).toSection x)
         ≤ 2 * (Kcd n * W) + 2 * (Kfx n * W) := by linarith
     _ = (2 * Kcd n + 2 * Kfx n) * W := by ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem bgCcEqConn (g₀ g₁ : SmoothRiemannianMetric I M) :
-    deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g₀ = connectionDifferenceSection (I := I) g₁ g₀ := by
+    deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g₀ = connectionDifferenceSection (I := I) g₁ g₀ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
@@ -521,7 +521,7 @@ theorem pieceAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ
         ∀ (σ' : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (n : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 (2 + n) x
             ((iteratedCovGrad (I := I) g₀ 3 2 n
-              (lieArm1Piece (I := I) (M := M) g₀ g₁ σ' ρ Ψ)).toSection x) ≤
+              (lieFirstOrderPiece (I := I) (M := M) g₀ g₁ σ' ρ Ψ)).toSection x) ≤
           Kpc n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) := by
   classical
@@ -571,7 +571,7 @@ theorem pieceAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ
     hKp_nn (fun l => mul_nonneg hfr_nn (mul_nonneg hfr_nn (hKψ_nn l))) hΦw hWw n x
   have hidx : n + 0 + 1 + 1 = n + 2 := by omega
   rw [hidx] at hfold
-  have hdef : lieArm1Piece (I := I) (M := M) g₀ g₁ σ' ρ Ψ =
+  have hdef : lieFirstOrderPiece (I := I) (M := M) g₀ g₁ σ' ρ Ψ =
       reindexCoeffGen (I := I) (M := M) g₀ 3 2
         (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 2 (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ')
           (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2 Ψ)))
@@ -593,7 +593,7 @@ theorem lieA1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannian
         (n : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 (2 + n) x
             ((iteratedCovGrad (I := I) g₀ 3 2 n
-              (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+              (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
           Kl n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) := by
   classical
@@ -637,7 +637,7 @@ theorem lieA1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannian
   have hΨpsi : ∀ (l : ℕ) (y : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) y
           ((iteratedCovGrad (I := I) g₀ 1 2 l
-            (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg)).toSection y) ≤
+            (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg)).toSection y) ≤
         KΨ l * Combinatorics.antidiagonalTupleGridWindow
           (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P y) (l + 2) := by
     intro l y
@@ -652,7 +652,7 @@ theorem lieA1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannian
   have hΨbg : ∀ (l : ℕ) (y : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) y
           ((iteratedCovGrad (I := I) g₀ 1 2 l
-            (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)).toSection y) ≤
+            (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)).toSection y) ≤
         KΨ l * Combinatorics.antidiagonalTupleGridWindow
           (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P y) (l + 2) := by
     intro l y
@@ -689,50 +689,50 @@ theorem lieA1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannian
           ((iteratedCovGrad (I := I) g₀ 1 2 l Ψ).toSection y) ≤
         KΨ l * Combinatorics.antidiagonalTupleGridWindow
           (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P y) (l + 2)) →
-      F (lieArm1Piece (I := I) (M := M) g₀ g₁ σ' ρ Ψ) ≤ Kpc n * bW := by
+      F (lieFirstOrderPiece (I := I) (M := M) g₀ g₁ σ' ρ Ψ) ≤ Kpc n * bW := by
     intro σ' ρ Ψ hΨ
     exact hpc g₁ P htie hδ_le hδ0 hδ Ψ hΨ σ' ρ n x
   set A : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaC lieArm1RhoSlot0
-      (deTurckLieArmOneBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg) with hA_def
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaC lieFirstOrderRhoSlot0
+      (deTurckLieFirstOrderBackgroundConnectionDifference (I := I) (M := M) g₀ g₁ g_bg) with hA_def
   set B1 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaA (Equiv.refl (Fin 3))
       (connectionDifferenceSection (I := I) g₁ g₀) with hB1_def
   set B2 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaA (Equiv.refl (Fin 3))
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg) with hB2_def
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaA (Equiv.refl (Fin 3))
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg) with hB2_def
   set B3 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaC (Equiv.refl (Fin 3))
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaC (Equiv.refl (Fin 3))
       (connectionDifferenceSection (I := I) g₁ g₀) with hB3_def
   set B4 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaD lieArm1RhoSlot0
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaD lieFirstOrderRhoSlot0
       (connectionDifferenceSection (I := I) g₁ g₀) with hB4_def
   set B5 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4)) lieArm1RhoSlot1
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4)) lieFirstOrderRhoSlot1
       (connectionDifferenceSection (I := I) g₁ g₀) with hB5_def
   set B6 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaF (Equiv.refl (Fin 3))
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaF (Equiv.refl (Fin 3))
       (connectionDifferenceSection (I := I) g₁ g₀) with hB6_def
   set C1 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap (Equiv.refl (Fin 3))
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaASwap (Equiv.refl (Fin 3))
       (connectionDifferenceSection (I := I) g₁ g₀) with hC1_def
   set C2 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaASwap (Equiv.refl (Fin 3))
-      (deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg) with hC2_def
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaASwap (Equiv.refl (Fin 3))
+      (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg) with hC2_def
   set C3 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaCSwap (Equiv.refl (Fin 3))
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaCSwap (Equiv.refl (Fin 3))
       (connectionDifferenceSection (I := I) g₁ g₀) with hC3_def
   set C4 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaDSwap lieArm1RhoSlot0
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaDSwap lieFirstOrderRhoSlot0
       (connectionDifferenceSection (I := I) g₁ g₀) with hC4_def
   set C5 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaESwap lieArm1RhoSlot1
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaESwap lieFirstOrderRhoSlot1
       (connectionDifferenceSection (I := I) g₁ g₀) with hC5_def
   set C6 : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ lieArm1SigmaFSwap (Equiv.refl (Fin 3))
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ lieFirstOrderSigmaFSwap (Equiv.refl (Fin 3))
       (connectionDifferenceSection (I := I) g₁ g₀) with hC6_def
   set D : SmoothCcTensor g₀ 3 2 :=
-    lieArm1Piece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4)) lieArm1RhoSlot0
+    lieFirstOrderPiece (I := I) (M := M) g₀ g₁ (Equiv.refl (Fin 4)) lieFirstOrderRhoSlot0
       (connectionDifferenceSection (I := I) g₁ g₀) with hD_def
   have hAb : F A ≤ Kpc n * bW := hpiece _ _ _ hΨbg
   have hB1b : F B1 ≤ Kpc n * bW := hpiece _ _ _ hΨcd
@@ -767,10 +767,10 @@ theorem lieA1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannian
       (C1 + C2 - C3 - C4 - C5 - C6) + D) ≤ 1138 * (Kpc n * bW) := by
     linarith [hAb, hB1b, hB2b, hB3b, hB4b, hB5b, hB6b,
       hC1b, hC2b, hC3b, hC4b, hC5b, hC6b, hDb]
-  have hexp : deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg =
+  have hexp : deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g_bg =
       A + (B1 + B2 - B3 - B4 - B5 - B6) + (C1 + C2 - C3 - C4 - C5 - C6) + D :=
-    deTurckLieArm1Coeff_eq_lieArm1Piece_sum (I := I) (M := M) g₀ g₁ g_bg
-  change F (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg) ≤ _
+    deTurckLieFirstOrderCoeff_eq_lieFirstOrderPiece_sum (I := I) (M := M) g₀ g₁ g_bg
+  change F (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g_bg) ≤ _
   rw [hexp]
   refine hsum.trans ?_
   rw [hbW_def]
@@ -789,7 +789,7 @@ theorem lieA1AntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M)
         (n : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 (2 + n) x
             ((iteratedCovGrad (I := I) g₀ 3 2 n
-              (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g₀)).toSection x) ≤
+              (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g₀)).toSection x) ≤
           Kl n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) :=
   lieA1AntidiagonalTupleGridWindowBackground (I := I) (M := M) g₀ g₀ hδ₀
@@ -809,7 +809,7 @@ theorem low1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannianM
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 (2 + n) x
             ((iteratedCovGrad (I := I) g₀ 3 2 n
               ((-2 : ℝ) • linearizedRicciConnectionDifferenceOrder1CoeffField (I := I) (M := M) g₀ g₁ +
-                deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+                deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
           K n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) := by
   classical
@@ -821,7 +821,7 @@ theorem low1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannianM
   set R : SmoothCcTensor g₀ 3 2 :=
     linearizedRicciConnectionDifferenceOrder1CoeffField (I := I) (M := M) g₀ g₁ with hR_def
   set L : SmoothCcTensor g₀ 3 2 :=
-    deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg with hL_def
+    deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g_bg with hL_def
   set W : ℝ := Combinatorics.antidiagonalTupleGridWindow
     (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) with hW_def
   have hRb : riemannianFiberNormSq (I := I) (M := M) g₀ 3 (2 + n) x
@@ -862,7 +862,7 @@ theorem low1AntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M)
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 (2 + n) x
             ((iteratedCovGrad (I := I) g₀ 3 2 n
               ((-2 : ℝ) • linearizedRicciConnectionDifferenceOrder1CoeffField (I := I) (M := M) g₀ g₁ +
-                deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g₀)).toSection x) ≤
+                deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g₀)).toSection x) ≤
           K n * Combinatorics.antidiagonalTupleGridWindow
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (n + 2) :=
   low1AntidiagonalTupleGridWindowBackground (I := I) (M := M) g₀ g₀ hδ₀

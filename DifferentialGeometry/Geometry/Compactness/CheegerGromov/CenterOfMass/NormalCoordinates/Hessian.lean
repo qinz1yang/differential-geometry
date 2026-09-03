@@ -423,7 +423,7 @@ theorem normalComp_inv {ι : Type*} [Fintype ι]
 
 namespace IsNormalDiag
 
-theorem readout_factor
+theorem diagonalInverseCoordinates_normalPair_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -451,7 +451,7 @@ theorem readout_factor
       (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    (toBranch (I := I) Y hcomplete hconn x hq he).diagReadout
+    (toBranch (I := I) Y hcomplete hconn x hq he).diagonalInverseCoordinates
         (normalPair (I := I) Y x w) =
       normalReadCLM (I := I) Y x w.1 (e.symm w).2 := by
   let : TopologicalSpace Y.M := Y.topology
@@ -509,7 +509,7 @@ theorem readout_factor
     exact NormalCoordinates.exp_target_sub_chart (I := I) Y.metric x
       ((expMapDiffeo (I := I) Y.metric x).map_source hzExpSource)
   have htransport := full_transport (I := I) Y hcomplete hconn x hq he hf
-  unfold DiagInvBranch.diagReadout
+  unfold DiagonalInverseBranch.diagonalInverseCoordinates
   rw [htransport.2.2 w hw,
     ← normalTanHome_apply (I := I) Y x (e.symm w) hzNormal]
   change normalPhaseRead (I := I) Y x (e.symm w) = _
@@ -1367,10 +1367,10 @@ theorem chartCmEqnC_factor
   intro i _hi
   congr 1
   change
-    (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he).chartReadout c
+    (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he).chartDiagonalInverseCoordinates c
         (normalPair (I := I) Y x (z, xi i) (c := c)) =
       (e.symm (z, xi i)).2
-  exact IsNormalDiag.chart_readout (I := I) Y hcomplete hconn x
+  exact IsNormalDiag.chartDiagonalInverseCoordinates_normalPair (I := I) Y hcomplete hconn x
     hq he hf (htgt i)
 
 omit [CompleteSpace E] in
@@ -1690,7 +1690,7 @@ theorem cmC_sol_strict
       let B := IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he
       z ∈ Metric.ball (0 : E) c.radius ∧
         (∀ i, xi i ∈ Metric.ball (0 : E) c.radius) ∧
-        (∀ i, (c.hom z, c.hom (xi i)) ∈ B.chartReadDom c) ∧
+        (∀ i, (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c) ∧
         chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y) x c
           B z (mu, xi) = 0) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -1756,7 +1756,7 @@ theorem cmC_sol_strict
   obtain ⟨L, hL⟩ := cmC_deriv_inv (I := I) Y hcomplete hconn x hq he hf
     happrox heta z mu xi htgt hmu hsum
   refine ⟨L, hL, ?_⟩
-  exact readoutSolC_strict (I := I) Y.metric (normal_enorm (I := I) Y)
+  exact chartCmEqnC_implicitFunction_hasStrictFDerivAt (I := I) Y.metric (normal_enorm (I := I) Y)
     x c B z (mu, xi) hz hxi hdom ⟨L, hL⟩ hzero
 
 theorem cmC_sol_cd
@@ -1802,7 +1802,7 @@ theorem cmC_sol_cd
       let B := IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he
       z ∈ Metric.ball (0 : E) c.radius ∧
         (∀ i, xi i ∈ Metric.ball (0 : E) c.radius) ∧
-        (∀ i, (c.hom z, c.hom (xi i)) ∈ B.chartReadDom c) ∧
+        (∀ i, (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c) ∧
         chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y) x c
           B z (mu, xi) = 0) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -1860,7 +1860,7 @@ theorem cmC_sol_cd
   rcases hdata with ⟨hz, hxi, hdom, hzero⟩
   obtain ⟨L, hL⟩ := cmC_deriv_inv (I := I) Y hcomplete hconn x hq he hf
     happrox heta z mu xi htgt hmu hsum
-  exact readoutSolC_cdAt (I := I) Y.metric (normal_enorm (I := I) Y)
+  exact chartCmEqnC_implicitFunction_contDiffAt (I := I) Y.metric (normal_enorm (I := I) Y)
     x c B z (mu, xi) n hn hz hxi hdom ⟨L, hL⟩ hzero
 theorem chartCmEqnB_factor
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -1921,10 +1921,10 @@ theorem chartCmEqnB_factor
   intro i hi
   rw [map_smul]
   congr 1
-  change (toBranch (I := I) Y hcomplete hconn x hq he).diagReadout
+  change (toBranch (I := I) Y hcomplete hconn x hq he).diagonalInverseCoordinates
       (normalPair (I := I) Y x (z, xi i)) =
     normalReadCLM (I := I) Y x z (e.symm (z, xi i)).2
-  exact readout_factor (I := I) Y hcomplete hconn x hq he hf (htgt i)
+  exact diagonalInverseCoordinates_normalPair_eq (I := I) Y hcomplete hconn x hq he hf (htgt i)
 
 theorem chartCm_zero_iff
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -2088,7 +2088,7 @@ theorem cmC_sol_of_vel
     have hmap := c.restrictBall.map_source hzBall
     simpa only [NormalBallChart.restrict_ball_apply] using hmap
   have hdom (i : ι) :
-      (c.hom z, c.hom (xi i)) ∈ B.chartReadDom c := by
+      (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c := by
     have hpair :
         normalPair (I := I) Y x (z, xi i) (c := c) ∈ B.dom := by
       rw [← (IsNormalDiag.full_transport (I := I) Y hcomplete hconn
@@ -2401,7 +2401,7 @@ theorem cm_sol_strict
   have htransport := full_transport (I := I) Y hcomplete hconn x hq he hf
   have hread (i : ι) :
       ContMDiffAt (I.prod I) 𝓘(Real, E) 1
-        (fun yq : Y.M × Y.M => B.diagReadout yq)
+        (fun yq : Y.M × Y.M => B.diagonalInverseCoordinates yq)
         ((NormalCoordinates.normalChartAt (I := I) Y.metric x).symm z,
           (NormalCoordinates.normalChartAt (I := I) Y.metric x).symm (xi i)) := by
     have hdom :
@@ -2421,11 +2421,11 @@ theorem cm_sol_strict
     have hmem :
         ((NormalCoordinates.normalChartAt (I := I) Y.metric x).symm z,
           (NormalCoordinates.normalChartAt (I := I) Y.metric x).symm (xi i)) ∈
-            B.readDom := ⟨hdom, hbase⟩
-    have hdata := B.readoutDomInf
+            B.coordinateDomain := ⟨hdom, hbase⟩
+    have hdata := B.diagonalInverseCoordinates_properties
     exact ((hdata.2.2.1 _ hmem).contMDiffAt (hdata.1.mem_nhds hmem)).of_le
       (by simp)
-  exact readoutSolB_strict (I := I) Y.metric (normal_enorm (I := I) Y) x B
+  exact chartCmEqnB_implicitFunction_hasStrictFDerivAt (I := I) Y.metric (normal_enorm (I := I) Y) x B
     z (mu, xi) hchz hchxi hread ⟨L, hL⟩ hzero
 
 theorem cm_sol_cd
@@ -2577,7 +2577,7 @@ theorem cm_sol_cd
   have htransport := full_transport (I := I) Y hcomplete hconn x hq he hf
   have hread (i : ι) :
       ContMDiffAt (I.prod I) 𝓘(Real, E) (n : ℕ∞)
-        (fun yq : Y.M × Y.M => B.diagReadout yq)
+        (fun yq : Y.M × Y.M => B.diagonalInverseCoordinates yq)
         ((NormalCoordinates.normalChartAt (I := I) Y.metric x).symm z,
           (NormalCoordinates.normalChartAt (I := I) Y.metric x).symm (xi i)) := by
     have hdom :
@@ -2596,11 +2596,11 @@ theorem cm_sol_cd
     have hmem :
         ((NormalCoordinates.normalChartAt (I := I) Y.metric x).symm z,
           (NormalCoordinates.normalChartAt (I := I) Y.metric x).symm (xi i)) ∈
-            B.readDom := ⟨hdom, hbase⟩
-    have hdata := B.readoutDomInf
+            B.coordinateDomain := ⟨hdom, hbase⟩
+    have hdata := B.diagonalInverseCoordinates_properties
     exact ((hdata.2.2.1 _ hmem).contMDiffAt (hdata.1.mem_nhds hmem)).of_le
       (WithTop.coe_le_coe.mpr le_top)
-  exact readoutSolB_cdAt (I := I) Y.metric (normal_enorm (I := I) Y) x B
+  exact chartCmEqnB_implicitFunction_contDiffAt (I := I) Y.metric (normal_enorm (I := I) Y) x B
     z (mu, xi) n hn hchz hchxi hread ⟨L, hL⟩ hzero
 
 end IsNormalDiag

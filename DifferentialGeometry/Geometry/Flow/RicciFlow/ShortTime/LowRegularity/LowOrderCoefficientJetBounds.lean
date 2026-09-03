@@ -86,7 +86,7 @@ theorem firstOrderKernel_jet_bound_background
         (0 : SmoothCcTensor g 0 2) hδg hδZ s =
       (-2 : ℝ) • linearizedRicciConnectionDifferenceOrder1CoeffField (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδg hδZ s) +
-        deTurckLieArm1Coeff (I := I) (M := M) g
+        deTurckLieFirstOrderCoeff (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδg hδZ s) g_bg := rfl
   have hq : ∀ q : ℕ, ‖iteratedCovGrad (I := I) g 3 2 q
         (ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g g_bg T
@@ -174,11 +174,11 @@ theorem selfLow_split_bg
     pathIntegrand (I := I) (M := M) g g_bg T hδ hδZ s =
       let gm := metricPerturbationPath (I := I) g T 0 hδ hδZ s
       (-2 : ℝ) • symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gm (s • T) +
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g_bg -
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g_bg -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδ hδZ
               lieDecompositionQ lieDecompositionEps s) +
-          (deTurckLieEndoArmField (I := I) (M := M) g gm g_bg -
-            deTurckLieEndoArmField (I := I) (M := M) g gm g) +
+          (deTurckLieEndoTermField (I := I) (M := M) g gm g_bg -
+            deTurckLieEndoTermField (I := I) (M := M) g gm g) +
           (lieCorrectionZeroInsertion (I := I) (M := M) g gm g_bg -
             lieCorrectionZeroInsertion (I := I) (M := M) g gm g) +
           lieCorrectionZeroVectorBundle (I := I) (M := M) g gm +
@@ -200,11 +200,11 @@ theorem selfLow_split_bg
           (metricPerturbationPath (I := I) g T 0 hδ hδZ s) g_bg) +
         lieCorrectionZeroRiemann (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ s) -
-        deTurckLieEndoArmField (I := I) (M := M) g
+        deTurckLieEndoTermField (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ s) g := by
     rw [← h]
     abel
-  rw [deTurckLieCoeffField_eq_covDerivArm_add_endoArm]
+  rw [deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm]
   rw [h']
   abel
 
@@ -224,7 +224,7 @@ theorem selfLow_split
     pathIntegrand (I := I) (M := M) g g T hδ hδZ s =
       let gm := metricPerturbationPath (I := I) g T 0 hδ hδZ s
       (-2 : ℝ) • symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gm (s • T) +
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g -
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g -
             deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδ hδZ
               lieDecompositionQ lieDecompositionEps s) +
           lieCorrectionZeroVectorBundle (I := I) (M := M) g gm +
@@ -240,11 +240,11 @@ theorem selfLow_split
           (metricPerturbationPath (I := I) g T 0 hδ hδZ s) g +
         lieCorrectionZeroRiemann (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ s) -
-        deTurckLieEndoArmField (I := I) (M := M) g
+        deTurckLieEndoTermField (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ s) g := by
     rw [← h]; abel
   rw [selfLow_good (I := I) (M := M) g g T hT hδ_lt hδ hδZ hs]
-  simp only [deTurckLieCoeffField_eq_covDerivArm_add_endoArm, h']
+  simp only [deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm, h']
   abel
 
 private theorem ricciGoodCap (g₀ : SmoothRiemannianMetric I M)
@@ -260,7 +260,7 @@ private theorem ricciGoodCap (g₀ : SmoothRiemannianMetric I M)
         HasCapWin (I := I) (M := M) g₀ P
           (symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g₀ g₁ P) K := by
   classical
-  obtain ⟨KAA, hKAA_nn, hAA⟩ := exists_ricciConnectionDifferenceQuadraticArm_capWindow (I := I) (M := M) g₀ hδ₀ hΛ1
+  obtain ⟨KAA, hKAA_nn, hAA⟩ := exists_ricciConnectionDifferenceQuadraticTerm_capWindow (I := I) (M := M) g₀ hδ₀ hΛ1
   obtain ⟨KDA, hKDA_nn, hDA⟩ := exists_ricciCovariantDerivativeConnectionDifferenceLowOrder_capWindow (I := I) (M := M) g₀ hδ₀ hΛ1
   choose SSw hSSw_nn hSSw using
     (fun i : ℕ => exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 2 (2 + i)
@@ -276,7 +276,7 @@ private theorem ricciGoodCap (g₀ : SmoothRiemannianMetric I M)
       nlinarith [h1, h2], ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hP0 hP1
   have hLow : HasCapWin (I := I) (M := M) g₀ P
-      (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g₀ g₁ +
+      (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g₀ g₁ +
         ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g₀ g₁ P) KL :=
     capAdd (I := I) (M := M) g₀ P (hAA g₁ P htie hδ_le hδ0 hδ hP0 hP1)
       (hDA g₁ P htie hδ_le hδ0 hδ hP0 hP1)
@@ -284,7 +284,7 @@ private theorem ricciGoodCap (g₀ : SmoothRiemannianMetric I M)
       (ccSlotSwapField (I := I) (M := M) g₀) SSw :=
     capOfBnd (I := I) (M := M) g₀ P _ hSSw_nn (fun i x => hSSw i x)
   have happ := capApp (I := I) (M := M) g₀ P
-    (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g₀ g₁ + ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g₀ g₁ P)
+    (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g₀ g₁ + ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g₀ g₁ P)
     (ccSlotSwapField (I := I) (M := M) g₀) hKL_nn hSSw_nn hLow hSw
   exact capSmul (I := I) (M := M) g₀ P (1 / 2 : ℝ)
     (capAdd (I := I) (M := M) g₀ P hLow happ)
@@ -447,7 +447,7 @@ private theorem ricciGoodMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} 
         HasMarkedGridWindow (I := I) (M := M) g₀ P
           (symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g₀ g₁ P) 2 K := by
   classical
-  obtain ⟨KAA, hKAA_nn, hAA⟩ := exists_ricciConnectionDifferenceQuadraticArm_markWindow (I := I) (M := M) g₀ hδ₀
+  obtain ⟨KAA, hKAA_nn, hAA⟩ := exists_ricciConnectionDifferenceQuadraticTerm_markWindow (I := I) (M := M) g₀ hδ₀
   obtain ⟨KDA, hKDA_nn, hDA⟩ := exists_ricciCovariantDerivativeConnectionDifferenceLowOrder_markWindow (I := I) (M := M) g₀ hδ₀
   choose SSw hSSw_nn hSSw using
     (fun i : ℕ => exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 2 (2 + i)
@@ -463,7 +463,7 @@ private theorem ricciGoodMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} 
       nlinarith [h1, h2], ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hP0
   have hLow : HasMarkedGridWindow (I := I) (M := M) g₀ P
-      (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g₀ g₁ +
+      (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g₀ g₁ +
         ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g₀ g₁ P) 2 KL :=
     hasMarkedGridWindow_add (I := I) (M := M) g₀ P (hAA g₁ P htie hδ_le hδ0 hδ)
       (hDA g₁ P htie hδ_le hδ0 hδ hP0)
@@ -471,13 +471,13 @@ private theorem ricciGoodMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} 
       (ccSlotSwapField (I := I) (M := M) g₀) 0 SSw :=
     hasMarkedGridWindow_of_pointwise_bound (I := I) (M := M) g₀ P _ hSSw_nn (fun i x => hSSw i x)
   have happ := hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P
-    (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g₀ g₁ + ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g₀ g₁ P)
+    (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g₀ g₁ + ricciCovariantDerivativeConnectionDifferenceLowOrder (I := I) (M := M) g₀ g₁ P)
     (ccSlotSwapField (I := I) (M := M) g₀) hKL_nn hSSw_nn hLow hSw
   exact hasMarkedGridWindow_smul (I := I) (M := M) g₀ P (1 / 2 : ℝ)
     (hasMarkedGridWindow_add (I := I) (M := M) g₀ P hLow happ)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [CompactSpace M] in
-private lemma jetFold (g : SmoothRiemannianMetric I M) {r c : ℕ}
+private lemma covariantJetNormSq_le_of_perOrder_bound (g : SmoothRiemannianMetric I M) {r c : ℕ}
     (X : SmoothCcTensor g r c) (i : ℕ) (A B : ℕ → ℝ) {u v : ℝ}
     (hstep : ∀ q ∈ Finset.range (i + 1),
       ‖iteratedCovGrad (I := I) g r c q X‖ ^ 2 ≤ (A q + B q * u) * v) :
@@ -511,7 +511,7 @@ private lemma jetTrans (g : SmoothRiemannianMetric I M) {r c : ℕ}
         (1 + ∑ j ∈ Finset.range (i + 2),
           ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
   classical
-  refine jetFold (I := I) (M := M) g X i A B (fun q hq => ?_)
+  refine covariantJetNormSq_le_of_perOrder_bound (I := I) (M := M) g X i A B (fun q hq => ?_)
   have hqi : q ≤ i := by have := Finset.mem_range.mp hq; omega
   refine le_trans (hX q) ?_
   have hHP_nn : (0 : ℝ) ≤ ∑ j ∈ Finset.range 3,
@@ -563,13 +563,13 @@ theorem lieBackgroundJet
           ((convexPerturbation (I := I) g T 0 s).toSection x) ≤ 1)
         (i : ℕ),
         covariantJetNormSq (I := I) (M := M) g i
-            ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+            ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g
                 (metricPerturbationPath (I := I) g T 0 hδg hδZ s) g_bg -
               deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδg hδZ
                 lieDecompositionQ lieDecompositionEps s) +
-              (deTurckLieEndoArmField (I := I) (M := M) g
+              (deTurckLieEndoTermField (I := I) (M := M) g
                   (metricPerturbationPath (I := I) g T 0 hδg hδZ s) g_bg -
-                deTurckLieEndoArmField (I := I) (M := M) g
+                deTurckLieEndoTermField (I := I) (M := M) g
                   (metricPerturbationPath (I := I) g T 0 hδg hδZ s) g)) ≤
           (K0 i + K2 i * ∑ j ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g 0 2 (1 + j) T‖ ^ 2) *
@@ -578,8 +578,8 @@ theorem lieBackgroundJet
   classical
   obtain ⟨Ac, Bc, hAc_nn, hBc_nn, hcov⟩ :=
     lieCovJet (I := I) (M := M) hDim g hδ₀
-  obtain ⟨Ca, hCa_nn, hCa⟩ := bdCovDerivArmDiff_pointwise_gridWindow (I := I) (M := M) g g_bg hδ₀
-  obtain ⟨Cb, hCb_nn, hCb⟩ := bdEndoArmDiff_pointwise_gridWindow (I := I) (M := M) g g_bg hδ₀
+  obtain ⟨Ca, hCa_nn, hCa⟩ := bdCovDerivTermDiff_pointwise_gridWindow (I := I) (M := M) g g_bg hδ₀
+  obtain ⟨Cb, hCb_nn, hCb⟩ := bdEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g g_bg hδ₀
   obtain ⟨Kint, hKint_nn, hint⟩ :=
     antidiagonalTupleGridWindow_bound_to_covariant_jet_bound (I := I) (M := M) g (Λ₀ := 1) zero_le_one
   set Aa : ℕ → ℝ := fun q => Ca q * ∑ k ∈ Finset.range (q + 2), Kint k with hAa_def
@@ -641,14 +641,14 @@ theorem lieBackgroundJet
     intro x
     simpa only [one_pow, hP_def] using hP0 x
   let Xc : SmoothCcTensor g 2 2 :=
-    deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g -
+    deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g -
       deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδg hδZ lieDecompositionQ lieDecompositionEps s
   let Xa : SmoothCcTensor g 2 2 :=
-    deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g_bg -
-      deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g
+    deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g_bg -
+      deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g
   let Xb : SmoothCcTensor g 2 2 :=
-    deTurckLieEndoArmField (I := I) (M := M) g gm g_bg -
-      deTurckLieEndoArmField (I := I) (M := M) g gm g
+    deTurckLieEndoTermField (I := I) (M := M) g gm g_bg -
+      deTurckLieEndoTermField (I := I) (M := M) g gm g
   have hcovL : covariantJetNormSq (I := I) (M := M) g i Xc ≤
       ((∑ q ∈ Finset.range (i + 1), Ac q) +
           (∑ q ∈ Finset.range (i + 1), Bc q) *
@@ -694,7 +694,7 @@ theorem lieBackgroundJet
     have hxb : Xb =
         deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g gm g_bg -
           deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g gm g := by
-      simp only [Xb, DifferentialGeometry.Integral.Connection.deTurckLieEndomorphismArm_eq_covariantDerivativeInsertion]
+      simp only [Xb, DifferentialGeometry.Integral.Connection.deTurckLieEndomorphismTerm_eq_covariantDerivativeInsertion]
     rw [hxb]
     simpa only [hAb_def, zero_mul, add_zero] using hraw
   have haL : covariantJetNormSq (I := I) (M := M) g i Xa ≤
@@ -712,10 +712,10 @@ theorem lieBackgroundJet
       (jetTrans (I := I) (M := M) g Xb i Ab (fun _ => 0) hAb_nn
         (fun _ => le_rfl) P T hPk hbStep)
   have hrw :
-      (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g_bg -
+      (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g_bg -
           deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδg hδZ lieDecompositionQ lieDecompositionEps s) +
-        (deTurckLieEndoArmField (I := I) (M := M) g gm g_bg -
-          deTurckLieEndoArmField (I := I) (M := M) g gm g) =
+        (deTurckLieEndoTermField (I := I) (M := M) g gm g_bg -
+          deTurckLieEndoTermField (I := I) (M := M) g gm g) =
       (Xc + Xa) + Xb := by
     dsimp only [Xc, Xa, Xb]
     abel
@@ -993,11 +993,11 @@ theorem selfLowJetQBackground
     have hnn : (0 : ℝ) ≤ (4 : ℝ) := by norm_num
     nlinarith [h, hnn]
   let L : SmoothCcTensor g 2 2 :=
-    (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gm g_bg -
+    (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g gm g_bg -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδg hδZ
           lieDecompositionQ lieDecompositionEps s) +
-      (deTurckLieEndoArmField (I := I) (M := M) g gm g_bg -
-        deTurckLieEndoArmField (I := I) (M := M) g gm g)
+      (deTurckLieEndoTermField (I := I) (M := M) g gm g_bg -
+        deTurckLieEndoTermField (I := I) (M := M) g gm g)
   let X : SmoothCcTensor g 2 2 :=
     lieCorrectionZeroInsertion (I := I) (M := M) g gm g_bg -
       lieCorrectionZeroInsertion (I := I) (M := M) g gm g

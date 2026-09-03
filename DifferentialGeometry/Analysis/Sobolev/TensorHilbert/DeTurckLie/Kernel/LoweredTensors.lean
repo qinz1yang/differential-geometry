@@ -356,7 +356,7 @@ lemma deTurckLieConnectionDifferenceDerivativeLoweredCc_unitModel_apply (g₀ g�
   rw [deTurckLieConnectionDifferenceDerivativeLoweredCc_unitModel]
   rfl
 
-def deTurckLieConnectionDifferenceDerivativeConnArmPt (g₀ gc : SmoothRiemannianMetric I M) :
+def deTurckLieConnectionDifferenceDerivativeConnTermPt (g₀ gc : SmoothRiemannianMetric I M) :
     ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :=
   ⟨fun x : M => PDE.DeTurck.connectionDifference (I := I) gc g₀ x,
@@ -367,13 +367,13 @@ def deTurckLieConnectionDifferenceDerivativeConnArmPt (g₀ gc : SmoothRiemannia
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma deTurckLieConnectionDifferenceDerivativeConnArmPt_apply (g₀ gc : SmoothRiemannianMetric I M) (x : M) :
-    deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc x = PDE.DeTurck.connectionDifference (I := I) gc g₀ x := rfl
+private lemma deTurckLieConnectionDifferenceDerivativeConnTermPt_apply (g₀ gc : SmoothRiemannianMetric I M) (x : M) :
+    deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ gc x = PDE.DeTurck.connectionDifference (I := I) gc g₀ x := rfl
 
 def deTurckLieConnectionDifferenceDerivativeQuadCc (g₀ g_arm g_out : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 1 3 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 1 2 3
-    (armSlotEndoPassZeroCc (I := I) (M := M) g₀ (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ g_arm))
+    (termSlotEndoPassZeroCc (I := I) (M := M) g₀ (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ g_arm))
     (connectionDifferenceSection (I := I) g_out g₀)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -393,11 +393,11 @@ lemma deTurckLieConnectionDifferenceDerivativeQuadCc_toModel (g₀ g_arm g_out :
         (deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ g_arm g_out).toSection x) om) =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 1 2 3
-          (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ g_arm))
+          (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+            (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ g_arm))
           (connectionDifferenceSection (I := I) g_out g₀)).toSection x) om) from rfl]
-  rw [toModel_operatorFieldComposition_armSlotEndoPassZeroCc_eval (I := I) (M := M) g₀
-    (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ g_arm) (connectionDifferenceSection (I := I) g_out g₀) x om w]
+  rw [toModel_operatorFieldComposition_termSlotEndoPassZeroCc_eval (I := I) (M := M) g₀
+    (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ g_arm) (connectionDifferenceSection (I := I) g_out g₀) x om w]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (connectionDifferenceSection (I := I) g_out g₀).toSection x) om) =
       connectionDifferencePairing (I := I) g_out g₀ x om from rfl]
@@ -406,7 +406,7 @@ lemma deTurckLieConnectionDifferenceDerivativeQuadCc_toModel (g₀ g_arm g_out :
         (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
           (if j = 0 then
             tangentSpaceModelContinuousLinearEquiv (I := I) x
-              (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ g_arm x
+              (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ g_arm x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1))
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 2)))
           else w 0)) =

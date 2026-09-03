@@ -10,7 +10,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatu
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.KoszulSecondCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.PrincipalEndomorphismTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.SymmetrizedReindexedCoefficient
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ReindexingArmDecomposition
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ReindexingTermDecomposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.RiemannFixedFrameBicontraction
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
@@ -1003,7 +1003,7 @@ omit [SigmaCompactSpace M] in
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem exists_ricciArmOrder0DeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+theorem exists_ricciOrderZeroDeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     ∃ R_Lie : SmoothCcTensor g₀ 2 2,
       ∀ (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x),
         unitModel (I := I) (M := M) g₀ 2
@@ -1124,26 +1124,26 @@ theorem exists_ricciArmOrder0DeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiemannianM
       · simp; rfl
       · simp; rfl
 
-noncomputable def ricciArmOrder0DeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+noncomputable def ricciOrderZeroDeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 :=
   deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem ricciArmOrder0DeTurckLieCoeff_toSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+@[simp] theorem ricciOrderZeroDeTurckLieCoeff_toSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) :
-    (ricciArmOrder0DeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg).toSection x =
+    (ricciOrderZeroDeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg).toSection x =
       (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM (deTurckLieFib (I := I) g₁ g_bg x)) :=
   rfl
 
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem ricciArmOrder0DeTurckLieCoeff_operatorFieldApplication_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+theorem ricciOrderZeroDeTurckLieCoeff_operatorFieldApplication_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-          (ricciArmOrder0DeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg) W)
+          (ricciOrderZeroDeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg) W)
         x v =
       (- ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 2 W x
@@ -1171,14 +1171,14 @@ theorem ricciArmOrder0DeTurckLieCoeff_operatorFieldApplication_eq (g₀ g₁ g_b
                   (smoothExtensionTangent (I := I) x (v 1)) x)) := by
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (ricciArmOrder0DeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg).toSection x).comp
+        (ricciOrderZeroDeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg).toSection x).comp
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x))
         (unitTensor (I := I) (M := M) x) =
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (ricciArmOrder0DeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg).toSection x)
+        (ricciOrderZeroDeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg).toSection x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x)
           (unitTensor (I := I) (M := M) x)) from rfl]
-  rw [ricciArmOrder0DeTurckLieCoeff_toSection]
+  rw [ricciOrderZeroDeTurckLieCoeff_toSection]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (show TensorRSSpace 2 2 I x from TensorRSSpace.ofCLM (deTurckLieFib (I := I) g₁ g_bg x)))
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x)
@@ -1261,7 +1261,7 @@ theorem ricciArmOrder0DeTurckLieCoeff_operatorFieldApplication_eq (g₀ g₁ g_b
 noncomputable def symmAbsorbedOrder0DeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 2 2 :=
   symmAbsorbedCoeff (I := I) (M := M) g₀ 0
-    (ricciArmOrder0DeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg)
+    (ricciOrderZeroDeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg)
     (Classical.choose (exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀
       (Equiv.swap (0 : Fin 2) 1) S 0))
 
@@ -1275,10 +1275,10 @@ theorem symmAbsorbedOrder0DeTurckLieCoeff_operatorFieldApplication_eq (g₀ g₁
           (iteratedCovGrad (I := I) g₀ 0 2 0 S)) x v =
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-          (ricciArmOrder0DeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg)
+          (ricciOrderZeroDeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg)
           (iteratedCovGrad (I := I) g₀ 0 2 0 (ccTensor02Symm (I := I) (M := M) g₀ S))) x v := by
   exact symmAbsorbedCoeff_operatorFieldApplication_eq (I := I) (M := M) g₀ 0 S
-    (ricciArmOrder0DeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg)
+    (ricciOrderZeroDeTurckLieCoeff (I := I) (M := M) g₀ g₁ g_bg)
     (Classical.choose (exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀
       (Equiv.swap (0 : Fin 2) 1) S 0))
     (Classical.choose_spec (exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀

@@ -56,45 +56,45 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private lemma connectionDifferenceSection_eq_armSlotEndoCc_zero_deTurckLieConnectionDifferenceDerivative (g₀ gc : SmoothRiemannianMetric I M) :
+private lemma connectionDifferenceSection_eq_termSlotEndoCc_zero_deTurckLieConnectionDifferenceDerivative (g₀ gc : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) gc g₀ =
-      bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc) := by
-  exact DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower.connectionDifferenceSection_eq_armSlotEndoCc_zero
+      bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ gc) := by
+  exact DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower.connectionDifferenceSection_eq_termSlotEndoCc_zero
     (I := I) (M := M) g₀ gc
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma armSlotEndoCc_one_eq_reindex_slotExtend_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
-    (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
+private lemma termSlotEndoCc_one_eq_reindex_slotExtend_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
+    (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
-    bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Arm =
+    bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term =
       reindexCoeffGen (I := I) (M := M) g₀ 2 3
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
-          (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)))
+          (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)))
         (Equiv.swap (0 : Fin 2) 1) := by
-  exact DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower.armSlotEndoCc_one_eq_reindex_slotExtend
-    (I := I) (M := M) g₀ Arm
+  exact DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower.termSlotEndoCc_one_eq_reindex_slotExtend
+    (I := I) (M := M) g₀ Term
 omit [SigmaCompactSpace M] in
-private lemma riemannianFiberNormSq_iteratedCovGrad_armSlotPass_connArm_le_deTurckLieConnectionDifferenceDerivative
+private lemma riemannianFiberNormSq_iteratedCovGrad_termSlotPass_connTerm_le_deTurckLieConnectionDifferenceDerivative
     (g₀ gc : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + j) x
         ((iteratedCovGrad (I := I) g₀ 2 3 j
-          (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc))).toSection x) ≤
+          (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+            (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ gc))).toSection x) ≤
       (Module.finrank ℝ E : ℝ) *
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 1 2 j (connectionDifferenceSection (I := I) gc g₀)).toSection x) := by
-  rw [riemannianFiberNormSq_iteratedCovGrad_armSlotEndoPassZeroCc_eq (I := I) (M := M) g₀
-    (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc) j x]
-  rw [armSlotEndoCc_one_eq_reindex_slotExtend_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀
-    (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc)]
+  rw [riemannianFiberNormSq_iteratedCovGrad_termSlotEndoPassZeroCc_eq (I := I) (M := M) g₀
+    (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ gc) j x]
+  rw [termSlotEndoCc_one_eq_reindex_slotExtend_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀
+    (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ gc)]
   rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 2 3
     (Equiv.swap (0 : Fin 2) 1) (finRotate 3).symm
     (slotExtend (I := I) (M := M) g₀ 1 2
-      (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc))) j x]
+      (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ gc))) j x]
   refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 2
-    (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc)) j x) ?_
-  rw [← connectionDifferenceSection_eq_armSlotEndoCc_zero_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ gc]
+    (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ gc)) j x) ?_
+  rw [← connectionDifferenceSection_eq_termSlotEndoCc_zero_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ gc]
 
 omit [SigmaCompactSpace M] in
 lemma deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (g₀ ga gb : SmoothRiemannianMetric I M)
@@ -120,13 +120,13 @@ lemma deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (g₀ ga gb 
   refine le_trans
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I) (M := M) g₀ j 1 2 3
-    (armSlotEndoPassZeroCc (I := I) (M := M) g₀ (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ ga))
+    (termSlotEndoPassZeroCc (I := I) (M := M) g₀ (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ ga))
     (connectionDifferenceSection (I := I) gb g₀) x) ?_
   have hcell : ∀ i ∈ Finset.range (j + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i) x
           ((iteratedCovGrad (I := I) g₀ 2 3 i
-            (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-              (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ ga))).toSection x) *
+            (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+              (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ ga))).toSection x) *
         ∑ l ∈ Finset.range (j + 1 - i),
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 1 2 l
@@ -139,10 +139,10 @@ lemma deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (g₀ ga gb 
     have hi_le : i ≤ j := by omega
     have hA1 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i) x
         ((iteratedCovGrad (I := I) g₀ 2 3 i
-          (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ ga))).toSection x) ≤
+          (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+            (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ ga))).toSection x) ≤
         (Module.finrank ℝ E : ℝ) * (Ba i * antidiagonalTupleGridPartialSum b (i + 2)) := by
-      refine le_trans (riemannianFiberNormSq_iteratedCovGrad_armSlotPass_connArm_le_deTurckLieConnectionDifferenceDerivative
+      refine le_trans (riemannianFiberNormSq_iteratedCovGrad_termSlotPass_connTerm_le_deTurckLieConnectionDifferenceDerivative
         (I := I) (M := M) g₀ ga i x) ?_
       exact mul_le_mul_of_nonneg_left (harm i hi_le) hfr_nn
     have hA2 : (∑ l ∈ Finset.range (j + 1 - i),
@@ -193,8 +193,8 @@ lemma deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (g₀ ga gb 
         ∑ i ∈ Finset.range (j + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i) x
               ((iteratedCovGrad (I := I) g₀ 2 3 i
-                (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-                  (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ ga))).toSection x) *
+                (termSlotEndoPassZeroCc (I := I) (M := M) g₀
+                  (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ ga))).toSection x) *
             ∑ l ∈ Finset.range (j + 1 - i),
               riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
                 ((iteratedCovGrad (I := I) g₀ 1 2 l

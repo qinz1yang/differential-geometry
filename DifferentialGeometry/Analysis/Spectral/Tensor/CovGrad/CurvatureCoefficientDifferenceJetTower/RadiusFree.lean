@@ -75,7 +75,7 @@ private lemma sum_shift_le_rf (g : ℕ → ℝ) (hg : ∀ j, 0 ≤ g j) (m c : �
     _ ≤ ∑ j ∈ Finset.range (m + c), g j :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub (fun j _ _ => hg j)
 
-theorem ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree
+theorem ricciOrderZeroBaseCoeff_perOrder_l2_radiusFree
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Atop : ℕ → ℝ, (∀ i, 0 ≤ Atop i) ∧ ∃ Alow : ℕ → ℝ, (∀ i, 0 ≤ Alow i) ∧
@@ -88,8 +88,8 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree
           ((symmS (I := I) (M := M) g₀ T).toSection x) ≤ Λ₀ ^ 2)
         (i : ℕ),
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-              ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+              ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
           Atop i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
               (symmS (I := I) (M := M) g₀ T)‖ ^ 2 +
           Alow i * (1 + ∑ j ∈ Finset.range (i + 2),
@@ -98,10 +98,10 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨KtCr, hKtCr_nn, KcCr, hKcCr_nn, hCr⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_topOrderSeparated_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_topOrderSeparated_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨KtCu, hKtCu_nn, KcCu, hKcCu_nn, hCu⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0CurvCoeff_backgroundDifference_topOrderSeparated_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_backgroundDifference_topOrderSeparated_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Klg, hKlg_nn, Ktg, hKtg_nn, hgate⟩ :=
     boundedFactorGridWindow_integral_radiusFree_topOrderSeparated (I := I) (M := M) g₀ hΛ₀0
@@ -109,8 +109,8 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree
     fun i => by have := hKcCr_nn i; have := hKcCu_nn i; have := hKtg_nn i; positivity, ?_⟩
   refine ⟨fun i => 5 * KcCr i * Klg i + 5 * KcCu i * Klg i +
       5 * ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-          ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2,
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+          ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2,
     fun i => by have := hKcCr_nn i; have := hKcCu_nn i; have := hKlg_nn i; positivity, ?_⟩
   intro g₁ T δ hδ_le hδ0 hδ htie hsup i
   have htie_s : ∀ (y : M) (v w : TangentSpace I y),
@@ -132,47 +132,47 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree
   set low : ℝ := ∑ j ∈ Finset.range (i + 2),
     ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2 with hlow
   set RieDiff : SmoothCcTensor g₀ 2 (2 + i) := iteratedCovGrad (I := I) g₀ 2 2 i
-    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-      ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) with hRieDiff
+    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+      ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) with hRieDiff
   set CuDiff : SmoothCcTensor g₀ 2 (2 + i) := iteratedCovGrad (I := I) g₀ 2 2 i
-    (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-      ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) with hCuDiff
+    (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+      ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) with hCuDiff
   have hlow_nn : 0 ≤ low := Finset.sum_nonneg (fun _ _ => sq_nonneg _)
   have hC5 : iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁) =
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁) =
       iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-            ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) +
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+            ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) +
         (RieDiff - HdCr) + HdCr - (CuDiff - HdCu) - HdCu := by
     rw [hRieDiff, hCuDiff]
-    have hsum : ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ =
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-          ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) +
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) -
-        (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) := by abel
+    have hsum : ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ =
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+          ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) +
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) -
+        (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) := by abel
     rw [hsum, iteratedCovGrad_sub, iteratedCovGrad_add]
     abel
   have hnorm : ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖ ≤
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ≤
       ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-            ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖ +
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+            ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖ +
         ‖RieDiff - HdCr‖ + ‖HdCr‖ + ‖CuDiff - HdCu‖ + ‖HdCu‖ := by
     rw [hC5]
     exact le_trans (norm_sub_le _ _) (add_le_add (le_trans (norm_sub_le _ _)
       (add_le_add (le_trans (norm_add_le _ _) (add_le_add (norm_add_le _ _) le_rfl)) le_rfl))
       le_rfl)
   have key5 : ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
       5 * (‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-              ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 +
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+              ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 +
           ‖RieDiff - HdCr‖ ^ 2 + ‖HdCr‖ ^ 2 + ‖CuDiff - HdCu‖ ^ 2 + ‖HdCu‖ ^ 2) := by
     refine le_trans ?_ (DifferentialGeometry.Analysis.sq_sum_five_le _ _ _ _ _)
     simp only [pow_two]
@@ -231,8 +231,8 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree
   have hRcu : ‖CuDiff - HdCu‖ ^ 2 ≤ KcCu i * Klg i * (1 + low) + KcCu i * Ktg i * W :=
     hresL2 (CuDiff - HdCu) (KcCu i) (hKcCu_nn i) hCu_res
   set B : ℝ := ‖iteratedCovGrad (I := I) g₀ 2 2 i
-    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
-      ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 with hB
+    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -
+      ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 with hB
   have hB_nn : 0 ≤ B := sq_nonneg _
   refine le_trans key5 ?_
   have hstep : 5 * (B + ‖RieDiff - HdCr‖ ^ 2 + ‖HdCr‖ ^ 2 + ‖CuDiff - HdCu‖ ^ 2 + ‖HdCu‖ ^ 2) ≤
@@ -251,7 +251,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree
     ring
   linarith [hbal, hslack]
 
-theorem ricciArmOrder0BaseCoeff_summed_l2_radiusFree
+theorem ricciOrderZeroBaseCoeff_summed_l2_radiusFree
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Klow : ℝ, 0 ≤ Klow ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -261,15 +261,15 @@ theorem ricciArmOrder0BaseCoeff_summed_l2_radiusFree
           g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w),
         ∑ i ∈ Finset.range (a + 1),
             ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
           Ktop * (∑ j ∈ Finset.range (a + 3),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) +
           Klow * (1 + ∑ j ∈ Finset.range (a + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   obtain ⟨Atop, hAtop_nn, Alow, hAlow_nn, hper⟩ :=
-    ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree (I := I) (M := M) g₀ hδ₀
+    ricciOrderZeroBaseCoeff_perOrder_l2_radiusFree (I := I) (M := M) g₀ hδ₀
       (Λ₀ := max 0 ((Module.finrank ℝ E : ℝ) * δ₀)) (le_max_left _ _)
   refine ⟨∑ i ∈ Finset.range (a + 1), Atop i,
     Finset.sum_nonneg (fun i _ => hAtop_nn i), ?_⟩
@@ -308,8 +308,8 @@ theorem ricciArmOrder0BaseCoeff_summed_l2_radiusFree
       exact riemannianFiberNormSq_symmS_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
     have hper' : ∀ i, i ≤ a →
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-              ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+              ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
           Atop i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
               (symmS (I := I) (M := M) g₀ T)‖ ^ 2 +
           Alow i * (1 + ∑ j ∈ Finset.range (i + 2),
@@ -324,8 +324,8 @@ theorem ricciArmOrder0BaseCoeff_summed_l2_radiusFree
       Finset.sum_nonneg (fun i _ => hAlow_nn i)
     calc ∑ i ∈ Finset.range (a + 1),
             ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2
         ≤ ∑ i ∈ Finset.range (a + 1),
             (Atop i * w (i + 2) + Alow i * (1 + ∑ j ∈ Finset.range (i + 2), w j)) := by
           refine Finset.sum_le_sum (fun i hi => ?_)
@@ -361,12 +361,12 @@ theorem ricciArmOrder0BaseCoeff_summed_l2_radiusFree
   · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hL0 : ∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-            ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 = 0 := by
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+            ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 = 0 := by
       refine Finset.sum_eq_zero (fun i _ => ?_)
       have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-            ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁)‖ = 0 := by
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+            ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ = 0 := by
         rw [SmoothCcTensor.norm_def, tensorL2Norm_def, tensorL2Inner,
           MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
       rw [hz]; ring

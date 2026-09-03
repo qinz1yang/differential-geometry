@@ -581,7 +581,7 @@ theorem exists_deTurckPrincipalCometricCoefficient_path_secondOrder_bound
       (mul_le_mul_of_nonneg_left hP hC) 2
   exact ⟨fun x => (hpt x).trans hscale, hjet.trans hscale⟩
 
-theorem exists_deTurckPrincipalCometricArm_firstOrder_bound
+theorem exists_deTurckPrincipalCometricTerm_firstOrder_bound
     (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 ≤ C ∧
@@ -592,7 +592,7 @@ theorem exists_deTurckPrincipalCometricArm_firstOrder_bound
           g₁.inner y v w = g₀.inner y v w +
             ccTensorBilinSymm (I := I) g₀ T y v w) →
         ‖ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)
-            (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ U)‖ ≤
+            (deTurckPrincipalCometricTerm (I := I) (M := M) g₀ g₁ U)‖ ≤
           C * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖ *
             ‖ccTensorToHs (I := I) (M := M) g₀ 2 (3 : ℝ) U‖ := by
   obtain ⟨ρ, Ccoeff, hρ, hCcoeff, hcoeff⟩ :=
@@ -610,6 +610,6 @@ theorem exists_deTurckPrincipalCometricArm_firstOrder_bound
   have hbound := happ
     (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁) U A
     hA (by simpa [A, N] using hpt) (by simpa [A, N] using hjet)
-  simpa [deTurckPrincipalCometricArm, A, N, mul_assoc] using hbound
+  simpa [deTurckPrincipalCometricTerm, A, N, mul_assoc] using hbound
 
 end DifferentialGeometry.Analysis.Spectral

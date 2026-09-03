@@ -198,7 +198,7 @@ theorem galN_eval (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
     (galCoreRep (I := I) (M := M) g₀ R S c)
     (galCoreRep_ball (I := I) (M := M) g₀ hR.le S c)
 
-theorem galArmId (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
+theorem galTermId (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 < R) (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hreal : ∀ T : SmoothCcTensor g₀ 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀
@@ -278,7 +278,7 @@ theorem galArmId (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
   exact h₁.trans (h₂.trans
     (congrArg (smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)) h₃))
 
-theorem galArmCap (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
+theorem galTermCap (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hreal : ∀ T : SmoothCcTensor g₀ 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀
@@ -306,7 +306,7 @@ theorem galArmCap (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
     (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).2 x
 
 open scoped Classical in
-theorem galForceArm (g₀ : SmoothRiemannianMetric I M)
+theorem galForceTerm (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B1 ρ P : ℝ} (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hCtop : 0 ≤ Ctop) (hB1 : 0 ≤ B1) (hρ : 0 < ρ) (hP : 0 < P)
     (hreal : ∀ T : SmoothCcTensor g₀ 0 2,
@@ -360,7 +360,7 @@ theorem galForceArm (g₀ : SmoothRiemannianMetric I M)
                     (lowRegularityStateRadius Ctop B1 ρ P) S c)))).coeff i
       else 0 := by
   classical
-  have harm := galArmId (I := I) (M := M) g₀
+  have harm := galTermId (I := I) (M := M) g₀
     (lowRegularityStateRadius_pos hCtop hB1 hρ hP) hδ hδ0 hδ3
     (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
       hP.le hreal) hcore S c

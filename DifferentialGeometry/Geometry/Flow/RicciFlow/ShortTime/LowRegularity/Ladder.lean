@@ -586,11 +586,11 @@ theorem firstOrderAction_ladder_background
       (hcap0 A.zeroOrderCoefficient T hball hc0jet) hc0jet q
     have h1 := heng1 1 (by norm_num) A.firstOrderCoefficient T hball
       (hcap1 A.firstOrderCoefficient T hball hc1jet) hc1jet q
-    have hsplitArm : A.firstOrderAction (I := I) (M := M) T =
+    have hsplitTerm : A.firstOrderAction (I := I) (M := M) T =
         operatorFieldApply (I := I) (M := M) g 2 2 A.zeroOrderCoefficient T +
           operatorFieldApply (I := I) (M := M) g 3 2 A.firstOrderCoefficient
             (iteratedCovGrad (I := I) g 0 2 1 T) := rfl
-    rw [hsplitArm, iteratedCovGrad_add, add_mul]
+    rw [hsplitTerm, iteratedCovGrad_add, add_mul]
     exact le_trans (norm_add_le _ _) (add_le_add h0 h1)
   have hwin : ∀ q ∈ Finset.range (m + 1),
       Real.sqrt (∑ i ∈ Finset.range (q + 1 + 1),

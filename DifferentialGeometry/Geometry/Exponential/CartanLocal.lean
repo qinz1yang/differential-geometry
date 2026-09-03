@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.BranchRadius
 import DifferentialGeometry.Geometry.Exponential.CartanNorm
-import DifferentialGeometry.Geometry.Exponential.DiagInvFixed
+import DifferentialGeometry.Geometry.Exponential.FixedBasePartialDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Polarization
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -51,7 +51,7 @@ def cartanMap
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {c : M} (B : DiagInvBranch (I := I) g hEnorm c) (p : M)
+    {c : M} (B : DiagonalInverseBranch (I := I) g hEnorm c) (p : M)
     (g' : SmoothRiemannianMetric I' M')
     (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
@@ -65,7 +65,7 @@ theorem cartanMap_smooth
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {c : M} (B : DiagInvBranch (I := I) g hEnorm c) (p : M)
+    {c : M} (B : DiagonalInverseBranch (I := I) g hEnorm c) (p : M)
     (g' : SmoothRiemannianMetric I' M')
     (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
@@ -99,7 +99,7 @@ theorem cartanMap_sq
     (g' : SmoothRiemannianMetric I' M')
     (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
-    {c : M} (B : DiagInvBranch (I := I) g hEnorm c) (p : M)
+    {c : M} (B : DiagonalInverseBranch (I := I) g hEnorm c) (p : M)
     (p' : M') (i : E ≃L[ℝ] E)
     (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
     (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
@@ -182,7 +182,7 @@ theorem cartanMap_sq
   have hright :
       mfderiv 𝓘(ℝ, E) I expf u w = Y := by
     have hx' : x ∈ (B.fixed p).dom := by
-      simpa only [DiagInvBranch.fixed_target] using hx
+      simpa only [DiagonalInverseBranch.fixed_target] using hx
     have h := exp_inv_mfderiv (I := I) (B.fixed p) hx' Y
     have hinvFun : (B.fixed p).inv = invf := by
       rfl
@@ -237,7 +237,7 @@ theorem cartanMap_inner
     (g' : SmoothRiemannianMetric I' M')
     (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
-    {c : M} (B : DiagInvBranch (I := I) g hEnorm c) (p : M)
+    {c : M} (B : DiagonalInverseBranch (I := I) g hEnorm c) (p : M)
     (p' : M') (i : E ≃L[ℝ] E)
     (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
     (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
@@ -350,16 +350,16 @@ def cartanPD
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p)
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {g' : SmoothRiemannianMetric I' M'}
     {hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w))}
-    {p' : M'} (B' : DiagInvBranch (I := I') g' hEnorm' p')
+    {p' : M'} (B' : DiagonalInverseBranch (I := I') g' hEnorm' p')
     (i : E ≃L[ℝ] E) :
     PartialDiffeomorph I I' M M' ∞ :=
   let L : PartialDiffeomorph 𝓘(ℝ, E) 𝓘(ℝ, E) E E ∞ :=
     i.toDiffeomorph.toPartialDiffeomorph
-  pdTrans (pdTrans B.fixedPD.symm L) B'.fixedPD
+  pdTrans (pdTrans B.fixedBasePartialDiffeomorph.symm L) B'.fixedBasePartialDiffeomorph
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')] [ConnectedSpace M] [ConnectedSpace M'] in
@@ -367,11 +367,11 @@ theorem cartanPD_coe
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p)
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {g' : SmoothRiemannianMetric I' M'}
     {hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w))}
-    {p' : M'} (B' : DiagInvBranch (I := I') g' hEnorm' p')
+    {p' : M'} (B' : DiagonalInverseBranch (I := I') g' hEnorm' p')
     (i : E ≃L[ℝ] E) :
     (cartanPD B B' i : M → M') =
       cartanMap B p g' hEnorm' p' i :=
@@ -383,20 +383,20 @@ theorem cartanPD_center
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p)
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {g' : SmoothRiemannianMetric I' M'}
     {hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w))}
-    {p' : M'} (B' : DiagInvBranch (I := I') g' hEnorm' p')
+    {p' : M'} (B' : DiagonalInverseBranch (I := I') g' hEnorm' p')
     (i : E ≃L[ℝ] E) :
     p ∈ (cartanPD B B' i).source := by
   change
-    p ∈ B.fixedPD.target ∩
-      (B.fixedPD.symm : M → E) ⁻¹' Set.univ ∩
-        (fun x : M => i (B.fixedPD.symm x)) ⁻¹' B'.fixedPD.source
-  refine ⟨⟨B.fixedPD_center_mem, Set.mem_univ _⟩, ?_⟩
-  simp only [Set.mem_preimage, B.fixedPD_symm_center, map_zero]
-  exact B'.fixedPD_zero_mem
+    p ∈ B.fixedBasePartialDiffeomorph.target ∩
+      (B.fixedBasePartialDiffeomorph.symm : M → E) ⁻¹' Set.univ ∩
+        (fun x : M => i (B.fixedBasePartialDiffeomorph.symm x)) ⁻¹' B'.fixedBasePartialDiffeomorph.source
+  refine ⟨⟨B.fixedBasePartialDiffeomorph_center_mem_target, Set.mem_univ _⟩, ?_⟩
+  simp only [Set.mem_preimage, B.fixedBasePartialDiffeomorph_symm_center, map_zero]
+  exact B'.fixedBasePartialDiffeomorph_zero_mem_source
 
 omit [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')]
@@ -408,8 +408,8 @@ theorem cartanPD_inner
     (g' : SmoothRiemannianMetric I' M')
     (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
-    {p : M} (B : DiagInvBranch (I := I) g hEnorm p)
-    {p' : M'} (B' : DiagInvBranch (I := I') g' hEnorm' p')
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p)
+    {p' : M'} (B' : DiagonalInverseBranch (I := I') g' hEnorm' p')
     (i : E ≃L[ℝ] E)
     (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
     (hR : ∀ (x : M) (X Y Z : TangentSpace I x),

@@ -98,13 +98,13 @@ theorem finiteEigenComboHs_eq (g₀ : SmoothRiemannianMetric I M)
   rw [finiteEigenComboHs_coeff_eq, smoothCcToTensorHs_coeff,
     ← SmoothCcTensor.toL2_apply]
 
-def deTurckArmFibreConst (n : ℕ) : ℝ := Real.sqrt ((n : ℝ) ^ 3)
+def deTurckTermFibreConst (n : ℕ) : ℝ := Real.sqrt ((n : ℝ) ^ 3)
 
-lemma de_turck_arm_fibre_const_nonneg (n : ℕ) : 0 ≤ deTurckArmFibreConst n :=
+lemma de_turck_term_fibre_const_nonneg (n : ℕ) : 0 ≤ deTurckTermFibreConst n :=
   Real.sqrt_nonneg _
 
-lemma one_le_de_turck_arm_fibre_const {n : ℕ} (hn : 1 ≤ n) :
-    1 ≤ deTurckArmFibreConst n := by
+lemma one_le_de_turck_term_fibre_const {n : ℕ} (hn : 1 ≤ n) :
+    1 ≤ deTurckTermFibreConst n := by
   have hn' : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have h1 : (1 : ℝ) ≤ (n : ℝ) ^ 3 := by
     calc (1 : ℝ) = 1 ^ 3 := (one_pow 3).symm
@@ -112,22 +112,22 @@ lemma one_le_de_turck_arm_fibre_const {n : ℕ} (hn : 1 ≤ n) :
   calc (1 : ℝ) = Real.sqrt 1 := Real.sqrt_one.symm
     _ ≤ Real.sqrt ((n : ℝ) ^ 3) := Real.sqrt_le_sqrt h1
 
-lemma sq_de_turck_arm_fibre_const (n : ℕ) :
-    deTurckArmFibreConst n ^ 2 = (n : ℝ) ^ 3 :=
+lemma sq_de_turck_term_fibre_const (n : ℕ) :
+    deTurckTermFibreConst n ^ 2 = (n : ℝ) ^ 3 :=
   Real.sq_sqrt (by positivity)
 
 def deTurckContractionThreshold (n : ℕ) : ℝ :=
-  1 / (1 + 2 * deTurckArmFibreConst n)
+  1 / (1 + 2 * deTurckTermFibreConst n)
 
 lemma de_turck_contraction_threshold_pos (n : ℕ) :
     0 < deTurckContractionThreshold n := by
-  have h := de_turck_arm_fibre_const_nonneg n
+  have h := de_turck_term_fibre_const_nonneg n
   unfold deTurckContractionThreshold
   positivity
 
 lemma de_turck_contraction_threshold_le_third {n : ℕ} (hn : 1 ≤ n) :
     deTurckContractionThreshold n ≤ 1 / 3 := by
-  have h1 := one_le_de_turck_arm_fibre_const hn
+  have h1 := one_le_de_turck_term_fibre_const hn
   unfold deTurckContractionThreshold
   rw [div_le_div_iff₀ (by linarith) (by norm_num : (0 : ℝ) < 3)]
   linarith
@@ -146,20 +146,20 @@ lemma de_turck_contraction_threshold_lt_one_of_ne_zero (n : ℕ) [NeZero n] :
   de_turck_contraction_threshold_lt_one (Nat.one_le_iff_ne_zero.mpr (NeZero.ne n))
 
 def deTurckRemainderContractionThreshold (n : ℕ) : ℝ :=
-  1 / (1 + 2 * (deTurckArmFibreConst n + 32 * deTurckArmFibreConst n ^ 3))
+  1 / (1 + 2 * (deTurckTermFibreConst n + 32 * deTurckTermFibreConst n ^ 3))
 
 lemma de_turck_remainder_contraction_threshold_pos (n : ℕ) :
     0 < deTurckRemainderContractionThreshold n := by
   unfold deTurckRemainderContractionThreshold
-  have hf : 0 ≤ deTurckArmFibreConst n := de_turck_arm_fibre_const_nonneg n
-  have hf3 : 0 ≤ deTurckArmFibreConst n ^ 3 := by positivity
+  have hf : 0 ≤ deTurckTermFibreConst n := de_turck_term_fibre_const_nonneg n
+  have hf3 : 0 ≤ deTurckTermFibreConst n ^ 3 := by positivity
   exact one_div_pos.mpr (by linarith)
 
 lemma de_turck_remainder_contraction_threshold_le_contraction_threshold {n : ℕ} (hn : 1 ≤ n) :
     deTurckRemainderContractionThreshold n ≤ deTurckContractionThreshold n := by
-  have hC := one_le_de_turck_arm_fibre_const hn
+  have hC := one_le_de_turck_term_fibre_const hn
   unfold deTurckRemainderContractionThreshold deTurckContractionThreshold
-  have hC3 : 0 ≤ deTurckArmFibreConst n ^ 3 := by positivity
+  have hC3 : 0 ≤ deTurckTermFibreConst n ^ 3 := by positivity
   apply one_div_le_one_div_of_le (by linarith)
   linarith
 
@@ -181,11 +181,11 @@ lemma de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (n : ℕ) [NeZe
     deTurckRemainderContractionThreshold n < 1 :=
   de_turck_remainder_contraction_threshold_lt_one (Nat.one_le_iff_ne_zero.mpr (NeZero.ne n))
 
-lemma de_turck_arm_fibre_const_mul_div_le_half {n : ℕ} (hn : 1 ≤ n) {δ : ℝ}
+lemma de_turck_term_fibre_const_mul_div_le_half {n : ℕ} (hn : 1 ≤ n) {δ : ℝ}
     (hδ_le : δ ≤ deTurckContractionThreshold n) :
-    deTurckArmFibreConst n * (δ / (1 - δ)) ≤ 1 / 2 := by
-  have hC := one_le_de_turck_arm_fibre_const hn
-  set C := deTurckArmFibreConst n with hC_def
+    deTurckTermFibreConst n * (δ / (1 - δ)) ≤ 1 / 2 := by
+  have hC := one_le_de_turck_term_fibre_const hn
+  set C := deTurckTermFibreConst n with hC_def
   have hden : (0 : ℝ) < 1 + 2 * C := by linarith
   have hthr_lt : deTurckContractionThreshold n < 1 :=
     de_turck_contraction_threshold_lt_one hn

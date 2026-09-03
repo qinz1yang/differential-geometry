@@ -380,6 +380,33 @@ theorem operatorFieldApplication_smul_right (g : SmoothRiemannianMetric I M) (r 
     rw [SmoothCcTensor.toSection_smul]; rfl]
   rw [ContinuousLinearMap.comp_smul]
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] [CompleteSpace E] in
+theorem operatorFieldApplication_zero_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (Φ : SmoothCcTensor g r s) :
+    operatorFieldApply (I := I) (M := M) g r s Φ (0 : SmoothCcTensor g 0 r) = 0 := by
+  simpa using operatorFieldApplication_smul_right (I := I) (M := M) g r s
+    (0 : ℝ) Φ (0 : SmoothCcTensor g 0 r)
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] [CompleteSpace E] in
+theorem operatorFieldApplication_neg_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
+    operatorFieldApply (I := I) (M := M) g r s Φ (-W) =
+      -operatorFieldApply (I := I) (M := M) g r s Φ W := by
+  simpa using operatorFieldApplication_smul_right (I := I) (M := M) g r s
+    (-1 : ℝ) Φ W
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] [CompleteSpace E] in
+theorem operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (Φ : SmoothCcTensor g r s) (W₁ W₂ : SmoothCcTensor g 0 r) :
+    operatorFieldApply (I := I) (M := M) g r s Φ (W₁ - W₂) =
+      operatorFieldApply (I := I) (M := M) g r s Φ W₁ -
+        operatorFieldApply (I := I) (M := M) g r s Φ W₂ := by
+  rw [sub_eq_add_neg, operatorFieldApplication_add_right,
+    operatorFieldApplication_neg_right, sub_eq_add_neg]
+
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
     [CompleteSpace E] in
 theorem operatorFieldApplication_smul_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -414,6 +441,44 @@ theorem operatorFieldApplication_add_left (g : SmoothRiemannianMetric I M) (r s 
   rw [show ((Φ₁ + Φ₂).toSection x : TensorRSSpace r s I x) = Φ₁.toSection x + Φ₂.toSection x from by
     rw [SmoothCcTensor.toSection_add]; rfl]
   rw [ContinuousLinearMap.add_comp]
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] [CompleteSpace E] in
+theorem operatorFieldApplication_zero_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (W : SmoothCcTensor g 0 r) :
+    operatorFieldApply (I := I) (M := M) (g := g) r s (0 : SmoothCcTensor g r s) W = 0 := by
+  have h := operatorFieldApplication_add_left (I := I) (M := M) g r s
+    (0 : SmoothCcTensor g r s) 0 W
+  rw [add_zero] at h
+  have h2 : operatorFieldApply (I := I) (M := M) (g := g) r s
+      (0 : SmoothCcTensor g r s) W -
+        operatorFieldApply (I := I) (M := M) (g := g) r s
+          (0 : SmoothCcTensor g r s) W =
+      operatorFieldApply (I := I) (M := M) (g := g) r s
+        (0 : SmoothCcTensor g r s) W := by
+    nth_rewrite 1 [h]
+    abel
+  rwa [sub_self] at h2
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] [CompleteSpace E] in
+theorem operatorFieldApplication_neg_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
+    operatorFieldApply (I := I) (M := M) (g := g) r s (-Φ) W =
+      -operatorFieldApply (I := I) (M := M) (g := g) r s Φ W := by
+  have h := operatorFieldApplication_add_left (I := I) (M := M) g r s Φ (-Φ) W
+  rw [add_neg_cancel, operatorFieldApplication_zero_left] at h
+  exact (neg_eq_of_add_eq_zero_right h.symm).symm
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] [CompleteSpace E] in
+theorem operatorFieldApplication_sub_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (Φ₁ Φ₂ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
+    operatorFieldApply (I := I) (M := M) (g := g) r s (Φ₁ - Φ₂) W =
+      operatorFieldApply (I := I) (M := M) (g := g) r s Φ₁ W -
+        operatorFieldApply (I := I) (M := M) (g := g) r s Φ₂ W := by
+  rw [sub_eq_add_neg, operatorFieldApplication_add_left,
+    operatorFieldApplication_neg_left, sub_eq_add_neg]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in

@@ -17,7 +17,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (linearizedRicciArm0BaseCoeff linearizedRicciArm1BaseCoeff)
+  (linearizedRicciOrderZeroBaseCoeff linearizedRicciFirstOrderBaseCoeff)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (metricPerturbationPath)
 
@@ -94,7 +94,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_summed_topOrderSeparated
+theorem linearizedRicciOrderZeroBaseCoeff_metricPerturbationPath_jetL2_summed_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -109,7 +109,7 @@ theorem linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_summed_topOrde
         ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ∑ i ∈ Finset.range (a + 1),
               ‖iteratedCovGrad (I := I) g₀ 2 2 i
-                (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤
+                (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤
             Ktop * (∑ j ∈ Finset.range (a + 3),
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) +
@@ -117,7 +117,7 @@ theorem linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_summed_topOrde
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hbound⟩ :=
-    linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
+    linearizedRicciOrderZeroBaseCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨2 * Ktop, by linarith, 2 * ∑ i ∈ Finset.range (a + 1), Kc i, ?_, ?_⟩
   · have := Finset.sum_nonneg (fun i (_ : i ∈ Finset.range (a + 1)) => hKc_nn i)
@@ -125,7 +125,7 @@ theorem linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_summed_topOrde
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs
   have hper : ∀ i, i ≤ a →
       ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤
+          (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤
         2 * (Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2))) +
@@ -136,16 +136,16 @@ theorem linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_summed_topOrde
       hbound T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i hi s hs
     have hsplit := norm_sq_le_two_sub
       (iteratedCovGrad (I := I) g₀ 2 2 i
-        (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s)) Hd
+        (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s)) Hd
     linarith [hsplit, hres, hL2h]
   exact jetL2_sum_of_perOrder a 2 Ktop hKtop_nn Kc hKc_nn
     (fun i => ‖iteratedCovGrad (I := I) g₀ 2 2 i
-      (linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2)
+      (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2)
     (fun j => ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
       ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)
     (fun j => add_nonneg (sq_nonneg _) (sq_nonneg _)) hper
 
-theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_summed_topOrderSeparated
+theorem linearizedRicciFirstOrderBaseCoeff_metricPerturbationPath_jetL2_summed_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -160,7 +160,7 @@ theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_summed_topOrde
         ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ∑ i ∈ Finset.range (a + 1),
               ‖iteratedCovGrad (I := I) g₀ 3 2 i
-                (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤
+                (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤
             Ktop * (∑ j ∈ Finset.range (a + 2),
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) +
@@ -168,7 +168,7 @@ theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_summed_topOrde
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hbound⟩ :=
-    linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
+    linearizedRicciFirstOrderBaseCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨2 * Ktop, by linarith, 2 * ∑ i ∈ Finset.range (a + 1), Kc i, ?_, ?_⟩
   · have := Finset.sum_nonneg (fun i (_ : i ∈ Finset.range (a + 1)) => hKc_nn i)
@@ -176,7 +176,7 @@ theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_summed_topOrde
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs
   have hper : ∀ i, i ≤ a →
       ‖iteratedCovGrad (I := I) g₀ 3 2 i
-          (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤
+          (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤
         2 * (Kc i * (1 + ∑ j ∈ Finset.range (i + 1),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2))) +
@@ -187,11 +187,11 @@ theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_summed_topOrde
       hbound T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i hi s hs
     have hsplit := norm_sq_le_two_sub
       (iteratedCovGrad (I := I) g₀ 3 2 i
-        (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s)) Hd
+        (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s)) Hd
     linarith [hsplit, hres, hL2h]
   exact jetL2_sum_of_perOrder a 1 Ktop hKtop_nn Kc hKc_nn
     (fun i => ‖iteratedCovGrad (I := I) g₀ 3 2 i
-      (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2)
+      (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2)
     (fun j => ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
       ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)
     (fun j => add_nonneg (sq_nonneg _) (sq_nonneg _)) hper

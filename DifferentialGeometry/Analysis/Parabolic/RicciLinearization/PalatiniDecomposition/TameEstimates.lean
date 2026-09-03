@@ -136,10 +136,10 @@ theorem exists_riemannPalatini_decomposition_identity_data
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∃ C0ra : ℝ → SmoothCcTensor g₀ 2 2,
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 C0ra (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 C0ra (δ := δ) (δ' := δ) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1,
             operatorFieldApply (I := I) (M := M) g₀ 2 2
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
                 (iteratedCovGrad (I := I) g₀ 0 2 0 T) =
               operatorFieldApply (I := I) (M := M) g₀ 2 2 (C0ra s)
@@ -157,37 +157,37 @@ theorem exists_riemannPalatini_decomposition_identity_data
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨ΛQ, hΛQ_nn, hcapQ⟩ :=
-    exists_ricciArmOrder0AACommCoeffField_metricPerturbationPath_fiberNormSq_ballUniform (I := I) (M := M)
+    exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_fiberNormSq_ballUniform (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨ΛB, hΛB_nn, hcapB⟩ :=
-    exists_ricciArmOrder0BackgroundCurvatureCoeffField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
+    exists_ricciOrderZeroBackgroundCurvatureCoeffField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
       (I := I) (M := M)
       g₀ a (R := R) hδ₀
   obtain ⟨ΛS, hΛS_nn, hcapS⟩ :=
-    exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riemannianFiberNormSq_uniformBound
+    exists_ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_riemannianFiberNormSq_uniformBound
       (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨ΛF, hΛF_nn, hcapF⟩ :=
-    exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_riemannianFiberNormSq_uniformBound (I := I)
+    exists_ricciContractionRemainderField_metricPerturbationPath_riemannianFiberNormSq_uniformBound (I := I)
       (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨KRm, hKRm_nn, hKRm⟩ :=
     exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 2 2
-      (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)
+      (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)
   obtain ⟨KB0, hKB0_nn, hKB0⟩ :=
     exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ 2 2
-      (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
+      (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
   obtain ⟨KQw, hKQw_nn, hwinQ⟩ :=
-    exists_ricciArmOrder0AACommCoeffField_metricPerturbationPath_l2JetWindow (I := I) (M := M)
+    exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨KBw, hKBw_nn, hwinB⟩ :=
-    exists_ricciArmOrder0BackgroundRCommCoeffField_metricPerturbationPath_backgroundDifference_l2JetWindow
+    exists_ricciOrderZeroBackgroundRCommCoeffField_metricPerturbationPath_backgroundDifference_l2JetWindow
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨KSw, hKSw_nn, hwinS⟩ :=
-    exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_l2JetWindow (I := I) (M := M)
+    exists_ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨KFw, hKFw_nn, hwinF⟩ :=
-    exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_l2JetWindow (I := I) (M := M)
+    exists_ricciContractionRemainderField_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   have hΛSQ_nn : (0 : ℝ) ≤
       2 * KRm + 8 * (2 * ΛQ + 2 * (2 * (2 * (2 * ΛB + 2 * KB0) + 2 * ΛS) + 2 * ΛF)) := by
@@ -196,11 +196,11 @@ theorem exists_riemannPalatini_decomposition_identity_data
       (2 * KRm + 8 * (2 * ΛQ + 2 * (2 * (2 * (2 * ΛB + 2 * KB0) + 2 * ΛS) + 2 * ΛF))),
     Real.sqrt_nonneg _,
     fun i => 2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2
       + 8 * (2 * KQw i + 2 * (2 * (2 * KBw i + 2 * KSw i) + 2 * KFw i)),
     fun i => by
       have h5 : (0 : ℝ) ≤ ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 := sq_nonneg _
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 := sq_nonneg _
       linarith [hKQw_nn i, hKBw_nn i, hKSw_nn i, hKFw_nn i],
     ![Equiv.swap (0 : Fin 4) 2, Equiv.swap (1 : Fin 4) 3,
       Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3, 1],
@@ -219,36 +219,36 @@ theorem exists_riemannPalatini_decomposition_identity_data
     rw [hzero, norm_zero]
     exact hR
   refine ⟨fun s =>
-    ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀
+    ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀
       + (2 : ℝ) •
-        (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+        (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-          + ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+          + ((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-              - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
-              + (1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+              - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
+              + (1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)
-              - ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+              - ricciContractionRemainderField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T))),
     ?_, ?_, ?_, ?_⟩
-  · exact threeArmHjoint_add_local (I := I) (M := M) g₀ _ _
-      (threeArmHjoint_const_local (I := I) (M := M) g₀
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀))
-      (threeArmHjoint_const_smul_local (I := I) (M := M) g₀ (2 : ℝ) _
-        (threeArmHjoint_add_local (I := I) (M := M) g₀ _ _
-          (ricciArmOrder0AACommCoeffField_metricPerturbationPath_threeArmHjoint (I := I) (M := M)
+  · exact covariantJetJointSmoothness_add_local (I := I) (M := M) g₀ _ _
+      (covariantJetJointSmoothness_const_local (I := I) (M := M) g₀
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀))
+      (covariantJetJointSmoothness_const_smul_local (I := I) (M := M) g₀ (2 : ℝ) _
+        (covariantJetJointSmoothness_add_local (I := I) (M := M) g₀ _ _
+          (ricciOrderZeroAACommCoeffField_metricPerturbationPath_covariantJetJointSmoothness (I := I) (M := M)
             g₀ T hδ hδZ)
-          (threeArmHjoint_sub_local (I := I) (M := M) g₀ _ _
-            (threeArmHjoint_add_local (I := I) (M := M) g₀ _ _
-              (threeArmHjoint_sub_local (I := I) (M := M) g₀ _ _
-                (ricciArmOrder0BackgroundRCommCoeffField_metricPerturbationPath_threeArmHjoint (I := I) (M := M)
+          (covariantJetJointSmoothness_sub_local (I := I) (M := M) g₀ _ _
+            (covariantJetJointSmoothness_add_local (I := I) (M := M) g₀ _ _
+              (covariantJetJointSmoothness_sub_local (I := I) (M := M) g₀ _ _
+                (ricciOrderZeroBackgroundRCommCoeffField_metricPerturbationPath_covariantJetJointSmoothness (I := I) (M := M)
                   g₀ T hδ hδZ)
-                (threeArmHjoint_const_local (I := I) (M := M) g₀
-                  (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)))
-              (threeArmHjoint_const_smul_local (I := I) (M := M) g₀ (1 / 2 : ℝ) _
-                (ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoint
+                (covariantJetJointSmoothness_const_local (I := I) (M := M) g₀
+                  (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)))
+              (covariantJetJointSmoothness_const_smul_local (I := I) (M := M) g₀ (1 / 2 : ℝ) _
+                (ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_covariantJetJointSmoothness
                   (I := I) (M := M) g₀ T hδ hδZ)))
-            (ricciArmRicciFoldRemainderField_metricPerturbationPath_threeArmHjoint (I := I) (M := M)
+            (ricciContractionRemainderField_metricPerturbationPath_covariantJetJointSmoothness (I := I) (M := M)
               g₀ T hδ hδZ))))
   · intro s hs
     have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le hδ₀
@@ -290,19 +290,19 @@ theorem exists_riemannPalatini_decomposition_identity_data
     rw [hfam, operatorFieldApplication_add_left, operatorFieldApplication_smul_left, operatorFieldApplication_smul_left]
     suffices hfold : (1 / 2 : ℝ) •
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)) T
           - operatorFieldApply (I := I) (M := M) g₀ 2 2
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) T) =
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) T) =
         operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+            (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-              + ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+              + ((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
                     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-                  - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
-                  + (1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+                  - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
+                  + (1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)
-                  - ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+                  - ricciContractionRemainderField (I := I) (M := M) g₀
                       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T))) T
           + operatorFieldApply (I := I) (M := M) g₀ 4 2
               (curvatureActionKernelCoeffField (I := I) (M := M) g₀
@@ -313,23 +313,23 @@ theorem exists_riemannPalatini_decomposition_identity_data
                 (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1)
               (iteratedCovGrad (I := I) g₀ 0 2 2 (s • T)) by
       have h2 : operatorFieldApply (I := I) (M := M) g₀ 2 2
-            (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀
+            (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)) T
           - operatorFieldApply (I := I) (M := M) g₀ 2 2
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) T =
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) T =
           (2 : ℝ) • ((1 / 2 : ℝ) •
             (operatorFieldApply (I := I) (M := M) g₀ 2 2
-                (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀
+                (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)) T
               - operatorFieldApply (I := I) (M := M) g₀ 2 2
-                  (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) T)) := by
+                  (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) T)) := by
         rw [smul_smul, show (2 : ℝ) * (1 / 2) = 1 by norm_num, one_smul]
       rw [hfold, iteratedCovGrad_smul_real, operatorFieldApplication_smul_right, smul_add, smul_smul] at h2
       rw [sub_eq_iff_eq_add] at h2
       rw [h2]
       abel
     have hprim :=
-      ricciArmOrder0RiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
+      ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
         (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T) htie hPsymm T
     rw [operatorFieldApplication_add_left, operatorFieldApplication_sub_left, operatorFieldApplication_add_left,
       coeffOpApply_slotSwapField_eq_apply_of_symm (I := I) (M := M) g₀ _ T hTsymm] at hprim
@@ -337,7 +337,7 @@ theorem exists_riemannPalatini_decomposition_identity_data
     exact hprim
   · intro s hs x
     have hQ : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+        ((ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x) ≤ ΛQ :=
       hcapQ T hδ_le hδ hδZ hball s hs x
     have hB := hcapB T 0 hδ_le hδ hδ_le hδZ hball hZball s hs x
@@ -350,108 +350,108 @@ theorem exists_riemannPalatini_decomposition_identity_data
     rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
       SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
     have houter := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 2 x
-      ((ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀).toSection x)
-      ((2 : ℝ) • ((ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+      ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀).toSection x)
+      ((2 : ℝ) • ((ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-        + ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+        + ((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-            - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
-            + (1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+            - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
+            + (1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)
-            - ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+            - ricciContractionRemainderField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T))).toSection x))
     have hsm : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((2 : ℝ) • ((ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+        ((2 : ℝ) • ((ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-          + ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+          + ((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-              - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
-              + (1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+              - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
+              + (1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)
-              - ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+              - ricciContractionRemainderField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T))).toSection x)) =
         4 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-          ((ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+          ((ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-          + ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+          + ((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-              - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
-              + (1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+              - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
+              + (1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)
-              - ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+              - ricciContractionRemainderField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T))).toSection x) := by
       rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
       norm_num
     have hX : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+        ((ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-          + ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+          + ((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-              - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
-              + (1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+              - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
+              + (1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)
-              - ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+              - ricciContractionRemainderField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T))).toSection x) ≤
         2 * ΛQ + 2 * (2 * (2 * (2 * ΛB + 2 * KB0) + 2 * ΛS) + 2 * ΛF) := by
-      rw [show ((ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+      rw [show ((ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-          + ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+          + ((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-              - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
-              + (1 / 2 : ℝ) • ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+              - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀)
+              + (1 / 2 : ℝ) • ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)
-              - ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+              - ricciContractionRemainderField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T))).toSection x) =
-          (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+          (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x
-          + ((((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+          + ((((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x
-              - (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀).toSection x)
-              + (1 / 2 : ℝ) • (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+              - (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀).toSection x)
+              + (1 / 2 : ℝ) • (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x)
-            - (ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+            - (ricciContractionRemainderField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x) from by
         simp only [SmoothCcTensor.toSection_add, SmoothCcTensor.toSection_sub,
           SmoothCcTensor.toSection_smul, ContMDiffSection.coe_add, ContMDiffSection.coe_sub,
           ContMDiffSection.coe_smul, Pi.add_apply, Pi.sub_apply, Pi.smul_apply]]
       have h1 := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 2 x
-        ((ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+        ((ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x)
-        (((((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+        (((((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x
-            - (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀).toSection x)
-            + (1 / 2 : ℝ) • (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+            - (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀).toSection x)
+            + (1 / 2 : ℝ) • (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x)
-          - (ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+          - (ricciContractionRemainderField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x))
       have h2 := riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 2 2 x
-        ((((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+        ((((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x
-            - (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀).toSection x)
-            + (1 / 2 : ℝ) • (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+            - (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀).toSection x)
+            + (1 / 2 : ℝ) • (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x))
-        ((ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+        ((ricciContractionRemainderField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x)
       have h3 := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 2 x
-        (((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+        (((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x
-          - (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀).toSection x))
-        ((1 / 2 : ℝ) • (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+          - (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀).toSection x))
+        ((1 / 2 : ℝ) • (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x)
       have h4 := riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 2 2 x
-        ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+        ((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x)
-        ((ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀).toSection x)
+        ((ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀).toSection x)
       have h5 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-          ((1 / 2 : ℝ) • (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+          ((1 / 2 : ℝ) • (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x) =
           (1 / 4 : ℝ) * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+            ((ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x) := by
         rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
         norm_num
       have h6 : (0 : ℝ) ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-          ((ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+          ((ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x) :=
         riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 2 x _
       linarith [hQ, hB, hS, hF, hB0, h1, h2, h3, h4, h5, h6, hΛS_nn]
@@ -465,19 +465,19 @@ theorem exists_riemannPalatini_decomposition_identity_data
     rw [iteratedCovGrad_add, iteratedCovGrad_smul_real, iteratedCovGrad_add,
       iteratedCovGrad_sub, iteratedCovGrad_add, iteratedCovGrad_smul_real]
     set jc := iteratedCovGrad (I := I) g₀ 2 2 i
-      (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) with hjc_def
+      (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) with hjc_def
     set jq := iteratedCovGrad (I := I) g₀ 2 2 i
-      (ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
+      (ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)) with hjq_def
     set jd := iteratedCovGrad (I := I) g₀ 2 2 i
-      (ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀
+      (ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
-        - ricciArmOrder0BackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀) with hjd_def
+        - ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g₀) with hjd_def
     set js := iteratedCovGrad (I := I) g₀ 2 2 i
-      (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀
+      (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)) with hjs_def
     set jr := iteratedCovGrad (I := I) g₀ 2 2 i
-      (ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
+      (ricciContractionRemainderField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)) with hjr_def
     have t1 := norm_add_sq_le_local (I := I) (M := M) g₀ jc
       ((2 : ℝ) • (jq + ((jd + (1 / 2 : ℝ) • js) - jr)))
@@ -520,7 +520,7 @@ theorem riemannPalatiniDecompositionC2Family_riemannianFiberNormSq_le
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
         (((2 : ℝ) • riemannPalatiniDecompositionC2Family (I := I) (M := M) g₀ T hδ hδZ qA qB
           s).toSection x) ≤
-      (max (8 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2 := by
+      (max (8 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2 := by
   classical
   intro s hs x
   have h1mδ : (0 : ℝ) < 1 - δ := by linarith
@@ -562,7 +562,7 @@ theorem riemannPalatiniDecompositionC2Family_riemannianFiberNormSq_le
               (ccTensor02Symm (I := I) (M := M) g₀ T))
             (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
               (ccTensor02Symm (I := I) (M := M) g₀ T)) σp).toSection x) ≤
-        (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) ^ 2 := by
+        (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) ^ 2 := by
     intro σp
     rw [curvatureDecompositionMonomialCoeffField_toSection]
     exact riemannianFiberNormSq_curvatureDecompositionMonomialBiContrFib_le (I := I) (M := M) g₀
@@ -604,8 +604,8 @@ theorem riemannPalatiniDecompositionC2Family_riemannianFiberNormSq_le
   have hc1 := hmono_cap (qA 1)
   have hc2 := hmono_cap (qA 2)
   have hc3 := hmono_cap (qA 3)
-  set fC : ℝ := deTurckArmFibreConst (Module.finrank ℝ E) with hfC_def
-  have hfC_nn : (0 : ℝ) ≤ fC := de_turck_arm_fibre_const_nonneg _
+  set fC : ℝ := deTurckTermFibreConst (Module.finrank ℝ E) with hfC_def
+  have hfC_nn : (0 : ℝ) ≤ fC := de_turck_term_fibre_const_nonneg _
   have hr1_nn : (0 : ℝ) ≤ δ / (1 - δ) := div_nonneg hδ0 (le_of_lt h1mδ)
   have hrate : δ / (1 - δ) ^ 2 ≤ 2 * (δ / (1 - δ)) := by
     rw [div_le_iff₀ (by positivity)]
@@ -667,7 +667,7 @@ theorem exists_riemannPalatiniDecompositionC2Family_l2JetWindow
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
             (((2 : ℝ) • riemannPalatiniDecompositionC2Family (I := I) (M := M) g₀ T hδ hδZ qA qB
               s).toSection x) ≤
-          (max (8 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2) ∧
+          (max (8 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) ^ 2) ∧
         (∀ i : ℕ, ∀ s ∈ Set.Icc (0 : ℝ) 1,
           ‖iteratedCovGrad (I := I) g₀ 4 2 i
             ((2 : ℝ) • riemannPalatiniDecompositionC2Family (I := I) (M := M) g₀ T hδ hδZ qA qB
@@ -790,14 +790,14 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
         (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
-        linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
+        linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
           (deTurckLieCovariantDerivativeDecompositionC2Family (I := I) (M := M) g₀ T hδ hδZ q ε)
           (δ := δ) (δ' := δ) ∧
         (∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
             ((deTurckLieCovariantDerivativeDecompositionC2Family (I := I) (M := M) g₀ T hδ hδZ q ε
               s).toSection x) ≤
-          (max (3 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) 0) ^ 2) ∧
+          (max (3 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) 0) ^ 2) ∧
         (∀ i : ℕ, ∀ s ∈ Set.Icc (0 : ℝ) 1,
           ‖iteratedCovGrad (I := I) g₀ 4 2 i
             (deTurckLieCovariantDerivativeDecompositionC2Family (I := I) (M := M) g₀ T hδ hδZ q ε s)‖ ^ 2 ≤
@@ -908,7 +908,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
                 (ccTensor02Symm (I := I) (M := M) g₀ T))
               (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
                 (ccTensor02Symm (I := I) (M := M) g₀ T)) σp).toSection x) ≤
-          (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) ^ 2 := by
+          (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) ^ 2 := by
       intro σp
       rw [curvatureDecompositionMonomialCoeffField_toSection]
       exact riemannianFiberNormSq_curvatureDecompositionMonomialBiContrFib_le (I := I) (M := M) g₀
@@ -924,7 +924,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
                 (ccTensor02Symm (I := I) (M := M) g₀ T))
               (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
                 (ccTensor02Symm (I := I) (M := M) g₀ T)) σp).toSection x)) ≤
-          (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) ^ 2 := by
+          (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) ^ 2 := by
       intro c hc σp
       rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
       have h1 := hmono_cap σp
@@ -963,10 +963,10 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
         (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ T)) (q 2)).toSection x))
     have hs2 : s ^ 2 ≤ 1 := by nlinarith only [hs0, hs1]
-    have hmax : max (3 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) 0 =
-        3 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2) :=
+    have hmax : max (3 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) 0 =
+        3 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2) :=
       max_eq_left (mul_nonneg (mul_nonneg (by norm_num)
-        (de_turck_arm_fibre_const_nonneg _)) (div_nonneg hδ0 (sq_nonneg _)))
+        (de_turck_term_fibre_const_nonneg _)) (div_nonneg hδ0 (sq_nonneg _)))
     rw [hmax]
     have hsum_nn := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 4 2 x
       (ε 0 • ((curvatureActionMonomialCoeffField (I := I) (M := M) g₀
@@ -985,7 +985,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
         (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ T)) (q 2)).toSection x))
     nlinarith only [hr0, hr1, hr2, h3, hs2, hsum_nn,
-      sq_nonneg (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2))]
+      sq_nonneg (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2))]
   · intro i s hs
     rw [deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight (I := I) (M := M) g₀ T hδ hδZ q ε s,
       iteratedCovGrad_smul_real]
@@ -1042,7 +1042,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
       hG0 hG1 hG2 (hK0_nn i) (hK1_nn i) (hK2_nn i) hwin_nn
 
 
-theorem exists_deTurckLieCovariantDerivativeArm_curvatureDecomposition_data
+theorem exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1056,11 +1056,11 @@ theorem exists_deTurckLieCovariantDerivativeArm_curvatureDecomposition_data
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∃ (C0da : ℝ → SmoothCcTensor g₀ 2 2) (C2da : ℝ → SmoothCcTensor g₀ 4 2),
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 C0da (δ := δ) (δ' := δ) ∧
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4 C2da (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 C0da (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 C2da (δ := δ) (δ' := δ) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1,
             operatorFieldApply (I := I) (M := M) g₀ 2 2
-                (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+                (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg)
                 (iteratedCovGrad (I := I) g₀ 0 2 0 T) =
               operatorFieldApply (I := I) (M := M) g₀ 2 2 (C0da s)
@@ -1072,7 +1072,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_curvatureDecomposition_data
               Λ ^ 2) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x ((C2da s).toSection x) ≤
-              (max (3 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) 0)
+              (max (3 * deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) 0)
                 ^ 2) ∧
           (∀ i : ℕ, ∀ s ∈ Set.Icc (0 : ℝ) 1,
             ‖iteratedCovGrad (I := I) g₀ 2 2 i (C0da s)‖ ^ 2 ≤
@@ -1084,7 +1084,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_curvatureDecomposition_data
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨Λ, hΛ, KA, hKA, q, ε, hε, hmain⟩ :=
-    exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data (I := I) (M := M) g₀ g_bg a
+    exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_data (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   obtain ⟨KB, hKB, hfam⟩ :=
     exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindow (I := I) (M := M) g₀ a
@@ -1132,7 +1132,7 @@ theorem deTurckVF_background_sub_eq_connectionDifference_trace
     add_sub_cancel_left]
 
 
-theorem exists_deTurckLieEndoArm_backgroundDifference_perOrder_l2_tameEnvelope_generic
+theorem exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope_generic
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1145,25 +1145,25 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_perOrder_l2_tameEnvelope_g
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ≤ R) →
         ∀ (i : ℕ),
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg -
-                deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2 ≤
+              (deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g_bg -
+                deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2 ≤
             K i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   set δ₁ : ℝ := max δ₀ 0 with hδ₁_def
   have hδ₁_lt : δ₁ < 1 := max_lt hδ₀ one_pos
-  obtain ⟨C, hC_nn, hpt⟩ := bdEndoArmDiff_pointwise_gridWindow (I := I) (M := M) g₀ g_bg hδ₁_lt
+  obtain ⟨C, hC_nn, hpt⟩ := bdEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ g_bg hδ₁_lt
   obtain ⟨Kg, hKg_nn, hKg⟩ := bdL2_tameEnvelope_of_gridWindow (I := I) (M := M) g₀ a ha_super hR
   refine ⟨fun i => C i * ∑ k ∈ Finset.range (i + 2), Kg k,
     fun i => mul_nonneg (hC_nn i) (Finset.sum_nonneg fun k _ => hKg_nn k), ?_⟩
   intro g₁ P δ hδ_le hδ htie hPball i
   have hwin_nn : (0 : ℝ) ≤ 1 + ∑ j ∈ Finset.range (i + 2),
       ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 := by positivity
-  have hsubj : deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg -
-      deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
+  have hsubj : deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g_bg -
+      deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀ =
       deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg -
         deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀ := by
-    rw [endoArmField_eq_deTurckLieCovariantDerivativeInsertionCoeffField, endoArmField_eq_deTurckLieCovariantDerivativeInsertionCoeffField]
+    rw [endomorphismTermField_eq_deTurckLieCovariantDerivativeInsertionCoeffField, endomorphismTermField_eq_deTurckLieCovariantDerivativeInsertionCoeffField]
   by_cases hM : Nonempty M
   · obtain ⟨x₀⟩ := hM
     have hδ0 : 0 ≤ δ := bdDelta_nonneg (I := I) (M := M) g₀ x₀ P hδ
@@ -1175,8 +1175,8 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_perOrder_l2_tameEnvelope_g
       (fun x => hpt g₁ P htie hδ_le' hδ0 hδ i x)
   · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg -
-          deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀)‖ = 0 :=
+        (deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g_bg -
+          deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀)‖ = 0 :=
       bdNorm_zero_of_isEmpty (I := I) (M := M) g₀ 2 (2 + i) _
     rw [hz]
     have hK_nn : 0 ≤ C i * ∑ k ∈ Finset.range (i + 2), Kg k :=
@@ -1184,7 +1184,7 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_perOrder_l2_tameEnvelope_g
     nlinarith only [hwin_nn, hK_nn]
 
 
-theorem exists_deTurckLieEndoArm_backgroundDifference_l2JetWindow
+theorem exists_deTurckLieEndoTerm_backgroundDifference_l2JetWindow
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1197,15 +1197,15 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_l2JetWindow
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∀ i : ℕ, ∀ s ∈ Set.Icc (0 : ℝ) 1,
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieEndoArmField (I := I) (M := M) g₀
+            (deTurckLieEndoTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-              - deTurckLieEndoArmField (I := I) (M := M) g₀
+              - deTurckLieEndoTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)‖ ^ 2 ≤
             K i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2) := by
   classical
   obtain ⟨K, hK_nn, hK⟩ :=
-    exists_deTurckLieEndoArm_backgroundDifference_perOrder_l2_tameEnvelope_generic
+    exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope_generic
       (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   refine ⟨K, hK_nn, ?_⟩
   intro T δ hδ_le hδ hδZ hball i s hs
@@ -1251,7 +1251,7 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_l2JetWindow
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j T)]
 
 
-theorem exists_deTurckLieEndoArm_backgroundDifference_order0_data
+theorem exists_deTurckLieEndoTerm_backgroundDifference_order0_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1262,22 +1262,22 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_order0_data
         (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
-        linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-          (fun s => deTurckLieEndoArmField (I := I) (M := M) g₀
+        linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+          (fun s => deTurckLieEndoTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-            - deTurckLieEndoArmField (I := I) (M := M) g₀
+            - deTurckLieEndoTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀) (δ := δ) (δ' := δ) ∧
         (∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((deTurckLieEndoArmField (I := I) (M := M) g₀
+            ((deTurckLieEndoTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-              - deTurckLieEndoArmField (I := I) (M := M) g₀
+              - deTurckLieEndoTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀).toSection x) ≤ Λ ^ 2) ∧
         (∀ i : ℕ, ∀ s ∈ Set.Icc (0 : ℝ) 1,
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieEndoArmField (I := I) (M := M) g₀
+            (deTurckLieEndoTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-              - deTurckLieEndoArmField (I := I) (M := M) g₀
+              - deTurckLieEndoTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)‖ ^ 2 ≤
             K i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
@@ -1289,7 +1289,7 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_order0_data
     deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M)
       g₀ g₀ a ha_super hR hδ₀
   obtain ⟨Ke, hKe_nn, henv⟩ :=
-    exists_deTurckLieEndoArm_backgroundDifference_l2JetWindow (I := I) (M := M)
+    exists_deTurckLieEndoTerm_backgroundDifference_l2JetWindow (I := I) (M := M)
       g₀ g_bg a ha_super hR hδ₀
   have hS_nn : (0 : ℝ) ≤ 2 * Λbg + 2 * Λz := by linarith
   refine ⟨Real.sqrt (2 * Λbg + 2 * Λz), Real.sqrt_nonneg _, Ke, hKe_nn, ?_⟩
@@ -1304,19 +1304,19 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_order0_data
     rw [hzero, norm_zero]
     exact hR
   refine ⟨?_, ?_, fun i s hs => henv T hδ_le hδ hδZ hball i s hs⟩
-  · exact threeArmHjoint_sub_local (I := I) (M := M) g₀ _ _
-      (endoArmField_metricPerturbationPath_threeArmHjoint (I := I) (M := M) g₀ T hδ hδZ g_bg)
-      (endoArmField_metricPerturbationPath_threeArmHjoint (I := I) (M := M) g₀ T hδ hδZ g₀)
+  · exact covariantJetJointSmoothness_sub_local (I := I) (M := M) g₀ _ _
+      (endomorphismTermField_metricPerturbationPath_covariantJetJointSmoothness (I := I) (M := M) g₀ T hδ hδZ g_bg)
+      (endomorphismTermField_metricPerturbationPath_covariantJetJointSmoothness (I := I) (M := M) g₀ T hδ hδZ g₀)
   · intro s hs x
     have h1 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((deTurckLieEndoArmField (I := I) (M := M) g₀
+        ((deTurckLieEndoTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg).toSection x) ≤ Λbg := by
-      rw [endoArmField_eq_deTurckLieCovariantDerivativeInsertionCoeffField]
+      rw [endomorphismTermField_eq_deTurckLieCovariantDerivativeInsertionCoeffField]
       exact hsup_bg T 0 hδ_le hδ hδ_le hδZ hball hZball s hs x
     have h2 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((deTurckLieEndoArmField (I := I) (M := M) g₀
+        ((deTurckLieEndoTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀).toSection x) ≤ Λz := by
-      rw [endoArmField_eq_deTurckLieCovariantDerivativeInsertionCoeffField]
+      rw [endomorphismTermField_eq_deTurckLieCovariantDerivativeInsertionCoeffField]
       exact hsup_z T 0 hδ_le hδ hδ_le hδZ hball hZball s hs x
     rw [Real.sq_sqrt hS_nn, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
       Pi.sub_apply]

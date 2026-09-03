@@ -43,7 +43,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 
-theorem ccTensorContract_l2_twoArm_mixed_orderUniform_le
+theorem ccTensorContract_l2_twoTerm_mixed_orderUniform_le
     (g₀ : SmoothRiemannianMetric I M) (b₀ s₀ a : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (q : ℕ), q ≤ a →
@@ -58,11 +58,11 @@ theorem ccTensorContract_l2_twoArm_mixed_orderUniform_le
               + ΛΦ ^ 2 * ∑ l ∈ Finset.range (q + 1),
                 ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2) := by
   classical
-  set Kf : ℕ → ℝ := fun k => (ccTensorContract_topOrder_l2_twoArm_mixed_ballUniform (I := I) g₀ b₀
+  set Kf : ℕ → ℝ := fun k => (ccTensorContract_topOrder_l2_twoTerm_mixed_ballUniform (I := I) g₀ b₀
     s₀ k).choose
     with hKf_def
   have hKf_nn : ∀ k, 0 ≤ Kf k := fun k =>
-    (ccTensorContract_topOrder_l2_twoArm_mixed_ballUniform (I := I) g₀ b₀ s₀ k).choose_spec.1
+    (ccTensorContract_topOrder_l2_twoTerm_mixed_ballUniform (I := I) g₀ b₀ s₀ k).choose_spec.1
   have hKf_spec : ∀ k, ∀ (Φ : SmoothCcTensor g₀ b₀ s₀) (W : SmoothCcTensor g₀ 0 b₀) (ΛΦ ΛW : ℝ),
         0 ≤ ΛΦ → 0 ≤ ΛW →
         (∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ b₀ s₀ x (Φ.toSection x) ≤ ΛΦ ^ 2) →
@@ -73,7 +73,7 @@ theorem ccTensorContract_l2_twoArm_mixed_orderUniform_le
                 ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2
               + ΛΦ ^ 2 * ∑ l ∈ Finset.range (k + 1),
                 ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2) := fun k =>
-    (ccTensorContract_topOrder_l2_twoArm_mixed_ballUniform (I := I) g₀ b₀ s₀ k).choose_spec.2
+    (ccTensorContract_topOrder_l2_twoTerm_mixed_ballUniform (I := I) g₀ b₀ s₀ k).choose_spec.2
   refine ⟨(Finset.range (a + 1)).sup' (Finset.nonempty_range_iff.mpr (Nat.succ_ne_zero a)) Kf,
     le_trans (hKf_nn 0) (Finset.le_sup' Kf (Finset.mem_range.mpr (Nat.succ_pos a))), ?_⟩
   intro q hq Φ W ΛΦ ΛW hΛΦ hΛW hΦsup hWsup
@@ -168,7 +168,7 @@ theorem ccTensorBilinSymm_metricCauchySchwarzBound_le_sobolevHsNorm_lossy_order
     mul_le_mul_of_nonneg_right hfx hmul_nn,
     mul_le_mul_of_nonneg_right hfx (mul_nonneg hsw_nn hsv_nn)]
 
-theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_dataWeighted_ballUniform_of_symm
+theorem deTurckSmoothRemainderDiff_covariantJet_coeffC0_jetL2_dataWeighted_ballUniform_of_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (hδ₀_nn : 0 ≤ δ₀) :
@@ -208,7 +208,7 @@ theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_dataWeighted_ballUnifo
       (a + 1)
       (by omega)
   obtain ⟨ΛC, Γ, hΛC_nn, hΓ_nn, hfib⟩ :=
-    deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_fibreWeighted_ballUniform_of_symm
+    deTurckSmoothRemainderDiff_covariantJet_coeffC0_jetL2_fibreWeighted_ballUniform_of_symm
       (I := I) g₀ g_bg a ha_super hR hδ₀ hδ₀_nn
   refine ⟨ΛC * (Ksob + 1), Γ, by positivity, hΓ_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTsymm hT'symm hTball hT'ball
@@ -253,7 +253,7 @@ private lemma three_term_sqrt_bound {b s t d : ℝ}
     mul_nonneg hb (mul_nonneg hd ht)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-private theorem deTurckRemainderDiff_lowArm_bound
+private theorem deTurckRemainderDiff_lowTerm_bound
     (g₀ : SmoothRiemannianMetric I M) (a q m : ℕ) (hq : q ≤ a)
     (T T' : SmoothCcTensor g₀ 0 2) (Cm : SmoothCcTensor g₀ (2 + m) 2)
     (Km Kmax Cemb1 Γ ΛC base S₁ : ℝ)
@@ -370,13 +370,13 @@ theorem deTurckSmoothRemainderDiff_iteratedCovGrad_l2_dataWeighted_ballUniform_o
   classical
   by_cases hδ₀_nn : 0 ≤ δ₀
   · obtain ⟨ΛC, Γ, hΛC_nn, hΓ_nn, hcoeff⟩ :=
-      deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_dataWeighted_ballUniform_of_symm
+      deTurckSmoothRemainderDiff_covariantJet_coeffC0_jetL2_dataWeighted_ballUniform_of_symm
         (I := I) g₀ g_bg a ha_super hR hδ₀ hδ₀_nn
-    obtain ⟨K₀, hK₀_nn, hK₀⟩ := ccTensorContract_l2_twoArm_mixed_orderUniform_le (I := I) g₀ 2 2 a
-    obtain ⟨K₁, hK₁_nn, hK₁⟩ := ccTensorContract_l2_twoArm_mixed_orderUniform_le (I := I) g₀ 3 2 a
-    obtain ⟨K₂, hK₂_nn, hK₂⟩ := ccTensorContract_l2_twoArm_mixed_orderUniform_le (I := I) g₀ 4 2 a
+    obtain ⟨K₀, hK₀_nn, hK₀⟩ := ccTensorContract_l2_twoTerm_mixed_orderUniform_le (I := I) g₀ 2 2 a
+    obtain ⟨K₁, hK₁_nn, hK₁⟩ := ccTensorContract_l2_twoTerm_mixed_orderUniform_le (I := I) g₀ 3 2 a
+    obtain ⟨K₂, hK₂_nn, hK₂⟩ := ccTensorContract_l2_twoTerm_mixed_orderUniform_le (I := I) g₀ 4 2 a
     obtain ⟨Cemb1, hCemb1_nn, hemb1⟩ :=
-      deTurckArmDiff_supercritical_pointwise_jet_le_lowerWindow (I := I) g₀ a ha_super
+      deTurckTermDiff_supercritical_pointwise_jet_le_lowerWindow (I := I) g₀ a ha_super
     set Kmax : ℝ := max K₀ (max K₁ K₂) with hKmax_def
     have hKmax_nn : 0 ≤ Kmax := le_trans hK₀_nn (le_max_left _ _)
     have hK₀_le : K₀ ≤ Kmax := le_max_left _ _
@@ -628,7 +628,7 @@ theorem deTurckSmoothRemainderDiff_iteratedCovGrad_l2_dataWeighted_ballUniform_o
         rw [hS₁_def]
         exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono (by omega))
           (fun i _ _ => sq_nonneg _)
-      exact deTurckRemainderDiff_lowArm_bound
+      exact deTurckRemainderDiff_lowTerm_bound
         (I := I) (M := M) g₀ a q m hq T T' Cm Km Kmax Cemb1 Γ ΛC base S₁
         hKm_le hKmax_nn hΛC_nn hS₁_nn hbase_def hKm hCmsup hCmjet
         (hWsup1 m (by omega)) hWjetLow

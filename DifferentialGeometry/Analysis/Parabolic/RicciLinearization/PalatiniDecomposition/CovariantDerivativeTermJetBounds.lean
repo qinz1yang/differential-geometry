@@ -553,7 +553,7 @@ private theorem connectionDifferenceQuadraticCurvatureTermGridWindow (g₀ : Smo
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 2
               (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁))).toSection x) ≤
           (fr ^ 2 * CA u') * Combinatorics.antidiagonalTupleGridWindow b (u' + 2) := by
-        refine le_trans (bdArmSlot2_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ u' x) ?_
+        refine le_trans (bdTermSlot2_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ u' x) ?_
         rw [← hfr_def, mul_assoc]
         refine mul_le_mul_of_nonneg_left ?_ (by positivity)
         have h2 := hCA g₁ P htie hδ_le hδ0 hbound u' x
@@ -863,7 +863,7 @@ private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetr
   linarith [hsub, hA, hB]
 
 
-theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiemannianMetric I M) (Λ0 : ℝ)
+theorem deTurckLieCovariantDerivativeTermDifferenceGridWindow (g₀ : SmoothRiemannianMetric I M) (Λ0 : ℝ)
     (hΛ0 : 0 ≤ Λ0)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
@@ -879,7 +879,7 @@ theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiema
         {s : ℝ} (_hs : s ∈ Set.Icc (0 : ℝ) 1) (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+              (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀
                 - deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
                   ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -950,7 +950,7 @@ theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiema
       ((iteratedCovGrad (I := I) g₀ 0 2 l' T).toSection y), hss, hs2]
   have hlift : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 2 i
-        (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀
           - deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
             ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -962,22 +962,22 @@ theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiema
         ((iteratedCovGrad (I := I) g₀ 2 2 i
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s))))).toSection x) := by
-    rw [lrArm_sub_family_eq_pairTrace (I := I) (M := M) g₀ T hδ_lt hδ hδZ hTsymm
+    rw [lrTerm_sub_family_eq_pairTrace (I := I) (M := M) g₀ T hδ_lt hδ hδZ hTsymm
       ⟨hs0, hs1⟩]
     rw [iteratedCovGrad_smul_real]
     rw [show (((-1 : ℝ) • iteratedCovGrad (I := I) g₀ 2 2 i
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s))))).toSection x) =
         (-1 : ℝ) • ((iteratedCovGrad (I := I) g₀ 2 2 i
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s))))).toSection x) from by
       rw [SmoothCcTensor.toSection_smul]
@@ -989,20 +989,20 @@ theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiema
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I) (M := M) g₀ i 2 6 2
     (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-    (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+    (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s))) x) ?_
   have hWtower : ∀ w, w ≤ i →
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
         ((iteratedCovGrad (I := I) g₀ 2 6 w
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s)))).toSection x) ≤
       (fr * (fr * CR w)) * Combinatorics.boundedFactorGridWindow b (i + 1) (w + 3) := by
     intro w hw
     have hperm : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
         ((iteratedCovGrad (I := I) g₀ 2 6 w
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s)))).toSection x) =
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
@@ -1010,10 +1010,10 @@ theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiema
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s))).toSection x) :=
       riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M) g₀ 2 6
-        armPairTraceSlotPerm6
+        termPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s)))
         (fun y d => by
@@ -1049,7 +1049,7 @@ theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiema
         ∑ w ∈ Finset.range (i + 1 - u),
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
             ((iteratedCovGrad (I := I) g₀ 2 6 w
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s)))).toSection x) ≤
       ((((u + 1 : ℕ) : ℝ) * CP u) * ∑ w ∈ Finset.range (i + 1 - u),
@@ -1090,7 +1090,7 @@ theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiema
     have hA2 : (∑ w ∈ Finset.range (i + 1 - u),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
           ((iteratedCovGrad (I := I) g₀ 2 6 w
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s)))).toSection x)) ≤
         ∑ w ∈ Finset.range (i + 1 - u),
@@ -1101,7 +1101,7 @@ theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiema
     have hsum_nn : (0 : ℝ) ≤ ∑ w ∈ Finset.range (i + 1 - u),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + w) x
           ((iteratedCovGrad (I := I) g₀ 2 6 w
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s)))).toSection x) :=
       Finset.sum_nonneg fun w _ =>

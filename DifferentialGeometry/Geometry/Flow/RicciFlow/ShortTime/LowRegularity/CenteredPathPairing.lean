@@ -236,23 +236,23 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
     operatorFieldApply (I := I) (M := M) g 4 2 (Φ s - Φ0) HT
   let CHLT : ℝ → SmoothCcTensor g 0 2 := fun s =>
     operatorFieldApply (I := I) (M := M) g 4 2 (Φ s - Φ0) HLT
-  have hR : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 R
+  have hR : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2 R
       (δ := delta) (δ' := delta) := by
     simpa only [R] using rhsDecomposition0_joint (I := I) (M := M)
       g g_bg T hdelta hdeltaZ
-  have hRK : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2
+  have hRK : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2
       (fun s => R s + K0) (δ := delta) (δ' := delta) :=
-    threeArmJoint_add (I := I) (M := M) g R (fun _ => K0) hR
-      (threeArmJoint_const (I := I) (M := M) g K0)
+    covariantJetJoint_add (I := I) (M := M) g R (fun _ => K0) hR
+      (covariantJetJoint_const (I := I) (M := M) g K0)
   have hA0 := operatorFieldApplication_fixed_jointContMDiffOn (I := I) (M := M)
     g (fun s => R s + K0) T S hRK
-  have hQ : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Q
+  have hQ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2 Q
       (δ := delta) (δ' := delta) := by
-    rw [linearizedRicciThreeArmHjoint]
+    rw [linearizedRicciCovariantJetJointSmoothness]
     simpa only [Q] using ricciDeTurckTopOrderPairingCoefficient_joint_contDiff (I := I) (M := M)
       g T T hdelta hdeltaZ ricciDecompositionQA ricciDecompositionQB lieDecompositionQ lieDecompositionEps
   have hZ0 := operatorFieldApplication_fixed_jointContMDiffOn (I := I) (M := M) g Q T S hQ
-  have hC : linearizedRicciThreeArmHjoint (I := I) (M := M) g 4
+  have hC : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 4
       (fun s => Φ s - Φ0) (δ := delta) (δ' := delta) := by
     simpa only [Φ, Φ0] using phi_dev_joint (I := I) (M := M)
       g T (0 : SmoothCcTensor g 0 2) hdelta hdeltaZ
@@ -293,12 +293,12 @@ theorem centeredPathPairing_eq_intervalIntegral_and_intervalIntegrable
         (fun s => Φ s - Φ0) S metricPerturbationPathDomain_isOpen hSI hC := by
     have hΦlin := rhs_top_path_joint (I := I) (M := M)
       g T (0 : SmoothCcTensor g 0 2) hdelta hdeltaZ
-    have hΦneg := threeArmJoint_add (I := I) (M := M) g Φ (fun _ => -Φ0)
+    have hΦneg := covariantJetJoint_add (I := I) (M := M) g Φ (fun _ => -Φ0)
       (by simpa only [Φ] using hΦlin)
-      (threeArmJoint_const (I := I) (M := M) g (-Φ0))
+      (covariantJetJoint_const (I := I) (M := M) g (-Φ0))
     have hΦ := hΦlin
     have hΦneg' := hΦneg
-    rw [linearizedRicciThreeArmHjoint] at hΦ hΦneg'
+    rw [linearizedRicciCovariantJetJointSmoothness] at hΦ hΦneg'
     unfold rhsTopPathIntegral
     simpa only [Φ, Φ0, S, sub_eq_add_neg] using
       pathIntegralCoeffField_add_const (I := I) (M := M)

@@ -1355,7 +1355,7 @@ lemma exists_rsDomDomCongrSection_head_transport (g₀ : SmoothRiemannianMetric 
 
 end CurvatureCoefficientDifferenceJetTower
 
-theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0CurvCoeff_backgroundDifference_topOrderSeparated_le
+theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_backgroundDifference_topOrderSeparated_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1372,8 +1372,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0CurvCoeff_background
           (∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
                 ((iteratedCovGrad (I := I) g₀ 2 2 i
-                    (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-                      ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) -
+                    (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+                      ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) -
                   Hd).toSection x) ≤
               Kc i * Combinatorics.boundedFactorGridWindow
                 (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
@@ -1481,16 +1481,16 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0CurvCoeff_background
       _ = 4 * (n * KtB) * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T).toSection x) := by ring
   · intro x
-    have hdecomp := ricciArmOrder0CurvCoeff_backgroundDifference_decomp (I := I) (M := M)
+    have hdecomp := ricciOrderZeroCurvCoeff_backgroundDifference_decomp (I := I) (M := M)
       g₀ g₁
     have hsplit : iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-            ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) -
+          (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+            ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) -
           (HdV + HdV2) =
         (iteratedCovGrad (I := I) g₀ 2 2 i V - HdV) +
           (iteratedCovGrad (I := I) g₀ 2 2 i V2 - HdV2) := by
-      rw [show (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-            ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) = V + V2 from by
+      rw [show (ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+            ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀) = V + V2 from by
         rw [hV_def, hV2_def, hLam_def]
         exact hdecomp]
       rw [iteratedCovGrad_add (I := I) g₀ 2 2 i V V2]
@@ -1573,13 +1573,13 @@ private lemma ts_riemann_coeff_sub_head_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (i : ℕ)
     (Dpt phiDt : SmoothCcTensor g₀ 6 2) (WBig WVd : SmoothCcTensor g₀ 2 6)
     (HdT1 HdT2 : SmoothCcTensor g₀ 2 (2 + i))
-    (hRiemD : ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-        ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ =
+    (hRiemD : ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+        ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ =
       (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 Dpt WBig +
         (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 phiDt WVd) :
     iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-            ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) -
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+            ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) -
         (2 : ℝ) • (HdT1 + HdT2) =
       (2 : ℝ) • ((iteratedCovGrad (I := I) g₀ 2 2 i
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 Dpt WBig) - HdT1) +
@@ -1631,7 +1631,7 @@ private lemma ts_combine_riemannianFiberNormSq_residual
     _ = (4 * (2 * (2 * a + 2 * b) + 2 * (2 * c * d))) * w :=
       ts_residual_bound_factor a b c d w
 
-theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_topOrderSeparated_le
+theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_topOrderSeparated_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1648,8 +1648,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgro
           (∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
                 ((iteratedCovGrad (I := I) g₀ 2 2 i
-                    (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                      ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) -
+                    (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                      ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) -
                   Hd).toSection x) ≤
               Kc i * Combinatorics.boundedFactorGridWindow
                 (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
@@ -1753,8 +1753,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgro
     rw [slotExtend_sub (I := I) (M := M) g₀ 1 5]
     rw [rsDomDomCongrSection_sub_cc (I := I) (M := M) g₀ 2 6 sigmaE0]
     abel
-  have hRiemD : ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-      ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ =
+  have hRiemD : ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+      ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ =
       (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 Dpt WBig +
         (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 phiDt WVd := by
     have hL1 := riemannCoeff_eq_pairTrace_L11 (I := I) (M := M) g₀ g₁
@@ -2318,8 +2318,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgro
       exact add_le_add (mul_le_mul_of_nonneg_left hpiece1 htwo)
         (mul_le_mul_of_nonneg_left hpiece2 htwo)
     have hsmul_diff : iteratedCovGrad (I := I) g₀ 2 2 i
-          (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-            ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀) -
+          (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+            ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) -
           (2 : ℝ) • (HdT1 + HdT2) =
         (2 : ℝ) • ((iteratedCovGrad (I := I) g₀ 2 2 i
             (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 Dpt WBig) - HdT1) +
@@ -2337,8 +2337,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgro
       (ts_nested_mul_assoc cP (n * n) (2 * KcA' i + 2 * KcA i) Wfin)
     exact ts_combine_riemannianFiberNormSq_residual g₀ i x
       (iteratedCovGrad (I := I) g₀ 2 2 i
-        (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-          ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀))
+        (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+          ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀))
       (iteratedCovGrad (I := I) g₀ 2 2 i
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 Dpt WBig))
       (iteratedCovGrad (I := I) g₀ 2 2 i

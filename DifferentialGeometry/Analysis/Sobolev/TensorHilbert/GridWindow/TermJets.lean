@@ -73,7 +73,7 @@ theorem connectionDifferenceMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : �
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (k + 1) := h2
   linarith [h1', h2']
 
-theorem exists_ricciConnectionDifferenceQuadraticArm_markWindow (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+theorem exists_ricciConnectionDifferenceQuadraticTerm_markWindow (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -81,7 +81,7 @@ theorem exists_ricciConnectionDifferenceQuadraticArm_markWindow (g₀ : SmoothRi
         {δ : ℝ} (_hδ_le : δ ≤ δ₀) (_hδ0 : 0 ≤ δ)
         (_hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ P) δ),
         HasMarkedGridWindow (I := I) (M := M) g₀ P
-          (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g₀ g₁) 2 K := by
+          (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g₀ g₁) 2 K := by
   classical
   obtain ⟨Kcd, hKcd_nn, hcd⟩ := connectionDifferenceMark (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kft, hKft_nn, hft⟩ := fourTrAntidiagonalTupleGridWindow (I := I) (M := M) g₀ hδ₀
@@ -209,11 +209,11 @@ theorem exists_ricciConnectionDifferenceQuadraticArm_markWindow (g₀ : SmoothRi
   have hFT : HasMarkedGridWindow (I := I) (M := M) g₀ P
       (ricciCometricFourTraceCastG0 (I := I) g₀ g₁) 0 Kft :=
     hasMarkedGridWindow_of_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ P _ (fun n y => hft g₁ P htie hδ_le hδ0 hδ n y)
-  simpa only [ricciConnectionDifferenceQuadraticArm] using
+  simpa only [ricciConnectionDifferenceQuadraticTerm] using
     hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _
       hKft_nn hK94_nn hFT hKer
 
-theorem exists_ricciConnectionDifferenceQuadraticArm_covariantJetNormSq_bound (hDim : Module.finrank ℝ E = 3)
+theorem exists_ricciConnectionDifferenceQuadraticTerm_covariantJetNormSq_bound (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ K0 K2 : ℕ → ℝ, (∀ i, 0 ≤ K0 i) ∧ (∀ i, 0 ≤ K2 i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -224,13 +224,13 @@ theorem exists_ricciConnectionDifferenceQuadraticArm_covariantJetNormSq_bound (h
         (_hP0 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
           (P.toSection x) ≤ 1)
         (i : ℕ),
-        ‖iteratedCovGrad (I := I) g₀ 2 2 i (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
+        ‖iteratedCovGrad (I := I) g₀ 2 2 i (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
           (K0 i + K2 i * ∑ j ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g₀ 0 2 (1 + j) P‖ ^ 2) *
             (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
-  obtain ⟨KA, hKA_nn, hAA⟩ := exists_ricciConnectionDifferenceQuadraticArm_markWindow (I := I) (M := M) g₀ hδ₀
+  obtain ⟨KA, hKA_nn, hAA⟩ := exists_ricciConnectionDifferenceQuadraticTerm_markWindow (I := I) (M := M) g₀ hδ₀
   obtain ⟨K0', hK0'_nn, hjet⟩ := markedGridWindow_jet_bound (I := I) (M := M) g₀
   obtain ⟨cg, hcg_nn, hcg⟩ := gradCapLin (I := I) (M := M) hDim g₀
   refine ⟨fun i => KA i * K0' i, fun i => KA i * K0' i * cg,
@@ -252,7 +252,7 @@ theorem exists_ricciConnectionDifferenceQuadraticArm_covariantJetNormSq_bound (h
       (P.toSection x) ≤ (1 : ℝ) ^ 2 := by
     intro x; rw [one_pow]; exact hP0 x
   have hres := hjet P (Λ₀ := 1) zero_le_one (le_refl _) hΛ₁0 hsup hcap
-    (ricciConnectionDifferenceQuadraticArm (I := I) (M := M) g₀ g₁) hKA_nn
+    (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g₀ g₁) hKA_nn
     (hAA g₁ P htie hδ_le hδ0 hδ) i
   refine hres.trans (le_of_eq ?_)
   rw [hΛ₁sq]

@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Exponential.ExpVariationSmooth
+import DifferentialGeometry.Geometry.Exponential.ExponentialVariationSmoothness
 
 
-import DifferentialGeometry.Geometry.Exponential.IntrinsicExp
-import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
+import DifferentialGeometry.Geometry.Exponential.IntrinsicExponential
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponentialDerivative
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Exponential.NormalBallGeodesic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.LocalGeometry

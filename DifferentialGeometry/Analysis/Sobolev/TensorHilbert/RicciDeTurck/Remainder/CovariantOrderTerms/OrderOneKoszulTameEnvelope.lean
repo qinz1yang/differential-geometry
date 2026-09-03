@@ -22,7 +22,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (ricciArmOrder1KoszulCoeff raisedKoszul)
+  (ricciFirstOrderKoszulCoeff raisedKoszul)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -274,7 +274,7 @@ theorem cometricCastG0_perOrder_l2_tameEnvelope_generic
     have hnn : 0 ≤ 2 * aL l + 2 * KD l := by linarith [haL_nn l, hKD_nn l]
     nlinarith only [hwin_nn, hnn]
 
-theorem ricciArmOrder1KoszulCoeff_perOrder_l2_tameEnvelope_generic
+theorem ricciFirstOrderKoszulCoeff_perOrder_l2_tameEnvelope_generic
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -287,7 +287,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_tameEnvelope_generic
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ≤ R) →
         ∀ (i : ℕ),
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-              (ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
+              (ricciFirstOrderKoszulCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
             K i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
@@ -299,12 +299,12 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_tameEnvelope_generic
   obtain ⟨KC, hKC_nn, hKC⟩ :=
     cometricCastG0_perOrder_l2_tameEnvelope_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨fun i => diagonalGridGrowthFactor (E := E) i *
-      (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+      (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
         (I := I) (M := M) g₀ 1 3 2 1 i).choose *
       (ΛB ^ 2 * 10 + ΛA ^ 2 * ∑ l ∈ Finset.range (i + 1), KC l),
     fun i => by
       refine mul_nonneg (mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) i)
-        (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+        (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
           (I := I) (M := M) g₀ 1 3 2 1 i).choose_spec.1) (add_nonneg ?_ ?_)
       · exact mul_nonneg (sq_nonneg _) (by norm_num)
       · exact mul_nonneg (sq_nonneg _)
@@ -313,11 +313,11 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_tameEnvelope_generic
   obtain ⟨hΦsup, hΦsum⟩ := hΦfeed g₁ P hδ_le hδ htie hPball
   obtain ⟨hWsup, hWsum⟩ := hWfeed g₁ P hδ_le hδ htie hPball
   obtain ⟨hgrid_int, hgrid_bound⟩ :=
-    (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g₀ 1 3 2 1 i).choose_spec.2
       (raisedKoszul (I := I) g₀ g₁) (cometricDoubleTraceCastG0 (I := I) g₀ g₁) ΛA ΛB hΛA hΛB hΦsup
         hWsup
-  rw [ricciArmOrder1KoszulCoeff_eq_raisedKoszul_contract_cometricDoubleTraceCastG0 (I := I) (M := M)
+  rw [ricciFirstOrderKoszulCoeff_eq_raisedKoszul_contract_cometricDoubleTraceCastG0 (I := I) (M := M)
     g₀ g₁]
   have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 3 (2 + i)
     (iteratedCovGrad (I := I) g₀ 3 2 i
@@ -339,9 +339,9 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_tameEnvelope_generic
   refine le_trans key ?_
   rw [MeasureTheory.integral_const_mul]
   have hAnn : (0 : ℝ) ≤ diagonalGridGrowthFactor (E := E) i := operatorFieldApplicationGdiag_nonneg (E := E) i
-  have hCnn : (0 : ℝ) ≤ (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+  have hCnn : (0 : ℝ) ≤ (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g₀ 1 3 2 1 i).choose :=
-    (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+    (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
       (I := I) (M := M) g₀ 1 3 2 1 i).choose_spec.1
   have hwin2_nn : 0 ≤ ∑ j ∈ Finset.range (i + 2),
       ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 :=
@@ -406,7 +406,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_tameEnvelope_generic
                       (cometricDoubleTraceCastG0 (I := I) g₀ g₁)).toSection x))
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)
       ≤ diagonalGridGrowthFactor (E := E) i *
-          ((exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+          ((exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
             (I := I) (M := M) g₀ 1 3 2 1 i).choose *
             (ΛB ^ 2 * ∑ n ∈ Finset.range (i + 1),
                 ‖iteratedCovGrad (I := I) g₀ 1 2 n (raisedKoszul (I := I) g₀ g₁)‖ ^ 2
@@ -415,7 +415,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_tameEnvelope_generic
                   2)) :=
         mul_le_mul_of_nonneg_left hgrid_bound hAnn
     _ ≤ diagonalGridGrowthFactor (E := E) i *
-          ((exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+          ((exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
             (I := I) (M := M) g₀ 1 3 2 1 i).choose *
             ((ΛB ^ 2 * 10 + ΛA ^ 2 * ∑ l ∈ Finset.range (i + 1), KC l) *
               (1 + ∑ j ∈ Finset.range (i + 2),
@@ -425,7 +425,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_tameEnvelope_generic
         have h2 := mul_le_mul_of_nonneg_left hSc (sq_nonneg ΛA)
         nlinarith only [h1, h2]
     _ = diagonalGridGrowthFactor (E := E) i *
-          (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
+          (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
             (I := I) (M := M) g₀ 1 3 2 1 i).choose *
           (ΛB ^ 2 * 10 + ΛA ^ 2 * ∑ l ∈ Finset.range (i + 1), KC l) *
           (1 + ∑ j ∈ Finset.range (i + 2),

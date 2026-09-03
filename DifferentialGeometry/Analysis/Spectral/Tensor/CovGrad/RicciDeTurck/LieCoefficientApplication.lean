@@ -38,26 +38,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private lemma operatorFieldApplication_sub_left_local (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ₁ Φ₂ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s (Φ₁ - Φ₂) W =
-      operatorFieldApply (I := I) (M := M) g r s Φ₁ W - operatorFieldApply (I := I) (M := M) g r s
-        Φ₂ W := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((operatorFieldApply (I := I) (M := M) g r s Φ₁ W - operatorFieldApply (I := I) (M := M)
-    g r s Φ₂ W).toSection x) =
-      (operatorFieldApply (I := I) (M := M) g r s Φ₁ W).toSection x -
-        (operatorFieldApply (I := I) (M := M) g r s Φ₂ W).toSection x from rfl]
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection, operatorFieldApplication_toSection]
-  rw [show ((Φ₁ - Φ₂).toSection x : TensorRSSpace r s I x) = Φ₁.toSection x - Φ₂.toSection x from by
-    rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [ContinuousLinearMap.sub_comp]
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma unitModel_add2_apply_local (g₀ : SmoothRiemannianMetric I M)
@@ -120,11 +100,11 @@ theorem deTurckLieTraceCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-theorem deTurckLieArm2PrincipalCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+theorem deTurckLieSecondOrderPrincipalCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (D : SmoothCcTensor g₀ 0 4) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁) D) x v =
+          (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀ g₁) D) x v =
       ((∑ k : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 4 D x
             ![v 0,
@@ -146,7 +126,8 @@ theorem deTurckLieArm2PrincipalCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetri
                 (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)),
               (Module.finBasis ℝ E) k] := by
-  rw [deTurckLieArm2PrincipalCoeff, operatorFieldApplication_sub_left_local, operatorFieldApplication_add_left,
+  rw [deTurckLieSecondOrderPrincipalCoeff, operatorFieldApplication_sub_left,
+    operatorFieldApplication_add_left,
     unitModel_sub2_apply_local, unitModel_add2_apply_local,
     deTurckLieTraceCoeff_apply_eq, deTurckLieTraceCoeff_apply_eq,
     traceHessianCoeff_apply_eq]
@@ -256,10 +237,10 @@ private lemma deTurckLieKoszulTraceFib_toModel_eval (g₀ g₁ : SmoothRiemannia
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+private lemma deTurckLieFirstOrderCoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (a b : E) :
     Tensor0SBundle.Tensor0SSpace.toModel
-        (deTurckLieArm1CoreFib (I := I) g₀ g₁ g_bg x D) ![a, b] =
+        (deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x D) ![a, b] =
       (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
               ![a,
@@ -339,7 +320,7 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                 ((Module.finBasis ℝ E) k))) := by
   have hS2 : Tensor0SBundle.Tensor0SSpace.toModel
-      (deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermInnerTwo x
+      (deTurckLiePairTraceFib (I := I) g₁ deTurckLieFirstOrderPairPermInnerTwo x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D) ![a, b] =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel D
@@ -365,7 +346,7 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
     · exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
         (by funext i; fin_cases i <;> rfl)
   have hB : Tensor0SBundle.Tensor0SSpace.toModel
-      (deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermCorrection x
+      (deTurckLiePairTraceFib (I := I) g₁ deTurckLieFirstOrderPairPermCorrection x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x) D) ![a, b] =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel D
@@ -393,7 +374,7 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
   have hT2 : Tensor0SBundle.Tensor0SSpace.toModel
       (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)
-        (domDomCongrFibRank (I := I) 3 deTurckLieArm1VecSlotPerm x D)) ![a, b] =
+        (domDomCongrFibRank (I := I) 3 deTurckLieFirstOrderVecSlotPerm x D)) ![a, b] =
       Tensor0SBundle.Tensor0SSpace.toModel D
         ![a, b,
           tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -403,7 +384,7 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
     exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
       (by funext i; fin_cases i <;> rfl)
   have hT3 : Tensor0SBundle.Tensor0SSpace.toModel
-      (deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermOuterZero x
+      (deTurckLiePairTraceFib (I := I) g₁ deTurckLieFirstOrderPairPermOuterZero x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D) ![a, b] =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel D
@@ -429,7 +410,7 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
     · exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
         (by funext i; fin_cases i <;> rfl)
   have hT4 : Tensor0SBundle.Tensor0SSpace.toModel
-      (deTurckLieKoszulTraceFib (I := I) g₀ g₁ deTurckLieArm1KoszulMidPerm x D) ![a, b] =
+      (deTurckLieKoszulTraceFib (I := I) g₀ g₁ deTurckLieFirstOrderKoszulMidPerm x D) ![a, b] =
       ∑ k : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel D
           ![cometricLmodel (I := I) g₁ x
@@ -446,7 +427,7 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
     exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
       (by funext i; fin_cases i <;> rfl)
   have hT5 : Tensor0SBundle.Tensor0SSpace.toModel
-      (deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermOuterTwo x
+      (deTurckLiePairTraceFib (I := I) g₁ deTurckLieFirstOrderPairPermOuterTwo x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D) ![a, b] =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel D
@@ -471,7 +452,7 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
     congr 1
     · exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
         (by funext i; fin_cases i <;> rfl)
-  rw [deTurckLieArm1CoreFib]
+  rw [deTurckLieFirstOrderCoreFib]
   simp only [sub_apply, ContinuousLinearMap.comp_apply,
     Tensor0SSpace.toModel_sub]
   rw [hS2, hB, hT2, hT3, hT4, hT5]
@@ -480,10 +461,10 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma deTurckLieArm1CoreFib_toModel_eval' (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+private lemma deTurckLieFirstOrderCoreFib_toModel_eval' (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (w : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
-        (deTurckLieArm1CoreFib (I := I) g₀ g₁ g_bg x D) w =
+        (deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x D) w =
       (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
               ![w 0,
@@ -564,30 +545,30 @@ private lemma deTurckLieArm1CoreFib_toModel_eval' (g₀ g₁ g_bg : SmoothRieman
                 ((Module.finBasis ℝ E) k))) := by
   have hw : w = ![w 0, w 1] := by funext i; fin_cases i <;> rfl
   conv_lhs => rw [hw]
-  exact deTurckLieArm1CoreFib_toModel_eval (I := I) g₀ g₁ g_bg x D (w 0) (w 1)
+  exact deTurckLieFirstOrderCoreFib_toModel_eval (I := I) g₀ g₁ g_bg x D (w 0) (w 1)
 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma deTurckLieArm1_swapCore_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+private lemma deTurckLieFirstOrder_swapCore_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (v : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         (domDomCongrFibRank (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x
-          (deTurckLieArm1CoreFib (I := I) g₀ g₁ g_bg x D)) v =
+          (deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x D)) v =
       Tensor0SBundle.Tensor0SSpace.toModel
-        (deTurckLieArm1CoreFib (I := I) g₀ g₁ g_bg x D) ![v 1, v 0] := by
+        (deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x D) ![v 1, v 0] := by
   rw [domDomCongrFibRank_apply, Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   exact congrArg (fun t : Fin 2 → E => Tensor0SBundle.Tensor0SSpace.toModel
-    (deTurckLieArm1CoreFib (I := I) g₀ g₁ g_bg x D) t)
+    (deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x D) t)
     (by funext i; fin_cases i <;> rfl)
 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma deTurckLieArm1_interiorProduct_eval (g₁ g_bg : SmoothRiemannianMetric I M)
+private lemma deTurckLieFirstOrder_interiorProduct_eval (g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (v : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 x
@@ -603,10 +584,10 @@ private lemma deTurckLieArm1_interiorProduct_eval (g₁ g_bg : SmoothRiemannianM
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma deTurckLieArm1_koszulZero_eval (g₀ g₁ : SmoothRiemannianMetric I M)
+private lemma deTurckLieFirstOrder_koszulZero_eval (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (v : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
-        (deTurckLieKoszulTraceFib (I := I) g₀ g₁ deTurckLieArm1KoszulZeroPerm x D) v =
+        (deTurckLieKoszulTraceFib (I := I) g₀ g₁ deTurckLieFirstOrderKoszulZeroPerm x D) v =
       ∑ k : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel D
           ![tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -627,11 +608,11 @@ private lemma deTurckLieArm1_koszulZero_eval (g₀ g₁ : SmoothRiemannianMetric
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-theorem deTurckLieArm1Coeff_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+theorem deTurckLieFirstOrderCoeff_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (D : SmoothCcTensor g₀ 0 3) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 3 2
-          (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg) D) x v =
+          (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g_bg) D) x v =
       unitModel (I := I) (M := M) g₀ 3 D x
           ![tangentSpaceModelContinuousLinearEquiv (I := I) x
               ((PDE.DeTurck.deTurckVF (I := I) g₁ g_bg : Π y : M, TangentSpace I y) x),
@@ -804,28 +785,28 @@ theorem deTurckLieArm1Coeff_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I 
               (Module.finBasis ℝ E) k] := by
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-        (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg).toSection x).comp
+        (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g_bg).toSection x).comp
         (show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I x from
           D.toSection x)) (unitTensor (I := I) (M := M) x) =
       (show Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-        (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg).toSection x)
+        (deTurckLieFirstOrderCoeff (I := I) (M := M) g₀ g₁ g_bg).toSection x)
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I x from
           D.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
-  rw [deTurckLieArm1Coeff_toSection]
+  rw [deTurckLieFirstOrderCoeff_toSection]
   rw [show (show Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
         (show Tensor0SBundle.TensorRSSpace 3 2 I x from
-          deTurckLieArm1Fib (I := I) g₀ g₁ g_bg x))
+          deTurckLieFirstOrderFib (I := I) g₀ g₁ g_bg x))
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I x from
           D.toSection x) (unitTensor (I := I) (M := M) x)) =
-      deTurckLieArm1Fib (I := I) g₀ g₁ g_bg x
+      deTurckLieFirstOrderFib (I := I) g₀ g₁ g_bg x
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I x from
           D.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
-  rw [deTurckLieArm1Fib]
+  rw [deTurckLieFirstOrderFib]
   simp only [add_apply, ContinuousLinearMap.comp_apply,
     Tensor0SSpace.toModel_add]
-  rw [deTurckLieArm1_interiorProduct_eval, deTurckLieArm1CoreFib_toModel_eval',
-    deTurckLieArm1_swapCore_eval, deTurckLieArm1CoreFib_toModel_eval,
-    deTurckLieArm1_koszulZero_eval]
+  rw [deTurckLieFirstOrder_interiorProduct_eval, deTurckLieFirstOrderCoreFib_toModel_eval',
+    deTurckLieFirstOrder_swapCore_eval, deTurckLieFirstOrderCoreFib_toModel_eval,
+    deTurckLieFirstOrder_koszulZero_eval]
   simp only [unitModel]
 
 

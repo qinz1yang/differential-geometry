@@ -38,20 +38,20 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-def deTurckLieArm2DivSlotPermA : Equiv.Perm (Fin 4) :=
+def deTurckLieSecondOrderDivSlotPermA : Equiv.Perm (Fin 4) :=
   Equiv.swap (0 : Fin 4) 2 * Equiv.swap (2 : Fin 4) 3 * Equiv.swap (3 : Fin 4) 1
 
-def deTurckLieArm2DivSlotPermAT : Equiv.Perm (Fin 4) :=
+def deTurckLieSecondOrderDivSlotPermAT : Equiv.Perm (Fin 4) :=
   Equiv.swap (0 : Fin 4) 3 * Equiv.swap (3 : Fin 4) 1
 
-theorem deTurckLieArm2DivSlotPermA_apply :
-    deTurckLieArm2DivSlotPermA 0 = 2 ∧ deTurckLieArm2DivSlotPermA 1 = 0 ∧
-      deTurckLieArm2DivSlotPermA 2 = 3 ∧ deTurckLieArm2DivSlotPermA 3 = 1 := by
+theorem deTurckLieSecondOrderDivSlotPermA_apply :
+    deTurckLieSecondOrderDivSlotPermA 0 = 2 ∧ deTurckLieSecondOrderDivSlotPermA 1 = 0 ∧
+      deTurckLieSecondOrderDivSlotPermA 2 = 3 ∧ deTurckLieSecondOrderDivSlotPermA 3 = 1 := by
   refine ⟨?_, ?_, ?_, ?_⟩ <;> decide
 
-theorem deTurckLieArm2DivSlotPermAT_apply :
-    deTurckLieArm2DivSlotPermAT 0 = 3 ∧ deTurckLieArm2DivSlotPermAT 1 = 0 ∧
-      deTurckLieArm2DivSlotPermAT 2 = 2 ∧ deTurckLieArm2DivSlotPermAT 3 = 1 := by
+theorem deTurckLieSecondOrderDivSlotPermAT_apply :
+    deTurckLieSecondOrderDivSlotPermAT 0 = 3 ∧ deTurckLieSecondOrderDivSlotPermAT 1 = 0 ∧
+      deTurckLieSecondOrderDivSlotPermAT 2 = 2 ∧ deTurckLieSecondOrderDivSlotPermAT 3 = 1 := by
   refine ⟨?_, ?_, ?_, ?_⟩ <;> decide
 
 noncomputable def domDomCongrFibPerm (σ : Equiv.Perm (Fin 4)) (x : M) :
@@ -268,14 +268,14 @@ private theorem jointTotalSpaceRS_add_local {r s : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 
-def deTurckLieArm2PrincipalCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
+def deTurckLieSecondOrderPrincipalCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 :=
-  deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ deTurckLieArm2DivSlotPermA
-    + deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ deTurckLieArm2DivSlotPermAT
+  deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ deTurckLieSecondOrderDivSlotPermA
+    + deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ deTurckLieSecondOrderDivSlotPermAT
     - traceHessianCoeff (I := I) (M := M) g₀ g₁
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
+theorem deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointContMDiff (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -284,83 +284,47 @@ theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointContMDiff (g₀
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 4 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) p.1
-        ((deTurckLieArm2PrincipalCoeff (I := I) g₀
+        ((deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hA := deTurckLieTraceCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
-    deTurckLieArm2DivSlotPermA
+    deTurckLieSecondOrderDivSlotPermA
   have hAT := deTurckLieTraceCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
-    deTurckLieArm2DivSlotPermAT
+    deTurckLieSecondOrderDivSlotPermAT
   have hH := traceHessianCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
   have hadd := jointTotalSpaceRS_add_local (I := I) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (deTurckLieTraceCoeff (I := I) g₀
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) deTurckLieArm2DivSlotPermA).toSection p.1)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) deTurckLieSecondOrderDivSlotPermA).toSection p.1)
     (fun p : M × ℝ => (deTurckLieTraceCoeff (I := I) g₀
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) deTurckLieArm2DivSlotPermAT).toSection p.1)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) deTurckLieSecondOrderDivSlotPermAT).toSection p.1)
     hA hAT
   have hsub := jointTotalSpaceRS_sub_local (I := I) (r := 4) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (deTurckLieTraceCoeff (I := I) g₀
-          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) deTurckLieArm2DivSlotPermA).toSection p.1
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) deTurckLieSecondOrderDivSlotPermA).toSection p.1
         + (deTurckLieTraceCoeff (I := I) g₀
-          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) deTurckLieArm2DivSlotPermAT).toSection p.1)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) deTurckLieSecondOrderDivSlotPermAT).toSection p.1)
     (fun p : M × ℝ => (traceHessianCoeff (I := I) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
     hadd hH
   refine hsub.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) p.1 t) ?_
-  rw [deTurckLieArm2PrincipalCoeff, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
+  rw [deTurckLieSecondOrderPrincipalCoeff, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
     Pi.sub_apply, SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointSmooth (g₀ : SmoothRiemannianMetric I M)
+theorem deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
-      (fun s => deTurckLieArm2PrincipalCoeff (I := I) g₀
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
+      (fun s => deTurckLieSecondOrderPrincipalCoeff (I := I) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)) (δ := δ) (δ' := δ') :=
-  deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private lemma operatorFieldApplication_sub_left_local (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ₁ Φ₂ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s (Φ₁ - Φ₂) W =
-      operatorFieldApply (I := I) (M := M) g r s Φ₁ W - operatorFieldApply (I := I) (M := M) g r s Φ₂ W := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((operatorFieldApply (I := I) (M := M) g r s Φ₁ W - operatorFieldApply (I := I) (M := M) g r s Φ₂ W).toSection x) =
-      (operatorFieldApply (I := I) (M := M) g r s Φ₁ W).toSection x -
-        (operatorFieldApply (I := I) (M := M) g r s Φ₂ W).toSection x from rfl]
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection, operatorFieldApplication_toSection]
-  rw [show ((Φ₁ - Φ₂).toSection x : TensorRSSpace r s I x) = Φ₁.toSection x - Φ₂.toSection x from by
-    rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [ContinuousLinearMap.sub_comp]
-
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private lemma operatorFieldApplication_add_left_local (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ₁ Φ₂ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s (Φ₁ + Φ₂) W =
-      operatorFieldApply (I := I) (M := M) g r s Φ₁ W + operatorFieldApply (I := I) (M := M) g r s Φ₂ W := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  rw [show ((operatorFieldApply (I := I) (M := M) g r s Φ₁ W +
-      operatorFieldApply (I := I) (M := M) g r s Φ₂ W).toSection x) =
-      (operatorFieldApply (I := I) (M := M) g r s Φ₁ W).toSection x +
-        (operatorFieldApply (I := I) (M := M) g r s Φ₂ W).toSection x from rfl]
-  rw [operatorFieldApplication_toSection, operatorFieldApplication_toSection, operatorFieldApplication_toSection]
-  rw [show ((Φ₁ + Φ₂).toSection x : TensorRSSpace r s I x) =
-      Φ₁.toSection x + Φ₂.toSection x from by
-    rw [SmoothCcTensor.toSection_add]; rfl]
-  rw [ContinuousLinearMap.add_comp]
-
+  deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma unitModel_add2_apply_local (g₀ : SmoothRiemannianMetric I M)
@@ -441,11 +405,11 @@ private theorem traceHessianCoeff_operatorFieldApplication_eq_local
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-theorem deTurckLieArm2PrincipalCoeff_operatorFieldApplication_eq (g₀ g₁ : SmoothRiemannianMetric I M)
+theorem deTurckLieSecondOrderPrincipalCoeff_operatorFieldApplication_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (D : SmoothCcTensor g₀ 0 4) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁) D) x v =
+          (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀ g₁) D) x v =
       ((∑ k : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 4 D x
             ![v 0,
@@ -467,7 +431,8 @@ theorem deTurckLieArm2PrincipalCoeff_operatorFieldApplication_eq (g₀ g₁ : Sm
                 (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)),
               (Module.finBasis ℝ E) k] := by
-  rw [deTurckLieArm2PrincipalCoeff, operatorFieldApplication_sub_left_local, operatorFieldApplication_add_left_local,
+  rw [deTurckLieSecondOrderPrincipalCoeff, operatorFieldApplication_sub_left,
+    operatorFieldApplication_add_left,
     unitModel_sub2_apply_local, unitModel_add2_apply_local,
     deTurckLieTraceCoeff_operatorFieldApplication_eq, deTurckLieTraceCoeff_operatorFieldApplication_eq,
     traceHessianCoeff_operatorFieldApplication_eq_local]

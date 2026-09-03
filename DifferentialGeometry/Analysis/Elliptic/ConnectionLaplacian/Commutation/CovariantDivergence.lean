@@ -574,20 +574,6 @@ theorem rawTensorConnLapSmooth_cometricDoubleTrace_apply_comm
   rw [Finset.sum_congr rfl (fun i _ => hlhs i), Finset.sum_congr rfl (fun k _ => hrhs k)]
   rw [Finset.sum_comm]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_sub_right_cc (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (Φ : SmoothCcTensor g r s) (A B : SmoothCcTensor g 0 r) :
-    operatorFieldApply (I := I) (M := M) g r s Φ (A - B) =
-      operatorFieldApply (I := I) (M := M) g r s Φ A - operatorFieldApply (I := I) (M := M) g r s Φ
-        B := by
-  have hAB : A - B = A + (-1 : ℝ) • B := by
-    rw [neg_one_smul]
-    exact sub_eq_add_neg A B
-  rw [hAB, operatorFieldApplication_add_right (I := I) (M := M) g r s Φ A ((-1 : ℝ) • B),
-    operatorFieldApplication_smul_right (I := I) (M := M) g r s (-1 : ℝ) Φ B,
-    neg_one_smul, ← sub_eq_add_neg]
-
 omit [SigmaCompactSpace M] in
 theorem rawConnLap_covDivergence_commutator_eq_operatorFieldApplication_pointwiseTensorCurv
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (Z : SmoothCcTensor g₀ 0 (s + 1)) :
@@ -611,7 +597,8 @@ theorem rawConnLap_covDivergence_commutator_eq_operatorFieldApplication_pointwis
     covDivergence_eq_cometricDoubleTrace_apply_covGrad (I := I) (M := M) g₀ s
       (rawTensorConnLapSmooth (I := I) g₀ 0 (s + 1) Z)
   rw [h1, h2]
-  rw [← operatorFieldApplication_sub_right_cc (I := I) (M := M) g₀ (s + 2) s (cometricDoubleTraceField (I := I) g₀ s)]
+  rw [← operatorFieldApplication_sub_right (I := I) (M := M) g₀ (s + 2) s
+    (cometricDoubleTraceField (I := I) g₀ s)]
   rfl
 
 omit [CompactSpace M] in

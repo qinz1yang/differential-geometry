@@ -383,7 +383,7 @@ theorem sectionalCurvature_neg_smul_right
   rw [sectionalCurvature_neg_right (I := I) g p v (c • w),
       sectionalCurvature_smul_right (I := I) g p hc v w]
 
-private lemma chartFourFold_reverse_sum
+private lemma fourfold_sum_reverse
     {n : ℕ}
     (α β : Fin n → ℝ) (T : Fin n → Fin n → Fin n → Fin n → ℝ) :
     (∑ i : Fin n, ∑ j : Fin n, ∑ k : Fin n, ∑ l : Fin n,
@@ -420,7 +420,7 @@ theorem sectionalCurvatureNumerator_symm_of_chartRiemannLower_second_pair_antisy
     rw [chartRiemannLower_antisymm_jk (I := I) g p i j k l, h_pair i k j l]
     ring
   rw [sectionalCurvatureNumerator_def, sectionalCurvatureNumerator_def]
-  refine Eq.trans ?_ (chartFourFold_reverse_sum (n := Module.finrank ℝ E)
+  refine Eq.trans ?_ (fourfold_sum_reverse (n := Module.finrank ℝ E)
     (α := fun i => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i)
     (β := fun i => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) i)
     (T := fun a b c d =>

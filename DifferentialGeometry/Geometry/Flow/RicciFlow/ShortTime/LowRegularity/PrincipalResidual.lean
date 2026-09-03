@@ -43,7 +43,7 @@ noncomputable def principalResidual
   deTurckSmoothRemainder (I := I) g g T hδ_lt hδ -
     deTurckSmoothRemainder (I := I) g g
       (0 : SmoothCcTensor g 0 2) hδ_lt hδZ -
-    deTurckPrincipalCometricArm (I := I) (M := M) g
+    deTurckPrincipalCometricTerm (I := I) (M := M) g
       (tensorSectionRealizeMetric (I := I) g T hδ_lt hδ) T
 
 noncomputable def principalResidualSobolev
@@ -117,7 +117,7 @@ theorem principalResidualSobolev_eq
           (ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T)
           (ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) T) =
         ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-          (deTurckPrincipalCometricArm (I := I) (M := M) g gm T) := by
+          (deTurckPrincipalCometricTerm (I := I) (M := M) g gm T) := by
     rw [lowRegularityPrincipalOperatorH2_apply_smoothCore (I := I) (M := M)
       hDim g gm T htie hsmall]
     exact principalCometricOperatorH2_apply_smoothCore (I := I) (M := M) hDim g gm T
@@ -155,7 +155,7 @@ theorem exists_principalResidual_decomposition_secondOrder_bound
         lowerScaleActionCoefficients (I := I) (M := M) g g T hδ_lt hδ hδZ
       principalResidual (I := I) (M := M) g T hδ_lt hδ hδZ =
           (L.secondOrderAction (I := I) (M := M) T -
-            deTurckPrincipalCometricArm (I := I) (M := M) g
+            deTurckPrincipalCometricTerm (I := I) (M := M) g
               (tensorSectionRealizeMetric (I := I) g T hδ_lt hδ) T) +
             L.firstOrderAction (I := I) (M := M) T ∧
         (∀ x : M,

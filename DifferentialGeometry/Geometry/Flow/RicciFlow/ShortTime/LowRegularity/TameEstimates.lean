@@ -231,16 +231,16 @@ theorem deTurckSmoothRemainder_h1_tame_bound
   rw [← horder1, ← horder2, ← horder3] at hraw
   rw [deTurckSmoothN_sub_eq_smoothCcToTensorHs_remainderSub
     (I := I) (M := M) g₀ g_bg 1 T T' hδ₀_lt hδ hδ₀_lt hδ']
-  rw [deTurckSmoothRemainderDiff_eq_armDiff_sub_connLapDiff
+  rw [deTurckSmoothRemainderDiff_eq_termDiff_sub_connLapDiff
     (I := I) g₀ g_bg T T' hδ₀_lt hδ hδ₀_lt hδ']
   simp only [smoothHs_eq_ccHs]
   have harm :
       deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ₀_lt hδ =
-        deTurckRHSArmG0 (I := I) g₀ g_bg T hδ₀_lt hδ := by
+        deTurckRHSTermG0 (I := I) g₀ g_bg T hδ₀_lt hδ := by
     rfl
   have harm' :
       deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ₀_lt hδ' =
-        deTurckRHSArmG0 (I := I) g₀ g_bg T' hδ₀_lt hδ' := by
+        deTurckRHSTermG0 (I := I) g₀ g_bg T' hδ₀_lt hδ' := by
     rfl
   rw [← harm, ← harm']
   exact hraw

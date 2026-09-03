@@ -46,7 +46,7 @@ private theorem branchEnergy_inf
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
-    {p : M} (B : ExpInvBranch (I := I) g hEnorm p) :
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) :
     ContMDiffOn I 𝓘(Real, Real) ∞
       (branchEnergy (I := I) g B) B.dom := by
   let gp : E →L[Real] E →L[Real] Real := g.inner p
@@ -69,7 +69,7 @@ private theorem branch_hess_zero
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
-    (p : M) (B : ExpInvBranch (I := I) g hEnorm p)
+    (p : M) (B : ExponentialInverseBranch (I := I) g hEnorm p)
     (hzero : (0 : E) ∈ B.hom.source) (Y : TangentSpace I p) :
     hessFun (I := I) g (branchEnergy (I := I) g B) p Y Y =
       g.inner p Y Y := by
@@ -186,7 +186,7 @@ theorem intrBranch_hess_pos
       fun z v =>
         tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := 𝓘(Real, E)) gExt z v
-    ∀ (B : ExpInvBranch (I := 𝓘(Real, E)) gExt hExt x),
+    ∀ (B : ExponentialInverseBranch (I := 𝓘(Real, E)) gExt hExt x),
       (u : E) ∈ B.hom.source →
       ∀ {Y : E}, Y ≠ 0 →
         0 < hessFun (I := 𝓘(Real, E)) gExt
@@ -218,7 +218,7 @@ theorem intrBranch_hess_pos
         tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := 𝓘(Real, E)) gExt z v
   change
-    ∀ (B : ExpInvBranch (I := 𝓘(Real, E)) gExt hExt x),
+    ∀ (B : ExponentialInverseBranch (I := 𝓘(Real, E)) gExt hExt x),
       u ∈ B.hom.source →
       ∀ {Y : E}, Y ≠ 0 →
         0 < hessFun (I := 𝓘(Real, E)) gExt

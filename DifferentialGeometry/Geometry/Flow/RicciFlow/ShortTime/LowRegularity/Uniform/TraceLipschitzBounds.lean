@@ -928,7 +928,7 @@ private theorem monoSplit (g gT gU : SmoothRiemannianMetric I M)
     operatorFieldComposition_sub_left, operatorFieldComposition_sub_right]
   abel
 
-private theorem twoArm {K₁ K₂ x y : ℝ}
+private theorem twoTerm {K₁ K₂ x y : ℝ}
     (hK₁ : 0 ≤ K₁) (hK₂ : 0 ≤ K₂) (hx : 0 ≤ x) (hy : 0 ≤ y) :
     2 * ((K₁ * x) ^ 2 + (K₂ * y) ^ 2) ≤ (2 * (K₁ + K₂) * (x + y)) ^ 2 := by
   have hK : 0 ≤ K₁ + K₂ := add_nonneg hK₁ hK₂
@@ -1117,7 +1117,7 @@ theorem curvMono_h2_lip_uniform
       mul_le_mul_of_nonneg_left (add_le_add hQ₁ hQ₂) (by norm_num)
     _ ≤ (C * (A * N + D)) ^ 2 := by
       dsimp only [C]
-      exact twoArm hK₁ hK₂ (mul_nonneg hA hN) hD
+      exact twoTerm hK₁ hK₂ (mul_nonneg hA hN) hD
 
 theorem curv_pair_h2_uniform
     (hDim : Module.finrank ℝ E = 3)

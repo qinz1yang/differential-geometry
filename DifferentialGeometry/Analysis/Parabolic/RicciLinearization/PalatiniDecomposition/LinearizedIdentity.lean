@@ -152,7 +152,7 @@ private lemma lrFamilyField_eq (g₀ : SmoothRiemannianMetric I M)
       s • ((-1 : ℝ) • ((1 / 2 : ℝ) •
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     ((Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2).trans
@@ -160,7 +160,7 @@ private lemma lrFamilyField_eq (g₀ : SmoothRiemannianMetric I M)
                     (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
             + ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     (((Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2).trans
@@ -170,7 +170,7 @@ private lemma lrFamilyField_eq (g₀ : SmoothRiemannianMetric I M)
         + (-1 : ℝ) • ((1 / 2 : ℝ) •
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     ((Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
@@ -179,7 +179,7 @@ private lemma lrFamilyField_eq (g₀ : SmoothRiemannianMetric I M)
                     (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
             + ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     (((Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
@@ -190,7 +190,7 @@ private lemma lrFamilyField_eq (g₀ : SmoothRiemannianMetric I M)
         + (1 : ℝ) • ((1 / 2 : ℝ) •
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     ((Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3).trans
@@ -198,7 +198,7 @@ private lemma lrFamilyField_eq (g₀ : SmoothRiemannianMetric I M)
                     (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
             + ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
               (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
                 (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                   (domDomCongrSection (I := I) g₀
                     (((Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3).trans
@@ -210,12 +210,12 @@ private lemma lrFamilyField_eq (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem lrFamily_threeArmHjoint (g₀ : SmoothRiemannianMetric I M)
+private theorem lrFamily_covariantJetJointSmoothness (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ) :
-    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
       (fun s => deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
         ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
           Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 * Equiv.swap (0 : Fin 4) 1,
@@ -270,27 +270,27 @@ private theorem lrFamily_threeArmHjoint (g₀ : SmoothRiemannianMetric I M)
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
           ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
             X.toSection q.1) (Y q.1))) h4
-    have hP00 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+    have hP00 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (domDomCongrSection (I := I) g₀
           ((Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2).trans
             (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
           (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
-    have hP01 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+    have hP01 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (domDomCongrSection (I := I) g₀
           (((Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2).trans
               (Equiv.swap (0 : Fin 4) 1)).trans
             (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
           (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
-    have hP10 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+    have hP10 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (domDomCongrSection (I := I) g₀
           ((Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
               Equiv.swap (0 : Fin 4) 1).trans
             (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
           (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
-    have hP11 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+    have hP11 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (domDomCongrSection (I := I) g₀
           (((Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
@@ -298,13 +298,13 @@ private theorem lrFamily_threeArmHjoint (g₀ : SmoothRiemannianMetric I M)
               (Equiv.swap (0 : Fin 4) 1)).trans
             (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
           (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
-    have hP20 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+    have hP20 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (domDomCongrSection (I := I) g₀
           ((Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3).trans
             (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
           (iteratedCovGrad (I := I) g₀ 0 2 2 T))))
-    have hP21 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
+    have hP21 := hbase (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (domDomCongrSection (I := I) g₀
           (((Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3).trans
@@ -438,7 +438,7 @@ private lemma lrWindowOneThree_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {B :
   nlinarith [hb 1, hB1, hB0, sq_nonneg (b 1 - B)]
 
 
-theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceResidual_order0_data
+theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_pairTraceResidual_order0_data
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -451,8 +451,8 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceRes
         (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
-        linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
-          (fun s => deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+          (fun s => deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀
             - deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
               ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -461,7 +461,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceRes
               ![(-1 : ℝ), -1, 1] s) (δ := δ) (δ' := δ) ∧
         (∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀
               - deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
                 ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -470,7 +470,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceRes
                 ![(-1 : ℝ), -1, 1] s).toSection x) ≤ Λ ^ 2) ∧
         (∀ i : ℕ, ∀ s ∈ Set.Icc (0 : ℝ) 1,
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀
               - deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
                 ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -488,7 +488,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceRes
     exists_sobolev_pointwise_bound_first_order (I := I) (M := M) g₀ a ha_super
   have hΛ0_nn : (0 : ℝ) ≤ (Csob0 * R) ^ 2 := sq_nonneg _
   obtain ⟨C, hC_nn, hpt⟩ :=
-    deTurckLieCovariantDerivativeArmDifferenceGridWindow (I := I) (M := M) g₀ ((Csob0 * R) ^ 2) hΛ0_nn hδ₁_lt
+    deTurckLieCovariantDerivativeTermDifferenceGridWindow (I := I) (M := M) g₀ ((Csob0 * R) ^ 2) hΛ0_nn hδ₁_lt
   obtain ⟨Kflat, hKflat_nn, hKflat⟩ :=
     boundedFactorGridWindow_integral_ballUniform_flat_allOrders (I := I) (M := M) g₀ a
       ha_super hR
@@ -505,9 +505,9 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceRes
         (Csob0 * R) ^ 2 :=
     fun x => hCsob0 T hR hball x
   refine ⟨?_, ?_, ?_⟩
-  · exact threeArmHjoint_sub_local (I := I) (M := M) g₀ _ _
-      (covDerivArmField_metricPerturbationPath_threeArmHjoint (I := I) (M := M) g₀ T hδ hδZ g₀)
-      (lrFamily_threeArmHjoint (I := I) (M := M) g₀ T hδ hδZ)
+  · exact covariantJetJointSmoothness_sub_local (I := I) (M := M) g₀ _ _
+      (covariantDerivativeTermField_metricPerturbationPath_covariantJetJointSmoothness (I := I) (M := M) g₀ T hδ hδZ g₀)
+      (lrFamily_covariantJetJointSmoothness (I := I) (M := M) g₀ T hδ hδZ)
   · intro s hs x
     have hδ0 : 0 ≤ δ := bdDelta_nonneg (I := I) (M := M) g₀ x T hδ
     have h0 := hpt T hTsymm hT0 hδ_le' hδ0 hδ hδZ hs 0 x
@@ -532,7 +532,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceRes
       have hptx : ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
               ((iteratedCovGrad (I := I) g₀ 2 2 i
-                (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+                (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀
                   - deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
                     ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -548,7 +548,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceRes
       have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀
         2 (2 + i)
         (iteratedCovGrad (I := I) g₀ 2 2 i
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀
             - deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
               ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -566,7 +566,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceRes
       ring
     · have hM' : IsEmpty M := not_nonempty_iff.mp hM
       have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀
             - deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
               ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -580,7 +580,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceRes
       nlinarith [hwin_nn, hK_nn]
 
 
-theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_decomposition_identity_data
+theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_decomposition_identity_data
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -595,10 +595,10 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_decompositio
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∃ C0da : ℝ → SmoothCcTensor g₀ 2 2,
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 C0da (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 C0da (δ := δ) (δ' := δ) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1,
             operatorFieldApply (I := I) (M := M) g₀ 2 2
-                (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+                (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)
                 (iteratedCovGrad (I := I) g₀ 0 2 0 T) =
               operatorFieldApply (I := I) (M := M) g₀ 2 2 (C0da s)
@@ -615,7 +615,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_decompositio
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨Λ, hΛ_nn, K, hK_nn, hres⟩ :=
-    exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceResidual_order0_data
+    exists_deTurckLieCovariantDerivativeTerm_basepointBackground_pairTraceResidual_order0_data
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨Λ, hΛ_nn, K, hK_nn,
     ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -626,7 +626,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_decompositio
     fin_cases i <;> norm_num
   intro T hTsymm δ hδ_le hδ hδZ hball
   obtain ⟨hjoint, hcap, hwin⟩ := hres T hTsymm hδ_le hδ hδZ hball
-  refine ⟨fun s => deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+  refine ⟨fun s => deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀
     - deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M) g₀ T hδ hδZ
       ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -645,7 +645,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_decompositio
   abel
 
 
-theorem exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data
+theorem exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -660,10 +660,10 @@ theorem exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data
           (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
         ∃ C0da : ℝ → SmoothCcTensor g₀ 2 2,
-          linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2 C0da (δ := δ) (δ' := δ) ∧
+          linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 C0da (δ := δ) (δ' := δ) ∧
           (∀ s ∈ Set.Icc (0 : ℝ) 1,
             operatorFieldApply (I := I) (M := M) g₀ 2 2
-                (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+                (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg)
                 (iteratedCovGrad (I := I) g₀ 0 2 0 T) =
               operatorFieldApply (I := I) (M := M) g₀ 2 2 (C0da s)
@@ -680,7 +680,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨Λv, hΛv_nn, Kv, hKv_nn, q, ε, hε, hmov⟩ :=
-    exists_deTurckLieCovariantDerivativeArm_basepointBackground_decomposition_identity_data (I := I) (M := M)
+    exists_deTurckLieCovariantDerivativeTerm_basepointBackground_decomposition_identity_data (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨Λbg, hΛbg_nn, hsup_bg⟩ :=
     deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M)
@@ -689,7 +689,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data
     deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M)
       g₀ g₀ a ha_super hR hδ₀
   obtain ⟨Kd, hKd_nn, henv_d⟩ :=
-    exists_deTurckLieCovariantDerivativeArm_backgroundDifference_l2JetWindow (I := I) (M := M)
+    exists_deTurckLieCovariantDerivativeTerm_backgroundDifference_l2JetWindow (I := I) (M := M)
       g₀ g_bg a ha_super hR hδ₀
   have hS_nn : (0 : ℝ) ≤ 2 * Λv ^ 2 + 2 * (2 * Λbg + 2 * Λz) := by positivity
   refine ⟨Real.sqrt (2 * Λv ^ 2 + 2 * (2 * Λbg + 2 * Λz)), Real.sqrt_nonneg _,
@@ -708,22 +708,22 @@ theorem exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data
     rw [hzero, norm_zero]
     exact hR
   refine ⟨fun s => C0v s +
-      (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+      (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-        - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀), ?_, ?_, ?_, ?_⟩
-  · exact threeArmHjoint_add_local (I := I) (M := M) g₀ _ _ hjv
-      (threeArmHjoint_sub_local (I := I) (M := M) g₀ _ _
-        (covDerivArmField_metricPerturbationPath_threeArmHjoint (I := I) (M := M) g₀ T hδ hδZ g_bg)
-        (covDerivArmField_metricPerturbationPath_threeArmHjoint (I := I) (M := M) g₀ T hδ hδZ g₀))
+  · exact covariantJetJointSmoothness_add_local (I := I) (M := M) g₀ _ _ hjv
+      (covariantJetJointSmoothness_sub_local (I := I) (M := M) g₀ _ _
+        (covariantDerivativeTermField_metricPerturbationPath_covariantJetJointSmoothness (I := I) (M := M) g₀ T hδ hδZ g_bg)
+        (covariantDerivativeTermField_metricPerturbationPath_covariantJetJointSmoothness (I := I) (M := M) g₀ T hδ hδZ g₀))
   · intro s hs
-    have hsplit : deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+    have hsplit : deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg =
-        deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀ +
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-            - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀) := by
       rw [add_sub_cancel]
     conv_lhs => rw [hsplit, operatorFieldApplication_add_left, hidv s hs]
@@ -731,19 +731,19 @@ theorem exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data
     abel
   · intro s hs x
     have h1 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg).toSection x) ≤ Λbg := by
-      rw [covDerivArmField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField]
+      rw [covariantDerivativeTermField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField]
       exact hsup_bg T 0 hδ_le hδ hδ_le hδZ hball hZball s hs x
     have h2 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀).toSection x) ≤ Λz := by
-      rw [covDerivArmField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField]
+      rw [covariantDerivativeTermField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField]
       exact hsup_z T 0 hδ_le hδ hδ_le hδZ hball hZball s hs x
     have hdiff : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+        ((deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-          - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+          - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀).toSection x) ≤
         2 * Λbg + 2 * Λz := by
       rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
@@ -752,9 +752,9 @@ theorem exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data
       linarith [h1, h2]
     have hsum : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
         (((fun s => C0v s +
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-            - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)) s).toSection x) ≤
         2 * Λv ^ 2 + 2 * (2 * Λbg + 2 * Λz) := by
       rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
@@ -766,56 +766,56 @@ theorem exists_deTurckLieCovariantDerivativeArm_decomposition_identity_data
   · intro i s hs
     have hlin : iteratedCovGrad (I := I) g₀ 2 2 i
         (C0v s +
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-            - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)) =
         iteratedCovGrad (I := I) g₀ 2 2 i (C0v s) +
           iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-              - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+              - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀) :=
       iteratedCovGrad_add (I := I) (g := g₀) (r := 2) (s := 2) (j := i) _ _
     have hv := henvv i s hs
     have hd := henv_d T hδ_le hδ hδZ hball i s hs
     have htri : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (C0v s +
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-            - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀))‖ ^ 2 ≤
         2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (C0v s)‖ ^ 2 +
           2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-              - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+              - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)‖ ^ 2 := by
       rw [hlin]
       have hn := norm_add_le (iteratedCovGrad (I := I) g₀ 2 2 i (C0v s))
         (iteratedCovGrad (I := I) g₀ 2 2 i
-          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+          (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-            - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀))
       nlinarith [mul_le_mul hn hn
           (norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i (C0v s) +
             iteratedCovGrad (I := I) g₀ 2 2 i
-              (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+              (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-                - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+                - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)))
           (add_nonneg (norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i (C0v s)))
             (norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i
-              (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+              (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-                - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+                - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)))),
         sq_nonneg (‖iteratedCovGrad (I := I) g₀ 2 2 i (C0v s)‖ -
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+            (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g_bg
-              - deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
+              - deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀)‖)]
     refine le_trans htri ?_
     have hwin_nn : (0 : ℝ) ≤ 1 + ∑ j ∈ Finset.range (i + 2),
