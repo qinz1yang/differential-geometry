@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference.ConnectionBicontraction
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Elliptic

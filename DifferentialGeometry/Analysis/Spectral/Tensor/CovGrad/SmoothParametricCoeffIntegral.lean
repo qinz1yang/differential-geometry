@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference.ConnectionBicontraction
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.Analysis.Calculus.ContDiff.Comp

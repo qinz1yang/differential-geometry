@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference.ConnectionBicontraction
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovDerivConnectionDifferenceQuadraticBound
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ConvexPerturbationPointwiseC2
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArm.OperatorField.Application
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SymmAbsorbedCoeffInputReindexBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifferenceKoszulSecondCovGrad
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference.KoszulSecondCovariantDerivative
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ArmCoefficient.PassZero
 
 set_option autoImplicit false
