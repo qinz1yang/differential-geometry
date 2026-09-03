@@ -21,7 +21,7 @@ import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Product
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Smooth
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
+import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
 import DifferentialGeometry.Geometry.Operator.Operators
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature

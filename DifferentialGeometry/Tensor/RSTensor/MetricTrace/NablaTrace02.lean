@@ -88,7 +88,7 @@ noncomputable def freezeHead03Field
       · exact (coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
           (coordinateFrameSet_open (I := I) x₀)
           (coordinateFrameAt_mem (I := I) x₀) (σ 1)
-    have hA := TensorMultilinear.contMDiffAt_section_apply_gen
+    have hA := TensorMultilinear.contMDiffAt_section_apply
       (𝕜 := Real) (I := I) (M := M) (n := 3)
       (T := fun y : M => A y) (A.contMDiff x₀) v hv
     change ContMDiffAt I (modelWithCornersSelf ℝ ℝ) (∞ : WithTop ℕ∞)
@@ -226,7 +226,7 @@ noncomputable def freezeTail04Field
           (coordinateFrameAt_mem (I := I) x₀) (σ 1)
       · exact Y.contMDiff x₀
       · exact Z.contMDiff x₀
-    have hA := TensorMultilinear.contMDiffAt_section_apply_gen
+    have hA := TensorMultilinear.contMDiffAt_section_apply
       (𝕜 := Real) (I := I) (M := M) (n := 4)
       (T := fun y : M => A y) (A.contMDiff x₀) v hv
     change ContMDiffAt I (modelWithCornersSelf ℝ ℝ) (∞ : WithTop ℕ∞)
@@ -365,7 +365,7 @@ noncomputable def freezeMiddle04Field
       · exact (coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
           (coordinateFrameSet_open (I := I) x₀)
           (coordinateFrameAt_mem (I := I) x₀) (σ 1)
-    have hA := TensorMultilinear.contMDiffAt_section_apply_gen
+    have hA := TensorMultilinear.contMDiffAt_section_apply
       (𝕜 := Real) (I := I) (M := M) (n := 4)
       (T := fun y : M => A y) (A.contMDiff x₀) v hv
     change ContMDiffAt I (modelWithCornersSelf ℝ ℝ) (∞ : WithTop ℕ∞)

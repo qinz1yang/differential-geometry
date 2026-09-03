@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
 import DifferentialGeometry.Geometry.Metric.TensorInner.CotangentRiemannian
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
+import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Geometry.Metric.ChartGram
 open DifferentialGeometry.Geometry.Connection.Realization

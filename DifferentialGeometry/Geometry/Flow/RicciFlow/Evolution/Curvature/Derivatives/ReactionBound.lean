@@ -73,7 +73,7 @@ theorem rmFrozenSlot_chartBasis_contMDiffOn
         (by
           rw [trivializationAt_baseSet_eq_chartAt_source (I := I) (M := M)]
           exact hx₀))
-  have h_eval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have h_eval := TensorMultilinear.contMDiffAt_section_apply
     (𝕜 := Real) (I := I) (M := M) (n := 1) (x₀ := x₀)
     (T := fun b : M => (freezeAllBut04Field (I := I) (M := M) (S.base.rm04 t) q Y) b)
     ((freezeAllBut04Field (I := I) (M := M) (S.base.rm04 t) q Y).contMDiff x₀)

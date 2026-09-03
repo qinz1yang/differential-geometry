@@ -144,7 +144,7 @@ lemma curry_covGrad_unit_eval_general
         tensorCovDerivAt (I := I) (M := M) g 0 s S x
           (tangentSpaceModelContinuousLinearEquiv (I := I) x w))
         (unitZeroSec (I := I) (M := M) x)) m
-  rw [TensorMultilinear.tensor0S_curry_apply_eval_gen]
+  rw [TensorMultilinear.tensor0S_curry_apply_eval]
   rw [covGrad_apply_unit_eval_genVal (I := I) (M := M) g s S x (Fin.cons w m)]
   simp only [Fin.cons_zero, Matrix.vecTail]
   rw [show (Fin.cons w m ∘ Fin.succ) = m from funext (fun j => by simp [Fin.cons_succ])]
@@ -530,7 +530,7 @@ theorem tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
         (tensor0SCurry (I := I) (M := M) s x
           ((Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g)).toFun
             (unitGradFieldGen (I := I) (M := M) g s S) x (X x)) (Y x)) m from
-    (TensorMultilinear.tensor0S_curry_apply_eval_gen (I := I) (M := M)
+    (TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
       (T := (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g)).toFun
         (unitGradFieldGen (I := I) (M := M) g s S) x (X x)) (v0 := Y x) (vs := m)).symm]
   rw [curry_covDeriv_succ_eq_covDeriv_curriedSection_sub_connCorrection (I := I) (M := M) g s

@@ -3249,8 +3249,7 @@ import DifferentialGeometry.Tensor.Mixed.Naturality
 import DifferentialGeometry.Tensor.Mixed.SectionTensorEquiv
 import DifferentialGeometry.Tensor.Multilinear.Basis
 import DifferentialGeometry.Tensor.Multilinear.Bundle
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
+import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
 import DifferentialGeometry.Tensor.Multilinear.Comp
 import DifferentialGeometry.Tensor.Multilinear.CurriedProducts
 import DifferentialGeometry.Tensor.Multilinear.Curry

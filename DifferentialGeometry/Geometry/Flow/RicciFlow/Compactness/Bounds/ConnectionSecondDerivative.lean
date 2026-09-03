@@ -1278,7 +1278,7 @@ theorem covStep2_branch1_mdiff
     rw [hσeval y]
   rw [hEq]
   have hS := (S.contMDiff x).of_le (le_refl (∞ : WithTop ℕ∞))
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen (I := I) (M := M) (n := s) (x₀ := x)
+  have hEval := TensorMultilinear.contMDiffAt_section_apply (I := I) (M := M) (n := s) (x₀ := x)
     (T := fun y : M => S y) hS (v := fun b : Fin s => fun y : M => (σ b) y)
     (hv := fun b => ((σ b).contMDiff.contMDiffAt))
   have hSAt : ContMDiffAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
@@ -1365,7 +1365,7 @@ theorem covStep2_branch2_mdiff
     rw [hρpt y]
   rw [hEq]
   have hS := ((covStep (I := I) g₂ s S).contMDiff x).of_le (le_refl (∞ : WithTop ℕ∞))
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen (I := I) (M := M) (n := s + 1) (x₀ := x)
+  have hEval := TensorMultilinear.contMDiffAt_section_apply (I := I) (M := M) (n := s + 1) (x₀ := x)
     (T := fun y : M => covStep (I := I) g₂ s S y) hS (v := fun p : Fin (s + 1) => fun y : M => (ρ p) y)
     (hv := fun p => ((ρ p).contMDiff.contMDiffAt))
   have hSAt : ContMDiffAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)

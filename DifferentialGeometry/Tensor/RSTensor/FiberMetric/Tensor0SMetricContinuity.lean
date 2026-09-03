@@ -1,6 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
+import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
 import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Topology.Instances.Matrix
 
@@ -29,7 +29,7 @@ theorem tensor0SField_eval_cmdAt_slots {s : ℕ}
     ContMDiffAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
       (fun y : M => α y (fun a : Fin s => v a y)) x₀ := by
   have hα_top := α.contMDiff x₀
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have hEval := TensorMultilinear.contMDiffAt_section_apply
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun y : M => α y) hα_top (v := v) (hv := hv)
   let h : ContMDiffAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)

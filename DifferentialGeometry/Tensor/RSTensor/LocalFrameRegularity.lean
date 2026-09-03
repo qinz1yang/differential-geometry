@@ -1,6 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.FixedChart.Models
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Tangent
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
+import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
 
 set_option autoImplicit false
 
@@ -175,7 +175,7 @@ theorem tensorRS_eval_contMDiffAt {r s : ℕ}
       (E₂ := fun p : M => Tensor0SSpace s I p)
       (IM := I) (IB := I) (b := id)
       (ϕ := fun p : M => T p) (v := fun p : M => β p) hT hβ
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have hEval := TensorMultilinear.contMDiffAt_section_apply
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun p : M => T p (β p)) hApplied
     (v := V) hV
@@ -217,7 +217,7 @@ theorem tensor0S_eval_tangentConstInChart_contMDiffAt
           (𝕜 := 𝕜) (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
           x₀ ((Module.finBasis 𝕜 E) (slots a)))
     exact (hconst_on x₀ hx₀).contMDiffAt (e.open_baseSet.mem_nhds hx₀)
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have hEval := TensorMultilinear.contMDiffAt_section_apply
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun y : M => α y) hα
     (v := fun a : Fin s =>

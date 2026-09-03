@@ -649,7 +649,7 @@ theorem tensor0S_eval_coordinateFrame_contMDiffAt
     exact (coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
       (coordinateFrameSet_open (I := I) x₀)
       (coordinateFrameAt_mem (I := I) x₀) (slots a)
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have hEval := TensorMultilinear.contMDiffAt_section_apply
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun y : M => α y) hα
     (v := fun a : Fin s => coordinateFrameAt (I := I) x₀ (slots a))
@@ -753,7 +753,7 @@ theorem tensor0S_eval_coordinateFrame_covariantDerivative_slot_contMDiffAt
           (coordinateFrameSet_open (I := I) x₀)
           (coordinateFrameAt_mem (I := I) x₀) (slots i)
       simpa [Function.update, hi] using hbase
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have hEval := TensorMultilinear.contMDiffAt_section_apply
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun p : M => αinf p) αinf.contMDiff.contMDiffAt
     (v := fun i : Fin s =>
@@ -837,7 +837,7 @@ theorem nabla0SFun_eval_coordinateFrame_contMDiffAt
       have hα_top := α.contMDiff p
       have hα := hα_top.of_le
         (by simp : (∞ : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-      have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+      have hEval := TensorMultilinear.contMDiffAt_section_apply
         (I := I) (M := M) (n := s) (x₀ := p)
         (T := fun y : M => α y) hα
         (v := fun a : Fin s => V a)

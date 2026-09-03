@@ -26,7 +26,7 @@ import Mathlib.Topology.Algebra.Module.FiniteDimension
 import DifferentialGeometry.Tensor.Multilinear.Curry
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import DifferentialGeometry.Tensor.RSTensor.Field
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
+import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
 
 set_option autoImplicit false
 

@@ -672,7 +672,7 @@ theorem ricCompField_mdiffOn
         (fun b : M => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) b
           (e₀.localFrame basisE (k i) b)) y :=
     fun i => (frame_e_mdiffOn e₀ basisE (k i)).contMDiffAt (e₀.open_baseSet.mem_nhds hy)
-  have h := TensorMultilinear.contMDiffAt_section_apply_gen
+  have h := TensorMultilinear.contMDiffAt_section_apply
     (T := fun b : M =>
       (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
         (I := I) (M := M) (leviCivitaConnectionOfMetric (I := I) g)

@@ -9,7 +9,7 @@ import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Coordinate
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Product
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Smooth
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
+import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 import DifferentialGeometry.Geometry.Operator.Operators
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
@@ -743,7 +743,7 @@ noncomputable def freeze02Field
   intro x₀
   have hnabla := nablaA.contMDiff x₀
   have hcurry :=
-    TensorMultilinear.contMDiffAt_curriedSection_of_contMDiffAt_section_gen
+    TensorMultilinear.contMDiffAt_curriedSection_of_contMDiffAt_section
       (𝕜 := Real) (I := I) (M := M)
       (T := fun y : M => nablaA y) x₀ hnabla
   have hY := Y.contMDiff x₀
@@ -752,7 +752,7 @@ noncomputable def freeze02Field
       (fun y : M =>
         TotalSpace.mk' (Tensor0SModel 2 Real E)
           (E := fun x : M => Tensor0SSpace 2 I x) y
-          ((TensorMultilinear.curriedSectionGen (𝕜 := Real) (I := I) (M := M)
+          ((TensorMultilinear.curriedSection (𝕜 := Real) (I := I) (M := M)
             (fun z : M => nablaA z) y) (Y y))) x₀ :=
     ContMDiffAt.clm_bundle_apply (𝕜 := Real) (n := (∞ : WithTop ℕ∞))
       (F₁ := E) (F₂ := Tensor0SModel 2 Real E)
@@ -761,12 +761,12 @@ noncomputable def freeze02Field
       (IM := I) (IB := I)
       (b := id)
       (ϕ := fun y : M =>
-        TensorMultilinear.curriedSectionGen (𝕜 := Real) (I := I) (M := M)
+        TensorMultilinear.curriedSection (𝕜 := Real) (I := I) (M := M)
           (fun z : M => nablaA z) y)
       (v := fun y : M => Y y) hcurry hY
   refine happ.congr_of_eventuallyEq ?_
   filter_upwards with y
-  simpa [TensorMultilinear.curriedSectionGen] using
+  simpa [TensorMultilinear.curriedSection] using
     tensor02FreezeNabla_eq_curry (I := I) (nablaA y) (Y y)
 
 @[simp] theorem freeze02Field_apply
@@ -955,7 +955,7 @@ omit [FiniteDimensional ℝ E] in
       (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 3 x nabla2A X)
       (vec3 (I := I) Y Z W) =
     Tensor0SSpace.eval nabla2A (vec4 (I := I) X Y Z W)
-  rw [TensorMultilinear.tensor0S_curry_apply_eval_gen]
+  rw [TensorMultilinear.tensor0S_curry_apply_eval]
   congr 1
   exact fin_cons_vec3_eq_vec4 (I := I) X Y Z W
 

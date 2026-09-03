@@ -105,7 +105,7 @@ private theorem oneForm_comp_smooth
   intro x hx
   apply ContMDiffAt.contMDiffWithinAt
   have hEval :=
-    TensorMultilinear.contMDiffAt_section_apply_gen
+    TensorMultilinear.contMDiffAt_section_apply
       (I := I) (M := M) (n := 1)
       (T := fun b : M => beta b) (beta.contMDiff x)
       (fun _ : Fin 1 => fun b : M =>

@@ -90,7 +90,7 @@ theorem tensorComp_mdiffOn {r : ℕ}
           (e₀.localFrame basisE (k i) b)) y :=
     fun i => (frame_e_mdiffOn e₀ basisE (k i)).contMDiffAt
       (e₀.open_baseSet.mem_nhds hy)
-  have h := TensorMultilinear.contMDiffAt_section_apply_gen
+  have h := TensorMultilinear.contMDiffAt_section_apply
     (T := fun b : M => T b) hT
     (v := fun (i : Fin r) (b : M) => e₀.localFrame basisE (k i) b) hv
   exact h.contMDiffWithinAt
@@ -141,7 +141,7 @@ theorem gCompField_mdiffOn
         (fun b : M => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) b
           (e₀.localFrame basisE (k i) b)) y :=
     fun i => (frame_e_mdiffOn e₀ basisE (k i)).contMDiffAt (e₀.open_baseSet.mem_nhds hy)
-  have h := TensorMultilinear.contMDiffAt_section_apply_gen
+  have h := TensorMultilinear.contMDiffAt_section_apply
     (T := fun b : M => metricTensorField (I := I) g b) hT
     (v := fun (i : Fin 2) (b : M) => e₀.localFrame basisE (k i) b) hv
   exact h.contMDiffWithinAt

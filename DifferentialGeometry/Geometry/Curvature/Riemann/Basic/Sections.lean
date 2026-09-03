@@ -315,7 +315,7 @@ private theorem riemannCurvatureAt_contMDiff
         curvField_contMDiffAt (I := I) cov hcov Xs Ys Zs x₀
     have hscalar : ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun p : M => cotangentToDualGen (I := I) (βsec p) (Rsec p)) x₀ := by
-      have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+      have hEval := TensorMultilinear.contMDiffAt_section_apply
         (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := 1) (x₀ := x₀) (T := βsec) hβ
         (v := fun _ : Fin 1 => Rsec) (fun _ => hR)

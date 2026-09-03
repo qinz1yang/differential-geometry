@@ -642,7 +642,7 @@ theorem diffStep_leibniz_eval
     have hSAt : ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun y : M => (S y) (fun b : Fin s => (τ a b) y)) x := by
       have hS := (S.contMDiff x).of_le (le_refl (∞ : WithTop ℕ∞))
-      have hEval := TensorMultilinear.contMDiffAt_section_apply_gen (I := I) (M := M) (n := s)
+      have hEval := TensorMultilinear.contMDiffAt_section_apply (I := I) (M := M) (n := s)
         (x₀ := x)
         (T := fun y : M => S y) hS (v := fun b : Fin s => fun y : M => (τ a b) y)
         (hv := fun b => ((τ a b).contMDiff.contMDiffAt))

@@ -376,7 +376,7 @@ theorem tensor0S_eval_tangentConst_covariantDerivative_slot_contMDiffAt
             x₀ ((Module.finBasis 𝕜 E) (slots i)))
       have hbase := (hbase_on x₀ hx₀).contMDiffAt (e.open_baseSet.mem_nhds hx₀)
       simpa [Function.update, hi] using hbase
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have hEval := TensorMultilinear.contMDiffAt_section_apply
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun p : M => αinf p) αinf.contMDiff.contMDiffAt
     (v := fun i : Fin s =>
@@ -452,7 +452,7 @@ theorem localCovariantDerivTensor0SAt_constInChart_eval_tangentConstInChart_cont
           x₀ ((Module.finBasis 𝕜 E) (slots a)))
     exact (hconst_on x₀ hx₀).contMDiffAt (e.open_baseSet.mem_nhds hx₀)
   have hpair : ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞) pair x₀ := by
-    have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+    have hEval := TensorMultilinear.contMDiffAt_section_apply
       (I := I) (M := M) (n := r) (x₀ := x₀)
       (T := βsec) hβsec
       (v := V) hV
@@ -493,7 +493,7 @@ theorem localCovariantDerivTensor0SAt_constInChart_eval_tangentConstInChart_cont
       · subst hi
         simpa using hW
       · simpa [Function.update, hi] using hV i
-    have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+    have hEval := TensorMultilinear.contMDiffAt_section_apply
       (I := I) (M := M) (n := r) (x₀ := x₀)
       (T := βsec) hβsec
       (v := fun i : Fin r => fun p : M =>
@@ -551,7 +551,7 @@ theorem localCovariantDerivTensor0SAt_constInChart_eval_tangentConstInChart_cont
     exact (hconst_on p hpTan).contMDiffAt (eTan.open_baseSet.mem_nhds hpTan)
   have hpair_md : MDifferentiableAt I 𝓘(𝕜, 𝕜) pair p := by
     have hpair_p : ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞) pair p := by
-      have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+      have hEval := TensorMultilinear.contMDiffAt_section_apply
         (I := I) (M := M) (n := r) (x₀ := p)
         (T := βsec) hβ_p
         (v := V) hV_p
@@ -686,7 +686,7 @@ theorem nabla0SFun_eval_smooth_slots {s : ℕ}
       have hα_top := α.contMDiff x₀
       have hα := hα_top.of_le
         (by simp : (∞ : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-      have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+      have hEval := TensorMultilinear.contMDiffAt_section_apply
         (I := I) (M := M) (n := s) (x₀ := x₀)
         (T := fun y : M => α y) hα
         (v := fun a : Fin s => W a)
@@ -733,7 +733,7 @@ theorem tensor0SField_eval_smooth_slots_contMDiffAt {s : ℕ}
           (⟨y, V a y⟩ : TotalSpace E (TangentSpace I : M -> Type _))) x₀ := by
     intro a
     exact (V a).contMDiff.contMDiffAt
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have hEval := TensorMultilinear.contMDiffAt_section_apply
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun y : M => α y) hα_top
     (v := fun a : Fin s => fun y : M => V a y)
@@ -899,7 +899,7 @@ theorem nabla0SFun_eval_tangentConstInChart_contMDiffAt
       have hα_top := α.contMDiff p
       have hα := hα_top.of_le
         (by simp : (∞ : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-      have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+      have hEval := TensorMultilinear.contMDiffAt_section_apply
         (I := I) (M := M) (n := s) (x₀ := p)
         (T := fun y : M => α y) hα
         (v := fun a : Fin s => V a)

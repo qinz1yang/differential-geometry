@@ -99,7 +99,7 @@ noncomputable def freezeAllBut04Field
         simp [v, Function.update_of_ne hi]
     change ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
       (fun y : M => Tensor0SSpace.toModel (A y) (fun i : Fin 4 => v i y)) x₀
-    exact TensorMultilinear.contMDiffAt_section_apply_gen
+    exact TensorMultilinear.contMDiffAt_section_apply
       (𝕜 := Real) (I := I) (M := M) (n := 4)
       (T := fun y : M => A y) (A.contMDiff x₀) v hv
   refine hcoeff.congr_of_eventuallyEq ?_

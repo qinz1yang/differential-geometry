@@ -93,7 +93,7 @@ noncomputable def freezeTailField {s : ℕ}
           refine hYc.congr_of_eventuallyEq ?_
           filter_upwards with y
           simp [v, freezeTailSlots, metricTraceInput]
-    have hA := TensorMultilinear.contMDiffAt_section_apply_gen
+    have hA := TensorMultilinear.contMDiffAt_section_apply
       (𝕜 := Real) (I := I) (M := M) (n := s + 2)
       (T := fun y : M => A y) (A.contMDiff x₀) v hv
     change ContMDiffAt I (modelWithCornersSelf ℝ ℝ) (∞ : WithTop ℕ∞)
