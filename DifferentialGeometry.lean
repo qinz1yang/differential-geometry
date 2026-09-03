@@ -1377,7 +1377,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.PointwiseBundleInstances
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.PointwiseLipschitz
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.UniformFamily
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SlotExtendCovariantParallelism
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SmoothPathHs
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothPathRegularity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SmoothStrongPair
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistenceRemainderDiffBallUniform

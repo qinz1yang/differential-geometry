@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SmoothPathHs
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothPathRegularity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.StrongSolutionUniqueness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.SectionRealization
