@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffSpan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.CriticalSpan
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Limit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Subsequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.PotentialSpan
 open DifferentialGeometry.Analysis.Sobolev

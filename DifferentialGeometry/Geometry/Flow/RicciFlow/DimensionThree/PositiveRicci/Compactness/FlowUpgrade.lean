@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Conclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CompactnessConclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Regularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Construction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FlowOfMetric
 import DifferentialGeometry.Geometry.Metric.Convergence.PullbackCross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TracefreeRicciPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Estimate
@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Boun
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.SourceCovariantLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.SourceCovariantLipschitzBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Completeness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Conclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.FlowLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.WindowEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Blowup
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.EarlyTime

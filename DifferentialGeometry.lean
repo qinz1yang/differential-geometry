@@ -2446,7 +2446,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Blowup
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.LimitRoundness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Compactness.FlowUpgrade
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Compactness.Limit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Compactness.RoundLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Classification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Hamilton
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.CriticalSpan
@@ -2454,7 +2454,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Critic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Classical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Energy
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Limit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Subsequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Span
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Strong
@@ -2515,7 +2515,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.DeTurckWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.EndpointMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.EndpointRicci
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Construction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.RestartExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Criterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.EnergyVanishing
@@ -2524,7 +2524,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Connectio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.DensityRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Fields
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.DifferenceFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.IntegrationByParts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.TensorLifts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.EnergyInequality
@@ -2806,14 +2806,14 @@ import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivative
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.CanonicalCompatibility
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Completeness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Conclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.FlowLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Equation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.SourceEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Completeness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Conclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.FlowLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.CurvatureConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Equation
@@ -2823,7 +2823,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Upgr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivativeTail
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivativeEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.FixedDomainBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Construction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FlowOfMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Upgrade
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Hamilton
@@ -2896,7 +2896,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciComponents
 import DifferentialGeometry.Geometry.Metric.Convergence.GoodFrame
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Conclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CompactnessConclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciTowerTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Solution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
@@ -3872,7 +3872,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocityC1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.FirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.Defs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.Construction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.InnerProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.AdaptedField
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Trace

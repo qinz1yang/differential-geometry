@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.RankZeroRealizat
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautCompat
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautTime
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarPotentialTime
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Limit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Subsequence
 import Mathlib.Analysis.Normed.Operator.BanachSteinhaus
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral

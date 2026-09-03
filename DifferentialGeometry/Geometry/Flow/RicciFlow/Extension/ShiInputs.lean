@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.FixedDomainBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Construction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.RestartExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivativeTail
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Estimate

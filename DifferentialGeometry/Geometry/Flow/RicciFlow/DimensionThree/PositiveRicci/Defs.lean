@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Definitions
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Conclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CompactnessConclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.PointedGlobal
 import DifferentialGeometry.Geometry.Curvature.MetricConditions
 open DifferentialGeometry.Analysis.Spectral
