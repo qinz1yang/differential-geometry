@@ -533,6 +533,32 @@ theorem finrank_range_le_of_lowerKyFanSum_pos
         (hpos k hkpos hkle hsource)
     omega
 
+theorem finrank_range_le_of_lowerKyFanSum_pos_of_finrank_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    [FiniteDimensional ℝ F]
+    {A : E →ₗ[ℝ] E} {B : F →ₗ[ℝ] F}
+    (hA : A.IsPositive) (hB : B.IsPositive)
+    (hfinrank : Module.finrank ℝ E = Module.finrank ℝ F)
+    (hpos : ∀ k, 1 ≤ k → k ≤ Module.finrank ℝ E →
+      0 < hA.isSymmetric.lowerKyFanSum k →
+      0 < hB.isSymmetric.lowerKyFanSum k) :
+    Module.finrank ℝ A.range ≤ Module.finrank ℝ B.range := by
+  let r := Module.finrank ℝ E
+  let rankA := Module.finrank ℝ A.range
+  by_cases hzero : rankA = 0
+  · omega
+  · let k := r - rankA + 1
+    have hrankA : rankA ≤ r := A.range.finrank_le
+    have hkpos : 1 ≤ k := by omega
+    have hkle : k ≤ r := by omega
+    have hsource : 0 < hA.isSymmetric.lowerKyFanSum k :=
+      (LinearMap.IsSymmetric.lowerKyFanSum_pos_iff_rank_ge hA hkle).2 (by omega)
+    have htarget := hpos k hkpos hkle hsource
+    have hkleF : k ≤ Module.finrank ℝ F := by omega
+    have hrankB :=
+      (LinearMap.IsSymmetric.lowerKyFanSum_pos_iff_rank_ge hB hkleF).1 htarget
+    omega
+
 end LinearMap.IsPositive
 
 namespace ContinuousLinearMap.IsPositive
