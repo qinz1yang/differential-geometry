@@ -116,110 +116,18 @@ theorem strict_barrier_on_compact_manifold_with_boundary
       w t x < 0 →
         0 ≤ parabolicOperatorWithDrift (I := I) G T X w t x) :
     ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ w t x := by
-  have hbarrier : ∀ epsilon : Real, 0 < epsilon →
-      ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ w t x + epsilon * t := by
-    intro epsilon hepsilon
-    by_contra hnot
-    push Not at hnot
-    rcases hnot with ⟨tb, htb, xb, hbneg⟩
-    let Phi : Real × M → Real := fun p => w p.1 p.2 + epsilon * p.1
-    have hPhi_cont : ContinuousOn Phi (Set.Icc 0 T ×ˢ Set.univ) :=
-      hw_cont.add (continuous_const.mul continuous_fst).continuousOn
-    have hslab_compact : IsCompact (Set.Icc 0 T ×ˢ (Set.univ : Set M)) :=
-      isCompact_Icc.prod isCompact_univ
-    have hslab_nonempty : (Set.Icc 0 T ×ˢ (Set.univ : Set M)).Nonempty :=
-      ⟨(tb, xb), htb, Set.mem_univ xb⟩
-    obtain ⟨p0, hp0, hp0min⟩ :=
-      hslab_compact.exists_isMinOn hslab_nonempty hPhi_cont
-    rcases p0 with ⟨t0, x0⟩
-    have ht0 : t0 ∈ Set.Icc 0 T := hp0.1
-    have hPhi_bad : Phi (t0, x0) ≤ Phi (tb, xb) :=
-      hp0min ⟨htb, Set.mem_univ xb⟩
-    have hPhi_neg : Phi (t0, x0) < 0 := lt_of_le_of_lt hPhi_bad hbneg
-    have ht0_ne : t0 ≠ 0 := by
-      intro ht0zero
-      have hnonneg : 0 ≤ Phi (t0, x0) := by
-        simp [Phi, ht0zero, hw0 x0]
-      exact not_lt_of_ge hnonneg hPhi_neg
-    have ht0pos : 0 < t0 := lt_of_le_of_ne ht0.1 (Ne.symm ht0_ne)
-    have hTpos : 0 < T := lt_of_lt_of_le ht0pos ht0.2
-    have hx0int : x0 ∈ I.interior M := by
-      rcases I.isInteriorPoint_or_isBoundaryPoint x0 with hx0 | hx0
-      · exact hx0
-      · have hw_nonneg := hw_boundary t0 ht0
-          (⟨x0, hx0⟩ : BoundaryManifold I M)
-        have heps_nonneg : 0 ≤ epsilon * t0 :=
-          mul_nonneg hepsilon.le ht0.1
-        dsimp [Phi] at hPhi_neg
-        linarith
-    have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t0 :=
-      (uniqueDiffOn_Icc hTpos).uniqueDiffWithinAt ht0
-    have htime_min : IsMinOn (fun s => w s x0 + epsilon * s)
-        (Set.Icc 0 T) t0 := by
-      intro s hs
-      exact hp0min
-        (show (s, x0) ∈ Set.Icc 0 T ×ˢ (Set.univ : Set M) from
-          ⟨hs, Set.mem_univ x0⟩)
-    have htime_diff : DifferentiableWithinAt Real
-        (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 :=
-      (hw_time t0 ht0 ht0pos x0 hx0int).add
-        ((differentiableWithinAt_fun_id (s := Set.Icc 0 T) (x := t0)).const_mul epsilon)
-    have hderiv_nonpos : derivWithin
-        (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 ≤ 0 :=
-      boundaryHopf_derivWithin_nonpos_at_Icc_min_of_pos
-        htime_min.localize ht0 ht0pos htime_diff
-    have hderiv_eq : derivWithin
-        (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 =
-        derivWithin (fun s => w s x0) (Set.Icc 0 T) t0 + epsilon :=
-      boundaryHopf_derivWithin_add_eps_mul_time (M := M) huniq
-        (hw_time t0 ht0 ht0pos x0 hx0int)
-    have hw_deriv_le : derivWithin (fun s => w s x0)
-        (Set.Icc 0 T) t0 ≤ -epsilon := by
-      linarith
-    have hwneg : w t0 x0 < 0 := by
-      have heps_nonneg : 0 ≤ epsilon * t0 :=
-        mul_nonneg hepsilon.le ht0.1
-      dsimp [Phi] at hPhi_neg
-      linarith
-    have hspatial_min : IsLocalMin (w t0) x0 := by
-      have hglobal : IsMinOn (w t0) Set.univ x0 := by
-        intro y hy
-        have hymin := hp0min
-          (show (t0, y) ∈ Set.Icc 0 T ×ˢ (Set.univ : Set M) from ⟨ht0, hy⟩)
-        dsimp [Phi] at hymin
-        exact (add_le_add_iff_right (epsilon * t0)).mp hymin
-      exact isLocalMinOn_univ_iff.mp hglobal.localize
-    have hinterior_open : IsOpen (I.interior M) :=
-      I.isOpen_interior (M := M) (n := ∞) (by simp)
-    have hheat_nonneg : 0 ≤
-        heatOperatorWithDrift (I := I) G t0 (X t0) (w t0) x0 :=
-      heatOperatorWithDrift_at_spatial_min_nonneg_of_isInteriorPoint
-        (I := I) G t0 (X t0) hspatial_min hx0int
-        (hw_mdiff t0 ht0 ht0pos x0 hx0int)
-        (by
-          filter_upwards [hinterior_open.mem_nhds hx0int] with y hy
-          exact hw_mdiff t0 ht0 ht0pos y hy)
-        (hw_grad t0 ht0 ht0pos x0 hx0int)
-    have hPneg : parabolicOperatorWithDrift (I := I) G T X w t0 x0 < 0 := by
-      unfold parabolicOperatorWithDrift
-      linarith
-    exact not_lt_of_ge
-      (hnegative t0 ht0 ht0pos x0 hx0int hwneg) hPneg
-  intro t ht x
-  by_contra hnot
-  have hwneg : w t x < 0 := lt_of_not_ge hnot
-  by_cases htzero : t = 0
-  · exact not_lt_of_ge (by simpa [htzero] using hw0 x) hwneg
-  · have htpos : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm htzero)
-    let epsilon : Real := -(w t x) / (2 * t)
-    have hepsilon : 0 < epsilon :=
-      div_pos (neg_pos.mpr hwneg) (mul_pos two_pos htpos)
-    have hnonneg := hbarrier epsilon hepsilon t ht x
-    have hepsilon_mul : epsilon * t = -(w t x) / 2 := by
-      dsimp [epsilon]
-      field_simp [htzero]
-    rw [hepsilon_mul] at hnonneg
-    linarith
+  apply strict_barrier_on_compact_manifold_interior_region
+    (I := I) G T X w (I.interior M)
+    (I.isOpen_interior (M := M) (n := ∞) (by simp)) Set.Subset.rfl
+    hw_cont hw0
+  · intro t ht x hx
+    rcases I.isInteriorPoint_or_isBoundaryPoint x with hxint | hxbdy
+    · exact (hx hxint).elim
+    · exact hw_boundary t ht ⟨x, hxbdy⟩
+  · exact hw_time
+  · exact hw_mdiff
+  · exact hw_grad
+  · exact hnegative
 
 end Barrier
 

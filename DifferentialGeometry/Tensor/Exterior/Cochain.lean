@@ -20,7 +20,7 @@ attribute [local instance] normedSpaceTangentSpace
 variable {EM : Type*} [NormedAddCommGroup EM] [NormedSpace ℝ EM]
   {HM : Type*} [TopologicalSpace HM]
   {IM : ModelWithCorners ℝ EM HM}
-  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ⊤ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ∞ M]
 
 noncomputable def deRhamCochainComplex [BoundarylessManifold IM M] :
     CochainComplex (ModuleCat ℝ) ℕ :=
@@ -77,18 +77,18 @@ universe u v w
 variable {EM : Type u} [NormedAddCommGroup EM] [NormedSpace ℝ EM]
   {HM : Type v} [TopologicalSpace HM]
   {IM : ModelWithCorners ℝ EM HM}
-  {M : Type w} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ⊤ M]
+  {M : Type w} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ∞ M]
   {EN : Type u} [NormedAddCommGroup EN] [NormedSpace ℝ EN]
   {HN : Type v} [TopologicalSpace HN]
   {IN : ModelWithCorners ℝ EN HN}
-  {N : Type w} [TopologicalSpace N] [ChartedSpace HN N] [IsManifold IN ⊤ N]
+  {N : Type w} [TopologicalSpace N] [ChartedSpace HN N] [IsManifold IN ∞ N]
   {EP : Type u} [NormedAddCommGroup EP] [NormedSpace ℝ EP]
   {HP : Type v} [TopologicalSpace HP]
   {IP : ModelWithCorners ℝ EP HP}
-  {P : Type w} [TopologicalSpace P] [ChartedSpace HP P] [IsManifold IP ⊤ P]
+  {P : Type w} [TopologicalSpace P] [ChartedSpace HP P] [IsManifold IP ∞ P]
 
 noncomputable def pullbackCochainMap [BoundarylessManifold IM M] [BoundarylessManifold IN N]
-    (f : M → N) (hf : ContMDiff IM IN ⊤ f) :
+    (f : M → N) (hf : ContMDiff IM IN ∞ f) :
     deRhamCochainComplex (IM := IN) (M := N) ⟶ deRhamCochainComplex (IM := IM) (M := M) where
   f i := ModuleCat.ofHom (pullbackLinearMap f hf i)
   comm' := by
@@ -113,8 +113,8 @@ theorem pullbackCochainMap_id [BoundarylessManifold IM M] :
   exact pullback_id α
 
 theorem pullbackCochainMap_comp [BoundarylessManifold IM M] [BoundarylessManifold IN N]
-    [BoundarylessManifold IP P] (f : M → N) (hf : ContMDiff IM IN ⊤ f) (g : N → P)
-    (hg : ContMDiff IN IP ⊤ g) :
+    [BoundarylessManifold IP P] (f : M → N) (hf : ContMDiff IM IN ∞ f) (g : N → P)
+    (hg : ContMDiff IN IP ∞ g) :
     pullbackCochainMap (g ∘ f) (hg.comp hf) =
       CategoryTheory.CategoryStruct.comp (pullbackCochainMap g hg) (pullbackCochainMap f hf) := by
   apply HomologicalComplex.hom_ext
@@ -127,25 +127,25 @@ theorem pullbackCochainMap_comp [BoundarylessManifold IM M] [BoundarylessManifol
   exact pullback_comp f hf g hg α
 
 noncomputable def pullbackMapCochainMap [BoundarylessManifold IM M] [BoundarylessManifold IN N]
-    (f : C^⊤⟮IM, M; IN, N⟯) :
+    (f : C^∞⟮IM, M; IN, N⟯) :
     deRhamCochainComplex (IM := IN) (M := N) ⟶ deRhamCochainComplex (IM := IM) (M := M) :=
   pullbackCochainMap f.1 f.2
 
 theorem pullbackMapCochainMap_id [BoundarylessManifold IM M] :
-    pullbackMapCochainMap (ContMDiffMap.id (I := IM) (M := M) : C^⊤⟮IM, M; IM, M⟯) =
+    pullbackMapCochainMap (ContMDiffMap.id (I := IM) (M := M) : C^∞⟮IM, M; IM, M⟯) =
       CategoryTheory.CategoryStruct.id (deRhamCochainComplex (IM := IM) (M := M)) := by
   unfold pullbackMapCochainMap ContMDiffMap.id
   exact pullbackCochainMap_id
 
 theorem pullbackMapCochainMap_comp [BoundarylessManifold IM M] [BoundarylessManifold IN N]
-    [BoundarylessManifold IP P] (f : C^⊤⟮IM, M; IN, N⟯) (g : C^⊤⟮IN, N; IP, P⟯) :
+    [BoundarylessManifold IP P] (f : C^∞⟮IM, M; IN, N⟯) (g : C^∞⟮IN, N; IP, P⟯) :
     pullbackMapCochainMap (ContMDiffMap.comp g f) =
       CategoryTheory.CategoryStruct.comp (pullbackMapCochainMap g) (pullbackMapCochainMap f) := by
   unfold pullbackMapCochainMap ContMDiffMap.comp
   exact pullbackCochainMap_comp f.1 f.2 g.1 g.2
 
 noncomputable def pullbackCohomologyMap [BoundarylessManifold IM M] [BoundarylessManifold IN N]
-    (f : M → N) (hf : ContMDiff IM IN ⊤ f) (k : ℕ) :
+    (f : M → N) (hf : ContMDiff IM IN ∞ f) (k : ℕ) :
     deRhamCohomology (IM := IN) (M := N) k ⟶ deRhamCohomology (IM := IM) (M := M) k :=
   HomologicalComplex.homologyMap (pullbackCochainMap f hf) k
 
@@ -157,8 +157,8 @@ theorem pullbackCohomologyMap_id [BoundarylessManifold IM M] (k : ℕ) :
     (K := deRhamCochainComplex (IM := IM) (M := M)) (i := k)
 
 theorem pullbackCohomologyMap_comp [BoundarylessManifold IM M] [BoundarylessManifold IN N]
-    [BoundarylessManifold IP P] (f : M → N) (hf : ContMDiff IM IN ⊤ f) (g : N → P)
-    (hg : ContMDiff IN IP ⊤ g) (k : ℕ) :
+    [BoundarylessManifold IP P] (f : M → N) (hf : ContMDiff IM IN ∞ f) (g : N → P)
+    (hg : ContMDiff IN IP ∞ g) (k : ℕ) :
     pullbackCohomologyMap (g ∘ f) (hg.comp hf) k =
       CategoryTheory.CategoryStruct.comp (pullbackCohomologyMap g hg k)
         (pullbackCohomologyMap f hf k) := by
@@ -178,18 +178,18 @@ theorem pullbackCohomologyMap_comp [BoundarylessManifold IM M] [BoundarylessMani
     (φ := pullbackCochainMap g hg) (ψ := pullbackCochainMap f hf) (i := k)
 
 noncomputable def pullbackMapCohomologyMap [BoundarylessManifold IM M] [BoundarylessManifold IN N]
-    (f : C^⊤⟮IM, M; IN, N⟯) (k : ℕ) :
+    (f : C^∞⟮IM, M; IN, N⟯) (k : ℕ) :
     deRhamCohomology (IM := IN) (M := N) k ⟶ deRhamCohomology (IM := IM) (M := M) k :=
   pullbackCohomologyMap f.1 f.2 k
 
 theorem pullbackMapCohomologyMap_id [BoundarylessManifold IM M] (k : ℕ) :
-    pullbackMapCohomologyMap (ContMDiffMap.id (I := IM) (M := M) : C^⊤⟮IM, M; IM, M⟯) k =
+    pullbackMapCohomologyMap (ContMDiffMap.id (I := IM) (M := M) : C^∞⟮IM, M; IM, M⟯) k =
       CategoryTheory.CategoryStruct.id (deRhamCohomology (IM := IM) (M := M) k) := by
   unfold pullbackMapCohomologyMap ContMDiffMap.id
   exact pullbackCohomologyMap_id (k := k)
 
 theorem pullbackMapCohomologyMap_comp [BoundarylessManifold IM M] [BoundarylessManifold IN N]
-    [BoundarylessManifold IP P] (f : C^⊤⟮IM, M; IN, N⟯) (g : C^⊤⟮IN, N; IP, P⟯) (k : ℕ) :
+    [BoundarylessManifold IP P] (f : C^∞⟮IM, M; IN, N⟯) (g : C^∞⟮IN, N; IP, P⟯) (k : ℕ) :
     pullbackMapCohomologyMap (ContMDiffMap.comp g f) k =
       CategoryTheory.CategoryStruct.comp (pullbackMapCohomologyMap g k)
         (pullbackMapCohomologyMap f k) := by

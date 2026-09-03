@@ -65,6 +65,44 @@ private theorem spatialJet_contDiffOn
     rfl
 
 omit [CompleteSpace E] in
+theorem chartGramMatrix_contDiffOn
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set Real} (hJ : J ⊆ D.regular) (α : M)
+    (i j : Fin (Module.finrank Real E)) :
+    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+      (fun p : Real × M => chartGramMatrix (I := I) (G.metric p.1) α p.2 i j)
+      (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
+  classical
+  let e := trivializationAt E (TangentSpace I : M → Type _) α
+  let b := chartModelBasis E
+  have hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) (e.localFrame b) e.baseSet :=
+    e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
+  have hsmooth := (hG.frameCompSmooth (e.localFrame b) hframe i j).mono
+    (Set.prod_mono hJ Set.Subset.rfl)
+  refine hsmooth.congr ?_
+  intro p hp
+  rw [e.localFrame_apply_of_mem_baseSet b hp.2,
+    e.localFrame_apply_of_mem_baseSet b hp.2]
+  simp only [chartGramMatrix, Matrix.of_apply, chartBasisVecFiber,
+    Trivialization.basisAt, Module.Basis.map_apply, e, b,
+    Trivialization.linearEquivAt_symm_apply]
+  rw [Trivialization.symmL_apply _ hp.2, Trivialization.symmL_apply _ hp.2]
+
+omit [CompleteSpace E] in
+theorem chartGramMatrix_continuousOn
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set Real} (hJ : J ⊆ D.regular) (α : M)
+    (i j : Fin (Module.finrank Real E)) :
+    ContinuousOn
+      (fun p : Real × M => chartGramMatrix (I := I) (G.metric p.1) α p.2 i j)
+      (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
+  (chartGramMatrix_contDiffOn (I := I) hG hJ α i j).continuousOn
+
+omit [CompleteSpace E] in
 theorem chartGramOnE_contDiffOn
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}

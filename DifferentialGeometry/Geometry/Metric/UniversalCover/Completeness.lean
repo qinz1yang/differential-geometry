@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Coordinates
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
@@ -615,6 +616,48 @@ theorem completeSpace_of_complete [CompleteSpace M]
   obtain ⟨y', _hproj, htend⟩ :=
     lift_the_limit (I := I) (M := M) g hEnormBase hEnormCover hu hyM
   exact ⟨y', htend⟩
+
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [PseudoEMetricSpace M] [SecondCountableTopology M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem liftedMetric_complete
+    (g : SmoothRiemannianMetric I M)
+    (hg : DifferentialGeometry.RiemannianMetricComplete (I := I) g) :
+    let _ : SecondCountableTopology H :=
+      ModelWithCorners.secondCountableTopology I
+    let _ : SecondCountableTopology M :=
+      ChartedSpace.secondCountable_of_sigmaCompact H M
+    DifferentialGeometry.RiemannianMetricComplete
+      (I := I) (liftedMetric (I := I) g) := by
+  let _ : SecondCountableTopology H :=
+    ModelWithCorners.secondCountableTopology I
+  let _ : SecondCountableTopology M :=
+    ChartedSpace.secondCountable_of_sigmaCompact H M
+  let : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞) (by norm_num)
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : CompleteSpace M := hg.complete
+  refine ⟨?_⟩
+  let : RegularSpace (UniversalCover M) := uc_regularSpace (M := M) I
+  exact completeSpace_of_complete (I := I) (M := M) g
+    (by
+      intro x v
+      rw [← ofReal_norm, norm_eq_sqrt_real_inner]
+      rfl)
+    (by
+      let : RiemannianBundle
+          (fun x : UniversalCover M => TangentSpace I x) :=
+        ⟨(liftedMetric (I := I) g).toRiemannianMetric⟩
+      intro x v
+      rw [← ofReal_norm, norm_eq_sqrt_real_inner]
+      rfl)
 
 end UniversalCover
 end Topology

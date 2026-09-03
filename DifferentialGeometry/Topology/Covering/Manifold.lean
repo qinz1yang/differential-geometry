@@ -191,6 +191,73 @@ instance instIsManifold :
         exact localSection_collapse a b hhCaTarget
     exact StructureGroupoid.mem_of_eqOnSource _ hRestrIn hEq
 
+instance instIsManifoldTop [IsManifold I (⊤ : WithTop ℕ∞) M] :
+    IsManifold I (⊤ : WithTop ℕ∞)
+      (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) where
+  compatible := by
+    rintro e e' ⟨a, rfl⟩ ⟨b, rfl⟩
+    set CovT : OpenPartialHomeomorph H H :=
+      (coverChartAt a).symm.trans (coverChartAt b) with hCovT_def
+    set MTrans : OpenPartialHomeomorph H H :=
+      (chartAt H (proj a)).symm.trans (chartAt H (proj b)) with hMTrans_def
+    have hMTrans_in : MTrans ∈ contDiffGroupoid (⊤ : WithTop ℕ∞) I :=
+      StructureGroupoid.compatible (contDiffGroupoid (⊤ : WithTop ℕ∞) I)
+        (chart_mem_atlas H (proj a)) (chart_mem_atlas H (proj b))
+    have hCovT_open : IsOpen CovT.source := CovT.open_source
+    have hsub : CovT.source ⊆ MTrans.source := by
+      intro h hh
+      rw [hCovT_def, OpenPartialHomeomorph.trans_source] at hh
+      obtain ⟨hhCa, hhCb⟩ := hh
+      rw [OpenPartialHomeomorph.symm_source, coverChartAt_target_eq] at hhCa
+      obtain ⟨hhCaH, hhCaTarget⟩ := hhCa
+      rw [hMTrans_def, OpenPartialHomeomorph.trans_source]
+      refine ⟨hhCaH, ?_⟩
+      rw [Set.mem_preimage, coverChartAt_source_eq] at hhCb
+      obtain ⟨_, hin⟩ := hhCb
+      rw [Set.mem_preimage] at hin
+      have hSymm : (coverChartAt a).symm h =
+          (localSection a).symm ((chartAt H (proj a)).symm h) := rfl
+      rw [hSymm] at hin
+      rwa [localSection_collapse a b hhCaTarget] at hin
+    have hMTrans_restr_src :
+        (MTrans.restrOpen CovT.source hCovT_open).source = CovT.source := by
+      rw [OpenPartialHomeomorph.restrOpen_source]
+      exact Set.inter_eq_right.mpr hsub
+    have hRestrIn :
+        MTrans.restrOpen CovT.source hCovT_open ∈
+          contDiffGroupoid (⊤ : WithTop ℕ∞) I := by
+      have hCR : ClosedUnderRestriction
+          (contDiffGroupoid (⊤ : WithTop ℕ∞) I) := inferInstance
+      have hMR := closedUnderRestriction'
+        (G := contDiffGroupoid (⊤ : WithTop ℕ∞) I) hMTrans_in hCovT_open
+      have h_eq : MTrans.restr CovT.source =
+          MTrans.restrOpen CovT.source hCovT_open := by
+        apply OpenPartialHomeomorph.toPartialEquiv_injective
+        exact (MTrans.restr_toPartialEquiv' CovT.source hCovT_open).trans
+          (MTrans.restrOpen_toPartialEquiv CovT.source hCovT_open).symm
+      rw [h_eq] at hMR
+      exact hMR
+    have hEq : CovT ≈ MTrans.restrOpen CovT.source hCovT_open := by
+      refine ⟨?_, ?_⟩
+      · rw [hMTrans_restr_src]
+      · intro h hh
+        simp only [OpenPartialHomeomorph.coe_restrOpen]
+        rw [hCovT_def, OpenPartialHomeomorph.trans_source] at hh
+        obtain ⟨hhCa, _⟩ := hh
+        rw [OpenPartialHomeomorph.symm_source, coverChartAt_target_eq] at hhCa
+        obtain ⟨_, hhCaTarget⟩ := hhCa
+        have hCovT_h : CovT h =
+            (chartAt H (proj b)) (localSection b ((coverChartAt a).symm h)) := rfl
+        have hMTrans_h : MTrans h =
+            (chartAt H (proj b)) ((chartAt H (proj a)).symm h) := rfl
+        rw [hCovT_h, hMTrans_h]
+        have hSymm : (coverChartAt a).symm h =
+            (localSection a).symm ((chartAt H (proj a)).symm h) := rfl
+        rw [hSymm]
+        congr 1
+        exact localSection_collapse a b hhCaTarget
+    exact StructureGroupoid.mem_of_eqOnSource _ hRestrIn hEq
+
 omit [FiniteDimensional ℝ E] [I.Boundaryless]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M] in
 lemma extChartAt_proj_eq

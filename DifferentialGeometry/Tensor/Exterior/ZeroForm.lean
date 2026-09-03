@@ -19,9 +19,9 @@ attribute [local instance] normedSpaceTangentSpace
 variable {EM : Type*} [NormedAddCommGroup EM] [NormedSpace ℝ EM]
   {HM : Type*} [TopologicalSpace HM]
   {IM : ModelWithCorners ℝ EM HM}
-  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ⊤ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ∞ M]
 
-noncomputable def ofFunction (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) ⊤ f) :
+noncomputable def ofFunction (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) ∞ f) :
     DifferentialForm IM M 0 :=
   ⟨fun x => constOfIsEmpty ℝ (TangentSpace IM x) (Fin 0) (f x), by
     intro x₀
@@ -35,10 +35,10 @@ noncomputable def ofFunction (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) �
     let hclm : ℝ →L[ℝ] (EM [⋀^Fin 0]→L[ℝ] ℝ) :=
       (ContinuousAlternatingMap.constOfIsEmptyLIE ℝ EM ℝ
         (Fin 0)).toContinuousLinearEquiv.toContinuousLinearMap
-    have hc : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin 0]→L[ℝ] ℝ) ⊤
+    have hc : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin 0]→L[ℝ] ℝ) ∞
         (fun x : M => hclm (f x)) x₀ := by
       exact (ContinuousLinearMap.contMDiff hclm).contMDiffAt.comp x₀ hf.contMDiffAt
-    have hc' : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin 0]→L[ℝ] ℝ) ⊤
+    have hc' : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin 0]→L[ℝ] ℝ) ∞
         (fun x : M => constOfIsEmpty ℝ EM (Fin 0) (f x)) x₀ := by
       refine hc.congr_of_eventuallyEq ?_
       exact eventually_of_mem (Filter.univ_mem : (univ : Set M) ∈ 𝓝 x₀) (fun x hx => by
@@ -62,17 +62,17 @@ noncomputable def ofFunction (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) �
         (A := (trivializationAt EM (TangentSpace IM) x₀).symmL ℝ x)))
     ⟩
 
-noncomputable def ofFunctionMap (f : C^⊤⟮IM, M; ℝ⟯) : DifferentialForm IM M 0 :=
+noncomputable def ofFunctionMap (f : C^∞⟮IM, M; ℝ⟯) : DifferentialForm IM M 0 :=
   ofFunction f.1 f.2
 
-@[simp] theorem ofFunctionMap_apply (f : C^⊤⟮IM, M; ℝ⟯) (x : M) :
+@[simp] theorem ofFunctionMap_apply (f : C^∞⟮IM, M; ℝ⟯) (x : M) :
     (ofFunctionMap f) x = ofFunction f.1 f.2 x := rfl
 
 noncomputable def toFunction (α : DifferentialForm IM M 0) : M → ℝ :=
   fun x => (α x).toFun (0 : Fin 0 → TangentSpace IM x)
 
 @[simp]
-theorem toFunction_ofFunction (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) ⊤ f) :
+theorem toFunction_ofFunction (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) ∞ f) :
     toFunction (ofFunction f hf) = f := by
   funext x
   dsimp [toFunction, ofFunction]
@@ -80,12 +80,12 @@ theorem toFunction_ofFunction (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) 
     (fun _ : Fin 0 => TangentSpace IM x) (f x) 0
 
 theorem contMDiff_toFunction (α : DifferentialForm IM M 0) :
-    ContMDiff IM 𝓘(ℝ, ℝ) ⊤ (toFunction α) := by
+    ContMDiff IM 𝓘(ℝ, ℝ) ∞ (toFunction α) := by
   intro x₀
   let e := trivializationAt (EM [⋀^Fin 0]→L[ℝ] ℝ)
     (Bundle.continuousAlternatingMap ℝ (Fin 0) EM (TangentSpace IM) ℝ
       (Bundle.Trivial M ℝ)) x₀
-  have hrep : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin 0]→L[ℝ] ℝ) ⊤
+  have hrep : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin 0]→L[ℝ] ℝ) ∞
       (fun x : M => (e ⟨x, α x⟩).2) x₀ := by
     exact (Bundle.Trivialization.contMDiffAt_section_iff e
       (mem_baseSet_trivializationAt (EM [⋀^Fin 0]→L[ℝ] ℝ)
@@ -94,7 +94,7 @@ theorem contMDiff_toFunction (α : DifferentialForm IM M 0) :
   let L : (EM [⋀^Fin 0]→L[ℝ] ℝ) →L[ℝ] ℝ :=
     (ContinuousAlternatingMap.constOfIsEmptyLIE ℝ EM ℝ
       (Fin 0)).symm.toContinuousLinearEquiv.toContinuousLinearMap
-  have hL : ContMDiffAt IM 𝓘(ℝ, ℝ) ⊤ (fun x : M => L ((e ⟨x, α x⟩).2)) x₀ := by
+  have hL : ContMDiffAt IM 𝓘(ℝ, ℝ) ∞ (fun x : M => L ((e ⟨x, α x⟩).2)) x₀ := by
     exact (ContinuousLinearMap.contMDiff L).contMDiffAt.comp x₀ hrep
   refine hL.congr_of_eventuallyEq ?_
   exact eventually_of_mem (e.open_baseSet.mem_nhds (mem_baseSet_trivializationAt
@@ -121,14 +121,14 @@ theorem ofFunction_toFunction (α : DifferentialForm IM M 0) :
   dsimp [ofFunction, toFunction]
   exact (ContinuousAlternatingMap.constOfIsEmptyLIE ℝ (TangentSpace IM x) ℝ (Fin 0)).right_inv (α x)
 
-noncomputable def toFunctionMap (α : DifferentialForm IM M 0) : C^⊤⟮IM, M; ℝ⟯ :=
+noncomputable def toFunctionMap (α : DifferentialForm IM M 0) : C^∞⟮IM, M; ℝ⟯ :=
   ⟨toFunction α, contMDiff_toFunction α⟩
 
 @[simp]
 theorem toFunctionMap_apply (α : DifferentialForm IM M 0) (x : M) :
     (toFunctionMap α) x = toFunction α x := rfl
 
-theorem toFunctionMap_ofFunctionMap (f : C^⊤⟮IM, M; ℝ⟯) :
+theorem toFunctionMap_ofFunctionMap (f : C^∞⟮IM, M; ℝ⟯) :
     toFunctionMap (ofFunctionMap f) = f := by
   apply ContMDiffMap.ext
   intro x
@@ -153,7 +153,7 @@ theorem toFunction_smul (c : ℝ) (α : DifferentialForm IM M 0) :
     c • (α x).toFun (0 : Fin 0 → TangentSpace IM x)
   rfl
 
-noncomputable def zeroFormLinearEquiv : DifferentialForm IM M 0 ≃ₗ[ℝ] C^⊤⟮IM, M; ℝ⟯ where
+noncomputable def zeroFormLinearEquiv : DifferentialForm IM M 0 ≃ₗ[ℝ] C^∞⟮IM, M; ℝ⟯ where
   toFun := toFunctionMap
   invFun := ofFunctionMap
   left_inv := ofFunctionMap_toFunctionMap
@@ -172,7 +172,7 @@ noncomputable def zeroFormLinearEquiv : DifferentialForm IM M 0 ≃ₗ[ℝ] C^�
     exact congrFun (toFunction_smul c α) x
 
 private theorem exteriorDerivativeAt_ofFunction_apply [BoundarylessManifold IM M]
-    (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) ⊤ f) (x : M) (v : TangentSpace IM x) :
+    (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) ∞ f) (x : M) (v : TangentSpace IM x) :
     (exteriorDerivativeAt (ofFunction f hf) x).toFun (fun _ : Fin 1 => v) =
       mvfderiv IM f x v := by
   let e₀ := trivializationAt (EM [⋀^Fin 0]→L[ℝ] ℝ)
@@ -245,9 +245,9 @@ private theorem exteriorDerivativeAt_ofFunction_apply [BoundarylessManifold IM M
       (BoundarylessManifold.isInteriorPoint (I := IM) (M := M) (x := x))
   have hdiff : DifferentiableAt ℝ (fun y : EM => f ((extChartAt IM x).symm y))
       ((extChartAt IM x) x) := by
-    have hs : ContMDiffAt 𝓘(ℝ, EM) IM ⊤ (extChartAt IM x).symm ((extChartAt IM x) x) := by
+    have hs : ContMDiffAt 𝓘(ℝ, EM) IM ∞ (extChartAt IM x).symm ((extChartAt IM x) x) := by
       exact (contMDiffOn_extChartAt_symm x).contMDiffAt (mem_interior_iff_mem_nhds.mp hmem)
-    have hcomp : ContMDiffAt 𝓘(ℝ, EM) 𝓘(ℝ, ℝ) ⊤
+    have hcomp : ContMDiffAt 𝓘(ℝ, EM) 𝓘(ℝ, ℝ) ∞
         (fun y : EM => f ((extChartAt IM x).symm y)) ((extChartAt IM x) x) :=
       ContMDiffAt.comp ((extChartAt IM x) x) (hf.contMDiffAt) hs
     exact (contMDiffAt_iff_contDiffAt.mp hcomp).differentiableAt (by simp)
@@ -269,7 +269,7 @@ private theorem exteriorDerivativeAt_ofFunction_apply [BoundarylessManifold IM M
   rfl
 
 theorem exteriorDerivative_ofFunction_apply [BoundarylessManifold IM M] (f : M → ℝ)
-    (hf : ContMDiff IM 𝓘(ℝ, ℝ) ⊤ f) (x : M) (v : TangentSpace IM x) :
+    (hf : ContMDiff IM 𝓘(ℝ, ℝ) ∞ f) (x : M) (v : TangentSpace IM x) :
     (exteriorDerivative (ofFunction f hf) x).toFun (fun _ : Fin 1 => v) =
       mvfderiv IM f x v := by
   rw [exteriorDerivative_apply]

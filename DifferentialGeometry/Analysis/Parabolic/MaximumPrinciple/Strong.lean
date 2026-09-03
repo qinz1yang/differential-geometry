@@ -495,6 +495,132 @@ theorem strict_barrier_on_compact_set_of_isInteriorPoint
     rw [hepsilon_mul] at hnonneg
     linarith
 
+theorem strict_barrier_on_compact_manifold_interior_region
+    [CompactSpace M]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (T : Real)
+    (X : Real → (x : M) → TangentSpace I x)
+    (w : Real → M → Real)
+    (U : Set M)
+    (hUopen : IsOpen U)
+    (hUint : U ⊆ I.interior M)
+    (hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2)
+      (Set.Icc 0 T ×ˢ Set.univ))
+    (hw0 : ∀ x : M, 0 ≤ w 0 x)
+    (hw_outside : ∀ t ∈ Set.Icc 0 T, ∀ x : M, x ∉ U → 0 ≤ w t x)
+    (hw_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
+      DifferentiableWithinAt Real (fun s => w s x) (Set.Icc 0 T) t)
+    (hw_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
+      MDifferentiableAt I 𝓘(Real, Real) (w t) x)
+    (hw_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (w t) y) x)
+    (hnegative : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
+      w t x < 0 →
+        0 ≤ parabolicOperatorWithDrift (I := I) G T X w t x) :
+    ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ w t x := by
+  have hbarrier : ∀ epsilon : Real, 0 < epsilon →
+      ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ w t x + epsilon * t := by
+    intro epsilon hepsilon
+    by_contra hnot
+    push Not at hnot
+    rcases hnot with ⟨tb, htb, xb, hbneg⟩
+    let Phi : Real × M → Real := fun p => w p.1 p.2 + epsilon * p.1
+    have hPhi_cont : ContinuousOn Phi (Set.Icc 0 T ×ˢ Set.univ) :=
+      hw_cont.add (continuous_const.mul continuous_fst).continuousOn
+    have hslab_compact : IsCompact (Set.Icc 0 T ×ˢ (Set.univ : Set M)) :=
+      isCompact_Icc.prod isCompact_univ
+    have hslab_nonempty : (Set.Icc 0 T ×ˢ (Set.univ : Set M)).Nonempty :=
+      ⟨(tb, xb), htb, Set.mem_univ xb⟩
+    obtain ⟨p0, hp0, hp0min⟩ :=
+      hslab_compact.exists_isMinOn hslab_nonempty hPhi_cont
+    rcases p0 with ⟨t0, x0⟩
+    have ht0 : t0 ∈ Set.Icc 0 T := hp0.1
+    have hPhi_bad : Phi (t0, x0) ≤ Phi (tb, xb) :=
+      hp0min ⟨htb, Set.mem_univ xb⟩
+    have hPhi_neg : Phi (t0, x0) < 0 := lt_of_le_of_lt hPhi_bad hbneg
+    have ht0_ne : t0 ≠ 0 := by
+      intro ht0zero
+      have hnonneg : 0 ≤ Phi (t0, x0) := by
+        simp [Phi, ht0zero, hw0 x0]
+      exact not_lt_of_ge hnonneg hPhi_neg
+    have ht0pos : 0 < t0 := lt_of_le_of_ne ht0.1 (Ne.symm ht0_ne)
+    have hTpos : 0 < T := lt_of_lt_of_le ht0pos ht0.2
+    have hx0U : x0 ∈ U := by
+      by_contra hx0
+      have hw_nonneg := hw_outside t0 ht0 x0 hx0
+      have heps_nonneg : 0 ≤ epsilon * t0 :=
+        mul_nonneg hepsilon.le ht0.1
+      dsimp [Phi] at hPhi_neg
+      linarith
+    have hx0int : x0 ∈ I.interior M := hUint hx0U
+    have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t0 :=
+      (uniqueDiffOn_Icc hTpos).uniqueDiffWithinAt ht0
+    have htime_min : IsMinOn (fun s => w s x0 + epsilon * s)
+        (Set.Icc 0 T) t0 := by
+      intro s hs
+      exact hp0min
+        (show (s, x0) ∈ Set.Icc 0 T ×ˢ (Set.univ : Set M) from
+          ⟨hs, Set.mem_univ x0⟩)
+    have htime_diff : DifferentiableWithinAt Real
+        (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 :=
+      (hw_time t0 ht0 ht0pos x0 hx0U).add
+        ((differentiableWithinAt_fun_id (s := Set.Icc 0 T) (x := t0)).const_mul epsilon)
+    have hderiv_nonpos : derivWithin
+        (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 ≤ 0 :=
+      strong_derivWithin_nonpos_at_Icc_min_of_pos
+        htime_min.localize ht0 ht0pos htime_diff
+    have hderiv_eq : derivWithin
+        (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 =
+        derivWithin (fun s => w s x0) (Set.Icc 0 T) t0 + epsilon :=
+      strong_derivWithin_add_eps_mul_time (M := M) huniq
+        (hw_time t0 ht0 ht0pos x0 hx0U)
+    have hw_deriv_le : derivWithin (fun s => w s x0)
+        (Set.Icc 0 T) t0 ≤ -epsilon := by
+      linarith
+    have hwneg : w t0 x0 < 0 := by
+      have heps_nonneg : 0 ≤ epsilon * t0 :=
+        mul_nonneg hepsilon.le ht0.1
+      dsimp [Phi] at hPhi_neg
+      linarith
+    have hspatial_min : IsLocalMin (w t0) x0 := by
+      have hglobal : IsMinOn (w t0) Set.univ x0 := by
+        intro y hy
+        have hymin := hp0min
+          (show (t0, y) ∈ Set.Icc 0 T ×ˢ (Set.univ : Set M) from ⟨ht0, hy⟩)
+        dsimp [Phi] at hymin
+        exact (add_le_add_iff_right (epsilon * t0)).mp hymin
+      exact isLocalMinOn_univ_iff.mp hglobal.localize
+    have hheat_nonneg : 0 ≤
+        heatOperatorWithDrift (I := I) G t0 (X t0) (w t0) x0 :=
+      heatOperatorWithDrift_at_spatial_min_nonneg_of_isInteriorPoint
+        (I := I) G t0 (X t0) hspatial_min hx0int
+        (hw_mdiff t0 ht0 ht0pos x0 hx0U)
+        (by
+          filter_upwards [hUopen.mem_nhds hx0U] with y hy
+          exact hw_mdiff t0 ht0 ht0pos y hy)
+        (hw_grad t0 ht0 ht0pos x0 hx0U)
+    have hPneg : parabolicOperatorWithDrift (I := I) G T X w t0 x0 < 0 := by
+      unfold parabolicOperatorWithDrift
+      linarith
+    exact not_lt_of_ge
+      (hnegative t0 ht0 ht0pos x0 hx0U hwneg) hPneg
+  intro t ht x
+  by_contra hnot
+  have hwneg : w t x < 0 := lt_of_not_ge hnot
+  by_cases htzero : t = 0
+  · exact not_lt_of_ge (by simpa [htzero] using hw0 x) hwneg
+  · have htpos : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm htzero)
+    let epsilon : Real := -(w t x) / (2 * t)
+    have hepsilon : 0 < epsilon :=
+      div_pos (neg_pos.mpr hwneg) (mul_pos two_pos htpos)
+    have hnonneg := hbarrier epsilon hepsilon t ht x
+    have hepsilon_mul : epsilon * t = -(w t x) / 2 := by
+      dsimp [epsilon]
+      field_simp [htzero]
+    rw [hepsilon_mul] at hnonneg
+    linarith
+
 theorem strict_barrier_on_compact_set
     [I.Boundaryless]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -962,39 +1088,42 @@ theorem scalar_hopf_boundary_point_of_defining_function
   exact inner_levelSetOutwardNormal_neg
     (I := I) (G.metric T) rho (u T) p hgrad_boundary hgradient
 
-theorem scalar_strong_maximum_principle_of_barrier
-    [I.Boundaryless]
+theorem scalar_strong_maximum_principle_of_barrier_interior_region
     [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
     (X : Real → (x : M) → TangentSpace I x)
     (u : Real → M → Real)
+    (U : Set M)
+    (hUopen : IsOpen U)
+    (hUint : U ⊆ I.interior M)
     (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
       (spacetimeSlab (M := M) T))
     (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
-    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
-    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDifferentiableAt I 𝓘(Real, Real) (u t) x)
-    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (u t) y) x)
-    (hu_super : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_super : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       0 ≤ parabolicOperatorWithDrift (I := I) G T X u t x)
     {rho : M → Real}
     (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
     (hrho_nonneg : ∀ x : M, 0 ≤ rho x)
     {r R delta eta m B kappa alpha : Real}
     (hR : 0 < R) (hdelta : 0 < delta) (heta : 0 < eta)
-    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
+    (hsublevel : ∀ x : M, rho x < R → x ∈ U)
+    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x ∈ U,
       rho x < r → eta ≤ u t x)
-    (hgrad_lower : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hgrad_lower : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       r ≤ rho x → rho x ≤ R →
       m ≤ (G.metric t).inner x
         (gradientFun (I := I) (G.metric t) rho x)
         (gradientFun (I := I) (G.metric t) rho x))
-    (hheat_upper : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hheat_upper : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       r ≤ rho x → rho x ≤ R →
       heatOperatorWithDrift (I := I) G t (X t) rho x ≤ B)
     (hkappa : 0 < kappa) (hinit : R ≤ kappa * T ^ 2)
@@ -1063,9 +1192,9 @@ theorem scalar_strong_maximum_principle_of_barrier
         (sub_nonpos.mpr hexp_le)
     dsimp [w]
     linarith [hu_nonneg 0 ⟨le_rfl, hT.le⟩ x]
-  have hv_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+  have hv_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       DifferentiableWithinAt Real (fun s => v s x) (Set.Icc 0 T) t := by
-    intro t ht htpos x
+    intro t ht htpos x hx
     exact (strongBarrier_time_differentiable
       rho epsilon alpha R kappa T x t).differentiableWithinAt
   have hv_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
@@ -1073,41 +1202,40 @@ theorem scalar_strong_maximum_principle_of_barrier
     intro t ht htpos x
     exact (strongBarrier_slice_contMDiff hrho
       epsilon alpha R kappa T t).mdifferentiable (by simp) x
-  have hv_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+  have hv_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (v t) y) x := by
-    intro t ht htpos x
+    intro t ht htpos x hx
     exact gradientFun_mdiffAt (I := I) (G.metric t)
       (strongBarrier_slice_contMDiff hrho epsilon alpha R kappa T t) x
-  have hw_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+  have hw_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       DifferentiableWithinAt Real (fun s => w s x) (Set.Icc 0 T) t := by
-    intro t ht htpos x
-    exact (hu_time t ht htpos x).sub (hv_time t ht htpos x)
-  have hw_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    intro t ht htpos x hx
+    exact (hu_time t ht htpos x hx).sub (hv_time t ht htpos x hx)
+  have hw_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDifferentiableAt I 𝓘(Real, Real) (w t) x := by
-    intro t ht htpos x
-    exact (hu_mdiff t ht htpos x).sub (hv_mdiff t ht htpos x)
-  have hw_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    intro t ht htpos x hx
+    exact (hu_mdiff t ht htpos x hx).sub (hv_mdiff t ht htpos x)
+  have hw_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (w t) y) x := by
-    intro t ht htpos x
+    intro t ht htpos x hx
     have heq :
-        (T% fun y : M => gradientFun (I := I) (G.metric t) (w t) y) =
+        (T% fun y : M => gradientFun (I := I) (G.metric t) (w t) y) =ᶠ[nhds x]
           (T% fun y : M =>
             gradientFun (I := I) (G.metric t) (u t) y -
               gradientFun (I := I) (G.metric t) (v t) y) := by
-      funext z
+      filter_upwards [hUopen.mem_nhds hx] with z hz
       apply congrArg (fun q =>
         (⟨z, q⟩ : TotalSpace E (TangentSpace I : M → Type _)))
       exact gradientFun_sub (I := I) (G.metric t)
-        (hu_mdiff t ht htpos z) (hv_mdiff t ht htpos z)
-    rw [heq]
-    exact mdifferentiableAt_sub_section
-      (hu_grad t ht htpos x) (hv_grad t ht htpos x)
-  have hnegative : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+        (hu_mdiff t ht htpos z hz) (hv_mdiff t ht htpos z)
+    exact (mdifferentiableAt_sub_section
+      (hu_grad t ht htpos x hx) (hv_grad t ht htpos x hx)).congr_of_eventuallyEq heq
+  have hnegative : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       w t x < 0 → 0 ≤
         parabolicOperatorWithDrift (I := I) G T X w t x := by
-    intro t ht htpos x hwneg
+    intro t ht htpos x hx hwneg
     have hvpos : 0 < v t x := by
       dsimp [w] at hwneg
       linarith [hu_nonneg t ht x]
@@ -1126,13 +1254,13 @@ theorem scalar_strong_maximum_principle_of_barrier
       nlinarith [sq_nonneg (t - T + delta)]
     have hrho_lower : r ≤ rho x := by
       by_contra hnot
-      have hu_eta := hlocal t ht htime_close x (lt_of_not_ge hnot)
+      have hu_eta := hlocal t ht htime_close x hx (lt_of_not_ge hnot)
       have hv_eps := hv_lt_epsilon t ht x
       dsimp [w] at hwneg
       dsimp [epsilon] at hv_eps
       linarith
-    have hheat := hheat_upper t ht htpos x hrho_lower hrho_lt.le
-    have hgrad := hgrad_lower t ht htpos x hrho_lower hrho_lt.le
+    have hheat := hheat_upper t ht htpos x hx hrho_lower hrho_lt.le
+    have hgrad := hgrad_lower t ht htpos x hx hrho_lower hrho_lt.le
     have hformula := strongBarrier_parabolicOperator (I := I)
       G T hT X hrho epsilon alpha R (kappa := kappa) (tau := T) ht x
     have hkt : 0 ≤ kappa * t := mul_nonneg hkappa_nonneg ht.1
@@ -1177,15 +1305,33 @@ theorem scalar_strong_maximum_principle_of_barrier
       rw [hformula]
       exact mul_nonpos_of_nonneg_of_nonpos
         (mul_nonneg hepsilon.le (Real.exp_pos _).le) hbracket
-    have hsub := parabolic_sub (I := I) G T X u v t x
-      (hu_time t ht htpos x) (hv_time t ht htpos x)
-      (hu_mdiff t ht htpos) (hv_mdiff t ht htpos)
-      (hu_grad t ht htpos x) (hv_grad t ht htpos x)
+    have hu_near : ∀ᶠ y in nhds x,
+        MDifferentiableAt I 𝓘(Real, Real) (u t) y := by
+      filter_upwards [hUopen.mem_nhds hx] with y hy
+      exact hu_mdiff t ht htpos y hy
+    have hsub := parabolic_sub_at (I := I) G T X u v t x
+      (hu_time t ht htpos x hx) (hv_time t ht htpos x hx)
+      hu_near (Filter.Eventually.of_forall (hv_mdiff t ht htpos))
+      (hu_grad t ht htpos x hx) (hv_grad t ht htpos x hx)
     change parabolicOperatorWithDrift (I := I) G T X w t x = _ at hsub
     rw [hsub]
-    linarith [hu_super t ht htpos x]
-  have hw_nonneg := strict_barrier_positive_region (I := I)
-    G T X w hw_cont hw0 hw_time hw_mdiff hw_grad hnegative
+    linarith [hu_super t ht htpos x hx]
+  have hw_outside : ∀ t ∈ Set.Icc 0 T, ∀ x : M, x ∉ U → 0 ≤ w t x := by
+    intro t ht x hx
+    have hv_nonpos : v t x ≤ 0 := by
+      by_contra hvnot
+      have hphase_lt := hv_pos_imp_phase_lt t x (lt_of_not_ge hvnot)
+      have hrho_lt : rho x < R := by
+        have htime_nonneg : 0 ≤ kappa * (t - T) ^ 2 :=
+          mul_nonneg hkappa_nonneg (sq_nonneg _)
+        unfold strongBarrierPhase at hphase_lt
+        linarith
+      exact hx (hsublevel x hrho_lt)
+    dsimp [w]
+    linarith [hu_nonneg t ht x]
+  have hw_nonneg := strict_barrier_on_compact_manifold_interior_region (I := I)
+    G T X w U hUopen hUint hw_cont hw0 hw_outside
+    hw_time hw_mdiff hw_grad hnegative
     T ⟨hT.le, le_rfl⟩ y
   have hphaseT : strongBarrierPhase rho kappa T T y = rho y := by
     simp [strongBarrierPhase]
@@ -1199,6 +1345,61 @@ theorem scalar_strong_maximum_principle_of_barrier
     exact mul_pos hepsilon (sub_pos.mpr hexp_lt)
   dsimp [w] at hw_nonneg
   linarith
+
+theorem scalar_strong_maximum_principle_of_barrier
+    [I.Boundaryless]
+    [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T : Real} (hT : 0 < T)
+    (X : Real → (x : M) → TangentSpace I x)
+    (u : Real → M → Real)
+    (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
+    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDifferentiableAt I 𝓘(Real, Real) (u t) x)
+    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hu_super : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      0 ≤ parabolicOperatorWithDrift (I := I) G T X u t x)
+    {rho : M → Real}
+    (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
+    (hrho_nonneg : ∀ x : M, 0 ≤ rho x)
+    {r R delta eta m B kappa alpha : Real}
+    (hR : 0 < R) (hdelta : 0 < delta) (heta : 0 < eta)
+    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
+      rho x < r → eta ≤ u t x)
+    (hgrad_lower : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      r ≤ rho x → rho x ≤ R →
+      m ≤ (G.metric t).inner x
+        (gradientFun (I := I) (G.metric t) rho x)
+        (gradientFun (I := I) (G.metric t) rho x))
+    (hheat_upper : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      r ≤ rho x → rho x ≤ R →
+      heatOperatorWithDrift (I := I) G t (X t) rho x ≤ B)
+    (hkappa : 0 < kappa) (hinit : R ≤ kappa * T ^ 2)
+    (htime : R ≤ kappa * delta ^ 2)
+    (halpha : 0 < alpha) (hdom : 2 * kappa * T + B ≤ alpha * m)
+    {y : M} (hy : rho y < R) :
+    0 < u T y := by
+  exact scalar_strong_maximum_principle_of_barrier_interior_region
+    (I := I) G hT X u Set.univ isOpen_univ
+    (fun _ _ => BoundarylessManifold.isInteriorPoint)
+    hu_cont hu_nonneg
+    (fun t ht htpos x hx => hu_time t ht htpos x)
+    (fun t ht htpos x hx => hu_mdiff t ht htpos x)
+    (fun t ht htpos x hx => hu_grad t ht htpos x)
+    (fun t ht htpos x hx => hu_super t ht htpos x)
+    hrho hrho_nonneg hR hdelta heta
+    (fun x hx => Set.mem_univ x)
+    (fun t ht htclose x hx => hlocal t ht htclose x)
+    (fun t ht htpos x hx => hgrad_lower t ht htpos x)
+    (fun t ht htpos x hx => hheat_upper t ht htpos x)
+    hkappa hinit htime halpha hdom hy
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_of_barrier
     [I.Boundaryless]
@@ -1372,14 +1573,14 @@ theorem scalar_strong_maximum_principle_fixed_metric_of_barrier
     rw [hzero, add_zero]
     exact hu_super t ht htpos x
   apply scalar_strong_maximum_principle_of_barrier (I := I)
-    G hT (fun _ _ => 0) u hu_cont hu_nonneg hu_time hu_mdiff hu_grad
-    hu_super' hrho hrho_nonneg hR hdelta heta hlocal
+    G hT (fun _ _ => 0) u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super'
+    hrho hrho_nonneg hR hdelta heta hlocal
     (m := m) (B := B) (kappa := kappa) (alpha := alpha)
   · intro t ht htpos x hxr hxR
-    exact hgrad_bound x (by exact ⟨hxr, hxR⟩)
+    exact hgrad_bound x ⟨hxr, hxR⟩
   · intro t ht htpos x hxr hxR
     have hlap := laplacianAt_eq_delta (I := I) G t hrho rfl x
-    have habs := hlap_bound x (by exact ⟨hxr, hxR⟩)
+    have habs := hlap_bound x ⟨hxr, hxR⟩
     unfold heatOperatorWithDrift driftTerm
     rw [hlap]
     rw [show G.metric t = g from rfl]
@@ -1594,6 +1795,451 @@ theorem scalar_strong_maximum_principle_with_potential_of_barrier
   exact ((mul_pos_iff.mp hz_pos).resolve_right
     (fun h => (not_lt_of_ge hscale_pos.le h.1).elim)).2
 
-end
+private theorem scalar_strong_maximum_principle_of_compact_sublevel_barrier
+    [I.Boundaryless]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T : Real} (hT : 0 < T)
+    (X : Real → (x : M) → TangentSpace I x)
+    (u : Real → M → Real)
+    (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
+    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDifferentiableAt I 𝓘(Real, Real) (u t) x)
+    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hu_super : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      0 ≤ parabolicOperatorWithDrift (I := I) G T X u t x)
+    {rho : M → Real}
+    (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
+    (hrho_nonneg : ∀ x : M, 0 ≤ rho x)
+    {r R delta eta m B kappa alpha : Real}
+    (hdelta : 0 < delta) (heta : 0 < eta)
+    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
+      rho x < r → eta ≤ u t x)
+    (hgrad_lower : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      r ≤ rho x → rho x ≤ R →
+      m ≤ (G.metric t).inner x (gradientFun (I := I) (G.metric t) rho x)
+        (gradientFun (I := I) (G.metric t) rho x))
+    (hheat_upper : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      r ≤ rho x → rho x ≤ R →
+      heatOperatorWithDrift (I := I) G t (X t) rho x ≤ B)
+    (hkappa : 0 < kappa) (hinit : R ≤ kappa * T ^ 2)
+    (htime : R ≤ kappa * delta ^ 2)
+    (halpha : 0 < alpha) (hdom : 2 * kappa * T + B ≤ alpha * m)
+    (hcompact : IsCompact {x : M | rho x ≤ R})
+    {y : M} (hy : rho y < R) :
+    0 < u T y := by
+  let K : Set M := {x : M | rho x ≤ R}
+  have hKcompact : IsCompact K := by simpa [K] using hcompact
+  have hKne : K.Nonempty := by
+    refine ⟨y, ?_⟩
+    simpa [K] using hy.le
+  let epsilon : Real := eta / 2
+  let v : Real → M → Real := fun t x => strongBarrier rho epsilon alpha R kappa T t x
+  let w : Real → M → Real := fun t x => u t x - v t x
+  have hepsilon : 0 < epsilon := by dsimp [epsilon]; linarith
+  have hkappa_nonneg : 0 ≤ kappa := hkappa.le
+  have hphase_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
+      0 ≤ strongBarrierPhase rho kappa T t x := by
+    intro t ht x
+    exact add_nonneg (hrho_nonneg x) (mul_nonneg hkappa_nonneg (sq_nonneg _))
+  have hv_lt_epsilon : ∀ t ∈ Set.Icc 0 T, ∀ x : M, v t x < epsilon := by
+    intro t ht x
+    have hexp_le : Real.exp (-alpha * strongBarrierPhase rho kappa T t x) ≤ 1 := by
+      rw [Real.exp_le_one_iff]
+      exact mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr halpha.le)
+        (hphase_nonneg t ht x)
+    have hdiff : Real.exp (-alpha * strongBarrierPhase rho kappa T t x) -
+        Real.exp (-alpha * R) < 1 := by linarith [Real.exp_pos (-alpha * R)]
+    change epsilon * (Real.exp (-alpha * strongBarrierPhase rho kappa T t x) -
+      Real.exp (-alpha * R)) < epsilon
+    simpa only [mul_comm] using (mul_lt_iff_lt_one_left hepsilon).mpr hdiff
+  have hv_pos_imp_phase_lt : ∀ t x, 0 < v t x →
+      strongBarrierPhase rho kappa T t x < R := by
+    intro t x hv
+    have hmul : 0 < epsilon * (Real.exp (-alpha * strongBarrierPhase rho kappa T t x) -
+        Real.exp (-alpha * R)) := hv
+    have hdiff : 0 < Real.exp (-alpha * strongBarrierPhase rho kappa T t x) -
+        Real.exp (-alpha * R) := by
+      rcases (mul_pos_iff.mp hmul) with hboth | hboth
+      · exact hboth.2
+      · exact (not_lt_of_ge hepsilon.le hboth.1).elim
+    have harg := Real.exp_lt_exp.mp (sub_pos.mp hdiff)
+    nlinarith
+  have hv_cont : ContinuousOn (fun p : Real × M => v p.1 p.2)
+      (Set.Icc 0 T ×ˢ K) := by
+    exact (strongBarrier_joint_continuous hrho.continuous epsilon alpha R kappa T).continuousOn.mono
+      (by
+        intro p hp
+        change p.1 ∈ Set.Icc 0 T ∧ p.2 ∈ (Set.univ : Set M)
+        exact ⟨hp.1, Set.mem_univ _⟩)
+  have hu_contK : ContinuousOn (fun p : Real × M => u p.1 p.2)
+      (Set.Icc 0 T ×ˢ K) := hu_cont.mono (by
+    intro p hp
+    exact ⟨hp.1, Set.mem_univ p.2⟩)
+  have hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2)
+      (Set.Icc 0 T ×ˢ K) := hu_contK.sub hv_cont
+  have hw0 : ∀ x ∈ K, 0 ≤ w 0 x := by
+    intro x hx
+    have hphase0 : R ≤ strongBarrierPhase rho kappa T 0 x := by
+      unfold strongBarrierPhase
+      nlinarith [hrho_nonneg x]
+    have hexp_le : Real.exp (-alpha * strongBarrierPhase rho kappa T 0 x) ≤
+        Real.exp (-alpha * R) := Real.exp_le_exp.mpr (by nlinarith)
+    have hv0 : v 0 x ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hepsilon.le
+      (sub_nonpos.mpr hexp_le)
+    dsimp [w]
+    linarith [hu_nonneg 0 ⟨le_rfl, hT.le⟩ x]
+  have hw_boundary : ∀ t ∈ Set.Icc 0 T, ∀ x ∈ frontier K, 0 ≤ w t x := by
+    intro t ht x hx
+    have hKclosed : IsClosed K := isClosed_le hrho.continuous continuous_const
+    have hxK : x ∈ K := by
+      exact hKclosed.closure_subset (frontier_subset_closure hx)
+    have hxK' : rho x ≤ R := by simpa [K] using hxK
+    have hxeq : rho x = R := by
+      by_contra hne
+      have hxlt : rho x < R := lt_of_le_of_ne hxK' hne
+      have hopen : IsOpen {z : M | rho z < R} :=
+        isOpen_lt hrho.continuous continuous_const
+      have hsub : {z : M | rho z < R} ⊆ K := by
+        intro z hz
+        simpa [K] using hz.le
+      have hxint : x ∈ interior K := interior_maximal hsub hopen hxlt
+      exact (mem_frontier_iff_notMem_interior hxK).mp hx hxint
+    have hphase : R ≤ strongBarrierPhase rho kappa T t x := by
+      unfold strongBarrierPhase
+      rw [hxeq]
+      exact le_add_of_nonneg_right (mul_nonneg hkappa_nonneg (sq_nonneg _))
+    have hv_nonpos : v t x ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hepsilon.le
+      (sub_nonpos.mpr (Real.exp_le_exp.mpr (by nlinarith)))
+    dsimp [w]
+    linarith [hu_nonneg t ht x]
+  have hw_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ interior K,
+      DifferentiableWithinAt Real (fun s => w s x) (Set.Icc 0 T) t := by
+    intro t ht htpos x hx
+    exact (hu_time t ht htpos x).sub
+      (strongBarrier_time_differentiable rho epsilon alpha R kappa T x t).differentiableWithinAt
+  have hw_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ interior K,
+      MDifferentiableAt I 𝓘(Real, Real) (w t) x := by
+    intro t ht htpos x hx
+    exact (hu_mdiff t ht htpos x).sub
+      ((strongBarrier_slice_contMDiff hrho epsilon alpha R kappa T t).mdifferentiable (by simp) x)
+  have hw_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ interior K,
+      MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric t) (w t) y) x := by
+    intro t ht htpos x hx
+    have heq : (T% fun y : M => gradientFun (I := I) (G.metric t) (w t) y) =
+        (T% fun y : M => gradientFun (I := I) (G.metric t) (u t) y -
+          gradientFun (I := I) (G.metric t) (v t) y) := by
+      funext z
+      apply congrArg (fun q => (⟨z, q⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+      exact gradientFun_sub (I := I) (G.metric t)
+        (hu_mdiff t ht htpos z)
+        ((strongBarrier_slice_contMDiff hrho epsilon alpha R kappa T t).mdifferentiable (by simp) z)
+    rw [heq]
+    exact mdifferentiableAt_sub_section (hu_grad t ht htpos x)
+      (gradientFun_mdiffAt (I := I) (G.metric t)
+        (strongBarrier_slice_contMDiff hrho epsilon alpha R kappa T t) x)
+  have hnegative : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ interior K,
+      w t x < 0 → 0 ≤ parabolicOperatorWithDrift (I := I) G T X w t x := by
+    intro t ht htpos x hx hwneg
+    have hvpos : 0 < v t x := by
+      dsimp [w] at hwneg
+      linarith [hu_nonneg t ht x]
+    have hphase_lt := hv_pos_imp_phase_lt t x hvpos
+    have hrho_lt : rho x < R := by
+      unfold strongBarrierPhase at hphase_lt
+      nlinarith [hrho_nonneg x, mul_nonneg hkappa_nonneg (sq_nonneg (t - T))]
+    have htime_sq : kappa * (t - T) ^ 2 < R := by
+      unfold strongBarrierPhase at hphase_lt
+      nlinarith [hrho_nonneg x]
+    have htime_close : T - delta < t := by
+      have hsq : (t - T) ^ 2 < delta ^ 2 := by nlinarith
+      nlinarith [sq_nonneg (t - T + delta)]
+    have hrho_lower : r ≤ rho x := by
+      by_contra hnot
+      have hu_eta := hlocal t ht htime_close x (lt_of_not_ge hnot)
+      have hv_eps := hv_lt_epsilon t ht x
+      dsimp [w, epsilon] at hwneg hv_eps
+      linarith
+    have hheat := hheat_upper t ht htpos x hrho_lower hrho_lt.le
+    have hgrad := hgrad_lower t ht htpos x hrho_lower hrho_lt.le
+    have hformula := strongBarrier_parabolicOperator (I := I) G T hT X hrho
+      epsilon alpha R (kappa := kappa) (tau := T) ht x
+    have hlin : -(2 * kappa * (t - T) - heatOperatorWithDrift
+        (I := I) G t (X t) rho x) ≤ 2 * kappa * T + B := by nlinarith
+    have hqmul : alpha * m ≤ alpha * (G.metric t).inner x
+        (gradientFun (I := I) (G.metric t) rho x)
+        (gradientFun (I := I) (G.metric t) rho x) :=
+      mul_le_mul_of_nonneg_left hgrad halpha.le
+    have hlinq : -(2 * kappa * (t - T) - heatOperatorWithDrift
+        (I := I) G t (X t) rho x) ≤ alpha * (G.metric t).inner x
+        (gradientFun (I := I) (G.metric t) rho x)
+        (gradientFun (I := I) (G.metric t) rho x) := hlin.trans (hdom.trans hqmul)
+    have hmul := mul_le_mul_of_nonneg_left hlinq halpha.le
+    have hbracket : -alpha * (2 * kappa * (t - T) - heatOperatorWithDrift
+        (I := I) G t (X t) rho x) - alpha ^ 2 * (G.metric t).inner x
+        (gradientFun (I := I) (G.metric t) rho x)
+        (gradientFun (I := I) (G.metric t) rho x) ≤ 0 := by
+      calc
+        _ = alpha * (-(2 * kappa * (t - T) - heatOperatorWithDrift
+            (I := I) G t (X t) rho x)) - alpha * (alpha *
+              (G.metric t).inner x (gradientFun (I := I) (G.metric t) rho x)
+                (gradientFun (I := I) (G.metric t) rho x)) := by ring
+        _ ≤ 0 := sub_nonpos.mpr hmul
+    have hPv_nonpos : parabolicOperatorWithDrift (I := I) G T X v t x ≤ 0 := by
+      change parabolicOperatorWithDrift (I := I) G T X
+        (strongBarrier rho epsilon alpha R kappa T) t x ≤ 0
+      rw [hformula]
+      exact mul_nonpos_of_nonneg_of_nonpos
+        (mul_nonneg hepsilon.le (Real.exp_pos _).le) hbracket
+    have hsub := parabolic_sub (I := I) G T X u v t x
+      (hu_time t ht htpos x)
+      (strongBarrier_time_differentiable rho epsilon alpha R kappa T x t).differentiableWithinAt
+      (hu_mdiff t ht htpos)
+      ((strongBarrier_slice_contMDiff hrho epsilon alpha R kappa T t).mdifferentiable (by simp))
+      (hu_grad t ht htpos x)
+      (gradientFun_mdiffAt (I := I) (G.metric t)
+        (strongBarrier_slice_contMDiff hrho epsilon alpha R kappa T t) x)
+    change parabolicOperatorWithDrift (I := I) G T X w t x = _ at hsub
+    rw [hsub]
+    linarith [hu_super t ht htpos x]
+  have hwK := strict_barrier_on_compact_set (I := I) G T hT.le X
+    hKcompact hKne w hw_cont hw0 hw_boundary hw_time hw_mdiff hw_grad hnegative
+  have hw_all : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ w t x := by
+    intro t ht x
+    by_cases hxK : rho x ≤ R
+    · exact hwK t ht x hxK
+    · have hv_nonpos : v t x ≤ 0 := by
+        by_contra hvnot
+        have hphase_lt := hv_pos_imp_phase_lt t x (lt_of_not_ge hvnot)
+        unfold strongBarrierPhase at hphase_lt
+        nlinarith [hxK, hrho_nonneg x,
+          mul_nonneg hkappa_nonneg (sq_nonneg (t - T))]
+      dsimp [w]
+      linarith [hu_nonneg t ht x]
+  have hphaseT : strongBarrierPhase rho kappa T T y = rho y := by
+    simp [strongBarrierPhase]
+  have hvT_pos : 0 < v T y := by
+    change 0 < epsilon * (Real.exp (-alpha * strongBarrierPhase rho kappa T T y) -
+      Real.exp (-alpha * R))
+    rw [hphaseT]
+    exact mul_pos hepsilon (sub_pos.mpr (Real.exp_lt_exp.mpr (by nlinarith)))
+  have hwT := hw_all T ⟨hT.le, le_rfl⟩ y
+  dsimp [w] at hwT
+  linarith
 
+theorem scalar_strong_maximum_principle_fixed_metric_of_compact_sublevel_barrier
+    [I.Boundaryless]
+    [T2Space M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (g : SmoothRiemannianMetric I M)
+    {T : Real} (hT : 0 < T)
+    (u : Real → M → Real)
+    (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
+    (hu_space : ∀ t ∈ Set.Icc 0 T, 0 < t →
+      ContMDiff I 𝓘(Real, Real) ∞ (u t))
+    (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
+      (x : M),
+      0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+    {rho : M → Real}
+    (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
+    (hrho_nonneg : ∀ x : M, 0 ≤ rho x)
+    {r R delta eta : Real}
+    (hR : 0 < R) (hdelta : 0 < delta) (heta : 0 < eta)
+    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
+      rho x < r → eta ≤ u t x)
+    (hcompact : IsCompact {x : M | rho x ≤ R})
+    (hgrad_ne : ∀ x : M, r ≤ rho x → rho x ≤ R →
+      gradientFun (I := I) g rho x ≠ 0)
+    {y : M} (hy : rho y < R) :
+    0 < u T y := by
+  let K : Set M := {x : M | r ≤ rho x ∧ rho x ≤ R}
+  have hKcompact : IsCompact K := by
+    apply hcompact.of_isClosed_subset
+      ((isClosed_le continuous_const hrho.continuous).inter
+        (isClosed_le hrho.continuous continuous_const))
+    intro x hx
+    exact hx.2
+  let q : M → Real := fun x => g.inner x
+    (gradientFun (I := I) g rho x) (gradientFun (I := I) g rho x)
+  let ell : M → Real := fun x => |ΔG (I := I) g ⟨rho, hrho⟩ x|
+  have hq_cont : Continuous q := by
+    apply continuous_iff_continuousAt.mpr
+    intro x
+    have hgrad : ContMDiffAt I (I.prod 𝓘(Real, E)) ∞
+        (T% fun y : M => gradientFun (I := I) g rho y) x :=
+      (gradientFun_smooth (I := I) g hrho).contMDiffAt
+    exact (CovariantDerivative.metric_inner_contMDiffAt
+      (I := I) g hgrad hgrad le_rfl).continuousAt
+  have hell_cont : Continuous ell := by
+    exact continuous_abs.comp (Δ_g_contMDiff (I := I) g ⟨rho, hrho⟩).continuous
+  have hbounds : ∃ m B : Real, 0 < m ∧ 0 ≤ B ∧
+      (∀ x ∈ K, m ≤ q x) ∧ (∀ x ∈ K, ell x ≤ B) := by
+    by_cases hKne : K.Nonempty
+    · obtain ⟨xm, hxm, hxmin⟩ := hKcompact.exists_isMinOn
+        (by simpa [K] using hKne) hq_cont.continuousOn
+      obtain ⟨xB, hxB, hxBmax⟩ := hKcompact.exists_isMaxOn
+        (by simpa [K] using hKne) hell_cont.continuousOn
+      have hqm_pos : 0 < q xm := by
+        exact g.pos xm _ (hgrad_ne xm hxm.1 hxm.2)
+      refine ⟨q xm, ell xB, hqm_pos, abs_nonneg _, ?_, ?_⟩
+      · intro x hx
+        exact hxmin (by simpa [K] using hx)
+      · intro x hx
+        exact hxBmax (by simpa [K] using hx)
+    · refine ⟨1, 0, zero_lt_one, le_rfl, ?_, ?_⟩
+      · intro x hx
+        exact (hKne ⟨x, hx⟩).elim
+      · intro x hx
+        exact (hKne ⟨x, hx⟩).elim
+  obtain ⟨m, B, hm, hB, hgrad_bound, hlap_bound⟩ := hbounds
+  let kappa : Real := max (R / T ^ 2) (R / delta ^ 2) + 1
+  have hT_sq : 0 < T ^ 2 := sq_pos_of_pos hT
+  have hdelta_sq : 0 < delta ^ 2 := sq_pos_of_pos hdelta
+  have hkappa : 0 < kappa := by
+    have hratio : 0 < R / T ^ 2 := div_pos hR hT_sq
+    dsimp [kappa]
+    linarith [le_max_left (R / T ^ 2) (R / delta ^ 2)]
+  have hinit : R ≤ kappa * T ^ 2 := by
+    have hratio : R / T ^ 2 < kappa := by
+      dsimp [kappa]
+      linarith [le_max_left (R / T ^ 2) (R / delta ^ 2)]
+    exact (le_of_lt ((div_lt_iff₀ hT_sq).mp hratio))
+  have htime : R ≤ kappa * delta ^ 2 := by
+    have hratio : R / delta ^ 2 < kappa := by
+      dsimp [kappa]
+      linarith [le_max_right (R / T ^ 2) (R / delta ^ 2)]
+    exact (le_of_lt ((div_lt_iff₀ hdelta_sq).mp hratio))
+  let alpha : Real := (2 * kappa * T + B) / m + 1
+  have hnum_nonneg : 0 ≤ 2 * kappa * T + B := by
+    positivity
+  have halpha : 0 < alpha := by
+    dsimp [alpha]
+    have hquot : 0 ≤ (2 * kappa * T + B) / m :=
+      div_nonneg hnum_nonneg hm.le
+    linarith
+  have hdom : 2 * kappa * T + B ≤ alpha * m := by
+    have hlt : (2 * kappa * T + B) / m < alpha := by
+      dsimp [alpha]
+      linarith
+    exact le_of_lt ((div_lt_iff₀ hm).mp hlt)
+  let G := strongStaticMetricFamily (I := I) g
+  have hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDifferentiableAt I 𝓘(Real, Real) (u t) x := by
+    intro t ht htpos x
+    exact (hu_space t ht htpos).mdifferentiable (by simp) x
+  have hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric t) (u t) y) x := by
+    intro t ht htpos x
+    exact gradientFun_mdiffAt (I := I) g (hu_space t ht htpos) x
+  have hu_super' : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      0 ≤ parabolicOperatorWithDrift (I := I) G T (fun _ _ => 0) u t x := by
+    intro t ht htpos x
+    have hlap := laplacianAt_eq_delta (I := I) G t
+      (hu_space t ht htpos) rfl x
+    unfold parabolicOperatorWithDrift heatOperatorWithDrift driftTerm
+    rw [hlap]
+    rw [show G.metric t = g from rfl]
+    have hzero : g.inner x ((fun _ _ => 0) t x) (gradientAt G t (u t) x) = 0 := by
+      simp only [map_zero, zero_apply]
+    rw [hzero, add_zero]
+    exact hu_super t ht htpos x
+  apply scalar_strong_maximum_principle_of_compact_sublevel_barrier (I := I)
+    G hT (fun _ _ => 0) u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super'
+    hrho hrho_nonneg hdelta heta hlocal
+    (m := m) (B := B) (kappa := kappa) (alpha := alpha)
+    (fun _ _ _ x hxr hxR => hgrad_bound x ⟨hxr, hxR⟩)
+    (fun t _ _ x hxr hxR => by
+      have hlap := laplacianAt_eq_delta (I := I) G t hrho rfl x
+      have habs := hlap_bound x ⟨hxr, hxR⟩
+      unfold heatOperatorWithDrift driftTerm
+      rw [hlap]
+      rw [show G.metric t = g from rfl]
+      have hzero : g.inner x ((fun _ => 0) x) (gradientAt G t rho x) = 0 := by
+        simp only [map_zero, zero_apply]
+      rw [hzero, add_zero]
+      exact le_trans (le_abs_self _) habs)
+    hkappa hinit htime halpha hdom hcompact hy
+
+theorem scalar_strong_maximum_principle_fixed_metric_with_drift_of_compact_sublevel_barrier
+    [I.Boundaryless]
+    [T2Space M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (g : SmoothRiemannianMetric I M)
+    {T : Real} (hT : 0 < T)
+    (X : Real → (x : M) → TangentSpace I x)
+    (u : Real → M → Real)
+    (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
+    (hu_space : ∀ t ∈ Set.Icc 0 T, 0 < t →
+      ContMDiff I 𝓘(Real, Real) ∞ (u t))
+    (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
+      (x : M),
+      0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+          g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
+    {rho : M → Real}
+    (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
+    (hrho_nonneg : ∀ x : M, 0 ≤ rho x)
+    {r R delta eta m B kappa alpha : Real}
+    (hdelta : 0 < delta) (heta : 0 < eta)
+    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
+      rho x < r → eta ≤ u t x)
+    (hgrad_lower : ∀ x : M, r ≤ rho x → rho x ≤ R →
+      m ≤ g.inner x (gradientFun (I := I) g rho x)
+        (gradientFun (I := I) g rho x))
+    (hheat_upper : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      r ≤ rho x → rho x ≤ R →
+      ΔG (I := I) g ⟨rho, hrho⟩ x +
+        g.inner x (X t x) (gradientFun (I := I) g rho x) ≤ B)
+    (hkappa : 0 < kappa) (hinit : R ≤ kappa * T ^ 2)
+    (htime : R ≤ kappa * delta ^ 2)
+    (halpha : 0 < alpha) (hdom : 2 * kappa * T + B ≤ alpha * m)
+    (hcompact : IsCompact {x : M | rho x ≤ R})
+    {y : M} (hy : rho y < R) :
+    0 < u T y := by
+  let G := strongStaticMetricFamily (I := I) g
+  have hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDifferentiableAt I 𝓘(Real, Real) (u t) x := by
+    intro t ht htpos x
+    exact (hu_space t ht htpos).mdifferentiable (by simp) x
+  have hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (u t) y) x := by
+    intro t ht htpos x
+    exact gradientFun_mdiffAt (I := I) g (hu_space t ht htpos) x
+  have hu_super' : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      0 ≤ parabolicOperatorWithDrift (I := I) G T X u t x := by
+    intro t ht htpos x
+    have hlap := laplacianAt_eq_delta (I := I) G t
+      (hu_space t ht htpos) rfl x
+    unfold parabolicOperatorWithDrift heatOperatorWithDrift driftTerm gradientAt
+    rw [hlap]
+    rw [show G.metric t = g from rfl]
+    exact hu_super t ht htpos x
+  apply scalar_strong_maximum_principle_of_compact_sublevel_barrier (I := I)
+    G hT X u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super'
+    hrho hrho_nonneg hdelta heta hlocal
+    (m := m) (B := B) (kappa := kappa) (alpha := alpha)
+    (fun _ _ _ x hxr hxR => hgrad_lower x hxr hxR)
+    (fun t ht htpos x hxr hxR => by
+      have hlap := laplacianAt_eq_delta (I := I) G t hrho rfl x
+      unfold heatOperatorWithDrift driftTerm gradientAt
+      rw [hlap]
+      exact hheat_upper t ht htpos x hxr hxR)
+    hkappa hinit htime halpha hdom hcompact hy
+
+end
 end DifferentialGeometry.Analysis.Parabolic

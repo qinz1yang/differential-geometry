@@ -722,6 +722,44 @@ theorem laplacian_sub
               divergence (I := I) cov (gradientFun (I := I) g h) x
           exact divergence_sub (I := I) cov hgradf hgradh
 
+theorem laplacian_sub_at
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    {f h : M -> Real} {x : M}
+    (hf : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hh : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) h y)
+    (hgradf : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x)
+    (hgradh : MDiffAt (T% fun y : M => gradientFun (I := I) g h y) x) :
+    laplacian (I := I) cov g (fun y : M => f y - h y) x =
+      laplacian (I := I) cov g f x -
+        laplacian (I := I) cov g h x := by
+  have hgrad_eq :
+      (fun y : M => gradientFun (I := I) g (fun z => f z - h z) y) =ᶠ[nhds x]
+        fun y : M => gradientFun (I := I) g f y -
+          gradientFun (I := I) g h y := by
+    filter_upwards [hf, hh] with y hyf hyh
+    exact gradientFun_sub (I := I) g hyf hyh
+  have hgrad_total :
+      (T% fun y : M => gradientFun (I := I) g (fun z => f z - h z) y) =ᶠ[nhds x]
+        (T% fun y : M => gradientFun (I := I) g f y -
+          gradientFun (I := I) g h y) := by
+    filter_upwards [hgrad_eq] with y hy
+    rw [hy]
+  have hgrad_sub :
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) g (fun z => f z - h z) y) x :=
+    (mdifferentiableAt_sub_section hgradf hgradh).congr_of_eventuallyEq hgrad_total
+  have hcov :
+      cov (fun y : M => gradientFun (I := I) g (fun z => f z - h z) y) x =
+        cov (fun y : M => gradientFun (I := I) g f y -
+          gradientFun (I := I) g h y) x :=
+    cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      hgrad_sub (mdifferentiableAt_sub_section hgradf hgradh)
+      Filter.univ_mem hgrad_eq
+  unfold laplacian divergence
+  rw [hcov]
+  exact divergence_sub (I := I) cov hgradf hgradh
+
 theorem laplacian_const_smul
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)

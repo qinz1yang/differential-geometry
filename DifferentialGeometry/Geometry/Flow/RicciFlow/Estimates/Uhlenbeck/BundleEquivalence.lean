@@ -1,0 +1,262 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.FrameExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
+import DifferentialGeometry.Analysis.ODE.Flow.BundleLinearODE
+import DifferentialGeometry.Bundle.Equiv
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Bundle Set
+open DifferentialGeometry.Analysis.ODE.Flow
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E] [CompleteSpace E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+
+omit [SigmaCompactSpace M] in
+private theorem exists_uhlenbeck_endomorphism_between
+    [I.Boundaryless]
+    {T : Real} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hEpos : 0 < Module.finrank Real E)
+    {s t : Real} (hs : 0 < s) (hst : s < t) (htT : t < T) :
+    ∃ Phi : ∀ x : M, TangentSpace I x →L[Real] TangentSpace I x,
+      ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
+        (fun p : TangentBundle I M =>
+          (⟨p.1, Phi p.1 p.2⟩ : TangentBundle I M)) ∧
+      (∀ x : M, Function.Bijective (Phi x)) ∧
+      ∀ x : M, ∀ v w : TangentSpace I x,
+        (S.family.metric t).inner x (Phi x v) (Phi x w) =
+          (S.family.metric s).inner x v w := by
+  let _ : NeZero (Module.finrank Real E) := ⟨Nat.ne_of_gt hEpos⟩
+  let width : Real := T - s
+  have hwidth : 0 < width := by
+    dsimp [width]
+    linarith
+  let D0 : RealTimeInterval := RealTimeInterval.closed 0 width hwidth.le
+  let Sshift := S.timeShift s
+  let S0 := Sshift.timeRestrict D0
+  have hSshift : IsSolutionOn (I := I) Sshift := isSolutionOn_timeShift hS s
+  have hcarrier : D0.carrier ⊆
+      ((RealTimeInterval.closed 0 T hT.le).timeShift s).carrier := by
+    intro r hr
+    change r + s ∈ Icc 0 T
+    change r ∈ Icc 0 width at hr
+    dsimp [width] at hr
+    exact ⟨by linarith [hr.1], by linarith [hr.2]⟩
+  have hregular : D0.regular ⊆
+      ((RealTimeInterval.closed 0 T hT.le).timeShift s).regular := by
+    intro r hr
+    change r + s ∈ Ioo 0 T
+    change r ∈ Ioo 0 width at hr
+    dsimp [width] at hr
+    exact ⟨by linarith [hr.1], by linarith [hr.2]⟩
+  have hS0 : IsSolutionOn (I := I) S0 :=
+    isSoln_timeRestrict (I := I) hSshift hcarrier hregular
+  let basisAt : ∀ x : M,
+      Module.Basis (Fin (Module.finrank Real E)) Real (TangentSpace I x) :=
+    fun _ => Module.finBasis Real E
+  let iota : MatrixComp M (Fin (Module.finrank Real E)) :=
+    solutionUhlenbeckIota hwidth S0 hS0 basisAt
+  let Phi0 : Real → ∀ x : M, TangentSpace I x →L[Real] TangentSpace I x :=
+    fun r x => uhlenbeckEndomorphismAt (basisAt x) iota r
+  let A : Real → ∀ x : M, TangentSpace I x →L[Real] TangentSpace I x :=
+    fun r x => ricciSharp (I := I) (S0.family.metric r) x
+  have hspec := solutionUhlenbeckIota_spec
+    (I := I) (M := M) hwidth S0 hS0 basisAt
+  have hiota0 : ∀ x : M, ∀ a k : Fin (Module.finrank Real E),
+      iota 0 x a k = if a = k then 1 else 0 := by
+    simpa only [iota] using hspec.1
+  have hiotaCont : ∀ x : M,
+      ContinuousOn (fun r : Real => iota r x) (Icc 0 width) := by
+    simpa only [iota] using hspec.2.1
+  have hiotaForward : ∀ r : Real, r ∈ Ico 0 width → ∀ x : M,
+      ∀ a k : Fin (Module.finrank Real E),
+        HasDerivWithinAt (fun q : Real => iota q x a k)
+          (∑ l : Fin (Module.finrank Real E),
+            uhlenbeckRupOfSolution (I := I) S0
+                (solutionInverseMetricComponents S0 basisAt)
+                (fun a x => basisAt x a) r x l k * iota r x a l)
+          (Ici 0) r := by
+    simpa only [iota] using hspec.2.2.1
+  have hgram : ∀ r : Real, r ∈ Icc 0 width → ∀ x : M,
+      ∀ a b : Fin (Module.finrank Real E),
+        movingFrameGramInFrame
+            (metricCompInFrame (I := I) S0 (fun a x => basisAt x a))
+            iota r x a b =
+          movingFrameGramInFrame
+            (metricCompInFrame (I := I) S0 (fun a x => basisAt x a))
+            iota 0 x a b := by
+    simpa only [iota] using hspec.2.2.2.2
+  have hAshift := ricciSharp_family_contMDiffOn
+    (I := I) (M := M) Sshift hSshift
+  have hA : ContMDiffOn (𝓘(Real, Real).prod I)
+      (I.prod 𝓘(Real, E →L[Real] E)) ∞
+      (fun p : Real × M =>
+        (⟨p.2, A p.1 p.2⟩ : TotalSpace (E →L[Real] E)
+          (fun x : M => TangentSpace I x →L[Real] TangentSpace I x)))
+      (Ioo (-s) width ×ˢ (univ : Set M)) := by
+    have hsub : Ioo (-s) width ×ˢ (univ : Set M) ⊆
+        ((RealTimeInterval.closed 0 T hT.le).timeShift s).regular ×ˢ
+          (univ : Set M) := by
+      intro p hp
+      refine ⟨?_, hp.2⟩
+      change p.1 + s ∈ Ioo 0 T
+      dsimp [width] at hp
+      constructor <;> linarith [hp.1.1, hp.1.2]
+    simpa [A, S0, Sshift, SolutionOn.timeRestrict, SolutionOn.timeShift,
+      SolutionOn.family, SolutionFamily.timeShift] using hAshift.mono hsub
+  have hPhi0 : ∀ x : M,
+      Phi0 0 x = ContinuousLinearMap.id Real (TangentSpace I x) := by
+    intro x
+    exact uhlenbeckEndomorphism_eq_id_of_identity_components
+      (basisAt x) iota (hiota0 x)
+  have hPhiCont : ∀ x : M, ∀ v : TangentSpace I x,
+      ContinuousOn (fun r : Real => Phi0 r x v) (Icc 0 width) := by
+    intro x v
+    exact uhlenbeckEndomorphism_continuousOn
+      (basisAt x) iota (hiotaCont x) v
+  have hPhiDeriv : ∀ x : M, ∀ v : TangentSpace I x,
+      ∀ r ∈ Ico 0 width,
+        HasDerivWithinAt (fun q : Real => Phi0 q x v)
+          (A r x (Phi0 r x v)) (Ici 0) r := by
+    intro x v r hr
+    exact uhlenbeckEndomorphism_hasDerivWithinAt_right
+      hwidth S0 (solutionInverseMetricComponents S0 basisAt) basisAt iota
+      (fun q y i j => solutionInverseMetricComponents_mul_metric
+        (I := I) (M := M) S0 basisAt q y i j)
+      (fun q y i j => solutionInverseMetricComponents_symm
+        (I := I) (M := M) S0 basisAt q y i j)
+      hiotaForward hr x v
+  have hzero : (0 : Real) ∈ Ioo (-s) width := by
+    exact ⟨by linarith, hwidth⟩
+  have htarget : t - s ∈ Ioo 0 width := by
+    dsimp [width]
+    constructor <;> linarith
+  have hPhiSmooth : ContMDiff (I.prod 𝓘(Real, E))
+      (I.prod 𝓘(Real, E)) ∞
+      (fun p : TangentBundle I M =>
+        (⟨p.1, Phi0 (t - s) p.1 p.2⟩ : TangentBundle I M)) :=
+    fiberwise_linear_ode_total_map_contMDiff_right
+      hzero A Phi0 hA hPhi0 hPhiCont hPhiDeriv htarget
+  have htargetIcc : t - s ∈ Icc 0 width :=
+    ⟨le_of_lt htarget.1, le_of_lt htarget.2⟩
+  have hPhiBij : ∀ x : M, Function.Bijective (Phi0 (t - s) x) := by
+    intro x
+    exact uhlenbeckEndomorphism_invertible
+      hwidth S0 basisAt iota hiota0 hgram htargetIcc x
+  refine ⟨Phi0 (t - s), hPhiSmooth, hPhiBij, ?_⟩
+  intro x v w
+  have hiso := uhlenbeckEndomorphism_isometry
+    (I := I) (M := M) hwidth S0 basisAt iota hiota0
+      hgram htargetIcc x v w
+  simpa [S0, Sshift, SolutionOn.timeRestrict, SolutionOn.timeShift,
+    SolutionOn.family, SolutionFamily.timeShift] using hiso
+
+omit [SigmaCompactSpace M] in
+theorem exists_uhlenbeck_tangent_bundle_isometry
+    [I.Boundaryless]
+    {T : Real} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    {s t : Real} (hs : 0 < s) (hst : s < t) (htT : t < T) :
+    ∃ phi : ∀ x : M, TangentSpace I x ≃ₗ[Real] TangentSpace I x,
+      ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
+        (fun p : TangentBundle I M =>
+          (⟨p.1, phi p.1 p.2⟩ : TangentBundle I M)) ∧
+      ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
+        (fun p : TangentBundle I M =>
+          (⟨p.1, (phi p.1).symm p.2⟩ : TangentBundle I M)) ∧
+      ∀ x : M, ∀ v w : TangentSpace I x,
+        (S.family.metric t).inner x (phi x v) (phi x w) =
+          (S.family.metric s).inner x v w := by
+  by_cases hdim : Module.finrank Real E = 0
+  · let phi : ∀ x : M, TangentSpace I x ≃ₗ[Real] TangentSpace I x :=
+      fun x => LinearEquiv.refl Real (TangentSpace I x)
+    have hphiSmooth : ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
+        (fun p : TangentBundle I M =>
+          (⟨p.1, phi p.1 p.2⟩ : TangentBundle I M)) := by
+      exact (contMDiff_id : ContMDiff (I.prod 𝓘(Real, E))
+        (I.prod 𝓘(Real, E)) ∞
+        (_root_.id : TangentBundle I M → TangentBundle I M)).congr
+          (fun p => by cases p; rfl)
+    have hphiInvSmooth : ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
+        (fun p : TangentBundle I M =>
+          (⟨p.1, (phi p.1).symm p.2⟩ : TangentBundle I M)) := by
+      exact (contMDiff_id : ContMDiff (I.prod 𝓘(Real, E))
+        (I.prod 𝓘(Real, E)) ∞
+        (_root_.id : TangentBundle I M → TangentBundle I M)).congr
+          (fun p => by cases p; rfl)
+    refine ⟨phi, hphiSmooth, hphiInvSmooth, ?_⟩
+    intro x v w
+    have hv : v = 0 :=
+      (finrank_zero_iff_forall_zero.mp
+        (show Module.finrank Real (TangentSpace I x) = 0 by exact hdim)) v
+    have hw : w = 0 :=
+      (finrank_zero_iff_forall_zero.mp
+        (show Module.finrank Real (TangentSpace I x) = 0 by exact hdim)) w
+    simp [hv, hw]
+  have hEpos : 0 < Module.finrank Real E := Nat.pos_of_ne_zero hdim
+  obtain ⟨Phi, hPhiSmooth, hPhiBij, hPhiIso⟩ :=
+    exists_uhlenbeck_endomorphism_between
+      (I := I) (M := M) hT S hS hEpos hs hst htT
+  let phi : ∀ x : M, TangentSpace I x ≃ₗ[Real] TangentSpace I x :=
+    fun x => LinearEquiv.ofBijective (Phi x).toLinearMap (hPhiBij x)
+  have hphiSmooth : ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
+      (fun p : TangentBundle I M =>
+        (⟨p.1, phi p.1 p.2⟩ : TangentBundle I M)) := by
+    change ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
+      (fun p : TangentBundle I M =>
+        (⟨p.1, Phi p.1 p.2⟩ : TangentBundle I M))
+    exact hPhiSmooth
+  let total : TangentBundle I M → TangentBundle I M :=
+    fun p => ⟨p.1, Phi p.1 p.2⟩
+  have htotalBij : Function.Bijective total := by
+    constructor
+    · rintro ⟨x, v⟩ ⟨y, w⟩ h
+      have hxy : x = y := congrArg TotalSpace.proj h
+      subst y
+      have hvw : Phi x v = Phi x w := TotalSpace.mk_inj.mp h
+      exact TotalSpace.mk_inj.mpr ((hPhiBij x).1 hvw)
+    · rintro ⟨x, v⟩
+      obtain ⟨w, hw⟩ := (hPhiBij x).2 v
+      exact ⟨⟨x, w⟩, TotalSpace.mk_inj.mpr hw⟩
+  let hom := ContMDiffVectorBundleHom.ofFiberwiseLinearMap
+    (𝕜 := Real) (IB := I) (n := (∞ : WithTop ℕ∞)) (F₁ := E) (F₂ := E)
+    (E₁ := TangentSpace I) (E₂ := TangentSpace I)
+    (_root_.id : M → M) (fun x => (Phi x).toLinearMap) hPhiSmooth
+  have hhomBij : Function.Bijective hom.toFun := by
+    change Function.Bijective
+      (fun p : TangentBundle I M =>
+        (⟨p.1, Phi p.1 p.2⟩ : TangentBundle I M))
+    exact htotalBij
+  let e := hom.toContMDiffVectorBundleEquivId rfl hhomBij
+  have hinv := e.toDiffeomorph.contMDiff_invFun
+  have hphiInvSmooth : ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
+      (fun p : TangentBundle I M =>
+        (⟨p.1, (phi p.1).symm p.2⟩ : TangentBundle I M)) := by
+    have heq : (fun p : TangentBundle I M =>
+        (⟨p.1, (phi p.1).symm p.2⟩ : TangentBundle I M)) =
+        e.toDiffeomorph.symm := by
+      funext p
+      apply e.toDiffeomorph.toEquiv.eq_symm_apply.mpr
+      obtain ⟨x, v⟩ := p
+      change (⟨x, Phi x ((phi x).symm v)⟩ : TangentBundle I M) = ⟨x, v⟩
+      exact TotalSpace.mk_inj.mpr ((phi x).apply_symm_apply v)
+    rw [heq]
+    exact hinv
+  refine ⟨phi, hphiSmooth, hphiInvSmooth, ?_⟩
+  intro x v w
+  exact hPhiIso x v w
+
+end DifferentialGeometry.PDE.RicciFlow
