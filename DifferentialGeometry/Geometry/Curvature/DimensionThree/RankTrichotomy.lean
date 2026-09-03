@@ -232,4 +232,69 @@ theorem curvatureOperator_time_slice_trichotomy
         (I := I) g x ⟨A x, hA x⟩)
       (hpositive x) hTwoFormDim (hthree x) ha
 
+theorem curvatureOperator_time_slice_trichotomy_of_metric
+    {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
+    [FiniteDimensional Real E]
+    {H : Type uH} [TopologicalSpace H]
+    {I : ModelWithCorners Real E H} [I.Boundaryless]
+    {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M] [Nonempty M]
+    (hE : Module.finrank Real E = 3)
+    (g : SmoothRiemannianMetric I M)
+    (hpositive : ∀ x,
+      ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+        0 ≤ (twoFormMetricData (I := I) g x).inner
+          (curvatureOperatorEndomorphismAt (I := I) g x
+            ⟨metricRm04 (I := I) g x,
+              metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ a) a)
+    (hnull : ∀ x,
+      ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+        curvatureOperatorEndomorphismAt (I := I) g x
+            ⟨metricRm04 (I := I) g x,
+              metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ a = 0 →
+          DimensionThree.curvatureOperatorReactionEndomorphism3
+            (curvatureOperatorEndomorphismAt (I := I) g x
+              ⟨metricRm04 (I := I) g x,
+                metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩).toLinearMap a = 0)
+    (hrank : ∀ x y,
+      Module.finrank Real
+          (curvatureOperatorImageAt (I := I) g x
+            ⟨metricRm04 (I := I) g x,
+              metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩) =
+        Module.finrank Real
+          (curvatureOperatorImageAt (I := I) g y
+            ⟨metricRm04 (I := I) g y,
+              metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g y⟩))
+    (hkernel : IsParallelContinuousAlternatingSubmoduleFamily g
+      (fun x => curvatureOperatorKernelAt (I := I) g x
+        ⟨metricRm04 (I := I) g x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩)) :
+    (∀ x, curvatureOperatorEndomorphismAt (I := I) g x
+      ⟨metricRm04 (I := I) g x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ = 0) ∨
+      (And
+        (∀ x, Module.finrank Real
+          (curvatureOperatorImageAt (I := I) g x
+            ⟨metricRm04 (I := I) g x,
+              metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩) = 1)
+        (∀ x, ∃ e : TangentSpace I x,
+          And (e ∈ curvatureOperatorImageAnnihilatorAt (I := I) g x
+              ⟨metricRm04 (I := I) g x,
+                metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩)
+          (And (g.inner x e e = 1)
+            (Connection.HasLocalRiemannianProductAt (I := I) g x e)))) ∨
+      And
+        (∀ x, Module.finrank Real
+          (curvatureOperatorImageAt (I := I) g x
+            ⟨metricRm04 (I := I) g x,
+              metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩) = 3)
+        (∀ x, ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real, a ≠ 0 →
+          0 < (twoFormMetricData (I := I) g x).inner
+            (curvatureOperatorEndomorphismAt (I := I) g x
+              ⟨metricRm04 (I := I) g x,
+                metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ a) a) := by
+  exact curvatureOperator_time_slice_trichotomy hE g (metricRm04 (I := I) g)
+    (fun x => metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x)
+    hpositive hnull hrank hkernel
+
 end DifferentialGeometry.Geometry.Curvature
