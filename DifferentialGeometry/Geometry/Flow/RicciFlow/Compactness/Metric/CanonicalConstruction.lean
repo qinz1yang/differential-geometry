@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence.Existence
 import DifferentialGeometry.Topology.Exhaustion
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Convergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.CompatibleChainLimits
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
