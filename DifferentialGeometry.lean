@@ -675,7 +675,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatSemigroup.Schauder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatPotential.PositiveDefinite
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatPotential.TimeRealization
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Resolvent
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.FixedPoint.Core
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.FixedPoint.Quadratic
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.FixedPoint.Rough
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.RoughMap
@@ -728,6 +727,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Tail.Gaussian
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Tail.Scale
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Value
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.LowerOrder
+import DifferentialGeometry.Analysis.FunctionalAnalysis.Contraction.ClosedBall
 import DifferentialGeometry.Analysis.FunctionalAnalysis.Parametrix.Neumann
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.Localization
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.Schauder

@@ -1,10 +1,10 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.FixedPoint.Core
+import DifferentialGeometry.Analysis.FunctionalAnalysis.Contraction.ClosedBall
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.State.Quadratic
 
 noncomputable section
 
 open MeasureTheory
-open scoped ENNReal RealInnerProductSpace
+open scoped ENNReal NNReal RealInnerProductSpace
 
 namespace DifferentialGeometry
 namespace Analysis
@@ -71,7 +71,8 @@ def hmfQuadFlux (A : ℝ × V → G →L[ℝ] F)
 def hmfQuadRate (eps K L R : ℝ) : ℝ :=
   4 * eps + K * R + 3 * L * R ^ 2
 
-def quadCoreData
+omit [NormedSpace ℝ Y] in
+theorem quad_fixed
     {T eps K L R eta : ℝ} {C : ℝ≥0∞}
     {tr : X →L[ℝ] E}
     {fluxPot sourcePot : (ℝ × V → F) → X}
@@ -83,24 +84,31 @@ def quadCoreData
     (heps0 : 0 ≤ eps) (hA : ∀ z, ‖A z‖ ≤ eps)
     (hQ : HmfStateQuad (K / 2) L Q)
     (hmeas : HmfQuadMeas A Q path grad)
-    (seed : X) (heta0 : 0 ≤ eta) (hseed : ‖seed‖ ≤ eta)
+    (seed : X) (hseed : ‖seed‖ ≤ eta)
     (htrace : tr seed = 0)
     (hrate : hmfQuadRate eps K L R < 1)
     (hsmall : eta ≤ (1 - hmfQuadRate eps K L R) * R) :
-    HmfCoreData tr R eta (hmfQuadRate eps K L R) where
-  seed := seed
-  nonlin := fun u ↦
-    fluxPot (hmfQuadFlux A grad u) +
-      sourcePot (fun z ↦ hmfStateQuadSrc Q (path u) (grad u) z)
-  R0 := M.R0
-  eta0 := heta0
-  rate0 := by
-    have hK0 : 0 ≤ K := by nlinarith [hQ.K0]
+    ∃! u : X,
+      u ∈ Metric.closedBall (0 : X) R ∧
+      tr u = 0 ∧
+      seed + fluxPot (hmfQuadFlux A grad u) +
+        sourcePot (fun z ↦ hmfStateQuadSrc Q (path u) (grad u) z) = u ∧
+      PathSup T R (path u) ∧ GradWt T R (grad u) ∧
+        GradCarl T C (grad u) := by
+  have hK0 : 0 ≤ K := by nlinarith [hQ.K0]
+  have hrate0 : 0 ≤ hmfQuadRate eps K L R := by
     unfold hmfQuadRate
     exact add_nonneg
       (add_nonneg (mul_nonneg (by norm_num) heps0) (mul_nonneg hK0 M.R0))
       (mul_nonneg (mul_nonneg (by norm_num) hQ.L0) (sq_nonneg R))
-  nonlin_zero := by
+  let κ : ℝ≥0 := ⟨hmfQuadRate eps K L R, hrate0⟩
+  have hκ : κ < 1 := by
+    rw [← NNReal.coe_lt_coe]
+    exact hrate
+  let Φ : X → X := fun u ↦
+    seed + fluxPot (hmfQuadFlux A grad u) +
+      sourcePot (fun z ↦ hmfStateQuadSrc Q (path u) (grad u) z)
+  have hΦzero : Φ 0 = seed := by
     have hflux : hmfQuadFlux A grad (0 : X) = 0 := by
       funext z
       simp only [hmfQuadFlux, M.grad_zero, Pi.zero_apply, map_zero]
@@ -108,10 +116,14 @@ def quadCoreData
         (fun z ↦ hmfStateQuadSrc Q (path (0 : X)) (grad 0) z) = 0 := by
       funext z
       simp only [hmfStateQuadSrc, M.grad_zero, Pi.zero_apply, map_zero]
-    rw [hflux, hsource, H.flux_zero, H.source_zero, add_zero]
-  seed_bound := hseed
-  nonlin_lip := by
-    intro u v hu hv
+    simp only [Φ, hflux, hsource, H.flux_zero, H.source_zero, add_zero]
+  have hΦ0 : ‖Φ 0‖ ≤ (1 - (κ : ℝ)) * R := by
+    rw [hΦzero]
+    exact hseed.trans hsmall
+  have hΦ : LipschitzOnWith κ Φ (Metric.closedBall (0 : X) R) := by
+    apply LipschitzOnWith.of_dist_le_mul
+    intro u hu v hv
+    rw [dist_eq_norm]
     let D : ℝ := ‖u - v‖
     have hpWt := linWt_of_bound A hA heps0 (M.grad_diff u v)
     have hpCarl := linCarl_of_bound A hA heps0
@@ -144,14 +156,11 @@ def quadCoreData
       exact (H.source_norm hsWt hsCarl).trans_eq (by
         simp only [D]
         ring)
-    have hsplit :
-        (fluxPot (hmfQuadFlux A grad u) +
-              sourcePot (fun z ↦ hmfStateQuadSrc Q (path u) (grad u) z)) -
-            (fluxPot (hmfQuadFlux A grad v) +
-              sourcePot (fun z ↦ hmfStateQuadSrc Q (path v) (grad v) z)) =
-          (fluxPot (hmfQuadFlux A grad u) - fluxPot (hmfQuadFlux A grad v)) +
-            (sourcePot (fun z ↦ hmfStateQuadSrc Q (path u) (grad u) z) -
-              sourcePot (fun z ↦ hmfStateQuadSrc Q (path v) (grad v) z)) := by
+    have hsplit : Φ u - Φ v =
+        (fluxPot (hmfQuadFlux A grad u) - fluxPot (hmfQuadFlux A grad v)) +
+          (sourcePot (fun z ↦ hmfStateQuadSrc Q (path u) (grad u) z) -
+            sourcePot (fun z ↦ hmfStateQuadSrc Q (path v) (grad v) z)) := by
+      simp only [Φ]
       abel
     rw [hsplit]
     calc
@@ -164,51 +173,27 @@ def quadCoreData
         norm_add_le _ _
       _ ≤ 4 * eps * D + (K * R + 3 * L * R ^ 2) * D :=
         add_le_add hflux hsource
-      _ = hmfQuadRate eps K L R * ‖u - v‖ := by
+      _ = (κ : ℝ) * dist u v := by
+        rw [show (κ : ℝ) = hmfQuadRate eps K L R from rfl, dist_eq_norm]
         simp only [hmfQuadRate, D]
         ring
-  trace_seed := htrace
-  trace_nonlin := by
-    intro u _
-    simp only [map_add, H.trace_flux, H.trace_source, add_zero]
-  rate_lt_one := hrate
-  seed_small := hsmall
-
-omit [NormedSpace ℝ Y] in
-theorem quad_fixed
-    {T eps K L R eta : ℝ} {C : ℝ≥0∞}
-    {tr : X →L[ℝ] E}
-    {fluxPot sourcePot : (ℝ × V → F) → X}
-    {path : X → ℝ × V → Y} {grad : X → ℝ × V → G}
-    {A : ℝ × V → G →L[ℝ] F}
-    {Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F}
-    (H : HmfQuadHeat T tr fluxPot sourcePot)
-    (M : HmfQuadModel T R C path grad)
-    (heps0 : 0 ≤ eps) (hA : ∀ z, ‖A z‖ ≤ eps)
-    (hQ : HmfStateQuad (K / 2) L Q)
-    (hmeas : HmfQuadMeas A Q path grad)
-    (seed : X) (heta0 : 0 ≤ eta) (hseed : ‖seed‖ ≤ eta)
-    (htrace : tr seed = 0)
-    (hrate : hmfQuadRate eps K L R < 1)
-    (hsmall : eta ≤ (1 - hmfQuadRate eps K L R) * R) :
-    ∃! u : X,
-      u ∈ Metric.closedBall (0 : X) R ∧
-      tr u = 0 ∧
-      seed + fluxPot (hmfQuadFlux A grad u) +
-        sourcePot (fun z ↦ hmfStateQuadSrc Q (path u) (grad u) z) = u ∧
-      PathSup T R (path u) ∧ GradWt T R (grad u) ∧
-        GradCarl T C (grad u) := by
-  let D := quadCoreData H M heps0 hA hQ hmeas seed heta0 hseed htrace hrate hsmall
-  obtain ⟨u, hu, huniq⟩ := D.core_fixed
+  obtain ⟨u, hu, huniq⟩ :=
+    DifferentialGeometry.Analysis.exists_unique_fixedPoint_mem_closedBall
+      M.R0 hκ hΦ0 hΦ
+  have huTrace : tr u = 0 := by
+    rw [← hu.2]
+    simp only [Φ, map_add, htrace, H.trace_flux, H.trace_source, add_zero]
+  have huFixed : Φ u = u := hu.2
   have heq : seed + fluxPot (hmfQuadFlux A grad u) +
       sourcePot (fun z ↦ hmfStateQuadSrc Q (path u) (grad u) z) = u := by
-    simpa [D, quadCoreData, hmfCoreMap, add_assoc] using hu.2.2
-  refine ⟨u, ⟨hu.1, hu.2.1, heq, M.path_ball u hu.1,
+    simpa only [Φ] using huFixed
+  refine ⟨u, ⟨hu.1, huTrace, heq, M.path_ball u hu.1,
     M.grad_ball u hu.1, M.carl_ball u hu.1⟩, ?_⟩
   intro v hv
   apply huniq v
-  refine ⟨hv.1, hv.2.1, ?_⟩
-  simpa [D, quadCoreData, hmfCoreMap, add_assoc] using hv.2.2.1
+  refine ⟨hv.1, ?_⟩
+  change Φ v = v
+  simpa only [Φ] using hv.2.2.1
 
 end Euclidean
 end Parabolic

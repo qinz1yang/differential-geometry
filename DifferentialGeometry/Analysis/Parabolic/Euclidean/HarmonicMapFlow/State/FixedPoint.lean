@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.FixedPo
 
 noncomputable section
 open MeasureTheory
-open scoped ENNReal RealInnerProductSpace
+open scoped ENNReal NNReal RealInnerProductSpace
 
 namespace DifferentialGeometry
 namespace Analysis
@@ -74,7 +74,7 @@ end HeatRoughBound
 def hmfStateRate (eps L K R : ℝ) : ℝ :=
   hmfRate (eps + 2 * L * R) K R
 
-def stateFpOfSplit
+theorem state_split_fixed
     {T eps L K R eta : ℝ} {C : ℝ≥0∞}
     {tr : X →L[ℝ] E}
     {fluxPot sourcePot : (ℝ × V → F) → X}
@@ -86,31 +86,43 @@ def stateFpOfSplit
     (hA : HmfStateCoeff eps L A)
     (hK0 : 0 ≤ K) (hQ : ∀ z, ‖Q z‖ ≤ K / 2)
     (hmeas : HmfStateMeas A Q path grad)
-    (seed : X) (heta0 : 0 ≤ eta) (hseed : ‖seed‖ ≤ eta)
+    (seed : X) (hseed : ‖seed‖ ≤ eta)
     (htrace : tr seed = 0)
     (hrate : hmfStateRate eps L K R < 1)
     (hsmall : eta ≤ (1 - hmfStateRate eps L K R) * R) :
-    HmfFPData tr (eps + 2 * L * R) K R eta where
-  seed := seed
-  principal := fun u ↦ fluxPot (hmfStateFlux A (path u) (grad u))
-  quadratic := fun u ↦ sourcePot (hmfQuad Q grad u)
-  eps0 := by nlinarith [hA.eps0, hA.L0, M.R0]
-  K0 := hK0
-  R0 := M.R0
-  eta0 := heta0
-  principal_zero := by
-    have hz : hmfStateFlux A (path 0) (grad 0) = 0 := by
+    ∃! u : X,
+      u ∈ Metric.closedBall (0 : X) R ∧
+      tr u = 0 ∧
+      seed + fluxPot (hmfStateFlux A (path u) (grad u)) +
+        sourcePot (hmfQuad Q grad u) = u ∧
+      PathSup T R (path u) ∧ GradWt T R (grad u) ∧
+        GradCarl T C (grad u) := by
+  have heps0 : 0 ≤ eps + 2 * L * R := by nlinarith [hA.eps0, hA.L0, M.R0]
+  have hrate0 : 0 ≤ hmfStateRate eps L K R := by
+    rw [hmfStateRate]
+    exact add_nonneg (mul_nonneg (by norm_num) heps0) (mul_nonneg hK0 M.R0)
+  let κ : ℝ≥0 := ⟨hmfStateRate eps L K R, hrate0⟩
+  have hκ : κ < 1 := by
+    rw [← NNReal.coe_lt_coe]
+    exact hrate
+  let Φ : X → X := fun u ↦
+    seed + fluxPot (hmfStateFlux A (path u) (grad u)) +
+      sourcePot (hmfQuad Q grad u)
+  have hΦzero : Φ 0 = seed := by
+    have hflux : hmfStateFlux A (path 0) (grad 0) = 0 := by
       funext z
       simp only [hmfStateFlux, M.grad_zero, Pi.zero_apply, map_zero]
-    rw [hz, H.flux_zero]
-  quadratic_zero := by
-    have hz : hmfQuad Q grad (0 : X) = 0 := by
+    have hquad : hmfQuad Q grad (0 : X) = 0 := by
       funext z
       simp only [hmfQuad, M.grad_zero, Pi.zero_apply, map_zero]
-    rw [hz, H.source_zero]
-  seed_bound := hseed
-  principal_lip := by
-    intro u v hu hv
+    simp only [Φ, hflux, hquad, H.flux_zero, H.source_zero, add_zero]
+  have hΦ0 : ‖Φ 0‖ ≤ (1 - (κ : ℝ)) * R := by
+    rw [hΦzero]
+    exact hseed.trans hsmall
+  have hΦ : LipschitzOnWith κ Φ (Metric.closedBall (0 : X) R) := by
+    apply LipschitzOnWith.of_dist_le_mul
+    intro u hu v hv
+    rw [dist_eq_norm]
     let D : ℝ := ‖u - v‖
     let p₁ : ℝ × V → F := fun z ↦
       A z (path u z) (grad u z - grad v z)
@@ -123,75 +135,77 @@ def stateFpOfSplit
       (M.path_ball u hu) (M.path_diff u v)
       (hmeas.state_grad u v) (hmeas.state_value u v)
       (M.carl_ball v hv) (M.carl_diff u v)
-    have hsplit :
+    have hsplitPrincipal :
         (fun z ↦ hmfStateFlux A (path u) (grad u) z -
           hmfStateFlux A (path v) (grad v) z) =
         (fun z ↦ p₁ z + p₂ z) := by
       funext z
       exact hmfStateFlux_sub A (path u) (path v) (grad u) (grad v) z
-    rw [← H.flux_sub, hsplit, H.flux_add]
-    calc
-      ‖fluxPot p₁ + fluxPot p₂‖ ≤ ‖fluxPot p₁‖ + ‖fluxPot p₂‖ :=
-        norm_add_le _ _
-      _ ≤ 4 * ((eps + L * R) * D) + 4 * ((L * D) * R) :=
-        add_le_add (H.flux_norm hw.1 hc.1) (H.flux_norm hw.2 hc.2)
-      _ = 4 * (eps + 2 * L * R) * ‖u - v‖ := by
-        simp only [D]
-        ring
-  quadratic_lip := by
-    intro u v hu hv
+    have hprincipal :
+        ‖fluxPot (hmfStateFlux A (path u) (grad u)) -
+          fluxPot (hmfStateFlux A (path v) (grad v))‖ ≤
+          4 * (eps + 2 * L * R) * ‖u - v‖ := by
+      rw [← H.flux_sub, hsplitPrincipal, H.flux_add]
+      calc
+        ‖fluxPot p₁ + fluxPot p₂‖ ≤ ‖fluxPot p₁‖ + ‖fluxPot p₂‖ :=
+          norm_add_le _ _
+        _ ≤ 4 * ((eps + L * R) * D) + 4 * ((L * D) * R) :=
+          add_le_add (H.flux_norm hw.1 hc.1) (H.flux_norm hw.2 hc.2)
+        _ = 4 * (eps + 2 * L * R) * ‖u - v‖ := by
+          simp only [D]
+          ring
     have hQ0 : 0 ≤ K / 2 := by linarith
-    have hw := quadDiffWt Q hQ hQ0 M.R0 (norm_nonneg (u - v))
+    have hwq := quadDiffWt Q hQ hQ0 M.R0 (norm_nonneg (u - v))
       (M.grad_ball u hu) (M.grad_ball v hv) (M.grad_diff u v)
-    have hc := quadDiffCarl Q hQ hQ0
+    have hcq := quadDiffCarl Q hQ hQ0
       (hmeas.quad_left u v) (hmeas.quad_right u v)
       (M.carl_ball u hu) (M.carl_ball v hv) (M.carl_diff u v)
-    rw [← H.source_sub]
-    change ‖sourcePot
-      (fun z ↦ Q z (grad u z) (grad u z) -
-        Q z (grad v z) (grad v z))‖ ≤ _
-    exact (H.source_norm hw hc).trans_eq (by ring)
-  trace_seed := htrace
-  trace_principal := fun u _ ↦ H.trace_flux _
-  trace_quadratic := fun u _ ↦ H.trace_source _
-  rate_lt_one := by simpa only [hmfStateRate] using hrate
-  seed_small := by simpa only [hmfStateRate] using hsmall
-
-theorem stateSplit_fixed
-    {T eps L K R eta : ℝ} {C : ℝ≥0∞}
-    {tr : X →L[ℝ] E}
-    {fluxPot sourcePot : (ℝ × V → F) → X}
-    {path : X → ℝ × V → F} {grad : X → ℝ × V → G}
-    {A : ℝ × V → F → G →L[ℝ] F}
-    {Q : ℝ × V → G →L[ℝ] G →L[ℝ] F}
-    (H : HeatRoughBound T tr fluxPot sourcePot)
-    (M : HmfStateModel T R C path grad)
-    (hA : HmfStateCoeff eps L A)
-    (hK0 : 0 ≤ K) (hQ : ∀ z, ‖Q z‖ ≤ K / 2)
-    (hmeas : HmfStateMeas A Q path grad)
-    (seed : X) (heta0 : 0 ≤ eta) (hseed : ‖seed‖ ≤ eta)
-    (htrace : tr seed = 0)
-    (hrate : hmfStateRate eps L K R < 1)
-    (hsmall : eta ≤ (1 - hmfStateRate eps L K R) * R) :
-    ∃! u : X,
-      u ∈ Metric.closedBall (0 : X) R ∧
-      tr u = 0 ∧
-      seed + fluxPot (hmfStateFlux A (path u) (grad u)) +
-        sourcePot (hmfQuad Q grad u) = u ∧
-      PathSup T R (path u) ∧ GradWt T R (grad u) ∧
-        GradCarl T C (grad u) := by
-  let D := stateFpOfSplit H M hA hK0 hQ hmeas seed heta0 hseed
-    htrace hrate hsmall
-  obtain ⟨u, hu, huniq⟩ := D.rough_fixed
+    have hquadratic :
+        ‖sourcePot (hmfQuad Q grad u) - sourcePot (hmfQuad Q grad v)‖ ≤
+          K * R * ‖u - v‖ := by
+      rw [← H.source_sub]
+      change ‖sourcePot
+        (fun z ↦ Q z (grad u z) (grad u z) -
+          Q z (grad v z) (grad v z))‖ ≤ _
+      exact (H.source_norm hwq hcq).trans_eq (by ring)
+    have hsplit : Φ u - Φ v =
+        (fluxPot (hmfStateFlux A (path u) (grad u)) -
+          fluxPot (hmfStateFlux A (path v) (grad v))) +
+        (sourcePot (hmfQuad Q grad u) - sourcePot (hmfQuad Q grad v)) := by
+      simp only [Φ]
+      abel
+    rw [hsplit]
+    calc
+      ‖(fluxPot (hmfStateFlux A (path u) (grad u)) -
+          fluxPot (hmfStateFlux A (path v) (grad v))) +
+          (sourcePot (hmfQuad Q grad u) - sourcePot (hmfQuad Q grad v))‖
+          ≤ ‖fluxPot (hmfStateFlux A (path u) (grad u)) -
+              fluxPot (hmfStateFlux A (path v) (grad v))‖ +
+            ‖sourcePot (hmfQuad Q grad u) - sourcePot (hmfQuad Q grad v)‖ :=
+        norm_add_le _ _
+      _ ≤ 4 * (eps + 2 * L * R) * ‖u - v‖ + K * R * ‖u - v‖ :=
+        add_le_add hprincipal hquadratic
+      _ = (κ : ℝ) * dist u v := by
+        rw [show (κ : ℝ) = hmfStateRate eps L K R from rfl, dist_eq_norm]
+        simp only [hmfStateRate, hmfRate]
+        ring
+  obtain ⟨u, hu, huniq⟩ :=
+    DifferentialGeometry.Analysis.exists_unique_fixedPoint_mem_closedBall
+      M.R0 hκ hΦ0 hΦ
+  have huTrace : tr u = 0 := by
+    rw [← hu.2]
+    simp only [Φ, map_add, htrace, H.trace_flux, H.trace_source, add_zero]
+  have huFixed : Φ u = u := hu.2
   have heq : seed + fluxPot (hmfStateFlux A (path u) (grad u)) +
       sourcePot (hmfQuad Q grad u) = u := by
-    simpa [D, stateFpOfSplit, hmfDuh] using hu.2.2
-  refine ⟨u, ⟨hu.1, hu.2.1, heq, M.path_ball u hu.1,
+    simpa only [Φ] using huFixed
+  refine ⟨u, ⟨hu.1, huTrace, heq, M.path_ball u hu.1,
     M.grad_ball u hu.1, M.carl_ball u hu.1⟩, ?_⟩
   intro v hv
   apply huniq v
-  refine ⟨hv.1, hv.2.1, ?_⟩
-  simpa [D, stateFpOfSplit, hmfDuh] using hv.2.2.1
+  refine ⟨hv.1, ?_⟩
+  change Φ v = v
+  simpa only [Φ] using hv.2.2.1
 
 end Euclidean
 end Parabolic
