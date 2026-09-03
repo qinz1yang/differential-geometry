@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPathDecomposition
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSDecompositionPathIntegral
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSDecompositionField
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.DecompositionPathIntegral
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.DecompositionField
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionDifferencePairing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionZeroSplit
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition

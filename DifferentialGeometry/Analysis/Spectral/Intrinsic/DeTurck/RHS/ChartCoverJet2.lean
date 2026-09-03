@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSAbstractJet2Bound
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.AbstractJet2Bound
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSDecompositionArms
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.DecompositionArms
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionZeroJointSmooth
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MovingPairTrace
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDifference.Bounds.Coefficients

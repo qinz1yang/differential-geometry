@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSPointwiseLipschitz
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.PointwiseLipschitz
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieMatrixChartBridge
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.LieDerivativePairing
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci

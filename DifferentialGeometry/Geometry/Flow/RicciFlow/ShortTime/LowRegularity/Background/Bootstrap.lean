@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Dire
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.AllOrderMassBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.UniformSolutionBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.SolutionAllOrderMassBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRHSRepresentation
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.RemainderRepresentation
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapLinear
 import DifferentialGeometry.Geometry.Metric.Basic
 

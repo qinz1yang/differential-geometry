@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieSummandLipschitz
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSPointwiseLipschitz
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.PointwiseLipschitz
 open DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

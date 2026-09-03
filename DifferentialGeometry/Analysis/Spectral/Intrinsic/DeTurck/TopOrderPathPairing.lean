@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingPolarization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionDifferencePairing
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSDecompositionPathIntegral
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.DecompositionPathIntegral
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannianBundle
 
 noncomputable section

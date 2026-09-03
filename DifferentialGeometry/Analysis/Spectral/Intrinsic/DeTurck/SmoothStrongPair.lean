@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SmoothPathHs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.StrongSolutionUniqueness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRHSSectionRealizeUnitModel
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.SectionRealization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothEmbedInj
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1

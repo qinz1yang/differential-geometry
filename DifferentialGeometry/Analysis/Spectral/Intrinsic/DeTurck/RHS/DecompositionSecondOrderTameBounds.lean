@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.Basic
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSDecompositionField
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSZeroDecomposition
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.DecompositionField
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.ZeroDecomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.RadiusFreeDifference
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.Coefficient.RadiusFreeDifference

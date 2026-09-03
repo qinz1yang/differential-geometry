@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSZeroDecomposition
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.ZeroDecomposition
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.BackgroundDifference
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.Identities
 
