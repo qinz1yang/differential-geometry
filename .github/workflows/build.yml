@@ -3,27 +3,46 @@ name: Lean Build CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: lean-build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   audit:
     name: Audit Project
-    runs-on: 
-      - self-hosted
-      - macOS
-      - ARM64
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          clean: true
-      - name: Install elan and Lean 4.29
+
+      - name: Free disk space for Lean build artifacts
         run: |
-          curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh
-          chmod +x elan-init.sh
-          ./elan-init.sh -y --default-toolchain leanprover/lean4:v4.29.0
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+
+      - name: Install Lean and restore Mathlib cache
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9
+        with:
+          auto-config: false
+          use-github-cache: false
+          use-mathlib-cache: true
+
+      - name: Restore project build cache
+        uses: actions/cache@v4
+        with:
+          path: .lake/build/lib/lean
+          key: differential-geometry-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            differential-geometry-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-
+
       - name: Build project from source
-        run: lake --no-cache build DifferentialGeometry
+        run: lake --wfail build DifferentialGeometry
