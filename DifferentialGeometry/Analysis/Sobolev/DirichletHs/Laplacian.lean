@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.DirichletHs.Defs
+import DifferentialGeometry.Analysis.Sobolev.DirichletHs.ExponentCongr
 
 noncomputable section
 
@@ -131,6 +131,49 @@ theorem dirichletHsLaplacian_opNorm_le_one :
   ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun v => by
     rw [one_mul]
     exact dirichletHsLaplacian_norm_le v
+
+def dirichletHsLaplacianL2
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    dirichletHs g 2 →L[ℝ] dirichletHs g 0 :=
+  (dirichletHsLaplacian g 0).comp
+    (dirichletHsCongrL g (by norm_num : (2 : ℝ) = 0 + 2))
+
+@[simp] theorem dirichletHsLaplacianL2_coeff
+    (v : dirichletHs g 2)
+    (i : DirichletLaplacianEigenindex g) :
+    (dirichletHsLaplacianL2 g v).coeff i =
+      -dirichletLaplacianEigenvalue i * v.coeff i := by
+  rw [dirichletHsLaplacianL2, ContinuousLinearMap.comp_apply,
+    dirichletHsLaplacian_coeff, dirichletHsCongrL_coeff]
+
+def dirichletHsOneSubLaplacian
+    (g : SmoothRiemannianMetric (I_half n) M) (σ : ℝ) :
+    dirichletHs g (σ + 2) →L[ℝ] dirichletHs g σ :=
+  dirichletHsInclusion (by linarith) - dirichletHsLaplacian g σ
+
+@[simp] theorem dirichletHsOneSubLaplacian_coeff
+    (v : dirichletHs g (σ + 2))
+    (i : DirichletLaplacianEigenindex g) :
+    (dirichletHsOneSubLaplacian g σ v).coeff i =
+      (1 + dirichletLaplacianEigenvalue i) * v.coeff i := by
+  change v.coeff i - (-dirichletLaplacianEigenvalue i * v.coeff i) = _
+  ring
+
+def dirichletHsOneSubLaplacianL2
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    dirichletHs g 2 →L[ℝ] dirichletHs g 0 :=
+  dirichletHsInclusion (show (0 : ℝ) ≤ 2 by norm_num) -
+    dirichletHsLaplacianL2 g
+
+@[simp] theorem dirichletHsOneSubLaplacianL2_coeff
+    (v : dirichletHs g 2)
+    (i : DirichletLaplacianEigenindex g) :
+    (dirichletHsOneSubLaplacianL2 g v).coeff i =
+      (1 + dirichletLaplacianEigenvalue i) * v.coeff i := by
+  simp only [dirichletHsOneSubLaplacianL2, sub_apply,
+    dirichletHs.sub_coeff, dirichletHs.dirichletHsInclusion_coeff,
+    dirichletHsLaplacianL2_coeff]
+  ring
 
 private theorem weight_neg_one_eigenvalue_mul_sq_le
     (v : dirichletHs g 1) (i : DirichletLaplacianEigenindex g) :

@@ -242,6 +242,45 @@ private theorem dirichletSobolevWeight_neg_one_eq_resolvent_eigenvalue
     ring
   rw [h, inv_inv]
 
+theorem H1ComplDirichletToLp_dirichletHsOneEquivH1Compl
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : dirichletHs g 1) :
+    H1ComplDirichletToLp g (dirichletHsOneEquivH1Compl g u) =
+      dirichletHsZeroEquivL2 g
+        (dirichletHsInclusion (show (0 : ℝ) ≤ 1 by norm_num) u) := by
+  apply (dirichletLaplacianHilbertBasis g).repr.injective
+  ext i
+  rw [HilbertBasis.repr_apply_apply]
+  change _ = dirichletL2Coeff
+    (dirichletHsZeroEquivL2 g
+      (dirichletHsInclusion (show (0 : ℝ) ≤ 1 by norm_num) u)) i
+  rw [dirichletHs.dirichletHsZeroEquivL2_dirichletL2Coeff,
+    dirichletHs.dirichletHsInclusion_coeff]
+  rw [real_inner_comm]
+  have hcoord := congrArg
+    (fun q : lp (fun _ : DirichletLaplacianEigenindex g ↦ ℝ) 2 =>
+      (q : DirichletLaplacianEigenindex g → ℝ) i)
+    (dirichletHsOneEquivH1Compl_repr g u)
+  rw [HilbertBasis.repr_apply_apply,
+    dirichletHs.rescaleEquivL2_apply,
+    dirichletH1HilbertBasis_apply,
+    real_inner_smul_left,
+    inner_dirichletLaplacianEigenfunction] at hcoord
+  have hmu : 0 < i.1.val :=
+    nonzeroDirichletResolventEigenvalue_pos i.1
+  have hsqrt : Real.sqrt i.1.val ≠ 0 :=
+    (Real.sqrt_pos.mpr hmu).ne'
+  change Real.sqrt i.1.val *
+      (i.1.val⁻¹ * inner ℝ
+        (H1ComplDirichletToLp g (dirichletHsOneEquivH1Compl g u))
+        (dirichletLaplacianHilbertBasis g i)) =
+    Real.sqrt (dirichletSobolevWeight i 1) * u.coeff i at hcoord
+  rw [dirichletSobolevWeight_one_eq_resolvent_eigenvalue_inv,
+    Real.sqrt_inv] at hcoord
+  field_simp [hsqrt, i.1.val_ne_zero, Real.sq_sqrt hmu.le] at hcoord
+  rw [Real.sq_sqrt hmu.le] at hcoord
+  exact mul_left_cancel₀ i.1.val_ne_zero hcoord
+
 private theorem dirichletBilinearFormToHs_neg_energyForm_coeff
     (g : SmoothRiemannianMetric (I_half n) M)
     (u : dirichletHs g 1) (i : DirichletLaplacianEigenindex g) :

@@ -3959,6 +3959,8 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.InitialData
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelRigidity
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelTimeConstancy
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
+import DifferentialGeometry.Analysis.Sobolev.DirichletHs.Domain
+import DifferentialGeometry.Analysis.Sobolev.DirichletHs.ExponentCongr
 import DifferentialGeometry.Analysis.Sobolev.DirichletHs.HeatSemigroupContinuity
 import DifferentialGeometry.Analysis.Sobolev.DirichletHs.SmoothEmbedding
 import DifferentialGeometry.Bundle.SmoothSubbundle.Defs
