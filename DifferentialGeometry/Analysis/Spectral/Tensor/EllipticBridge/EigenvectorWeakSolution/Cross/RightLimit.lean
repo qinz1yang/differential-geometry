@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossLimits
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.Basic
 import DifferentialGeometry.Geometry.Operator.Gradient
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
