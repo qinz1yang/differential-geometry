@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingPolarization
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionDifferencePairing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionDifference.Pairing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.DecompositionPathIntegral
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannianBundle
 
