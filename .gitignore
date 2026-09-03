@@ -5,6 +5,7 @@
 !/.github
 !/Examples/
 !/DifferentialGeometry.lean
+!/lake-manifest.json
 !/lakefile.toml
 !/lean-toolchain
 !/README.md

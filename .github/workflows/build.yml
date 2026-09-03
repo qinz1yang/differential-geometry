@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Free disk space for Lean build artifacts
         run: |
@@ -37,7 +37,7 @@ jobs:
           use-mathlib-cache: true
 
       - name: Restore project build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .lake/build/lib/lean
           key: differential-geometry-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-${{ github.sha }}
