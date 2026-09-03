@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.TameEstimates
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.SlotInsertSelfAdjointPairing
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorCovDivergence
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingAlgebra
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LowOrderPairingDecomposition
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Algebra
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.LowOrderDecomposition
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

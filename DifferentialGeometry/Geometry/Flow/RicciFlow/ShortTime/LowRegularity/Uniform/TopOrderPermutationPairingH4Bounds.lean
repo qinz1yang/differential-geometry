@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPathPairingBounds
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.PathIntegralBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.LinearTerms
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldApplicationLpProduct
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2PointwiseUnif

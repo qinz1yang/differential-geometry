@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RemainderAction
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LowOrderPairingDecomposition
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPathPairing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.LowOrderDecomposition
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.PathIntegral
 
 noncomputable section
 

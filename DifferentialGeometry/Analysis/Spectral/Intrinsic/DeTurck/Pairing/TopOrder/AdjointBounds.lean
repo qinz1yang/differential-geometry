@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingDecomposition
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingPolarization
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Decomposition
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Polarization
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldApplicationLpProduct
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 open DifferentialGeometry.Analysis.Sobolev

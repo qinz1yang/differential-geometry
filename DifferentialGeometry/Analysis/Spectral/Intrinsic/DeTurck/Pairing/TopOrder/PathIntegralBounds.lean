@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingAdjointBoundsPolarized
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPathPairing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.PolarizedAdjointBounds
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.PathIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PathIntegralFibreNormTransfer
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldApplicationLpProduct
 

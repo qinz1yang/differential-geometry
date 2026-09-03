@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.RicciFoldKernel
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingDecomposition
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Decomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSLowCoeff
 
 noncomputable section

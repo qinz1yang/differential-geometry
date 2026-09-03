@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingAdjointBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderPairingPolarization
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.AdjointBounds
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Polarization
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldApplicationLpProduct
 
 noncomputable section

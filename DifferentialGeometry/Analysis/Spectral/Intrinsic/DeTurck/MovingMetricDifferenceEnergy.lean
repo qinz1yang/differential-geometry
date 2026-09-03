@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
 import DifferentialGeometry.Analysis.ODE.ClosedEdgeGronwall
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderDifferenceEnergy
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.DifferenceEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.StrongSpectralSolution
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.SmallC0
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.TensorFields

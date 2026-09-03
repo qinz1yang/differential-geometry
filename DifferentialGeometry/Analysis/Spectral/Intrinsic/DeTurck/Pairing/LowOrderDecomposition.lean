@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.ApplicationJetWindow
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TopOrderDifferenceEnergy
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.DifferenceEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.Symmetry
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSThreeArmCancel
 open DifferentialGeometry.Analysis.Sobolev
