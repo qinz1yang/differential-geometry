@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.NonautonomousL2Cross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.TimeFirstOrder
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperatorPairing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.Pairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.TimeSecondOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ExponentCongr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.PrincipalTime
