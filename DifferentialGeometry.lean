@@ -3108,6 +3108,7 @@ import DifferentialGeometry.Geometry.Operator.TensorHeat
 import DifferentialGeometry.Geometry.Operator.TensorInnerLaplacian
 import DifferentialGeometry.Geometry.Operator.VossWeyl
 import DifferentialGeometry.Topology.Covering.SimplyConnected
+import DifferentialGeometry.Topology.ConnectedCompactNeighborhood
 import DifferentialGeometry.Topology.DirectLimit
 import DifferentialGeometry.Topology.DirectLimitManifold
 import DifferentialGeometry.Topology.FiberBundleT2
