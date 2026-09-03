@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Tensor0S
 import DifferentialGeometry.Geometry.Coordinates.Christoffel
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
 
 set_option autoImplicit false
 

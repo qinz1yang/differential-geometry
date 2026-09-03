@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.Tensor
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.ConnectionDifference
-import DifferentialGeometry.Tensor.RSTensor.TensorRSRiemannian
+import DifferentialGeometry.Geometry.Connection.TensorNabla.ConnectionDifference
+import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

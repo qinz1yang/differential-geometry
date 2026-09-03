@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormEvol
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Frame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormHeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivative
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.FiniteArrayNorm
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.FiniteArrayNorm
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 open DifferentialGeometry.Geometry.Curvature
 

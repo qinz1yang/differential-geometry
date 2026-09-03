@@ -3,8 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Iterated
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeComponents
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NablaTraceGen
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NormBound
+import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen
+import DifferentialGeometry.Geometry.Connection.MetricTrace.NormBound
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

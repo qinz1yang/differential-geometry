@@ -4,9 +4,9 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeTimeR
 import DifferentialGeometry.Geometry.Metric.Convergence.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
-import DifferentialGeometry.Analysis.Calculus.PartialDerivative
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Iterated
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Operator.Hessian
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Analysis.Calculus.ContDiff.Bounds

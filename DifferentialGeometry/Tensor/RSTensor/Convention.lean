@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.Components
-import DifferentialGeometry.Tensor.RSTensor.Derivation.Contract
+import DifferentialGeometry.Tensor.RSTensor.Contraction
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Bundle

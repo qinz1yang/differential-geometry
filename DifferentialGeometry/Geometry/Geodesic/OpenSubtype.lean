@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
 import DifferentialGeometry.Geometry.Geodesic.Equation
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.OpensRestrict
+import DifferentialGeometry.Geometry.Connection.TensorNabla.OpenRestriction
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

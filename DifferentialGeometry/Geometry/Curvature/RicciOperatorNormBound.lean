@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricContinuity
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricContinuity
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Coordinates.ConnectionCoefficients
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
 import DifferentialGeometry.Bundle.TangentSpace
 
 set_option autoImplicit false

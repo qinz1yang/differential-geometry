@@ -1,4 +1,4 @@
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.TailRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.FrameRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.HeatEquation

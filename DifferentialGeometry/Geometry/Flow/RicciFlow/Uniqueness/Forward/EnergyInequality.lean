@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.IntegrationByParts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureBounds
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound

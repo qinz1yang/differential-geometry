@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.TotalNabla0STimeDeriv
+import DifferentialGeometry.Geometry.Connection.TensorNabla.TotalNabla0STimeDeriv
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Tangent
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Tangent
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.ChartTensor0SCovariantDerivativeAgreementSucc
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SNabla
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SPartialEval
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

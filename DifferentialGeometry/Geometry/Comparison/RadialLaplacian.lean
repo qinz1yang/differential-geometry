@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiShape
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialGronwall
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.LineSplit
+import DifferentialGeometry.Geometry.Connection.MetricTrace.LineSplit
 
 
 open DifferentialGeometry.Tensor.RSTensor

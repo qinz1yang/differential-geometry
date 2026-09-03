@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.ContinuousEvaluation
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Nullspace
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.ContinuousEvaluation
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Nullspace
 
 set_option autoImplicit false
 

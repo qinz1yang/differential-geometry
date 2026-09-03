@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.TensorDecomposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureBounds
-import DifferentialGeometry.Tensor.RSTensor.NormSqProduct
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
+import DifferentialGeometry.Geometry.Metric.TensorInner.TensorProductNorm
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 
 set_option autoImplicit false
 

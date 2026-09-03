@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
 
 set_option autoImplicit false
 

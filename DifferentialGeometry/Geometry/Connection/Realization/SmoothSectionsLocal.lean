@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
 import Mathlib.Geometry.Manifold.BumpFunction
 
 namespace DifferentialGeometry.Geometry.Connection.Realization

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweri
 import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Operator.Hessian
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 
 set_option autoImplicit false
 

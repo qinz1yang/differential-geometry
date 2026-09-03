@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.RoughLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.FrozenSlot
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.FrozenSlot
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.FrozenSlot
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.ReactionBound
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.RicciIdentity

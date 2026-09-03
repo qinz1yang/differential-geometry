@@ -11,14 +11,16 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
 import DifferentialGeometry.Geometry.Connection.ChartBridge.OrthonormalComponents
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRicciRHSSymmetric
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricContinuity
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricDeriv
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.FiniteArrayNorm
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.TimeSlab
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.BasisEvaluation
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricContinuity
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricDeriv
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.FiniteArrayNorm
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor.Coordinates
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
-import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
+import DifferentialGeometry.Geometry.Metric.TensorInner.GenericCotangent
 
 set_option autoImplicit false
 

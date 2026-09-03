@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeContinuity
 import DifferentialGeometry.Geometry.Connection.ChartBridge.HessFrobenius
 import DifferentialGeometry.Geometry.Operator.LaplacianBridge
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.ConnectionDifferenceNorm
+import DifferentialGeometry.Geometry.Connection.ConnectionDifferenceNorm
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

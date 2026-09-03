@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.MetricExistence
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph
-import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.InverseMetricField
-import DifferentialGeometry.Tensor.RSTensor.Derivation.Contract
+import DifferentialGeometry.Tensor.RSTensor.Contraction
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation

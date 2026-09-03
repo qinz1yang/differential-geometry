@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
 import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

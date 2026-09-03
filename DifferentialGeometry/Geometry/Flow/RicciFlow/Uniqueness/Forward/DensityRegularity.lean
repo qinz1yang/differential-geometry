@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.EnergyVanishing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CovariantDerivativeCoordinates
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Connection
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Connection
 import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.WithinSmoothness
 

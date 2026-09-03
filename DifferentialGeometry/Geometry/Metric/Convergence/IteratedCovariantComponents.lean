@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeCompo
 import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeContraction
 import DifferentialGeometry.Geometry.Connection.Coordinates.ComponentNorm
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSectionsLocal
-import DifferentialGeometry.Tensor.RSTensor.NablaDomDomCongr
+import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotPermutation
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.DifferenceFields
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.TotalNabla0SLinear
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TotalNabla0S
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NablaTraceGen
+import DifferentialGeometry.Geometry.Connection.TensorNabla.TotalNabla0SLinear
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TotalNabla0S
+import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen
 
 set_option autoImplicit false
 

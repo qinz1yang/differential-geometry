@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.Gradient
-import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.GenericCotangent
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section

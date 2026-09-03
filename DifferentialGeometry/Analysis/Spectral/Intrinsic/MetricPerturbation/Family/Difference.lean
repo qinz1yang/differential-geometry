@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoeffi
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
 import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
-import DifferentialGeometry.Tensor.RSTensor.Metric
+import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Geometry.Curvature

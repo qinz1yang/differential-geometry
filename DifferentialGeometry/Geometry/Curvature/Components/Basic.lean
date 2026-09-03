@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
-import DifferentialGeometry.Tensor.RicciIdentity.OneForm
-import DifferentialGeometry.Tensor.RicciIdentity.Tensor0S.Realization
-import DifferentialGeometry.Tensor.RicciIdentity.Tensor0S.Formula
-import DifferentialGeometry.Tensor.RicciIdentity.MixedComponents
+import DifferentialGeometry.Geometry.Connection.RicciIdentity.OneForm.Realization
+import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Realization
+import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Formula
+import DifferentialGeometry.Geometry.Connection.RicciIdentity.MixedComponents
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
 import DifferentialGeometry.Tensor.RSTensor.Components

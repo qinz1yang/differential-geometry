@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ConnectionDifference
+import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Basic
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

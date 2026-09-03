@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.SpeedBoun
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TailEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.TimeRecursion
 import DifferentialGeometry.Tensor.RicciIdentity.SlotAlgebra
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 
 set_option autoImplicit false
 

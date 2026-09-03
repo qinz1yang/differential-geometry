@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul
-import DifferentialGeometry.Geometry.Connection.ConnectionDifference
+import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Basic
 
 
 noncomputable section

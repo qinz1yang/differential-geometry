@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.ConnectionDifference
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.ConnectionDifference
+import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
 
 open DifferentialGeometry.Geometry.Curvature
 

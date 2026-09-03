@@ -3,11 +3,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.ShiInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.SmoothLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.LimitData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Basic
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Coordinate
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Product
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Smooth
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Basic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Product
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import Mathlib.Analysis.Calculus.FDeriv.Extend
 open DifferentialGeometry.PDE.RicciFlow

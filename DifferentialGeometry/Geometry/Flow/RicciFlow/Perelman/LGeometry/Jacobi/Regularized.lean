@@ -7,9 +7,9 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDeriv
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.TensorDerivativeAlong
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
 import DifferentialGeometry.Geometry.Metric.TensorInner.CotangentRiemannian
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Coordinate
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
 
 set_option autoImplicit false
 

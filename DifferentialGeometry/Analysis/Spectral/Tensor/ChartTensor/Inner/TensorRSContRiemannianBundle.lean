@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.LowerAllUpperIndices
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannianBundle
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SInnerSectionContinuity
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SInnerSectionContinuity
 import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.Tensor0SBundleLocalityIdentities
 import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleTransition
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian

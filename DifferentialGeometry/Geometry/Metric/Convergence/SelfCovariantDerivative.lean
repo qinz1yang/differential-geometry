@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Scaling
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
 
 set_option autoImplicit false
 

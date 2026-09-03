@@ -6,8 +6,8 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.SmoothAlongExp
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import DifferentialGeometry.Geometry.Operator.Operators
 import DifferentialGeometry.Geometry.Operator.CotangentSharpSmooth
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.FrozenSlot
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Smooth
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.FrozenSlot
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
 
 set_option autoImplicit false
 

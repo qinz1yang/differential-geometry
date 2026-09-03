@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
-import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
-import DifferentialGeometry.Bundle.LocalFrameRegularity
+import DifferentialGeometry.Geometry.Metric.TensorInner.GenericCotangent
+import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

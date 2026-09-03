@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.IteratedFDerivSeminormCalculus
-import DifferentialGeometry.Analysis.Calculus.PartialDerivative
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Iterated
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartRicciStructuralDifference
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Geometry.Curvature

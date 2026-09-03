@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Curvature.Sections.Trace
-import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.TimeSlab
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.OneJet
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Tangent
-import DifferentialGeometry.Tensor.RicciIdentity.Tensor0S.Realization
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.OneJet
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Tangent
+import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Realization
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
 import DifferentialGeometry.Geometry.Metric.MetricBallMonotone

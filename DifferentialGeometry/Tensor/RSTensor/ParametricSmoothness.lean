@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.Derivation.Contract
+import DifferentialGeometry.Tensor.RSTensor.Contraction
 import DifferentialGeometry.Tensor.Multilinear.DomDomCongrSection
 
 noncomputable section

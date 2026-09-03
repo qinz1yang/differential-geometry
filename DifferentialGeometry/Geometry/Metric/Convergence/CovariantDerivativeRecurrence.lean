@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.IteratedCovariantComponents
 import DifferentialGeometry.Analysis.Estimates.IteratedCovariantRecurrence
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.KoszulDifference
+import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulDifference
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

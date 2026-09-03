@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
+import DifferentialGeometry.Geometry.Connection.TensorNabla.InducedConnection
 import Mathlib.Geometry.Manifold.VectorBundle.MDifferentiable
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary

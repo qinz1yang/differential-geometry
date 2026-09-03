@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Operator.RoughLaplacian
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
-import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
+import DifferentialGeometry.Geometry.Connection.TensorNabla.InducedConnection
 import Mathlib.Geometry.Manifold.MFDeriv.Tangent
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

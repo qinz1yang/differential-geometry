@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.FiniteArrayNorm
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.FiniteArrayNorm
 
 set_option autoImplicit false
 

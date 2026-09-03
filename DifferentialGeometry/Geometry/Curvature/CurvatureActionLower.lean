@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.CurvatureAction
+import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.CurvatureAction
 import DifferentialGeometry.Geometry.Curvature.Contractions
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature

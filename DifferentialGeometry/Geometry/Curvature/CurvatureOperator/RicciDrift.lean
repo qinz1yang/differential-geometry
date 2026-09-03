@@ -4,8 +4,8 @@ import DifferentialGeometry.Geometry.Curvature.Metric
 import DifferentialGeometry.Geometry.Operator.CotangentSharpSmooth
 import DifferentialGeometry.Geometry.Operator.LaplacianBridge
 import DifferentialGeometry.Geometry.Metric.InverseMetricField
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SBochnerProduct
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TotalNabla0S
+import DifferentialGeometry.Geometry.Curvature.Bochner.TensorNormProduct
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TotalNabla0S
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
 

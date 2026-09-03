@@ -1,7 +1,7 @@
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.KoszulDifference
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TotalNabla0S
+import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulDifference
+import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TotalNabla0S
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
 open DifferentialGeometry.Geometry.Curvature

@@ -8,8 +8,8 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Regularit
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.BarrierCertification
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Weak
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Defs
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.TimeSlab
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Connection
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Trace04
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NablaTrace02
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Higher
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Connection
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Trace04
+import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTrace02
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
@@ -12,7 +12,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Model
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 import DifferentialGeometry.Geometry.Operator.Operators

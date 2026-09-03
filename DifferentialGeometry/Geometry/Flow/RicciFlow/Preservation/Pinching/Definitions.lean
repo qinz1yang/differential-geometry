@@ -11,8 +11,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerTensor
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.PinchingAlgebra
-import DifferentialGeometry.Tensor.RSTensor.Metric
-import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
+import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

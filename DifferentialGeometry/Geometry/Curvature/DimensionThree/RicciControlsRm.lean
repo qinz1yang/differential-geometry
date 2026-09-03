@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.PinchingAlgebra
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Basic
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Coordinate
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Product
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Smooth
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Basic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Product
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
 import Mathlib.Analysis.InnerProductSpace.Spectrum
 import Mathlib.Tactic
 open DifferentialGeometry.Geometry.Curvature

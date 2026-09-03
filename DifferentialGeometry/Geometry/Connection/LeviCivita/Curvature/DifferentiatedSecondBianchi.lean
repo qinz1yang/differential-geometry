@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
-import DifferentialGeometry.Tensor.RSTensor.NablaDomDomCongr
+import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotPermutation
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

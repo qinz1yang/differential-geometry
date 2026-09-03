@@ -1,13 +1,13 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeComponents
-import DifferentialGeometry.Tensor.RSTensor.ProductNablaLeibniz
-import DifferentialGeometry.Tensor.RSTensor.NormSqProduct
-import DifferentialGeometry.Tensor.RSTensor.NablaDomDomCongr
+import DifferentialGeometry.Geometry.Connection.TensorNabla.ProductLeibniz
+import DifferentialGeometry.Geometry.Metric.TensorInner.TensorProductNorm
+import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotPermutation
 import DifferentialGeometry.Geometry.Connection.Coordinates.ComponentNorm
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

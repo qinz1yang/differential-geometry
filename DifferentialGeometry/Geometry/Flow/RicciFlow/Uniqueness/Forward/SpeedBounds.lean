@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.QuadraticTerms
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Drift
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Scaling
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
 
 set_option autoImplicit false
 

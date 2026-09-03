@@ -6,10 +6,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Soluti
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Frame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Lichnerowicz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci
-import DifferentialGeometry.Tensor.RSTensor.ProductNablaLeibniz
-import DifferentialGeometry.Tensor.RSTensor.NablaDomDomCongr
-import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NablaTraceGen
+import DifferentialGeometry.Geometry.Connection.TensorNabla.ProductLeibniz
+import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotPermutation
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
+import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm

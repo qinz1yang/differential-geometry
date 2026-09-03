@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Family.Basic
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.TensorRSModelEvalBasis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.BasisEvaluation
 import DifferentialGeometry.Geometry.Metric.OpenSubtype
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
@@ -49,7 +49,7 @@ theorem tensor0SFamilyContinuousOnSet_of_chartComp
     continuous_snd.continuousAt.preimage_mem_nhds (hN q₀.2)
   have key : ContinuousAt
       (fun q : {t : Real // t ∈ K} × M =>
-        DifferentialGeometry.Analysis.Parabolic.TensorSpectral.eval0SCLE (E := E) s
+        DifferentialGeometry.Tensor.Coordinates.eval0SCLE (E := E) s
           ((trivializationAt (Tensor0SModel s Real E)
             (fun x : M => Tensor0SSpace s I x) q₀.2
               ⟨q.2, A q.1.1 q.2⟩).2)) q₀ := by
@@ -57,7 +57,7 @@ theorem tensor0SFamilyContinuousOnSet_of_chartComp
     intro idx
     have hpt :
         (fun q : {t : Real // t ∈ K} × M =>
-          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.eval0SCLE (E := E) s
+          DifferentialGeometry.Tensor.Coordinates.eval0SCLE (E := E) s
             ((trivializationAt (Tensor0SModel s Real E)
               (fun x : M => Tensor0SSpace s I x) q₀.2
                 ⟨q.2, A q.1.1 q.2⟩).2) idx)
@@ -67,7 +67,7 @@ theorem tensor0SFamilyContinuousOnSet_of_chartComp
                   (trivializationAt E (TangentSpace I) q₀.2).symmL Real q.2
                     (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (idx k))) := by
       funext q
-      rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.eval0SCLE_apply]
+      rw [DifferentialGeometry.Tensor.Coordinates.eval0SCLE_apply]
       rw [show ((trivializationAt (Tensor0SModel s Real E)
               (fun x : M => Tensor0SSpace s I x) q₀.2 ⟨q.2, A q.1.1 q.2⟩).2)
             = (A q.1.1 q.2).compContinuousLinearMap
@@ -77,13 +77,13 @@ theorem tensor0SFamilyContinuousOnSet_of_chartComp
     rw [hpt]
     exact (hcomp q₀.2 idx).continuousAt hopen
   have hsymm :=
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.eval0SCLE (E := E) s).symm.continuous
+    (DifferentialGeometry.Tensor.Coordinates.eval0SCLE (E := E) s).symm.continuous
   have hcongr : (fun q : {t : Real // t ∈ K} × M =>
       (trivializationAt (Tensor0SModel s Real E)
         (fun x : M => Tensor0SSpace s I x) q₀.2 ⟨q.2, A q.1.1 q.2⟩).2)
       = fun q : {t : Real // t ∈ K} × M =>
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.eval0SCLE (E := E) s).symm
-            (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.eval0SCLE (E := E) s
+          (DifferentialGeometry.Tensor.Coordinates.eval0SCLE (E := E) s).symm
+            (DifferentialGeometry.Tensor.Coordinates.eval0SCLE (E := E) s
               ((trivializationAt (Tensor0SModel s Real E)
                 (fun x : M => Tensor0SSpace s I x) q₀.2 ⟨q.2, A q.1.1 q.2⟩).2)) := by
     funext q

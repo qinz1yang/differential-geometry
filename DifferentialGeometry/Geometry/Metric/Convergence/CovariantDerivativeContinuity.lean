@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricContinuity
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricContinuity
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

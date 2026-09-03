@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricDeriv
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricDeriv
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization

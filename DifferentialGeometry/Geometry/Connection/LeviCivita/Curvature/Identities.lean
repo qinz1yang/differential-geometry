@@ -20,17 +20,17 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Connect
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Moving
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Smoothness
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Tensor0S
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Smooth
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Tangent
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Endomorphism
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.OneJet
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Connection
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Trace04
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NablaTrace02
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Higher
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Smooth
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Tangent
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Endomorphism
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.OneJet
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Connection
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Trace04
+import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTrace02
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
 
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.RicciIdentity

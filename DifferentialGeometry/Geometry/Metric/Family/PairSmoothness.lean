@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Bundle.Equiv
-import DifferentialGeometry.Bundle.LocalFrameRegularity
+import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

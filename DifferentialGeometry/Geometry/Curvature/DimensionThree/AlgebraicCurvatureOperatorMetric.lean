@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 

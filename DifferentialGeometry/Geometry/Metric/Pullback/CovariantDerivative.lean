@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeRestr
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
 import DifferentialGeometry.Geometry.Metric.Convergence.Tensor02CovariantDerivative
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.OpensRestrict
+import DifferentialGeometry.Geometry.Connection.TensorNabla.OpenRestriction
 
 open DifferentialGeometry.Geometry.Curvature
 

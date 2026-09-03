@@ -4,8 +4,8 @@ import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivative
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 import DifferentialGeometry.Geometry.Metric.Convergence.LaplacianDifference
 import DifferentialGeometry.Geometry.Metric.Convergence.ProductDerivativeNorm
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.ConnectionDifferenceNorm
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Connection.ConnectionDifferenceNorm
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv

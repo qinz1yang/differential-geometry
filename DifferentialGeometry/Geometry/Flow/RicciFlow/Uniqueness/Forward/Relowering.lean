@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureBridge
-import DifferentialGeometry.Tensor.RSTensor.NablaDomDomCongr
-import DifferentialGeometry.Tensor.RSTensor.ContractionLeibniz
+import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotPermutation
+import DifferentialGeometry.Geometry.Connection.TensorNabla.ContractionLeibniz
 
 set_option autoImplicit false
 

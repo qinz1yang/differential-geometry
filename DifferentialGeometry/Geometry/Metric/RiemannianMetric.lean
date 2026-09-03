@@ -1,7 +1,7 @@
 /-
 Authors: Jack McCarthy
 -/
-import DifferentialGeometry.Tensor.RSTensor.Metric
+import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension

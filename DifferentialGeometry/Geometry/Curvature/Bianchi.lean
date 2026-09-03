@@ -11,9 +11,9 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Smooth
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Tangent
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Endomorphism
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Smooth
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Tangent
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Endomorphism
 open DifferentialGeometry.Geometry.Curvature
 
 

@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Analysis.Calculus.MultilinearZero
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeAlong
 import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
-import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
+import DifferentialGeometry.Geometry.Connection.TensorNabla.InducedConnection
 
 set_option autoImplicit false
 

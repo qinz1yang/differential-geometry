@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.CoerciveBilinInverse
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 
 set_option autoImplicit false
 

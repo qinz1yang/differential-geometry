@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.ModelBasis
+import DifferentialGeometry.Tensor.Coordinates.ModelBasis
 import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent

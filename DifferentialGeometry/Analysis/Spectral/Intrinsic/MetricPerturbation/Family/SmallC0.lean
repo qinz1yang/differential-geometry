@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Famil
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.UnitSelfBound
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

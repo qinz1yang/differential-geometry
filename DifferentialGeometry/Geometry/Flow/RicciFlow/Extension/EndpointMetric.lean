@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Covariant
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeContinuity
 import DifferentialGeometry.Geometry.Metric.Convergence.LimitMetric
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 import Mathlib.Topology.Order.IsLUB
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

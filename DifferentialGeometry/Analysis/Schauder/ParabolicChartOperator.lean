@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.PartialDerivative
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Iterated
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.LowerOrder
 import DifferentialGeometry.Analysis.Schauder.ParabolicChart
 import DifferentialGeometry.Analysis.Schauder.Scaling

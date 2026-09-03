@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Components
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Scaling
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
 
 set_option autoImplicit false
 

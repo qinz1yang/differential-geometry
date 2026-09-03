@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBound
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeComponents
 import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
 
 
 open DifferentialGeometry.Geometry.Curvature

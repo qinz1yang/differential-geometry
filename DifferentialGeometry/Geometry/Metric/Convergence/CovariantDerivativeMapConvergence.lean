@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeComponents
 open DifferentialGeometry.Geometry.Curvature
 
