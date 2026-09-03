@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalArmEnergyPairing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalArm.EnergyPairing
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ConnectionDifferenceDerivative.TopOrderBounds

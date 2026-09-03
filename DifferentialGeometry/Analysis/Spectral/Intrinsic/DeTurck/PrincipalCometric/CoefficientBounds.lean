@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3Principal
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCometricExtraction
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral

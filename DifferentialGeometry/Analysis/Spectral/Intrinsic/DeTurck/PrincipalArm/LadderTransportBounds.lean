@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCometricExtraction
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNormEquiv
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CometricSlotPairing
@@ -21,7 +21,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Sl
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.HomFieldCurvatureJetDecomposition
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ConnLapPairing
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalArmIteratedCovGradJetBounds
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalArm.IteratedCovGradJetBounds
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
