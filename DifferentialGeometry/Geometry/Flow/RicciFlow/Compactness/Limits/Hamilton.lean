@@ -36,7 +36,7 @@ theorem compactnessSol_cond
     (hflow : FlowUpgrade (I := I) X
       (MetricCompactnessInputs.metricCompactness (I := I)
         inp hcomplete0 hconn)) :
-    CompactnessConclusion (I := I) X :=
+    compactnessConclusion (I := I) X :=
   solutionComp_cond (I := I) X inp hcomplete0 hconn hflow
 
 theorem compactnessSol

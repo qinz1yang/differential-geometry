@@ -336,7 +336,7 @@ theorem flowLimit_of_maps
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
-    CompactnessConclusion (I := I) X :=
+    compactnessConclusion (I := I) X :=
   (flowUpgradeOfMaps (I := I) (X := X) mc L P hPlim hPL Φ R bf hsrc htgt
     β ψ hcarrier co hLmetric scalar ricciNorm).toConclusion
 
@@ -367,7 +367,7 @@ theorem flowLimit_of_co
       ((endgamePhi (I := I) mc L hL0).compSubseq co.φ co.hφ))
     (ricciNorm : RicNormPullback (I := I)
       ((endgamePhi (I := I) mc L hL0).compSubseq co.φ co.hφ)) :
-    CompactnessConclusion (I := I) X :=
+    compactnessConclusion (I := I) X :=
   flowLimit_of_maps (I := I) mc L (L.atTime 0) hL0 rfl (endgamePhi
     (I := I) mc L hL0) R bf hsrc htgt β ψ
     hcarrier co (fun t ht => heq_of_eq (hLmetric t ht)) scalar ricciNorm
@@ -473,7 +473,7 @@ theorem flowLimit_of_mc
         PointedCGHMaps (I := I) X
           ((flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime 0)
           (mc.subseq ∘ co.φ))) :
-    CompactnessConclusion (I := I) X :=
+    compactnessConclusion (I := I) X :=
   (flowUpgradeOfMc (I := I) (X := X) mc Φ₀ R bf hsrc htgt β ψ
     hcarrier co hzero hsol scalar ricciNorm).toConclusion
 
@@ -791,7 +791,7 @@ theorem flowLimit_endgame
           (mc.subseq ∘
             (endgameCo Φ₀ R bf hsrc htgt β ψ hβψ hwin gRefT B Crel Bmax hBmax hCrel1 hBmax1
             hequivT hrel hShiT hcovSrc hlipG).φ))) :
-    CompactnessConclusion (I := I) X := by
+    compactnessConclusion (I := I) X := by
   let : TopologicalSpace mc.limit.M := mc.limit.topology
   let : ChartedSpace H mc.limit.M := mc.limit.charted
   let : T2Space mc.limit.M := mc.limit.t2
@@ -993,7 +993,7 @@ theorem flowLimit_of_reg
         X.D.carrier (fun t x ↦ metricRicciAt (I := I) (co.gInf t) x))
       (_hrm04Cont : tensor0SFamilyContinuousOnSet (I := I) (M := mc.limit.M) 4
         X.D.carrier (fun t x ↦ metricRm04At (I := I) (co.gInf t) x)),
-      CompactnessConclusion (I := I) X := by
+      compactnessConclusion (I := I) X := by
   dsimp only
   intro hsmooth hscalarCont hscalarTime hricciCont hrm04Cont
   let : TopologicalSpace mc.limit.M := mc.limit.topology

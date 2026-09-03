@@ -4,7 +4,7 @@ Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Curry
-import DifferentialGeometry.Tensor.Multilinear.Tensor
+import DifferentialGeometry.Tensor.Multilinear.TensorProduct
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent

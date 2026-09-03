@@ -6,7 +6,7 @@ import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.RSTensor.Basis
 import DifferentialGeometry.Tensor.Product.Defs
 import DifferentialGeometry.Tensor.Multilinear.Basis
-import DifferentialGeometry.Tensor.Multilinear.Tensor
+import DifferentialGeometry.Tensor.Multilinear.TensorProduct
 import DifferentialGeometry.Tensor.Multilinear.DomDomCongrSection
 open DifferentialGeometry.Tensor.Multilinear
 

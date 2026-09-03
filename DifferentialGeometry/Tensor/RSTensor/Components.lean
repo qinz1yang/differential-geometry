@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
-import DifferentialGeometry.Tensor.Multilinear.Tensor
+import DifferentialGeometry.Tensor.Multilinear.TensorProduct
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Bundle
 import DifferentialGeometry.Tensor.Alternating.Comp

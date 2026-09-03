@@ -314,7 +314,7 @@ theorem flowLimit_of_open
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
-    CompactnessConclusion (I := I) X :=
+    compactnessConclusion (I := I) X :=
   (flowUpgradeOfOpen (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
     hLmetric scalar ricciNorm).toConclusion
 

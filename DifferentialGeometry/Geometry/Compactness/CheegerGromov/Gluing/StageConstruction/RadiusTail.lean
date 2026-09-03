@@ -1,7 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageConstruction.Diagonal
-
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.Injectivity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.InjectivityHigherRegularity

@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Classical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.FlowVariation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Geometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.GradientIdentities
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.WeightedHessian
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral

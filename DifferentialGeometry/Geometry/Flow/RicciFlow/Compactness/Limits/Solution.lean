@@ -26,7 +26,7 @@ theorem solutionComp_of_mc
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
     (hflow : FlowUpgrade (I := I) X mc) :
-    CompactnessConclusion (I := I) X :=
+    compactnessConclusion (I := I) X :=
   hflow.toConclusion
 
 end HCGCompactness

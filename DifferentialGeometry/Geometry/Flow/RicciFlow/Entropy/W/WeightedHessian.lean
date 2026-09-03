@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciDrift
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerConcrete
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Connection.ChartBridge.HessFrobenius
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Geometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.WeightedFirstVariation
 
 
 open DifferentialGeometry.Tensor.RSTensor

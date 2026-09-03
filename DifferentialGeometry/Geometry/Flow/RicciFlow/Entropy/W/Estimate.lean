@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Geometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.GradientIdentities
 import DifferentialGeometry.Analysis.Integration.EntropyJensen
 import DifferentialGeometry.Geometry.Operator.Operators
 open DifferentialGeometry.Geometry.Operator

@@ -1,7 +1,7 @@
 /-
 Authors: Jack McCarthy
 -/
-import DifferentialGeometry.Tensor.Multilinear.Tensor
+import DifferentialGeometry.Tensor.Multilinear.TensorProduct
 import Mathlib.Analysis.Calculus.FDeriv.Bilinear
 
 noncomputable section

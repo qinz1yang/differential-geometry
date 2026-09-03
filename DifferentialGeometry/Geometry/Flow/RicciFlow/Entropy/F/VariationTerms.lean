@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Geometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.WeightedFirstVariation
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

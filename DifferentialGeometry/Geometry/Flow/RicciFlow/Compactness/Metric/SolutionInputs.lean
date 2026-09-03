@@ -34,7 +34,7 @@ theorem solutionComp_cond
     (hflow : FlowUpgrade (I := I) X
       (MetricCompactnessInputs.metricCompactness (I := I)
         inp hcomplete0 hconn)) :
-    CompactnessConclusion (I := I) X :=
+    compactnessConclusion (I := I) X :=
   solutionComp_of_mc (I := I) X
     (MetricCompactnessInputs.metricCompactness (I := I)
       inp hcomplete0 hconn)

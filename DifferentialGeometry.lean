@@ -2442,7 +2442,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.RegionTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Transport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Defs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Flow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Extinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Blowup
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.LimitRoundness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Compactness.FlowUpgrade
@@ -2469,7 +2469,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.ConnectionTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.FirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.VariationTerms
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Functional
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Geometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.WeightedFirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.VariationFormula
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.GeometricFirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.TraceAlgebra
@@ -2478,7 +2478,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.FlowVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.PositiveApproximation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Evolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Geometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.GradientIdentities
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Estimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.LowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Span
@@ -2512,7 +2512,7 @@ import DifferentialGeometry.Geometry.Connection.Coordinates.ComponentNorm
 import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeLinear
 import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeRealization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.DeTurckWindow
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.RicciFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.EndpointMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.EndpointRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Construction
@@ -2767,7 +2767,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageConst
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Fill
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.Injectivity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Map
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageConstruction.Geometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageConstruction.RadiusTail
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageConstruction.Seed
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Support
@@ -2896,7 +2896,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciComponents
 import DifferentialGeometry.Geometry.Metric.Convergence.GoodFrame
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.RicciFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Conclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciTowerTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Solution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
@@ -3266,7 +3266,7 @@ import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
 import DifferentialGeometry.Tensor.Multilinear.Flip
 import DifferentialGeometry.Tensor.Multilinear.HsBoundOp
 import DifferentialGeometry.Tensor.Multilinear.ModelProductContinuousBilinear
-import DifferentialGeometry.Tensor.Multilinear.Tensor
+import DifferentialGeometry.Tensor.Multilinear.TensorProduct
 import DifferentialGeometry.Tensor.Product.Basis
 import DifferentialGeometry.Tensor.Product.Bundle
 import DifferentialGeometry.Tensor.Product.Defs
