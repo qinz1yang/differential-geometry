@@ -143,6 +143,87 @@ theorem H1ComplDirichletToLp_coe_dirichletHsToLaplacianDomainPowSucc
   rw [coe_dirichletHsToLaplacianDomainPowSucc,
     H1ComplDirichletToLp_even_realization]
 
+private theorem exists_dirichletHs_of_mem_dirichletLaplacianDomainPow_succ
+    (g : SmoothRiemannianMetric (I_half n) M) (k : ℕ)
+    {v : H1ComplDirichlet g}
+    (hv : v ∈ dirichletLaplacianDomainPow g (k + 1)) :
+    ∃ u : dirichletHs g ((2 * (k + 1) : ℕ) : ℝ),
+      dirichletHsOneEquivH1Compl g
+          (dirichletHsInclusion (one_le_two_mul_succ_cast k) u) = v := by
+  rw [dirichletLaplacianDomainPow_succ_mem_iff] at hv
+  obtain ⟨f, rfl⟩ := hv
+  let fHs : dirichletHs g 0 := (dirichletHsZeroEquivL2 g).symm f
+  have hfSummable : Summable (fun i : DirichletLaplacianEigenindex g =>
+      (dirichletL2Coeff f i) ^ 2) := by
+    simpa only [fHs, dirichletSobolevWeight_zero, one_mul,
+      dirichletHs.dirichletHsZeroEquivL2_symm_coeff] using
+        fHs.weighted_summable
+  have hweighted : Summable (fun i : DirichletLaplacianEigenindex g =>
+      dirichletSobolevWeight i ((2 * (k + 1) : ℕ) : ℝ) *
+        (i.1.val ^ (k + 1) * dirichletL2Coeff f i) ^ 2) := by
+    rw [show (fun i : DirichletLaplacianEigenindex g =>
+        dirichletSobolevWeight i ((2 * (k + 1) : ℕ) : ℝ) *
+          (i.1.val ^ (k + 1) * dirichletL2Coeff f i) ^ 2) =
+        fun i => (dirichletL2Coeff f i) ^ 2 by
+      funext i
+      unfold dirichletSobolevWeight
+      rw [Real.rpow_natCast, one_add_dirichletLaplacianEigenvalue_eq_inv]
+      rw [mul_pow, ← pow_mul]
+      rw [show 2 * (k + 1) = (k + 1) * 2 by omega]
+      rw [← mul_assoc, ← mul_pow, inv_mul_cancel₀ i.1.val_ne_zero,
+        one_pow, one_mul]]
+    exact hfSummable
+  let u : dirichletHs g ((2 * (k + 1) : ℕ) : ℝ) :=
+    ⟨fun i => i.1.val ^ (k + 1) * dirichletL2Coeff f i, hweighted⟩
+  refine ⟨u, ?_⟩
+  apply H1ComplDirichletToLp_injective g
+  rw [H1ComplDirichletToLp_even_realization]
+  apply (dirichletLaplacianHilbertBasis g).repr.injective
+  ext i
+  change dirichletL2Coeff
+      (dirichletHsToL2
+        (show (0 : ℝ) ≤ ((2 * (k + 1) : ℕ) : ℝ) by positivity) u) i =
+    dirichletL2Coeff
+      (H1ComplDirichletToLp g
+        (resolventDirichlet g (iteratedDirichletResolventL2 g k f))) i
+  rw [dirichletHs.dirichletL2Coeff_dirichletHsToL2]
+  change i.1.val ^ (k + 1) * dirichletL2Coeff f i = _
+  rw [← resolventDirichletL2_apply,
+    ← iteratedDirichletResolventL2_succ_apply]
+  simpa only [dirichletL2Coeff, HilbertBasis.repr_apply_apply] using
+    (inner_dirichletLaplacianHilbertBasis_iteratedDirichletResolventL2
+      g (k + 1) f i).symm
+
+theorem dirichletHsToLaplacianDomainPowSucc_surjective
+    (g : SmoothRiemannianMetric (I_half n) M) (k : ℕ) :
+    Function.Surjective (dirichletHsToLaplacianDomainPowSucc g k) := by
+  intro v
+  obtain ⟨u, hu⟩ :=
+    exists_dirichletHs_of_mem_dirichletLaplacianDomainPow_succ
+      g k v.property
+  refine ⟨u, Subtype.ext ?_⟩
+  exact hu
+
+theorem dirichletHsToLaplacianDomainPowSucc_injective
+    (g : SmoothRiemannianMetric (I_half n) M) (k : ℕ) :
+    Function.Injective (dirichletHsToLaplacianDomainPowSucc g k) := by
+  intro u v huv
+  have hcoe := congrArg
+    (fun w : dirichletLaplacianDomainPow g (k + 1) =>
+      (w : H1ComplDirichlet g)) huv
+  change dirichletHsOneEquivH1Compl g
+      (dirichletHsInclusion (one_le_two_mul_succ_cast k) u) =
+    dirichletHsOneEquivH1Compl g
+      (dirichletHsInclusion (one_le_two_mul_succ_cast k) v) at hcoe
+  exact dirichletHs.dirichletHsInclusion_injective (one_le_two_mul_succ_cast k)
+    ((dirichletHsOneEquivH1Compl g).injective hcoe)
+
+theorem dirichletHsToLaplacianDomainPowSucc_bijective
+    (g : SmoothRiemannianMetric (I_half n) M) (k : ℕ) :
+    Function.Bijective (dirichletHsToLaplacianDomainPowSucc g k) :=
+  ⟨dirichletHsToLaplacianDomainPowSucc_injective g k,
+    dirichletHsToLaplacianDomainPowSucc_surjective g k⟩
+
 end Hs
 end Sobolev
 end Analysis
