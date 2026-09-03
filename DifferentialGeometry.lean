@@ -2756,7 +2756,9 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Transition.PairGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Transition.Pairwise
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.Basic
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.ScaleSelection
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.SupportSelection
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.SupportConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Smoothness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.Buffer

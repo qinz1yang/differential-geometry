@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.SupportConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.StableNet
 
 

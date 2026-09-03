@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.TransitionLimits
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.SupportConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Basic
 
 set_option autoImplicit false

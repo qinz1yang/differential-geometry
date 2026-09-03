@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.SupportSelection
 
 
 open DifferentialGeometry.Geometry.Curvature
