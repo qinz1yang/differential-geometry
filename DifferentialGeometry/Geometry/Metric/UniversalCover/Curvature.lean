@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Coordinates
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
@@ -19,6 +20,7 @@ import Mathlib.Data.Finite.Defs
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Tensor0SBundle
 
 open Set Function Filter Bundle
 open scoped Topology ContDiff
@@ -376,6 +378,80 @@ theorem ricciTensor_lifted_natural (g : SmoothRiemannianMetric I M)
     DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_symm_apply,
     tangentSpaceModelContinuousLinearEquiv_apply]
   rw [hRiem]
+
+omit [PseudoEMetricSpace M]
+  [NeZero (Module.finrank ℝ E)]
+  [ConnectedSpace M]
+  [SecondCountableTopology M]
+  [SigmaCompactSpace M] in
+theorem metricScalarAt_lifted (g : SmoothRiemannianMetric I M)
+    (x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :
+    metricScalarAt (I := I)
+        (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+        (liftedMetric (I := I) g) x' =
+      metricScalarAt (I := I) g (proj x') := by
+  classical
+  obtain ⟨bb, hbb⟩ := exists_gOrthonormalBasis (I := I) g (proj x')
+  let eb : TangentSpace I (proj x') ≃L[ℝ] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) (proj x')
+  let ex : TangentSpace I x' ≃L[ℝ] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) x'
+  let e : TangentSpace I (proj x') ≃ₗ[ℝ] TangentSpace I x' :=
+    eb.toLinearEquiv.trans ex.symm.toLinearEquiv
+  let b1 : Module.Basis (Fin (Module.finrank ℝ (TangentSpace I (proj x')))) ℝ
+      (TangentSpace I x') := bb.map e
+  have hb0 : ∀ i j, g.inner (proj x') (bb i) (bb j) =
+      if i = j then (1 : ℝ) else 0 := by
+    intro i j
+    exact hbb i j
+  have hb1 : ∀ i j, (liftedMetric (I := I) g).inner x' (b1 i) (b1 j) =
+      if i = j then (1 : ℝ) else 0 := by
+    intro i j
+    have h := liftedMetric_inner_eq (I := I) g x' (b1 i) (b1 j)
+    rw [← h]
+    change g.inner (proj x') (bb i) (bb j) = _
+    exact hb0 i j
+  have hi0 : MetricInverseInBasisGen (I := I) g (proj x') bb
+      (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I (proj x'))))) :=
+    metricInverseInBasis_of_orthonormal (I := I) g bb hb0
+  have hi1 : MetricInverseInBasisGen (I := I)
+      (liftedMetric (I := I) g) x' b1
+      (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I (proj x'))))) :=
+    metricInverseInBasis_of_orthonormal (I := I) (liftedMetric (I := I) g) b1 hb1
+  rw [metricScalarAt_def, metricScalarAt_def,
+    DifferentialGeometry.Geometry.Operator.metricTracePair0SAt_eq_sum_basis
+      (I := I) (liftedMetric (I := I) g) b1
+      (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I (proj x'))))) hi1
+      (metricRicciAt (I := I)
+        (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+        (liftedMetric (I := I) g) x'),
+    DifferentialGeometry.Geometry.Operator.metricTracePair0SAt_eq_sum_basis
+      (I := I) g bb
+        (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I (proj x'))))) hi0
+      (metricRicciAt (I := I) g (proj x'))]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hric : metricRicciAt (I := I)
+        (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+        (liftedMetric (I := I) g) x' (vec2 (b1 i) (b1 i)) =
+      metricRicciAt (I := I) g (proj x') (vec2 (bb i) (bb i)) := by
+    rw [metricRicciAt_apply_eq_ricciTensor, metricRicciAt_apply_eq_ricciTensor]
+    change ricciTensor (I := I)
+      (liftedMetric (I := I) g) x' (bb i) (bb i) =
+      ricciTensor (I := I) g (proj x') (bb i) (bb i)
+    simpa [b1, e, ex, eb, tangentSpaceModelContinuousLinearEquiv_apply] using
+      ricciTensor_lifted_natural (I := I) (M := M) g x'
+        (bb i) (bb i)
+        (chartRiemannBasisIdentity_holds (I := I)
+          (liftedMetric (I := I) g) x')
+        (chartRiemannBasisIdentity_holds (I := I) g (proj x'))
+  simp only [identityInvMetric, diagonalInvMetric]
+  rw [Finset.sum_eq_single i]
+  · simp [hric]
+  · intro j _ hji
+    simp [Ne.symm hji]
+  · intro hi
+    exact False.elim (hi (Finset.mem_univ i))
 
 omit [PseudoEMetricSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

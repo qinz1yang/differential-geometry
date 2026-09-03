@@ -4,6 +4,7 @@ import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
 import Mathlib.Analysis.InnerProductSpace.Defs
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Analysis.InnerProductSpace.Positive
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
@@ -138,6 +139,50 @@ def orthogonal (D : MetricFiberData V) (W : Submodule Real V) : Submodule Real V
 
 def IsSymmetric (D : MetricFiberData V) (A : V →ₗ[Real] V) : Prop :=
   ∀ v w, D.inner (A v) w = D.inner v (A w)
+
+theorem trace_pos_of_isSymmetric_of_nonneg_of_ne_zero
+    (D : MetricFiberData V) (A : V →ₗ[Real] V)
+    (hAsymm : D.IsSymmetric A)
+    (hAnonneg : ∀ v : V, 0 ≤ D.inner (A v) v)
+    (hAne : A ≠ 0) :
+    0 < LinearMap.trace Real V A := by
+  let addV : AddCommGroup V := inferInstance
+  let modV : Module Real V := inferInstance
+  let _ : InnerProductSpace.Core Real V := D.toCore
+  let _ : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
+  let _ : AddCommGroup V := addV
+  let _ : Module Real V := modV
+  let _ : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
+  have hApos : A.IsPositive := by
+    rw [LinearMap.isPositive_iff]
+    constructor
+    · intro x y
+      rw [MetricFiberData.toCore_inner D, MetricFiberData.toCore_inner D]
+      exact hAsymm x y
+    · intro x
+      rw [MetricFiberData.toCore_inner D]
+      exact hAnonneg x
+  let B : OrthonormalBasis (Fin (Module.finrank Real V)) Real V :=
+    stdOrthonormalBasis Real V
+  let mat : Matrix (Fin (Module.finrank Real V)) (Fin (Module.finrank Real V)) Real :=
+    LinearMap.toMatrix B.toBasis B.toBasis A
+  have hmat : mat.PosSemidef := by
+    dsimp [mat]
+    exact (LinearMap.posSemidef_toMatrix_iff B).mpr hApos
+  have hmat_ne : mat ≠ 0 := by
+    intro hzero
+    apply hAne
+    apply (LinearMap.toMatrix B.toBasis B.toBasis).injective
+    simpa [mat] using hzero
+  have htrace_nonneg : 0 ≤ mat.trace := hmat.trace_nonneg
+  have htrace_ne : mat.trace ≠ 0 := by
+    intro hzero
+    exact hmat_ne (hmat.trace_eq_zero_iff.mp hzero)
+  have htrace_pos : 0 < mat.trace := lt_of_le_of_ne' htrace_nonneg htrace_ne
+  rw [LinearMap.trace_eq_matrix_trace Real B.toBasis A]
+  exact htrace_pos
 
 theorem IsSymmetric.range_eq_orthogonal_ker
     {D : MetricFiberData V} {A : V →ₗ[Real] V} (hA : D.IsSymmetric A) :
