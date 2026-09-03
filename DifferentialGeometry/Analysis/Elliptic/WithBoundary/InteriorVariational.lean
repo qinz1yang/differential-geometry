@@ -132,11 +132,6 @@ theorem resolventInterior_inner_eq_lpFunctional
   rw [ContinuousLinearMap.comp_apply, H1ComplInteriorRieszRepr_inner,
     lpFunctionalCLMInterior_apply]
 
-example (g : SmoothRiemannianMetric (I_half n) M) :
-    Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ]
-      H1ComplInterior g :=
-  resolventInterior g
-
 end WithBoundary
 end Laplacian
 end Analysis

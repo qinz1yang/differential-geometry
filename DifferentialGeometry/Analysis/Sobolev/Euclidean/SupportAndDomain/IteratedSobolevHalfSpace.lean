@@ -475,47 +475,6 @@ theorem extChartAt_target_isHalfSpaceRelOpen
 
 end EuclideanHalfSpaceChartTargets
 
-section UsabilityCheck
-
-variable {n : ℕ} [NeZero n]
-
-example {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace n) M]
-    [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    (α : M) (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) :
-    MemWkpHalfSpace (d := n) k p (fun _ : EuclideanSpace ℝ (Fin n) => (0 : ℝ))
-      (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target :=
-  MemWkpHalfSpace_zero_fun (d := n) hp
-    (extChartAt_target_isHalfSpaceRelOpen α)
-
-example {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace n) M]
-    [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    (α : M) (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
-    {u v : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hu : MemWkpHalfSpace (d := n) k p u
-      (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target)
-    (hv : MemWkpHalfSpace (d := n) k p v
-      (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target) :
-    MemWkpHalfSpace (d := n) k p (fun x => u x + v x)
-      (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target :=
-  MemWkpHalfSpace.add (d := n) hp
-    (extChartAt_target_isHalfSpaceRelOpen α) hu hv
-
-example {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace n) M]
-    [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    (α : M) {p : ℝ≥0∞}
-    {u : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hu_smooth : ContDiff ℝ ∞ u) (hu_supp : HasCompactSupport u) :
-    DeGiorgi.MemW1p p u
-      (interiorHalfSpace (d := n)
-        (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target) :=
-  memW1p_of_smooth_compactSupport_interiorHalfSpace
-    (extChartAt_target_isHalfSpaceRelOpen α) hu_smooth hu_supp
-
-end UsabilityCheck
-
 end Euclidean
 end Sobolev
 end Analysis

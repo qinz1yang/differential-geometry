@@ -681,56 +681,6 @@ theorem tensorComponentEuclid_covDerivAlongGrad_rotatedTestSection_chartTestPull
   rw [euclidPartial_chartPushedRaw_chartTestPullback_eqOn (I := I) (M := M)
     α ψ l hy]
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
-  (P₀ : CompIdx E r s)
-
-example (Idx : Fin r → Fin (Module.finrank ℝ E))
-    (Jdx : Fin (s + 1) → Fin (Module.finrank ℝ E))
-    (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s)
-    {b : M} (hb : b ∈ (chartAt H α).source) :
-    tensorChartComponentRaw (I := I) (M := M) g r (s + 1)
-        (prependCovGradSlot (I := I) (M := M) g r s ζ S) α Idx Jdx b =
-      mvfderiv (I := I) (ζ : M → ℝ) b
-          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b) *
-        tensorChartComponentRaw (I := I) (M := M) g r s S α Idx
-          (Matrix.vecTail Jdx) b :=
-  tensorChartComponentRaw_prependCovGradSlot (I := I) (M := M) g r s ζ S α
-    Idx Jdx hb
-
-example {χ : M → ℝ} (hχs : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ χ (chartAt H α).source)
-    (hχt : tsupport χ ⊆ (chartAt H α).source) (Q : CompIdx E r (s + 1)) :
-    Set.EqOn
-      (tensorComponentEuclid (I := I) (M := M) g r (s + 1)
-        (prependCovGradSlot (I := I) (M := M) g r s (chartAtlasPOU I M α)
-          (rotatedTestSection (I := I) (M := M) g r s α P₀ χ hχs hχt))
-        α Q)
-      (fun y => crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y *
-        chartPushedRaw I α χ y)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  tensorComponentEuclid_prependCovGradSlot_rotatedTestSection_eqOn
-    (I := I) (M := M) g r s α P₀ hχs hχt Q
-
-example {χ : M → ℝ} (hχs : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ χ (chartAt H α).source)
-    (hχt : tsupport χ ⊆ (chartAt H α).source) (Q : CompIdx E r s) :
-    Set.EqOn
-      (tensorComponentEuclid (I := I) (M := M) g r s
-        (covDerivAlongGrad (I := I) (M := M) g r s
-          (rotatedTestSection (I := I) (M := M) g r s α P₀ χ hχs hχt)
-          (chartAtlasPOU I M α))
-        α Q)
-      (fun y => crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y *
-          chartPushedRaw I α χ y +
-        ∑ l : Fin (Module.finrank ℝ E),
-          crossRightTestGradCoeff (I := I) (M := M) g r s α P₀ Q l y *
-            euclidPartial (E := E) l (chartPushedRaw I α χ) y)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  tensorComponentEuclid_covDerivAlongGrad_rotatedTestSection_eqOn
-    (I := I) (M := M) g r s α P₀ hχs hχt Q
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

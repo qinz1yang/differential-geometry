@@ -331,19 +331,6 @@ theorem tensorL2_eq_of_chartComponent_eq
     map_sub, tensorL2ChartComponentCLM_apply, tensorL2ChartComponentCLM_apply,
     h α P₀, sub_self]
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (u v : TensorL2 r s g)
-    (h : ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
-      tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ =
-      tensorL2ChartComponent (I := I) (M := M) g r s v α P₀) :
-    u = v :=
-  tensorL2_eq_of_chartComponent_eq (I := I) (M := M) g r s u v h
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

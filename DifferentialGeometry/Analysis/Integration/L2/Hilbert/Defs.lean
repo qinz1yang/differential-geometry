@@ -36,18 +36,6 @@ abbrev TensorL2
     (r s : ℕ) (g : SmoothRiemannianMetric I M) : Type _ :=
   UniformSpace.Completion (SmoothCcTensor g r s)
 
-section ElaborationTests
-
-variable [T2Space M] [SigmaCompactSpace M]
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) : Type _ := TensorL2 r s g
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (S : SmoothCcTensor g r s) : TensorL2 r s g :=
-  (S : UniformSpace.Completion (SmoothCcTensor g r s))
-
-end ElaborationTests
-
 end L2
 end Integral
 end DifferentialGeometry

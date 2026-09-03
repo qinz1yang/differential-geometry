@@ -731,19 +731,6 @@ theorem tensorHeatSemigroupHs_add_comp {g : SmoothRiemannianMetric I M}
   exact tensorHeatSemigroupHs_add (I := I) (M := M) ht hu
     (a := a) (b := a) (c := a) T
 
-example {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    {t : ℝ} (ht : 0 < t)
-    (a b : ℝ) :
-    TensorHs (I := I) (M := M) g r s a →L[ℝ]
-      TensorHs (I := I) (M := M) g r s b :=
-  tensorHeatSemigroupHs (I := I) (M := M) (g := g) (r := r) (s := s) ht (a := a) (b := b)
-
-example {μ : ℝ} (hμ : 0 ≤ μ) {t : ℝ} (ht : 0 < t) (ht1 : t ≤ 1)
-    {lam : ℝ} (hlam : 0 ≤ lam) :
-    (1 + lam) ^ μ * Real.exp (-(2 * lam * t)) ≤
-      tensorSmoothingConst μ * t ^ (-μ) :=
-  tensorSmoothingScalarBound hμ ht ht1 hlam
-
 end TensorHeatEquation
 end Parabolic
 end Analysis

@@ -299,22 +299,6 @@ theorem resolventFullNeumann_inner_eq_lpFunctional
   rw [ContinuousLinearMap.comp_apply, H1ComplFullNeumannRieszRepr_inner,
     lpFunctionalCLMFullNeumann_apply]
 
-example (g : SmoothRiemannianMetric (I_half n) M) : Type _ := H1ComplFullNeumann g
-
-example (g : SmoothRiemannianMetric (I_half n) M) :
-    NormedAddCommGroup (H1ComplFullNeumann g) := inferInstance
-
-example (g : SmoothRiemannianMetric (I_half n) M) :
-    InnerProductSpace ℝ (H1ComplFullNeumann g) := inferInstance
-
-example (g : SmoothRiemannianMetric (I_half n) M) :
-    CompleteSpace (H1ComplFullNeumann g) := inferInstance
-
-example (g : SmoothRiemannianMetric (I_half n) M) :
-    Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ]
-      H1ComplFullNeumann g :=
-  resolventFullNeumann g
-
 end Neumann
 end WithBoundary
 end Laplacian

@@ -33,11 +33,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 
-example (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    (smoothSmul
-        (I := I) φ hφ X) x = φ x • X x := rfl
-
 omit [Module.Finite ℝ E] in
 private lemma scalarOnE_mdifferentiableWithinAt_target
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)

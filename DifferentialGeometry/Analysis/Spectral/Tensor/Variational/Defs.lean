@@ -142,10 +142,6 @@ theorem tensorResolvent_bilin_eq_lpFunctional
   rw [tensorH1ComplBilin_apply]
   exact tensorResolvent_inner_eq_lpFunctional (I := I) (M := M) g r s f v
 
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    TensorL2 r s g →L[ℝ] TensorH1Compl g r s :=
-  tensorResolvent (I := I) (M := M) g r s
-
 end TensorSpectral
 end Parabolic
 end Analysis

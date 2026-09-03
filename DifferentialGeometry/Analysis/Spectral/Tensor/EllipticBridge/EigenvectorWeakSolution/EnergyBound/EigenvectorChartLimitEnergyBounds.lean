@@ -246,43 +246,6 @@ theorem cutoffPartialLpLimit_eLpNorm_le
   rw [← ENNReal.ofReal_mul h_factor_nn]
   exact ENNReal.ofReal_le_ofReal h_bound
 
-section ElaborationTest
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-  (α : M) (P : TensorCompIdx (E := E) r s)
-  (P' : TensorCompIdx (E := E) r (s + 1))
-  (k : Fin (Module.finrank ℝ E))
-
-example :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
-      eLpNorm ((partialLpLimit (I := I) (M := M)
-            g r s i α P k :
-          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
-          ((volume : Measure EuclN).restrict
-            (chartTargetEuclid (I := I) (M := M) α))
-        ≤ ENNReal.ofReal (C * Real.sqrt (i.fst.val)) *
-          ENNReal.ofReal
-            ‖tensorResolventEigenbasisVec (I := I) (M := M)
-              (tensorResolventL2_isCompactOperator (I := I) (M := M)
-                g r s) i‖ :=
-  partialLpLimit_eLpNorm_le (I := I) (M := M) g r s α P k
-
-example :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
-      eLpNorm ((cutoffPartialLpLimit (I := I) (M := M)
-            g r s i α P k :
-          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
-          ((volume : Measure EuclN).restrict
-            (chartTargetEuclid (I := I) (M := M) α))
-        ≤ ENNReal.ofReal (C * Real.sqrt (i.fst.val)) *
-          ENNReal.ofReal
-            ‖tensorResolventEigenbasisVec (I := I) (M := M)
-              (tensorResolventL2_isCompactOperator (I := I) (M := M)
-                g r s) i‖ :=
-  cutoffPartialLpLimit_eLpNorm_le (I := I) (M := M) g r s α P k
-
-end ElaborationTest
-
 end TensorSpectral
 end Parabolic
 end Analysis

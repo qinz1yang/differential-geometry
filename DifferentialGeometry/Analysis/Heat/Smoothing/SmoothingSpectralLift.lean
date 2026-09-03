@@ -110,26 +110,6 @@ theorem heatSemigroup_in_laplacianDomainPow_succ_explicit
     heatSemigroupExplicitLift_mem (I := I) (M := M) g k t u_0,
     H1ComplToLp_heatSemigroupExplicitLift (I := I) (M := M) g k ht u_0⟩
 
-example (g : SmoothRiemannianMetric I M) {t : ℝ} (ht : 0 < t)
-    (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) (k : ℕ) :
-    ∃ u_h : H1Compl (I := I) (M := M) g,
-      u_h ∈ laplacianDomainPow (I := I) (M := M) g k ∧
-        H1ComplToLp (I := I) (M := M) g u_h =
-          heatSemigroup (I := I) (M := M) g t u_0 :=
-  heatSemigroup_in_laplacianDomainPow (I := I) (M := M) g ht u_0 k
-
-example (g : SmoothRiemannianMetric I M) {t : ℝ} (ht : 0 < t)
-    (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) (k : ℕ) :
-    heatSemigroupSpectralLift (I := I) (M := M) g ht u_0 k ∈
-      laplacianDomainPow (I := I) (M := M) g k :=
-  heatSemigroupSpectralLift_mem (I := I) (M := M) g ht u_0 k
-
-example (g : SmoothRiemannianMetric I M) (k : ℕ) (t : ℝ)
-    (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :
-    heatSemigroupExplicitLift (I := I) (M := M) g k t u_0 ∈
-      laplacianDomainPow (I := I) (M := M) g (k + 1) :=
-  heatSemigroupExplicitLift_mem (I := I) (M := M) g k t u_0
-
 end HeatEquation
 end Analysis
 end DifferentialGeometry

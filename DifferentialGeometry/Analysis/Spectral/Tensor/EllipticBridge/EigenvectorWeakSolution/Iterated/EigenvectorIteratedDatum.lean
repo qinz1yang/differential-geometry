@@ -567,35 +567,6 @@ def ofBase
 
 end EigenvectorIteratedTensorChartBilinearData
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-  (i : TensorEigenIdx (I := I) (M := M) g r s)
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ) : Type _ :=
-  EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
-    g r s i α P₀ m
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
-      g r s i α P₀ 0 :=
-  EigenvectorIteratedTensorChartBilinearData.ofBase
-    (I := I) (M := M) g r s i α P₀
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
-    (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (l : Fin (Module.finrank ℝ E)) :
-    eigenvectorChartIteratedStep (I := I) (M := M)
-        g r s i α P₀ m dirs
-        (eigenvectorChartRHSDiff (I := I) (M := M)
-          g r s i α P₀ m dirs) l =
-      eigenvectorChartRHSDiff (I := I) (M := M)
-        g r s i α P₀ (m + 1) (Fin.snoc dirs l) :=
-  eigenvectorChartIteratedStep_eq_rhsDiff_succ
-    (I := I) (M := M) g r s i α P₀ m dirs l
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

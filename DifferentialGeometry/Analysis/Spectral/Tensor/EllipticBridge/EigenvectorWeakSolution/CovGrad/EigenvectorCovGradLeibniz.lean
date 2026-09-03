@@ -167,28 +167,6 @@ theorem chartPushedRaw_pou_mul_euclidPartial_eq
   rw [h_component_deriv, h_leibniz]
   ring
 
-example (g : SmoothRiemannianMetric I M) (α : M)
-    (S : SmoothCcTensor g 1 2)
-    (Idx : Fin 1 → Fin (Module.finrank ℝ E))
-    (Jdx : Fin 2 → Fin (Module.finrank ℝ E))
-    (k : Fin (Module.finrank ℝ E)) {y : EuclN E}
-    (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
-    chartPushedRaw I α ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) y
-        * euclidPartial (E := E) k
-            (chartPushedRaw I α
-              (tensorChartComponentRaw (I := I) (M := M)
-                g 1 2 S α Idx Jdx)) y =
-      euclidPartial (E := E) k
-          (tensorChartComponent (I := I) (M := M) g 1 2 S α Idx Jdx) y
-        - euclidPartial (E := E) k
-              (chartPushedRaw I α
-                ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) y
-            * chartPushedRaw I α
-                (tensorChartComponentRaw (I := I) (M := M)
-                  g 1 2 S α Idx Jdx) y :=
-  chartPushedRaw_pou_mul_euclidPartial_eq
-    (I := I) (M := M) g 1 2 S α Idx Jdx k hy
-
 end TensorSpectral
 end Parabolic
 end Analysis

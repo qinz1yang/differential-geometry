@@ -506,41 +506,6 @@ theorem weak_oneSubLap_holds_of_image_in_laplacianDomain
   exact integral_H1ComplToLp_oneSubLap_eq_integral_preimage_smooth
     (I := I) (M := M) g hw_lift w
 
-section SanityTests
-
-example (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
-    (h_discharge : christoffelDischargeSmoothCase (I := I) (M := M) g φ v)
-    (w : SmoothScalar g) :
-    ∫ x, ((gradInnerCLM (I := I) (M := M) g φ
-              (smoothToH1Compl (I := I) (M := M) g v) :
-              Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - ΔG (I := I) g ⟨w.toFun, w.smooth⟩ x)
-        ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      ∫ x, w.toFun x *
-            ((gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
-                (smoothToH1Compl_mem_laplacianDomainPow_two
-                  (I := I) (M := M) g v) :
-                Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x
-        ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
-  integral_gradInner_oneSubLap_smooth_eq_integral_candidate_smoothCase_of_discharge
-    (I := I) (M := M) g φ v h_discharge w
-
-example (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v w : SmoothScalar g) :
-    ∫ x, ((gradInnerCLM (I := I) (M := M) g φ
-              (smoothToH1Compl (I := I) (M := M) g v) :
-              Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - ΔG (I := I) g ⟨w.toFun, w.smooth⟩ x)
-        ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      ∫ x, w.toFun x *
-            ((smoothToLp (I := I) (M := M) g
-                (gradInnerSmoothBundle (I := I) (M := M) g φ v).oneSubLapClassical :
-                Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x
-        ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
-  integral_gradInner_oneSubLap_smooth_eq_integral_smoothCase
-    (I := I) (M := M) g φ v w
-
-end SanityTests
-
 end GradInnerVariationalIntegralForm
 end Laplacian
 end Analysis

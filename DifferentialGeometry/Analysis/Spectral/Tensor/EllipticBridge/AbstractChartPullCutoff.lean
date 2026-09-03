@@ -1666,33 +1666,6 @@ theorem tensorL2Inner_cutoff_chartKernelSupported_pull
   exact (cutoff_chartPull_integral_eq_sum_inner (I := I) (M := M) g r s α Sg u
     hSg_chart).symm
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (α : M) : C^∞⟮I, M; ℝ⟯ := chartKernelCutoff (I := I) (M := M) α
-
-example (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
-  tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀
-
-example (u : TensorL2 r s g) (Sg : SmoothCcTensor g r s) (α : M)
-    (hSg : tsupport Sg.toFun ⊆
-      tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :
-    (⟪u, (Sg : TensorL2 r s g)⟫_ℝ : ℝ) =
-      ∫ y in chartTargetEuclid (I := I) (M := M) α,
-        densityOnEuclid (I := I) g α y *
-          (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
-            covChartMetricGram (I := I) (M := M) g r s α P Q y *
-              ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y *
-              tensorComponentEuclid (I := I) (M := M) g r s Sg α Q y)
-        ∂(volume : Measure EuclN) :=
-  tensorL2Inner_cutoff_chartKernelSupported_pull
-    (I := I) (M := M) g r s α u Sg hSg
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

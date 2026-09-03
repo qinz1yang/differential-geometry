@@ -494,12 +494,6 @@ theorem tensorLaplacianEigenvalueOf_nonneg_of_resolventEigenvalue
   have h_num_nn : 0 ≤ 1 - μ := by linarith
   exact div_nonneg h_num_nn hμ_pos.le
 
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) (μ : ℝ) :
-    Submodule ℝ (TensorL2 r s g) :=
-  tensorResolventEigenspace (I := I) (M := M) g r s μ
-
-example : ℝ := tensorLaplacianEigenvalueOf 0.5
-
 end TensorSpectral
 end Parabolic
 end Analysis

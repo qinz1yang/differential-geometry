@@ -1203,35 +1203,6 @@ theorem crossRightGradCoeffDivSum_tendsto
       from funext h_termN, h_termLim]
   exact h_add
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (S : SmoothCcTensor g r s) (α : M)
-    (P₀ : TensorCompIdx (E := E) r s) (l : Fin (Module.finrank ℝ E)) :
-    EuclN → ℝ :=
-  crossRightTestGradTerm (I := I) (M := M) g r s S α P₀ l
-
-example (S : SmoothCcTensor g r s) (α : M)
-    (P₀ : TensorCompIdx (E := E) r s)
-    {φ : EuclN → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
-    (hφ_cs : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    ∑ l : Fin (Module.finrank ℝ E),
-        ∫ y in chartTargetEuclid (I := I) (M := M) α,
-          densityOnEuclid (I := I) g α y *
-              crossRightTestGradTerm (I := I) (M := M) g r s S α P₀ l y *
-            euclidPartial (E := E) l φ y ∂(volume : Measure EuclN) =
-      -∫ y in chartTargetEuclid (I := I) (M := M) α,
-        (∑ l : Fin (Module.finrank ℝ E),
-            euclidPartial (E := E) l
-              (fun z => densityOnEuclid (I := I) g α z *
-                crossRightTestGradTerm (I := I) (M := M) g r s S α P₀ l z) y) *
-          φ y ∂(volume : Measure EuclN) :=
-  crossRightTestGradTerm_byParts (I := I) (M := M) g r s S α P₀ hφ hφ_cs hφ_supp
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

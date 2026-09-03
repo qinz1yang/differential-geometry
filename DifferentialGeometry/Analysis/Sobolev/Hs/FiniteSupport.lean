@@ -231,16 +231,6 @@ theorem ScalarHs.finiteSupportSubmodule_dense
   exact ScalarHs.finiteSupportSubmodule_topologicalClosure_eq_top
     (I := I) (M := M)
 
-example {g : SmoothRiemannianMetric I M} {σ : ℝ}
-    (i : EigenIdx (I := I) (M := M) g) :
-    ScalarHs (I := I) (M := M) g σ :=
-  ScalarHs.basisVec (I := I) (M := M) g σ i
-
-example {g : SmoothRiemannianMetric I M} {σ : ℝ} :
-    Dense (ScalarHs.finiteSupportSubmodule (I := I) (M := M) g σ :
-      Set (ScalarHs (I := I) (M := M) g σ)) :=
-  ScalarHs.finiteSupportSubmodule_dense (I := I) (M := M)
-
 end Hs
 end Sobolev
 end Analysis

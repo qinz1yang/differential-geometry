@@ -299,31 +299,6 @@ theorem eigenvectorChartComponent_memWkp_m_plus_two_of_iterated
   rw [eigenvectorChartIteratedPartial_zero] at h_final
   exact h_final
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-  (i : TensorEigenIdx (I := I) (M := M) g r s)
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
-    (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (a : Fin (Module.finrank ℝ E))
-    (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) (m + 1) 2
-      (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
-      (chartTargetEuclid (I := I) (M := M) α)) :
-    eigenvectorChartIteratedPartial (I := I) (M := M)
-        g r s i α P₀ (m + 1) (Fin.cons a dirs)
-      =ᵐ[(volume : Measure EuclN).restrict
-        (chartTargetEuclid (I := I) (M := M) α)]
-    chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
-      (eigenvectorChartIteratedPartial (I := I) (M := M)
-        g r s i α P₀ m dirs)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  eigenvectorChartIteratedPartial_cons_eq_chosenWeakPartial_ae
-    g r s i α P₀ m dirs a h_parent
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

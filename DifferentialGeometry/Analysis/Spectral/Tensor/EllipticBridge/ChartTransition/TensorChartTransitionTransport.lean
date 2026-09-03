@@ -436,23 +436,6 @@ theorem tensorL2ChartComponentCutoff_ae_eq_pou_transport_sum
     (fun Q => chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
       (tensorL2ChartComponent (I := I) (M := M) g r s u β Q))
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (α : M) : Finset M := transportChartCenters (I := I) (M := M) α
-
-example (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ =
-      ∑ β ∈ transportChartCenters (I := I) (M := M) α,
-        ∑ Q : TensorCompIdx (E := E) r s,
-          chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
-            (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :=
-  tensorL2ChartComponentCutoff_eq_pou_transport_sum
-    (I := I) (M := M) g r s u α P₀
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

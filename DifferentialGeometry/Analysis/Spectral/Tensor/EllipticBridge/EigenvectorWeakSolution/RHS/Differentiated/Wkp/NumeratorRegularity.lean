@@ -787,55 +787,6 @@ lemma eigenvectorChartRHSDiffNumerator_div_density_ae_zero_off_chartPouKernel
     densityOnEuclid (I := I) g α y = 0
   rw [hy]; simp
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-  (i : TensorEigenIdx (I := I) (M := M) g r s)
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
-    (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
-    (h_comp : MemWkp (d := Module.finrank ℝ E) (m + 2 + K) 2
-      (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
-      (chartTargetEuclid (I := I) (M := M) α))
-    (h_prev_memWkp_succ :
-      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 fChartEffPrev
-        (chartTargetEuclid (I := I) (M := M) α))
-    (h_prev_ae_zero : fChartEffPrev =ᵐ[(volume : Measure EuclN).restrict
-      (chartTargetEuclid (I := I) (M := M) α \
-        chartPouKernel (I := I) (M := M) α)]
-      (fun _ => (0 : ℝ))) :
-    MemWkp (d := Module.finrank ℝ E) K 2
-      (eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-        g r s i α P₀ m l fChartEffPrev)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  eigenvectorChartRHSDiffNumerator_memWkp (I := I) (M := M)
-    g r s i α P₀ m K l h_comp h_prev_memWkp_succ h_prev_ae_zero
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
-    (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
-    (h_comp : MemWkp (d := Module.finrank ℝ E) (m + 2 + K) 2
-      (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
-      (chartTargetEuclid (I := I) (M := M) α))
-    (h_prev_memWkp_succ :
-      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 fChartEffPrev
-        (chartTargetEuclid (I := I) (M := M) α))
-    (h_prev_ae_zero : fChartEffPrev =ᵐ[(volume : Measure EuclN).restrict
-      (chartTargetEuclid (I := I) (M := M) α \
-        chartPouKernel (I := I) (M := M) α)]
-      (fun _ => (0 : ℝ))) :
-    MemWkp (d := Module.finrank ℝ E) K 2
-      (fun y =>
-        eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-          g r s i α P₀ m l fChartEffPrev y /
-        densityOnEuclid (I := I) g α y)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  eigenvectorChartRHSDiffNumerator_div_density_memWkp (I := I) (M := M)
-    g r s i α P₀ m K l h_comp h_prev_memWkp_succ h_prev_ae_zero
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

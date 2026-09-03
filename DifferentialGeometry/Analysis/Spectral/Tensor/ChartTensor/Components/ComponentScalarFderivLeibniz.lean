@@ -130,30 +130,6 @@ theorem fderiv_chartPushed_tensorChartComponentPou_eq_leibniz_on_target
   rw [h_eq] at h_main
   exact h_main
 
-example (g : SmoothRiemannianMetric I M) (α : M)
-    (S : SmoothCcTensor g 1 2)
-    (Idx : Fin 1 → Fin (Module.finrank ℝ E))
-    (Jdx : Fin 2 → Fin (Module.finrank ℝ E))
-    {y : EuclN E} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
-    fderiv ℝ
-        (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
-          (tensorChartComponentScalar (I := I) (M := M)
-            g 1 2 S α Idx Jdx)) y =
-      chartSmoothExt (I := I) (M := M) α
-            ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) y •
-          fderiv ℝ
-            (chartSmoothExt (I := I) (M := M) α
-              (tensorChartComponentScalar (I := I) (M := M)
-                g 1 2 S α Idx Jdx)) y +
-        chartSmoothExt (I := I) (M := M) α
-            (tensorChartComponentScalar (I := I) (M := M)
-              g 1 2 S α Idx Jdx) y •
-          fderiv ℝ
-            (chartSmoothExt (I := I) (M := M) α
-              ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) y :=
-  fderiv_chartPushed_tensorChartComponentScalar_eq_leibniz_on_target
-    (I := I) (M := M) g 1 2 α S Idx Jdx hy
-
 end TensorSpectral
 end Parabolic
 end Analysis

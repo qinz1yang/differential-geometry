@@ -280,18 +280,6 @@ theorem tensorCovGradL2_inner_smooth
       (covGrad (I := I) (M := M) g r s w.toCcTensor) T]
   rfl
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example : SmoothCcTensorH1 g r s →L[ℝ] TensorL2 r (s + 1) g :=
-  tensorCovGradL2 (I := I) (M := M) g r s
-
-example : TensorH1Compl g r s →L[ℝ] TensorL2 r (s + 1) g :=
-  tensorCovGradL2Compl (I := I) (M := M) g r s
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

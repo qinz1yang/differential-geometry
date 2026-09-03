@@ -543,12 +543,6 @@ noncomputable instance instInnerProductSpaceSmoothScalar
     (f h : SmoothScalar g) :
     @inner ℝ _ _ f h = smoothScalarH1Inner (I := I) (M := M) f h := rfl
 
-example (g : SmoothRiemannianMetric I M) :
-    SeminormedAddCommGroup (SmoothScalar g) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) :
-    InnerProductSpace ℝ (SmoothScalar g) := inferInstance
-
 end Laplacian
 end Analysis
 end DifferentialGeometry

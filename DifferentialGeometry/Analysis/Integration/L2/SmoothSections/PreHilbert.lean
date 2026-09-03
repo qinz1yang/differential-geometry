@@ -104,18 +104,6 @@ theorem tensorL2Inner_sub_right_smoothCc
 
 end PreHilbert
 
-section InstanceTests
-
-variable [T2Space M] [SigmaCompactSpace M]
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    SeminormedAddCommGroup (SmoothCcTensor g r s) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    InnerProductSpace ℝ (SmoothCcTensor g r s) := inferInstance
-
-end InstanceTests
-
 end L2
 end Integral
 end DifferentialGeometry

@@ -638,28 +638,6 @@ lemma componentLpLimit_memLp_weighted
       (by rw [componentLpLimit]; exact Lp.coeFn_smul i.fst.val _)
   exact (h_comp.const_smul i.fst.val).ae_eq h_smul.symm
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    MemLp (fun y => (tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ :
-        EuclN → ℝ) y) 2
-      ((chartPulledWeightedMeasure (I := I) g α).restrict
-        (chartTargetEuclid (I := I) (M := M) α)) :=
-  tensorL2ChartComponent_memLp_weighted (I := I) (M := M) g r s u α P₀
-
-example (i : TensorEigenIdx (I := I) (M := M) g r s)
-    (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    MemLp (covPrincipalRotationCoeffLimit (I := I) (M := M)
-        g r s i α P₀) 2
-      ((chartPulledWeightedMeasure (I := I) g α).restrict
-        (chartTargetEuclid (I := I) (M := M) α)) :=
-  covPrincipalRotationCoeffLimit_memLp_weighted (I := I) (M := M)
-    g r s i α P₀
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

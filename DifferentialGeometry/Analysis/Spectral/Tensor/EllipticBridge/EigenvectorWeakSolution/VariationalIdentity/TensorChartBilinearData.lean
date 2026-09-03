@@ -179,23 +179,6 @@ theorem tensor_chart_bilinear_identity_h1Compl
       ∂(volume : Measure EuclN) :=
   D.variational_identity ψ hψ hψ_cs hψ_supp
 
-section ElaborationTests
-
-variable [I.Boundaryless] [T2Space M] [CompactSpace M]
-  (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s)
-    (D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀) :
-    ChartBilinearH1ComplData (I := I) (M := M) g α :=
-  D.toChartData
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s)
-    (D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀) :
-    EuclN → ℝ :=
-  D.uChart
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

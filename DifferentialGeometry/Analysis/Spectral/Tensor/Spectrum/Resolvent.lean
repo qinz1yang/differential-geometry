@@ -79,10 +79,6 @@ theorem tensorResolventL2_isSelfAdjoint
   intro f h
   exact tensorResolventL2_symm (I := I) (M := M) g r s f h
 
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    TensorL2 r s g →L[ℝ] TensorL2 r s g :=
-  tensorResolventL2 (I := I) (M := M) g r s
-
 end TensorSpectral
 end Parabolic
 end Analysis

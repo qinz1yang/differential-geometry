@@ -680,29 +680,6 @@ theorem tensorCovDerivCrossRight_integral_tendsto
     (eigenvectorSmoothApprox (I := I) (M := M) g r s i n).toCcTensor S,
     real_inner_comm]
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (S : SmoothCcTensor g r s)
-    (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    SmoothCcTensor g r s :=
-  covDerivAlong (I := I) (M := M) g r s S V
-
-example (S : SmoothCcTensor g r s) (ζ : C^∞⟮I, M; ℝ⟯) :
-    SmoothCcTensor g r s :=
-  covDerivAlongGrad (I := I) (M := M) g r s S ζ
-
-example (ζ : C^∞⟮I, M; ℝ⟯) (w S : SmoothCcTensor g r s) (x : M) :
-    tensorCovDerivCrossRight (I := I) (M := M) g r s ζ w S x =
-      tensorInnerPointwise (I := I) (M := M) g r s x
-        (w.toFun x)
-        ((covDerivAlongGrad (I := I) (M := M) g r s S ζ).toFun x) :=
-  tensorCovDerivCrossRight_eq_tensorInnerPointwise_grad
-    (I := I) (M := M) g r s ζ w S x
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

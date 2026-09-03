@@ -448,24 +448,6 @@ instance instHasSmoothBoundary (n : ℕ) [NeZero n] :
     rw [finrank_euclideanSpace_fin, finrank_euclideanSpace_fin]
     exact Nat.sub_one_add_one_eq_of_pos (Nat.pos_of_neZero n)
 
-example (n : ℕ) [NeZero n] :
-    HasSmoothBoundary.boundaryModelE
-      (modelWithCornersEuclideanHalfSpace n)
-      = EuclideanSpace ℝ (Fin (n - 1)) := rfl
-
-example (n : ℕ) [NeZero n] :
-    HasSmoothBoundary.boundaryModelH
-      (modelWithCornersEuclideanHalfSpace n)
-      = EuclideanSpace ℝ (Fin (n - 1)) := rfl
-
-example (n : ℕ) [NeZero n] :
-    HasSmoothBoundary.boundaryModel
-      (modelWithCornersEuclideanHalfSpace n)
-      = modelWithCornersSelf ℝ (EuclideanSpace ℝ (Fin (n - 1))) := rfl
-
-example (n : ℕ) [NeZero n] :
-    ContDiff ℝ ∞ (instHasSmoothBoundary n).projE := projEuclidean_contDiff n
-
 private theorem inwardCoordAt_self_charted_eq
     (n : ℕ) [NeZero n]
     (α y : DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary.BoundaryManifold

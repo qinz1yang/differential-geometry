@@ -397,28 +397,6 @@ theorem tensorL2ChartComponent_ae_eq_pou_transport_sum
     (I := I) (M := M) g r s u α P₀] with y hy
   rw [hy]
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (α : M) :
-    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) →L[ℝ]
-      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
-  boundedPouMulLpCLM (I := I) (M := M) α
-
-example (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    ((tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ :
-        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
-      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
-      (fun y => chartPushedRaw I α
-          (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
-        ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ :
-            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) :=
-  tensorL2ChartComponent_eq_chartPushedPou_mul_cutoff
-    (I := I) (M := M) g r s u α P₀
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

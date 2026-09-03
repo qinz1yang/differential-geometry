@@ -360,9 +360,6 @@ theorem laplacianEigenvalueAscending_tendsto_atTop_of_infinite
     exact h_card
   omega
 
-example (g : SmoothRiemannianMetric I M) : ℕ → ℝ :=
-  laplacianEigenvalueAscending (I := I) (M := M) g
-
 end Laplacian
 end Analysis
 end DifferentialGeometry

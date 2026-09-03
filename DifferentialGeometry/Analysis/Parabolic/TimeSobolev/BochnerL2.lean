@@ -57,10 +57,6 @@ abbrev timeL2 (X : Type*) [NormedAddCommGroup X]
     (T : ℝ) : Type _ :=
   MeasureTheory.Lp X 2 (timeMeasure T)
 
-example : NormedAddCommGroup (timeL2 X T) := inferInstance
-example : NormedSpace ℝ (timeL2 X T) := inferInstance
-example : CompleteSpace (timeL2 X T) := inferInstance
-
 omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem memLp_iff {f : ℝ → X} :
     MemLp f 2 (timeMeasure T) ↔ ∃ F : timeL2 X T, F =ᵐ[timeMeasure T] f :=

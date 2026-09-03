@@ -409,17 +409,6 @@ omit [NeZero (Module.finrank ℝ E)] in
       Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) * T.coeff i :=
   rfl
 
-example {g : SmoothRiemannianMetric I M} {r s : ℕ} {τ σ : ℝ}
-    (hτσ : τ ≤ σ) :
-    TensorHs (I := I) (M := M) g r s σ →L[ℝ]
-      TensorHs (I := I) (M := M) g r s τ :=
-  tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ
-
-example {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ} :
-    Dense {T : TensorHs (I := I) (M := M) g r s σ |
-      (Function.support T.coeff).Finite} :=
-  tensorHs_dense_finiteSupport (I := I) (M := M)
-
 end TensorHeatEquation
 end Parabolic
 end Analysis

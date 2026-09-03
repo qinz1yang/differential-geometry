@@ -979,45 +979,6 @@ theorem tensorHsToL2_tensorHsBasisVec {g : SmoothRiemannianMetric I M}
     · simp [h]
   rw [h_lhs, h_rhs]
 
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
-    Type _ :=
-  TensorHs (I := I) (M := M) g r s σ
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
-    NormedAddCommGroup (TensorHs (I := I) (M := M) g r s σ) :=
-  inferInstance
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
-    InnerProductSpace ℝ
-      (TensorHs (I := I) (M := M) g r s σ) :=
-  inferInstance
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
-    CompleteSpace (TensorHs (I := I) (M := M) g r s σ) :=
-  inferInstance
-
-example {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    (h_compact : IsCompactOperator (tensorResolventL2
-      (I := I) (M := M) g r s))
-    (T : TensorL2 r s g) (i : TensorEigenIdx (I := I) (M := M) g r s) : ℝ :=
-  tensorL2Coeff (I := I) (M := M) h_compact T i
-
-example {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    (h_compact : IsCompactOperator (tensorResolventL2
-      (I := I) (M := M) g r s)) {σ : ℝ}
-    (hσ : 0 ≤ σ) :
-    TensorHs (I := I) (M := M) g r s σ →L[ℝ]
-      TensorL2 r s g :=
-  tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
-    h_compact hσ
-
-example {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    (h_compact : IsCompactOperator (tensorResolventL2
-      (I := I) (M := M) g r s)) :
-    TensorHs (I := I) (M := M) g r s 0 ≃ₗᵢ[ℝ]
-      TensorL2 r s g :=
-  tensorHsZeroEquivL2 (I := I) (M := M) h_compact
-
 end TensorHeatEquation
 end Parabolic
 end Analysis

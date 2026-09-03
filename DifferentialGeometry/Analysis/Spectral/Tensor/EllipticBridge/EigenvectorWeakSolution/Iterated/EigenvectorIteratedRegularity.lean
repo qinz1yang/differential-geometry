@@ -96,30 +96,6 @@ theorem tensorChartComponent_memWkp_succ_of_diffData
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ''_open (h_diff_ae l)).mpr
       (h_diff_memWkp l)
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-  (i : TensorEigenIdx (I := I) (M := M) g r s)
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s)
-    {Ω'' : Set EuclN} (hΩ''_open : IsOpen Ω'')
-    (hΩ''_compact_closure : IsCompact (closure Ω''))
-    {R₀ : ℝ} (hR₀_pos : 0 < R₀)
-    (h_room : Metric.cthickening R₀ (closure Ω'') ⊆
-      chartTargetEuclid (I := I) (M := M) α)
-    {k : ℕ} (hk : k ≤ 1) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) (2 * k) 2
-      (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
-        (tensorResolventEigenbasisVec (I := I) (M := M)
-          (DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
-            (I := I) (M := M) g r s) i) α P₀ :
-        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω'' :=
-  eigenvector_chartComponent_memWkp_two_k g r s i α P₀
-    hΩ''_open hΩ''_compact_closure hR₀_pos h_room hk
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

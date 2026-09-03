@@ -94,14 +94,6 @@ theorem fHLeibniz_smoothToH1Compl (g : SmoothRiemannianMetric I M) (α : M)
   rw [gradInnerCLM_smoothToH1Compl]
   rw [H1ComplToLp_smoothToH1Compl]
 
-example (g : SmoothRiemannianMetric I M) (α : M) :
-    C^∞⟮I, M; ℝ⟯ := laplacianOfChartPOU (I := I) (M := M) g α
-
-example (g : SmoothRiemannianMetric I M) (α : M)
-    (u_h : H1Compl g) (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
-    Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
-  leibnizCompensatedSource (I := I) (M := M) g α u_h hu_h
-
 end Laplacian
 end Analysis
 end DifferentialGeometry

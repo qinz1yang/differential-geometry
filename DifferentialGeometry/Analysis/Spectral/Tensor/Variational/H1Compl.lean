@@ -227,21 +227,6 @@ theorem TensorH1ComplToTensorL2_smoothToTensorH1Compl_eq_coe
   rw [TensorH1ComplToTensorL2_smoothToTensorH1Compl,
     smoothCcTensorH1ToTensorL2_apply]
 
-section InstanceTests
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) : Type _ := TensorH1Compl g r s
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    NormedAddCommGroup (TensorH1Compl g r s) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    InnerProductSpace ℝ (TensorH1Compl g r s) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    CompleteSpace (TensorH1Compl g r s) := inferInstance
-
-end InstanceTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

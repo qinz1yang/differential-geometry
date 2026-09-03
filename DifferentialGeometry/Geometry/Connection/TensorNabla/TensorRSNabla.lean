@@ -92,34 +92,6 @@ theorem tensorRSCovariantDerivative_apply_of_mdifferentiableAt (r s : ℕ)
     (Tensor0SNabla.tensor0SCovariantDerivative I M s cov)
     τ hτ hV hw
 
-example
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov ∞] :
-    CovariantDerivative I (TensorRSModel 1 2 ℝ E)
-      (fun x : M => TensorRSSpace 1 2 I x) :=
-  tensorRSCovariantDerivative I M 1 2 cov
-
-example
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov ∞] :
-    ContMDiffCovariantDerivative
-      (tensorRSCovariantDerivative I M 1 2 cov) ∞ :=
-  inferInstance
-
-example
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov ∞] :
-    CovariantDerivative I (TensorRSModel 2 1 ℝ E)
-      (fun x : M => TensorRSSpace 2 1 I x) :=
-  tensorRSCovariantDerivative I M 2 1 cov
-
-example
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov ∞] :
-    ContMDiffCovariantDerivative
-      (tensorRSCovariantDerivative I M 2 1 cov) ∞ :=
-  inferInstance
-
 end TensorRSNabla
 
 end DifferentialGeometry

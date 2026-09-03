@@ -294,8 +294,8 @@ theorem mildSolution_isStrongSolutionAt_of_hasDerivAt_forcing
     ring
   obtain ⟨u_h, hu_h, hlap⟩ :=
     (exists_laplacianDomain_lift_iff_inner_eigenbasis
-      (I := I) (M := M) g
-      (mildSolution (I := I) (M := M) g u_0 f t) laplacian).mpr hcoeff
+      (I := I) (M := M) (g := g)
+      (u := mildSolution (I := I) (M := M) g u_0 f t) (w := laplacian)).mpr hcoeff
   refine ⟨u_h, hu_h, ?_⟩
   rw [hlap]
   have hderiv := mildSolution_hasDerivAt_of_hasDerivAt_forcing

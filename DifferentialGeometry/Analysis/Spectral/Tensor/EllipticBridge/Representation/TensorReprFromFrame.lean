@@ -532,20 +532,6 @@ theorem continuous_tensorL2ChartComponent
   rw [h]
   exact (tensorL2ChartComponentCLM (I := I) (M := M) g r s α P₀).continuous
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
-  tensorL2ChartComponent (I := I) (M := M) g r s u α P₀
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    TensorL2 r s g →L[ℝ] Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
-  tensorL2ChartComponentCLM (I := I) (M := M) g r s α P₀
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

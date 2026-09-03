@@ -529,24 +529,6 @@ lemma chartTensorRSCovariantDerivative_smul (r s : ℕ)
   rw [hsplit_output]
   rw [smul_sub, smul_add]
 
-example (g : SmoothRiemannianMetric I M) (α : M)
-    (T : Π b : M, TensorRSSpace 1 2 I b)
-    (X : Π b : M, TangentSpace I b) (b : M) :
-    TensorRSSpace 1 2 I b :=
-  chartTensorRSCovariantDerivative (I := I) 1 2 g α T X b
-
-example (g : SmoothRiemannianMetric I M) (α : M)
-    (T : Π b : M, TensorRSSpace 2 1 I b)
-    (X : Π b : M, TangentSpace I b) (b : M) :
-    TensorRSSpace 2 1 I b :=
-  chartTensorRSCovariantDerivative (I := I) 2 1 g α T X b
-
-example (g : SmoothRiemannianMetric I M) (α : M)
-    (T : Π b : M, TensorRSSpace 0 0 I b)
-    (X : Π b : M, TangentSpace I b) (b : M) :
-    TensorRSSpace 0 0 I b :=
-  chartTensorRSCovariantDerivative (I := I) 0 0 g α T X b
-
 end Connection
 end Geometry
 end DifferentialGeometry

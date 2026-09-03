@@ -289,16 +289,6 @@ theorem SmoothCcTensorH1.norm_def
     ‖S‖ = Real.sqrt (tensorH1Inner
         (I := I) (M := M) g r s S.toCcTensor S.toCcTensor) := rfl
 
-section InstanceTests
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    SeminormedAddCommGroup (SmoothCcTensorH1 g r s) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    InnerProductSpace ℝ (SmoothCcTensorH1 g r s) := inferInstance
-
-end InstanceTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

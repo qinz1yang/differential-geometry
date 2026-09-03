@@ -684,13 +684,6 @@ def eigenvectorTensorChartBilinearData
        eigenvectorChartVariationalIdentity (I := I) (M := M)
          g r s i α P₀ hψ hψ_cs hψ_supp }⟩
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-  (i : TensorEigenIdx (I := I) (M := M) g r s)
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

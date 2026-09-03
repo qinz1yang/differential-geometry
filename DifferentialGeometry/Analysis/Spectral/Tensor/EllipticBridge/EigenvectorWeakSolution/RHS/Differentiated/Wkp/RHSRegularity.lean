@@ -242,43 +242,6 @@ theorem eigenvectorChartRHSDiff_memW1p
   rw [MemWkp.one_iff_memW1p] at h_memWkp
   exact h_memWkp
 
-section ElaborationTestsUnconditional
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-  (i : TensorEigenIdx (I := I) (M := M) g r s)
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
-    (l : Fin m → Fin (Module.finrank ℝ E))
-    (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
-      MemWkp (d := Module.finrank ℝ E) (m + 1 + K) 2
-        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
-            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
-              (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
-        (chartTargetEuclid (I := I) (M := M) β)) :
-    MemWkp (d := Module.finrank ℝ E) K 2
-      (eigenvectorChartRHSDiff (I := I) (M := M) g r s i α P₀ m l)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  eigenvectorChartRHSDiff_memWkp (I := I) (M := M)
-    g r s i α P₀ m K l h_pou
-
-example (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
-    (l : Fin m → Fin (Module.finrank ℝ E))
-    (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
-      MemWkp (d := Module.finrank ℝ E) (m + 2) 2
-        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
-            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
-              (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
-        (chartTargetEuclid (I := I) (M := M) β)) :
-    DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      (eigenvectorChartRHSDiff (I := I) (M := M) g r s i α P₀ m l)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  eigenvectorChartRHSDiff_memW1p (I := I) (M := M)
-    g r s i α P₀ m l h_pou
-
-end ElaborationTestsUnconditional
-
 end TensorSpectral
 end Parabolic
 end Analysis

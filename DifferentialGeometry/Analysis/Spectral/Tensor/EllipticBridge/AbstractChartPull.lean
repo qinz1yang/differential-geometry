@@ -701,38 +701,6 @@ theorem tensorL2Inner_pouSmul_tensorL2ChartComponent_pull
   rw [hu]
   exact (chartPull_integral_eq_sum_inner (I := I) (M := M) g r s α Sg u hSg).symm
 
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (Sg T : SmoothCcTensor g r s) (α : M)
-    (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source) :
-    tensorL2Inner (I := I) (M := M) g r s Sg.toFun T.toFun =
-      ∫ y in chartTargetEuclid (I := I) (M := M) α,
-        densityOnEuclid (I := I) g α y *
-          (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
-            covChartMetricGram (I := I) (M := M) g r s α P Q y *
-              tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
-              tensorComponentEuclid (I := I) (M := M) g r s T α Q y)
-        ∂(volume : Measure EuclN) :=
-  tensorL2Inner_chartSupported_chart_pull (I := I) (M := M) g r s Sg T α hSg
-
-example (u : TensorL2 r s g) (Sg : SmoothCcTensor g r s) (α : M)
-    (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source) :
-    (⟪(pouSmul (I := I) (M := M) g r s α Sg : TensorL2 r s g), u⟫_ℝ : ℝ) =
-      ∫ y in chartTargetEuclid (I := I) (M := M) α,
-        densityOnEuclid (I := I) g α y *
-          (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
-            covChartMetricGram (I := I) (M := M) g r s α P Q y *
-              tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
-              ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
-        ∂(volume : Measure EuclN) :=
-  tensorL2Inner_pouSmul_tensorL2ChartComponent_pull
-    (I := I) (M := M) g r s α u Sg hSg
-
-end ElaborationTests
-
 end TensorSpectral
 end Parabolic
 end Analysis

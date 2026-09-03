@@ -137,13 +137,6 @@ lemma tensorParseval_norm_sq
   rw [h_eq] at h_par
   linarith [h_par, h_sq]
 
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) : Type _ :=
-  TensorEigenIdx (I := I) (M := M) g r s
-
-example {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    (i : TensorEigenIdx (I := I) (M := M) g r s) : ℝ :=
-  TensorEigenIdx.lambda (I := I) (M := M) i
-
 end TensorHeatEquation
 end Parabolic
 end Analysis

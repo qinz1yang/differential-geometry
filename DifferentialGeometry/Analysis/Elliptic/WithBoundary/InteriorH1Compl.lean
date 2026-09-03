@@ -194,17 +194,6 @@ lemma H1ComplInteriorToLp_smoothToH1ComplInterior
     (denseRange_toComplL_interiorSmoothScalar g)
     (isUniformInducing_toComplL_interiorSmoothScalar g) f
 
-example (g : SmoothRiemannianMetric (I_half n) M) : Type _ := H1ComplInterior g
-
-example (g : SmoothRiemannianMetric (I_half n) M) :
-    NormedAddCommGroup (H1ComplInterior g) := inferInstance
-
-example (g : SmoothRiemannianMetric (I_half n) M) :
-    InnerProductSpace ℝ (H1ComplInterior g) := inferInstance
-
-example (g : SmoothRiemannianMetric (I_half n) M) :
-    CompleteSpace (H1ComplInterior g) := inferInstance
-
 end WithBoundary
 end Laplacian
 end Analysis

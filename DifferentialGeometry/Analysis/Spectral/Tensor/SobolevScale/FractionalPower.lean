@@ -640,24 +640,6 @@ theorem tensorHsEquivOfFractionalPower_norm
   (tensorHsEquivOfFractionalPower (I := I) (M := M) (g := g) (r := r) (s := s)
     σ τ).norm_map T
 
-example {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    (θ : ℝ) {σ : ℝ} :
-    TensorHs (I := I) (M := M) g r s σ →L[ℝ]
-      TensorHs (I := I) (M := M) g r s (σ - 2 * θ) :=
-  tensorFractionalPower (I := I) (M := M) (g := g) (r := r) (s := s) θ
-
-example {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    (θ σ : ℝ) :
-    TensorHs (I := I) (M := M) g r s σ ≃ₗᵢ[ℝ]
-      TensorHs (I := I) (M := M) g r s (σ - 2 * θ) :=
-  tensorFractionalPowerEquiv (I := I) (M := M) (g := g) (r := r) (s := s) θ σ
-
-example {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    (σ τ : ℝ) :
-    TensorHs (I := I) (M := M) g r s σ ≃ₗᵢ[ℝ]
-      TensorHs (I := I) (M := M) g r s τ :=
-  tensorHsEquivOfFractionalPower (I := I) (M := M) (g := g) (r := r) (s := s) σ τ
-
 end TensorHeatEquation
 end Parabolic
 end Analysis

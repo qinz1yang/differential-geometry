@@ -87,11 +87,6 @@ theorem smoothToH1ComplDirichlet_eq_resolventDirichlet_oneSubLap
     smoothToH1ComplDirichlet g u = resolventDirichlet g u.oneSubLapClassicalLp :=
   smoothToH1ComplInterior_eq_resolventInterior_oneSubLap u
 
-example (g : SmoothRiemannianMetric (I_half n) M) :
-    Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ]
-      H1ComplDirichlet g :=
-  resolventDirichlet g
-
 end Dirichlet
 end WithBoundary
 end Laplacian
