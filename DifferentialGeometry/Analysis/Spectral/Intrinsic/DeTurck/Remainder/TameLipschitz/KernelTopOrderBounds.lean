@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
@@ -36,7 +36,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ArmOne.L2J
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ArmTwo.L2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.TameEstimates
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzDegenerateOneDimensionalVanishing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.OneDimensionalVanishing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.LeibnizWindow
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Sobolev

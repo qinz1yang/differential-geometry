@@ -30,7 +30,7 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegulari
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSmoothing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DuhamelSmoothing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralEigenSeriesJointGram
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.PointwiseDeriv
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise

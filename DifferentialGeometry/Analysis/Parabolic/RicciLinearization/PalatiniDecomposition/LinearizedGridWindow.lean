@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArm.Coeff
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.PathLinearization
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieHigherOrderCoeffField
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.L2JetBound

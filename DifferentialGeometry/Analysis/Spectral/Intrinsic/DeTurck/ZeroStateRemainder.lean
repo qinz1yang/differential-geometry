@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 
 noncomputable section

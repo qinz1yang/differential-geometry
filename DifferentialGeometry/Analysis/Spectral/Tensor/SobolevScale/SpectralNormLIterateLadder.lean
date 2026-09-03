@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalArmEnergyPairing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.FaithfulH1Embedding
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.SobolevScaleSummable

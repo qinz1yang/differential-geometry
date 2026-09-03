@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LiftAffine
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DuhamelEstimates
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
 

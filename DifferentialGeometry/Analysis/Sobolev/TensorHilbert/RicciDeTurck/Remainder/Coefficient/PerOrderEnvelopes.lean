@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.ConvexPerturbationPointwi
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceJetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderHigherOrderTame
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.HigherOrderTame
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCometricExtraction
 import Mathlib.Analysis.MeanInequalities
 open DifferentialGeometry.Analysis.Spectral.DeTurck

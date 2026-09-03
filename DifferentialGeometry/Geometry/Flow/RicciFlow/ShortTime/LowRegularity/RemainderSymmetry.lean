@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SymmetryPreservation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SmoothBridge
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitz
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRHSSectionRealizeUnitModel
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ExponentCongr
 

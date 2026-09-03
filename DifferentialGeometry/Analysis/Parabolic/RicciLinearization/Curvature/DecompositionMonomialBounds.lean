@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondG
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Tensor02FrameBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorFiberNormBound
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Norm
 

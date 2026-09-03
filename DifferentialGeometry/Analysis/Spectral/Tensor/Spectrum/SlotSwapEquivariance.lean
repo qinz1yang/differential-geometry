@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckLineari
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.SlotSwapPairingCalculus
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 open DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Analysis.Sobolev

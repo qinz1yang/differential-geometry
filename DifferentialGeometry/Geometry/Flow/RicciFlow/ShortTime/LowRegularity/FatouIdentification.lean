@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Adap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.GalerkinForcingSequence
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DuhamelEstimates
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.GalerkinParabolicEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.TimeL2EigenProjection
 

@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmOneAllOrderJetBounds
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.ArmOneJetBounds
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
