@@ -660,6 +660,49 @@ theorem scalar_dirichlet_solution_positive_of_initial_point
       hu_initial hu_boundary_t hu_time_t hu_mdiff_t hu_grad_t hu_equation_t
       hinterior_conn hcint hc y hyint
 
+def IsLocalScalarDirichletSolution
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (T : Real) (X : Real → (x : M) → TangentSpace I x)
+    (s t c : Real) (Kset : Set M) (f₀ : M → Real) (f : Real → M → Real) : Prop :=
+  ContinuousOn (fun p : Real × M ↦ f p.1 p.2) (Set.Icc s t ×ˢ Kset) ∧
+    (∀ z ∈ Kset, f s z = f₀ z) ∧
+    (∀ q ∈ Set.Icc s t, ∀ z ∈ frontier Kset, f q z = 0) ∧
+    (∀ q ∈ Set.Ioc s t, ∀ z ∈ interior Kset, 0 < f q z) ∧
+    (∀ q ∈ Set.Ioc s t, ∀ z ∈ interior Kset,
+      DifferentiableAt Real (fun r ↦ f r z) q) ∧
+    (∀ q ∈ Set.Ioc s t, ∀ z ∈ interior Kset,
+      MDifferentiableAt I 𝓘(Real, Real) (f q) z) ∧
+    (∀ q ∈ Set.Ioc s t, ∀ z ∈ interior Kset,
+      MDiffAt (T% fun w : M ↦ gradientFun (I := I) (G.metric q) (f q) w) z) ∧
+    ∀ q ∈ Set.Ioc s t, ∀ z ∈ interior Kset,
+      parabolicOperatorWithDrift (I := I) G T X f q z = -c * f q z
+
+def HasLocalScalarDirichletSolution
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (T : Real) (X : Real → (x : M) → TangentSpace I x)
+    (s t : Real) (Kset : Set M) : Prop :=
+  ∀ (c : Real), 0 ≤ c → ∀ f₀ : M → Real,
+    ContMDiff I 𝓘(Real, Real) ∞ f₀ →
+    (∀ z, 0 ≤ f₀ z) → HasCompactSupport f₀ →
+    tsupport f₀ ⊆ interior Kset →
+    (∃ z ∈ interior Kset, 0 < f₀ z) →
+    ∃ f : Real → M → Real, IsLocalScalarDirichletSolution
+      (I := I) G T X s t c Kset f₀ f
+
+theorem HasLocalScalarDirichletSolution.exists_solution
+    {G : MetricConnectionFamily (I := I) (M := M) Real}
+    {T : Real} {X : Real → (x : M) → TangentSpace I x}
+    {s t : Real} {Kset : Set M}
+    (h : HasLocalScalarDirichletSolution (I := I) G T X s t Kset)
+    {c : Real} (hc : 0 ≤ c) {f₀ : M → Real}
+    (hf₀ : ContMDiff I 𝓘(Real, Real) ∞ f₀)
+    (hf₀_nonneg : ∀ z, 0 ≤ f₀ z) (hf₀_compact : HasCompactSupport f₀)
+    (hf₀_support : tsupport f₀ ⊆ interior Kset)
+    (hf₀_pos : ∃ z ∈ interior Kset, 0 < f₀ z) :
+    ∃ f : Real → M → Real, IsLocalScalarDirichletSolution
+      (I := I) G T X s t c Kset f₀ f :=
+  h c hc f₀ hf₀ hf₀_nonneg hf₀_compact hf₀_support hf₀_pos
+
 end Dirichlet
 
 end

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KyFanBarrier
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.InitialData
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Order.Lattice.Nat
 import Mathlib.Tactic.Linarith
@@ -324,27 +325,8 @@ theorem lowerKyFanSum_pos_at_of_local_dirichlet_solution_exists
     (hreactionLip : ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
       LipschitzOnWith Klip (reaction q z)
         {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
-    (hdirichlet :
-      ∀ (c : ℝ), 0 ≤ c → ∀ f₀ : M → ℝ,
-        ContMDiff I 𝓘(ℝ, ℝ) ∞ f₀ →
-        (∀ z, 0 ≤ f₀ z) → HasCompactSupport f₀ →
-        tsupport f₀ ⊆ interior Kset →
-        (∃ z ∈ interior Kset, 0 < f₀ z) →
-        ∃ f : ℝ → M → ℝ,
-          ContinuousOn (fun p : ℝ × M ↦ f p.1 p.2)
-              (Icc s t ×ˢ Kset) ∧
-          (∀ z ∈ Kset, f s z = f₀ z) ∧
-          (∀ q ∈ Icc s t, ∀ z ∈ frontier Kset, f q z = 0) ∧
-          (∀ q ∈ Ioc s t, ∀ z ∈ interior Kset, 0 < f q z) ∧
-          (∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
-            DifferentiableAt ℝ (fun r ↦ f r z) q) ∧
-          (∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
-            MDifferentiableAt I 𝓘(ℝ, ℝ) (f q) z) ∧
-          (∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
-            MDiffAt (T% fun w : M ↦
-              gradientFun (I := I) (G.metric q) (f q) w) z) ∧
-          ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
-            parabolicOperatorWithDrift (I := I) G T X f q z = -c * f q z)
+    (hdirichlet : HasLocalScalarDirichletSolution
+      (I := I) G T X s t Kset)
     (hGconn : ∀ q ∈ Ioc s t,
       G.connection q = LeviCivita (I := I) (G.metric q))
     (hAt : ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
@@ -382,8 +364,8 @@ theorem lowerKyFanSum_pos_at_of_local_dirichlet_solution_exists
     positivity
   obtain ⟨f, hfCont, hfInitialEq, hfBoundary, hfPos, hfTime,
       hfSpace, hfGrad, hfEquation⟩ :=
-    hdirichlet c hcNonneg f₀ hf₀Smooth hf₀Nonneg hf₀Compact hf₀Support
-      ⟨x, hxKset, hf₀x⟩
+    HasLocalScalarDirichletSolution.exists_solution hdirichlet hcNonneg
+      hf₀Smooth hf₀Nonneg hf₀Compact hf₀Support ⟨x, hxKset, hf₀x⟩
   have hc : (Klip : ℝ) < c := by
     dsimp only [c]
     linarith
@@ -428,27 +410,8 @@ theorem finrank_range_le_at_of_local_dirichlet_solution_exists
     (hreactionLip : ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
       LipschitzOnWith Klip (reaction q z)
         {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
-    (hdirichlet :
-      ∀ (c : ℝ), 0 ≤ c → ∀ f₀ : M → ℝ,
-        ContMDiff I 𝓘(ℝ, ℝ) ∞ f₀ →
-        (∀ z, 0 ≤ f₀ z) → HasCompactSupport f₀ →
-        tsupport f₀ ⊆ interior Kset →
-        (∃ z ∈ interior Kset, 0 < f₀ z) →
-        ∃ f : ℝ → M → ℝ,
-          ContinuousOn (fun p : ℝ × M ↦ f p.1 p.2)
-              (Icc s t ×ˢ Kset) ∧
-          (∀ z ∈ Kset, f s z = f₀ z) ∧
-          (∀ q ∈ Icc s t, ∀ z ∈ frontier Kset, f q z = 0) ∧
-          (∀ q ∈ Ioc s t, ∀ z ∈ interior Kset, 0 < f q z) ∧
-          (∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
-            DifferentiableAt ℝ (fun r ↦ f r z) q) ∧
-          (∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
-            MDifferentiableAt I 𝓘(ℝ, ℝ) (f q) z) ∧
-          (∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
-            MDiffAt (T% fun w : M ↦
-              gradientFun (I := I) (G.metric q) (f q) w) z) ∧
-          ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
-            parabolicOperatorWithDrift (I := I) G T X f q z = -c * f q z)
+    (hdirichlet : HasLocalScalarDirichletSolution
+      (I := I) G T X s t Kset)
     (hGconn : ∀ q ∈ Ioc s t,
       G.connection q = LeviCivita (I := I) (G.metric q))
     (hAt : ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
