@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.POUFDerivBound
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RawTensorConnLapL2WtwokTwoBoundChartPouEuclFderiv
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.PartitionOfUnityDerivative
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartComponentRawNorm
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density

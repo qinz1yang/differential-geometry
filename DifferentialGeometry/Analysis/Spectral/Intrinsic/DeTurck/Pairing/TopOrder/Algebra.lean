@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.TameEstimates
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.SlotInsertSelfAdjointPairing
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorCovDivergence
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantDivergence
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

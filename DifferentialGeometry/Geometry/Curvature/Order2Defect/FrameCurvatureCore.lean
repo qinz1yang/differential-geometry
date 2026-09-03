@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.FrozenFrameTrace
+import DifferentialGeometry.Geometry.Connection.Laplacian.FrozenFrameTrace
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

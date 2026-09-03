@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Order2Equivalence
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.AllOrderGardingConstant
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.AllOrder
 import DifferentialGeometry.Analysis.Sobolev.Embedding.RawConnLapToHsOrderDropping
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.MovingFrameGenuineFieldFiberEnergy
 import DifferentialGeometry.Geometry.Connection.TensorNabla.FiberNorm.FrameSum
 import DifferentialGeometry.Geometry.Curvature.Order2Defect.MetricTraceFrame
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.FrozenFrameTrace
+import DifferentialGeometry.Geometry.Connection.Laplacian.FrozenFrameTrace
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotSubstitutionBound

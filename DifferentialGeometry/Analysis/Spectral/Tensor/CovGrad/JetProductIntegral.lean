@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormUniformBound
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Bound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.PointwiseCurvatureBound
 import Mathlib.Analysis.MeanInequalities
 
 noncomputable section

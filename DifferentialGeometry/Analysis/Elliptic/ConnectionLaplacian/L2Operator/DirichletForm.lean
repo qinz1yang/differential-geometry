@@ -1,0 +1,60 @@
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Operator.UnboundedOperator
+open DifferentialGeometry.Analysis.Elliptic
+
+noncomputable section
+
+
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
+open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
+  RealInnerProductSpace InnerProductSpace
+
+namespace DifferentialGeometry
+namespace Analysis
+namespace Elliptic
+namespace ConnectionLaplacian
+
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Integral.L2
+
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+
+def dirichletForm (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+    SmoothCcTensor g r s → SmoothCcTensor g r s → ℝ :=
+  fun T S => - (@inner ℝ _ _
+      ((connLaplacianL2 (I := I) g r s)
+        ⟨SmoothCcTensor.toL2 (g := g) (r := r) (s := s) T,
+          toL2_mem_connLaplacianL2_domain (I := I) g r s T⟩)
+      (SmoothCcTensor.toL2 (g := g) (r := r) (s := s) S))
+
+
+omit [CompactSpace M] in
+theorem dirichletForm_eq_neg_inner_laplacian
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (T S : SmoothCcTensor g r s)
+    (hT : SmoothCcTensor.toL2 (g := g) (r := r) (s := s) T ∈
+      (connLaplacianL2 (I := I) g r s).domain) :
+    dirichletForm (I := I) g r s T S =
+      - (@inner ℝ _ _
+          ((connLaplacianL2 (I := I) g r s)
+            ⟨SmoothCcTensor.toL2 (g := g) (r := r) (s := s) T, hT⟩)
+          (SmoothCcTensor.toL2 (g := g) (r := r) (s := s) S)) := by
+  unfold dirichletForm
+  rfl
+
+end ConnectionLaplacian
+end Elliptic
+end Analysis
+end DifferentialGeometry
+
+end

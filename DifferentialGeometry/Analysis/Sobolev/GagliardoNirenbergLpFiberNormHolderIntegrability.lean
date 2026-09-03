@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.HomFieldCurvature
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorThirdOrderWeitzenbock
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Bundle.Section
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorDirichletCurrentGreenIdentityRS
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.MixedTensor
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

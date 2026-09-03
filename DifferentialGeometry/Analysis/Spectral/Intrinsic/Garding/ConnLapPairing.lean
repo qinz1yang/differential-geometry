@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.SobolevScaleSummable
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.CovDivergenceRoughLaplacianCommutation
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.CovariantDivergence
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.SpectralSeriesSecondOrderSobolev
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapLinear
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.LinearMap
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 
 open DifferentialGeometry.Geometry.Curvature

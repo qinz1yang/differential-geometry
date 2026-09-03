@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Operator.PointwiseMixed
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Operator.MixedTensor
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.InverseMetricFieldParallel
 import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentCovDerivIdentification
 open DifferentialGeometry.Geometry.Connection.Realization

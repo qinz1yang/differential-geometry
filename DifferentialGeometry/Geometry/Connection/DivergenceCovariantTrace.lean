@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ChartFrameNormGlobalSmoothCoordBasisExpansion
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.LocalizedFrame.Coordinates
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartInvariance
 open DifferentialGeometry.Analysis.Elliptic

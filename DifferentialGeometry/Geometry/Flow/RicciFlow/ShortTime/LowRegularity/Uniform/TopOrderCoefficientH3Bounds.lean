@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreN
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TopOrderSeparatedCurvatureBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciTopOrderCoefficientBounds
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.AllOrderGardingConstant
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.AllOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2PointwiseUnif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Morrey
 

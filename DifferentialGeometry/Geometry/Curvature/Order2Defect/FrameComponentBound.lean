@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.CurvatureDefect
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Bound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.PointwiseCurvatureBound
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorPointwiseBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorFiberNormBound

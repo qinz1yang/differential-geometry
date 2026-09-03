@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiff
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.FiniteSpectralRepresentation
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapLinear
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.LinearMap
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Retag
 import Mathlib.Analysis.Normed.Operator.Extend
 open DifferentialGeometry.Analysis.Elliptic

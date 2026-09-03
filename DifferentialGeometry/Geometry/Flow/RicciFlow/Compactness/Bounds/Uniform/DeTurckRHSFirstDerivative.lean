@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.R
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.CovariantDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciTowerTrace
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.RoughLaplacianOperatorFieldApplicationCommutation
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.OperatorFieldApplication
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NormBound
 
 set_option autoImplicit false

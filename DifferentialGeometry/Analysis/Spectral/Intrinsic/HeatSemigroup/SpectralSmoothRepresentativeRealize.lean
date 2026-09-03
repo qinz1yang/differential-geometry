@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DuhamelSmoothing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.TensorHsInterpolationLimit
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenComboGardingReduction
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.AllOrderGardingConstant
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.AllOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.SmoothTensorAllOrderCompleteness
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
     DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs

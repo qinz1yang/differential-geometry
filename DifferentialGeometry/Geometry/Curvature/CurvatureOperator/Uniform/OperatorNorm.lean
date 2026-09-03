@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentityOffCentre
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartFiberTrivialisationOpNorm.ChartRiemannDataUniformBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.RiemannTensorBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.GramMatrixUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
 import DifferentialGeometry.Analysis.Integration.Measure.Rellich

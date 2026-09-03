@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.CurvatureCoefficientBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.TopPathDeviationBounds
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapLinear
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.LinearMap
 
 set_option autoImplicit false
 

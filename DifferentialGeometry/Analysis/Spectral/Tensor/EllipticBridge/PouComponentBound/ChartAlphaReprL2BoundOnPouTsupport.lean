@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RawTensorConnLapL2WtwokTwoBound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.SecondDerivativeRepresentationL2Bound
 import DifferentialGeometry.Tensor.Alternating.DeterminantNorm
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Defs
 open DifferentialGeometry.Analysis.Elliptic

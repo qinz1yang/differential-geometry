@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorThirdOrderWeitzenbock
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorConnLapSecondGradientL2Bound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.SecondDerivativeBound
 
 
 noncomputable section

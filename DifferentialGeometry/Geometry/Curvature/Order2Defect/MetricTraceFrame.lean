@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Geometry.Curvature.Order2Defect.FrameComponentBound
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.CurvatureDefect
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Bound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.PointwiseCurvatureBound
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Tensor02FiberNormBound
 import DifferentialGeometry.Geometry.Operator.Gradient

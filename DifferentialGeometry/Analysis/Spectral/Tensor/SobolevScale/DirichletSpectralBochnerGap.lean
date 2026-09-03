@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNor
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorCovDivergence
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantDivergence
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral

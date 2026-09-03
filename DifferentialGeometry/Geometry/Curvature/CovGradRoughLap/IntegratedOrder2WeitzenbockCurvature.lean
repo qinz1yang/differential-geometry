@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.IntegratedOrder2Weitzenbock
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedCovariantTensor
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorFiberNormBound
 open DifferentialGeometry.Analysis.Elliptic

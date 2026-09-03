@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.CovDivergenceRoughLaplacianCommutation
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.CovariantDivergence
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradSlotPermutationNaturality
 import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotInsertCovariantNaturality
 open DifferentialGeometry.Analysis.Sobolev

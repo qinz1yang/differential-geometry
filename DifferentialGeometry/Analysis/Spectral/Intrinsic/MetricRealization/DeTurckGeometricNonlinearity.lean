@@ -1,7 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.FaithfulH1Embedding
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RawTensorConnLapIterL2WtwokTwoBound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Iterates
+import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovariantDerivativeBounds.ChartPullbackFormula
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRemainderPolynomial
 open DifferentialGeometry.Tensor.Multilinear
@@ -464,8 +465,9 @@ private theorem smoothCcChartRepr_euclid_jointContDiffWithinAt
 
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [I.Boundaryless] in
 private theorem smoothCcCovApplyChartRepr_euclid_jointContDiffWithinAt
+    [modelBoundaryless : I.Boundaryless]
     (g₀ : SmoothRiemannianMetric I M)
     (F : ℝ → SmoothCcTensor g₀ 0 2)
     (S : Set ℝ) (α : M)
@@ -483,6 +485,7 @@ private theorem smoothCcCovApplyChartRepr_euclid_jointContDiffWithinAt
           (covApply (TensorRSNabla.tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g₀))
             B.toFun (fun z : M => (F q.1).toSection z)) ((extChartAt I α).symm q.2))
       (S ×ˢ (extChartAt I α).target) (t₀, extChartAt I α b) := by
+  let _ := modelBoundaryless
   classical
   set φ := extChartAt I α with hφ
   set chartRep : ℝ → E → Tensor0SBundle.TensorRSModel 0 2 ℝ E :=

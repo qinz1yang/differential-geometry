@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.CovDivergenceRoughLaplacianCommutation
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.CovariantDivergence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.AdjointBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.MovingMetricDifferenceEnergy
 open DifferentialGeometry.Analysis.Sobolev

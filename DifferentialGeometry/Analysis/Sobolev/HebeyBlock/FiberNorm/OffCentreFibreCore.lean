@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.FiberNormRiemannianBridge
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartFiberTrivialisationOpNorm.TensorRSChartFiberFromModelOpNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.TensorFiberFromModel
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.TensorSectionL2BoundByComponents
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 open DifferentialGeometry.Analysis.Elliptic

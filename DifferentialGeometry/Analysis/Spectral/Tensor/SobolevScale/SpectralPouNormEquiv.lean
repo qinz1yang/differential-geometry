@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.FaithfulH1Embedding
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.AllOrderGardingConstant
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.AllOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Order2SpectralIterateEquiv
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

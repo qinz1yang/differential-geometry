@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Retag
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.CovDivergenceRoughLaplacianCommutation
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.CovariantDivergence
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricTraceRetag
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SharpFlatEndoField
