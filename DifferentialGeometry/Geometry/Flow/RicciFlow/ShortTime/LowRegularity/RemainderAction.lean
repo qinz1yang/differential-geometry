@@ -8,7 +8,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometri
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldApplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H4Principal
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetIntegral
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Basic
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.TraceRadiusFreeBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.VectorBundle.Expansion

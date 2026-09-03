@@ -1,8 +1,8 @@
 import Mathlib.Analysis.Normed.Operator.NormedSpace
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.AppH2Hs
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SymmRaiseEndoField
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ArmCoefficient.ReindexingNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.SymmetricRaiseEndomorphism
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
 
 
 noncomputable section

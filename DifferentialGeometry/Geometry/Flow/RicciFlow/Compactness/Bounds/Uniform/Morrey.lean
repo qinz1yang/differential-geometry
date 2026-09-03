@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricLoweringTower
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.LoweringJetTower
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.JetTowerComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.ReverseJetSecondDerivative

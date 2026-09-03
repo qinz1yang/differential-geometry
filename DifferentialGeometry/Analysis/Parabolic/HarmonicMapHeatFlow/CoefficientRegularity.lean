@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.MapRegularity
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInner
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.CurvatureSupremum
 
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PerturbedCurvatureOperatorBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovDerivConnectionDifferenceQuadraticBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.PerturbationOperatorBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantDerivativeQuadraticBounds
 
 set_option autoImplicit false
 

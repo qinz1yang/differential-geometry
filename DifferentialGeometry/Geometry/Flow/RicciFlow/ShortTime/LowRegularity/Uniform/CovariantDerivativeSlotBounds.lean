@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.GradSlotCurvatureBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.GradientSlotBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.CurvatureJetOne
 
 set_option autoImplicit false

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ParametricAppHs
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricTimeDeriv
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.TimeDerivative
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetIntegral
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

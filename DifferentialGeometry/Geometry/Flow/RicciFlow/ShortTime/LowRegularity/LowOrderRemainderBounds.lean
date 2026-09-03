@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.ConnectionInsertionFirstOrderBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSPathIntegral
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetIntegral
 open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
     DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
     DifferentialGeometry.Analysis.Spectral.MetricRealization

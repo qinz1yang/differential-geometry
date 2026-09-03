@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderCoefficientJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LowOrderCoefficientJetBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.PrincipalArm.TameBounds
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.PrincipalTerm.TameBounds
 
 noncomputable section
 

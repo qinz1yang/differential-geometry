@@ -1,0 +1,486 @@
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCovariantJetCancellation
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrectionZeroJointSmooth
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSLowCoeff
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetIntegral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
+
+noncomputable section
+
+
+open Set Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
+open scoped Topology Manifold BigOperators ContDiff
+
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
+
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Integral.Measure
+
+open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.PDE.DeTurck.RicciLinearization
+open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+  [BoundarylessManifold I M]
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [BoundarylessManifold I M] in
+private theorem tangent_model_pair_eq (x : M) (v w : TangentSpace I x) :
+    (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (![v, w] j)) =
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
+  funext j
+  fin_cases j <;> rfl
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+    [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
+private theorem unitModel_add_app
+    (g : SmoothRiemannianMetric I M) (A B : SmoothCcTensor g 0 2)
+    (x : M) (v : Fin 2 → E) :
+    unitModel (I := I) (M := M) g 2 (A + B) x v =
+      unitModel (I := I) (M := M) g 2 A x v +
+        unitModel (I := I) (M := M) g 2 B x v := by
+  have hfun : unitModel (I := I) (M := M) g 2 (A + B) x =
+      unitModel (I := I) (M := M) g 2 A x +
+        unitModel (I := I) (M := M) g 2 B x := by
+    simp only [unitModel]
+    rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
+      add_apply, Tensor0SSpace.toModel_add]
+  rw [hfun, add_apply]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+    [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
+private theorem unitModel_smul_app
+    (g : SmoothRiemannianMetric I M) (c : ℝ) (A : SmoothCcTensor g 0 2)
+    (x : M) (v : Fin 2 → E) :
+    unitModel (I := I) (M := M) g 2 (c • A) x v =
+      c * unitModel (I := I) (M := M) g 2 A x v := by
+  have hfun : unitModel (I := I) (M := M) g 2 (c • A) x =
+      c • unitModel (I := I) (M := M) g 2 A x := by
+    simp only [unitModel]
+    rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
+      smul_apply, Tensor0SSpace.toModel_smul]
+  rw [hfun, smul_apply, smul_eq_mul]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+    [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
+private theorem jointRS_smul {r q : ℕ} {S : Set ℝ} (c : ℝ)
+    (A : ∀ p : M × ℝ, TensorRSSpace r q I p.1)
+    (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel r q ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel r q ℝ E)
+        (E := fun z : M => TensorRSSpace r q I z) p.1 (A p)) ((Set.univ : Set M) ×ˢ S)) :
+    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel r q ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel r q ℝ E)
+        (E := fun z : M => TensorRSSpace r q I z) p.1 (c • A p))
+      ((Set.univ : Set M) ×ˢ S) := by
+  let _ := tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r q
+  intro p₀ hp₀
+  rw [Bundle.contMDiffWithinAt_totalSpace]
+  refine ⟨contMDiffWithinAt_fst, ?_⟩
+  set x₀ := p₀.1 with hx₀
+  set e := trivializationAt (TensorRSModel r q ℝ E)
+    (fun z : M => TensorRSSpace r q I z) x₀ with he
+  have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := TensorRSModel r q ℝ E)
+    (E := fun z : M => TensorRSSpace r q I z)).mp (hA p₀ hp₀)
+  refine ((contMDiffWithinAt_const (I := I.prod 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+    (c := c)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
+  · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S),
+        p.1 ∈ e.baseSet :=
+      (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
+        (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
+    filter_upwards [hbase] with p hx
+    exact (e.linear ℝ hx).map_smul c (A p)
+  · exact (e.linear ℝ (by rw [he, ← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)).map_smul
+      c (A p₀)
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+    [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
+private theorem hjoint_smul
+    (g : SmoothRiemannianMetric I M) (r : ℕ)
+    (Φ : ℝ → SmoothCcTensor g r 2) {δ δ' : ℝ} (c : ℝ)
+    (hΦ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Φ
+      (δ := δ) (δ' := δ')) :
+    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+      (fun s => c • Φ s) (δ := δ) (δ' := δ') := by
+  rw [linearizedRicciThreeArmHjoint] at hΦ ⊢
+  have h := jointRS_smul (I := I) (M := M) c
+    (fun p : M × ℝ => (Φ p.2).toSection p.1) hΦ
+  refine h.congr (fun p _ => ?_)
+  refine congrArg (fun t => TotalSpace.mk' (TensorRSModel r 2 ℝ E)
+    (E := fun z : M => TensorRSSpace r 2 I z) p.1 t) ?_
+  rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+    [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
+private theorem hjoint_add
+    (g : SmoothRiemannianMetric I M) (r : ℕ)
+    (Φ Ψ : ℝ → SmoothCcTensor g r 2) {δ δ' : ℝ}
+    (hΦ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Φ
+      (δ := δ) (δ' := δ'))
+    (hΨ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Ψ
+      (δ := δ) (δ' := δ')) :
+    linearizedRicciThreeArmHjoint (I := I) (M := M) g r
+      (fun s => Φ s + Ψ s) (δ := δ) (δ' := δ') := by
+  rw [linearizedRicciThreeArmHjoint] at hΦ hΨ ⊢
+  have h := joint_rs_add (I := I) (r := r) (s := 2)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (fun p : M × ℝ => (Φ p.2).toSection p.1)
+    (fun p : M × ℝ => (Ψ p.2).toSection p.1) hΦ hΨ
+  refine h.congr (fun p _ => ?_)
+  refine congrArg (fun t => TotalSpace.mk' (TensorRSModel r 2 ℝ E)
+    (E := fun z : M => TensorRSSpace r 2 I z) p.1 t) ?_
+  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
+private theorem symmS_eq_self_local
+    (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
+    (hS : ∀ (x : M) (v w : TangentSpace I x),
+      smoothCcTensorBilinForm (I := I) g S x v w = smoothCcTensorBilinForm (I := I) g S x w v) :
+    ccTensor02Symm (I := I) (M := M) g S = S := by
+  have hswap : domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1) S = S := by
+    refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g (fun x => ?_)
+    rw [domDomCongrSection_unitModel]
+    refine ContinuousMultilinearMap.ext (fun v => ?_)
+    rw [ContinuousMultilinearMap.domDomCongr_apply]
+    have hv : ∀ u w : TangentSpace I x,
+        unitModel (I := I) (M := M) g 2 S x ![u, w] =
+          unitModel (I := I) (M := M) g 2 S x ![w, u] := by
+      intro u w
+      rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g S x u w,
+        unitModel_eq_ccTensorBilin_local (I := I) (M := M) g S x w u]
+      exact hS x u w
+    have hveta : (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) = ![v 1, v 0] := by
+      funext i
+      fin_cases i <;> rfl
+    have hveta' : v = ![v 0, v 1] := by
+      funext i
+      fin_cases i <;> rfl
+    rw [hveta]
+    conv_rhs => rw [hveta']
+    exact hv (v 1) (v 0)
+  rw [ccTensor02Symm, hswap, ← two_smul ℝ S, smul_smul,
+    show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
+
+omit [CompactSpace M] [SigmaCompactSpace M]
+    [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem chartLie_symm
+    (g g_bg : SmoothRiemannianMetric I M) (x : M)
+    (i j : Fin (Module.finrank ℝ E)) (y : E) :
+    chartLieDeTurckComp (I := I) g g_bg x i j y =
+      chartLieDeTurckComp (I := I) g g_bg x j i y := by
+  have hA : (∑ k : Fin (Module.finrank ℝ E),
+        chartDeTurckVFComp (I := I) g g_bg x k y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g x i j) y) =
+      ∑ k : Fin (Module.finrank ℝ E),
+        chartDeTurckVFComp (I := I) g g_bg x k y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g x j i) y := by
+    refine Finset.sum_congr rfl (fun k _ => ?_)
+    congr 1
+    apply congrArg (fun f : E → ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k f y)
+    funext z
+    exact chartGramOnE_symm (I := I) g x i j z
+  have hB : (∑ k : Fin (Module.finrank ℝ E),
+        chartGramOnE (I := I) g x k j y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g g_bg x k) y) =
+      ∑ k : Fin (Module.finrank ℝ E),
+        chartGramOnE (I := I) g x j k y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g g_bg x k) y := by
+    refine Finset.sum_congr rfl (fun k _ => ?_)
+    rw [chartGramOnE_symm (I := I) g x k j y]
+  have hC : (∑ k : Fin (Module.finrank ℝ E),
+        chartGramOnE (I := I) g x i k y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g g_bg x k) y) =
+      ∑ k : Fin (Module.finrank ℝ E),
+        chartGramOnE (I := I) g x k i y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g g_bg x k) y := by
+    refine Finset.sum_congr rfl (fun k _ => ?_)
+    rw [chartGramOnE_symm (I := I) g x i k y]
+  rw [chartLieDeTurckComp_def, chartLieDeTurckComp_def, hA, hB, hC]
+  ring
+
+omit [BoundarylessManifold I M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+private theorem lieSlope_symm
+    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
+    (x : M) (i j : Fin (Module.finrank ℝ E)) {s : ℝ} (hs : s ∈ Ioo (0 : ℝ) 1) :
+    lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+        g_bg x i j s (extChartAt I x x) =
+      lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+        g_bg x j i s (extChartAt I x x) := by
+  rw [← deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope (I := I)
+      g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg x i j hs,
+    ← deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope (I := I)
+      g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg x j i hs]
+  congr 1
+  funext t
+  exact chartLie_symm (I := I)
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t) g_bg x i j (extChartAt I x x)
+
+omit [SigmaCompactSpace M] in
+theorem lieSum_eq_arms
+    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
+    (x : M) (v w : TangentSpace I x) {s : ℝ} (hs : s ∈ Ioo (0 : ℝ) 1) :
+    lieSumSlope (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s =
+      unitModel (I := I) (M := M) g₀ 2
+        (operatorFieldApply (I := I) (M := M) g₀ 2 2
+              (deTurckLieCoeffField (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg +
+                lieCorrectionZeroField (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+              (iteratedCovGrad (I := I) g₀ 0 2 0
+                (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
+            operatorFieldApply (I := I) (M := M) g₀ 3 2
+              (deTurckLieArm1Coeff (I := I) (M := M) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+              (iteratedCovGrad (I := I) g₀ 0 2 1
+                (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
+            operatorFieldApply (I := I) (M := M) g₀ 4 2
+              (deTurckLieArm2PrincipalCoeff (I := I) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
+              (iteratedCovGrad (I := I) g₀ 0 2 2
+                (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
+  classical
+  let W : SmoothCcTensor g₀ 0 2 :=
+    operatorFieldApply (I := I) (M := M) g₀ 2 2
+          (deTurckLieCoeffField (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg +
+            lieCorrectionZeroField (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+          (iteratedCovGrad (I := I) g₀ 0 2 0
+            (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
+        operatorFieldApply (I := I) (M := M) g₀ 3 2
+          (deTurckLieArm1Coeff (I := I) (M := M) g₀
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+          (iteratedCovGrad (I := I) g₀ 0 2 1
+            (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) +
+        operatorFieldApply (I := I) (M := M) g₀ 4 2
+          (deTurckLieArm2PrincipalCoeff (I := I) g₀
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
+          (iteratedCovGrad (I := I) g₀ 0 2 2
+            (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))
+  unfold lieSumSlope
+  simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_repr, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply]
+  change (∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+        lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+          g_bg x i k s (extChartAt I x x)) =
+    unitModel (I := I) (M := M) g₀ 2 W x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x w]
+  calc
+    _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+          lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+            g_bg x k i s (extChartAt I x x) := by
+      refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
+      rw [lieSlope_symm (I := I) g₀ g_bg T T'
+        hδ_lt hδ hδ'_lt hδ' x i k hs]
+    _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+          unitModel (I := I) (M := M) g₀ 2 W x
+            ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] := by
+      refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
+      rw [lieSlope_eq_arms (I := I) g₀ g_bg T T'
+        hδ_lt hδ hδ'_lt hδ' s x k i]
+    _ = _ := unitModel_basis_expand_two (I := I) (M := M) g₀ W x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x w]
+
+def ricciDeTurckRemainderZeroOrderCoefficient
+    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    {δ : ℝ}
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    {δ' : ℝ}
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
+    (s : ℝ) : SmoothCcTensor g₀ 2 2 :=
+  (-2 : ℝ) • linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s +
+    (deTurckLieCoeffField (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg +
+      lieCorrectionZeroField (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+
+
+def ricciDeTurckRemainderFirstOrderCoefficient
+    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    {δ : ℝ}
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    {δ' : ℝ}
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
+    (s : ℝ) : SmoothCcTensor g₀ 3 2 :=
+  (-2 : ℝ) • linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s +
+    deTurckLieArm1Coeff (I := I) (M := M) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
+
+omit [SigmaCompactSpace M] in
+theorem ricciDeTurckRemainderZeroOrderCoefficient_path_joint
+    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    {δ : ℝ}
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    {δ' : ℝ}
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
+    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+      (fun s => ricciDeTurckRemainderZeroOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+      (δ := δ) (δ' := δ') := by
+  have hR := linearizedRicciConnectionDifferenceOrder0Coeff_jointContMDiffOn_smallPerturbationSet
+    (I := I) g₀ T T' hδ hδ'
+  have hL := deTurckLieCoeffField_metricPerturbationPath_jointSmooth
+    (I := I) g₀ T T' hδ hδ' g_bg
+  have hC := lieCorrectionZero_path_joint (I := I) g₀ T T' hδ hδ' g_bg
+  have hLC := hjoint_add (I := I) (M := M) g₀ 2 _ _ hL hC
+  have hR' := hjoint_smul (I := I) (M := M) g₀ 2 _ (-2 : ℝ) hR
+  simpa only [ricciDeTurckRemainderZeroOrderCoefficient] using hjoint_add (I := I) (M := M) g₀ 2 _ _ hR' hLC
+
+omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem ricciDeTurckRemainderFirstOrderCoefficient_path_joint
+    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    {δ : ℝ}
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    {δ' : ℝ}
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ') :
+    linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
+      (fun s => ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+      (δ := δ) (δ' := δ') := by
+  have hR := linearizedRicciConnectionDifferenceOrder1Coeff_jointContMDiffOn_smallPerturbationSet
+    (I := I) g₀ T T' hδ hδ'
+  have hL := deTurckLieArm1Coeff_metricPerturbationPath_jointSmooth
+    (I := I) g₀ T T' hδ hδ' g_bg
+  have hR' := hjoint_smul (I := I) (M := M) g₀ 3 _ (-2 : ℝ) hR
+  simpa only [ricciDeTurckRemainderFirstOrderCoefficient] using hjoint_add (I := I) (M := M) g₀ 3 _ _ hR' hL
+
+omit [SigmaCompactSpace M] in
+theorem ricciDeTurckRemainderLowOrder_eq_arms
+    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
+      smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
+    (hT'symm : ∀ (x : M) (v w : TangentSpace I x),
+      smoothCcTensorBilinForm (I := I) g₀ T' x v w = smoothCcTensorBilinForm (I := I) g₀ T' x w v)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
+    (x : M) (v w : TangentSpace I x) {s : ℝ} (hs : s ∈ Ioo (0 : ℝ) 1) :
+    rhsLowTerm (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s =
+      unitModel (I := I) (M := M) g₀ 2
+        (operatorFieldApply (I := I) (M := M) g₀ 2 2
+            (ricciDeTurckRemainderZeroOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+            (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
+          operatorFieldApply (I := I) (M := M) g₀ 3 2
+            (ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+            (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
+  classical
+  have hsubsymm : ∀ (y : M) (u z : TangentSpace I y),
+      smoothCcTensorBilinForm (I := I) g₀ (T - T') y u z =
+        smoothCcTensorBilinForm (I := I) g₀ (T - T') y z u := by
+    intro y u z
+    rw [ccTensorBilin_sub, ccTensorBilin_sub, hTsymm y u z, hT'symm y u z]
+  have hsymmS : ccTensor02Symm (I := I) (M := M) g₀ (T - T') = T - T' :=
+    symmS_eq_self_local (I := I) (M := M) g₀ (T - T') hsubsymm
+  have hLie := lieSum_eq_arms (I := I) g₀ g_bg T T'
+    hδ_lt hδ hδ'_lt hδ' x v w hs
+  have hLieSplit := lieSum_eq_split (I := I) g₀ g_bg T T'
+    hδ_lt hδ hδ'_lt hδ' x v w s
+  have hTop := lieTop_add_swap (I := I) g₀ T T'
+    hδ_lt hδ hδ'_lt hδ' x v w s
+  rw [hsymmS] at hLie hTop
+  rw [tangent_model_pair_eq] at hTop
+  have hLower :
+      lieOneSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
+          lieZeroSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s -
+          lieTopTailSwap (I := I) g₀ T T' hδ hδ' x v w s =
+        unitModel (I := I) (M := M) g₀ 2
+          (operatorFieldApply (I := I) (M := M) g₀ 2 2
+              (deTurckLieCoeffField (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg +
+                lieCorrectionZeroField (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+              (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
+            operatorFieldApply (I := I) (M := M) g₀ 3 2
+              (deTurckLieArm1Coeff (I := I) (M := M) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+              (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T'))) x
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
+    simp only [unitModel_add_app] at hLie ⊢
+    linear_combination hLie - hLieSplit - hTop
+  have hR0 :
+      linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s +
+          (linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s -
+            linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s) =
+        linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s := by
+    abel
+  have hR1 :
+      linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s +
+          (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s -
+            linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s) =
+        linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s := by
+    abel
+  unfold rhsLowTerm ricciDeTurckRemainderZeroOrderCoefficient ricciDeTurckRemainderFirstOrderCoefficient
+  rw [hR0, hR1]
+  simp only [operatorFieldApplication_add_left, unitModel_add_app] at hLower
+  simp only [operatorFieldApplication_add_left, operatorFieldApplication_smul_left, unitModel_add_app,
+    unitModel_smul_app, tangent_model_pair_eq]
+  linear_combination hLower
+
+omit [SigmaCompactSpace M] in
+theorem ricciDeTurckRemainderSlope_eq_arms
+    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
+      smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
+    (hT'symm : ∀ (x : M) (v w : TangentSpace I x),
+      smoothCcTensorBilinForm (I := I) g₀ T' x v w = smoothCcTensorBilinForm (I := I) g₀ T' x w v)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
+    (x : M) (v w : TangentSpace I x) {s : ℝ} (hs : s ∈ Ioo (0 : ℝ) 1) :
+    rhsSumSlope (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s =
+      unitModel (I := I) (M := M) g₀ 2
+        (operatorFieldApply (I := I) (M := M) g₀ 2 2
+            (ricciDeTurckRemainderZeroOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+            (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T')) +
+          operatorFieldApply (I := I) (M := M) g₀ 3 2
+            (ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M) g₀ g_bg T T' hδ hδ' s)
+            (iteratedCovGrad (I := I) g₀ 0 2 1 (T - T')) +
+          operatorFieldApply (I := I) (M := M) g₀ 4 2
+            (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
+            (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
+  rw [rhsSlope_eq_split (I := I) g₀ g_bg T T' hTsymm hT'symm
+    hδ_lt hδ hδ'_lt hδ' x v w hs]
+  rw [ricciDeTurckRemainderLowOrder_eq_arms (I := I) g₀ g_bg T T' hTsymm hT'symm
+    hδ_lt hδ hδ'_lt hδ' x v w hs]
+  unfold rhsTopTerm
+  simp only [unitModel_add_app, tangent_model_pair_eq]
+  ring
+
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

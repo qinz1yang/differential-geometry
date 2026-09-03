@@ -9,7 +9,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.CompactInclusion
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.SmallC0
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
 import DifferentialGeometry.Geometry.Connection.Laplacian.Musical
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 open DifferentialGeometry.Analysis.Sobolev

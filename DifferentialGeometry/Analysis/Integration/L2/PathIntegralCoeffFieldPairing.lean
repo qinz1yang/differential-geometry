@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PathIntegralFibreNormTransfer
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.PathIntegralFibreNorm
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ParametricSmoothness
 import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness

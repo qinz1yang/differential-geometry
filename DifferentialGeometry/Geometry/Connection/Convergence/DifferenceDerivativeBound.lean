@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovDerivConnectionDifferenceQuadraticBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantDerivativeQuadraticBounds
 
 import DifferentialGeometry.Geometry.Metric.Convergence.LaplacianDifference
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra

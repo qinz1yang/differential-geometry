@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.SectionRealization
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSThreeArmCancel
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSCovariantJetCancellation
 open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature

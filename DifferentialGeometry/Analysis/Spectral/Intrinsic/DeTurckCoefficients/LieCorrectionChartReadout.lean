@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ChartBasisReadout
+import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.BasisEvaluation
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.ChartRicciDerivative
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArm.CoefficientFields
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CoefficientFields
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RealizeMetricChartGramDifference
 
 open DifferentialGeometry.Geometry.Curvature
