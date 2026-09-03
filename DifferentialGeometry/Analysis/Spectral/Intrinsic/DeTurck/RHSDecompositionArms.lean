@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSZeroDecomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSThreeArmCancel
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSPathIntegral
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArmJointAlgebra
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArm.JointAlgebra
 
 noncomputable section
 

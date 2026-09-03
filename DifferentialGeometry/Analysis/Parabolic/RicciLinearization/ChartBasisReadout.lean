@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.UnitModel
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArm.CoefficientFields
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleLocalityIdentities

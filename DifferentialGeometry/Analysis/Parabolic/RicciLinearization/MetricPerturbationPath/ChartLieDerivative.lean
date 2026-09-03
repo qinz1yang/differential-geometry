@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPathChartRicciDerivative
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.ChartRicciDerivative
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

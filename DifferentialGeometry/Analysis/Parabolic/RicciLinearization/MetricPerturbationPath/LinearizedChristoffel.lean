@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPathChartRicciDerivative
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.ChartRicciDerivative
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ChristoffelLinearization
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.PerOrderEnvelopes
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormUniformBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArm.CoefficientFields
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Envelope
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValue
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnectionDifferenceCovGradBridge
 import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateFormula
 open DifferentialGeometry.Tensor.Multilinear

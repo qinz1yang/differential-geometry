@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PerturbedRiemannOpDifferenceBound
 import DifferentialGeometry.Geometry.Metric.Convergence.SelfCovariantDerivative
 
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFields
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeNormBridge

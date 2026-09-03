@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValue
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceJetTower
 import DifferentialGeometry.Geometry.Curvature.MetricPerturbationPathCurvatureJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PerturbedRiemannOpDifferenceBound

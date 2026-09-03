@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CometricTraceSelfBound
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArm.CometricTraceSelf
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCometricExtraction
 
 set_option autoImplicit false

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArm.CoefficientFields
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetIntegral
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 

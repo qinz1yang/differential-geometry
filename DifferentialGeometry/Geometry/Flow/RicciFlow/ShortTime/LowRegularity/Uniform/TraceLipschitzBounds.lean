@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.InverseCoefficientLipschitzBounds
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CometricTraceSelfBound
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArm.CometricTraceSelf
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.KoszulSectionParallelRaise
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
