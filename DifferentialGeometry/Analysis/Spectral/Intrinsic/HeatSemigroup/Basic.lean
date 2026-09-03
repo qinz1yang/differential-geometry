@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.AbstractSpectralSemigroupContinuity
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Semigroup
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -48,14 +48,14 @@ noncomputable def tensorHeatSemigroup
   abstractSpectralSemigroup (intrinsicEigenbasis (I := I) (M := M) g r s)
     (intrinsic_lambda_nonneg (I := I) (M := M) g r s) t
 
-theorem tensorHeatSemigroup_intrinsic_apply_zero
+theorem tensorHeatSemigroup_apply_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     tensorHeatSemigroup (I := I) (M := M) g r s 0 =
       ContinuousLinearMap.id ℝ (TensorL2 r s g) :=
   abstractSpectralSemigroup_apply_zero (intrinsicEigenbasis (I := I) (M := M) g r s)
     (intrinsic_lambda_nonneg (I := I) (M := M) g r s)
 
-theorem tensorHeatSemigroup_intrinsic_apply_add
+theorem tensorHeatSemigroup_apply_add
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {t s' : ℝ} (ht : 0 ≤ t) (hs : 0 ≤ s') :
     tensorHeatSemigroup (I := I) (M := M) g r s (t + s') =
@@ -64,13 +64,13 @@ theorem tensorHeatSemigroup_intrinsic_apply_add
   abstractSpectralSemigroup_apply_add (intrinsicEigenbasis (I := I) (M := M) g r s)
     (intrinsic_lambda_nonneg (I := I) (M := M) g r s) ht hs
 
-theorem tensorHeatSemigroup_intrinsic_opNorm_le_one
+theorem tensorHeatSemigroup_opNorm_le_one
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (t : ℝ) :
     ‖tensorHeatSemigroup (I := I) (M := M) g r s t‖ ≤ 1 :=
   abstractSpectralSemigroup_opNorm_le_one (intrinsicEigenbasis (I := I) (M := M) g r s)
     (intrinsic_lambda_nonneg (I := I) (M := M) g r s) t
 
-theorem tensorHeatSemigroup_intrinsic_continuousOn
+theorem tensorHeatSemigroup_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : TensorL2 r s g) :
     ContinuousOn (fun t : ℝ =>
         tensorHeatSemigroup (I := I) (M := M) g r s t T)
@@ -78,7 +78,7 @@ theorem tensorHeatSemigroup_intrinsic_continuousOn
   abstractSpectralSemigroup_continuousOn (intrinsicEigenbasis (I := I) (M := M) g r s)
     (intrinsic_lambda_nonneg (I := I) (M := M) g r s) T
 
-theorem tensorHeatSemigroup_intrinsic_inner_eigenbasis
+theorem tensorHeatSemigroup_inner_eigenbasis
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {t : ℝ} (ht : 0 ≤ t) (u₀ : TensorL2 r s g)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -153,10 +153,6 @@ theorem tensorHeatSemigroup_intrinsic_inner_eigenbasis
         heatCoeff (TensorEigenIdx.lambda (I := I) (M := M)) t i *
           ⟪b i, u₀⟫_ℝ := h_eq.symm
   rw [h_inner_val, heatCoeff_def]
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) (t : ℝ) :
-    TensorL2 r s g →L[ℝ] TensorL2 r s g :=
-  tensorHeatSemigroup (I := I) (M := M) g r s t
 
 end Spectral
 end Analysis

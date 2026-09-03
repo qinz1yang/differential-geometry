@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.BoundedC0Intrinsic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.BoundedC0
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.MildSolutionExistence
 
 noncomputable section
@@ -21,7 +21,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
-theorem tensor_quasilinear_heat_mild_solution_existence_intrinsic
+theorem exists_tensor_quasilinear_heat_mild_solution
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T_0 : TensorL2 r s g)
     {N : TensorL2 r s g → TensorL2 r s g} {L : ℝ≥0} (hN : LipschitzWith L N) :
@@ -38,9 +38,9 @@ theorem tensor_quasilinear_heat_mild_solution_existence_intrinsic
   refine ⟨T, hT_pos, u, hu_cont, hu_zero, ?_⟩
   intro t ht
   have h := hu_eq t ht
-  simpa only [tensorBoundedC0Semigroup_intrinsic_apply] using h
+  simpa only [tensorBoundedC0Semigroup_apply] using h
 
-theorem tensor_quasilinear_parabolic_unique
+theorem tensor_quasilinear_heat_mild_solution_unique
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T_0 : TensorL2 r s g)
     {N : TensorL2 r s g → TensorL2 r s g} {L : ℝ≥0} (hN : LipschitzWith L N)
@@ -60,9 +60,9 @@ theorem tensor_quasilinear_parabolic_unique
     (tensorBoundedC0Semigroup (I := I) (M := M) g r s) T_0 hN
     hT hTL hu hv ?_ ?_
   · intro t ht
-    simpa only [tensorBoundedC0Semigroup_intrinsic_apply] using hu_eq t ht
+    simpa only [tensorBoundedC0Semigroup_apply] using hu_eq t ht
   · intro t ht
-    simpa only [tensorBoundedC0Semigroup_intrinsic_apply] using hv_eq t ht
+    simpa only [tensorBoundedC0Semigroup_apply] using hv_eq t ht
 
 end Spectral
 end Analysis

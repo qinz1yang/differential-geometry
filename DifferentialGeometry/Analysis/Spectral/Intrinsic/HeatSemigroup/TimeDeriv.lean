@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.AbstractSpectralSemigroupContinuity
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Intrinsic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Basic
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.Calculus.MeanValue
@@ -608,7 +608,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-theorem tensorHeatSemigroup_intrinsic_hasDerivAt
+theorem tensorHeatSemigroup_hasDerivAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g) :
     HasDerivAt

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Intrinsic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Basic
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.BoundedC0Semigroup
 
 noncomputable section
@@ -26,16 +26,16 @@ noncomputable def tensorBoundedC0Semigroup
     BoundedC0Semigroup (TensorL2 r s g) where
   toFun := fun t => tensorHeatSemigroup (I := I) (M := M) g r s t
   apply_zero :=
-    tensorHeatSemigroup_intrinsic_apply_zero (I := I) (M := M) g r s
+    tensorHeatSemigroup_apply_zero (I := I) (M := M) g r s
   apply_add := fun _ _ ht hs =>
-    tensorHeatSemigroup_intrinsic_apply_add (I := I) (M := M) g r s ht hs
+    tensorHeatSemigroup_apply_add (I := I) (M := M) g r s ht hs
   opNorm_le_one := fun t _ =>
-    tensorHeatSemigroup_intrinsic_opNorm_le_one (I := I) (M := M) g r s t
+    tensorHeatSemigroup_opNorm_le_one (I := I) (M := M) g r s t
   continuousOn_apply := fun T =>
-    tensorHeatSemigroup_intrinsic_continuousOn (I := I) (M := M) g r s T
+    tensorHeatSemigroup_continuousOn (I := I) (M := M) g r s T
 
 @[simp]
-theorem tensorBoundedC0Semigroup_intrinsic_apply
+theorem tensorBoundedC0Semigroup_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (t : ℝ) :
     tensorBoundedC0Semigroup (I := I) (M := M) g r s t =
       tensorHeatSemigroup (I := I) (M := M) g r s t :=

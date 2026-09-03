@@ -1,9 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.Resolvent
 import Mathlib.Analysis.Normed.Operator.Compact.Basic
 
-
 noncomputable section
-
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -68,12 +66,6 @@ theorem tensorResolventL2_isCompactOperator_and_isSelfAdjoint
   ⟨tensorResolventL2_isCompactOperator_of_isCompactOperator
     (I := I) (M := M) g r s h_H1L2,
    tensorResolventL2_isSelfAdjoint (I := I) (M := M) g r s⟩
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (h : IsCompactOperator (TensorH1ComplToTensorL2 (I := I) (M := M) g r s)) :
-    IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s) :=
-  tensorResolventL2_isCompactOperator_of_isCompactOperator
-    (I := I) (M := M) g r s h
 
 end TensorSpectral
 end Parabolic

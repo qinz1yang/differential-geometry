@@ -566,7 +566,7 @@ theorem tensor00ScalarL2Equiv_tensorHeatSemigroup
                 congr 1
                 exact eigenvectorSmooth00_eq_basis (I := I) (M := M) g i
               rw [hc1]
-              rw [tensorHeatSemigroup_intrinsic_tensorL2Coeff_ofCompact (I := I) (M := M) g 0 0 ht U i]
+              rw [tensorL2Coeff_tensorHeatSemigroup (I := I) (M := M) g 0 0 ht U i]
               have hc2 : tensorL2Coeff (I := I) (M := M)
                     (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 0) U i =
                   ⟪(eigenvectorSmooth g 0 0 i : TensorL2 0 0 g), U⟫_ℝ := by
@@ -1487,7 +1487,7 @@ theorem scalarHeatCoeff_eq_inner_heatSemigroup
           exact eigenvectorSmooth00_eq_basis (I := I) (M := M) g j
     _ = Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) j) * t) *
           tensorL2Coeff (I := I) (M := M) hc u₀ j := by
-          exact tensorHeatSemigroup_intrinsic_tensorL2Coeff_ofCompact
+          exact tensorL2Coeff_tensorHeatSemigroup
             (I := I) (M := M) g 0 0 ht u₀ j
     _ = scalarHeatCoeff (I := I) (M := M) g u₀ j t := rfl
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.CompactInclusion
-import DifferentialGeometry.Analysis.Spectral.Tensor.Rellich.Tensor
+import DifferentialGeometry.Analysis.Spectral.Tensor.Rellich.Resolvent
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.Resolvent
 
 noncomputable section
@@ -38,16 +38,12 @@ theorem tensorResolventL2_isCompactOperator
       (I := I) (M := M) g r s)
 
 omit [CompleteSpace E] in
-theorem tensorResolventL2_isCompactOperator_isSelfAdjoint_intrinsic
+theorem tensorResolventL2_isCompactOperator_and_isSelfAdjoint
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s) ∧
       IsSelfAdjoint (tensorResolventL2 (I := I) (M := M) g r s) :=
   ⟨tensorResolventL2_isCompactOperator (I := I) (M := M) g r s,
    tensorResolventL2_isSelfAdjoint (I := I) (M := M) g r s⟩
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s) :=
-  tensorResolventL2_isCompactOperator (I := I) (M := M) g r s
 
 end Spectral
 end Analysis

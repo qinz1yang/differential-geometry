@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Intrinsic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Basic
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SmoothingHs
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
@@ -31,7 +31,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-theorem tensorHeatSemigroup_intrinsic_tensorL2Coeff_ofCompact
+theorem tensorL2Coeff_tensorHeatSemigroup
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {t : ℝ} (ht : 0 ≤ t) (u₀ : TensorL2 r s g)
     (i : TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g r s) :
@@ -43,7 +43,7 @@ theorem tensorHeatSemigroup_intrinsic_tensorL2Coeff_ofCompact
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           u₀ i := by
   rw [tensorL2Coeff_eq_inner, tensorL2Coeff_eq_inner]
-  exact tensorHeatSemigroup_intrinsic_inner_eigenbasis
+  exact tensorHeatSemigroup_inner_eigenbasis
     (I := I) (M := M) g r s ht u₀ i
 
 private def baseHZero (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -107,7 +107,7 @@ theorem heat_semigroup_into_tensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ
         (tensorHeatSemigroup (I := I) (M := M) g r s t u₀)) i =
         Real.exp (-(TensorHeatEquation.TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
           tensorL2Coeff (I := I) (M := M) h_compact u₀ i := by
-    have h := tensorHeatSemigroup_intrinsic_tensorL2Coeff_ofCompact
+    have h := tensorL2Coeff_tensorHeatSemigroup
       (I := I) (M := M) g r s ht.le u₀ i
     simpa only [tensorL2Coeff] using h
   rw [hlhs, hrhs]
