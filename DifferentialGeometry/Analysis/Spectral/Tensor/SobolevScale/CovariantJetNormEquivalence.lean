@@ -1,17 +1,10 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRemainderPolynomial
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RawTensorConnLapIterL2WtwokTwoBound
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.FaithfulH1Embedding
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocallyLipschitzTruncation
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingManifoldC0
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingReverseHebeyToHs
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNormEquiv
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.Basic
-import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Sobolev.SmoothCcTensor
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -26,11 +19,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
-open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 
