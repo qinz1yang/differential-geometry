@@ -102,7 +102,6 @@ section Dirichlet
 
 theorem scalar_dirichlet_solution_nonnegative
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real → (x : M) → TangentSpace I x)
