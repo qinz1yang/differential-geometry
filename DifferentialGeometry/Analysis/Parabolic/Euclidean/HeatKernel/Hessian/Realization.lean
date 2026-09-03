@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Fourier.LpCompatibility
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Duhamel.Core
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Duhamel.SpatialIntegrationByParts
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Hessian.L2
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Lp
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Resolvent

@@ -641,7 +641,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Frozen
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.FrozenPositiveDefinite
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.FirstDerivative.GaussianSplit
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.FirstDerivative.LpPower
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Duhamel.Core
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Duhamel.SpatialIntegrationByParts
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Duhamel.LowerOrder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.EarlyTime.Flux
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.EarlyTime.FluxSeries
@@ -1217,7 +1217,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ArmTwo.L2J
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.Bound
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.Core
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.ConnectionDifferenceBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.Identities
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.Pointwise
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.CometricTraceFrame
@@ -3514,7 +3514,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.H1Jet
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.HsTwoJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.HsThreeJet
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.CompleteMetricExtension
-import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.CoreConvexity
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.IntrinsicCoreGeometry
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.ExponentialFiber
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.ExponentialFiberIteration
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.ExponentialPathLift

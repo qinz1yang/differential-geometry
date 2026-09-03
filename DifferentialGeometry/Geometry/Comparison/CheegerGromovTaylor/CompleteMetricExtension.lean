@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.TubeStability
-import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.CoreConvexity
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.IntrinsicCoreGeometry
 import DifferentialGeometry.Geometry.Comparison.GeodesicConvexity
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint
