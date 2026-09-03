@@ -1,7 +1,7 @@
 /-
 Authors: Jack McCarthy
 -/
-import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
+import DifferentialGeometry.Tensor.Multilinear.PredualBasis
 import DifferentialGeometry.Tensor.Multilinear.Basis
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Field

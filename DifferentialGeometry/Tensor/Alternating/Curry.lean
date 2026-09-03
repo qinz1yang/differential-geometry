@@ -7,7 +7,7 @@ Coauthors: Jack McCarthy
 import DifferentialGeometry.Tensor.Alternating.Flip
 import DifferentialGeometry.Tensor.Alternating.Comp
 import DifferentialGeometry.Tensor.Alternating.Congr
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Decomposition
+import DifferentialGeometry.Tensor.Alternating.Shuffle.Decomposition
 import Mathlib.Analysis.Normed.Module.Alternating.Curry
 import Mathlib.LinearAlgebra.Alternating.DomCoprod
 import Mathlib.LinearAlgebra.Alternating.Uncurry.Fin

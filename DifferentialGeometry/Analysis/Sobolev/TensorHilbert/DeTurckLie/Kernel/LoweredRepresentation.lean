@@ -19,7 +19,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.Ord
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.LoweredTensors
 import DifferentialGeometry.Analysis.Sobolev.AntidiagonalTupleGridPartialSum
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.CometricTraceFrame
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Integral.DivergenceTheorem

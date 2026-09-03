@@ -9,7 +9,7 @@ import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.LinearAlgebra.Multilinear.FiniteDimensional
-import DifferentialGeometry.Tensor.Auxiliary.LinearIsometryContDiff
+import DifferentialGeometry.Tensor.Multilinear.LinearIsometryContDiff
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.Normed.Module.Alternating.Basic
@@ -54,8 +54,8 @@ import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
 import Mathlib.Analysis.Normed.Operator.Mul
 import DifferentialGeometry.Tensor.Alternating.Congr
 import Mathlib.LinearAlgebra.Alternating.Basic
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Decomposition
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Split
+import DifferentialGeometry.Tensor.Alternating.Shuffle.Decomposition
+import DifferentialGeometry.Tensor.Alternating.Shuffle.Split
 import Mathlib.GroupTheory.Perm.Option
 import Mathlib.LinearAlgebra.Alternating.DomCoprod
 import Mathlib.GroupTheory.Perm.Finite
@@ -70,7 +70,7 @@ import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Tensor.RSTensor.Field
-import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
+import DifferentialGeometry.Tensor.Multilinear.PredualBasis
 import Mathlib.LinearAlgebra.Dual.Basis
 import Mathlib.LinearAlgebra.Trace
 

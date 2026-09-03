@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.CoordinateRegularity
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature

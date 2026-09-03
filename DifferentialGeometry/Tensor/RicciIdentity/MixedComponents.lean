@@ -3,10 +3,9 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ApplyI
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelBridge
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formula
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
-import DifferentialGeometry.Tensor.Auxiliary.DerivationAlgebra
+import DifferentialGeometry.Tensor.RicciIdentity.ContractionProductRules
 import DifferentialGeometry.Tensor.RSTensor.Components
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
-open DifferentialGeometry.Tensor.Auxiliary
 
 set_option autoImplicit false
 

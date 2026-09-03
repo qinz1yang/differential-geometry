@@ -7,7 +7,7 @@ import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 
-section LinearIsometry
+namespace LinearIsometry
 
 variable {𝕜 E F G : Type*} [NontriviallyNormedField 𝕜]
     [CompleteSpace 𝕜]
@@ -15,7 +15,7 @@ variable {𝕜 E F G : Type*} [NontriviallyNormedField 𝕜]
     [NormedSpace 𝕜 E] [NormedSpace 𝕜 F] [NormedSpace 𝕜 G]
     [Module.Finite 𝕜 F]
 
-theorem LinearIsometry.comp_contDiff_iff {L : E →ₗᵢ[𝕜] F} {f : G → E} {n : WithTop ℕ∞} :
+theorem comp_contDiff_iff {L : E →ₗᵢ[𝕜] F} {f : G → E} {n : WithTop ℕ∞} :
     ContDiff 𝕜 n (L ∘ f) ↔ ContDiff 𝕜 n f := by
   have hL : LinearMap.ker L.toLinearMap = ⊥ := LinearMap.ker_eq_bot_of_injective L.injective
   have ⟨K', hK'⟩ := LinearMap.exists_leftInverse_of_injective L.toLinearMap hL

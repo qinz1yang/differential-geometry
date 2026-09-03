@@ -6,7 +6,7 @@ import Mathlib.Tactic.Ring
 
 open scoped BigOperators
 
-namespace DifferentialGeometry.Tensor.Auxiliary
+namespace DifferentialGeometry.Tensor.RicciIdentity
 
 def contractUpper {R Idx : Type*} [AddCommMonoid R] [Mul R] [Fintype Idx]
     {r s : Nat}
@@ -134,4 +134,4 @@ theorem contractUpper_first_product_of_scalar_derivation
     (hDsum (fun A z => theta z A * beta z A K))
     (fun A => by rw [hDmul, hthetaD A, hbetaD A K])
 
-end DifferentialGeometry.Tensor.Auxiliary
+end DifferentialGeometry.Tensor.RicciIdentity

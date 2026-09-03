@@ -7,9 +7,7 @@ import Mathlib.Tactic.FinCases
 
 open scoped BigOperators
 
-namespace DifferentialGeometry
-namespace Tensor
-namespace SlotAlgebra
+namespace DifferentialGeometry.Tensor.SlotAlgebra
 
 lemma sum_fin3_fun_eq_triple
     {R ι : Type*} [CommSemiring R] [Fintype ι]
@@ -336,6 +334,4 @@ lemma sum_mul_right3
     _ = ∑ i : ι, ∑ k : κ, ∑ j : ι', F i k j * c j := by
           rw [← sum_rotate3]
 
-end SlotAlgebra
-end Tensor
-end DifferentialGeometry
+end DifferentialGeometry.Tensor.SlotAlgebra

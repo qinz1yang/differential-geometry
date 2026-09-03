@@ -3,7 +3,7 @@ Copyright (c) 2026 Jack McCarthy. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jack McCarthy
 -/
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Split
+import DifferentialGeometry.Tensor.Alternating.Shuffle.Split
 import Mathlib.GroupTheory.Perm.Finite
 import Mathlib.GroupTheory.Perm.Option
 import Mathlib.LinearAlgebra.Alternating.DomCoprod
@@ -16,7 +16,7 @@ namespace ContinuousAlternatingMap
 variable {m n : ℕ}
 
 theorem shuffle_side_well_defined
-    (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
+    {σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1))}
     (τ : (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range) :
     (∃ k, σ⁻¹ (Sum.inl 0) = Sum.inl k) ↔
     (∃ k, ((σ * ↑τ)⁻¹ (Sum.inl 0)) = Sum.inl k) := by
@@ -39,17 +39,17 @@ theorem shuffle_side_well_defined
       rw [hk] at this; simp at this
 
 theorem shuffle_side_well_defined_right
-    (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
+    {σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1))}
     (τ : (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin (n + 1))).range) :
     (∃ k, σ⁻¹ (Sum.inl 0) = Sum.inr k) ↔
     (∃ k, ((σ * ↑τ)⁻¹ (Sum.inl 0)) = Sum.inr k) := by
   constructor <;> intro ⟨k, hk⟩
   · rcases h : (σ * ↑τ)⁻¹ (Sum.inl 0) with j | j
-    · have := (shuffle_side_well_defined σ τ).mpr ⟨j, h⟩
+    · have := (shuffle_side_well_defined (σ := σ) τ).mpr ⟨j, h⟩
       obtain ⟨j', hj'⟩ := this; rw [hk] at hj'; exact absurd hj' (by simp)
     · exact ⟨j, h.symm ▸ rfl⟩
   · rcases h : σ⁻¹ (Sum.inl 0) with j | j
-    · have := (shuffle_side_well_defined σ τ).mp ⟨j, h⟩
+    · have := (shuffle_side_well_defined (σ := σ) τ).mp ⟨j, h⟩
       obtain ⟨j', hj'⟩ := this; rw [hk] at hj'; exact absurd hj' (by simp)
     · exact ⟨j, h.symm ▸ rfl⟩
 
@@ -362,7 +362,8 @@ noncomputable def shuffleLeftRestrict :
         exact Subgroup.inv_mem _ h_rel
       rw [show τ = shuffleLeftExtendRepresentative q.out * ((shuffleLeftExtendRepresentative q.out)⁻¹ * τ)
         from by group]
-      exact (shuffle_side_well_defined (shuffleLeftExtendRepresentative q.out) ⟨_, h_inv⟩).mp
+      exact (shuffle_side_well_defined
+        (σ := shuffleLeftExtendRepresentative q.out) ⟨_, h_inv⟩).mp
         (shuffleLeftExtendRepresentative_isLeft q.out)⟩
   left_inv := fun ⟨q, hq⟩ => by
     ext
@@ -406,7 +407,7 @@ theorem shuffleLeftRestrict_subtype_of_inv
   have h_eq : σ = τ * (Equiv.Perm.sumCongrHom _ _ (tl, tr)) := by
     rw [htl_tr]; group
   rw [h_eq] at hσ
-  exact (shuffle_side_well_defined τ ⟨_, ⟨(tl, tr), rfl⟩⟩).mpr hσ
+  exact (shuffle_side_well_defined (σ := τ) ⟨_, ⟨(tl, tr), rfl⟩⟩).mpr hσ
 
 @[simp] theorem finSuccSumOptionEquiv_symm_some
     (z : Fin m ⊕ Fin (n + 1)) :
@@ -890,7 +891,7 @@ noncomputable def shuffleRightRestrict :
       rw [show τ = shuffleRightExtendRepresentative q.out *
         ((shuffleRightExtendRepresentative q.out)⁻¹ * τ) from by group]
       exact (shuffle_side_well_defined_right
-        (shuffleRightExtendRepresentative q.out) ⟨_, h_inv⟩).mp
+        (σ := shuffleRightExtendRepresentative q.out) ⟨_, h_inv⟩).mp
         (shuffleRightExtendRepresentative_isRight q.out)⟩
   left_inv := fun ⟨q, hq⟩ => by
     ext
@@ -928,6 +929,6 @@ theorem shuffleRightRestrict_subtype_of_inv
   have h_eq : σ = τ * (Equiv.Perm.sumCongrHom _ _ (tl, tr)) := by
     rw [htl_tr]; group
   rw [h_eq] at hσ
-  exact (shuffle_side_well_defined_right τ ⟨_, ⟨(tl, tr), rfl⟩⟩).mpr hσ
+  exact (shuffle_side_well_defined_right (σ := τ) ⟨_, ⟨(tl, tr), rfl⟩⟩).mpr hσ
 
 end ContinuousAlternatingMap

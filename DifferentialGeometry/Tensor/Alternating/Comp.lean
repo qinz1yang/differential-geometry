@@ -6,7 +6,7 @@ Coauthors: Jack McCarthy
 -/
 import DifferentialGeometry.Tensor.Multilinear.Comp
 import DifferentialGeometry.Analysis.Calculus.AnalyticTransfer
-import DifferentialGeometry.Tensor.Auxiliary.LinearIsometryContDiff
+import DifferentialGeometry.Tensor.Multilinear.LinearIsometryContDiff
 import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace

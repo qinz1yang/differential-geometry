@@ -7,7 +7,7 @@ import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.LinearAlgebra.Multilinear.FiniteDimensional
-import DifferentialGeometry.Tensor.Auxiliary.LinearIsometryContDiff
+import DifferentialGeometry.Tensor.Multilinear.LinearIsometryContDiff
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.Normed.Module.Alternating.Basic

@@ -8,7 +8,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SingleSlotOperatorF
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

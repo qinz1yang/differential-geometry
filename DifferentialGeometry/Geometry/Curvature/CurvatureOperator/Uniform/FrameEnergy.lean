@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorCurvature
 import Mathlib.Topology.Order.Compact
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

@@ -5,8 +5,8 @@ Coauthors: Jack McCarthy
 import Mathlib.Algebra.Group.Nat.Defs
 import Mathlib.Logic.Equiv.Fin.Basic
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-import Mathlib.Order.WellFounded
 import Mathlib.Order.Hom.PowersetCard
+import Mathlib.Order.WellFounded
 
 namespace Fin
 

@@ -10,7 +10,6 @@ import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace
 import DifferentialGeometry.Geometry.Metric.Convergence.WindowAllPoints
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

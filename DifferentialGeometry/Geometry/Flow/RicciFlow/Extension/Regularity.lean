@@ -7,7 +7,6 @@ import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -23,7 +23,6 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Combinatorics
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

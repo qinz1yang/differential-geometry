@@ -36,7 +36,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 open LieCorrectionZeroCore
 open TensorMultilinear

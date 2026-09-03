@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import DifferentialGeometry.Tensor.RSTensor.RankZero
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Sobolev

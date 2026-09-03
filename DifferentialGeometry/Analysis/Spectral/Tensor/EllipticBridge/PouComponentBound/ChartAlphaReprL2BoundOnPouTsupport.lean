@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RawTensorConnLapL2WtwokTwoBound
-import DifferentialGeometry.Tensor.Auxiliary.DetOpNormBound
+import DifferentialGeometry.Tensor.Alternating.DeterminantNorm
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Defs
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

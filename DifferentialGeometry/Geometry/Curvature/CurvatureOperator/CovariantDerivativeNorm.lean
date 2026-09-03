@@ -4,7 +4,6 @@ import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 

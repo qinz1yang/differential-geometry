@@ -20,7 +20,6 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization

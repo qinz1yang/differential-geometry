@@ -5,17 +5,17 @@ Authors: Yury Kudryashov
 Coauthors: Jack McCarthy
 Modified by: Ziyang Qin
 -/
-import DifferentialGeometry.Tensor.Auxiliary.Perm
-import DifferentialGeometry.Tensor.Auxiliary.MultiKroneckerDelta
-import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Split
+import DifferentialGeometry.Tensor.Alternating.Permutation
+import DifferentialGeometry.Tensor.Alternating.MultiKroneckerDelta
+import DifferentialGeometry.Tensor.Multilinear.PredualBasis
+import DifferentialGeometry.Tensor.Alternating.Shuffle.Split
 import DifferentialGeometry.Tensor.Alternating.Congr
 import DifferentialGeometry.Tensor.Alternating.Comp
 import DifferentialGeometry.Tensor.Alternating.Curry
 import DifferentialGeometry.Tensor.Product.Defs
 import DifferentialGeometry.Tensor.Alternating.Basis
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Derivative
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Placement
+import DifferentialGeometry.Tensor.Alternating.Shuffle.Derivative
+import DifferentialGeometry.Tensor.Alternating.Shuffle.Placement
 
 noncomputable section
 

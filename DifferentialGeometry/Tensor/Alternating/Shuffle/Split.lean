@@ -6,8 +6,7 @@ Authors: Jack McCarthy
 import Mathlib.GroupTheory.Perm.Option
 import Mathlib.LinearAlgebra.Alternating.DomCoprod
 
-namespace DifferentialGeometry
-namespace ShuffleSplit
+namespace DifferentialGeometry.ShuffleSplit
 
 attribute [local instance] Fintype.ofFinite Classical.propDecidable
 
@@ -45,7 +44,7 @@ def optionSumEquiv : Option α₀ ⊕ β ≃ Option (α₀ ⊕ β) where
     optionSumEquiv.symm (some (Sum.inr b) : Option (α₀ ⊕ β)) = Sum.inr b := rfl
 
 theorem preimage_inl_none_side_well_defined
-    (σ : Equiv.Perm (Option α₀ ⊕ β))
+    {σ : Equiv.Perm (Option α₀ ⊕ β)}
     (τ_l : Equiv.Perm (Option α₀)) (τ_r : Equiv.Perm β) :
     (∃ k, σ⁻¹ (Sum.inl none) = Sum.inl k) ↔
     (∃ k, (σ * Equiv.Perm.sumCongr τ_l τ_r)⁻¹ (Sum.inl none) = Sum.inl k) := by
@@ -63,7 +62,7 @@ theorem preimage_inl_none_side_well_defined
       rw [hk] at this; exact absurd this (by simp)
 
 theorem preimage_inl_none_side_well_defined'
-    (σ : Equiv.Perm (Option α₀ ⊕ β))
+    {σ : Equiv.Perm (Option α₀ ⊕ β)}
     (τ : (Equiv.Perm.sumCongrHom (Option α₀) β).range) :
     (∃ k, σ⁻¹ (Sum.inl none) = Sum.inl k) ↔
     (∃ k, (σ * ↑τ)⁻¹ (Sum.inl none) = Sum.inl k) := by
@@ -71,7 +70,7 @@ theorem preimage_inl_none_side_well_defined'
   have : (↑τ : Equiv.Perm _) = Equiv.Perm.sumCongr τ_l τ_r := by
     rw [← hτ]; rfl
   rw [this]
-  exact preimage_inl_none_side_well_defined σ τ_l τ_r
+  exact preimage_inl_none_side_well_defined (σ := σ) τ_l τ_r
 
 theorem optionCongr_removeNone_of_fix_none {α : Type*}
     (σ : Equiv.Perm (Option α)) (h : σ none = none) :
@@ -139,5 +138,4 @@ theorem permCongr_inv_mul {α β : Type*}
   simp only [Equiv.Perm.coe_mul, Function.comp_apply, Equiv.permCongr_apply,
     h_inv, Equiv.symm_apply_apply]
 
-end ShuffleSplit
-end DifferentialGeometry
+end DifferentialGeometry.ShuffleSplit

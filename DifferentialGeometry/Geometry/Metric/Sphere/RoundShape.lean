@@ -5,7 +5,6 @@ import Mathlib.Analysis.InnerProductSpace.Orthogonal
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 

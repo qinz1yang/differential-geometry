@@ -11,7 +11,7 @@ namespace ContinuousLinearMap
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
 
-theorem abs_det_le_factorial_mul_opNormPow_finrank
+theorem abs_det_le_factorial_mul_norm_pow_finrank
     (L : E →L[ℝ] E) :
     |LinearMap.det (L : E →ₗ[ℝ] E)| ≤
       ((Module.finrank ℝ E).factorial : ℝ) * ‖L‖ ^ (Module.finrank ℝ E) := by

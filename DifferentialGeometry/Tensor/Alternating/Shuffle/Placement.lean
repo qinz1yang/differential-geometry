@@ -2,7 +2,7 @@ import Mathlib.LinearAlgebra.Alternating.DomCoprod
 import Mathlib.GroupTheory.Coset.Card
 import Mathlib.Data.Finset.Sort
 import Mathlib.Tactic.Group
-import DifferentialGeometry.Tensor.Auxiliary.Fin
+import DifferentialGeometry.Tensor.Alternating.FinEquiv
 
 namespace Equiv.Perm
 

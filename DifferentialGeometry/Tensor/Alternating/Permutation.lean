@@ -2,7 +2,7 @@
 Authors: Yury Kudryashov
 Coauthors: Jack McCarthy
 -/
-import DifferentialGeometry.Tensor.Auxiliary.Fin
+import DifferentialGeometry.Tensor.Alternating.FinEquiv
 import Mathlib.LinearAlgebra.Alternating.DomCoprod
 
 namespace Equiv.Perm
