@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.DerivativePairingBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.ZeroStateRemainder
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.ZeroState
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.TimeDependentLowOrderOperators
 
 section

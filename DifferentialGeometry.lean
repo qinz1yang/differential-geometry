@@ -1312,7 +1312,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalArm.Res
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalArm.SobolevBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalArm.SpectralGarding
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckQuasilinearExistence
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Existence.Quasilinear
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.SectionRealization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.HigherOrderTame
@@ -1355,11 +1355,11 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionD
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionDifference.OrderOneBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionDifference.Pairing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.RiemannLieIdentities
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.StrongSpectralSolution
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.StrongSpectral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrection.BackgroundDifferences
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrection.OperatorDecompositions
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrection.TraceDiagonalGrid
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPathDecomposition
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPath.Decomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.CovariantSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.InverseMetricDifference
@@ -1367,7 +1367,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Famil
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.TensorFields
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.JetNorm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.Jets
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MovingMetricDifferenceEnergy
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.MovingMetricDifferenceEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.Symmetry
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.CoefficientBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.AbstractJet2Bound
@@ -1378,12 +1378,12 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.PointwiseLip
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.UniformFamily
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SlotExtendCovariantParallelism
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothPathRegularity
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SmoothStrongPair
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistenceRemainderDiffBallUniform
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.SmoothStrongPair
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.RemainderDifferenceBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.CovariantJetNormEquivalence
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.TensorSymmetrizationNorm
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.StrongSolutionUniqueness
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.StrongUniqueness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRemainderPolynomial
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRicciRHSRealizeJet
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartGramRealizeDiffJet
@@ -3445,7 +3445,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Lowe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.CenteredPathPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.FirstOrderPerIndex
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderPerIndex
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.ZeroStateRemainder
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.ZeroState
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LowOrderCoefficientJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderCoefficientJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Dissipation

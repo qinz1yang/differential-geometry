@@ -13,7 +13,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.CovariantJetNormEquivalence
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistenceRemainderDiffBallUniform
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.RemainderDifferenceBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.TensorSymmetrizationNorm
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Analysis.Sobolev

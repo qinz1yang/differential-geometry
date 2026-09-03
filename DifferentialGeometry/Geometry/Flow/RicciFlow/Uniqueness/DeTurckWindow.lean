@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SmoothStrongPair
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.SmoothStrongPair
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 
