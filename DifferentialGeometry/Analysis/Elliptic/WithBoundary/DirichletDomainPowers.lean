@@ -223,6 +223,46 @@ theorem dirichletLaplacianDomainPow_succ_subset_dirichletLaplacianDomain
   rw [SetLike.mem_coe, dirichletLaplacianDomain_mem_iff]
   exact ⟨iteratedDirichletResolventL2 g k f, hf⟩
 
+theorem dirichletLaplacianDomainPow_succ_le
+    (g : SmoothRiemannianMetric (I_half n) M) (k : ℕ) :
+    dirichletLaplacianDomainPow g (k + 1) ≤
+      dirichletLaplacianDomainPow g k := by
+  cases k with
+  | zero =>
+      rw [dirichletLaplacianDomainPow_zero]
+      exact le_top
+  | succ k =>
+      intro u hu
+      rw [dirichletLaplacianDomainPow_succ_mem_iff] at hu ⊢
+      obtain ⟨f, hf⟩ := hu
+      refine ⟨resolventDirichletL2 g f, ?_⟩
+      have hiter :
+          iteratedDirichletResolventL2 g (k + 1) f =
+            iteratedDirichletResolventL2 g k
+              (resolventDirichletL2 g f) := by
+        rw [iteratedDirichletResolventL2_add g k 1,
+          ContinuousLinearMap.comp_apply,
+          iteratedDirichletResolventL2_one]
+      exact hf.trans (congrArg (resolventDirichlet g) hiter)
+
+theorem dirichletLaplacianDomainPow_antitone
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    Antitone (dirichletLaplacianDomainPow g) := by
+  intro j k hjk
+  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hjk
+  clear hjk
+  induction d with
+  | zero => exact le_rfl
+  | succ d ih =>
+      rw [Nat.add_succ]
+      exact (dirichletLaplacianDomainPow_succ_le g (j + d)).trans ih
+
+theorem dirichletLaplacianDomainPow_le_of_le
+    (g : SmoothRiemannianMetric (I_half n) M) {j k : ℕ} (hjk : j ≤ k) :
+    dirichletLaplacianDomainPow g k ≤
+      dirichletLaplacianDomainPow g j :=
+  dirichletLaplacianDomainPow_antitone g hjk
+
 theorem dirichletLaplacianDomainPow_succ_preimage_mem_range
     (g : SmoothRiemannianMetric (I_half n) M) (k : ℕ)
     {u : H1ComplDirichlet g}
