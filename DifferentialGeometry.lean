@@ -3083,6 +3083,7 @@ import DifferentialGeometry.Geometry.Metric.UniversalCover.Coordinates
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometry
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
+import DifferentialGeometry.Geometry.Metric.UniversalCover.ParallelSubbundle
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
 import DifferentialGeometry.Geometry.Operator.CotangentSharpSmooth
 import DifferentialGeometry.Geometry.Operator.Gradient
