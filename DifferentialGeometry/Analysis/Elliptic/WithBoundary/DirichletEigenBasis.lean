@@ -310,6 +310,14 @@ def dirichletLaplacianEigenvalue
     (i : DirichletLaplacianEigenindex g) : ℝ :=
   (1 - i.1.val) / i.1.val
 
+theorem one_add_dirichletLaplacianEigenvalue_eq_inv
+    {g : SmoothRiemannianMetric (I_half n) M}
+    (i : DirichletLaplacianEigenindex g) :
+    1 + dirichletLaplacianEigenvalue i = i.1.val⁻¹ := by
+  unfold dirichletLaplacianEigenvalue
+  field_simp [i.1.val_ne_zero]
+  ring
+
 theorem dirichletLaplacianEigenvalue_nonneg
     {g : SmoothRiemannianMetric (I_half n) M}
     (i : DirichletLaplacianEigenindex g) :

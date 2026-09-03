@@ -24,14 +24,6 @@ private abbrev I_half (n : ℕ) [NeZero n] :
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
 open DifferentialGeometry.Integral.Measure
 
-private theorem one_add_dirichletLaplacianEigenvalue_eq_inv
-    {g : SmoothRiemannianMetric (I_half n) M}
-    (i : DirichletLaplacianEigenindex g) :
-    1 + dirichletLaplacianEigenvalue i = i.1.val⁻¹ := by
-  unfold dirichletLaplacianEigenvalue
-  field_simp [i.1.val_ne_zero]
-  ring
-
 private theorem dirichletSobolevWeight_one_eq_inv
     {g : SmoothRiemannianMetric (I_half n) M}
     (i : DirichletLaplacianEigenindex g) :

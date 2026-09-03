@@ -28,14 +28,6 @@ open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-private theorem one_add_dirichletLaplacianEigenvalue_eq_inv
-    {g : SmoothRiemannianMetric (I_half n) M}
-    (i : DirichletLaplacianEigenindex g) :
-    1 + dirichletLaplacianEigenvalue i = i.1.val⁻¹ := by
-  unfold dirichletLaplacianEigenvalue
-  field_simp [i.1.val_ne_zero]
-  ring
-
 theorem dirichletL2Coeff_oneSubLaplacian
     {g : SmoothRiemannianMetric (I_half n) M}
     (u : SmoothScalarDirichlet g)
