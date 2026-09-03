@@ -118,6 +118,23 @@ theorem iteratedDirichletResolventL2_apply_dirichletLaplacianHilbertBasis
       smul_smul]
     congr 1
 
+theorem inner_dirichletLaplacianHilbertBasis_iteratedDirichletResolventL2
+    (g : SmoothRiemannianMetric (I_half n) M) (k : ℕ)
+    (f : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g))
+    (i : DirichletLaplacianEigenindex g) :
+    ⟪dirichletLaplacianHilbertBasis g i,
+        iteratedDirichletResolventL2 g k f⟫_ℝ =
+      i.1.val ^ k * ⟪dirichletLaplacianHilbertBasis g i, f⟫_ℝ := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+      rw [iteratedDirichletResolventL2_succ_apply]
+      rw [← resolventDirichletL2_symm,
+        resolventDirichletL2_apply_dirichletLaplacianHilbertBasis,
+        real_inner_smul_left]
+      rw [ih, pow_succ']
+      ring
+
 theorem exists_iteratedDirichletResolventL2_preimage_of_weighted_coeff_summable
     (g : SmoothRiemannianMetric (I_half n) M)
     (u : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g))
