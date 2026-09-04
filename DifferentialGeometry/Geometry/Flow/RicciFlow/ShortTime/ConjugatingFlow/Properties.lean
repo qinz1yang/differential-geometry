@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Va
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.Pullback
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

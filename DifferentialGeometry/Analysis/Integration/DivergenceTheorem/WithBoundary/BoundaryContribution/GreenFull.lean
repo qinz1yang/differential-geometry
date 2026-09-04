@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceInstance
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.POUReduction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.Stokes
 import DifferentialGeometry.Geometry.Operator.NormGradSq
-import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import DifferentialGeometry.Geometry.Operator.Gradient
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormChartBound
-import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import Mathlib.Topology.Order.Compact
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

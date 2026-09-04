@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.CoefficientRegularity
-import DifferentialGeometry.Analysis.Integration.Measure.CompactParametricIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.CompactIntegral
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

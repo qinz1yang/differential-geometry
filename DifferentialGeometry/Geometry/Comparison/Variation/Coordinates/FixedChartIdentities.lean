@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricc
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Riemann
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisBracket
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import Mathlib.Geometry.Manifold.ContMDiff.Defs
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 open DifferentialGeometry.Geometry.Curvature

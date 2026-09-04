@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DenseLowerState
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
 
 noncomputable section
 

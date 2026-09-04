@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartT
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovariantDerivativeBounds.SlotCorrection.Kernel
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.TensorFiberFromModel
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.TensorFiberToModel
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import Mathlib.MeasureTheory.Integral.IntegrableOn
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

@@ -1,9 +1,9 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothPathRegularity
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Regularity.SmoothPaths
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.StrongUniqueness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.SectionRealization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothEmbedInj
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothInjectivity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.MetricPerturbation
 open DifferentialGeometry.Analysis.Elliptic

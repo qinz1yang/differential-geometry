@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Diffe
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSSmoothQuasilinear
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.FiberNormRiemannianBridge
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieSummandLipschitz
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RicciDiffAffine
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.SummandLipschitz
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Ricci.AffineDifference
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

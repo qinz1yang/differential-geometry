@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
 import DifferentialGeometry.Topology.Manifold.TangentPartialDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback

@@ -3,8 +3,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.PrincipalTerm.TameBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.CrossScaleCauchySchwarz
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.CrossScaleCauchySchwarz
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
 import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
 import Mathlib.Analysis.InnerProductSpace.PiL2

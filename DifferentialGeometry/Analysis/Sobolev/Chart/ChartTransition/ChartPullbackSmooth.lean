@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.Defs
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.TransitionDiffeo
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 
 noncomputable section
 

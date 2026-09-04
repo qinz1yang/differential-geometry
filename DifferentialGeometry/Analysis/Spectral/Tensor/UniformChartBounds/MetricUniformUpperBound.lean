@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.LowerAllUpperIndices
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.JinvContinuity
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SRiemannian
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 import Mathlib.Topology.Order.Compact

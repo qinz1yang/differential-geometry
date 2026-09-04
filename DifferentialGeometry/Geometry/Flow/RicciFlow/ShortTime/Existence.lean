@@ -17,7 +17,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.Conj
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.FlatInteriorRicciFlowPde
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciFlowPdeAtZero
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Properties
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

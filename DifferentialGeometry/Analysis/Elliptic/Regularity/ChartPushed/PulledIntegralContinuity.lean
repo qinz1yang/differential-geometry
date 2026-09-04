@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variati
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.VariationalLimitAnyTest
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1ComplFromDom
 import DifferentialGeometry.Analysis.Elliptic.Operator.ChartMeasureEquiv
-import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 
 
 noncomputable section

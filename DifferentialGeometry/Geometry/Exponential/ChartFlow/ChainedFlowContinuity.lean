@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Exponential.ChartFlow.PreconnectedPropagati
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.ContDiffOnOne
 import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
 import Mathlib.Topology.Compactness.Compact

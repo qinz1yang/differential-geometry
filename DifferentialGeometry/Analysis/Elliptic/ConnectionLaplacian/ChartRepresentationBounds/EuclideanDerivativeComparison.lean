@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Equiv

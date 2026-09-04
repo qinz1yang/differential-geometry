@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.SpectralSeriesSecondOrderSobolev
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

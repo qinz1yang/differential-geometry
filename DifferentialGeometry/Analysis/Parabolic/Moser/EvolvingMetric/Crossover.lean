@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.EvolvingMetric.LogTail
 import DifferentialGeometry.Analysis.Parabolic.Moser.Spacetime.Measure
-import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
 
 noncomputable section
 

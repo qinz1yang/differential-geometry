@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralEigenSeriesJointGram.JointSmoothness
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.WeylSummability
+import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.WeylSummability
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerMode
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs

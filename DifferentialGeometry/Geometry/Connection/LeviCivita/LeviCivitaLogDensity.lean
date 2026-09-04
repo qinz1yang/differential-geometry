@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Gradient
 import DifferentialGeometry.Geometry.Operator.Hessian
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChristoffelPerturbation
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation
 open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false

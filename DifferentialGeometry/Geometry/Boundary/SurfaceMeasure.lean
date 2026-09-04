@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Boundary.InducedMetric
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 
 noncomputable section
 

@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.LpClass
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.PairingChart
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Ricci.PairingCLM
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.MeasurablePullback
-import DifferentialGeometry.Analysis.Integration.Measure.Rellich
-import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.BasisHaar
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.HaarBasis
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Polar
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
 open DifferentialGeometry.Geometry.Curvature

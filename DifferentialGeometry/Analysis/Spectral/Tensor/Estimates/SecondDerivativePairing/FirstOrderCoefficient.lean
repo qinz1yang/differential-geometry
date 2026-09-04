@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.SecondDerivativePairing.ZeroOrderCoefficient
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.H1Jet
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.UnifBochnerGap
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.FirstOrder
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.UniformBochnerBounds
 
 set_option autoImplicit false
 

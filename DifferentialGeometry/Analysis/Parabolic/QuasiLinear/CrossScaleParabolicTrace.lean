@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionSpace
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.CrossScalePairing
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.CrossScale
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

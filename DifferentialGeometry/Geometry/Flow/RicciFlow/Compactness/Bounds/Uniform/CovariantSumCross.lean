@@ -7,8 +7,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Product
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 import DifferentialGeometry.Geometry.Connection.ConnectionDifferenceNorm
 import DifferentialGeometry.Geometry.Metric.ChartGram
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
-import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.Analysis.Matrix.Order
 open DifferentialGeometry.PDE.RicciFlow

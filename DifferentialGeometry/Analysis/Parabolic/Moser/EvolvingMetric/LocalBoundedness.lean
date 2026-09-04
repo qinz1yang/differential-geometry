@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.EvolvingMetric.Power
 import DifferentialGeometry.Analysis.Parabolic.Moser.FixedMetric.LocalBoundedness
-import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
 
 
 noncomputable section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.LipschitzW1
 import DifferentialGeometry.Analysis.Sobolev.Manifold.IteratedSobolevEmbedding
-import DifferentialGeometry.Analysis.Integration.Measure.FamilyDecomposition
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Decomposition
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 open DifferentialGeometry.Geometry.Curvature

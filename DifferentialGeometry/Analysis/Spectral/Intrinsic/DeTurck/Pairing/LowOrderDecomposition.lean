@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.ApplicationJetWindow
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.DifferenceEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.Symmetry
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSCovariantJetCancellation
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.CovariantJetCancellation
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

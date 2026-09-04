@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.JacobiFormula
+import DifferentialGeometry.Analysis.Integration.Measure.Jacobian.Derivative
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.ExponentialMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.HamiltonBound

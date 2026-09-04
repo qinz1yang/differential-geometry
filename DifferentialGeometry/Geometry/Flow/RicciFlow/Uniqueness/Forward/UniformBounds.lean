@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.TensorDecomposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.DensityRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureRegularity
-import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Continuity
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 
 set_option autoImplicit false

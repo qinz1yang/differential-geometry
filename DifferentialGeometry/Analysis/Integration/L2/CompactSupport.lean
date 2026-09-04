@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.Realization.Embedding
 import DifferentialGeometry.Geometry.Connection.Realization.ConcreteConnection
 import DifferentialGeometry.Analysis.Integration.L2.Basic
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import Mathlib.Topology.Algebra.Support
 import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.ContMDiffMap

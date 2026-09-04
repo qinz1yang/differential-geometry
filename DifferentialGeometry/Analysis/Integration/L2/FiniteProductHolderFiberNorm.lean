@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Analysis.Integration.Holder.Weighted
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Integrability
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import Mathlib.MeasureTheory.Integral.MeanInequalities
 open DifferentialGeometry.Analysis.Elliptic
 

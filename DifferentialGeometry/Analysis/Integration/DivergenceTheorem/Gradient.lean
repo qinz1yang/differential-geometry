@@ -10,9 +10,9 @@ import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Analysis.Calculus.FDeriv.Comp
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.LineDeriv.Basic
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
-import DifferentialGeometry.Analysis.Integration.Measure.FamilyDefs
-import DifferentialGeometry.Analysis.Integration.Measure.VolumeVariation
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Defs
+import DifferentialGeometry.Analysis.Integration.Measure.Family.VolumeVariation
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian

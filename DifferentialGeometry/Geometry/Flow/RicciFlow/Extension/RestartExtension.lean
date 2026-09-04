@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.SmoothLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.SmoothSolutions
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.FixedDomainBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.Bootstrap
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.GaugeRemoval
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.Energy.Bootstrap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Solution.GaugeRemoval
 
 open DifferentialGeometry.Analysis.Sobolev.CSupTensor
     DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs

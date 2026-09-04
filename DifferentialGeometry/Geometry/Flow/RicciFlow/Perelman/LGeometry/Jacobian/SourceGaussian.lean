@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.PositiveDefinite.Basic
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.Basic
 

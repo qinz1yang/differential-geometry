@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.IntegrationBy
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Geometry.Operator.Laplacian
-import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 
 
 noncomputable section

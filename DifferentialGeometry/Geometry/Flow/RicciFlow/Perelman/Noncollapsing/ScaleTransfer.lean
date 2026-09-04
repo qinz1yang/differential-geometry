@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
-import DifferentialGeometry.Analysis.Integration.Measure.Scaling
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.CompactChartJetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.EigensectionSobolevDecay
+import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SobolevDecay
 
 noncomputable section
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.CoefficientBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SecondCovariantDerivativeApplication
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Application.SecondCovariantDerivative
 
 noncomputable section
 

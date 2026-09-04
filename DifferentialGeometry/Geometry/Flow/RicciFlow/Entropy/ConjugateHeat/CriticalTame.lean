@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautUniform
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarPotentialPairing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautonomous.UniformBound
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Potential.Pairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature

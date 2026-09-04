@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.MetricComparison
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.EndpointControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.SourceTailControl

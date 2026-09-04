@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.Logarithmic.Oscillation
 import DifferentialGeometry.Analysis.Integration.Holder.Weighted
-import DifferentialGeometry.Analysis.Integration.Measure.CompactParametricIntegral
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.CompactIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 import Mathlib.MeasureTheory.Integral.Prod
 

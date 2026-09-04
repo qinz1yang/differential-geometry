@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.PolarEvaluation
+import DifferentialGeometry.Analysis.Integration.Measure.Polar.Evaluation
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.NoConjugatePoints
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Frame
 

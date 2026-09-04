@@ -3,10 +3,10 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartLocalIbp
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartInvariance
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
-import DifferentialGeometry.Analysis.Integration.Measure.Family
-import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.Topology.Algebra.Support
 

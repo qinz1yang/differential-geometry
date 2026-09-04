@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.StateMass
-import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Continuity
 import Mathlib.Analysis.Calculus.MeanValue
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow

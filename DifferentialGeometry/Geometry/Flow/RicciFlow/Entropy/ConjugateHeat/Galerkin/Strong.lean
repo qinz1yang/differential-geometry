@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.ODE.ChartLocalPicardIntegral
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionSpace
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.RankZeroRealization
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautCompat
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautTime
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarPotentialTime
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.RankZeroRealization
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautonomous.Compatibility
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautonomous.TimeDependence
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Potential.TimeDependence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Subsequence
 import Mathlib.Analysis.Normed.Operator.BanachSteinhaus
 import Mathlib.MeasureTheory.Integral.DominatedConvergence

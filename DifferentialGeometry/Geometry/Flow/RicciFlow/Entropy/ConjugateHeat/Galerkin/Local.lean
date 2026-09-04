@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautExact
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ScalarWeyl
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautonomous.ExactFormula
+import DifferentialGeometry.Analysis.Spectral.Scalar.WeylBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Classical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.PotentialSpan
 open DifferentialGeometry.Analysis.Sobolev

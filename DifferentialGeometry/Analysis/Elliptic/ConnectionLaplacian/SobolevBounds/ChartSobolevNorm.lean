@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.PointwiseBounds.ChartDataBound
-import DifferentialGeometry.Analysis.Integration.Measure.ManifoldL2NormChartTargetBound
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.L2TargetBound
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 

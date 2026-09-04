@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Ball
-import DifferentialGeometry.Analysis.Integration.Measure.PolarEvaluation
+import DifferentialGeometry.Analysis.Integration.Measure.Polar.Evaluation
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Area
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Pole
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Gauss

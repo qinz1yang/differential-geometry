@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.GramInvUniformEigenvalueLowerBound
 import DifferentialGeometry.Geometry.Operator.Gradient
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Separation.Basic
 open DifferentialGeometry.Geometry.Curvature

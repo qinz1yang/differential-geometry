@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Scalar
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.SpectralSmoothRepresentative
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.RankZero
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

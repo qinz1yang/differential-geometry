@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Polarization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.ZeroDecomposition
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ConnLapPairing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.ConnectionLaplacian
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.OperatorFieldApplication
 
 noncomputable section

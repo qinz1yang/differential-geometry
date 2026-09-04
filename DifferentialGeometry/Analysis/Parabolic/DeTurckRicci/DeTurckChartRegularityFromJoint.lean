@@ -9,10 +9,10 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
 import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateFormula
 import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateComponents
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieMatrixChartBridge
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.MatrixChartIdentification
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRemainderPolynomial
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chart.RemainderPolynomial
 import Mathlib.Analysis.Calculus.TangentCone.Prod
 import Mathlib.Analysis.Calculus.TangentCone.Real
 import Mathlib.Analysis.Calculus.ContDiff.Comp

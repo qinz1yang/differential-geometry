@@ -4,7 +4,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.Normed.Operator.LinearIsometry
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Topology.Covering.Manifold
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
 import Mathlib.Topology.VectorBundle.Riemannian

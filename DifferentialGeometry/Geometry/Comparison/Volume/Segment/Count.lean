@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar
 import DifferentialGeometry.Geometry.Comparison.Volume.Packing
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

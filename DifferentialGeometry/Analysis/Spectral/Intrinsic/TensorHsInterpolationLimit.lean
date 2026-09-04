@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.FractionalPower
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.FractionalPower
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
 open DifferentialGeometry.Geometry.Curvature
 

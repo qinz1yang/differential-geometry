@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarPotential
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Potential.Basic
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarUniform
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity

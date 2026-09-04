@@ -1,11 +1,11 @@
-import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
-import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Continuity
+import DifferentialGeometry.Analysis.Integration.Measure.Family.LocalVariation
 import DifferentialGeometry.Analysis.ODE.ClosedEdgeGronwall
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.DifferenceEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.StrongSpectral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.SmallC0
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.TensorFields
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRemainderPolynomial
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chart.RemainderPolynomial
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
 import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
 import DifferentialGeometry.Geometry.Connection.ChartBridge.OrthonormalComponents

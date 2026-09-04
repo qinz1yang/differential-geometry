@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenvalueTailSummableFromCounting
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.TailSummability
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

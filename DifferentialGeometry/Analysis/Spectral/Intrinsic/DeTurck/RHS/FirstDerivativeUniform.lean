@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSFirstDerivativeLipschitz
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.FirstDerivativeLipschitz
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

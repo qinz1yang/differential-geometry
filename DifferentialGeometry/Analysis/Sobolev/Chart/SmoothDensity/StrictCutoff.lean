@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 
 

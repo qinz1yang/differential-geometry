@@ -2,9 +2,9 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1Compl
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2Inclusion
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.MeasurablePullback
-import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
-import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 import Mathlib.MeasureTheory.Function.LpSeminorm.Indicator

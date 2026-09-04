@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.ToLpChartBridge
 import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.WeakPartialLimit
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.VariationalIdentityIntegral
 import DifferentialGeometry.Analysis.Elliptic.Operator.VariationalLaplacian
-import DifferentialGeometry.Analysis.Integration.Measure.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Geometry.Operator.Laplacian
 import Mathlib.MeasureTheory.Function.LpSpace.Basic

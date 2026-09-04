@@ -10,7 +10,7 @@ import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.SmallVelocityRescaling
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.RescaledLift
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.UniformExistence
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 open DifferentialGeometry.Geometry.Curvature

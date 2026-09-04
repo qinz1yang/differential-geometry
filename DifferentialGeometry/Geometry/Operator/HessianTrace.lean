@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.Hessian
 import DifferentialGeometry.Geometry.Operator.VossWeyl
-import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Geometry.Operator.HessianTraceChartGramRegularity
 import DifferentialGeometry.Geometry.Operator.HessianTraceChartDensityJacobiDerivative
 import DifferentialGeometry.Geometry.Operator.HessianTraceChartInverseGramDerivative

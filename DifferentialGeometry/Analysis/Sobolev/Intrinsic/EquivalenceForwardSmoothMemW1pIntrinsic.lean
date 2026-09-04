@@ -1,13 +1,13 @@
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lp
 import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDense
-import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Sobolev.Manifold.MeasureBridgeUniform
 import DifferentialGeometry.Analysis.Sobolev.Manifold.EmbeddingSubcritical
 import DifferentialGeometry.Analysis.Sobolev.Manifold.MorreyManifold
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.IntegrationByParts
 import DifferentialGeometry.Geometry.Operator.Laplacian
-import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
 open DifferentialGeometry.Geometry.Operator

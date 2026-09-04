@@ -2,7 +2,7 @@ import Mathlib.Analysis.Normed.Operator.NormedSpace
 import Mathlib.Analysis.SpecificLimits.Normed
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.MetricPerturbation.H2
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.AppH2Hs
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Application.SecondOrderSobolevBound
 
 noncomputable section
 

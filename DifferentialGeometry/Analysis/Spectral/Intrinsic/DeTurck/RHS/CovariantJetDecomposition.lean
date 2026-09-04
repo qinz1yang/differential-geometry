@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.ZeroDecomposition
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSCovariantJetCancellation
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSPathIntegral
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.CovariantJetCancellation
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.PathIntegral
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.JointAlgebra
 
 noncomputable section

@@ -7,8 +7,8 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.Transition
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.ChartPullbackSmooth
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
-import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
-import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 
 noncomputable section
 

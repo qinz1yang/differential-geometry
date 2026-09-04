@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.Manifold.EmbeddingSubcritical
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Chart.Defs
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.IteratedSobolevHalfSpace
-import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 
 
 noncomputable section

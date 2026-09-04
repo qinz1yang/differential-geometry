@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape

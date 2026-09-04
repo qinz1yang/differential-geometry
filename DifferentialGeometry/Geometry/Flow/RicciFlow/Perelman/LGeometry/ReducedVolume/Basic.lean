@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.FlatPaths
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic

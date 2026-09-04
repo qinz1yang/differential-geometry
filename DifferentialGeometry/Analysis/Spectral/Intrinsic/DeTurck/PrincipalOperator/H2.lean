@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.MetricPerturbation.InverseH2
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.FractionalPower
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IterCovGradHs
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.FractionalPower
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Application.IteratedCovariantDerivative
 
 noncomputable section
 

@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Heat.Smoothing.SpectralBridge
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.ScalarPathReconstruct
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ScalarWeyl
+import DifferentialGeometry.Analysis.Spectral.Scalar.WeylBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Analysis.Integration.Measure.FiniteParametricIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.FiniteIntegral
 import DifferentialGeometry.Analysis.Heat.Semigroup.Mass
 import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel

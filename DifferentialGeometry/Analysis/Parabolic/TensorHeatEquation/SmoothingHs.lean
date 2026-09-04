@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.FractionalPower
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.FractionalPower
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Semigroup
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.SpecialFunctions.Pow.Real

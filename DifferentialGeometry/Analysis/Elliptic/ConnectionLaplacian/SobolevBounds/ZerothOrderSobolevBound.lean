@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartRepresent
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.ZerothOrderReduction
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.IntrinsicL2Bound
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedNorm
-import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

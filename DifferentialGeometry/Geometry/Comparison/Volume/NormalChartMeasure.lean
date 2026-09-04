@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 open DifferentialGeometry.Geometry.Curvature

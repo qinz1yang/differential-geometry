@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Operator.MetricFamily
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
 
 

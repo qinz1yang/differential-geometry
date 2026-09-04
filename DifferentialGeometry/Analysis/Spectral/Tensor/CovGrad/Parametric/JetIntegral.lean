@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.CovariantDerivativePathIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.PathIntegralFibreNorm
-import DifferentialGeometry.Analysis.Integration.Measure.FamilyDecomposition
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Decomposition
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

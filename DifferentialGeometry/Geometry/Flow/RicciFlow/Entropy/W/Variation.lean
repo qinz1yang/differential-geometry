@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
+import DifferentialGeometry.Analysis.Integration.Measure.Family.LocalVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Classical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.FlowVariation

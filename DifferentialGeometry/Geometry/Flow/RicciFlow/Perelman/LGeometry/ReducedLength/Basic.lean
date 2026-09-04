@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.ManifoldRademacher
+import DifferentialGeometry.Analysis.Integration.Measure.Differentiation.Rademacher
 import DifferentialGeometry.Geometry.Operator.Operators
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Injectivity

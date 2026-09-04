@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.EvolvingMetric.ReverseHolder
 import DifferentialGeometry.Analysis.Parabolic.Moser.FixedMetric.ForwardIteration
-import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
 
 
 set_option autoImplicit false

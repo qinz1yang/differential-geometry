@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentity
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.RiemannTensorBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.GramMatrixUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
-import DifferentialGeometry.Analysis.Integration.Measure.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Topology.Order.Compact
 open DifferentialGeometry.Analysis.Elliptic

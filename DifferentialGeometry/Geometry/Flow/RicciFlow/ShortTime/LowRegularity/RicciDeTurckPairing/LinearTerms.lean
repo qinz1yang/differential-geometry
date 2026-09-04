@@ -1,11 +1,11 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Lipschitz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Solution.Lipschitz
 import DifferentialGeometry.Analysis.Estimates.QuarticInterpolation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Interpolation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.JetDifference
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.JetProduct
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.ReindexedPureTraceCovariantJet
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderCoefficientLipschitzBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coefficients.SecondOrderLipschitzBounds
 
 section
 

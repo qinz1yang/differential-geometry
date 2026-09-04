@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.IntegrationBy
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Proper
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.MeasureTheory.Integral.Bochner.Basic

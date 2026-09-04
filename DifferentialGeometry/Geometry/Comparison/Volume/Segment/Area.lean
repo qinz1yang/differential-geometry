@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Density
-import DifferentialGeometry.Analysis.Integration.Measure.JacobianImageLe
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Jacobian.ImageIntegralBound
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 
 set_option autoImplicit false
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.FixedMetric.BombieriGiusti.Crossover
 import DifferentialGeometry.Analysis.Parabolic.Moser.FixedMetric.SmallExponentLocalBoundedness
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothDenseLp
 
 

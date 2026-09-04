@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.JacobiFormula
+import DifferentialGeometry.Analysis.Integration.Measure.Jacobian.Derivative
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
 
 open DifferentialGeometry.Geometry.Curvature

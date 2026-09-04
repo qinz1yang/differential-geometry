@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.BasisHaar
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.HaarBasis
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Area
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Gauss

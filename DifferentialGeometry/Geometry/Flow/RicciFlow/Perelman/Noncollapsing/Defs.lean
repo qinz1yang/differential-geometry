@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Functional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
-import DifferentialGeometry.Analysis.Integration.Measure.MetricFamily
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Metric
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
