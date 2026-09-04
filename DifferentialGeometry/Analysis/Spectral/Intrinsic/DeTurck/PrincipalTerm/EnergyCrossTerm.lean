@@ -104,7 +104,7 @@ private theorem term_commutator_Hs_family_tame
     fun m Z => (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀
       m).choose_spec.2 Z
   obtain ⟨Ktame, hKtame_nn, hKtame⟩ :=
-    deTurckPrincipalCometricCoeff_perOrder_l2_tame_generic (I := I) (M := M) g₀ a (by omega)
+    deTurckPrincipalCometricCoeff_perOrder_l2_tame (I := I) (M := M) g₀ a (by omega)
       (mul_nonneg (hCbr_nn (a + 2)) hR₀) (show (1 : ℝ) / 3 < 1 by norm_num)
   obtain ⟨Kptc2, hKptc2_nn, hKptc2⟩ :=
     exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le (I := I) (M := M) g₀ 2

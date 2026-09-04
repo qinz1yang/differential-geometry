@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplResidualChain
 import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.LpDecomposition
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.Data
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.H1Data
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Leibniz
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Rellich.Compactness
 open DifferentialGeometry.Geometry.Curvature
@@ -32,7 +32,7 @@ open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
 open DifferentialGeometry.Analysis.Laplacian.GradInnerLpIdentity
 open DifferentialGeometry.Analysis.Laplacian.ResidualLpDecomposition
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplFinal
+open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplResidual
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 private local instance : MeasurableSpace E := borel E
@@ -149,9 +149,9 @@ private lemma fChartResidual_aeEq_chartPushedRaw_diff
   classical
   have hu_dom : u_h ∈ laplacianDomain (I := I) (M := M) g :=
     laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h
-  have h_lp_id := fHLeibnizGeneralResidualCLM_eq_preimageDiff
+  have h_lp_id := leibnizCompensatedSourceResidualCLMOfSmoothFactor_eq_preimageDiff
     (I := I) (M := M) g α hu_dom
-  have h_clm_eq := fHLeibnizGeneralResidualCLM_eq_fHLeibnizResidualLp
+  have h_clm_eq := leibnizCompensatedSourceResidualCLMOfSmoothFactor_eq_fHLeibnizResidualLp
     (I := I) (M := M) g α u_h
   set ρα : C^∞⟮I, M; ℝ⟯ := chartAtlasPOU I M α with hρα_def
   have h_residual_eq :

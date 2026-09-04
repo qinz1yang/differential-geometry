@@ -19,7 +19,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
 theorem exists_orthonormal_basis_norm_le_of_coercive
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     {c : ℝ} (hc : 0 < c)
     (hlow : ∀ v : TangentSpace I x, c * ‖v‖ ^ 2 ≤ g.inner x v v) :
     ∃ basis : Module.Basis
@@ -41,9 +41,9 @@ theorem exists_orthonormal_basis_norm_le_of_coercive
 
 theorem sqrt_normSq0S_le_of_metric_equiv_of_component_bound
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g₀ g : SmoothMetricGen I M) (x : M) (s : ℕ)
+    (g₀ g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
     (basis : Module.Basis Idx ℝ (TangentSpace I x))
-    (hinv₀ : MetricInverseInBasisGen (I := I) g₀ x basis
+    (hinv₀ : MetricInverseInBasis (I := I) g₀ x basis
       (identityInvMetric (Idx := Idx)))
     {C B : ℝ} (hC : 1 ≤ C)
     (hequiv : ∀ v : TangentSpace I x,
@@ -74,7 +74,7 @@ theorem sqrt_normSq0S_le_of_metric_equiv_of_component_bound
 
 theorem sqrt_normSq0S_le_of_component_bound_of_coercive
     {Idx : Type*} [Fintype Idx]
-    (g : SmoothMetricGen I M) (x : M) (s : ℕ)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
     (basis : Module.Basis Idx ℝ (TangentSpace I x))
     {c B : ℝ} (hc : 0 < c)
     (hlow : ∀ v : TangentSpace I x,
@@ -105,10 +105,10 @@ theorem sqrt_normSq0S_le_of_component_bound_of_coercive
       (Finset.mem_univ i)
   have hco : IsCoercive (g.inner x) := ⟨c, hc, hlow⟩
   have hsharp_eq (i : Idx) :
-      (tangentFlatEquivGen (I := I) g x).symm (basis.coord i) =
+      (tangentFlatEquiv (I := I) g x).symm (basis.coord i) =
         IsCoercive.sharp hco (basis.coord i).toContinuousLinearMap := by
-    apply (tangentFlatEquivGen (I := I) g x).injective
-    rw [(tangentFlatEquivGen (I := I) g x).apply_symm_apply]
+    apply (tangentFlatEquiv (I := I) g x).injective
+    rw [(tangentFlatEquiv (I := I) g x).apply_symm_apply]
     ext v
     change basis.coord i v =
       g.inner x
@@ -157,8 +157,8 @@ theorem sqrt_normSq0S_le_of_component_bound_of_coercive
         apply add_le_add (hgInv_bound i j)
         split_ifs <;> simp
       _ = epsBasis := rfl
-  have hginv : MetricInverseInBasisGen (I := I) g x basis gInv :=
-    basisInvMetric_real (I := I) g x basis
+  have hginv : MetricInverseInBasis (I := I) g x basis gInv :=
+    basisInvMetric_isInverse (I := I) g x basis
   have hnorm := normSq0S_le_pow_sum_comp_sq
     (I := I) g x s basis gInv epsBasis heps_nonneg hginv hnear T
   have hsum :

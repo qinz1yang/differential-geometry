@@ -221,7 +221,7 @@ theorem rmDiffLowAt_eq_lowerTri (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     have h :=
       DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At_apply_const
         (I := I) g₁ (metricCov (I := I) g₁) (metricCov_smooth (I := I) g₁) (v 0) (v 1) (v 2) (v 3)
-    rw [DifferentialGeometry.riemannCurvatureAux_tangentConst_eq_riemannOp
+    rw [DifferentialGeometry.connectionRiemannCurvatureField_tangentConst_eq_riemannOp
       (I := I) (metricCov (I := I) g₁) (metricCov_smooth (I := I) g₁) x (v 0) (v 1) (v 2),
       hv] at h
     change Tensor0SSpace.eval
@@ -238,7 +238,7 @@ theorem rmDiffLowAt_eq_lowerTri (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     have h :=
       DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At_apply_const
         (I := I) g₁ (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) (v 0) (v 1) (v 2) (v 3)
-    rw [DifferentialGeometry.riemannCurvatureAux_tangentConst_eq_riemannOp
+    rw [DifferentialGeometry.connectionRiemannCurvatureField_tangentConst_eq_riemannOp
       (I := I) (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x (v 0) (v 1) (v 2),
       hv] at h
     change Tensor0SSpace.eval

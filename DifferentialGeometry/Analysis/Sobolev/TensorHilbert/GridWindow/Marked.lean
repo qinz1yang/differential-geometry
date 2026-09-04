@@ -375,9 +375,9 @@ theorem hasMarkedGridWindow_reindex (g₀ : SmoothRiemannianMetric I M) (P : Smo
     {r c u : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (ρ : Equiv.Perm (Fin r))
     (hX : HasMarkedGridWindow (I := I) (M := M) g₀ P X u K) :
     HasMarkedGridWindow (I := I) (M := M) g₀ P
-      (reindexCoeffGen (I := I) (M := M) g₀ r c X ρ) u K := by
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ r c X ρ) u K := by
   intro i x
-  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r c X ρ i x]
+  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ r c X ρ i x]
   exact hX i x
 
 omit [SigmaCompactSpace M] in

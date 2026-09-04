@@ -17,7 +17,7 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 def klHeat0 (t : ℝ) (f : ℝ × V → F) (x : V) : F :=
-  heatEarly0 t f x + klLateFull0 (Real.sqrt t) f x
+  heatEarly0 t f x + klLatePotential (Real.sqrt t) f x
 
 omit [CompleteSpace F] in
 theorem klEarly0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
@@ -80,7 +80,7 @@ theorem klLate0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
   have hsqrt : 0 < Real.sqrt t := Real.sqrt_pos.2 ht
   choose s hcard hcover using
     fun k : ℕ ↦ exists_shell_cover (V := V) x hsqrt k
-  have hi := klLateFull_int (V := V) h x hsqrt (by
+  have hi := klTermKernel_smul_integrable (V := V) h x hsqrt (by
     simpa only [Real.sq_sqrt ht.le] using htT) s hcard hcover
   simpa only [Real.sq_sqrt ht.le] using hi
 
@@ -124,12 +124,12 @@ theorem klHeat0_eq_heatPot {T t : ℝ} {A₁ A_q : ℝ≥0}
       (setIntegral_prod (f := g) hfull)
   have hlateEq :
       (∫ z in L, g z ∂(stVolume : Measure (ℝ × V))) =
-        klLateFull0 (V := V) (Real.sqrt t) f x := by
-    unfold L g klLateFull0 klTermKernel klTermMeasure stVolume
+        klLatePotential (V := V) (Real.sqrt t) f x := by
+    unfold L g klLatePotential klTermKernel klTermMeasure stVolume
     rw [Real.sq_sqrt ht.le, Measure.restrict_prod_eq_prod_univ]
   change
     (∫ z in E, g z ∂(stVolume : Measure (ℝ × V))) +
-        klLateFull0 (V := V) (Real.sqrt t) f x =
+        klLatePotential (V := V) (Real.sqrt t) f x =
       ∫ s in 0..t, ∫ y : V, g (s, y)
   rw [intervalIntegral.integral_of_le ht.le, ← hprod, hsplit, hlateEq]
 
@@ -143,10 +143,10 @@ theorem klHeat0_norm {T t : ℝ} {A₁ A_q : ℝ≥0}
           (klLateSeries (Module.finrank ℝ V) *
             (klLateTailC V * (A_q : ℝ))) := by
   have hsqrt : 0 < Real.sqrt t := Real.sqrt_pos.2 ht
-  have hlate := klLateFull_canon (V := V) h x hsqrt (by
+  have hlate := norm_klLatePotential_le (V := V) h x hsqrt (by
     simpa only [Real.sq_sqrt ht.le] using htT)
   have hlateE :
-      (↑‖klLateFull0 (V := V) (Real.sqrt t) f x‖₊ : ℝ≥0∞) ≤
+      (↑‖klLatePotential (V := V) (Real.sqrt t) f x‖₊ : ℝ≥0∞) ≤
         ENNReal.ofReal
           (klLateSeries (Module.finrank ℝ V) *
             (klLateTailC V * (A_q : ℝ))) := by
@@ -155,13 +155,13 @@ theorem klHeat0_norm {T t : ℝ} {A₁ A_q : ℝ≥0}
   have hearly := kl0_early_norm (V := V) ht htT f x h
   unfold klHeat0
   calc
-    (↑‖heatEarly0 t f x + klLateFull0 (V := V) (Real.sqrt t) f x‖₊ :
+    (↑‖heatEarly0 t f x + klLatePotential (V := V) (Real.sqrt t) f x‖₊ :
         ℝ≥0∞) ≤
         (↑‖heatEarly0 t f x‖₊ : ℝ≥0∞) +
-          (↑‖klLateFull0 (V := V) (Real.sqrt t) f x‖₊ : ℝ≥0∞) := by
+          (↑‖klLatePotential (V := V) (Real.sqrt t) f x‖₊ : ℝ≥0∞) := by
       simpa only [enorm_eq_nnnorm] using
         enorm_add_le (heatEarly0 t f x)
-          (klLateFull0 (V := V) (Real.sqrt t) f x)
+          (klLatePotential (V := V) (Real.sqrt t) f x)
     _ ≤ earlyHeatC V * (A₁ : ℝ≥0∞) +
         ENNReal.ofReal
           (klLateSeries (Module.finrank ℝ V) *

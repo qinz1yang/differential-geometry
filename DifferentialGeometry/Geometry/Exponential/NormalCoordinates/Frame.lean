@@ -24,7 +24,7 @@ variable [IsManifold I ∞ M]
 
 noncomputable def normalBasis (g : SmoothRiemannianMetric I M) (x : M) :
     Module.Basis (Fin (Module.finrank Real E)) Real (TangentSpace I x) := by
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   letI : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -39,7 +39,7 @@ theorem normalBasis_inner (g : SmoothRiemannianMetric I M) (x : M)
     (i j : Fin (Module.finrank Real E)) :
     g.inner x (normalBasis (I := I) g x i) (normalBasis (I := I) g x j) =
       if i = j then (1 : Real) else 0 := by
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -53,8 +53,8 @@ theorem normalBasis_inner (g : SmoothRiemannianMetric I M) (x : M)
     MetricFiberData.toCore_inner D (ob i) (ob j)
   have hob := ob.inner_eq_ite i j
   change g.inner x (ob i) (ob j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricDataGen.inner_eq_gen
-    (tangentMetricDataGen (I := I) g x) (ob i) (ob j)]
+  rw [← TangentMetricData.inner_eq
+    (tangentMetricData (I := I) g x) (ob i) (ob j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact hob

@@ -54,7 +54,7 @@ theorem metricCompInFrame_mvfderiv_eq_christoffel
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (t : Real)
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (hg : g = S.family.metric t)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
@@ -71,12 +71,11 @@ theorem metricCompInFrame_mvfderiv_eq_christoffel
           metricCompInFrame (I := I) S frame t x a p) := by
   classical
   subst hg
-  have hd := metric_localFrame_mdiffAt (I := I) frame hframe hu hx d
   have ha := metric_localFrame_mdiffAt (I := I) frame hframe hu hx a
   have hb := metric_localFrame_mdiffAt (I := I) frame hframe hu hx b
   have hmetric :=
-    DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-      (I := I) hmc (frame d) (frame a) (frame b) hd ha hb
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+      (I := I) hmc (frame d x) ha hb
   have hmetric' :
       mvfderiv (I := I)
           (fun y : M => metricCompInFrame (I := I) S frame t y a b)
@@ -363,7 +362,7 @@ theorem inverseMetricCovDerivCompInFrame_eq_zero
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (t : Real)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
       cov (S.family.metric t))
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (hginv_mdiff : ∀ a b : Idx,
@@ -386,7 +385,7 @@ theorem inverseMetricCovDerivCompInFrame_eq_zero
   let Γ : Idx -> Idx -> Real := fun a b =>
     christoffelSymbolInFrame cov frame hframe x d a b
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric t) x
         (hframe.toBasisAt hx) (fun a b : Idx => gInv t x a b) := by
     intro a b
@@ -398,7 +397,7 @@ theorem inverseMetricCovDerivCompInFrame_eq_zero
   have hsymm : ∀ a b : Idx, U a b = U b a := by
     intro a b
     simpa [U] using
-      Tensor0SBundle.invMetric_symm (I := I) (M := M) (S.family.metric t)
+      Tensor0SBundle.MetricInverseInBasis.symmetric (I := I) (M := M) (S.family.metric t)
         x (hframe.toBasisAt hx) (fun a b : Idx => gInv t x a b) hinvAt a b
   have hDG : ∀ a b : Idx,
       DG a b =
@@ -664,7 +663,7 @@ theorem invCovZeroLocal
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (t : Real)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
       cov (S.family.metric t))
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (hginv_mdiff : ∀ a b : Idx,
@@ -687,7 +686,7 @@ theorem invCovZeroLocal
   let Γ : Idx -> Idx -> Real := fun a b =>
     christoffelSymbolInFrame cov frame hframe x d a b
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric t) x
         (hframe.toBasisAt hx) (fun a b : Idx => gInv t x a b) := by
     intro a b
@@ -699,7 +698,7 @@ theorem invCovZeroLocal
   have hsymm : ∀ a b : Idx, U a b = U b a := by
     intro a b
     simpa [U] using
-      Tensor0SBundle.invMetric_symm (I := I) (M := M) (S.family.metric t)
+      Tensor0SBundle.MetricInverseInBasis.symmetric (I := I) (M := M) (S.family.metric t)
         x (hframe.toBasisAt hx) (fun a b : Idx => gInv t x a b) hinvAt a b
   have hDG : ∀ a b : Idx,
       DG a b =

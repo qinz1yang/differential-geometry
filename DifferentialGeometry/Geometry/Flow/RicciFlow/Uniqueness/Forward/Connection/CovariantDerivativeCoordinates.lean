@@ -97,7 +97,7 @@ theorem nablaRicChartComp
       tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
         (I := I) (V q) x (hV_at q) i
   have hraw :=
-    nabla0SFun_eval_coordFrame_moving_raw
+    nabla0SFun_eval_coordFrame_moving
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s := 2) (metricCov (I := I) g) X V Ric x hpair hV hVmodel hcoord
   have hslots :

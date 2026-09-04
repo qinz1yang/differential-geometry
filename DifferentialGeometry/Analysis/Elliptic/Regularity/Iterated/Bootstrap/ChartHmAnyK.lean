@@ -40,7 +40,7 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrap
-open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapFinal
+open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapPolymorphic
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapCanonical
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapStrongInduction
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH2kBridge
@@ -62,7 +62,7 @@ theorem chartSideH2kBridge_le_two
     ChartSideH2kBridge (I := I) (M := M) k
       (((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :=
-  IteratedChartHmBootstrapFinal.chartSideH2kBridge_of_laplacianDomainPow_le_two
+  IteratedChartHmBootstrapPolymorphic.chartSideH2kBridge_of_laplacianDomainPow_le_two
     (I := I) (M := M) g hk hu_h
 
 theorem chartPushed_memWkp_two_min_k_two

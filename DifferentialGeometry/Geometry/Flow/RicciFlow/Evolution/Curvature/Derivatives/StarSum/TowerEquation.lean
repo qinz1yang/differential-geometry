@@ -40,7 +40,7 @@ omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
 theorem normSq0S_le_card
     [Module.Finite ℝ E]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetricGen I M) {x : M} {s : ℕ}
+    (g : SmoothRiemannianMetric I M) {x : M} {s : ℕ}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (horth : ∀ i j : Idx, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)

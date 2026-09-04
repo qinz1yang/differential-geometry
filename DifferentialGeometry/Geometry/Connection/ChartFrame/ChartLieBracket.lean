@@ -61,7 +61,7 @@ private lemma mpullbackWithin_extChartAt_symm_eventuallyEq_chartE_repr_symm
   exact mpullbackWithin_extChartAt_symm_eq_chartE_repr_symm V hy
 
 omit [FiniteDimensional ℝ E] in
-private lemma mlieBracket_eq_chart_fderiv_diff_raw
+private lemma mlieBracket_eq_chart_fderiv_diff_tangent_at_center
     (x : M) (X Y : Π y : M, TangentSpace I y)
     (hxint : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E))
     :
@@ -117,7 +117,7 @@ private lemma mlieBracket_eq_chart_fderiv_diff_raw
   rfl
 
 omit [FiniteDimensional ℝ E] in
-theorem mlieBracket_eq_chart_fderiv_diff
+theorem mlieBracket_eq_chart_fderiv_diff_at_center
     (x : M) (X Y : Π y : M, TangentSpace I y)
     (hxint : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E)) :
     tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -130,10 +130,10 @@ theorem mlieBracket_eq_chart_fderiv_diff
             (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x)) := by
   have h := congrArg
     (fun v : TangentSpace I x => tangentSpaceModelContinuousLinearEquiv (I := I) x v)
-    (mlieBracket_eq_chart_fderiv_diff_raw (I := I) x X Y hxint)
+    (mlieBracket_eq_chart_fderiv_diff_tangent_at_center (I := I) x X Y hxint)
   exact h
 
-theorem mlieBracket_eq_chart_fderiv_diff_general
+theorem mlieBracket_eq_chart_fderiv_diff
     (α x : M) (X Y : Π y : M, TangentSpace I y)
     (hx_src : x ∈ (extChartAt I α).source)
     (hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -480,7 +480,7 @@ theorem mvfderiv_apply_mlieBracket
             (tangentSpaceModelContinuousLinearEquiv (I := I) x (X x))
           - fderiv ℝ Xchart (φ x)
               (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x)) :=
-    mlieBracket_eq_chart_fderiv_diff x X Y hx_int
+    mlieBracket_eq_chart_fderiv_diff_at_center x X Y hx_int
   have hsymm : IsSymmSndFDerivAt ℝ ftilde (φ x) :=
     hftilde_cda.isSymmSndFDerivAt (by simp)
   have hftilde_lieBracket :

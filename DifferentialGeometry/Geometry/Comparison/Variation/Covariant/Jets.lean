@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
-import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.GeneralCurvatureCommutation
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.TwoParameterFields
 
 set_option autoImplicit false
 

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
+import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Analysis.InnerProductSpace.Defs
@@ -265,12 +266,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-abbrev SmoothMetric
-    (I : ModelWithCorners Real E H) (M : Type*)
-    [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] : Type _ :=
-  Bundle.ContMDiffRiemannianMetric I ∞ E (TangentSpace I : M -> Type _)
-
-def tangentFlatLinear (g : SmoothMetric I M) (x : M) :
+def tangentFlatLinear (g : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x →ₗ[Real] Module.Dual Real (TangentSpace I x) where
   toFun v := (g.inner x v).toLinearMap
   map_add' v w := by
@@ -284,14 +280,14 @@ def tangentFlatLinear (g : SmoothMetric I M) (x : M) :
 
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem tangentFlatLinear_apply
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     tangentFlatLinear (I := I) g x v w = g.inner x v w := by
   rfl
 
 omit [FiniteDimensional ℝ E] in
 theorem tangentFlatLinear_injective
-    (g : SmoothMetric I M) (x : M) :
+    (g : SmoothRiemannianMetric I M) (x : M) :
     Function.Injective (tangentFlatLinear (I := I) g x) := by
   intro v w hvw
   have hzero : forall z : TangentSpace I x, g.inner x (v - w) z = 0 := by
@@ -308,7 +304,7 @@ theorem tangentFlatLinear_injective
   have hpos : 0 < g.inner x (v - w) (v - w) := g.pos x (v - w) hvw_ne
   exact (lt_irrefl (0 : Real)) ((hzero (v - w)) ▸ hpos)
 
-def tangentFlatEquiv (g : SmoothMetric I M) (x : M) :
+def tangentFlatEquiv (g : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x ≃ₗ[Real] Module.Dual Real (TangentSpace I x) :=
   LinearMap.linearEquivOfInjective
     (tangentFlatLinear (I := I) g x)
@@ -316,18 +312,18 @@ def tangentFlatEquiv (g : SmoothMetric I M) (x : M) :
     MetricFiberData.dual_finrank_eq
 
 @[simp] theorem tangentFlatEquiv_apply
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     tangentFlatEquiv (I := I) g x v w = g.inner x v w := by
   rfl
 
 structure TangentMetricData
-    (g : SmoothMetric I M) (x : M) where
+    (g : SmoothRiemannianMetric I M) (x : M) where
   metric : MetricFiberData (TangentSpace I x)
   realizes_inner : forall X Y : TangentSpace I x,
     metric.inner X Y = g.inner x X Y
 
-def tangentMetricData (g : SmoothMetric I M) (x : M) :
+def tangentMetricData (g : SmoothRiemannianMetric I M) (x : M) :
     TangentMetricData (I := I) g x where
   metric :=
     { flat := tangentFlatEquiv (I := I) g x
@@ -346,7 +342,7 @@ def tangentMetricData (g : SmoothMetric I M) (x : M) :
 namespace TangentMetricData
 
 theorem inner_eq
-    {g : SmoothMetric I M} {x : M} (D : TangentMetricData (I := I) g x)
+    {g : SmoothRiemannianMetric I M} {x : M} (D : TangentMetricData (I := I) g x)
     (X Y : TangentSpace I x) :
     D.metric.inner X Y = g.inner x X Y :=
   D.realizes_inner X Y

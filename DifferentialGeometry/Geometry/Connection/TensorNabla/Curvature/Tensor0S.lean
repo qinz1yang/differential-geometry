@@ -125,10 +125,10 @@ def baseSlotCurv
   riemannSec (LeviCivita (I := I) g) (fun b => X b) (fun b => W b)
     (fun b => smoothExtensionTangent (I := I) x u b) x
 
-noncomputable def homGenS (g : SmoothRiemannianMetric I M) (s : ℕ) :
+noncomputable def tangentHomTensorCovariantDerivative (g : SmoothRiemannianMetric I M) (s : ℕ) :
     CovariantDerivative I (E →L[ℝ] Tensor0SModel s ℝ E)
       (fun x : M => TangentSpace I x →L[ℝ] Tensor0SSpace s I x) :=
-  HomConnectionGen.homBundleCovariantDerivativeGen I M E
+  HomConnection.homBundleCovariantDerivative I M E
     (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
     (fun x : M => Tensor0SSpace s I x)
     (LeviCivita (I := I) g)
@@ -137,13 +137,13 @@ noncomputable def homGenS (g : SmoothRiemannianMetric I M) (s : ℕ) :
 omit [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensor0S_curry_tensor0SCov_succ_eq_homGenS
+lemma tensor0S_curry_tensor0SCov_succ_eq_tangentHomTensorCovariantDerivative
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Π b : M, Tensor0SSpace (s + 1) I b)
     {x : M} (hS : TensorSectionMDiffAt (I := I) (s + 1) S x) (v : TangentSpace I x) :
     tensor0SCurry (I := I) (M := M) s x
         (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) S x v) =
-      homGenS (I := I) (M := M) g s (curriedSection I M S) x v := by
+      tangentHomTensorCovariantDerivative (I := I) (M := M) g s (curriedSection I M S) x v := by
   classical
   have hC := mdifferentiableAt_curriedSection_of_section (I := I) (M := M) s S hS
   apply ContinuousLinearMap.ext
@@ -162,7 +162,7 @@ lemma tensor0S_curry_tensor0SCov_succ_eq_homGenS
   have hYat : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (Y y)) x :=
     Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  have hgen := HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
+  have hgen := HomConnection.homBundleCovariantDerivative_apply_of_mdifferentiableAt
     I M E (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
     (fun x : M => Tensor0SSpace s I x)
     (LeviCivita (I := I) g)
@@ -176,7 +176,7 @@ lemma tensor0S_curry_tensor0SCov_succ_eq_homGenS
         (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) S x
           ((Vext : Π b : M, TangentSpace I b) x))
         ((Y : Π b : M, TangentSpace I b) x) =
-      (HomConnectionGen.homBundleCovariantDerivativeGen I M E
+      (HomConnection.homBundleCovariantDerivative I M E
           (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
           (fun x : M => Tensor0SSpace s I x)
           (LeviCivita (I := I) g)
@@ -198,7 +198,7 @@ lemma tensor0S_curry_riemannSec_tensor0SCov_succ_eq
     tensor0SCurry (I := I) (M := M) s x
         (riemannSec (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
           (fun b => X b) (fun b => W b) A x) =
-      riemannSec (homGenS (I := I) (M := M) g s) (fun b => X b) (fun b => W b)
+      riemannSec (tangentHomTensorCovariantDerivative (I := I) (M := M) g s) (fun b => X b) (fun b => W b)
         (curriedSection I M A) x := by
   classical
   have hA1 : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel (s + 1) ℝ E)) ((∞ : WithTop ℕ∞) + 1)
@@ -219,19 +219,19 @@ lemma tensor0S_curry_riemannSec_tensor0SCov_succ_eq
       curriedSection I M
           (covApply (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
             (fun b => Z b) A) =
-        covApply (homGenS (I := I) (M := M) g s) (fun b => Z b) (curriedSection I M A) := by
+        covApply (tangentHomTensorCovariantDerivative (I := I) (M := M) g s) (fun b => Z b) (curriedSection I M A) := by
     intro Z
     funext b
     rw [curriedSection_apply, covApply_apply, covApply_apply,
-      tensor0S_curry_tensor0SCov_succ_eq_homGenS (I := I) (M := M) g s A (hAatAll b) (Z b)]
+      tensor0S_curry_tensor0SCov_succ_eq_tangentHomTensorCovariantDerivative (I := I) (M := M) g s A (hAatAll b) (Z b)]
   rw [riemannSec_def, riemannSec_def, map_sub, map_sub]
-  rw [tensor0S_curry_tensor0SCov_succ_eq_homGenS (I := I) (M := M) g s
+  rw [tensor0S_curry_tensor0SCov_succ_eq_tangentHomTensorCovariantDerivative (I := I) (M := M) g s
       (covApply (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
         (fun b => W b) A) (hcovApply_at W) (X x),
-    tensor0S_curry_tensor0SCov_succ_eq_homGenS (I := I) (M := M) g s
+    tensor0S_curry_tensor0SCov_succ_eq_tangentHomTensorCovariantDerivative (I := I) (M := M) g s
       (covApply (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
         (fun b => X b) A) (hcovApply_at X) (W x),
-    tensor0S_curry_tensor0SCov_succ_eq_homGenS (I := I) (M := M) g s A (hAatAll x)
+    tensor0S_curry_tensor0SCov_succ_eq_tangentHomTensorCovariantDerivative (I := I) (M := M) g s A (hAatAll x)
       (VectorField.mlieBracket I (fun b => X b) (fun b => W b) x)]
   rw [hcurry_covApply W, hcurry_covApply X]
 
@@ -267,15 +267,15 @@ theorem riemannSec_tensor0SCov_succ_consEval
       (fun b => X b) (fun b => W b) A x) (v0 := u₀) (vs := u')]
   rw [tensor0S_curry_riemannSec_tensor0SCov_succ_eq (I := I) (M := M) g s X W A hA x]
   rw [show (u₀ : TangentSpace I x) = (Y : Π b : M, TangentSpace I b) x from hYx.symm]
-  rw [show riemannSec (homGenS (I := I) (M := M) g s) (fun b => X b) (fun b => W b)
+  rw [show riemannSec (tangentHomTensorCovariantDerivative (I := I) (M := M) g s) (fun b => X b) (fun b => W b)
         (curriedSection I M A) x =
-      riemannSec (HomConnectionGen.homBundleCovariantDerivativeGen I M E
+      riemannSec (HomConnection.homBundleCovariantDerivative I M E
           (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
           (fun x : M => Tensor0SSpace s I x)
           (LeviCivita (I := I) g)
           (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)))
         (fun b => X b) (fun b => W b) (fun b => Acurry b) x from rfl]
-  rw [HomConnectionGen.riemannSec_homBundleGen_apply_eq I M E
+  rw [HomConnection.riemannSec_homBundle_apply_eq I M E
     (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
     (fun x : M => Tensor0SSpace s I x)
     (LeviCivita (I := I) g)

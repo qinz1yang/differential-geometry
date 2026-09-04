@@ -60,8 +60,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -81,7 +82,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -103,7 +104,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth
   deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
+  (reindexCoefficientInputSlots reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply reindexCoefficientInputSlots_toSection
   deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib
   domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieSecondOrderDivSlotPermA
   deTurckLieSecondOrderDivSlotPermAT traceHessianCoeff_toSection)
@@ -668,17 +669,17 @@ private theorem slotPermutationCc0_toSection
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private theorem reindexCoeffFibGen_innerContractionSwapPerm_eq_comp
+private theorem reindexCoefficientInputSlotsFiber_innerContractionSwapPerm_eq_comp
     {s : ℕ} (x : M)
     (A : Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace s I x) :
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffFibGen
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlotsFiber
         (I := I) 2 s
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.innerContractionSwapPerm x A =
       A.comp (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.slotPermCLM
         (I := I) DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm210 x) := by
   apply ContinuousLinearMap.ext
   intro D
-  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffFibGen_apply,
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlotsFiber_apply,
     ContinuousLinearMap.comp_apply,
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.slotPermCLM_apply]
   rfl
@@ -697,7 +698,7 @@ private theorem order0KernelField_eq_term_combination (g₀ g₁ : SmoothRiemann
               (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelMiddlePermutation102)
               (Analysis.Parabolic.TensorSpectral.connectionDifferenceContrInsertionInnerField
                 (I := I) g₀ g₁)))
-        + DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M)
+        + DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M)
           g₀ 2 4
             (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
               (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2301)
@@ -718,7 +719,7 @@ private theorem order0KernelField_eq_term_combination (g₀ g₁ : SmoothRiemann
                 (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelMiddlePermutation120)
                 (Analysis.Parabolic.TensorSpectral.connectionDifferenceContrInsertionInnerField
                   (I := I) g₀ g₁)))
-        + DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M)
+        + DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M)
           g₀ 2 4
             (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
               (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation1302)
@@ -735,7 +736,7 @@ private theorem order0KernelField_eq_term_combination (g₀ g₁ : SmoothRiemann
               (I := I) g₀ g₁)
               (Analysis.Parabolic.TensorSpectral.connectionDifferenceContrInsertionInnerField
                 (I := I) g₀ g₁))
-        + DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M)
+        + DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M)
           g₀ 2 4
             (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
               (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2103)
@@ -751,7 +752,7 @@ private theorem order0KernelField_eq_term_combination (g₀ g₁ : SmoothRiemann
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation3012)
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceGradContrInsertionField
             (I := I) g₀ g₁)
-      - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M) g₀
+      - DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M) g₀
         2 4
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
             (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2013)
@@ -766,11 +767,11 @@ private theorem order0KernelField_eq_term_combination (g₀ g₁ : SmoothRiemann
   simp only [SmoothCcTensor.toSection_add, SmoothCcTensor.toSection_sub,
     ContMDiffSection.coe_add, ContMDiffSection.coe_sub, Pi.add_apply, Pi.sub_apply,
     operatorFieldComposition_toSection,
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen_toSection,
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots_toSection,
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceContravariantInsertionField_toSection,
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceContrInsertionInnerField_toSection,
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceGradContrInsertionField_toSection]
-  simp only [reindexCoeffFibGen_innerContractionSwapPerm_eq_comp]
+  simp only [reindexCoefficientInputSlotsFiber_innerContractionSwapPerm_eq_comp]
   rw [show orderZeroKernelOutputPermutation3201 =
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm43201 from rfl,
     show orderZeroKernelOutputPermutation2301 =
@@ -858,7 +859,7 @@ private theorem connectionDifferenceContravariantInsertionField_le (g₀ g₁ : 
   rw
     [Analysis.Parabolic.TensorSpectral.connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two
     (I := I) (M := M) g₀ g₁]
-  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 3 4
+  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 3 4
     (slotExtend (I := I) (M := M) g₀ 2 3
       (slotExtend (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)))
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceContrInsertionReindexPerm n x]
@@ -884,7 +885,7 @@ private theorem connectionDifferenceContrInsertionInnerField_le (g₀ g₁ : Smo
   rw
     [Analysis.Parabolic.TensorSpectral.connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend
     (I := I) (M := M) g₀ g₁]
-  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 3
+  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 2 3
     (slotExtend (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀))
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.innerContractionSwapPerm m x]
   exact riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 2
@@ -903,7 +904,7 @@ private theorem connectionDifferenceGradContrInsertionField_le (g₀ g₁ : Smoo
   rw
     [Analysis.Parabolic.TensorSpectral.connectionDifferenceGradContrInsertionField_eq_reindex_slotExtend
     (I := I) (M := M) g₀ g₁]
-  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4
+  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 2 4
     (slotExtend (I := I) (M := M) g₀ 1 3
       (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)))
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.innerContractionSwapPerm i x]
@@ -2754,7 +2755,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceContrInsertionInnerField
         (I := I) g₀ g₁))))).toSection x
       + (iteratedCovGrad (I := I) g₀ 2 4 i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M) g₀
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M) g₀
         2 4 (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2301)
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -2775,7 +2776,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceContrInsertionInnerField
         (I := I) g₀ g₁))))).toSection x
       + (iteratedCovGrad (I := I) g₀ 2 4 i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M) g₀
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M) g₀
         2 4 (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation1302)
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -2794,7 +2795,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceContrInsertionInnerField
         (I := I) g₀ g₁)))).toSection x
       + (iteratedCovGrad (I := I) g₀ 2 4 i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M) g₀
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M) g₀
         2 4 (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2103)
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -2811,7 +2812,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceGradContrInsertionField
         (I := I) g₀ g₁))).toSection x
       - (iteratedCovGrad (I := I) g₀ 2 4 i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M) g₀
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M) g₀
         2 4 (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2013)
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceGradContrInsertionField
@@ -2840,7 +2841,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
     exact hquad _ hWa
   have hq2 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 4 i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M) g₀
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M) g₀
         2 4 (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2301)
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -2851,7 +2852,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
         (I := I) g₀ g₁))))
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.innerContractionSwapPerm)).toSection
         x) ≤ Qq i * w := by
-    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4
+    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 2 4
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2301)
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -2889,7 +2890,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
     exact hquad _ hWb
   have hq4 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 4 i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M) g₀
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M) g₀
         2 4 (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation1302)
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -2899,7 +2900,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
         (I := I) g₀ g₁)))
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.innerContractionSwapPerm)).toSection
         x) ≤ Qq i * w := by
-    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4
+    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 2 4
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation1302)
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -2933,7 +2934,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
     exact hquad _ hWinner
   have hq6 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 4 i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M) g₀
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M) g₀
         2 4 (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2103)
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -2944,7 +2945,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
         (I := I) g₀ g₁))))
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.innerContractionSwapPerm)).toSection
         x) ≤ Qq i * w := by
-    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4
+    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 2 4
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2103)
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -2977,7 +2978,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
     exact hgrad_sqrt
   have hs8 : Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 (4 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 4 i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen (I := I) (M := M) g₀
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots (I := I) (M := M) g₀
         2 4 (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2013)
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceGradContrInsertionField
@@ -2987,7 +2988,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
       Real.sqrt fr * (d * Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x))
         + Real.sqrt ((Kc (i + 1) * ((i : ℝ) + 1)) * w)) := by
-    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 4
+    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 2 4
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4
         (slotPermutationCc0 (I := I) (M := M) g₀ orderZeroKernelOutputPermutation2013)
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceGradContrInsertionField

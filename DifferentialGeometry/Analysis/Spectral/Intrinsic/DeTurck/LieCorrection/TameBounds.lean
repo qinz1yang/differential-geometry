@@ -61,8 +61,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -82,7 +83,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -122,7 +123,7 @@ private theorem realizedDeTurckLie_covariantJet_lowerOrder_residual
   obtain ⟨Φ₀L, Φ₁L, Φ₂L, hj0, hj1, hj2, hident⟩ :=
     realizedDeTurckLie_covariantJet_covariant_identity (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
   refine ⟨Φ₀L, Φ₁L, Φ₂L, hj0, hj1, hj2, fun s hs x v => ?_⟩
-  rw [(hasDerivAt_realizedDeTurckLieChartSum_general (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
+  rw [(hasDerivAt_realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
     x (v 0) (v 1) hs).deriv]
   simpa only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply] using
     hident s hs x (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i))
@@ -583,8 +584,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -604,7 +606,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -1317,8 +1319,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -1338,7 +1341,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -1595,7 +1598,7 @@ theorem lieCorrectionZero_connectionDifferenceSection_bounds (g₀ : SmoothRiema
             ‖iteratedCovGrad (I := I) g₀ 1 2 q (connectionDifferenceSection (I := I) g₁ g₀)‖ ^ 2 ≤ F i) := by
   classical
   obtain ⟨ΛK, FK, hΛK_nn, hFK_nn, hK⟩ :=
-    raisedKoszul_order0sup_jetL2_ballUniform_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    raisedKoszul_order0sup_jetL2_ballUniform (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Λsf, Fsf, hΛsf_nn, hFsf_nn, hsf⟩ :=
     lieCorrectionZero_sharpFlat_bounds (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨C2, hC2_nn, hC2⟩ := lieCorrectionZero_twoTerm_fn (I := I) (M := M) g₀ 1 1 2 1
@@ -1891,8 +1894,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -1912,7 +1916,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -2502,8 +2506,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -2523,7 +2528,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -2857,18 +2862,18 @@ omit [I.Boundaryless] in
 lemma lieCorrectionZero_traceStep_fiber (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) (x : M) :
     (show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
-      (reindexCoeffGen (I := I) (M := M) g₀ (p + 2) p
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ (p + 2) p
         (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p) σ).toSection x) =
     lieCorrectionZeroTraceStep (I := I) g₁ p σ x := by
   apply ContinuousLinearMap.ext
   intro D
   rw [show ((show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
-      (reindexCoeffGen (I := I) (M := M) g₀ (p + 2) p
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ (p + 2) p
         (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p) σ).toSection x) D) =
-      reindexCoeffFibGen (I := I) (p + 2) p σ x
+      reindexCoefficientInputSlotsFiber (I := I) (p + 2) p σ x
         (show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
           (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p).toSection x) D from rfl]
-  rw [reindexCoeffFibGen_apply (I := I) (p + 2) p σ x _ D]
+  rw [reindexCoefficientInputSlotsFiber_apply (I := I) (p + 2) p σ x _ D]
   rw [show ((show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p).toSection x)
       (Tensor0SSpace.ofModel (ContinuousMultilinearMap.domDomCongr σ
@@ -2907,8 +2912,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -2928,7 +2934,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -3046,8 +3052,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -3067,7 +3074,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -3104,7 +3111,7 @@ lemma lieCorrectionZero_iV_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x 
     (B : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 1
-        (reindexCoeffGen (I := I) (M := M) g₀ 3 1
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 1
           (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1) lieCorrectionZeroIVPerm)
         (slotExtendIter (I := I) (M := M) g₀ 0 1 2
           (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB))).toSection x) B =
@@ -3119,7 +3126,7 @@ lemma lieCorrectionZero_iV_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x 
       (unitTensor (I := I) (M := M) x) with hVf
   have hchain : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 1
-        (reindexCoeffGen (I := I) (M := M) g₀ 3 1
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 1
           (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1) lieCorrectionZeroIVPerm)
         (slotExtendIter (I := I) (M := M) g₀ 0 1 2
           (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB))).toSection x) B) =
@@ -3127,12 +3134,12 @@ lemma lieCorrectionZero_iV_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x 
         (tensor0SProdKappaFib (I := I) (p := 2) (q := 1) x Vf B) := by
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 1
-          (reindexCoeffGen (I := I) (M := M) g₀ 3 1
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 1
             (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1) lieCorrectionZeroIVPerm)
           (slotExtendIter (I := I) (M := M) g₀ 0 1 2
             (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB))).toSection x) B) =
         (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 1 I x from
-          (reindexCoeffGen (I := I) (M := M) g₀ 3 1
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 1
             (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1) lieCorrectionZeroIVPerm).toSection x)
           ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
             (slotExtendIter (I := I) (M := M) g₀ 0 1 2
@@ -3257,8 +3264,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -3278,7 +3286,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -3318,7 +3326,7 @@ noncomputable def lieCorrectionZeroNEndoSec (g₀ g₁ g_bg : SmoothRiemannianMe
 noncomputable def lieCorrectionZeroIVField (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 1 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 1
-    (reindexCoeffGen (I := I) (M := M) g₀ 3 1
+    (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 1
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1) lieCorrectionZeroIVPerm)
     (slotExtendIter (I := I) (M := M) g₀ 0 1 2 (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB))
 
@@ -3423,8 +3431,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -3444,7 +3453,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -3477,7 +3486,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
 
 noncomputable def lieCorrectionZeroTr (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) : SmoothCcTensor g₀ (p + 2) p :=
-  reindexCoeffGen (I := I) (M := M) g₀ (p + 2) p (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p) σ
+  reindexCoefficientInputSlots (I := I) (M := M) g₀ (p + 2) p (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p) σ
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -3579,7 +3588,7 @@ noncomputable def lieCorrectionZeroRiemRestField (g₀ : SmoothRiemannianMetric 
 noncomputable def lieCorrectionZeroInsertionField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 :=
   endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)
-    + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+    + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
             (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
@@ -3656,8 +3665,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -3677,7 +3687,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -3780,8 +3790,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -3801,7 +3812,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -3888,8 +3899,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -3909,7 +3921,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -4049,8 +4061,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -4070,7 +4083,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -4140,8 +4153,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -4161,7 +4175,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -4238,8 +4252,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -4259,7 +4274,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -4352,8 +4367,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -4373,7 +4389,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -4469,8 +4485,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -4490,7 +4507,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -4536,7 +4553,7 @@ lemma lieCorrectionZero_insert_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I 
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)).toSection x) D) +
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
@@ -4559,7 +4576,7 @@ lemma lieCorrectionZero_insert_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I 
     rw [slotInsertEndoFib_apply_eval]
   have hterm2 : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
@@ -4569,17 +4586,17 @@ lemma lieCorrectionZero_insert_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I 
           ((tangentLinearMapToModel (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x))
             (m 1))) := by
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) =
-        reindexCoeffFibGen (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+        reindexCoefficientInputSlotsFiber (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
           (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg))).toSection x) D from rfl]
-    rw [reindexCoeffFibGen_apply (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x _ D]
+    rw [reindexCoefficientInputSlotsFiber_apply (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x _ D]
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
@@ -4669,8 +4686,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -4690,7 +4708,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -4801,8 +4819,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -4822,7 +4841,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -5057,8 +5076,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -5078,7 +5098,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -5172,19 +5192,19 @@ theorem lieCorrectionZero_reindex_bounds (g₀ : SmoothRiemannianMetric I M) (r 
     (hF : ∀ i : ℕ, i ≤ amax →
       ∑ q ∈ Finset.range (i + 1), ‖iteratedCovGrad (I := I) g₀ r s q R‖ ^ 2 ≤ F i) :
     (∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ r s x
-        ((reindexCoeffGen (I := I) (M := M) g₀ r s R σ).toSection x) ≤ Λ) ∧
+        ((reindexCoefficientInputSlots (I := I) (M := M) g₀ r s R σ).toSection x) ≤ Λ) ∧
     (∀ i : ℕ, i ≤ amax →
       ∑ q ∈ Finset.range (i + 1),
         ‖iteratedCovGrad (I := I) g₀ r s q
-          (reindexCoeffGen (I := I) (M := M) g₀ r s R σ)‖ ^ 2 ≤ F i) := by
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ r s R σ)‖ ^ 2 ≤ F i) := by
   constructor
   · intro x
-    have h := riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r s R σ 0 x
+    have h := riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ r s R σ 0 x
     simp only [iteratedCovGrad_zero] at h
     exact le_of_eq_of_le h (h0 x)
   · intro i hi
     refine le_trans (le_of_eq (Finset.sum_congr rfl fun q _ =>
-      norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r s R σ q)) (hF i hi)
+      norm_sq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ r s R σ q)) (hF i hi)
 
 theorem lieCorrectionZero_slotExtendIter_bounds (g₀ : SmoothRiemannianMetric I M)
     (b₀ s₀ w : ℕ) (K : SmoothCcTensor g₀ b₀ s₀) (Λ : ℝ) (F : ℕ → ℝ) (amax : ℕ)
@@ -5292,7 +5312,7 @@ theorem lieCorrectionZero_iVField_bounds (g₀ gB : SmoothRiemannianMetric I M) 
   obtain ⟨hse0, hseL2⟩ := lieCorrectionZero_slotExtendIter_bounds (I := I) (M := M) g₀ 0 1 2
     (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB) Λvf Fvf a hvf0 hvfL2
   exact lieCorrectionZero_composition_bounds (I := I) (M := M) g₀ 2 3 1 a
-    (reindexCoeffGen (I := I) (M := M) g₀ 3 1 (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1) lieCorrectionZeroIVPerm)
+    (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 1 (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1) lieCorrectionZeroIVPerm)
     (slotExtendIter (I := I) (M := M) g₀ 0 1 2 (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB))
     C2 hC2_nn hC2 Λdt (fr2 * Λvf) Fdt (fun q => fr2 * Fvf q) hΛdt_nn
     (mul_nonneg hfr2_nn hΛvf_nn) hre0 hse0 hreL2 hseL2
@@ -5363,8 +5383,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -5384,7 +5405,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -5793,8 +5814,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -5814,7 +5836,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -5848,7 +5870,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 lemma lieCorrectionZero_normSq_iteratedCovGrad_bothCongr_eq (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ' : Equiv.Perm (Fin r)) (σ : Equiv.Perm (Fin s)) (R : SmoothCcTensor g₀ r s) (q : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ r s q
-        (reindexCoeffGen (I := I) (M := M) g₀ r s
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ r s
           (rsDomDomCongrSection (I := I) (M := M) g₀ r s σ R) σ')‖ ^ 2 =
       ‖iteratedCovGrad (I := I) g₀ r s q R‖ ^ 2 := by
   rw [lieCorrectionZero_normSq_eq_integral, lieCorrectionZero_normSq_eq_integral]
@@ -6000,7 +6022,7 @@ theorem lieCorrectionZeroField_metricPerturbationPath_jetL2_perOrder_ballUniform
       (lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
       4 * (fr * (4 * Fc0 i + 4 * Fcb i + 2 * PW i)) := by
     have hswapEq : ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
@@ -6014,7 +6036,7 @@ theorem lieCorrectionZeroField_metricPerturbationPath_jetL2_perOrder_ballUniform
           (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)) i
     have hsplitI := lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg))
-      (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
             (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
@@ -6073,7 +6095,7 @@ theorem lieCorrectionZeroField_metricPerturbationPath_jetL2_perOrder_ballUniform
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg))‖ ^ 2 +
           2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                   (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
@@ -6243,13 +6265,13 @@ theorem lieCorrectionZeroField_metricPerturbationPath_riemannianFiberNormSq_orde
       4 * (fr * (4 * Λc0 + 4 * Λcb + 2 * ΛW)) := by
     have hsplitI := lieCorrectionZero_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg))
-      (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
             (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
         (Equiv.swap (0 : Fin 2) 1)) x
     have hswapEq : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        ((reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
@@ -6292,7 +6314,7 @@ theorem lieCorrectionZeroField_metricPerturbationPath_riemannianFiberNormSq_orde
             ((endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)).toSection x) +
           2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((reindexCoeffGen (I := I) (M := M) g₀ 2 2
+            ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                   (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))

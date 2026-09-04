@@ -24,7 +24,7 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace OpenConvOut
+namespace OpenMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
@@ -34,7 +34,7 @@ theorem gInf_zero_eq
       letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
     (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
-    {a b t₀ : Real} (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    {a b t₀ : Real} (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (hzero : (0 : Real) ∈ Set.Ioo a b)
     (g₀ : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted;
@@ -68,8 +68,8 @@ theorem gInf_zero_eq
   exact DifferentialGeometry.HCGCompactness.gInf_zero_eq (I := I) Φ R bf hsrc htgt
     (RealTimeInterval.openWindowLeft a t₀ n)
     (RealTimeInterval.openWindowRight b t₀ n)
-    (OpenConvOut.atWindow Φ co n) hzeroN g₀ hconv₀
+    (OpenMetricConvergenceData.atWindow Φ co n) hzeroN g₀ hconv₀
 
-end OpenConvOut
+end OpenMetricConvergenceData
 end HCGCompactness
 end DifferentialGeometry

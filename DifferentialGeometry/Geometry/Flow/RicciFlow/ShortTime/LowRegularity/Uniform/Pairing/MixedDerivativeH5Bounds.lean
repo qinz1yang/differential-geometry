@@ -189,15 +189,15 @@ private theorem covgrad_slot_extend_eq_reindex_h5
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [SigmaCompactSpace M]
     [BoundarylessManifold I M] in
-private theorem reindexCoeffGen_refl_h5 (g : SmoothRiemannianMetric I M)
+private theorem reindexCoefficientInputSlots_refl_h5 (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (R : SmoothCcTensor g r s) :
-    reindexCoeffGen (I := I) (M := M) g r s R (Equiv.refl _) = R := by
+    reindexCoefficientInputSlots (I := I) (M := M) g r s R (Equiv.refl _) = R := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply]
+  rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply]
   congr 1
 
 omit [BoundarylessManifold I M] in
@@ -215,7 +215,7 @@ private theorem rs_dom_iterated_norm_sq_h5
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
   have h := riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq
     (I := I) (M := M) g r s (Equiv.refl (Fin r)) σ S i x
-  rw [reindexCoeffGen_refl_h5 (I := I) (M := M)] at h
+  rw [reindexCoefficientInputSlots_refl_h5 (I := I) (M := M)] at h
   exact h
 
 omit [BoundarylessManifold I M] in

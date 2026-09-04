@@ -876,7 +876,7 @@ theorem rm04_coord_eq [I.Boundaryless]
     funext k; fin_cases k <;> rfl
   rw [hvec, metricRm04At_eq_riemannCurvature04At,
     CovariantDerivative.riemannCurvature04At_apply_const,
-    riemannCurvatureAux_tangentConst_eq_riemannOp (cov := LeviCivita (I := I) g) (hcov := hcov),
+    connectionRiemannCurvatureField_tangentConst_eq_riemannOp (cov := LeviCivita (I := I) g) (hcov := hcov),
     riemannOp_chartBasisVec_alpha_eq (I := I) g x₀ (idx 2) (idx 0) (idx 1) hx, map_sum]
   refine Finset.sum_congr rfl (fun l _ => ?_)
   rw [map_smul, smul_eq_mul, ← DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]

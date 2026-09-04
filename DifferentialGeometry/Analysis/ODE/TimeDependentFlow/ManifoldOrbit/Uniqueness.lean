@@ -89,7 +89,7 @@ private theorem orbit_confine_source_ball (α : M) {a : ℝ} (ha : 0 < a) (γ : 
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] in
-theorem bare_fromZero_local
+theorem integral_curves_eventuallyEq_zero_of_lipschitz
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
     {a : ℝ≥0} {δ₀ : ℝ} {K : ℝ≥0} (ha_pos : 0 < (a:ℝ)) (hδ₀_pos : 0 < δ₀)
     (hlipdat : ∀ t ∈ Set.Icc (0 : ℝ) δ₀,

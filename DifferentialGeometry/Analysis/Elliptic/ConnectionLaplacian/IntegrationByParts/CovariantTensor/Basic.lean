@@ -137,7 +137,7 @@ lemma loweringIntertwiner_three (g : SmoothRiemannianMetric I M) :
     LoweringIntertwiner (I := I) (M := M) g 3 :=
   fun S x v => loweredCovDerivAt_eq_lower_tensorCovDerivAt_three (I := I) (M := M) g S x v
 
-def covDerivAlongVFrawGen
+def covDerivAlongVFrawCovariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -148,25 +148,25 @@ def covDerivAlongVFrawGen
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-@[simp] lemma covDerivAlongVFrawGen_apply
+@[simp] lemma covDerivAlongVFrawCovariantTensor_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
-    covDerivAlongVFrawGen (I := I) (M := M) g s T B y =
+    covDerivAlongVFrawCovariantTensor (I := I) (M := M) g s T B y =
       (tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g)).toFun
         (fun y : M => T y) y (B y) := rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-lemma covDerivAlongVFrawGen_contMDiff
+lemma covDerivAlongVFrawCovariantTensor_contMDiff
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 s ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (TensorRSModel 0 s ℝ E)
         (E := fun z : M => TensorRSSpace 0 s I z) y
-        (covDerivAlongVFrawGen (I := I) (M := M) g s T B y)) := by
+        (covDerivAlongVFrawCovariantTensor (I := I) (M := M) g s T B y)) := by
   classical
   set cov := tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g) with hcov_def
   have hT : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 s ℝ E))
@@ -186,60 +186,60 @@ lemma covDerivAlongVFrawGen_contMDiff
   rw [← contMDiffOn_univ]
   exact hOn
 
-def covDerivAlongVFSectionGen
+def covDerivAlongVFSectionCovariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯ :=
   ContMDiffSection.mk
-    (fun y : M => covDerivAlongVFrawGen (I := I) (M := M) g s T B y)
-    (covDerivAlongVFrawGen_contMDiff (I := I) (M := M) g s T B)
+    (fun y : M => covDerivAlongVFrawCovariantTensor (I := I) (M := M) g s T B y)
+    (covDerivAlongVFrawCovariantTensor_contMDiff (I := I) (M := M) g s T B)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-@[simp] lemma covDerivAlongVFSectionGen_apply
+@[simp] lemma covDerivAlongVFSectionCovariantTensor_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
-    covDerivAlongVFSectionGen (I := I) (M := M) g s T B y =
+    covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T B y =
       (tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g)).toFun
         (fun y : M => T y) y (B y) := rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma covDerivAlongVFSectionGen_lowered_eq
+lemma covDerivAlongVFSectionCovariantTensor_lowered_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (hint : LoweringIntertwiner (I := I) (M := M) g s)
     (T : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
     lowerAllUpperIndices (I := I) (M := M) g 0 s y
-        (TensorRSSpace.toModel (covDerivAlongVFSectionGen (I := I) (M := M) g s T B y)) =
+        (TensorRSSpace.toModel (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T B y)) =
       Tensor0SSpace.toModel (loweredCovDerivAt (I := I) (M := M) g 0 s T y (B y)) := by
   rw [hint T y (B y)]
   rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma toModel_liftedTensorSection_covDerivAlongVFSectionGen
+lemma toModel_liftedTensorSection_covDerivAlongVFSectionCovariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (hint : LoweringIntertwiner (I := I) (M := M) g s)
     (T : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
     Tensor0SSpace.toModel
         (liftedTensorSection (I := I) (M := M) g 0 s
-          (covDerivAlongVFSectionGen (I := I) (M := M) g s T B) y) =
+          (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T B) y) =
       Tensor0SSpace.toModel (loweredCovDerivAt (I := I) (M := M) g 0 s T y (B y)) := by
   rw [toModel_liftedTensorSection]
-  exact covDerivAlongVFSectionGen_lowered_eq (I := I) (M := M) g s hint T B y
+  exact covDerivAlongVFSectionCovariantTensor_lowered_eq (I := I) (M := M) g s hint T B y
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma covDerivAlongGen_covDerivAlongVFSectionGen_eq
+lemma covDerivAlong_covDerivAlongVFSectionCovariantTensor_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
-    covDerivAlongVFSectionGen (I := I) (M := M) g s
-        (covDerivAlongVFSectionGen (I := I) (M := M) g s T B) B y =
+    covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s
+        (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T B) B y =
       tensorSecondCovDeriv (I := I) g 0 s
           (fun b : M => B b) (fun b : M => B b) (fun b : M => T b) y +
         (tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g)).toFun
@@ -253,7 +253,7 @@ lemma covDerivAlongGen_covDerivAlongVFSectionGen_eq
       tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g) from rfl]
   abel
 
-def dirichletFormGen
+def dirichletFormCovariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) (b : M) :
     TangentSpace I b →ₗ[ℝ] ℝ where
   toFun X := tensorInnerPointwise (I := I) (M := M) g 0 s b
@@ -281,37 +281,37 @@ def dirichletFormGen
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-@[simp] lemma dirichletFormGen_apply
+@[simp] lemma dirichletFormCovariantTensor_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) (b : M)
     (X : TangentSpace I b) :
-    dirichletFormGen (I := I) (M := M) g s T v b X =
+    dirichletFormCovariantTensor (I := I) (M := M) g s T v b X =
       tensorInnerPointwise (I := I) (M := M) g 0 s b
         (TensorRSSpace.toModel (tensorCovDerivAt (I := I) (M := M) g 0 s T b X))
         (TensorRSSpace.toModel (v.toSection b)) := rfl
 
-def dirichletVFGen
+def dirichletVFCovariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) (b : M) :
     TangentSpace I b :=
-  metricSharp (I := I) g b (dirichletFormGen (I := I) (M := M) g s T v b)
+  metricSharp (I := I) g b (dirichletFormCovariantTensor (I := I) (M := M) g s T v b)
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-lemma inner_dirichletVFGen
+lemma inner_dirichletVFCovariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) (b : M)
     (X : TangentSpace I b) :
-    g.inner b (dirichletVFGen (I := I) (M := M) g s T v b) X =
-      dirichletFormGen (I := I) (M := M) g s T v b X := by
-  rw [dirichletVFGen]
-  exact inner_metricSharp (I := I) g b (dirichletFormGen (I := I) (M := M) g s T v b) X
+    g.inner b (dirichletVFCovariantTensor (I := I) (M := M) g s T v b) X =
+      dirichletFormCovariantTensor (I := I) (M := M) g s T v b X := by
+  rw [dirichletVFCovariantTensor]
+  exact inner_metricSharp (I := I) g b (dirichletFormCovariantTensor (I := I) (M := M) g s T v b) X
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma dirichletFormGen_chartBasis_component_contMDiffOn
+private lemma dirichletFormCovariantTensor_chartBasis_component_contMDiffOn
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) (α : M)
     (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
-      (fun b : M => dirichletFormGen (I := I) (M := M) g s T v b
+      (fun b : M => dirichletFormCovariantTensor (I := I) (M := M) g s T v b
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source := by
   have hcov_section : ContMDiffOn I (I.prod 𝓘(ℝ, TensorRSModel 0 s ℝ E)) ∞
@@ -356,42 +356,42 @@ private lemma dirichletFormGen_chartBasis_component_contMDiffOn
   rw [hbase_eq] at hinner
   refine hinner.congr ?_
   intro b _
-  rw [dirichletFormGen_apply]
+  rw [dirichletFormCovariantTensor_apply]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma dirichletVFGen_contMDiff
+lemma dirichletVFCovariantTensor_contMDiff
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (fun b : M => TotalSpace.mk' E b (dirichletVFGen (I := I) (M := M) g s T v b)) :=
+      (fun b : M => TotalSpace.mk' E b (dirichletVFCovariantTensor (I := I) (M := M) g s T v b)) :=
   metricSharp_contMDiff_total (I := I) g
-    (cv := fun b : M => dirichletFormGen (I := I) (M := M) g s T v b)
-    (fun α j => dirichletFormGen_chartBasis_component_contMDiffOn
+    (cv := fun b : M => dirichletFormCovariantTensor (I := I) (M := M) g s T v b)
+    (fun α j => dirichletFormCovariantTensor_chartBasis_component_contMDiffOn
       (I := I) (M := M) g s T v α j)
 
-def dirichletVFSectionGen
+def dirichletVFSectionCovariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
   ContMDiffSection.mk
-    (fun b : M => dirichletVFGen (I := I) (M := M) g s T v b)
-    (dirichletVFGen_contMDiff (I := I) (M := M) g s T v)
+    (fun b : M => dirichletVFCovariantTensor (I := I) (M := M) g s T v b)
+    (dirichletVFCovariantTensor_contMDiff (I := I) (M := M) g s T v)
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-@[simp] lemma dirichletVFSectionGen_apply
+@[simp] lemma dirichletVFSectionCovariantTensor_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) (b : M) :
-    dirichletVFSectionGen (I := I) (M := M) g s T v b =
-      dirichletVFGen (I := I) (M := M) g s T v b := rfl
+    dirichletVFSectionCovariantTensor (I := I) (M := M) g s T v b =
+      dirichletVFCovariantTensor (I := I) (M := M) g s T v b := rfl
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
-private lemma divergence_dirichletVFGen_summand_eq
+private lemma divergence_dirichletVFCovariantTensor_summand_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (hint : LoweringIntertwiner (I := I) (M := M) g s)
     (T v : SmoothCcTensor g 0 s) (b : M)
     (i : Fin (Module.finrank ℝ E)) :
     g.inner b
         ((LeviCivita (I := I) g).toFun
-          (dirichletVFSectionGen (I := I) (M := M) g s T v).toFun b
+          (dirichletVFSectionCovariantTensor (I := I) (M := M) g s T v).toFun b
           (smoothOrthoFrame (I := I) g b i b))
         (smoothOrthoFrame (I := I) g b i b) =
       tensorInnerPointwise (I := I) (M := M) g 0 s b
@@ -412,7 +412,7 @@ private lemma divergence_dirichletVFGen_summand_eq
     ⟨fun y : M => smoothOrthoFrame (I := I) g b i y,
       smoothOrthoFrame_smooth (I := I) g b i⟩ with hB_def
   set Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    dirichletVFSectionGen (I := I) (M := M) g s T v with hZ_def
+    dirichletVFSectionCovariantTensor (I := I) (M := M) g s T v with hZ_def
   have hBb : (B : ∀ y, TangentSpace I y) b = smoothOrthoFrame (I := I) g b i b := rfl
   have hleib := leibniz_inner (I := I) g
     (V := fun y : M => Z y) (W := fun y : M => B y)
@@ -420,44 +420,44 @@ private lemma divergence_dirichletVFGen_summand_eq
     (x := b) ((B : ∀ y, TangentSpace I y) b)
   have hfun : (fun y : M => g.inner y (Z y) (B y)) =
       tensorInnerScalar (I := I) (M := M) g 0 s
-        (covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B) v.toSection := by
+        (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B) v.toSection := by
     funext y
-    rw [hZ_def, dirichletVFSectionGen_apply, inner_dirichletVFGen, dirichletFormGen_apply,
-      tensorInnerScalar_apply, covDerivAlongVFSectionGen_apply]
+    rw [hZ_def, dirichletVFSectionCovariantTensor_apply, inner_dirichletVFCovariantTensor, dirichletFormCovariantTensor_apply,
+      tensorInnerScalar_apply, covDerivAlongVFSectionCovariantTensor_apply]
     rfl
   have hprod : tangentSectionAction (I := I) B
         (fun y : M => g.inner y (Z y) (B y)) b =
       tensorInnerPointwise (I := I) (M := M) g 0 s b
           (TensorRSSpace.toModel
-            (covDerivAlongVFSectionGen (I := I) (M := M) g s
-              (covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B) B b))
+            (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s
+              (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B) B b))
           (TensorRSSpace.toModel (v.toSection b))
         + tensorInnerPointwise (I := I) (M := M) g 0 s b
           (TensorRSSpace.toModel
-            (covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B b))
+            (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B b))
           (TensorRSSpace.toModel
-            (covDerivAlongVFSectionGen (I := I) (M := M) g s v.toSection B b)) := by
+            (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s v.toSection B b)) := by
     rw [show tangentSectionAction (I := I) B
             (fun y : M => g.inner y (Z y) (B y)) =
           tangentSectionAction (I := I) B
             (tensorInnerScalar (I := I) (M := M) g 0 s
-              (covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B) v.toSection) from by
+              (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B) v.toSection) from by
       rw [hfun]]
     rw [tangentSectionAction_tensorInnerScalar (I := I) (M := M) g 0 s
-      (covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B) v.toSection B b]
+      (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B) v.toSection B b]
     congr 1
     · rw [tensorInnerPointwise_eq_liftedTensorSection_inner (I := I) (M := M) g 0 s
-        (covDerivAlongVFSectionGen (I := I) (M := M) g s
-          (covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B) B)
+        (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s
+          (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B) B)
         v.toSection b]
-      rw [toModel_liftedTensorSection_covDerivAlongVFSectionGen (I := I) (M := M) g s hint
-        (covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B) B b]
+      rw [toModel_liftedTensorSection_covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s hint
+        (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B) B b]
     · rw [tensorInnerPointwise_eq_liftedTensorSection_inner (I := I) (M := M) g 0 s
-        (covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B)
-        (covDerivAlongVFSectionGen (I := I) (M := M) g s v.toSection B) b]
-      rw [toModel_liftedTensorSection_covDerivAlongVFSectionGen (I := I) (M := M) g s hint
+        (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B)
+        (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s v.toSection B) b]
+      rw [toModel_liftedTensorSection_covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s hint
         T.toSection B b,
-        toModel_liftedTensorSection_covDerivAlongVFSectionGen (I := I) (M := M) g s hint v.toSection
+        toModel_liftedTensorSection_covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s hint v.toSection
           B b]
   have haccel : g.inner b (Z b)
         ((LeviCivita (I := I) g).toFun (fun y : M => B y) b
@@ -468,8 +468,8 @@ private lemma divergence_dirichletVFGen_summand_eq
             ((LeviCivita (I := I) g).toFun (fun y : M => B y) b
               ((B : ∀ y, TangentSpace I y) b))))
         (TensorRSSpace.toModel (v.toSection b)) := by
-    rw [hZ_def, dirichletVFSectionGen_apply, inner_dirichletVFGen, dirichletFormGen_apply]
-  have hsecond := covDerivAlongGen_covDerivAlongVFSectionGen_eq (I := I) (M := M) g s T.toSection B
+    rw [hZ_def, dirichletVFSectionCovariantTensor_apply, inner_dirichletVFCovariantTensor, dirichletFormCovariantTensor_apply]
+  have hsecond := covDerivAlong_covDerivAlongVFSectionCovariantTensor_eq (I := I) (M := M) g s T.toSection B
     b
   have hsummand : g.inner b
         ((LeviCivita (I := I) g).toFun (fun y : M => Z y) b
@@ -495,9 +495,9 @@ private lemma divergence_dirichletVFGen_summand_eq
           ((LeviCivita (I := I) g).toFun (fun y : M => B y) b
             ((B : ∀ y, TangentSpace I y) b)) := rfl
   rw [haccel_eq]
-  rw [show covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B b =
+  rw [show covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B b =
         tensorCovDerivAt (I := I) (M := M) g 0 s T b ((B : ∀ y, TangentSpace I y) b) from rfl,
-    show covDerivAlongVFSectionGen (I := I) (M := M) g s v.toSection B b =
+    show covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s v.toSection B b =
         tensorCovDerivAt (I := I) (M := M) g 0 s v b ((B : ∀ y, TangentSpace I y) b) from rfl]
   rw [hBb]
   rw [show (fun y : M => (B : ∀ z : M, TangentSpace I z) y) =
@@ -506,7 +506,7 @@ private lemma divergence_dirichletVFGen_summand_eq
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] [SigmaCompactSpace M] in
-private lemma tensorCovDerivPointwiseInnerGen_eq_smoothOrthoFrame_diag
+private lemma tensorCovDerivPointwiseInnerCovariantTensor_eq_smoothOrthoFrame_diag
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) (b : M) :
     tensorCovDerivPointwiseInner (I := I) (M := M) g 0 s T v b =
       ∑ i : Fin (Module.finrank ℝ E),
@@ -583,11 +583,11 @@ private lemma tensorCovDerivPointwiseInnerGen_eq_smoothOrthoFrame_diag
   rw [hframe_eq i, tangentSpaceModelContinuousLinearEquiv_apply]
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
-lemma divergence_dirichletVFGen_eq
+lemma divergence_dirichletVFCovariantTensor_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (hint : LoweringIntertwiner (I := I) (M := M) g s)
     (T v : SmoothCcTensor g 0 s) (b : M) :
-    divergenceG (I := I) g (dirichletVFSectionGen (I := I) (M := M) g s T v) b =
+    divergenceG (I := I) g (dirichletVFSectionCovariantTensor (I := I) (M := M) g s T v) b =
       tensorCovDerivPointwiseInner (I := I) (M := M) g 0 s T v b
         + tensorInnerPointwise (I := I) (M := M) g 0 s b
             (TensorRSSpace.toModel
@@ -595,11 +595,11 @@ lemma divergence_dirichletVFGen_eq
             (TensorRSSpace.toModel (v.toSection b)) := by
   classical
   rw [divergence_g_eq_smoothOrthoFrame_trace (I := I) g
-    (dirichletVFSectionGen (I := I) (M := M) g s T v) b]
+    (dirichletVFSectionCovariantTensor (I := I) (M := M) g s T v) b]
   rw [Finset.sum_congr rfl (fun i _ =>
-    divergence_dirichletVFGen_summand_eq (I := I) (M := M) g s hint T v b i)]
+    divergence_dirichletVFCovariantTensor_summand_eq (I := I) (M := M) g s hint T v b i)]
   rw [Finset.sum_add_distrib]
-  rw [← tensorCovDerivPointwiseInnerGen_eq_smoothOrthoFrame_diag (I := I) (M := M) g s T v b]
+  rw [← tensorCovDerivPointwiseInnerCovariantTensor_eq_smoothOrthoFrame_diag (I := I) (M := M) g s T v b]
   rw [add_comm]
   congr 1
   rw [rawTensorConnLap_eq_frame_trace_secondCovDeriv (I := I) g 0 s
@@ -633,7 +633,7 @@ lemma divergence_dirichletVFGen_eq
         (smoothOrthoFrame (I := I) g b i) (smoothOrthoFrame (I := I) g b i)
         (fun y : M => T.toSection y) b) Finset.univ
 
-theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_general
+theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (hint : LoweringIntertwiner (I := I) (M := M) g s)
     (T v : SmoothCcTensor g 0 s) :
@@ -645,7 +645,7 @@ theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_general
   classical
   set μ := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
   set Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    dirichletVFSectionGen (I := I) (M := M) g s T v with hZ_def
+    dirichletVFSectionCovariantTensor (I := I) (M := M) g s T v with hZ_def
   have hZ_cs : HasCompactSupport (Z : ∀ x, TangentSpace I x) :=
     HasCompactSupport.of_compactSpace _
   have hdiv_zero : ∫ b, divergenceG (I := I) g Z b ∂μ = 0 :=
@@ -656,7 +656,7 @@ theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_general
             (TensorRSSpace.toModel
               (rawTensorConnLap (I := I) g 0 s (fun y : M => T.toSection y) b))
             (TensorRSSpace.toModel (v.toSection b)) := by
-    intro b; rw [hZ_def]; exact divergence_dirichletVFGen_eq (I := I) (M := M) g s hint T v b
+    intro b; rw [hZ_def]; exact divergence_dirichletVFCovariantTensor_eq (I := I) (M := M) g s hint T v b
   rw [integral_congr_ae (Filter.Eventually.of_forall hpt)] at hdiv_zero
   have hcross_cont : Continuous
       (fun b : M => tensorCovDerivPointwiseInner (I := I) (M := M) g 0 s T v b) := by
@@ -720,7 +720,7 @@ theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_three
         (covGrad (I := I) (M := M) g 0 3 v).toFun =
       - tensorL2Inner (I := I) (M := M) g 0 3
           (rawTensorConnLapSmooth (I := I) g 0 3 T).toFun v.toFun :=
-  tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_general
+  tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap
     (I := I) (M := M) g 3 (loweringIntertwiner_three (I := I) (M := M) g) T v
 
 theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_two
@@ -730,7 +730,7 @@ theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_two
         (covGrad (I := I) (M := M) g 0 2 v).toFun =
       - tensorL2Inner (I := I) (M := M) g 0 2
           (rawTensorConnLapSmooth (I := I) g 0 2 T).toFun v.toFun :=
-  tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_general
+  tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap
     (I := I) (M := M) g 2 (loweringIntertwiner_two (I := I) (M := M) g) T v
 
 end Elliptic

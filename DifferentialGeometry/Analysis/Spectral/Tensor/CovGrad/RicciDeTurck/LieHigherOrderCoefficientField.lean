@@ -602,7 +602,7 @@ private theorem dLieCovGradVal_toNabla {d : ℕ} (g₀ : SmoothRiemannianMetric 
       Tensor0SBundle.Tensor0SSpace.eval
         (Tensor0SNabla.tensor0SCovariantDerivative I M d (LeviCivita (I := I) g₀)
           (unitEvalSection (I := I) (M := M) g₀ d F) x v0) m := by
-  rw [covGrad_apply_unit_eval_genVal (I := I) (M := M) g₀ d F x (Fin.cons v0 m)]
+  rw [covGrad_apply_unit_eval (I := I) (M := M) g₀ d F x (Fin.cons v0 m)]
   have hzero : (Fin.cons v0 m : Fin (d + 1) → TangentSpace I x) 0 = v0 := rfl
   have htail : Matrix.vecTail (Fin.cons v0 m) = m := by
     funext j
@@ -610,7 +610,7 @@ private theorem dLieCovGradVal_toNabla {d : ℕ} (g₀ : SmoothRiemannianMetric 
   rw [hzero, htail, tensorCovDerivAt_def (I := I) (M := M) g₀ 0 d F x
       (tangentSpaceModelContinuousLinearEquiv (I := I) x v0),
     ContinuousLinearEquiv.symm_apply_apply,
-    covDeriv_unit_eval_eq_genVal (I := I) (M := M) g₀ d F.toSection x v0]
+    covDeriv_unit_eval_eq (I := I) (M := M) g₀ d F.toSection x v0]
   rfl
 
 private def dLieTriEvalFn (V : Π b : M, Tensor0SBundle.Tensor0SSpace 3 I b)

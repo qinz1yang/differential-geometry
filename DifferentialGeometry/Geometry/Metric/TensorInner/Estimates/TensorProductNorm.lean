@@ -22,10 +22,10 @@ variable [T2Space M]
 
 omit [IsManifold I 2 M] [T2Space M] in
 theorem normSq0S_product {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetricGen I M) (x : M) {s q : ℕ}
+    (g : SmoothRiemannianMetric I M) (x : M) {s q : ℕ}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -72,10 +72,10 @@ theorem normSq0S_product {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
 omit [IsManifold I 2 M] [T2Space M] in
 theorem normSq0S_prod {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetricGen I M) (x : M) {s q : ℕ}
+    (g : SmoothRiemannianMetric I M) (x : M) {s q : ℕ}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : Tensor0SSpace s I x) (B : Tensor0SSpace q I x) :
     normSq0S (I := I) g x (s + q)
         (Tensor0SSpace.product A B)
@@ -120,10 +120,10 @@ theorem normSq0S_prod {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
 omit [IsManifold I 2 M] [T2Space M] in
 theorem normSq0S_domDomCongr {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetricGen I M) (x : M) {s s' : ℕ}
+    (g : SmoothRiemannianMetric I M) (x : M) {s s' : ℕ}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (e : Fin s ≃ Fin s') (T : Tensor0SSpace s I x) :
     normSq0S (I := I) g x s' (T.domDomCongr e) = normSq0S (I := I) g x s T := by
   classical

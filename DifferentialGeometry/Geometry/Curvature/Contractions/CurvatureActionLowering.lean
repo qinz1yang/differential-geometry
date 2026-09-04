@@ -25,7 +25,7 @@ theorem curvatureAction0SAt_eq_rm04 {s : ℕ}
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) Rm04)

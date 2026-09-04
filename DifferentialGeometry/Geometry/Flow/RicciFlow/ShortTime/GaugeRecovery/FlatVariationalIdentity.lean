@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCo
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatIdentity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.FlowRealisation.LocalChart
@@ -100,7 +100,7 @@ theorem flat_raw_variational_identity
     obtain ⟨T₀, hT₀, W, hW, hxW, hode⟩ := hΦfam_ode t ht x
     obtain ⟨G', hG'⟩ := hGfd t ht x
     obtain ⟨ΦE, velChart, Pv, _hvel, hident⟩ :=
-      rawVariationalIdentityFlat_of_jointSmoothBareField (I := I) X hX hXauto Φ_fam t x v
+      rawVariationalIdentityFlat_of_jointSmoothField (I := I) X hX hXauto Φ_fam t x v
         (hx_src t ht x) hT₀ hW hxW hode (horbit_cont t ht x).1 (horbit_cont t ht x).2 hG'
     exact ⟨_, _, hident⟩
   choose! Tv Pv hTv using hpoint

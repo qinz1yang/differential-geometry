@@ -66,8 +66,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -88,7 +89,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -110,7 +111,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth
   deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
+  (reindexCoefficientInputSlots reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply reindexCoefficientInputSlots_toSection
   deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib
   domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieSecondOrderDivSlotPermA
   deTurckLieSecondOrderDivSlotPermAT traceHessianCoeff_toSection)
@@ -197,21 +198,21 @@ private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma reindexCoeffGen_sub (g₀ : SmoothRiemannianMetric I M)
+private lemma reindexCoefficientInputSlots_sub (g₀ : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g₀ 2 2) (ρ : Equiv.Perm (Fin 2)) :
-    reindexCoeffGen (I := I) (M := M) g₀ 2 2 (A - B) ρ =
-      reindexCoeffGen (I := I) (M := M) g₀ 2 2 A ρ -
-        reindexCoeffGen (I := I) (M := M) g₀ 2 2 B ρ := by
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 (A - B) ρ =
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 A ρ -
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 B ρ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    reindexCoeffGen_toSection, reindexCoeffGen_toSection, reindexCoeffGen_toSection,
+    reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlots_toSection,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro D
-  rw [sub_apply, reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
-    reindexCoeffFibGen_apply, sub_apply]
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply, reindexCoefficientInputSlotsFiber_apply,
+    reindexCoefficientInputSlotsFiber_apply, sub_apply]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_NEndoInsertion_difference_decomposition (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
@@ -232,7 +233,7 @@ private lemma lieCorrectionZero_insertionField_sub (g₀ g₁ g_bg : SmoothRiema
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
             lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀)
-        + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
@@ -240,17 +241,17 @@ private lemma lieCorrectionZero_insertionField_sub (g₀ g₁ g_bg : SmoothRiema
             (Equiv.swap (0 : Fin 2) 1) := by
   rw [slotInsertEndoCc_sub (I := I) (M := M) g₀ 1,
     rsDomDomCongrSection_sub (I := I) (M := M) g₀ (Equiv.swap (0 : Fin 2) 1),
-    reindexCoeffGen_sub (I := I) (M := M) g₀]
+    reindexCoefficientInputSlots_sub (I := I) (M := M) g₀]
   rw [show lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)
-        + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)))
             (Equiv.swap (0 : Fin 2) 1) from rfl]
   rw [show lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g₀ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀)
-        + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀)))
@@ -357,7 +358,7 @@ private theorem lieCorrectionZero_add_baseEndomorphism_decomposition (g₀ g₁ 
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
             lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀)
-        + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
@@ -767,7 +768,7 @@ private theorem exists_deTurckVectorFieldInteriorProduct_coeffJetEnvelope
     refine le_trans (hse0 x) (le_of_eq ?_)
     rw [hfr2_def]
   exact operatorFieldComposition_l2JetWindow_le (I := I) (M := M) g₀ 2 3 1 i Win hWin1
-    (reindexCoeffGen (I := I) (M := M) g₀ 3 1
+    (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 1
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1) lieCorrectionZeroIVPerm)
     (slotExtendIter (I := I) (M := M) g₀ 0 1 2 (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB))
     C2 hC2_nn hC2 Λdt (fr2 * Λvf) Kdt (fun q => fr2 * Kvf q)
@@ -1578,7 +1579,7 @@ private theorem lieDerivativeCorrectionPlusEndoTerm_l2JetWindow
   set IΔ : SmoothCcTensor g₀ 2 2 := endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
     (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
       lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀) with hIΔ_def
-  set IS : SmoothCcTensor g₀ 2 2 := reindexCoeffGen (I := I) (M := M) g₀ 2 2
+  set IS : SmoothCcTensor g₀ 2 2 := reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
     (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) IΔ)
     (Equiv.swap (0 : Fin 2) 1) with hIS_def
   have k1 := lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i

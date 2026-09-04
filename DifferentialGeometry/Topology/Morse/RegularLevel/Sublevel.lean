@@ -572,7 +572,7 @@ theorem mem_manifoldSublevelInteriorChart_source [I.Boundaryless]
       (sublevelPullbackCutoffPoint_value_lt I f a x b hx)
       (contDiff_sublevelPullbackCutoff I f hf x.1 b hb)
 
-private theorem sublevelPullbackChart_transition_mem_aux
+private theorem sublevelPullbackChart_transition_mem
     (f : M → ℝ) (a : ℝ) (x₁ x₂ : SublevelSpace f a)
     (b₁ : ContDiffBump ((extChartAt I x₁.1) x₁.1))
     (hb₁ : Metric.closedBall ((extChartAt I x₁.1) x₁.1) b₁.rOut ⊆ (extChartAt I x₁.1).target)
@@ -647,7 +647,7 @@ private theorem sublevelPullbackChart_transition_mem_aux
   rw [hclamp]
   exact ⟨hm₁, hme₁, hc₁₂e₂, hm₂⟩
 
-private theorem sublevelPullbackChart_transition_reduce_aux
+private theorem sublevelPullbackChart_transition_reduce
     (f : M → ℝ) (a : ℝ) (x₁ x₂ : SublevelSpace f a)
     (b₁ : ContDiffBump ((extChartAt I x₁.1) x₁.1))
     (hb₁ : Metric.closedBall ((extChartAt I x₁.1) x₁.1) b₁.rOut ⊆ (extChartAt I x₁.1).target)
@@ -690,7 +690,7 @@ private theorem sublevelPullbackChart_transition_reduce_aux
   have hclamp : I'.symm y = z := by
     apply Subtype.ext
     exact morseHalfSpaceClamp_of_mem m hy2'
-  have hmems := sublevelPullbackChart_transition_mem_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy
+  have hmems := sublevelPullbackChart_transition_mem I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy
   have hm₁ : z ∈ m₁.target := by
     rw [hclamp] at hmems
     exact hmems.1
@@ -739,7 +739,7 @@ private theorem sublevelPullbackChart_transition_w₁_mem_aux
   have hclamp : I'.symm y = z := by
     apply Subtype.ext
     exact morseHalfSpaceClamp_of_mem m hy2'
-  have hmems := sublevelPullbackChart_transition_mem_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy
+  have hmems := sublevelPullbackChart_transition_mem I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy
   have hm₁ : z ∈ m₁.target := by
     rw [hclamp] at hmems
     exact hmems.1
@@ -776,7 +776,7 @@ private theorem sublevelPullbackChart_transition_w₁_mem_aux
   · rwa [← hw₁z]
   · rwa [← hw₁z]
 
-private theorem sublevelPullbackChart_transition_contDiffOn_aux
+private theorem sublevelPullbackChart_transition_contDiffOn
     [IsManifold I (⊤ : WithTop ℕ∞) M]
     (f : M → ℝ) (a : ℝ) (x₁ x₂ : SublevelSpace f a)
     (b₁ : ContDiffBump ((extChartAt I x₁.1) x₁.1))
@@ -822,7 +822,7 @@ private theorem sublevelPullbackChart_transition_contDiffOn_aux
         rw [range_morseModelWithCornersHalfSpace] at hy2''
         exact hy2''
       exact hD₁ y' hy2' (by
-        have hmems' := sublevelPullbackChart_transition_mem_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy'
+        have hmems' := sublevelPullbackChart_transition_mem I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy'
         have hclamp' : (morseModelWithCornersHalfSpace m).symm y' = ⟨y', hy2'⟩ := by
           apply Subtype.ext
           exact morseHalfSpaceClamp_of_mem m hy2'
@@ -856,9 +856,9 @@ private theorem sublevelPullbackChart_transition_contDiffOn_aux
     s y
   refine hcd.congr_of_eventuallyEq ?_ ?_
   · filter_upwards [self_mem_nhdsWithin] with y' hy'
-    simpa using (sublevelPullbackChart_transition_reduce_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
+    simpa using (sublevelPullbackChart_transition_reduce I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
       w₁ v₂ hW₁val hV₂val hy')
-  · simpa using (sublevelPullbackChart_transition_reduce_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
+  · simpa using (sublevelPullbackChart_transition_reduce I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
       w₁ v₂ hW₁val hV₂val hy)
 
 theorem contDiffOn_manifoldSublevelBoundary_transition [I.Boundaryless]
@@ -942,7 +942,7 @@ theorem contDiffOn_manifoldSublevelBoundary_transition [I.Boundaryless]
       exact hz
     · exact hy0
   simpa [manifoldSublevelBoundaryChart, b₁, b₂, hb₁, hb₂, g₁, g₂, p₁, p₂, m₁, m₂] using
-    (sublevelPullbackChart_transition_contDiffOn_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
+    (sublevelPullbackChart_transition_contDiffOn I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
       w₁ v₂ D₁ hW₁ hV₂ hW₁val hV₂val hD₁)
 
 theorem contDiffOn_manifoldSublevelInterior_transition [I.Boundaryless]
@@ -1014,7 +1014,7 @@ theorem contDiffOn_manifoldSublevelInterior_transition [I.Boundaryless]
     intro y hy0 hz
     exact hy0
   simpa [manifoldSublevelInteriorChart, b₁, b₂, hb₁, hb₂, g₁, g₂, p₁, p₂, m₁, m₂] using
-    (sublevelPullbackChart_transition_contDiffOn_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
+    (sublevelPullbackChart_transition_contDiffOn I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
       w₁ v₂ D₁ hW₁ hV₂ hW₁val hV₂val hD₁)
 
 theorem contDiffOn_manifoldSublevelBoundaryInterior_transition [I.Boundaryless]
@@ -1101,7 +1101,7 @@ theorem contDiffOn_manifoldSublevelBoundaryInterior_transition [I.Boundaryless]
     · exact hy0
   simpa [manifoldSublevelBoundaryChart, manifoldSublevelInteriorChart, b₁, b₂, hb₁, hb₂,
     g₁, g₂, p₁, p₂, m₁, m₂] using
-    (sublevelPullbackChart_transition_contDiffOn_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
+    (sublevelPullbackChart_transition_contDiffOn I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
       w₁ v₂ D₁ hW₁ hV₂ hW₁val hV₂val hD₁)
 
 theorem contDiffOn_manifoldSublevelInteriorBoundary_transition [I.Boundaryless]
@@ -1173,7 +1173,7 @@ theorem contDiffOn_manifoldSublevelInteriorBoundary_transition [I.Boundaryless]
     exact hy0
   simpa [manifoldSublevelInteriorChart, manifoldSublevelBoundaryChart, b₁, b₂, hb₁, hb₂,
     g₁, g₂, p₁, p₂, m₁, m₂] using
-    (sublevelPullbackChart_transition_contDiffOn_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
+    (sublevelPullbackChart_transition_contDiffOn I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
       w₁ v₂ D₁ hW₁ hV₂ hW₁val hV₂val hD₁)
 
 @[reducible]
@@ -1461,7 +1461,7 @@ theorem levelSetPullbackChart_symm_value (f : M → ℝ) (a : ℝ) (x : LevelSet
   rw [OpenPartialHomeomorph.coe_mk_symm, PartialEquiv.coe_symm_mk]
   rw [dif_pos hz']
 
-private theorem levelSetPullbackChart_transition_mem_aux
+private theorem levelSetPullbackChart_transition_mem
     (f : M → ℝ) (a : ℝ) (x₁ x₂ : LevelSetSpace f a)
     (b₁ : ContDiffBump ((extChartAt I x₁.1) x₁.1))
     (hb₁ : Metric.closedBall ((extChartAt I x₁.1) x₁.1) b₁.rOut ⊆ (extChartAt I x₁.1).target)
@@ -1515,7 +1515,7 @@ private theorem levelSetPullbackChart_transition_mem_aux
     simpa [hcs] using hc₁₂.2
   exact ⟨hm₁, hme₁, hc₁₂e₂, hm₂⟩
 
-private theorem levelSetPullbackChart_transition_reduce_aux
+private theorem levelSetPullbackChart_transition_reduce
     (f : M → ℝ) (a : ℝ) (x₁ x₂ : LevelSetSpace f a)
     (b₁ : ContDiffBump ((extChartAt I x₁.1) x₁.1))
     (hb₁ : Metric.closedBall ((extChartAt I x₁.1) x₁.1) b₁.rOut ⊆ (extChartAt I x₁.1).target)
@@ -1543,7 +1543,7 @@ private theorem levelSetPullbackChart_transition_reduce_aux
   let e₂ : OpenPartialHomeomorph (LevelSetSpace f a)
       (LevelSetSpace (sublevelPullbackCutoff I f x₂.1 b₂) a) :=
     levelSetPullbackChart I f a x₂ b₂ hb₂
-  have hmems := levelSetPullbackChart_transition_mem_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy
+  have hmems := levelSetPullbackChart_transition_mem I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy
   change (m₂ (e₂ (e₁.symm (m₁.symm y))) : MorseModel m) =
     v₂ (sublevelChartTransition I x₁.1 x₂.1 (w₁ y))
   rw [hV₂val (e₂ (e₁.symm (m₁.symm y))) hmems.2.2.2]
@@ -1569,7 +1569,7 @@ private theorem levelSetPullbackChart_transition_w₁_mem_aux
         (levelSetPullbackChart I f a x₂ b₂ hb₂ ≫ₕ m₂)).source) :
     w₁ y ∈ sublevelChartTransitionDomain I x₁.1 x₂.1 := by
   classical
-  have hmems := levelSetPullbackChart_transition_mem_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy
+  have hmems := levelSetPullbackChart_transition_mem I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy
   have hw₁y : (m₁.symm y).1 = w₁ y := hW₁val y hmems.1
   have htarget : (m₁.symm y).1 ∈ (extChartAt I x₁.1).target := by
     have hball : (m₁.symm y).1 ∈ Metric.ball ((extChartAt I x₁.1) x₁.1) b₁.rIn := by
@@ -1597,7 +1597,7 @@ private theorem levelSetPullbackChart_transition_w₁_mem_aux
   · rwa [← hw₁y]
   · rwa [← hw₁y]
 
-private theorem levelSetPullbackChart_transition_contDiffOn_aux
+private theorem levelSetPullbackChart_transition_contDiffOn
     [IsManifold I (⊤ : WithTop ℕ∞) M]
     (f : M → ℝ) (a : ℝ) (x₁ x₂ : LevelSetSpace f a)
     (b₁ : ContDiffBump ((extChartAt I x₁.1) x₁.1))
@@ -1627,7 +1627,7 @@ private theorem levelSetPullbackChart_transition_contDiffOn_aux
   intro y hy
   have hw : ContDiffWithinAt ℝ (⊤ : ℕ∞) w₁ s y := by
     exact (hW₁.mono (by intro y' hy'; exact hD₁ y' (by
-      have hmems' := levelSetPullbackChart_transition_mem_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy'
+      have hmems' := levelSetPullbackChart_transition_mem I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ hy'
       exact hmems'.1))) y hy
   have hwt : w₁ y ∈ sublevelChartTransitionDomain I x₁.1 x₂.1 :=
     levelSetPullbackChart_transition_w₁_mem_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂ w₁ hW₁val hy
@@ -1652,9 +1652,9 @@ private theorem levelSetPullbackChart_transition_contDiffOn_aux
       (levelSetPullbackChart I f a x₂ b₂ hb₂ ≫ₕ m₂)) y') s y
   refine hcd.congr_of_eventuallyEq ?_ ?_
   · filter_upwards [self_mem_nhdsWithin] with y' hy'
-    simpa using (levelSetPullbackChart_transition_reduce_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
+    simpa using (levelSetPullbackChart_transition_reduce I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
       w₁ v₂ hW₁val hV₂val hy')
-  · simpa using (levelSetPullbackChart_transition_reduce_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
+  · simpa using (levelSetPullbackChart_transition_reduce I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
       w₁ v₂ hW₁val hV₂val hy)
 
 noncomputable def manifoldLevelSetChart [I.Boundaryless]
@@ -1748,7 +1748,7 @@ theorem contDiffOn_manifoldLevelSet_transition [I.Boundaryless]
     change y ∈ m₁.target
     exact hy
   simpa [manifoldLevelSetChart, b₁, b₂, hb₁, hb₂, g₁, g₂, p₁, p₂, m₁, m₂] using
-    (levelSetPullbackChart_transition_contDiffOn_aux I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
+    (levelSetPullbackChart_transition_contDiffOn I f a x₁ x₂ b₁ hb₁ b₂ hb₂ m₁ m₂
       w₁ v₂ D₁ hW₁ hV₂ hW₁val hV₂val hD₁)
 
 @[reducible]

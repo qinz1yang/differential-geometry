@@ -38,7 +38,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def differential1FormFun (u : M -> Real) (x : M) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
-  dualToCotangentGen (I := I) (mvfderiv (I := I) u x).toLinearMap
+  dualToCotangent (I := I) (mvfderiv (I := I) u x).toLinearMap
 
 def duField (u : M -> Real) (x : M) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
@@ -378,7 +378,7 @@ theorem hessSec_inner_cov
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) cov g)
     (f : M -> Real) (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f)
     (x : M) (v w : TangentSpace I x) :
@@ -400,14 +400,12 @@ theorem hessSec_inner_cov
   have hY : Y x = w :=
     (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x w).choose_spec
-  have hXm : MDiffAt (T% fun y : M => X y) x :=
-    X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hYm : MDiffAt (T% fun y : M => Y y) x :=
     Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hGm : MDiffAt (T% fun y : M => G y) x :=
     gradientFun_mdiffAt (I := I) g hf x
-  have hmetric := DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-    (I := I) hmc (fun y : M => X y) G (fun y : M => Y y) hXm hGm hYm
+  have hmetric := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+    (I := I) hmc (X x) hGm hYm
   have hmetric_ext :
       mvfderiv (I := I) (fun y : M => g.inner y (G y) (Y y)) x (X x) =
         g.inner x (cov G x (X x)) (Y x) +
@@ -682,7 +680,7 @@ theorem ScalarLaplacianRealizesTraceAt.toInBasis
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (f : M -> Real)
     (hessF :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -702,7 +700,7 @@ private theorem hessian_component_eq_inner_cov_gradient
     {Idx : Type*}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (f : M -> Real)
     (duSec : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -721,8 +719,6 @@ private theorem hessian_component_eq_inner_cov_gradient
         (basis j) := by
   classical
   let G : (y : M) -> TangentSpace I y := fun y => gradientFun (I := I) g f y
-  have hXi : MDiffAt (T% fun y : M => X i y) x :=
-    (X i).contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hXj : MDiffAt (T% fun y : M => X j y) x :=
     (X j).contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hfun :
@@ -731,8 +727,8 @@ private theorem hessian_component_eq_inner_cov_gradient
     funext y
     rw [hdu y]
     exact differential1FormFun_apply_eq_inner_gradientFun (I := I) g f y (X j y)
-  have hmetric := DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-    (I := I) hmc (fun y : M => X i y) G (fun y : M => X j y) hXi hgrad hXj
+  have hmetric := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+    (I := I) hmc (X i x) hgrad hXj
   have hmetric_ext :
       mvfderiv (I := I) (fun y : M => g.inner y (G y) (X j y)) x (X i x) =
         g.inner x (cov G x (X i x)) (X j x) +
@@ -776,10 +772,10 @@ theorem scalarLaplacianRealizesTraceAt_of_nablaDu
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (f : M -> Real)
     (duSec : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (∞ : WithTop ℕ∞) 1)
@@ -821,10 +817,10 @@ theorem scalarLapTraceAt_of_nablaDu
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (f : M -> Real)
     (duSec : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (∞ : WithTop ℕ∞) 1)
@@ -848,7 +844,7 @@ theorem scalarLap_canon
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     {x : M}
     (f : M -> Real)
     (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f)
@@ -892,7 +888,7 @@ theorem scalarLap_smooth
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     {x : M}
     (f : M -> Real)
     (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f) :
@@ -909,9 +905,9 @@ theorem lap_sub_conn
     (hcov' : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov'
       (∞ : WithTop ℕ∞))
     (g g' : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) cov g)
-    (hmc' : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+    (hmc' : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) cov' g')
     (u : M -> Real) (hu : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) u)
     (x : M) :
@@ -958,7 +954,7 @@ theorem lapTrace_nablaSec
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (f : M -> Real)
     (duSec : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (∞ : WithTop ℕ∞) 1)

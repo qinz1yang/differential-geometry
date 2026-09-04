@@ -53,7 +53,7 @@ omit [BoundarylessManifold I M] [T2Space M] in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] in
-lemma tensor0S_curry_covGradBundleEquiv_unit_genVal
+lemma tensor0S_curry_covGradBundleEquiv_unit
     (s : ℕ) (x : M) (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x)
     (v : TangentSpace I x) :
     tensor0SCurry (I := I) (M := M) s x
@@ -89,32 +89,32 @@ lemma tensor0S_curry_covGradBundleEquiv_unit_genVal
       Fin.succ) = m from funext (fun j => by simp [Fin.cons_succ])]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-lemma curriedSection_unitGradFieldGen_apply
+lemma curriedSection_unitGradFieldCovariantTensor_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (w : TangentSpace I x) :
-    Tensor0SNabla.curriedSection I M (unitGradFieldGen (I := I) (M := M) g s S) x w =
+    Tensor0SNabla.curriedSection I M (unitGradFieldCovariantTensor (I := I) (M := M) g s S) x w =
       (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)).toFun
         (unitEvalSection (I := I) (M := M) g s S) x w := by
-  rw [curry_unitGradFieldGen_eq (I := I) (M := M) g s S x w]
+  rw [curry_unitGradFieldCovariantTensor_eq (I := I) (M := M) g s S x w]
   rw [tensorCovDerivAt_def (I := I) (M := M) g 0 s S x
     (tangentSpaceModelContinuousLinearEquiv (I := I) x w)]
   simp only [ContinuousLinearEquiv.symm_apply_apply]
-  exact covDeriv_unit_eval_eq_genVal (I := I) (M := M) g s S.toSection x w
+  exact covDeriv_unit_eval_eq (I := I) (M := M) g s S.toSection x w
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-lemma curriedSection_unitGradFieldGen_eq_covApply_abstract
+lemma curriedSection_unitGradFieldCovariantTensor_eq_covApply_abstract
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (Z : Π b : M, TangentSpace I b) :
     (fun y : M => Tensor0SNabla.curriedSection I M
-        (unitGradFieldGen (I := I) (M := M) g s S) y (Z y)) =
+        (unitGradFieldCovariantTensor (I := I) (M := M) g s S) y (Z y)) =
       covApply (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)) Z
         (unitEvalSection (I := I) (M := M) g s S) := by
   funext y
-  rw [curriedSection_unitGradFieldGen_apply (I := I) (M := M) g s S y (Z y), covApply_apply]
+  rw [curriedSection_unitGradFieldCovariantTensor_apply (I := I) (M := M) g s S y (Z y), covApply_apply]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorSecondCovDeriv_unit_eval_genVal
+lemma tensorSecondCovDeriv_unit_eval
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {B : Π b : M, TangentSpace I b}
     (hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% B)) (x : M) :
@@ -137,14 +137,14 @@ lemma tensorSecondCovDeriv_unit_eval_genVal
       ContMDiffSection.mk
         (fun y : M => covApply (tensorCov (I := I) g 0 s) B (fun z : M => S.toSection z) y)
         (covApplyRS_contMDiff (I := I) g 0 s S.toSection.contMDiff hB) with hσ
-    have h1 := covDeriv_unit_eval_eq_genVal (I := I) (M := M) g s σ x (B x)
+    have h1 := covDeriv_unit_eval_eq (I := I) (M := M) g s σ x (B x)
     have hσapp : ∀ y, σ y =
         covApply (tensorCov (I := I) g 0 s) B (fun z : M => S.toSection z) y := fun y => rfl
     simp only [hσapp] at h1
     rw [h1]
-    rw [covApply_unit_eval_eq_genVal (I := I) (M := M) g s S.toSection B]
+    rw [covApply_unit_eval_eq (I := I) (M := M) g s S.toSection B]
     rfl
-  · rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g s S.toSection x
+  · rw [covDeriv_unit_eval_eq (I := I) (M := M) g s S.toSection x
       ((LeviCivita (I := I) g).toFun B x (B x))]
     rfl
 
@@ -195,15 +195,15 @@ lemma covGrad_covDeriv_leadingSlot_eq_abstractHess
           (fun z : M => (covGrad (I := I) (M := M) g 0 s S).toSection z) x (Y x))
         (unitZeroSec (I := I) (M := M) x) =
       (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g)).toFun
-        (unitGradFieldGen (I := I) (M := M) g s S) x (Y x) from
-    covDeriv_unit_eval_eq_genVal (I := I) (M := M) g (s + 1)
+        (unitGradFieldCovariantTensor (I := I) (M := M) g s S) x (Y x) from
+    covDeriv_unit_eval_eq (I := I) (M := M) g (s + 1)
       (covGrad (I := I) (M := M) g 0 s S).toSection x (Y x)]
   rw [curry_covDeriv_succ_eq_covDeriv_curriedSection_sub_connCorrection (I := I) (M := M) g s
-    (unitGradFieldGen (I := I) (M := M) g s S) (Vfield := Y) (Y := Z) (x := x)
-    ((contMDiff_curried_unitGradFieldGen (I := I) (M := M) g s S x).mdifferentiableAt (by simp))
+    (unitGradFieldCovariantTensor (I := I) (M := M) g s S) (Vfield := Y) (Y := Z) (x := x)
+    ((contMDiff_curried_unitGradFieldCovariantTensor (I := I) (M := M) g s S x).mdifferentiableAt (by simp))
     ((hY x).mdifferentiableAt (by simp)) ((hZ x).mdifferentiableAt (by simp))]
-  rw [curriedSection_unitGradFieldGen_eq_covApply_abstract (I := I) (M := M) g s S Z]
-  rw [curriedSection_unitGradFieldGen_apply (I := I) (M := M) g s S x
+  rw [curriedSection_unitGradFieldCovariantTensor_eq_covApply_abstract (I := I) (M := M) g s S Z]
+  rw [curriedSection_unitGradFieldCovariantTensor_apply (I := I) (M := M) g s S x
     ((LeviCivita (I := I) g).toFun Z x (Y x))]
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -222,7 +222,7 @@ lemma covGrad_covDeriv_inner_leadingSlot_eq_abstractIter
           (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)) Y
             (unitEvalSection (I := I) (M := M) g s S)) x w := by
   classical
-  rw [tensor0S_curry_covGradBundleEquiv_unit_genVal (I := I) (M := M) s x
+  rw [tensor0S_curry_covGradBundleEquiv_unit (I := I) (M := M) s x
     ((tensorCov (I := I) g 0 s).toFun
       (covApply (tensorCov (I := I) g 0 s) Y (fun z : M => S.toSection z)) x) w]
   set σ : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun y : M => TensorRSSpace 0 s I y)⟯ :=
@@ -241,7 +241,7 @@ lemma covGrad_covDeriv_inner_leadingSlot_eq_abstractIter
     rw [show (fun y : M => σ y) =
       (covApply (tensorCov (I := I) g 0 s) Y (fun z : M => S.toSection z)) from
       funext (fun y => hσapp y)]]
-  rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g s σ x w]
+  rw [covDeriv_unit_eval_eq (I := I) (M := M) g s σ x w]
   rw [show (fun y : M => (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace s I y from σ y)
         (unitZeroSec (I := I) (M := M) y)) =
       covApply (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)) Y
@@ -254,7 +254,7 @@ lemma covGrad_covDeriv_inner_leadingSlot_eq_abstractIter
         ((tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g))
           (fun z : M => S.toSection z) y (Y y))
           (unitZeroSec (I := I) (M := M) y) from rfl]
-    rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g s S.toSection y (Y y)]
+    rw [covDeriv_unit_eval_eq (I := I) (M := M) g s S.toSection y (Y y)]
     rfl]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in

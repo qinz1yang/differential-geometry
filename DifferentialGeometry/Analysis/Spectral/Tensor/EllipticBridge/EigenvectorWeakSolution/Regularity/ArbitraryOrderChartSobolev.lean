@@ -35,7 +35,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-section Unconditional
+section MainResults
 
 
 omit [CompleteSpace E] in
@@ -258,7 +258,7 @@ theorem eigenvector_chartComponent_memWkp_arbitrary
   exact MemWkp.le_of_le (d := Module.finrank ℝ E)
     (by omega : k ≤ k + 2) h_pk
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

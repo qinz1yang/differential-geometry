@@ -5554,7 +5554,7 @@ private theorem vb_inner_bounds_lip
       VT VU IT IU happ12 happ21 hVd' hIT2 hVU hId).trans ?_
     exact le_of_eq (vb_inner_pair_factor_lip C12 C21 Vd Ib Vb Im p u)
 
-private theorem vb_outer_final_factor_lip
+private theorem vb_outer_factorization_lip
     (C Ct Bt Sin Kv Ki x d n : ℝ) :
     4 * (2 * (C * (Ct ^ 2 * (d ^ 2 + n ^ 2)) * (Sin * (x ^ 2 * x ^ 2)) +
       C * Bt ^ 2 * (2 *
@@ -5628,7 +5628,7 @@ private theorem amix_pair_factor_mixed_lip
         (C21 * G * (2 * (K + L))) * ((pl * pl) * u)) := by
   ring
 
-private theorem amix_final_factor_lip
+private theorem amix_factorization_lip
     (K L x d n : ℝ) :
     2 * (K * ((x ^ 2 * x ^ 2) * (d ^ 2 + n ^ 2)) +
       L * ((x ^ 2 * x ^ 2) * (d ^ 2 + n ^ 2))) =
@@ -6069,7 +6069,7 @@ private theorem vb_pair_h1
     rw [hTr1T, covariantJetNormSq_reindexedPureTrace]
     exact htb1'.1
   have hTr1d2 : covariantJetNormSq (I := I) (M := M) g 2 (Tr1T - Tr1U) ≤ Ct1 ^ 2 * u := by
-    rw [hTr1T, hTr1U, reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [hTr1T, hTr1U, reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp1'
   have hWTform : WT = ccOperatorFieldComp (I := I) (M := M) g 0 3 1 Tr1T cdT := by
     rw [hWTdef, hTr1T, hcdT, deTurckVectorFieldCovector_eq_reindexedPureTrace_ccOperatorFieldComp]
@@ -6160,7 +6160,7 @@ private theorem vb_pair_h1
         LvT LvU InT InU happOut hLvd2 hInT1 hLvU2 hInd1 hFormT hFormU
     _ = B R * ((1 + A + A ^ 2) ^ 4 * (D2 ^ 2 + N ^ 2)) := by
       simp only [B, K1, K2, hpl2, hu]
-      exact vb_outer_final_factor_lip Cout Ct2 Bt2 (Sin R)
+      exact vb_outer_factorization_lip Cout Ct2 Bt2 (Sin R)
         (Cin12 * Vd R * Ib R) (Cin1 * Vb R * Im R) (1 + A + A ^ 2) D2 N
 
 private theorem amixHalf_pair_h1
@@ -6735,7 +6735,7 @@ private theorem amixHalf_pair_h1
       (reindexedPureTrace (I := I) (M := M) g gmT 3 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
         reindexedPureTrace (I := I) (M := M) g gmU 3 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
       Ct3 ^ 2 * u := by
-    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp3'
   have htrU3 : covariantJetNormSq (I := I) (M := M) g 2
       (reindexedPureTrace (I := I) (M := M) g gmU 3
@@ -6815,7 +6815,7 @@ private theorem amixHalf_pair_h1
       (reindexedPureTrace (I := I) (M := M) g gmT 4 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
         reindexedPureTrace (I := I) (M := M) g gmU 4 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
       Ct4 ^ 2 * u := by
-    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp4'
   have htrU4 : covariantJetNormSq (I := I) (M := M) g 2
       (reindexedPureTrace (I := I) (M := M) g gmU 4
@@ -6839,7 +6839,7 @@ private theorem amixHalf_pair_h1
       (reindexedPureTrace (I := I) (M := M) g gmT 2 σlast -
         reindexedPureTrace (I := I) (M := M) g gmU 2 σlast) ≤
       Ct2 ^ 2 * u := by
-    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp2'
   have htrU2 : covariantJetNormSq (I := I) (M := M) g 2
       (reindexedPureTrace (I := I) (M := M) g gmU 2 σlast) ≤ Bt2 ^ 2 :=
@@ -6865,7 +6865,7 @@ private theorem amixHalf_pair_h1
         (K2 R) (K23 R) pl2 u
     _ = B R * ((1 + A + A ^ 2) ^ 4 * (D2 ^ 2 + N ^ 2)) := by
       simp only [B, hpl2, hu]
-      exact amix_final_factor_lip (K1 R) (K12 R) (1 + A + A ^ 2) D2 N
+      exact amix_factorization_lip (K1 R) (K12 R) (1 + A + A ^ 2) D2 N
   exact le_rfl
 
 private theorem amix_pair_h1
@@ -7178,7 +7178,7 @@ private theorem connIns_bdd_h2
   have hfr : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
   have hbase := hsec gT T hT hTtie hδ_le hδ0 hδT hδZ R A hR hA hT2 hT3
   rw [connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two
-      (I := I) (M := M) g gT, covariantJetNormSq_reindexCoeffGen]
+      (I := I) (M := M) g gT, covariantJetNormSq_reindexCoefficientInputSlots]
   calc
     covariantJetNormSq (I := I) (M := M) g 2
         (slotExtend (I := I) (M := M) g 2 3
@@ -7247,7 +7247,7 @@ private theorem connIns_pair_h1
   have hsub :
       connectionDifferenceContravariantInsertionField (I := I) g gT -
           connectionDifferenceContravariantInsertionField (I := I) g gU =
-        reindexCoeffGen (I := I) (M := M) g 3 4
+        reindexCoefficientInputSlots (I := I) (M := M) g 3 4
           (slotExtend (I := I) (M := M) g 2 3
             (slotExtend (I := I) (M := M) g 1 2
               (connectionDifferenceSection (I := I) gT g -
@@ -7257,9 +7257,9 @@ private theorem connIns_pair_h1
         (I := I) (M := M) g gT,
       connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two
         (I := I) (M := M) g gU,
-      slotExtend_sub, slotExtend_sub, reindexCoeffGen_sub]
+      slotExtend_sub, slotExtend_sub, reindexCoefficientInputSlots_sub]
     rw [show connectionDifferenceContrInsertionReindexPerm = coreInPerm201 from rfl]
-  rw [hsub, covariantJetNormSq_reindexCoeffGen]
+  rw [hsub, covariantJetNormSq_reindexCoefficientInputSlots]
   calc
     covariantJetNormSq (I := I) (M := M) g 1
         (slotExtend (I := I) (M := M) g 2 3
@@ -7316,7 +7316,7 @@ private theorem connInn_bdd_h2
   have hfr : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
   have hbase := hsec gT T hT hTtie hδ_le hδ0 hδT hδZ R A hR hA hT2 hT3
   rw [connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend
-      (I := I) (M := M) g gT, covariantJetNormSq_reindexCoeffGen]
+      (I := I) (M := M) g gT, covariantJetNormSq_reindexCoefficientInputSlots]
   exact (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 2 _).trans
     (mul_le_mul_of_nonneg_left hbase hfr)
 
@@ -7367,7 +7367,7 @@ private theorem connInn_pair_h1
   have hsub :
       connectionDifferenceContrInsertionInnerField (I := I) g gT -
           connectionDifferenceContrInsertionInnerField (I := I) g gU =
-        reindexCoeffGen (I := I) (M := M) g 2 3
+        reindexCoefficientInputSlots (I := I) (M := M) g 2 3
           (slotExtend (I := I) (M := M) g 1 2
             (connectionDifferenceSection (I := I) gT g -
               connectionDifferenceSection (I := I) gU g))
@@ -7376,8 +7376,8 @@ private theorem connInn_pair_h1
         (I := I) (M := M) g gT,
       connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend
         (I := I) (M := M) g gU,
-      slotExtend_sub, reindexCoeffGen_sub]
-  rw [hsub, covariantJetNormSq_reindexCoeffGen]
+      slotExtend_sub, reindexCoefficientInputSlots_sub]
+  rw [hsub, covariantJetNormSq_reindexCoefficientInputSlots]
   exact (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 2 _).trans
     (mul_le_mul_of_nonneg_left hp hfr)
 
@@ -7397,36 +7397,36 @@ private theorem fourtrace_jet_le
     (g : SmoothRiemannianMetric I M) (F : SmoothCcTensor g 4 2) :
     covariantJetNormSq (I := I) (M := M) g 2
         (((1 : ℝ) / 2) •
-          (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231
-              + reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321
+          (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231
+              + reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321
               - F
-              - reindexCoeffGen (I := I) (M := M) g 4 2 F
+              - reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F
                   fourTraceArgPerm2301)) ≤
       22 * covariantJetNormSq (I := I) (M := M) g 2 F := by
   have hJ0 : 0 ≤ covariantJetNormSq (I := I) (M := M) g 2 F :=
     jet_nonneg_lip (I := I) (M := M) (m := 2) g F
   have hr1 : covariantJetNormSq (I := I) (M := M) g 2
-      (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231) =
+      (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231) =
       covariantJetNormSq (I := I) (M := M) g 2 F :=
-    covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g F fourTraceArgPerm0231
+    covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g F fourTraceArgPerm0231
   have hr2 : covariantJetNormSq (I := I) (M := M) g 2
-      (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321) =
+      (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321) =
       covariantJetNormSq (I := I) (M := M) g 2 F :=
-    covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g F fourTraceArgPerm0321
+    covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g F fourTraceArgPerm0321
   have hr3 : covariantJetNormSq (I := I) (M := M) g 2
-      (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm2301) =
+      (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm2301) =
       covariantJetNormSq (I := I) (M := M) g 2 F :=
-    covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g F fourTraceArgPerm2301
+    covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g F fourTraceArgPerm2301
   have e1 := jet_add_lip (I := I) (M := M) g 2
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231)
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321)
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231)
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321)
   have e2 := jet_sub_lip (I := I) (M := M) g 2
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
-      reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321) F
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321) F
   have e3 := jet_sub_lip (I := I) (M := M) g 2
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
-        reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321 - F)
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm2301)
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
+        reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321 - F)
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm2301)
   rw [jet_smul_lip]
   rw [hr1, hr2] at e1
   rw [hr3] at e3
@@ -7489,17 +7489,17 @@ private theorem fourtrace_pair_h2
       ricciCometricFourTraceCastG0 (I := I) g gT -
           ricciCometricFourTraceCastG0 (I := I) g gU =
         ((1 : ℝ) / 2) •
-          (reindexCoeffGen (I := I) (M := M) g 4 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                 (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                 fourTraceArgPerm0231
-              + reindexCoeffGen (I := I) (M := M) g 4 2
+              + reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                   (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                     cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                   fourTraceArgPerm0321
               - (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
-              - reindexCoeffGen (I := I) (M := M) g 4 2
+              - reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                   (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                     cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                   fourTraceArgPerm2301) := by
@@ -7507,7 +7507,7 @@ private theorem fourtrace_pair_h2
         (I := I) (M := M) g gT,
       ricciCometricFourTraceCastG0_eq_reindex_combination
         (I := I) (M := M) g gU,
-      reindexCoeffGen_sub, reindexCoeffGen_sub, reindexCoeffGen_sub]
+      reindexCoefficientInputSlots_sub, reindexCoefficientInputSlots_sub, reindexCoefficientInputSlots_sub]
     module
   rw [hsub]
   refine (fourtrace_jet_le (I := I) (M := M) g _).trans ?_
@@ -7831,18 +7831,18 @@ private noncomputable def aaKerBlockSum
     (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 2 4 :=
   aaBlk (I := I) (M := M) g gm aaP3201
           (aaInn (I := I) (M := M) g gm aaP102) +
-        reindexCoeffGen (I := I) (M := M) g 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (aaBlk (I := I) (M := M) g gm aaP2301
             (aaInn (I := I) (M := M) g gm aaP102)) innerCoreInPerm10 +
         aaBlk (I := I) (M := M) g gm aaP3102
           (aaInn (I := I) (M := M) g gm aaP120) +
-        reindexCoeffGen (I := I) (M := M) g 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (aaBlk (I := I) (M := M) g gm aaP1302
             (connectionDifferenceContrInsertionInnerField (I := I) g gm))
           innerCoreInPerm10 +
         aaBlk (I := I) (M := M) g gm aaP1203
           (connectionDifferenceContrInsertionInnerField (I := I) g gm) +
-        reindexCoeffGen (I := I) (M := M) g 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (aaBlk (I := I) (M := M) g gm aaP2103
             (aaInn (I := I) (M := M) g gm aaP120)) innerCoreInPerm10
 
@@ -8282,26 +8282,26 @@ private theorem aaKer_bdd_h2
     (hZinn aaP120 (Or.inr rfl))
   have hrx : ∀ X : SmoothCcTensor g 2 4,
       covariantJetNormSq (I := I) (M := M) g 2
-          (reindexCoeffGen (I := I) (M := M) g 2 4 X innerCoreInPerm10) =
+          (reindexCoefficientInputSlots (I := I) (M := M) g 2 4 X innerCoreInPerm10) =
         covariantJetNormSq (I := I) (M := M) g 2 X := by
     intro X
-    rw [covariantJetNormSq_reindexCoeffGen]
+    rw [covariantJetNormSq_reindexCoefficientInputSlots]
   rw [aaKer_eq_lip (I := I) (M := M) g gT]
   unfold aaKerBlockSum
   set y0 := aaBlk (I := I) (M := M) g gT aaP3201
     (aaInn (I := I) (M := M) g gT aaP102) with hy0
-  set y1 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set y1 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (aaBlk (I := I) (M := M) g gT aaP2301
       (aaInn (I := I) (M := M) g gT aaP102)) innerCoreInPerm10 with hy1
   set y2 := aaBlk (I := I) (M := M) g gT aaP3102
     (aaInn (I := I) (M := M) g gT aaP120) with hy2
-  set y3 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set y3 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (aaBlk (I := I) (M := M) g gT aaP1302
       (connectionDifferenceContrInsertionInnerField (I := I) g gT)) innerCoreInPerm10
     with hy3
   set y4 := aaBlk (I := I) (M := M) g gT aaP1203
     (connectionDifferenceContrInsertionInnerField (I := I) g gT) with hy4
-  set y5 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set y5 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (aaBlk (I := I) (M := M) g gT aaP2103
       (aaInn (I := I) (M := M) g gT aaP120)) innerCoreInPerm10 with hy5
   have hb1 : covariantJetNormSq (I := I) (M := M) g 2 y1 ≤ Q := by
@@ -8624,44 +8624,44 @@ private theorem aaKer_pair_h1
     (hZinnB aaP120 (Or.inr rfl)) (hZinnD aaP120 (Or.inr rfl))
   have hrx : ∀ X Y : SmoothCcTensor g 2 4,
       covariantJetNormSq (I := I) (M := M) g 1
-          (reindexCoeffGen (I := I) (M := M) g 2 4 X innerCoreInPerm10 -
-            reindexCoeffGen (I := I) (M := M) g 2 4 Y innerCoreInPerm10) =
+          (reindexCoefficientInputSlots (I := I) (M := M) g 2 4 X innerCoreInPerm10 -
+            reindexCoefficientInputSlots (I := I) (M := M) g 2 4 Y innerCoreInPerm10) =
         covariantJetNormSq (I := I) (M := M) g 1 (X - Y) := by
     intro X Y
-    rw [← reindexCoeffGen_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [← reindexCoefficientInputSlots_sub, covariantJetNormSq_reindexCoefficientInputSlots]
   rw [aaKer_eq_lip (I := I) (M := M) g gT,
     aaKer_eq_lip (I := I) (M := M) g gU]
   unfold aaKerBlockSum
   set y0 := aaBlk (I := I) (M := M) g gT aaP3201
     (aaInn (I := I) (M := M) g gT aaP102) with hy0
-  set y1 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set y1 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (aaBlk (I := I) (M := M) g gT aaP2301
       (aaInn (I := I) (M := M) g gT aaP102)) innerCoreInPerm10 with hy1
   set y2 := aaBlk (I := I) (M := M) g gT aaP3102
     (aaInn (I := I) (M := M) g gT aaP120) with hy2
-  set y3 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set y3 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (aaBlk (I := I) (M := M) g gT aaP1302
       (connectionDifferenceContrInsertionInnerField (I := I) g gT)) innerCoreInPerm10
     with hy3
   set y4 := aaBlk (I := I) (M := M) g gT aaP1203
     (connectionDifferenceContrInsertionInnerField (I := I) g gT) with hy4
-  set y5 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set y5 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (aaBlk (I := I) (M := M) g gT aaP2103
       (aaInn (I := I) (M := M) g gT aaP120)) innerCoreInPerm10 with hy5
   set z0 := aaBlk (I := I) (M := M) g gU aaP3201
     (aaInn (I := I) (M := M) g gU aaP102) with hz0
-  set z1 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set z1 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (aaBlk (I := I) (M := M) g gU aaP2301
       (aaInn (I := I) (M := M) g gU aaP102)) innerCoreInPerm10 with hz1
   set z2 := aaBlk (I := I) (M := M) g gU aaP3102
     (aaInn (I := I) (M := M) g gU aaP120) with hz2
-  set z3 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set z3 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (aaBlk (I := I) (M := M) g gU aaP1302
       (connectionDifferenceContrInsertionInnerField (I := I) g gU)) innerCoreInPerm10
     with hz3
   set z4 := aaBlk (I := I) (M := M) g gU aaP1203
     (connectionDifferenceContrInsertionInnerField (I := I) g gU) with hz4
-  set z5 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set z5 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (aaBlk (I := I) (M := M) g gU aaP2103
       (aaInn (I := I) (M := M) g gU aaP120)) innerCoreInPerm10 with hz5
   have hb1 : covariantJetNormSq (I := I) (M := M) g 1 (y1 - z1) ≤ Q := by
@@ -8949,7 +8949,7 @@ private theorem ricciCovariantDerivativeConnectionDifference_pairing_firstOrder_
   obtain ⟨Ca222, hCa222, h222a⟩ :=
     app_h21_mul_lip (I := I) (M := M) hDim g 2 2 2
   obtain ⟨Be, hBe, hfsb⟩ :=
-    RicciDeTurckLowOrder.full_slot_sobolev_two_bound (I := I) (M := M) g
+    RicciDeTurckLowOrder.exists_metricComparisonEndomorphism_slot_one_covariantJetNormSq_two_bound (I := I) (M := M) g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨Be0, Be1, hBe0, hBe1, hfsd⟩ :=
     RicciDeTurckLowOrder.fullSlot_pair_h1 (I := I) (M := M) hDim g

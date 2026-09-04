@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.GeneralTensor
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.TensorRS
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum
 open DifferentialGeometry.Analysis.Sobolev

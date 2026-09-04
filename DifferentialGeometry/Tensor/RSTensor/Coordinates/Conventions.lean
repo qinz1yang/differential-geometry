@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.FieldComponents
 import DifferentialGeometry.Tensor.RSTensor.Algebra.Contraction
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
@@ -105,7 +105,7 @@ omit [DecidableEq Idx] in
 theorem componentRS_basisTensor_apply {r s : Nat}
     (T : TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
-    componentRSGen (I := I) basis T upper lower =
+    componentRSField (I := I) basis T upper lower =
       (T (basisTensor0S (I := I) basis upper))
         (fun a => basis (lower a)) := by
   rfl
@@ -114,7 +114,7 @@ omit [DecidableEq Idx] in
 @[simp]
 theorem component11_apply
     (T : TensorRSSpace 1 1 I x) (i j : Idx) :
-    componentRSGen (I := I) basis T (fun _ : Fin 1 => i) (fun _ : Fin 1 => j) =
+    componentRSField (I := I) basis T (fun _ : Fin 1 => i) (fun _ : Fin 1 => j) =
       (T (basisTensor0S (I := I) basis (fun _ : Fin 1 => i)))
         (fun _ : Fin 1 => basis j) := by
   rfl
@@ -122,12 +122,12 @@ theorem component11_apply
 omit [DecidableEq Idx] in
 theorem component13_apply
     (T : TensorRSSpace 1 3 I x) (a i j k : Idx) :
-    componentRSGen (I := I) basis T
+    componentRSField (I := I) basis T
         (fun _ : Fin 1 => a)
         (fun q : Fin 3 => if q = 0 then i else if q = 1 then j else k) =
       (T (basisTensor0S (I := I) basis (fun _ : Fin 1 => a)))
         (fun q : Fin 3 => if q = 0 then basis i else if q = 1 then basis j else basis k) := by
-  rw [componentRS_apply_gen]
+  rw [componentRSField_apply]
   congr 1
   funext q
   by_cases h0 : q = 0

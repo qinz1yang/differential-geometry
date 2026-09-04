@@ -345,7 +345,7 @@ lemma mlieBracket_chartBasisVec_ext_self_eq_zero_alpha [I.Boundaryless]
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hx
   have hXj_at : MDiffAt (T% Xj) x := (hXj x).mdifferentiableAt (by simp)
   have hXk_at : MDiffAt (T% Xk) x := (hXk x).mdifferentiableAt (by simp)
-  rw [mlieBracket_eq_chart_fderiv_diff_general (I := I) α x Xj Xk hxsrc_ext hxbase hxint
+  rw [mlieBracket_eq_chart_fderiv_diff (I := I) α x Xj Xk hxsrc_ext hxbase hxint
     hXj_at hXk_at]
   rw [fderiv_chartE_section_repr_alpha_eq_zero_of_eventuallyEq (I := I) α k hx hU_open hxU hXk_eq]
   rw [fderiv_chartE_section_repr_alpha_eq_zero_of_eventuallyEq (I := I) α j hx hU_open hxU hXj_eq]

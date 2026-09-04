@@ -33,7 +33,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-namespace TensorHsSmoothReprAux
+namespace TensorHsSmoothRepresentative
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
@@ -57,7 +57,7 @@ private lemma sum_basisVec_coeff_apply
       simp only [TensorHs.smul_coeff, tensorHsBasisVec_coeff,
         mul_ite, mul_one, mul_zero]
 
-end TensorHsSmoothReprAux
+end TensorHsSmoothRepresentative
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -71,7 +71,7 @@ theorem tensorHs_eq_finset_sum_of_finite_support
   classical
   refine TensorHs.ext ?_
   funext j
-  rw [TensorHsSmoothReprAux.sum_basisVec_coeff_apply
+  rw [TensorHsSmoothRepresentative.sum_basisVec_coeff_apply
     (I := I) (M := M) g r s σ hT_fs.toFinset T j]
   by_cases hj_supp : j ∈ Function.support T.coeff
   · have hj_mem : j ∈ hT_fs.toFinset := hT_fs.mem_toFinset.mpr hj_supp
@@ -97,7 +97,7 @@ theorem tensorHs_eq_finset_sum_of_finite_support
     rw [hzero, h_rhs_zero]
 
 
-namespace TensorHsSmoothReprAux
+namespace TensorHsSmoothRepresentative
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
@@ -144,14 +144,14 @@ private lemma partialSum_memWtwokTwo_unconditional
       exact MemWtwokTwo_smul (I := I) (M := M) g (c j)
         (tensorEigenvector_memWtwokTwo (I := I) (M := M) g r s j k)
 
-end TensorHsSmoothReprAux
+end TensorHsSmoothRepresentative
 
 noncomputable def tensorHsSmoothRepr
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {σ : ℝ} (T : TensorHs (I := I) (M := M) g r s σ)
     (hT_fs : (Function.support T.coeff).Finite) :
     SmoothCcTensor g r s :=
-  TensorHsSmoothReprAux.partialSum_unconditional (I := I) (M := M) g r s
+  TensorHsSmoothRepresentative.partialSum_unconditional (I := I) (M := M) g r s
     hT_fs.toFinset T.coeff
 
 omit [CompleteSpace E] in
@@ -171,7 +171,7 @@ theorem tensorHsSmoothRepr_memWtwokTwo
     (hT_fs : (Function.support T.coeff).Finite) (k : ℕ) :
     MemWtwokTwo (I := I) (M := M) g k
       (tensorHsSmoothRepr (I := I) (M := M) T hT_fs) :=
-  TensorHsSmoothReprAux.partialSum_memWtwokTwo_unconditional
+  TensorHsSmoothRepresentative.partialSum_memWtwokTwo_unconditional
     (I := I) (M := M) g r s k hT_fs.toFinset T.coeff
 
 omit [CompleteSpace E] in
@@ -251,7 +251,7 @@ theorem tensorHsSmoothRepr_toL2
   congr 1
   exact (eigenvectorSmooth_toL2 (I := I) (M := M) g r s i).symm
 
-namespace TensorHsSmoothReprAux
+namespace TensorHsSmoothRepresentative
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
 
@@ -337,7 +337,7 @@ private lemma partialSum_wtwokTwoNorm_le_sum_unconditional
           hC_nn hC_bound c j
       exact add_le_add h_sumand_bd ih
 
-end TensorHsSmoothReprAux
+end TensorHsSmoothRepresentative
 
 omit [CompleteSpace E] in
 theorem tensorHsSmoothRepr_wtwokTwoNorm_le_uniform
@@ -359,7 +359,7 @@ theorem tensorHsSmoothRepr_wtwokTwoNorm_le_uniform
   intro σ T hT_fs
   unfold tensorHsSmoothRepr
   refine le_trans
-    (TensorHsSmoothReprAux.partialSum_wtwokTwoNorm_le_sum_unconditional
+    (TensorHsSmoothRepresentative.partialSum_wtwokTwoNorm_le_sum_unconditional
       (I := I) (M := M) g r s k hC_nn hC_bound hT_fs.toFinset T.coeff)
     ?_
   have h_eigval_inv_one_le :

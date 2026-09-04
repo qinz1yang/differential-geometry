@@ -84,7 +84,7 @@ theorem chartLeviCivita_torsion_free_on (g : SmoothRiemannianMetric I M) (α : M
     rw [hcancel]
     abel
   rw [hreorg]
-  exact (mlieBracket_eq_chart_fderiv_diff_general (I := I) α x X Y
+  exact (mlieBracket_eq_chart_fderiv_diff (I := I) α x X Y
     hx_src hx_base hx_int hX hY).symm
 
 end Connection

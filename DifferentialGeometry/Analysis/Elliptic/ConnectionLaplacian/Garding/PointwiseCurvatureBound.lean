@@ -227,7 +227,7 @@ theorem secondCovGrad_l2NormSq_le_rawConnLap_of_pointwise_curv_bound
         (tensorL2Norm (I := I) (M := M) g 0 2
             (rawTensorConnLapSmooth (I := I) g 0 2 T₀).toFun ^ 2 +
           tensorL2Norm (I := I) (M := M) g 0 2 T₀.toFun ^ 2) := by
-  refine secondCovGrad_l2NormSq_le_rawConnLap_gen (I := I) (M := M) g T₀
+  refine secondCovGrad_l2NormSq_le_rawConnLap_covariantTensor (I := I) (M := M) g T₀
     (covGradRoughLapCurv (I := I) (M := M) g T₀) C₀ hC₀
     (covGradRoughLap_commutator_eq (I := I) (M := M) g T₀) ?_
   exact tensorL2Norm_le_of_pointwise_fiberNormSq_bound (I := I) (M := M) g T₀

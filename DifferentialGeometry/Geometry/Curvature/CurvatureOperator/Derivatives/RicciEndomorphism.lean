@@ -680,7 +680,7 @@ theorem nablaRicci_symm
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private lemma nablaRicci_add_right_raw
+private lemma nablaRicci_add_right
     (g : SmoothRiemannianMetric I M)
     (X V W W' : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     nablaRicci (I := I) g (fun b => X b) (fun b => V b) (fun b => (W + W') b) x =
@@ -707,7 +707,7 @@ private lemma nablaRicci_add_right_raw
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private lemma nablaRicci_smul_right_raw
+private lemma nablaRicci_smul_right
     (g : SmoothRiemannianMetric I M) (c : ℝ)
     (X V W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     nablaRicci (I := I) g (fun b => X b) (fun b => V b) (fun b => (c • W) b) x =
@@ -739,7 +739,7 @@ private lemma nablaRicci_smul_right_raw
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-lemma nablaRicci_eq_of_W_eq_raw
+lemma nablaRicci_eq_of_W_eq
     (g : SmoothRiemannianMetric I M)
     (X V W W' : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M)
     (hWW' : (W : Π b : M, TangentSpace I b) x = W' x) :
@@ -760,7 +760,7 @@ lemma nablaRicci_eq_of_W_eq_raw
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-lemma nablaRicci_eq_of_V_eq_raw
+lemma nablaRicci_eq_of_V_eq
     (g : SmoothRiemannianMetric I M)
     (X V V' W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M)
     (hVV' : (V : Π b : M, TangentSpace I b) x = V' x) :
@@ -769,7 +769,7 @@ lemma nablaRicci_eq_of_V_eq_raw
   classical
   rw [nablaRicci_symm (I := I) g (fun b => X b) (fun b => V b) (fun b => W b) x,
     nablaRicci_symm (I := I) g (fun b => X b) (fun b => V' b) (fun b => W b) x]
-  exact nablaRicci_eq_of_W_eq_raw (g := g) X W V V' x hVV'
+  exact nablaRicci_eq_of_W_eq (g := g) X W V V' x hVV'
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma nablaRicci_eq_of_VW_eq
@@ -780,12 +780,12 @@ lemma nablaRicci_eq_of_VW_eq
     nablaRicci (I := I) g (fun b => X b) (fun b => V b) (fun b => W b) x =
       nablaRicci (I := I) g (fun b => X b) (fun b => V₀ b) (fun b => W₀ b) x := by
   classical
-  rw [nablaRicci_eq_of_V_eq_raw (g := g) X V V₀ W x hVV₀,
-    nablaRicci_eq_of_W_eq_raw (g := g) X V₀ W W₀ x hWW₀]
+  rw [nablaRicci_eq_of_V_eq (g := g) X V V₀ W x hVV₀,
+    nablaRicci_eq_of_W_eq (g := g) X V₀ W W₀ x hWW₀]
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private lemma nablaRicci_add_left_raw
+private lemma nablaRicci_add_left
     (g : SmoothRiemannianMetric I M)
     (X V V' W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     nablaRicci (I := I) g (fun b => X b) (fun b => (V + V') b) (fun b => W b) x =
@@ -795,11 +795,11 @@ private lemma nablaRicci_add_left_raw
   rw [nablaRicci_symm (I := I) g (fun b => X b) (fun b => (V + V') b) (fun b => W b) x,
     nablaRicci_symm (I := I) g (fun b => X b) (fun b => V b) (fun b => W b) x,
     nablaRicci_symm (I := I) g (fun b => X b) (fun b => V' b) (fun b => W b) x]
-  exact nablaRicci_add_right_raw (g := g) X W V V' x
+  exact nablaRicci_add_right (g := g) X W V V' x
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private lemma nablaRicci_smul_left_raw
+private lemma nablaRicci_smul_left
     (g : SmoothRiemannianMetric I M) (c : ℝ)
     (X V W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     nablaRicci (I := I) g (fun b => X b) (fun b => (c • V) b) (fun b => W b) x =
@@ -807,7 +807,7 @@ private lemma nablaRicci_smul_left_raw
   classical
   rw [nablaRicci_symm (I := I) g (fun b => X b) (fun b => (c • V) b) (fun b => W b) x,
     nablaRicci_symm (I := I) g (fun b => X b) (fun b => V b) (fun b => W b) x]
-  exact nablaRicci_smul_right_raw (g := g) c X W V x
+  exact nablaRicci_smul_right (g := g) c X W V x
 
 private noncomputable abbrev extSec (x : M) (v : TangentSpace I x) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
@@ -825,11 +825,11 @@ private lemma nablaRicciBilinAux_add_left
           (fun b => smoothExtensionTangent (I := I) x w b) x +
         nablaRicci (I := I) g X (fun b => smoothExtensionTangent (I := I) x v' b)
           (fun b => smoothExtensionTangent (I := I) x w b) x := by
-  have hdet := nablaRicci_eq_of_V_eq_raw (g := g) X (extSec (I := I) x (v + v'))
+  have hdet := nablaRicci_eq_of_V_eq (g := g) X (extSec (I := I) x (v + v'))
     (extSec (I := I) x v + extSec (I := I) x v') (extSec (I := I) x w) x (by
       simp only [extSec, ContMDiffSection.coeFn_mk, ContMDiffSection.coe_add, Pi.add_apply,
         smoothExtensionTangent_eq])
-  have hadd := nablaRicci_add_left_raw (g := g) X (extSec (I := I) x v) (extSec (I := I) x v')
+  have hadd := nablaRicci_add_left (g := g) X (extSec (I := I) x v) (extSec (I := I) x v')
     (extSec (I := I) x w) x
   exact hdet.trans hadd
 
@@ -842,11 +842,11 @@ private lemma nablaRicciBilinAux_smul_left
         (fun b => smoothExtensionTangent (I := I) x w b) x =
       c • nablaRicci (I := I) g X (fun b => smoothExtensionTangent (I := I) x v b)
           (fun b => smoothExtensionTangent (I := I) x w b) x := by
-  have hdet := nablaRicci_eq_of_V_eq_raw (g := g) X (extSec (I := I) x (c • v))
+  have hdet := nablaRicci_eq_of_V_eq (g := g) X (extSec (I := I) x (c • v))
     (c • extSec (I := I) x v) (extSec (I := I) x w) x (by
       simp only [extSec, ContMDiffSection.coeFn_mk, ContMDiffSection.coe_smul, Pi.smul_apply,
         smoothExtensionTangent_eq])
-  exact hdet.trans (nablaRicci_smul_left_raw (g := g) c X (extSec (I := I) x v)
+  exact hdet.trans (nablaRicci_smul_left (g := g) c X (extSec (I := I) x v)
     (extSec (I := I) x w) x)
 
 omit [I.Boundaryless] in
@@ -861,11 +861,11 @@ private lemma nablaRicciBilinAux_add_right
           (fun b => smoothExtensionTangent (I := I) x w b) x +
         nablaRicci (I := I) g X (fun b => smoothExtensionTangent (I := I) x v b)
           (fun b => smoothExtensionTangent (I := I) x w' b) x := by
-  have hdet := nablaRicci_eq_of_W_eq_raw (g := g) X (extSec (I := I) x v)
+  have hdet := nablaRicci_eq_of_W_eq (g := g) X (extSec (I := I) x v)
     (extSec (I := I) x (w + w')) (extSec (I := I) x w + extSec (I := I) x w') x (by
       simp only [extSec, ContMDiffSection.coeFn_mk, ContMDiffSection.coe_add, Pi.add_apply,
         smoothExtensionTangent_eq])
-  have hadd := nablaRicci_add_right_raw (g := g) X (extSec (I := I) x v) (extSec (I := I) x w)
+  have hadd := nablaRicci_add_right (g := g) X (extSec (I := I) x v) (extSec (I := I) x w)
     (extSec (I := I) x w') x
   exact hdet.trans hadd
 
@@ -879,11 +879,11 @@ private lemma nablaRicciBilinAux_smul_right
         (fun b => smoothExtensionTangent (I := I) x (c • w) b) x =
       c • nablaRicci (I := I) g X (fun b => smoothExtensionTangent (I := I) x v b)
           (fun b => smoothExtensionTangent (I := I) x w b) x := by
-  have hdet := nablaRicci_eq_of_W_eq_raw (g := g) X (extSec (I := I) x v)
+  have hdet := nablaRicci_eq_of_W_eq (g := g) X (extSec (I := I) x v)
     (extSec (I := I) x (c • w)) (c • extSec (I := I) x w) x (by
       simp only [extSec, ContMDiffSection.coeFn_mk, ContMDiffSection.coe_smul, Pi.smul_apply,
         smoothExtensionTangent_eq])
-  exact hdet.trans (nablaRicci_smul_right_raw (g := g) c X (extSec (I := I) x v)
+  exact hdet.trans (nablaRicci_smul_right (g := g) c X (extSec (I := I) x v)
     (extSec (I := I) x w) x)
 
 noncomputable def nablaRicciBilin

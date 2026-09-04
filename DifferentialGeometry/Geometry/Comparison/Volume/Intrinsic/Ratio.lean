@@ -261,13 +261,13 @@ private theorem intrPoleCap
     have hcurve : ∀ᶠ t in 𝓝[>] (0 : Real),
         intrinsicGeodesic (I := I) g hEnorm p u t =
           radialCurve (I := I) g p ue t := by
-      filter_upwards [intrJacobi_raw (I := I) g hEnorm p ue (0 : E)]
+      filter_upwards [intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p ue (0 : E)]
         with t ht using ht.1
     have hfields : ∀ᶠ t in 𝓝[>] (0 : Real), ∀ i,
         (intrinsicJacobi (I := I) g hEnorm p u (v i) t : E) =
           (radialJacobiField (I := I) g p ue (B (some i)) t : E) := by
       refine Filter.eventually_all.2 (fun i => ?_)
-      filter_upwards [intrJacobi_raw (I := I) g hEnorm p ue (v i : E)]
+      filter_upwards [intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p ue (v i : E)]
         with t ht
       rw [hBsome i]
       exact ht.2

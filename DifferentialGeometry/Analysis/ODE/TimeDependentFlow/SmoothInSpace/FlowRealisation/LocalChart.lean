@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.FlowRealisation.Factor
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.ForwardIntegralCurveUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.Flow.Defs
 
 
@@ -360,7 +360,7 @@ theorem exists_chartPicard_and_cocycle_realisation
       exact (hΦbare ((Φ_fam t : M → M) y) hyU s (hsub_T hs)).hasMFDerivWithinAt
     have hstart : (Φ_fam t : M → M) y = Φ ((Φ_fam t : M → M) y) t :=
       (hΦinit ((Φ_fam t : M → M) y) hyU).symm
-    exact bare_integral_flow_eqOn_of_jointC1 X hXauto
+    exact integral_curves_eqOn_of_jointC1 X hXauto
       (fun u p => (Φ_fam u : M → M) p) (fun u p => Φ p u) y ((Φ_fam t : M → M) y)
       ht_mem' hode_fam hode_chart hstart
   have hwindow : Set.Ioo (t - T') (t + T') ∈ 𝓝 t := isOpen_Ioo.mem_nhds ⟨by linarith, by linarith⟩
@@ -373,7 +373,7 @@ theorem exists_chartPicard_and_cocycle_realisation
   exact hΦconf ((Φ_fam t : M → M) y) hyU s (hsub_T hs)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem rawVariationalIdentityFlat_of_jointSmoothBareField
+theorem rawVariationalIdentityFlat_of_jointSmoothField
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)))

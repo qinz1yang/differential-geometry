@@ -27,17 +27,17 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
-lemma tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_gen
+lemma tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     tensorL2Inner (I := I) (M := M) g 0 (s + 1)
         (covGrad (I := I) (M := M) g 0 s S).toFun
         (covGrad (I := I) (M := M) g 0 s S).toFun =
       - tensorL2Inner (I := I) (M := M) g 0 s
           (rawTensorConnLapSmooth (I := I) g 0 s S).toFun S.toFun :=
-  tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_gen (I := I) (M := M) g s S S
+  tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_covariantTensor (I := I) (M := M) g s S S
 
 
-theorem covGrad_l2NormSq_le_rawConnLap_mul_self_gen
+theorem covGrad_l2NormSq_le_rawConnLap_mul_self_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     tensorL2Norm (I := I) (M := M) g 0 (s + 1)
         (covGrad (I := I) (M := M) g 0 s S).toFun ^ 2 ≤
@@ -52,7 +52,7 @@ theorem covGrad_l2NormSq_le_rawConnLap_mul_self_gen
     rw [tensorL2Norm_sq_toFun (I := I) (M := M) g 0 (s + 1)
       (covGrad (I := I) (M := M) g 0 s S)]
     rw [hΔS_def]
-    exact tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_gen (I := I) (M := M) g s S
+    exact tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_covariantTensor (I := I) (M := M) g s S
   rw [hgreen]
   have hcs := abs_tensorL2Inner_le (I := I) (M := M) g 0 s ΔS.toFun S.toFun
     (SmoothCcTensor.memL2_toFun (I := I) (M := M) ΔS)
@@ -113,7 +113,7 @@ theorem secondCovGrad_l2NormSq_le_of_cross_bound
     exact weitzenbock_integrated_covGrad_l2_normSq (I := I) (M := M) g s S
   have horder1 : nGrad ^ 2 ≤ nLap * nS := by
     rw [hnGrad_def, hnLap_def, hnS_def]
-    exact covGrad_l2NormSq_le_rawConnLap_mul_self_gen (I := I) (M := M) g s S
+    exact covGrad_l2NormSq_le_rawConnLap_mul_self_covariantTensor (I := I) (M := M) g s S
   have hstep1 : nHess ^ 2 ≤ nLap ^ 2 + Ccross * (nGrad ^ 2 + nS * nGrad) := by
     have hcross' :
         - tensorL2Inner (I := I) (M := M) g 0 (s + 1)

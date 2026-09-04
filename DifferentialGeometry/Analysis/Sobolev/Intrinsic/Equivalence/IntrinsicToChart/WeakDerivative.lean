@@ -328,7 +328,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
   have hψ_mem_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) p ψ
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α) := by
-    have h := DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    have h := DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := Module.finrank ℝ E)
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
         (I := I) (M := M) α)

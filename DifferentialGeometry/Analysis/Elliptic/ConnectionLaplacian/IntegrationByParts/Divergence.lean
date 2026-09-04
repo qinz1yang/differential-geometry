@@ -663,7 +663,7 @@ omit [I.Boundaryless] in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma contract_eval (s : ℕ) (x : M) (v : TangentSpace I x)
+private lemma contract_toModel_apply (s : ℕ) (x : M) (v : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) (D : Tensor0SSpace 0 I x) (m : Fin s → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
@@ -674,7 +674,7 @@ private lemma contract_eval (s : ℕ) (x : M) (v : TangentSpace I x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma contract_bare_eval (s : ℕ) (x : M) (v : TangentSpace I x)
+private lemma contract_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) (D : Tensor0SSpace 0 I x)
     (m : Fin s → TangentSpace I x) :
     Tensor0SSpace.eval
@@ -715,7 +715,7 @@ private lemma contract_eq_tensor0SAsRS_curry (s : ℕ) (x : M) (v : TangentSpace
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
-  rw [contract_eval (I := I) (M := M) s x v A D m]
+  rw [contract_toModel_apply (I := I) (M := M) s x v A D m]
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
         tensor0SToTensorRS (I := I) (M := M) x
           (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
@@ -835,7 +835,7 @@ private lemma contract_covGrad_eq_covDeriv
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
-  rw [contract_eval (I := I) (M := M) s x v _ D m]
+  rw [contract_toModel_apply (I := I) (M := M) s x v _ D m]
   rw [covGrad_toSection_apply_eval (I := I) (M := M) g 0 s T x D
     (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m)]
   rw [Fin.cons_zero, Matrix.vecTail,
@@ -853,7 +853,7 @@ private lemma fiberNormSqComponent_contract (g : SmoothRiemannianMetric I M) (s 
       fiberNormSqComponent (I := I) (M := M) g x 0 (s + 1) A n e (fun k => k.elim0)
         (Fin.cons i J) := by
   unfold fiberNormSqComponent
-  rw [contract_bare_eval (I := I) (M := M) s x (e i) A _ (fun k => e (J k))]
+  rw [contract_eval (I := I) (M := M) s x (e i) A _ (fun k => e (J k))]
   congr 1
   funext k
   refine Fin.cases ?_ ?_ k
@@ -973,13 +973,13 @@ private lemma divergence_oneSidedVF_summand_eq
         (fun y : M => g.inner y (Z y) (B y)) b =
       tensorInnerPointwise (I := I) (M := M) g 0 s b
           (TensorRSSpace.toModel
-            (covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B b))
+            (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B b))
           (TensorRSSpace.toModel (C b))
         + tensorInnerPointwise (I := I) (M := M) g 0 s b
           (TensorRSSpace.toModel (T.toSection b))
           (TensorRSSpace.toModel
-            (covDerivAlongVFSectionGen (I := I) (M := M) g s C B b)) := by
-    have hint := loweringIntertwiner_gen (I := I) (M := M) g s
+            (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s C B b)) := by
+    have hint := loweringIntertwiner (I := I) (M := M) g s
     rw [show tangentSectionAction (I := I) B
             (fun y : M => g.inner y (Z y) (B y)) =
           tangentSectionAction (I := I) B
@@ -988,12 +988,12 @@ private lemma divergence_oneSidedVF_summand_eq
       T.toSection C B b]
     congr 1
     · rw [tensorInnerPointwise_eq_liftedTensorSection_inner (I := I) (M := M) g 0 s
-        (covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B) C b]
-      rw [toModel_liftedTensorSection_covDerivAlongVFSectionGen (I := I) (M := M) g s hint
+        (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B) C b]
+      rw [toModel_liftedTensorSection_covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s hint
         T.toSection B b]
     · rw [tensorInnerPointwise_eq_liftedTensorSection_inner (I := I) (M := M) g 0 s
-        T.toSection (covDerivAlongVFSectionGen (I := I) (M := M) g s C B) b]
-      rw [toModel_liftedTensorSection_covDerivAlongVFSectionGen (I := I) (M := M) g s hint
+        T.toSection (covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s C B) b]
+      rw [toModel_liftedTensorSection_covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s hint
         C B b]
   have haccel : g.inner b (Z b)
         ((LeviCivita (I := I) g).toFun (fun y : M => B y) b
@@ -1006,14 +1006,14 @@ private lemma divergence_oneSidedVF_summand_eq
               ((B : ∀ y, TangentSpace I y) b)) (V.toSection b))) := by
     rw [hZ_def, oneSidedDirichletVFSection_apply, inner_oneSidedDirichletVF,
       oneSidedDirichletForm_apply]
-  have hCleib : covDerivAlongVFSectionGen (I := I) (M := M) g s C B b =
+  have hCleib : covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s C B b =
       contractCovariant 0 s b ((B : ∀ y, TangentSpace I y) b)
           ((tensorRSCovariantDerivative I M 0 (s + 1) (LeviCivita (I := I) g)).toFun
             (fun y : M => V.toSection y) b ((B : ∀ y, TangentSpace I y) b))
         + contractCovariant 0 s b
           ((LeviCivita (I := I) g).toFun (fun y : M => B y) b ((B : ∀ y, TangentSpace I y) b))
           (V.toSection b) := by
-    rw [show covDerivAlongVFSectionGen (I := I) (M := M) g s C B b =
+    rw [show covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s C B b =
           (tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g)).toFun
             (fun y : M => C y) b ((B : ∀ y, TangentSpace I y) b) from rfl]
     rw [hC_def]
@@ -1035,7 +1035,7 @@ private lemma divergence_oneSidedVF_summand_eq
       ((B : ∀ y, TangentSpace I y) b) = _
   rw [hsummand, hprod, haccel]
   rw [hCleib, TensorRSSpace.toModel_add, tensorInnerPointwise_add_right]
-  rw [show covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B b =
+  rw [show covDerivAlongVFSectionCovariantTensor (I := I) (M := M) g s T.toSection B b =
         tensorCovDerivAt (I := I) (M := M) g 0 s T b
           (tangentSpaceModelContinuousLinearEquiv (I := I) b
             ((B : ∀ y, TangentSpace I y) b)) from by

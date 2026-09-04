@@ -232,16 +232,9 @@ theorem projConn_eq_metricCov
         (roundMetric (E := E) (n := n)) y
   have hMC₂ : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E) (n := n)))
-      (roundMetric (E := E) (n := n)) := by
-    intro W₁ W₂ y hW₁ hW₂ _ vv
-    obtain ⟨W, hWy⟩ : ∃ σ : Cₛ^∞⟮𝓡 n; EuclideanSpace ℝ (Fin n),
-        (TangentSpace (𝓡 n) : sphere (0 : E) 1 → Type _)⟯, σ y = vv :=
-      ContMDiffSection.exists_eq_at y vv
-    have hgen :=
-      DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
-      (roundMetric (E := E) (n := n)) y W W₁ W₂ W.mdifferentiableAt hW₁ hW₂
-    rw [hWy] at hgen
-    exact hgen
+      (roundMetric (E := E) (n := n)) :=
+    DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
+      (roundMetric (E := E) (n := n))
   exact DifferentialGeometry.Geometry.Connection.koszul_levi_civita_unique_of_torsionFree_metricCompatible
     (projConnCD (E := E) (n := n)) (DifferentialGeometry.Geometry.Curvature.metricCov
       (roundMetric (E := E) (n := n)))

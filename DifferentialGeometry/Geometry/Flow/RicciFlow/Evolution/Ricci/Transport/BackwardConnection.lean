@@ -104,7 +104,7 @@ theorem connBack_pair
   let N : Tensor0SSpace 3 I x :=
     totalNabla0SFun (𝕜 := Real) (I := I)
       2 (S.base.connection (T - tau)) (S.ricci (T - tau)) x
-  have hinv : MetricInverseInBasisGen (I := I)
+  have hinv : MetricInverseInBasis (I := I)
       (S.base.metric (T - tau)) x b
       (fun i j ↦ gInv (T - tau) x i j) := by
     have hb : b = coordinateFrameAtBasis (I := I) x hx := by

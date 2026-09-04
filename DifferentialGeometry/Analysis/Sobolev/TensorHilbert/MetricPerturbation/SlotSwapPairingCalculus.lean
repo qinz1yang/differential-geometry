@@ -80,7 +80,7 @@ private lemma cons_cons_comp_decomposeFin_double {α : Type*} {t : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-theorem unitModel_appFullSec_swap_eq_domDomCongr
+theorem unitModel_homTensorRSFieldApply_swap_eq_domDomCongr
     (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
@@ -109,7 +109,7 @@ theorem unitModel_appFullSec_swap_eq_domDomCongr
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private lemma appFullSec_add_right_cc (g : SmoothRiemannianMetric I M) (a c : ℕ)
+private lemma homTensorRSFieldApply_add_right_cc (g : SmoothRiemannianMetric I M) (a c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) 0 a c I) (A B : SmoothCcTensor g 0 a) :
     homTensorRSFieldApply (I := I) (M := M) g 0 a c Q (A + B) =
       homTensorRSFieldApply (I := I) (M := M) g 0 a c Q A + homTensorRSFieldApply (I := I) (M := M)
@@ -121,12 +121,12 @@ private lemma appFullSec_add_right_cc (g : SmoothRiemannianMetric I M) (a c : �
       homTensorRSFieldApply (I := I) (M := M) g 0 a c Q B).toSection x) =
     (homTensorRSFieldApply (I := I) (M := M) g 0 a c Q A).toSection x +
       (homTensorRSFieldApply (I := I) (M := M) g 0 a c Q B).toSection x from rfl]
-  rw [appFullSec_toSection, appFullSec_toSection, appFullSec_toSection]
+  rw [homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection]
   rw [show ((A + B).toSection x : TensorRSSpace 0 a I x) = A.toSection x + B.toSection x from rfl]
   exact map_add _ _ _
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem appFullSec_swap_norm_eq (g : SmoothRiemannianMetric I M) (t : ℕ)
+theorem homTensorRSFieldApply_swap_norm_eq (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
       (a b : TangentSpace I x) (m : Fin t → TangentSpace I x),
@@ -148,7 +148,7 @@ theorem appFullSec_swap_norm_eq (g : SmoothRiemannianMetric I M) (t : ℕ)
     have h := riemannianFiberNormSq_iteratedCovGrad_eq_of_section_domDomCongr
       (I := I) (M := M) g (t + 2) (Equiv.swap (0 : Fin (t + 2)) (1 : Fin (t + 2))) U
       (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F U)
-      (fun y => unitModel_appFullSec_swap_eq_domDomCongr (I := I) (M := M) g t F hF U y)
+      (fun y => unitModel_homTensorRSFieldApply_swap_eq_domDomCongr (I := I) (M := M) g t F hF U y)
       0 x
     simpa only [iteratedCovGrad_zero] using h
   have hsq : ‖homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F U‖ ^ 2 = ‖U‖ ^ 2 := by
@@ -164,7 +164,7 @@ theorem appFullSec_swap_norm_eq (g : SmoothRiemannianMetric I M) (t : ℕ)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem appFullSec_swap_involutive (g : SmoothRiemannianMetric I M) (t : ℕ)
+theorem homTensorRSFieldApply_swap_involutive (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
       (a b : TangentSpace I x) (m : Fin t → TangentSpace I x),
@@ -179,9 +179,9 @@ theorem appFullSec_swap_involutive (g : SmoothRiemannianMetric I M) (t : ℕ)
     homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F
         (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F U) = U := by
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g (fun x => ?_)
-  rw [unitModel_appFullSec_swap_eq_domDomCongr (I := I) (M := M) g t F hF
+  rw [unitModel_homTensorRSFieldApply_swap_eq_domDomCongr (I := I) (M := M) g t F hF
     (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F U) x]
-  rw [unitModel_appFullSec_swap_eq_domDomCongr (I := I) (M := M) g t F hF U x]
+  rw [unitModel_homTensorRSFieldApply_swap_eq_domDomCongr (I := I) (M := M) g t F hF U x]
   refine ContinuousMultilinearMap.ext (fun w => ?_)
   rw [ContinuousMultilinearMap.domDomCongr_apply, ContinuousMultilinearMap.domDomCongr_apply]
   congr 1
@@ -189,7 +189,7 @@ theorem appFullSec_swap_involutive (g : SmoothRiemannianMetric I M) (t : ℕ)
   rw [Equiv.swap_apply_self]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem appFullSec_swap_l2Inner_hop (g : SmoothRiemannianMetric I M) (t : ℕ)
+theorem homTensorRSFieldApply_swap_l2Inner_hop (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
       (a b : TangentSpace I x) (m : Fin t → TangentSpace I x),
@@ -215,14 +215,14 @@ theorem appFullSec_swap_l2Inner_hop (g : SmoothRiemannianMetric I M) (t : ℕ)
   have hsum : homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F A + B =
       homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F
         (A + homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F B) := by
-    rw [appFullSec_add_right_cc (I := I) (M := M) g (t + 2) (t + 2) F A
+    rw [homTensorRSFieldApply_add_right_cc (I := I) (M := M) g (t + 2) (t + 2) F A
       (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F B)]
-    rw [appFullSec_swap_involutive (I := I) (M := M) g t F hF B]
+    rw [homTensorRSFieldApply_swap_involutive (I := I) (M := M) g t F hF B]
   rw [hsum]
-  rw [appFullSec_swap_norm_eq (I := I) (M := M) g t F hF
+  rw [homTensorRSFieldApply_swap_norm_eq (I := I) (M := M) g t F hF
     (A + homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F B)]
-  rw [appFullSec_swap_norm_eq (I := I) (M := M) g t F hF A]
-  rw [appFullSec_swap_norm_eq (I := I) (M := M) g t F hF B]
+  rw [homTensorRSFieldApply_swap_norm_eq (I := I) (M := M) g t F hF A]
+  rw [homTensorRSFieldApply_swap_norm_eq (I := I) (M := M) g t F hF B]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] [SigmaCompactSpace M] in
@@ -258,7 +258,7 @@ theorem unitModel_covGrad_of_unitModel_domDomCongr
   exact happ
 
 omit [SigmaCompactSpace M] in
-theorem appFullSec_swap_rawConnLap_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
+theorem homTensorRSFieldApply_swap_rawConnLap_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
       (a b : TangentSpace I x) (m : Fin t → TangentSpace I x),
@@ -281,7 +281,7 @@ theorem appFullSec_swap_rawConnLap_comm (g : SmoothRiemannianMetric I M) (t : �
   have h0 : ∀ y : M, unitModel (I := I) (M := M) g (t + 2)
       (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F U) y =
       ContinuousMultilinearMap.domDomCongr tau (unitModel (I := I) (M := M) g (t + 2) U y) :=
-    fun y => unitModel_appFullSec_swap_eq_domDomCongr (I := I) (M := M) g t F hF U y
+    fun y => unitModel_homTensorRSFieldApply_swap_eq_domDomCongr (I := I) (M := M) g t F hF U y
   have h1 : ∀ y : M, unitModel (I := I) (M := M) g (t + 3)
       (covGrad (I := I) (M := M) g 0 (t + 2)
         (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F U)) y =
@@ -304,12 +304,12 @@ theorem appFullSec_swap_rawConnLap_comm (g : SmoothRiemannianMetric I M) (t : �
         (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F U)) h1 y
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g (fun x => ?_)
   refine ContinuousMultilinearMap.ext (fun v => ?_)
-  rw [unitModel_rawConnLap_eq_frame_sum_gen (I := I) g (t + 2)
+  rw [unitModel_rawConnLap_eq_frame_sum_covariantTensor (I := I) g (t + 2)
     (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F U) x v]
-  rw [unitModel_appFullSec_swap_eq_domDomCongr (I := I) (M := M) g t F hF
+  rw [unitModel_homTensorRSFieldApply_swap_eq_domDomCongr (I := I) (M := M) g t F hF
     (rawTensorConnLapSmooth (I := I) g 0 (t + 2) U) x]
   rw [ContinuousMultilinearMap.domDomCongr_apply]
-  rw [unitModel_rawConnLap_eq_frame_sum_gen (I := I) g (t + 2) U x (fun k => v (tau k))]
+  rw [unitModel_rawConnLap_eq_frame_sum_covariantTensor (I := I) g (t + 2) U x (fun k => v (tau k))]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   have h2x := congrArg
     (fun T : ContinuousMultilinearMap ℝ (fun _ : Fin (t + 4) => E) ℝ =>
@@ -405,7 +405,7 @@ theorem unitModel_operatorFieldApplication_slotExtend_slotInsertEndoCc_cons
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem operatorFieldApplication_slotExtend_slotInsert_appFullSec_swap_conj
+theorem operatorFieldApplication_slotExtend_slotInsert_homTensorRSFieldApply_swap_conj
     (g : SmoothRiemannianMetric I M) (s' : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
@@ -443,12 +443,12 @@ theorem operatorFieldApplication_slotExtend_slotInsert_appFullSec_swap_conj
       unitModel (I := I) (M := M) g (s' + 2) U x
         (Fin.cons (tangentLinearMapToModel (I := I) (Λ x) (Matrix.vecTail w 0))
           (Fin.cons (w 0) (Matrix.vecTail (Matrix.vecTail w)))) from by
-    rw [unitModel_appFullSec_swap_eq_domDomCongr (I := I) (M := M) g s' F hF U x,
+    rw [unitModel_homTensorRSFieldApply_swap_eq_domDomCongr (I := I) (M := M) g s' F hF U x,
       ContinuousMultilinearMap.domDomCongr_apply,
       cons_cons_comp_swap01 (w 0)
         (tangentLinearMapToModel (I := I) (Λ x) (Matrix.vecTail w 0))
         (Matrix.vecTail (Matrix.vecTail w))]]
-  rw [unitModel_appFullSec_swap_eq_domDomCongr (I := I) (M := M) g s' F hF
+  rw [unitModel_homTensorRSFieldApply_swap_eq_domDomCongr (I := I) (M := M) g s' F hF
     (operatorFieldApply (I := I) (M := M) g (s' + 2) (s' + 2)
       (endoSlotZeroCcTensor (I := I) (M := M) g (s' + 1) Λ) U) x,
     ContinuousMultilinearMap.domDomCongr_apply,

@@ -31,7 +31,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 omit [CompleteSpace E] in
-theorem normalBrHat
+theorem normal_branch_scale_lt
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {a D c R : Real} (hD : 0 < D) (hc : c < a * D) :
@@ -42,7 +42,7 @@ theorem normalBrHat
     _ < a * hd.mu R :=
       mul_lt_mul_of_pos_right ((div_lt_iff₀ hD).2 hc) (hd.mu_pos R)
 
-def HasNormalBrFull
+def HasControlledNormalBranch
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -97,17 +97,17 @@ def HasNormalBrFull
             ((PhaseFlow.freeDiagCLE (E := E)).symm :
               (E × E) →L[Real] (E × E)) e.target η
 
-namespace HasNormalBrFull
+namespace HasControlledNormalBranch
 
 theorem mono
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
     (x : Y.M) {q : NNReal} {δ ρ ρ' : Real}
-    (h : HasNormalBrFull (I := I) Y hcomplete hconn x q δ ρ)
+    (h : HasControlledNormalBranch (I := I) Y hcomplete hconn x q δ ρ)
     (hρ : ρ' ≤ ρ) :
-    HasNormalBrFull (I := I) Y hcomplete hconn x q δ ρ' := by
-  dsimp only [HasNormalBrFull] at h ⊢
+    HasControlledNormalBranch (I := I) Y hcomplete hconn x q δ ρ' := by
+  dsimp only [HasControlledNormalBranch] at h ⊢
   rcases h with ⟨hq, e, he, hfence, hclosed, hδdom, htransport⟩
   refine ⟨hq, e, he, hfence, ?_, hδdom, htransport⟩
   intro w hw
@@ -118,7 +118,7 @@ theorem toDom
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
     (x : Y.M) {q : NNReal} {δ ρ : Real}
-    (h : HasNormalBrFull (I := I) Y hcomplete hconn x q δ ρ) :
+    (h : HasControlledNormalBranch (I := I) Y hcomplete hconn x q δ ρ) :
     HasNormalBranchDom (I := I) Y hcomplete hconn x q δ ρ := by
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
@@ -172,9 +172,9 @@ theorem toDom
   rcases h with ⟨hq, e, he, _hfence, hclosed, _hδdom, _⟩
   exact ⟨hq, e, he, hclosed⟩
 
-end HasNormalBrFull
+end HasControlledNormalBranch
 
-theorem normalBrAccept
+theorem exists_normal_branch_control_scales
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
@@ -202,7 +202,7 @@ theorem normalBrAccept
               PhaseFlow.phaseErr (normalPhaseK hb (2 * q)) < 1 / 24 ∧
           ∀ k (x : (X.obj k).M),
             hd.dist k x (X.obj k).basepoint ≤ R →
-            HasNormalBrFull (I := I) (X.obj k) (hcomplete.complete k)
+            HasControlledNormalBranch (I := I) (X.obj k) (hcomplete.complete k)
               (hconn k) x q δ (aρ * hd.mu R) := by
   obtain ⟨aq, aδ, haq, haδ, hscale⟩ := h.exists_phase_scale
   let aρ : Real := min aδ (aq / 2)
@@ -263,7 +263,7 @@ theorem normalBrAccept
   have hrMetric := h.phaseRadius_metric hx
   have hrQuarter := h.phaseRadius_exp hx
   obtain ⟨δ', e, hδ', hδ'eq, he, hfence, hinvApprox⟩ :=
-    normalDiagAtFull (I := I) hb k x (hcomplete.complete k) (hconn k)
+    exists_normalDiagonal (I := I) hb k x (hcomplete.complete k) (hconn k)
       hrMetric hrQuarter q hq hqWide hqAcc herr
   have hδ'eq' : δ' = δ := by simpa only [δ] using hδ'eq
   subst δ'
@@ -285,7 +285,7 @@ theorem normalBrAccept
     intro w hw
     exact IsNormalDiag.pair_mem_of_closed (I := I) (X.obj k)
       (hcomplete.complete k) (hconn k) x hq he hw hqExp hρδ hρExp
-  have htransport := IsNormalDiag.full_transport (I := I) (X.obj k)
+  have htransport := IsNormalDiag.branch_coordinate_transport (I := I) (X.obj k)
     (hcomplete.complete k) (hconn k) x hq he hfence
   have heData := he
   change e.source = Metric.ball (0 : E × E) q ∧
@@ -382,13 +382,13 @@ theorem normalMinScale
             letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
             letI : T2Space (TangentBundle I (X.obj k).M) :=
               (X.obj k).t2TangentBundle
-            HasNormalBrFull (I := I) (X.obj k) (hcomplete.complete k)
+            HasControlledNormalBranch (I := I) (X.obj k) (hcomplete.complete k)
                 (hconn k) x q δ (aMin * hd.mu R) ∧
               aMin * hd.mu R ≤ hb.radius k x ∧
               (aMin * hd.mu R) / 2 ≤
                 Geometry.Riemannian.metricCoerciveExpRadius (I := I) (X.obj k).metric x := by
   obtain ⟨aq, aδ, aρ, haq, haδ, haρ, hall⟩ :=
-    normalBrAccept (I := I) h hcomplete hconn
+    exists_normal_branch_control_scales (I := I) h hcomplete hconn
   let aMin : Real := min aρ (min (aq / 4) h.metricCoerciveRatio)
   have haMin : 0 < aMin := by
     dsimp only [aMin]
@@ -424,9 +424,9 @@ theorem normalMinScale
     (X.obj k).t2TangentBundle
   have hρsmall : aMin * hd.mu R ≤ aρ * hd.mu R :=
     mul_le_mul_of_nonneg_right haMinρ (hd.mu_nonneg R)
-  have hbranch : HasNormalBrFull (I := I) (X.obj k) (hcomplete.complete k)
+  have hbranch : HasControlledNormalBranch (I := I) (X.obj k) (hcomplete.complete k)
       (hconn k) x q δ (aMin * hd.mu R) :=
-    HasNormalBrFull.mono (I := I) (X.obj k) (hcomplete.complete k)
+    HasControlledNormalBranch.mono (I := I) (X.obj k) (hcomplete.complete k)
       (hconn k) x (hfull k x hx) hρsmall
   have hMinRatio : aMin ≤ h.ratio := haMinGp.trans h.metricCoerciveRatio_le_ratio
   have hradius : aMin * hd.mu R ≤ hb.radius k x :=
@@ -441,7 +441,7 @@ theorem normalMinScale
       _ ≤ h.metricCoerciveRatio * hd.mu R := hMinFloor
   exact ⟨hbranch, hradius, hhalfFloor.trans (h.floor_le_metricCoerciveExpRadius hx)⟩
 
-theorem normalBrScale
+theorem exists_normal_branch_domain_scales
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
@@ -463,14 +463,14 @@ theorem normalBrScale
             HasNormalBranchDom (I := I) (X.obj k) (hcomplete.complete k)
               (hconn k) x q δ (aρ * hd.mu R) := by
   obtain ⟨aq, aδ, aρ, haq, haδ, haρ, hall⟩ :=
-    normalBrAccept (I := I) h hcomplete hconn
+    exists_normal_branch_control_scales (I := I) h hcomplete hconn
   refine ⟨aq, aδ, aρ, haq, haδ, haρ, ?_⟩
   intro R hR
   obtain ⟨q, δ, hq, hδ, hqeq, hδlower, hqWide, _hqAcc, _herr, _hinvErr,
       hfull⟩ := hall R hR
   refine ⟨q, δ, hq, hδ, hqeq, hδlower, hqWide, ?_⟩
   intro k x hx
-  exact HasNormalBrFull.toDom (I := I) (X.obj k) (hcomplete.complete k)
+  exact HasControlledNormalBranch.toDom (I := I) (X.obj k) (hcomplete.complete k)
     (hconn k) x (hfull k x hx)
 
 end HCGCompactness

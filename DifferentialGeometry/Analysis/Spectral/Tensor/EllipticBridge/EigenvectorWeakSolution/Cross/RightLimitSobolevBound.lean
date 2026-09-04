@@ -48,7 +48,7 @@ private lemma mu_mul_inv_pow_le_inv_pow_local
     mul_le_mul_of_nonneg_right hμ_le_one hμ_inv_pow_nn
   simpa using h
 
-section Unconditional
+section MainResults
 
 
 omit [CompleteSpace E] in
@@ -637,7 +637,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖ := h_packed_le
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

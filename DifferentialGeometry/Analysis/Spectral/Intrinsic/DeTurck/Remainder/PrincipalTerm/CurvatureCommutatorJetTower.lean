@@ -131,11 +131,11 @@ private lemma pointwiseTensorCurvRS_jet_le (g : SmoothRiemannianMetric I M) (r s
   obtain ⟨Q₀, Q₁, Q₂, hQ⟩ :=
     exists_pointwiseTensorCurvRS_homField_jetDecomposition (I := I) (M := M) g r s
   obtain ⟨cc₀, hcc₀_nn, hcc₀⟩ :=
-    exists_appFullSec_iteratedCovGrad_window_bound (I := I) (M := M) g r s (s + 1) Q₀
+    exists_homTensorRSFieldApply_iteratedCovGrad_window_bound (I := I) (M := M) g r s (s + 1) Q₀
   obtain ⟨cc₁, hcc₁_nn, hcc₁⟩ :=
-    exists_appFullSec_on_jet_iteratedCovGrad_window_bound (I := I) (M := M) g r s 1 (s + 1) Q₁
+    exists_homTensorRSFieldApply_on_jet_iteratedCovGrad_window_bound (I := I) (M := M) g r s 1 (s + 1) Q₁
   obtain ⟨cc₂, hcc₂_nn, hcc₂⟩ :=
-    exists_appFullSec_on_jet_iteratedCovGrad_window_bound (I := I) (M := M) g r s 2 (s + 1) Q₂
+    exists_homTensorRSFieldApply_on_jet_iteratedCovGrad_window_bound (I := I) (M := M) g r s 2 (s + 1) Q₂
   refine ⟨fun j => Real.sqrt (cc₀ j) + Real.sqrt (cc₁ j) + Real.sqrt (cc₂ j),
     fun j => by positivity, fun j S => ?_⟩
   set Sj : ℝ := ∑ b ∈ Finset.range (j + 3), ‖iteratedCovGrad (I := I) g r s b S‖ with hSj_def

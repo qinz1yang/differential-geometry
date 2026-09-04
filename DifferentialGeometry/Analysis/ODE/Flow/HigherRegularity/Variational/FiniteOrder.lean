@@ -638,11 +638,11 @@ theorem contDiffOn_fromAugFlow
 
 end AugFlowProjection
 
-section UnconditionalAbstract
+section Abstract
 
 variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax : ℝ} {Φ : E × ℝ → E}
 
-theorem contDiffOn_flow_succ_of_augFlow_candidate
+theorem contDiffOn_flow_succ_of_augFlow
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
     {T_out T_mid T M : ℝ} (hT : 0 < T) (hT_lt_mid : T < T_mid) (hT_mid_lt_out : T_mid < T_out)
     (hM : 0 ≤ M) (hMT_mid : M * T_mid < 1)
@@ -671,7 +671,7 @@ theorem contDiffOn_flow_succ_of_augFlow_candidate
   exact contDiffOn_flow_succ_of_isVariationalFlowProjection hΦ hT hT_lt_mid hT_mid_lt_out hM
     hMT_mid hsub hr' hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd hf_succ hΦ_Ck hY
 
-end UnconditionalAbstract
+end Abstract
 
 section AggregatedPublic
 
@@ -1232,7 +1232,7 @@ theorem contDiffOn_flow_succ_via_augFlow
 
 end VariationalLinearMapSmooth
 
-section UnconditionalC1
+section C1
 
 variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax : ℝ} {Φ : E × ℝ → E}
 
@@ -1247,7 +1247,7 @@ theorem exists_contDiffOn_flow_C1 [FiniteDimensional ℝ E]
   exact exists_contDiffOn_flow_of_contDiff hΦ (le_refl 1) hf hT hT_lt_mid hT_mid_lt_out hM hMT_mid
     hsub hr' hρ_pos hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd
 
-end UnconditionalC1
+end C1
 
 section NeighbourhoodReconciliation
 

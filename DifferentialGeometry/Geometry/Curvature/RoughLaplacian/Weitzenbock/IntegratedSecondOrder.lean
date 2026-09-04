@@ -30,7 +30,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem secondCovDeriv_covGrad_antisymm_eq_riemannOp_gen
+theorem secondCovDeriv_covGrad_antisymm_eq_riemannOp_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {X Y : Π b : M, TangentSpace I b} {x : M}
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
@@ -47,7 +47,7 @@ theorem secondCovDeriv_covGrad_antisymm_eq_riemannOp_gen
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem riemannOp_covGrad_fiberNormSq_le_gen
+theorem riemannOp_covGrad_fiberNormSq_le_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     ∃ Cx : ℝ, 0 ≤ Cx ∧
       ∀ v w : TangentSpace I x,

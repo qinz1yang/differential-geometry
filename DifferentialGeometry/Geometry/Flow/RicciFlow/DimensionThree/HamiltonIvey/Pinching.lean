@@ -799,7 +799,7 @@ private theorem scalarLowerBarrier_le_shifted_scalar
         DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
           (I := I) (S'.family.metric t) x k l (extChartAt I x x)
     have hinv :
-        Tensor0SBundle.MetricInverseInBasisGen (I := I) (S'.family.metric t) x
+        Tensor0SBundle.MetricInverseInBasis (I := I) (S'.family.metric t) x
           basis gInv := by
       simpa [basis, gInv] using
         Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center

@@ -23,7 +23,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E
 variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {Φ : E × ℝ → E}
 
 omit [CompleteSpace E] in
-private theorem contDiffOn_variational_coeff_aux
+private theorem contDiffOn_variational_coeff
     {n : ℕ} {T : ℝ} {ρ : ℝ≥0}
     (hf_succ : ContDiffOn ℝ ((n : ℕ∞) + 1) (uncurry f) (univ : Set (ℝ × E)))
     (hΦ_Cn : ContDiffOn ℝ (n : ℕ∞) Φ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T))) :
@@ -91,7 +91,7 @@ theorem IsLocalFlow.contDiffOn_top
     have hf_Csucc : ContDiffOn ℝ ((n : ℕ∞) + 1) (uncurry f) (univ : Set (ℝ × E)) := by
       simpa using hf_Ck (n + 1)
     have hcoeff_Cn : ContDiffOn ℝ (n : ℕ∞) (fun q : E × ℝ => fderiv ℝ (f q.2) (Φ q)) U :=
-      contDiffOn_variational_coeff_aux hf_Csucc ih
+      contDiffOn_variational_coeff hf_Csucc ih
     set A : E → ℝ → (E →L[ℝ] E) := fun x t => fderiv ℝ (f t) (Φ ⟨x, t⟩)
     have hlinear_Cn : ∀ δ : E, ContDiffOn ℝ (n : ℕ∞)
         (uncurry (linearODESolution A (t₀ - T) (t₀ + T) t₀ (fun _ => δ)))

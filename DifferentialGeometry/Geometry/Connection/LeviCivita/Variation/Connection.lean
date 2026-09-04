@@ -584,15 +584,13 @@ theorem metricCovAtBase_eq_connectionDifference
       connectionDifferenceLow (I := I) G frame var base var x d a b +
         (G.metric var).inner x (frame a x)
           (connectionDifferenceVec (I := I) G frame base var x d b) := by
-  have hfd : MDiffAt (T% (frame d)) x :=
-    localFrame_mdiffAt (I := I) frame hframe hu hx d
   have hfa : MDiffAt (T% (frame a)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx a
   have hfb : MDiffAt (T% (frame b)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx b
   have hmc :=
-    DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-      (I := I) (hLC var).1 (frame d) (frame a) (frame b) hfd hfa hfb
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+      (I := I) (hLC var).1 (frame d x) hfa hfb
   unfold metricCovAtBase connectionDifferenceLow connectionDifferenceVec
   have hmc' :
       mvfderiv (I := I)
@@ -937,7 +935,7 @@ theorem normSq0S_three_eq_componentL2Sq3_of_components [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) g x basis (Tensor0SBundle.identityInvMetric (Idx := Idx)))
     (A : Tensor0SBundle.Tensor0SSpace
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
@@ -1347,7 +1345,7 @@ theorem normSqRS_connectionDifference_eq_componentL2Sq3 [DecidableEq Idx]
               (G.connection base) frame hframe x a b e) := by
   classical
   have hinvBasis :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (G.metric var) x (hframe.toBasisAt hx)
         (Tensor0SBundle.identityInvMetric (Idx := Idx)) := by
     intro i j

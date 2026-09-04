@@ -158,7 +158,7 @@ section MetricCLMSection
 
 variable [NeZero (Module.finrank ℝ E)]
 
-namespace MetricCLMSectionAux
+namespace MetricCLMSectionCoordinates
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma inCoordinates_metric_eq_chartGram_sum
@@ -209,7 +209,7 @@ private lemma inCoordinates_metric_eq_chartGram_sum
   rw [map_smul, smul_eq_mul, g_inner_eq_chartGramMatrix_basis]
   ring
 
-end MetricCLMSectionAux
+end MetricCLMSectionCoordinates
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCLMSection_jointContMDiffOn_of_chartGram
@@ -226,7 +226,7 @@ theorem metricCLMSection_jointContMDiffOn_of_chartGram
         ((g_DT q.1).inner q.2)))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) := by
   classical
-  open MetricCLMSectionAux in
+  open MetricCLMSectionCoordinates in
   intro q₀ hq₀
   refine (?_ : ContMDiffAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
     (fun q : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)

@@ -81,7 +81,7 @@ private theorem lReg_curv_pair
   rw [metricRm04_apply,
     metricRm04At_eq_riemannCurvature04At,
     CovariantDerivative.riemannCurvature04At_apply_const,
-    riemannCurvatureAux_tangentConst_eq_riemannOp
+    connectionRiemannCurvatureField_tangentConst_eq_riemannOp
       (cov := LeviCivita (I := I) g) (hcov := hcov)]
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in

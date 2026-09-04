@@ -124,7 +124,7 @@ theorem normSq0S_iterCov_domDomCongr [FiniteDimensional Real E]
     (Y : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s) (m : ℕ) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
+    (hinv : MetricInverseInBasis (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
     normSq0S (I := I) gRef x (s' + m)
         (iterCov (I := I) gRef s'
           (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e Y) m x) =
@@ -145,7 +145,7 @@ theorem normSq0S_iterCov_shift [FiniteDimensional Real E]
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) r) (m : ℕ) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
+    (hinv : MetricInverseInBasis (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
     normSq0S (I := I) gRef x (r + (m + 1)) (iterCov (I := I) gRef r T (m + 1) x) =
       normSq0S (I := I) gRef x ((r + 1) + m)
         (iterCov (I := I) gRef (r + 1) (covStep (I := I) gRef r T) m x) := by
@@ -194,7 +194,7 @@ theorem sqrt_normSq0S_add_le [FiniteDimensional Real E]
     (gRef : SmoothRiemannianMetric I M) {s : ℕ} {x : M}
     (u v : Tensor0SSpace s I x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
+    (hinv : MetricInverseInBasis (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
     Real.sqrt (normSq0S (I := I) gRef x s (u + v)) ≤
       Real.sqrt (normSq0S (I := I) gRef x s u) + Real.sqrt (normSq0S (I := I) gRef x s v) := by
   rw [normSq0S_identity_eq_sum_sq (I := I) gRef x s basis hinv,
@@ -211,7 +211,7 @@ theorem iterCov_product_sqrtNormSq_le [FiniteDimensional Real E]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (gRef : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) gRef x basis (identityInvMetric (Idx := Idx)))
+    (hinv : MetricInverseInBasis (I := I) gRef x basis (identityInvMetric (Idx := Idx)))
     (m : ℕ) : ∀ {s q : ℕ}
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
@@ -355,7 +355,7 @@ theorem iterCov_smulF_le [FiniteDimensional Real E]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (gRef : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) gRef x basis (identityInvMetric (Idx := Idx)))
+    (hinv : MetricInverseInBasis (I := I) gRef x basis (identityInvMetric (Idx := Idx)))
     (m : ℕ) {q : ℕ} (φ : M → Real) (hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ)
     (B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) q) :

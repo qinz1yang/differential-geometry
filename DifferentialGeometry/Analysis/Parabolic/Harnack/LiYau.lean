@@ -40,15 +40,15 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 variable [I.Boundaryless] [T2Space M]
 
-private abbrev deltaLegacy
+private abbrev laplacianOfSmooth
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ f) : M → ℝ :=
   ΔG (I := I) g ⟨f, hf⟩
 
-private theorem deltaLegacy_contMDiff
+private theorem laplacianOfSmooth_contMDiff
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ f) :
-    ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ (deltaLegacy (I := I) g hf) :=
+    ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ (laplacianOfSmooth (I := I) g hf) :=
   Δ_g_contMDiff (I := I) g ⟨f, hf⟩
 
 def liYauQuantity (g : SmoothRiemannianMetric I M) (f : ℝ → M → ℝ) (t : ℝ) (x : M) : ℝ :=
@@ -83,9 +83,9 @@ theorem heatSolution_log_evolution
     (hpos : ∀ t : ℝ, t ∈ D.carrier → ∀ x : M, 0 < u t x)
     {t : ℝ} (ht : t ∈ D.regular) {x : M}
     (hpde : HasDerivAt (fun s => u s x)
-      (deltaLegacy (I := I) g (hslice t (D.regular_subset ht)) x) t) :
+      (laplacianOfSmooth (I := I) g (hslice t (D.regular_subset ht)) x) t) :
     deriv (fun s => Real.log (u s x)) t =
-      deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x +
+      laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x +
       g.inner x
         (gradientFun (I := I) g (fun y => Real.log (u t y)) x)
         (gradientFun (I := I) g (fun y => Real.log (u t y)) x) := by
@@ -152,12 +152,12 @@ theorem liYauQuantity_eq_neg_laplacian_log
     (hpos : ∀ t : ℝ, t ∈ D.carrier → ∀ x : M, 0 < u t x)
     {t : ℝ} (ht : t ∈ D.regular) {x : M}
     (hpde : HasDerivAt (fun s => u s x)
-      (deltaLegacy (I := I) g (hslice t (D.regular_subset ht)) x) t) :
+      (laplacianOfSmooth (I := I) g (hslice t (D.regular_subset ht)) x) t) :
     g.inner x
           (gradientFun (I := I) g (fun y : M => Real.log (u t y)) x)
           (gradientFun (I := I) g (fun y : M => Real.log (u t y)) x) -
         deriv (fun s : ℝ => Real.log (u s x)) t =
-      -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x := by
+      -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x := by
   have h := heatSolution_log_evolution (I := I) (M := M) (D := D) g u hslice hlogslice hpos ht hpde
   rw [h]
   ring
@@ -172,9 +172,9 @@ theorem liYauQuantity_eq_neg_laplacian
     (hpos : ∀ t : ℝ, t ∈ D.carrier → ∀ x : M, 0 < u t x)
     {t : ℝ} (ht : t ∈ D.regular) {x : M}
     (hpde : HasDerivAt (fun s => u s x)
-      (deltaLegacy (I := I) g (hslice t (D.regular_subset ht)) x) t) :
+      (laplacianOfSmooth (I := I) g (hslice t (D.regular_subset ht)) x) t) :
     liYauQuantity g (fun τ y => Real.log (u τ y)) t x =
-      -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x := by
+      -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x := by
   simpa [liYauQuantity] using
     liYauQuantity_eq_neg_laplacian_log (I := I) (M := M) (D := D) g u hslice hlogslice hpos ht hpde
 
@@ -856,12 +856,12 @@ theorem liYauQuantity_evolution_identity
     (hpos : ∀ t : ℝ, t ∈ D.carrier → ∀ x : M, 0 < u t x)
     (hpde : ∀ t : ℝ, (ht : t ∈ D.regular) → ∀ x : M,
       HasDerivAt (fun s => u s x)
-        (deltaLegacy (I := I) g (hslice t (D.regular_subset ht)) x) t)
+        (laplacianOfSmooth (I := I) g (hslice t (D.regular_subset ht)) x) t)
     (hqslice : ∀ t : ℝ, t ∈ D.regular → ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun y : M => liYauQuantity g (fun σ z => Real.log (u σ z)) t y))
     {t : ℝ} (ht : t ∈ D.regular) (x : M) :
     deriv (fun s => liYauQuantity g (fun τ y => Real.log (u τ y)) s x) t -
-        deltaLegacy (I := I) g (hqslice t ht) x =
+        laplacianOfSmooth (I := I) g (hqslice t ht) x =
       2 * g.inner x
             (gradientFun (I := I) g (fun y => Real.log (u t y)) x)
             (gradientFun (I := I) g (fun y => liYauQuantity g (fun σ z => Real.log
@@ -884,7 +884,7 @@ theorem liYauQuantity_evolution_identity
     simpa [f] using hlogAt.contMDiffWithinAt
   let q : ℝ → M → ℝ := fun τ y => liYauQuantity g f τ y
   have hqid : ∀ (τ : ℝ) (hτ : τ ∈ D.regular) (y : M),
-      q τ y = -deltaLegacy (I := I) g (hlogslice τ (D.regular_subset hτ)) y :=
+      q τ y = -laplacianOfSmooth (I := I) g (hlogslice τ (D.regular_subset hτ)) y :=
     fun τ hτ y => liYauQuantity_eq_neg_laplacian (I := I) (M := M)
       (D := D) g u hslice hlogslice hpos hτ (hpde τ hτ y)
   have hftslice : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => deriv (fun s : ℝ => f s y) t) :=
@@ -911,7 +911,7 @@ theorem liYauQuantity_evolution_identity
     refine ⟨D.regular, IsOpen.mem_nhds D.regular_isOpen ht, ?_⟩
     intro s hs
     have hqid_s := hqid s hs x
-    have hvw : deltaLegacy (I := I) g (hlogslice s (D.regular_subset hs)) x =
+    have hvw : laplacianOfSmooth (I := I) g (hlogslice s (D.regular_subset hs)) x =
         chartVossWeylLaplacian (I := I) g α (f s) x :=
       voss_weyl_laplacian_formula_pointwise (I := I) g α
         (hlogslice s (D.regular_subset hs)) hxsrc
@@ -924,37 +924,37 @@ theorem liYauQuantity_evolution_identity
   have hdq : deriv (fun s : ℝ => q s x) t =
       -chartVossWeylLaplacian (I := I) g α (fun w : M => deriv (fun s : ℝ => f s w) t) x :=
     hdq_has.deriv
-  have hdq' : deriv (fun s : ℝ => q s x) t = -deltaLegacy (I := I) g hftslice x := by
+  have hdq' : deriv (fun s : ℝ => q s x) t = -laplacianOfSmooth (I := I) g hftslice x := by
     have hchart_eq : chartVossWeylLaplacian (I := I) g α
-        (fun w : M => deriv (fun s : ℝ => f s w) t) x = deltaLegacy (I := I) g hftslice x := by
+        (fun w : M => deriv (fun s : ℝ => f s w) t) x = laplacianOfSmooth (I := I) g hftslice x := by
       exact (voss_weyl_laplacian_formula_pointwise (I := I) g α hftslice hxsrc).symm
     exact hdq.trans (congrArg Neg.neg hchart_eq)
-  have hdq_laplacian : deltaLegacy (I := I) g (hqslice t ht) x =
-      -deltaLegacy (I := I) g (deltaLegacy_contMDiff (I := I) g (hlogslice t
+  have hdq_laplacian : laplacianOfSmooth (I := I) g (hqslice t ht) x =
+      -laplacianOfSmooth (I := I) g (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
         (D.regular_subset ht))) x := by
     have heq : (fun y : M => liYauQuantity g f t y) =ᶠ[𝓝 x]
-        (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) := by
+        (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) := by
       rw [Filter.eventuallyEq_iff_exists_mem]
       refine ⟨Set.univ, Filter.univ_mem, ?_⟩
       intro y hy
       exact hqid t ht y
     have hneg : ContMDiff I 𝓘(ℝ, ℝ) ∞
-        (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) :=
-      ContMDiff.neg (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))
+        (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) :=
+      ContMDiff.neg (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))
     have hcongr := Δ_g_congr_of_eventuallyEq (I := I) g
       (hqslice t ht) hneg heq
-    unfold deltaLegacy
+    unfold laplacianOfSmooth
     rw [hcongr]
-    exact Δ_g_neg (I := I) g (deltaLegacy_contMDiff (I := I) g (hlogslice t
+    exact Δ_g_neg (I := I) g (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
       (D.regular_subset ht))) (x := x)
   have hheq : ∀ y, deriv (fun s : ℝ => f s y) t -
-      deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y =
+      laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y =
       normGradSqFun (I := I) g (fun z : M => Real.log (u t z)) y := by
     intro y
     have hle := heatSolution_log_evolution (I := I) (M := M)
       (D := D) g u hslice hlogslice hpos ht (hpde t ht y)
     have hle' : deriv (fun s : ℝ => f s y) t =
-        deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y +
+        laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y +
           g.inner y (gradientFun (I := I) g (f t) y) (gradientFun (I := I) g (f t) y) := by
       simpa [f] using hle
     have hnorm : g.inner y (gradientFun (I := I) g (f t) y) (gradientFun (I := I) g (f t) y) =
@@ -965,64 +965,64 @@ theorem liYauQuantity_evolution_identity
       have hlogeq : (fun z : M => Real.log (u t z)) = f t := rfl
       rw [normGradSqFun, hlogeq, hvec (f t)]
     have hle'' : deriv (fun s : ℝ => f s y) t =
-        deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y +
+        laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y +
           normGradSqFun (I := I) g (fun z : M => Real.log (u t z)) y := by
       rw [← hnorm]
       exact hle'
     linarith
   have hmain : deriv (fun s : ℝ => q s x) t -
-      deltaLegacy (I := I) g (hqslice t ht) x =
-      -deltaLegacy (I := I) g (normGradSqFun_contMDiff (I := I) g
+      laplacianOfSmooth (I := I) g (hqslice t ht) x =
+      -laplacianOfSmooth (I := I) g (normGradSqFun_contMDiff (I := I) g
         (hlogslice t (D.regular_subset ht))) x := by
     rw [hdq', hdq_laplacian]
     have hsub_fun : (fun y : M => deriv (fun s : ℝ => f s y) t -
-          deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) =ᶠ[𝓝 x]
+          laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) =ᶠ[𝓝 x]
         (fun y : M => normGradSqFun (I := I) g (fun z : M => Real.log (u t z)) y) := by
       rw [Filter.eventuallyEq_iff_exists_mem]
       refine ⟨Set.univ, Filter.univ_mem, ?_⟩
       intro y hy
       exact hheq y
-    have hΔsub : deltaLegacy (I := I) g
-        (hftslice.sub (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))) x =
-        deltaLegacy (I := I) g hftslice x -
-          deltaLegacy (I := I) g (deltaLegacy_contMDiff (I := I) g (hlogslice t
+    have hΔsub : laplacianOfSmooth (I := I) g
+        (hftslice.sub (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))) x =
+        laplacianOfSmooth (I := I) g hftslice x -
+          laplacianOfSmooth (I := I) g (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
             (D.regular_subset ht))) x := by
       have h1 := Δ_g_add (I := I) g ⟨_, hftslice⟩
         ⟨_, ContMDiff.neg
-          (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))⟩ x
-      have h2 := Δ_g_neg (I := I) g (deltaLegacy_contMDiff (I := I) g (hlogslice t
+          (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))⟩ x
+      have h2 := Δ_g_neg (I := I) g (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
         (D.regular_subset ht))) (x := x)
       have hsub_eq : (fun y : M => deriv (fun s : ℝ => f s y) t -
-            deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) =ᶠ[𝓝 x]
+            laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) =ᶠ[𝓝 x]
           (fun y : M => deriv (fun s : ℝ => f s y) t +
-            -(deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y)) := by
+            -(laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y)) := by
         rw [Filter.eventuallyEq_iff_exists_mem]
         refine ⟨Set.univ, Filter.univ_mem, ?_⟩
         intro y hy
         ring
       have hbridge := Δ_g_congr_of_eventuallyEq (I := I) g
-        (hftslice.sub (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))))
-        (hftslice.add (ContMDiff.neg (deltaLegacy_contMDiff (I := I) g (hlogslice t
+        (hftslice.sub (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))))
+        (hftslice.add (ContMDiff.neg (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
           (D.regular_subset ht)))))
         hsub_eq
-      unfold deltaLegacy
+      unfold laplacianOfSmooth
       rw [hbridge]
       change ΔG (I := I) g
           (⟨_, hftslice⟩ + ⟨_, ContMDiff.neg
-            (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))⟩) x = _
+            (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))⟩) x = _
       rw [h1, h2]
       ring
-    have hΔnorm : deltaLegacy (I := I) g
-        (hftslice.sub (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))) x =
-        deltaLegacy (I := I) g (normGradSqFun_contMDiff (I := I) g
+    have hΔnorm : laplacianOfSmooth (I := I) g
+        (hftslice.sub (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))) x =
+        laplacianOfSmooth (I := I) g (normGradSqFun_contMDiff (I := I) g
           (hlogslice t (D.regular_subset ht))) x :=
       Δ_g_congr_of_eventuallyEq (I := I) g
-        (hftslice.sub (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))))
+        (hftslice.sub (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))))
         (normGradSqFun_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))) hsub_fun
-    have hstep : deltaLegacy (I := I) g hftslice x -
-        deltaLegacy (I := I) g (deltaLegacy_contMDiff (I := I) g (hlogslice t
+    have hstep : laplacianOfSmooth (I := I) g hftslice x -
+        laplacianOfSmooth (I := I) g (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
           (D.regular_subset ht))) x =
-        deltaLegacy (I := I) g (normGradSqFun_contMDiff (I := I) g
+        laplacianOfSmooth (I := I) g (normGradSqFun_contMDiff (I := I) g
           (hlogslice t (D.regular_subset ht))) x :=
       hΔsub.symm.trans hΔnorm
     linarith
@@ -1035,18 +1035,18 @@ theorem liYauQuantity_evolution_identity
         (gradFun (I := I) g (fun y => Real.log (u t y)) x)
         (gradFun (I := I) g (fun y => liYauQuantity g (fun σ z => Real.log (u σ z)) t y) x) =
       2 * g.inner x (gradFun (I := I) g (f t) x)
-         (gradFun (I := I) g (fun y => -deltaLegacy (I := I) g (hlogslice t
+         (gradFun (I := I) g (fun y => -laplacianOfSmooth (I := I) g (hlogslice t
            (D.regular_subset ht)) y) x) := by
     simp [f, q, hqid t ht]
   have hmain' : deriv (fun s : ℝ => q s x) t -
-      deltaLegacy (I := I) g (hqslice t ht) x =
+      laplacianOfSmooth (I := I) g (hqslice t ht) x =
       -2 * chartHessFrobeniusSq (I := I) g (fun y : M => Real.log (u t y)) x -
         2 * ricciTensor (I := I) g x
           (gradFun (I := I) g (fun y : M => Real.log (u t y)) x)
           (gradFun (I := I) g (fun y : M => Real.log (u t y)) x) -
         2 * g.inner x (gradFun (I := I) g (fun y : M => Real.log (u t y)) x)
-          (gradFun (I := I) g (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht))) x) := by
-    unfold deltaLegacy at hmain ⊢
+          (gradFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht))) x) := by
+    unfold laplacianOfSmooth at hmain ⊢
     rw [hmain, hbochner]
     ring
   rw [hvecg (fun y : M => Real.log (u t y))]
@@ -1054,33 +1054,33 @@ theorem liYauQuantity_evolution_identity
   rw [hgrad]
   rw [hmain']
   have hinner_eq : 2 * g.inner x (gradFun (I := I) g (f t) x)
-        (gradFun (I := I) g (fun y : M => -deltaLegacy (I := I) g (hlogslice t
+        (gradFun (I := I) g (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t
           (D.regular_subset ht)) y) x) =
       -2 * g.inner x (gradFun (I := I) g (fun y : M => Real.log (u t y)) x)
-        (gradFun (I := I) g (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht))) x) := by
+        (gradFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht))) x) := by
     have hfun : (f t) = (fun y : M => Real.log (u t y)) := by
       funext y
       rfl
     have hgradneg : gradFun (I := I) g
-        (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) x =
-        -gradFun (I := I) g (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht))) x := by
+        (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) x =
+        -gradFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht))) x := by
       have hneg : gradientFun (I := I) g
-          (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) x =
-          -gradientFun (I := I) g (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht))) x :=
+          (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) x =
+          -gradientFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht))) x :=
         gradientFun_neg g
-          ((deltaLegacy_contMDiff (I := I) g (hlogslice t
+          ((laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
             (D.regular_subset ht))).mdifferentiableAt (by simp))
       calc
         gradFun (I := I) g
-            (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) x
+            (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) x
             = gradientFun (I := I) g
-                (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) x :=
-              (hvecg (fun y : M => -deltaLegacy (I := I) g (hlogslice t
+                (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) x :=
+              (hvecg (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t
                 (D.regular_subset ht)) y)).symm
-        _ = -gradientFun (I := I) g (deltaLegacy (I := I) g (hlogslice t
+        _ = -gradientFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t
           (D.regular_subset ht))) x := hneg
-        _ = -gradFun (I := I) g (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht))) x := by
-              rw [hvecg (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)))]
+        _ = -gradFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht))) x := by
+              rw [hvecg (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)))]
     rw [hfun, hgradneg]
     rw [map_neg]
     ring
@@ -1103,12 +1103,12 @@ theorem liYauQuantity_evolution_inequality
     (hpos : ∀ t : ℝ, t ∈ D.carrier → ∀ x : M, 0 < u t x)
     (hpde : ∀ t : ℝ, (ht : t ∈ D.regular) → ∀ x : M,
       HasDerivAt (fun s => u s x)
-        (deltaLegacy (I := I) g (hslice t (D.regular_subset ht)) x) t)
+        (laplacianOfSmooth (I := I) g (hslice t (D.regular_subset ht)) x) t)
     (hqslice : ∀ t : ℝ, t ∈ D.regular → ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun y : M => liYauQuantity g (fun σ z => Real.log (u σ z)) t y))
     {t : ℝ} (ht : t ∈ D.regular) (x : M) :
     deriv (fun s => liYauQuantity g (fun τ y => Real.log (u τ y)) s x) t -
-        deltaLegacy (I := I) g (hqslice t ht) x ≤
+        laplacianOfSmooth (I := I) g (hqslice t ht) x ≤
       2 * g.inner x
             (gradientFun (I := I) g (fun y => Real.log (u t y)) x)
             (gradientFun (I := I) g (fun y => liYauQuantity g (fun σ z => Real.log
@@ -1129,25 +1129,25 @@ theorem liYauQuantity_evolution_inequality
     (hlogslice t (D.regular_subset ht)) x
   have hn : (0 : ℝ) < (Module.finrank ℝ E : ℝ) := by
     exact_mod_cast (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
-  have hle0 : (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 ≤
+  have hle0 : (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 ≤
       chartHessFrobeniusSq (I := I) g logut x *
         (Module.finrank ℝ E : ℝ) := by
     rw [mul_comm] at htrace0
     exact htrace0
-  have hdiv : (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
+  have hdiv : (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
         (Module.finrank ℝ E : ℝ) ≤ chartHessFrobeniusSq (I := I) g logut x := by
     exact (div_le_iff₀ hn).2 hle0
   have htrace' : -2 * chartHessFrobeniusSq (I := I) g logut x ≤
       -(2 / (Module.finrank ℝ E : ℝ)) *
-        (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
+        (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
     have hstep : -2 * chartHessFrobeniusSq (I := I) g logut x ≤
-        -2 * ((deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
+        -2 * ((laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
           (Module.finrank ℝ E : ℝ)) := by
       nlinarith [hdiv]
-    have hring : -2 * ((deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
+    have hring : -2 * ((laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
           (Module.finrank ℝ E : ℝ)) =
         -(2 / (Module.finrank ℝ E : ℝ)) *
-          (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
+          (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
       ring_nf
     rwa [← hring]
   have hRic' : -2 * ricciTensor (I := I) g x (gradFun (I := I) g logut x) (gradFun
@@ -1159,7 +1159,7 @@ theorem liYauQuantity_evolution_inequality
       rw [hvecg logut]
     nlinarith [hr, hin]
   have hqsq : (liYauQuantity g (fun σ z => Real.log (u σ z)) t x)^2 =
-      (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
+      (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
     have hqid := liYauQuantity_eq_neg_laplacian (I := I) (M := M)
       (D := D) g u hslice hlogslice hpos ht (hpde t ht x)
     rw [hqid]
@@ -2314,11 +2314,11 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
     exact (hqat.comp (x := x) (contMDiffAt_const.prodMk contMDiffAt_id))
   have hpd_all : ∀ (τ : ℝ) (hτ : τ ∈ D.regular) (x : M),
       HasDerivAt (fun s => u s x)
-        (deltaLegacy (I := I) g (hu.sliceSmooth τ (D.regular_subset hτ)) x) τ := by
+        (laplacianOfSmooth (I := I) g (hu.sliceSmooth τ (D.regular_subset hτ)) x) τ := by
     intro τ hτ x
     have heq := hu.equation τ hτ x
     have hbridge : laplacianAt (I := I) G τ (u τ) x =
-        deltaLegacy (I := I) g (hu.sliceSmooth τ (D.regular_subset hτ)) x := by
+        laplacianOfSmooth (I := I) g (hu.sliceSmooth τ (D.regular_subset hτ)) x := by
       have hconn : G.connection τ = LeviCivita (G.metric τ) :=
         hGconn τ (D.regular_subset hτ)
       rw [laplacianAt_eq_delta (I := I) G τ (hu.sliceSmooth τ (D.regular_subset hτ)) hconn x]
@@ -2329,7 +2329,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
     exact heq0.congr_deriv hbridge
   let n : ℝ := (Module.finrank ℝ E : ℝ)
   have hevol : ∀ (τ : ℝ) (hτ : τ ∈ D.regular) (y : M),
-      deriv (fun s => q s y) τ - deltaLegacy (I := I) g (hqslice τ hτ) y ≤
+      deriv (fun s => q s y) τ - laplacianOfSmooth (I := I) g (hqslice τ hτ) y ≤
         2 * g.inner y (gradientFun (I := I) g (f τ) y) (gradientFun (I := I) g (q τ) y) -
           (2 / n) * (q τ y)^2 := by
     intro τ hτ y
@@ -2497,7 +2497,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
     have hev0 := hevol s hsreg x₀
     have hdq_Δq : deriv (fun τ' : ℝ => q τ' x₀) s - laplacianAt (I := I) G s (q s) x₀ ≤
         -(2 / n) * (q s x₀)^2 := by
-      have hlapeq : laplacianAt (I := I) G s (q s) x₀ = deltaLegacy (I := I) g
+      have hlapeq : laplacianAt (I := I) G s (q s) x₀ = laplacianOfSmooth (I := I) g
         (hqslice s hsreg) x₀ := by
         rw [laplacianAt_eq_delta (I := I) G s (hqslice s hsreg) hconn]
         rw [hGmetric s (D.regular_subset hsreg)]
@@ -2505,7 +2505,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
         (q s) x₀) = 0 := by
         rw [hgradq']
         ring
-      have hev0' : deriv (fun τ' : ℝ => q τ' x₀) s - deltaLegacy (I := I) g (hqslice s hsreg) x₀ ≤
+      have hev0' : deriv (fun τ' : ℝ => q τ' x₀) s - laplacianOfSmooth (I := I) g (hqslice s hsreg) x₀ ≤
           -(2 / n) * (q s x₀)^2 := by
         nlinarith [hev0, hcanc]
       rw [hlapeq]
@@ -2544,7 +2544,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
           exact hmul
         have hc_cd : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => n / 2 + eps * s) :=
           contMDiff_const
-        change deltaLegacy (I := I) (G.metric s) hsub_cd x₀ =
+        change laplacianOfSmooth (I := I) (G.metric s) hsub_cd x₀ =
           laplacianAt (I := I) G s (fun y : M => s • q s y) x₀ -
             laplacianAt (I := I) G s (fun _ : M => n / 2 + eps * s) x₀
         rw [laplacianAt_eq_delta (I := I) G s hscd hconn]
@@ -2560,7 +2560,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
           ring
         have hbridge := Δ_g_congr_of_eventuallyEq (I := I) g hsub_cd
           (hscd.add (ContMDiff.neg hc_cd)) hc_eq
-        unfold deltaLegacy
+        unfold laplacianOfSmooth
         rw [hbridge]
         change ΔG (I := I) g
             (⟨_, hscd⟩ + ⟨_, ContMDiff.neg hc_cd⟩) x₀ = _

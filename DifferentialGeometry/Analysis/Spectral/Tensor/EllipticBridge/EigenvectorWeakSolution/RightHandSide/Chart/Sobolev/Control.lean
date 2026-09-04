@@ -43,7 +43,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-section Unconditional
+section MainResults
 
 
 def eigenvectorResolventChartWkpRegularity
@@ -57,7 +57,7 @@ def eigenvectorResolventChartWkpRegularity
           β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
       (chartTargetEuclid (I := I) (M := M) β)
 
-section AggregateUnconditional
+section Aggregate
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -137,7 +137,7 @@ def eigenvectorChartRHSWkpControl : ℝ≥0∞ :=
     eigenvectorCrossRightLimitWkpNormSum (I := I) (M := M) g r s i α K +
     eigenvectorCutoffPartialLimitWkpNormSum (I := I) (M := M) g r s i α K
 
-end AggregateUnconditional
+end Aggregate
 
 private lemma le_sevenSum (a₁ a₂ a₃ a₄ a₅ a₆ a₇ : ℝ≥0∞) :
     a₁ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ ∧
@@ -176,7 +176,7 @@ private lemma le_sevenSum (a₁ a₂ a₃ a₄ a₅ a₆ a₇ : ℝ≥0∞) :
       _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ := le_self_add
   · exact le_add_self
 
-section DominationUnconditional
+section Domination
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -282,9 +282,9 @@ lemma crossRightGradCoeffDivLimit_memWkp
   exact (MemWkp_congr_ae (d := Module.finrank ℝ E)
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ae_eq).mp h_prod_memWkp
 
-end DominationUnconditional
+end Domination
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

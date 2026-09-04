@@ -1013,7 +1013,7 @@ lemma termSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannianMetric I 
     (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
     bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term =
-      reindexCoeffGen (I := I) (M := M) g₀ 2 3
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 3
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
           (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)))
         (Equiv.swap (0 : Fin 2) 1) := by
@@ -1043,7 +1043,7 @@ lemma termSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannianMetric I 
     rw [slotInsertEndoFib_apply_natural]
   have e1 : Tensor0SSpace.eval
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 3
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 3
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
             (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)))
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) w =
@@ -1053,7 +1053,7 @@ lemma termSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannianMetric I 
             ((slotExtend (I := I) (M := M) g₀ 1 2
               (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)).toSection x)) D') w := by
     have h1 : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 3
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 3
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
             (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)))
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) =
@@ -1061,8 +1061,8 @@ lemma termSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannianMetric I 
           rsDomDomCongr (finRotate 3).symm
             ((slotExtend (I := I) (M := M) g₀ 1 2
               (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)).toSection x)) D') := by
-      rw [reindexCoeffGen_toSection]
-      rw [reindexCoeffFibGen_apply (I := I) 2 3 (Equiv.swap (0 : Fin 2) 1) x
+      rw [reindexCoefficientInputSlots_toSection]
+      rw [reindexCoefficientInputSlotsFiber_apply (I := I) 2 3 (Equiv.swap (0 : Fin 2) 1) x
         (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
             (slotExtend (I := I) (M := M) g₀ 1 2

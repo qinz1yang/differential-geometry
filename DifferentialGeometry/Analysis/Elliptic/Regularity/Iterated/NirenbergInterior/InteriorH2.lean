@@ -241,7 +241,7 @@ private lemma chartPushed_ae_zero_off_chartImagePOUTsupport_aux
     hy.1 hy.2
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma locallyIntegrableOn_of_memLp_two_chartTarget_aux
+private lemma locallyIntegrableOn_of_memLp_two_chartTarget
     (α : M) {f : EuclN → ℝ}
     (hf : MemLp f 2
       ((volume : Measure EuclN).restrict
@@ -405,7 +405,7 @@ lemma chosenMthMixedPartialChartPushedU_ae_zero_off_chartImagePOUTsupport
           (dirs (Fin.last m))
       have h_chosen_memLp :=
         chosenWeakPartial'_memLp_of_mem h_inner_memW1p (dirs (Fin.last m))
-      have hw_li := locallyIntegrableOn_of_memLp_two_chartTarget_aux
+      have hw_li := locallyIntegrableOn_of_memLp_two_chartTarget
         (I := I) (M := M) (α := α) (f := _) h_chosen_memLp
       rw [chosenMthMixedPartialChartPushedU_succ]
       exact weakPartial_ae_zero_off_inline_aux hΩ_open hU_open hU_sub

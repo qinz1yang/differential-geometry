@@ -353,7 +353,7 @@ private lemma g_inner_sum_left
 
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private theorem chartFrameNormFiber_orth_strong_aux
+private theorem chartFrameNormFiber_orth_strong
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     ∀ k : ℕ, ∀ i : Fin (Module.finrank ℝ E), i.val ≤ k →
@@ -676,16 +676,16 @@ theorem chartFrameNormFiber_orthonormal
       if i = j then 1 else 0 := by
   classical
   rcases Nat.lt_trichotomy i.val j.val with hlt | heq | hgt
-  · have h := chartFrameNormFiber_orth_strong_aux (I := I) g α hb j.val j (le_refl _)
+  · have h := chartFrameNormFiber_orth_strong (I := I) g α hb j.val j (le_refl _)
     have horth := h.2.1 i hlt
     have hne : i ≠ j := by
       intro h_eq; rw [h_eq] at hlt; omega
     rw [if_neg hne, horth]
   · have hi_eq_j : i = j := Fin.ext heq
     rw [if_pos hi_eq_j, ← hi_eq_j]
-    have h := chartFrameNormFiber_orth_strong_aux (I := I) g α hb i.val i (le_refl _)
+    have h := chartFrameNormFiber_orth_strong (I := I) g α hb i.val i (le_refl _)
     exact h.2.2
-  · have h := chartFrameNormFiber_orth_strong_aux (I := I) g α hb i.val i (le_refl _)
+  · have h := chartFrameNormFiber_orth_strong (I := I) g α hb i.val i (le_refl _)
     have horth_ji := h.2.1 j hgt
     have hne : i ≠ j := by
       intro h_eq; rw [h_eq] at hgt; omega
@@ -1044,7 +1044,7 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
               (chartFrameRawFiber (I := I) g α b i)
               (chartFrameRawFiber (I := I) g α b i) := by
         intro b hb
-        have h_aux := chartFrameNormFiber_orth_strong_aux
+        have h_aux := chartFrameNormFiber_orth_strong
           (I := I) g α hb i.val i (le_refl _)
         have hraw_ne : chartFrameRawFiber (I := I) g α b i ≠ 0 := h_aux.1
         exact g.pos b _ hraw_ne
@@ -1727,7 +1727,7 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
               (chartFrameRawFiber (g q.1) α q.2 i)
               (chartFrameRawFiber (g q.1) α q.2 i) := by
         intro q hq
-        have h_aux := chartFrameNormFiber_orth_strong_aux
+        have h_aux := chartFrameNormFiber_orth_strong
           (I := I) (g q.1) α (hU_base q hq) i.val i (le_refl _)
         have hraw_ne : chartFrameRawFiber (g q.1) α q.2 i ≠ 0 := h_aux.1
         exact (g q.1).pos q.2 _ hraw_ne

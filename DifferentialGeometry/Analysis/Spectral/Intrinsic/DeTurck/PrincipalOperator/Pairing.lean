@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.CoreIdentification
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.SmoothCoreIdentification
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
 

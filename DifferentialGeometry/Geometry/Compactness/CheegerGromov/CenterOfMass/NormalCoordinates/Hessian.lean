@@ -508,7 +508,7 @@ theorem diagonalInverseCoordinates_normalPair_eq
     rw [TangentBundle.trivializationAt_baseSet]
     exact NormalCoordinates.exp_target_sub_chart (I := I) Y.metric x
       ((expMapDiffeo (I := I) Y.metric x).map_source hzExpSource)
-  have htransport := full_transport (I := I) Y hcomplete hconn x hq he hf
+  have htransport := branch_coordinate_transport (I := I) Y hcomplete hconn x hq he hf
   unfold DiagonalInverseBranch.diagonalInverseCoordinates
   rw [htransport.2.2 w hw,
     ← normalTanHome_apply (I := I) Y x (e.symm w) hzNormal]
@@ -625,7 +625,7 @@ theorem inv_cov_coord
   have hSopen : IsOpen S := by
     change IsOpen ((fun y : Y.M => (y, pt)) ⁻¹' B.hom.target)
     exact B.hom.open_target.preimage (continuous_id.prodMk continuous_const)
-  have htransport := full_transport (I := I) Y hcomplete hconn x hq he hf
+  have htransport := branch_coordinate_transport (I := I) Y hcomplete hconn x hq he hf
   have hpairDom : normalPair (I := I) Y x (z, xi) ∈ B.dom := by
     rw [← htransport.2.1]
     refine ⟨(z, xi), hw, ?_⟩
@@ -2091,7 +2091,7 @@ theorem cmC_sol_of_vel
       (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c := by
     have hpair :
         normalPair (I := I) Y x (z, xi i) (c := c) ∈ B.dom := by
-      rw [← (IsNormalDiag.full_transport (I := I) Y hcomplete hconn
+      rw [← (IsNormalDiag.branch_coordinate_transport (I := I) Y hcomplete hconn
         x hq he hf).2.1]
       refine ⟨(z, xi i), htgt i, ?_⟩
       exact c.pairHome_apply (z, xi i)
@@ -2398,7 +2398,7 @@ theorem cm_sol_strict
       (I := I) Y.metric x (xi i) hiTarget).contMDiffAt
         ((NormalCoordinates.normalChartAt (I := I) Y.metric x).open_target.mem_nhds
           hiTarget)
-  have htransport := full_transport (I := I) Y hcomplete hconn x hq he hf
+  have htransport := branch_coordinate_transport (I := I) Y hcomplete hconn x hq he hf
   have hread (i : ι) :
       ContMDiffAt (I.prod I) 𝓘(Real, E) 1
         (fun yq : Y.M × Y.M => B.diagonalInverseCoordinates yq)
@@ -2574,7 +2574,7 @@ theorem cm_sol_cd
     exact ((exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) Y x).contMDiffAt
       (Metric.isOpen_ball.mem_nhds (hnormal i).2)).of_le
         (WithTop.coe_le_coe.mpr le_top)
-  have htransport := full_transport (I := I) Y hcomplete hconn x hq he hf
+  have htransport := branch_coordinate_transport (I := I) Y hcomplete hconn x hq he hf
   have hread (i : ι) :
       ContMDiffAt (I.prod I) 𝓘(Real, E) (n : ℕ∞)
         (fun yq : Y.M × Y.M => B.diagonalInverseCoordinates yq)
@@ -2605,7 +2605,7 @@ theorem cm_sol_cd
 
 end IsNormalDiag
 
-namespace HasNormalBrFull
+namespace HasControlledNormalBranch
 
 theorem hess_pos
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -2614,7 +2614,7 @@ theorem hess_pos
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
     (x : (X.obj k).M) {q : NNReal} {δ ρ : Real}
-    (hfull : HasNormalBrFull (I := I) (X.obj k) hcomplete hconn x q δ ρ)
+    (hfull : HasControlledNormalBranch (I := I) (X.obj k) hcomplete hconn x q δ ρ)
     (hqAcc : 3 * hb.metricC 1 * (2 * (q : Real)) ^ 2 ≤
       (2 / 3 : Real) * (q : Real)) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -2682,7 +2682,7 @@ theorem hess_pos
   let : MetricSpace (X.obj k).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
   intro hquarter hρ hρq hρmetric hρexp y pt hpairs v hv
-  dsimp only [HasNormalBrFull] at hfull
+  dsimp only [HasControlledNormalBranch] at hfull
   rcases hfull with
     ⟨hq, e, he, hf, _hclosed, _hδdom, _hhom, _hpair, _hinv,
       _hδinv, eta, heta, happrox⟩
@@ -2815,7 +2815,7 @@ theorem hess_pos
     simpa only [hvY] using hhessY
   nlinarith
 
-end HasNormalBrFull
+end HasControlledNormalBranch
 
 end HCGCompactness
 end DifferentialGeometry

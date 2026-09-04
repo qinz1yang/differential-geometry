@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Data
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
 open DifferentialGeometry.PDE.RicciFlow

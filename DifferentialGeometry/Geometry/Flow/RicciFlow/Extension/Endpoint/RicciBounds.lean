@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
-import DifferentialGeometry.Geometry.Curvature.Coordinates.RicciJet
+import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.ChartBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

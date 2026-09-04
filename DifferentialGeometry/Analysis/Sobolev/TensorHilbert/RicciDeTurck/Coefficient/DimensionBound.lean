@@ -92,7 +92,7 @@ theorem traceCoeff_sub_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g₀ g₁ -
         traceHessianCoeff (I := I) (M := M) g₀ g₀ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
         (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)
         traceHessianSlotPerm := by
   apply SmoothCcTensor.ext
@@ -100,10 +100,10 @@ theorem traceCoeff_sub_eq
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     traceHessianCoeff_toSection, traceHessianCoeff_toSection,
-    reindexCoeffGen_toSection]
+    reindexCoefficientInputSlots_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [sub_apply, reindexCoeffFibGen_apply,
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply,
     deTurckPrincipalCometricCoeff_toSection_clm_eq,
     sub_apply, traceHessianFib, traceHessianFib,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
@@ -121,7 +121,7 @@ theorem trace_riemannianFiberNormSq_le
           ((iteratedCovGrad (I := I) g₀ 2 2 j
             (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) := by
   rw [traceCoeff_sub_eq (I := I) (M := M) g₀ g₁,
-    riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2
+    riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 4 2
       (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)
       traceHessianSlotPerm i x]
   exact pcc_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ i x

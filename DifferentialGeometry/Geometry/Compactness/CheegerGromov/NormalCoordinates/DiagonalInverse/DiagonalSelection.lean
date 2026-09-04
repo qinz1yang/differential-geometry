@@ -246,7 +246,7 @@ theorem exists_slot_diag
   exact ⟨psi, gInf, deltaStage, deltaInf, e, eInf,
     hpsi, hcenter, hmetric, hpair⟩
 
-theorem exists_diag_full
+theorem exists_diagonal_subsequence_of_eventually
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -280,7 +280,7 @@ theorem exists_diag_full
           PhaseFlow.phaseErr
             (normalPhaseK inp.normalBounds (2 * q alpha)) < 1 / 24)
     (hbranch : Filter.Eventually
-      (fun n ↦ HasLiveBrFull (I := I) P L inp.pack r n
+      (fun n ↦ HasControlledLiveNormalBranches (I := I) P L inp.pack r n
         hcomplete hconn aMin q δ) Filter.atTop)
     (Q : Nat → Prop) (hQ : Filter.Eventually Q Filter.atTop) :
     ∃ (psi : Nat → Nat) (hpsi : StrictMono psi)
@@ -311,7 +311,7 @@ theorem exists_diag_full
           (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf alpha z v v ∧
             gInf alpha z v v ≤ 2 * ‖v‖ ^ 2) ∧
       let Lpsi := L.subseq hpsi
-      (∀ n, HasLiveBrFull (I := I) P Lpsi inp.pack r n
+      (∀ n, HasControlledLiveNormalBranches (I := I) P Lpsi inp.pack r n
         hcomplete hconn aMin q δ) ∧
       let index : Nat → Nat := fun n ↦ L.φ (psi n)
       let Xpsi : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
@@ -341,12 +341,12 @@ theorem exists_diag_full
   have hpsi : StrictMono psi := hpsi0.comp hshift
   let Lpsi := L.subseq hpsi
   have hbranchAll : ∀ n,
-      HasLiveBrFull (I := I) P Lpsi inp.pack r n
+      HasControlledLiveNormalBranches (I := I) P Lpsi inp.pack r n
         hcomplete hconn aMin q δ := by
     intro n
     have hn := (hN (shift n) (by simp only [shift]; omega)).1
     with_unfolding_all
-      change HasLiveBrFull (I := I) P L inp.pack r (psi n)
+      change HasControlledLiveNormalBranches (I := I) P L inp.pack r (psi n)
         hcomplete hconn aMin q δ
     simpa only [psi, Function.comp_apply] using hn
   have hQAll : ∀ n, Q (psi n) := by
@@ -366,7 +366,7 @@ theorem exists_diag_full
             (seqCenterD inp.decay P Lpsi n (alpha.1 : Nat))) := by
     intro alpha n
     have hfull := hbranchAll n alpha
-    dsimp only [HasNormalBrFull] at hfull
+    dsimp only [HasControlledNormalBranch] at hfull
     rcases hfull with ⟨_hq, e, he, hf, _⟩
     exact ⟨e, he, hf⟩
   choose e hnormal hfence using hselected

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.Remainder
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.CoreIdentification
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.SmoothCoreIdentification
 
 noncomputable section
 

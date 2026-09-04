@@ -45,7 +45,7 @@ theorem barrierDerivs
     (nabla2S : TensorNabla2SecFamily (I := I) (M := M))
     (epsilon delta t0 : Real)
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (cov t) (G t))
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) (cov t) (G t))
     (hS : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S) :
     TensorSpatialDerivs (I := I) (M := M) cov
       (tensorBarrierSecFamily (I := I) (M := M) G S epsilon delta t0)
@@ -205,7 +205,7 @@ theorem raw_quad_add_smul_eq
           ring
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] in
-theorem psd_null_left_raw
+theorem rawTwoTensor_psd_null_left
     {A : RawTwoTensorField (I := I) (M := M)} {x : M}
     {v : TangentSpace I x}
     (hsym : TwoTensorSymmetricAt (I := I) (M := M) A x)
@@ -244,7 +244,7 @@ theorem psd_null_left_raw
   exact not_le_of_gt (by simpa [hcalc] using hneg) hnonneg
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] in
-theorem psd_null_right_raw
+theorem rawTwoTensor_psd_null_right
     {A : RawTwoTensorField (I := I) (M := M)} {x : M}
     {v : TangentSpace I x}
     (hsym : TwoTensorSymmetricAt (I := I) (M := M) A x)
@@ -254,7 +254,7 @@ theorem psd_null_right_raw
     ∀ w : TangentSpace I x, A x w v = 0 := by
   intro w
   rw [← hsym v w]
-  exact psd_null_left_raw (I := I) (M := M) hsym hbilin hpsd hnull w
+  exact rawTwoTensor_psd_null_left (I := I) (M := M) hsym hbilin hpsd hnull w
 
 structure TensorBarrierRegularityOn
     (G : Real -> SmoothRiemannianMetric I M)

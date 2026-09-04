@@ -219,7 +219,7 @@ theorem inner02_eq_coord_direct
     (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : Tensor02At (I := I) x) :
     inner02 (I := I) g x A B =
       ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
@@ -244,7 +244,7 @@ theorem metricInverseInBasis_of_frame
     (hframe : IsLocalFrameOn I E ∞ frame u)
     (hinv : InverseMetricComponentsInFrameTime (I := I) G gInv frame)
     (t : Time) {x : M} (hx : x ∈ u) :
-    Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (G.metric t) x
+    Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) (G.metric t) x
       (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) := by
   intro i j
   constructor
@@ -267,7 +267,7 @@ theorem inner02_eq_coord
           tensor02Comp (I := I) A frame t x i j *
             tensor02Comp (I := I) B frame t x k l := by
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (G.metric t) x
+      Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) (G.metric t) x
         (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) :=
     metricInverseInBasis_of_frame (I := I) G gInv frame hframe hinv t hx
   have h := inner02_eq_coord_direct (I := I) (G.metric t) x
@@ -298,7 +298,7 @@ theorem normSq02_eq_coord
           tensor02Comp (I := I) A frame t x i j *
             tensor02Comp (I := I) A frame t x k l := by
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (G.metric t) x
+      Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) (G.metric t) x
         (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) :=
     metricInverseInBasis_of_frame (I := I) G gInv frame hframe hinv t hx
   simpa [tensorNormSq02, normSq02, inner02, tensor02Comp,
@@ -684,7 +684,7 @@ theorem inner02_rough
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : Tensor02At (I := I) x) :
     inner02 (I := I) g x B A =
       tensor02RoughInnerCoord (I := I) basis gInv A B := by
@@ -785,7 +785,7 @@ noncomputable def freeze02Field
 theorem tensor02_inner_mvfderiv_eq_inner_nabla
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA nablaB :
@@ -840,7 +840,7 @@ private theorem inner02_mdiff
 private theorem inner02_nablaFun
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -886,7 +886,7 @@ theorem du_norm02
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA :
@@ -963,7 +963,7 @@ theorem freeze02_deriv
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA :
@@ -1246,10 +1246,10 @@ theorem hess_norm02
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (hfields : SmoothBasisFieldsAt (I := I) basis X)
@@ -1496,10 +1496,10 @@ theorem second_norm02_mc
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (hfields : SmoothBasisFieldsAt (I := I) basis X)
@@ -1682,7 +1682,7 @@ theorem ricci_lap_mc
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 y)
     (hframe : forall x i, basis x i = frame i x)
     (hinv : forall t x,
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (G.metric t) x
+      Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) (G.metric t) x
         (basis x) (gInv t x))
     (hfields : forall x, SmoothBasisFieldsAt (I := I) (basis x) (X x))
     (hlapTrace : forall t x,

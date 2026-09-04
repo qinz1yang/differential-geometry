@@ -88,7 +88,7 @@ theorem eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
   have hf_mem :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkpHalfSpace
         (d := n) 1 (ENNReal.ofReal p) f Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := n) hΩ_int_open hf_smooth hf_compact hf_supp hp_enn_one 1
   exact eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkpHalfSpace
     (n := n) hp_one hp_dim hΩ hf_mem hf_compact hf_supp

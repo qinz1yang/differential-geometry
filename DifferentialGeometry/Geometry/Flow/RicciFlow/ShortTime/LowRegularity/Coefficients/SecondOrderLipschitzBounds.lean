@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.CoreIdentification
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.SmoothCoreIdentification
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.TopOrderSeparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.Remainder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.SecondOrder
@@ -113,7 +113,7 @@ private theorem insertSucc_eq_c2
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     endoSlotZeroCcTensor (I := I) (M := M) g (s + 1) Λ =
-      reindexCoeffGen (I := I) (M := M) g (s + 2) (s + 2)
+      reindexCoefficientInputSlots (I := I) (M := M) g (s + 2) (s + 2)
         (rsDomDomCongrSection (I := I) (M := M) g (s + 2) (s + 2)
           (Equiv.swap (0 : Fin (s + 2)) 1)
           (slotExtend (I := I) (M := M) g (s + 1) (s + 1)
@@ -133,14 +133,14 @@ private theorem insertSucc_eq_c2
         (endoSlotZeroCcTensor (I := I) (M := M) g (s + 1) Λ).toSection x) D) m =
     Tensor0SSpace.toModel
       ((show Tensor0SSpace (s + 2) I x →L[ℝ] Tensor0SSpace (s + 2) I x from
-        (reindexCoeffGen (I := I) (M := M) g (s + 2) (s + 2)
+        (reindexCoefficientInputSlots (I := I) (M := M) g (s + 2) (s + 2)
           (rsDomDomCongrSection (I := I) (M := M) g (s + 2) (s + 2)
             (Equiv.swap (0 : Fin (s + 2)) 1)
             (slotExtend (I := I) (M := M) g (s + 1) (s + 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g s Λ)))
           (Equiv.swap (0 : Fin (s + 2)) 1)).toSection x) D) m
   rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval]
-  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply,
+  rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply,
     rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply, slotExtend_toSection]
   rw [show (fun k : Fin (s + 2) =>
@@ -3766,32 +3766,32 @@ private theorem reindex_jet_c2
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A : SmoothCcTensor g r s) (ρ : Equiv.Perm (Fin r)) :
     secondOrderCoefficientJetNormSq (I := I) (M := M) g
-        (reindexCoeffGen (I := I) (M := M) g r s A ρ) =
+        (reindexCoefficientInputSlots (I := I) (M := M) g r s A ρ) =
       secondOrderCoefficientJetNormSq (I := I) (M := M) g A := by
   unfold secondOrderCoefficientJetNormSq
   apply Finset.sum_congr rfl
   intro i _
-  rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M) g r s A ρ i,
-    norm_reindexCoeffGen_eq (I := I) (M := M) g r (s + i)]
+  rw [iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M) g r s A ρ i,
+    norm_reindexCoefficientInputSlots_eq (I := I) (M := M) g r (s + i)]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem reindex_sub_c2
     (g : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g 4 2) (ρ : Equiv.Perm (Fin 4)) :
-    reindexCoeffGen (I := I) (M := M) g 4 2 (A - B) ρ =
-      reindexCoeffGen (I := I) (M := M) g 4 2 A ρ -
-        reindexCoeffGen (I := I) (M := M) g 4 2 B ρ := by
+    reindexCoefficientInputSlots (I := I) (M := M) g 4 2 (A - B) ρ =
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 A ρ -
+        reindexCoefficientInputSlots (I := I) (M := M) g 4 2 B ρ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    reindexCoeffGen_toSection, reindexCoeffGen_toSection,
-    reindexCoeffGen_toSection, SmoothCcTensor.toSection_sub,
+    reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlots_toSection,
+    reindexCoefficientInputSlots_toSection, SmoothCcTensor.toSection_sub,
     ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro D
-  rw [sub_apply, reindexCoeffFibGen_apply,
-    reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply,
+    reindexCoefficientInputSlotsFiber_apply, reindexCoefficientInputSlotsFiber_apply,
     sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -3823,7 +3823,7 @@ private lemma trace_base_eq
     (g gm : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g gm -
         traceHessianCoeff (I := I) (M := M) g g =
-      reindexCoeffGen (I := I) (M := M) g 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2
         (deTurckPrincipalCometricCoeff (I := I) (M := M) g gm)
         traceHessianSlotPerm := by
   apply SmoothCcTensor.ext
@@ -3831,10 +3831,10 @@ private lemma trace_base_eq
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     traceHessianCoeff_toSection, traceHessianCoeff_toSection,
-    reindexCoeffGen_toSection]
+    reindexCoefficientInputSlots_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [sub_apply, reindexCoeffFibGen_apply,
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply,
     deTurckPrincipalCometricCoeff_toSection_clm_eq,
     sub_apply, traceHessianFib, traceHessianFib,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
@@ -3847,14 +3847,14 @@ private noncomputable def pccDiff
 
 private noncomputable def traceDiff
     (g gT gU : SmoothRiemannianMetric I M) : SmoothCcTensor g 4 2 :=
-  reindexCoeffGen (I := I) (M := M) g 4 2
+  reindexCoefficientInputSlots (I := I) (M := M) g 4 2
     (pccDiff (I := I) (M := M) g gT gU) traceHessianSlotPerm
 
 private noncomputable def ricci2Diff
     (g gT gU : SmoothRiemannianMetric I M) : SmoothCcTensor g 4 2 :=
   let D := pccDiff (I := I) (M := M) g gT gU
-  reindexCoeffGen (I := I) (M := M) g 4 2 D koszulSlotPerm +
-    reindexCoeffGen (I := I) (M := M) g 4 2
+  reindexCoefficientInputSlots (I := I) (M := M) g 4 2 D koszulSlotPerm +
+    reindexCoefficientInputSlots (I := I) (M := M) g 4 2
       (rsDomDomCongrSection (I := I) (M := M) g 4 2
         (Equiv.swap (0 : Fin 2) 1) D) koszulSlotPerm -
     D
@@ -3862,9 +3862,9 @@ private noncomputable def ricci2Diff
 private noncomputable def phiDiff
     (g gT gU : SmoothRiemannianMetric I M) : SmoothCcTensor g 4 2 :=
   let H := traceDiff (I := I) (M := M) g gT gU
-  reindexCoeffGen (I := I) (M := M) g 4 2 H
+  reindexCoefficientInputSlots (I := I) (M := M) g 4 2 H
       (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA) +
-    reindexCoeffGen (I := I) (M := M) g 4 2 H
+    reindexCoefficientInputSlots (I := I) (M := M) g 4 2 H
       (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT) -
     ricci2Diff (I := I) (M := M) g gT gU
 
@@ -3917,12 +3917,12 @@ private theorem metricPrincipalDefect_diff_eq
   let RU := ricciDeTurckPrincipalCoefficient (I := I) (M := M) g gU
   let R0 := ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g
   have hHT0 : HT - H0 =
-      reindexCoeffGen (I := I) (M := M) g 4 2 PT
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 PT
         traceHessianSlotPerm := by
     simpa only [HT, H0, PT] using
       trace_base_eq (I := I) (M := M) g gT
   have hHU0 : HU - H0 =
-      reindexCoeffGen (I := I) (M := M) g 4 2 PU
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 PU
         traceHessianSlotPerm := by
     simpa only [HU, H0, PU] using
       trace_base_eq (I := I) (M := M) g gU
@@ -3933,8 +3933,8 @@ private theorem metricPrincipalDefect_diff_eq
     rw [← reindex_sub_c2]
     rfl
   have hRT0 : (RT - R0) + (RT - R0) =
-      reindexCoeffGen (I := I) (M := M) g 4 2 PT koszulSlotPerm +
-        reindexCoeffGen (I := I) (M := M) g 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 PT koszulSlotPerm +
+        reindexCoefficientInputSlots (I := I) (M := M) g 4 2
           (rsDomDomCongrSection (I := I) (M := M) g 4 2
             (Equiv.swap (0 : Fin 2) 1) PT) koszulSlotPerm -
         PT := by
@@ -3942,8 +3942,8 @@ private theorem metricPrincipalDefect_diff_eq
       ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
         (I := I) (M := M) g gT
   have hRU0 : (RU - R0) + (RU - R0) =
-      reindexCoeffGen (I := I) (M := M) g 4 2 PU koszulSlotPerm +
-        reindexCoeffGen (I := I) (M := M) g 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 PU koszulSlotPerm +
+        reindexCoefficientInputSlots (I := I) (M := M) g 4 2
           (rsDomDomCongrSection (I := I) (M := M) g 4 2
             (Equiv.swap (0 : Fin 2) 1) PU) koszulSlotPerm -
         PU := by
@@ -3960,13 +3960,13 @@ private theorem metricPrincipalDefect_diff_eq
   calc
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gT -
           deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gU =
-        (reindexCoeffGen (I := I) (M := M) g 4 2 HT
+        (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 HT
             (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA) -
-          reindexCoeffGen (I := I) (M := M) g 4 2 HU
+          reindexCoefficientInputSlots (I := I) (M := M) g 4 2 HU
             (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)) +
-        (reindexCoeffGen (I := I) (M := M) g 4 2 HT
+        (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 HT
             (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT) -
-          reindexCoeffGen (I := I) (M := M) g 4 2 HU
+          reindexCoefficientInputSlots (I := I) (M := M) g 4 2 HU
             (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)) -
         ((RT + RT) - (RU + RU)) := by
       rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g gT,
@@ -3974,9 +3974,9 @@ private theorem metricPrincipalDefect_diff_eq
       dsimp only [HT, HU, RT, RU]
       exact tri_sub_alg _ _ _ _ _ _
     _ =
-        reindexCoeffGen (I := I) (M := M) g 4 2 (HT - HU)
+        reindexCoefficientInputSlots (I := I) (M := M) g 4 2 (HT - HU)
             (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA) +
-          reindexCoeffGen (I := I) (M := M) g 4 2 (HT - HU)
+          reindexCoefficientInputSlots (I := I) (M := M) g 4 2 (HT - HU)
             (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT) -
           ((RT + RT) - (RU + RU)) := by
       rw [reindex_sub_c2, reindex_sub_c2]
@@ -4011,12 +4011,12 @@ private theorem metricPrincipalDefect_pair_lip
   intro T U gT gU hTtie hUtie hT hU
   let D := pccDiff (I := I) (M := M) g gT gU
   let Hc := traceDiff (I := I) (M := M) g gT gU
-  let A := reindexCoeffGen (I := I) (M := M) g 4 2 Hc
+  let A := reindexCoefficientInputSlots (I := I) (M := M) g 4 2 Hc
     (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)
-  let B := reindexCoeffGen (I := I) (M := M) g 4 2 Hc
+  let B := reindexCoefficientInputSlots (I := I) (M := M) g 4 2 Hc
     (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)
-  let R1 := reindexCoeffGen (I := I) (M := M) g 4 2 D koszulSlotPerm
-  let R2 := reindexCoeffGen (I := I) (M := M) g 4 2
+  let R1 := reindexCoefficientInputSlots (I := I) (M := M) g 4 2 D koszulSlotPerm
+  let R2 := reindexCoefficientInputSlots (I := I) (M := M) g 4 2
     (rsDomDomCongrSection (I := I) (M := M) g 4 2
       (Equiv.swap (0 : Fin 2) 1) D) koszulSlotPerm
   let R := R1 + R2 - D

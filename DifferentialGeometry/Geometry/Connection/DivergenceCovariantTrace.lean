@@ -31,24 +31,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chartInvGramOnE_symm
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j : Fin (Module.finrank ℝ E)) (y : E) :
-    chartInvGramOnE (I := I) g α i j y = chartInvGramOnE (I := I) g α j i y := by
-  classical
-  rw [chartInvGramOnE_def, chartInvGramOnE_def]
-  set x : M := (extChartAt I α).symm y
-  have hHerm : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).IsHermitian :=
-    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α x
-  have hHermInv : (chartInvGramMatrix (I := I) g α x).IsHermitian := by
-    unfold chartInvGramMatrix
-    exact hHerm.inv
-  have h_apply := hHermInv.apply i j
-  rw [star_trivial] at h_apply
-  exact h_apply.symm
-
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
-omit [NeZero (Module.finrank ℝ E)] in
 lemma sum_chartChristoffel_diag_eq_half_trace
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) (y : E) :

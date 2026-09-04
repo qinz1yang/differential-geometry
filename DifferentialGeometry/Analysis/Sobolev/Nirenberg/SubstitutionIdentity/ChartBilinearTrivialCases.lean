@@ -11,7 +11,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
-namespace SubstitutionDischargeFinal
+namespace SubstitutionChartBilinearTrivialCases
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -295,7 +295,7 @@ theorem chart_bilinear_substitution_identity_of_nonzero_nonempty
 
 
 
-end SubstitutionDischargeFinal
+end SubstitutionChartBilinearTrivialCases
 end Sobolev
 end Analysis
 end DifferentialGeometry

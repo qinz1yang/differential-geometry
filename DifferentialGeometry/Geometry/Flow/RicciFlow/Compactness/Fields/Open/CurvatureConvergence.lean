@@ -24,7 +24,7 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace OpenConvOut
+namespace OpenMetricConvergenceData
 
 theorem scalar_conv
     {R : letI : TopologicalSpace P.M := P.topology
@@ -34,7 +34,7 @@ theorem scalar_conv
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (cLow : Nat → Real) (hcLow : ∀ n, 0 < cLow n)
     (hbound : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
@@ -99,12 +99,12 @@ theorem scalar_conv
   have htWin : t ∈ RealTimeInterval.openWindow a b t₀ n :=
     mem_of_mem_nhds hn
   simpa only [Function.comp_apply, PointedCGHMaps.compSubseq, PointedCGHMaps.map,
-    OpenConvOut.atWindow] using
-    ConvOut.scalar_conv_at (I := I) Φ R bf hsrc htgt
+    OpenMetricConvergenceData.atWindow] using
+    FlowMetricConvergenceData.scalar_conv_at (I := I) Φ R bf hsrc htgt
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n) (cLow n) (hcLow n)
       (fun k s hs ↦ hbound n k s hs) (fun q ↦ hcovTail n q)
-      (OpenConvOut.atWindow Φ co n) htWin x
+      (OpenMetricConvergenceData.atWindow Φ co n) htWin x
 
 theorem ricNorm_conv
     {R : letI : TopologicalSpace P.M := P.topology
@@ -114,7 +114,7 @@ theorem ricNorm_conv
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (cLow : Nat → Real) (hcLow : ∀ n, 0 < cLow n)
     (hbound : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
@@ -181,14 +181,14 @@ theorem ricNorm_conv
   have htWin : t ∈ RealTimeInterval.openWindow a b t₀ n :=
     mem_of_mem_nhds hn
   simpa only [Function.comp_apply, PointedCGHMaps.compSubseq, PointedCGHMaps.map,
-    OpenConvOut.atWindow] using
-    ConvOut.ricNorm_conv_at (I := I) Φ R bf hsrc htgt
+    OpenMetricConvergenceData.atWindow] using
+    FlowMetricConvergenceData.ricNorm_conv_at (I := I) Φ R bf hsrc htgt
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n) (cLow n) (hcLow n)
       (fun k s hs ↦ hbound n k s hs) (fun q ↦ hcovTail n q)
-      (OpenConvOut.atWindow Φ co n) htWin x
+      (OpenMetricConvergenceData.atWindow Φ co n) htWin x
 
-end OpenConvOut
+end OpenMetricConvergenceData
 
 end HCGCompactness
 end DifferentialGeometry

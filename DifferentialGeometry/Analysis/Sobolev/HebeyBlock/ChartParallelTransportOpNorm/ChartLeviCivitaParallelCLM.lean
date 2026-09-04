@@ -551,7 +551,7 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem chartLeviCivitaParallelCLM_general_X_opNorm_isBounded_on_pouTsupport
+theorem chartLeviCivitaParallelCLM_opNorm_isBounded_on_pouTsupport
     [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=

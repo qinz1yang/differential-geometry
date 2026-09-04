@@ -435,7 +435,7 @@ theorem hasDerivAt_metricPerturbationPath_chartRicciTensor (g₀ : SmoothRiemann
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem hasDerivAt_realizedRicciChartSum_general (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_realizedRicciChartSum (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

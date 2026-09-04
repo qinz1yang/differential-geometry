@@ -31,7 +31,7 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace OpenConvOut
+namespace OpenMetricConvergenceData
 
 theorem isSolution
     {R : letI : TopologicalSpace P.M := P.topology
@@ -41,7 +41,7 @@ theorem isSolution
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (cLow : Nat → Real) (hcLow : ∀ n, 0 < cLow n)
     (hbound : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
@@ -91,16 +91,16 @@ theorem isSolution
   let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
-  have hgram := OpenConvOut.gramSmooth (I := I) (Φ := Φ) ht₀ hD co
+  have hgram := OpenMetricConvergenceData.gramSmooth (I := I) (Φ := Φ) ht₀ hD co
   have hsmooth : MetricFamilySmoothOn (I := I) (M := P.M) X.D
       ({ base := { metric := co.gInf } } :
         SolutionOn (I := I) (M := P.M) X.D).family.metric := by
     exact hD.symm ▸
-      OpenConvOut.smoothMetric_of_conv (I := I) (Φ := Φ) ht₀ hD co
+      OpenMetricConvergenceData.smoothMetric_of_conv (I := I) (Φ := Φ) ht₀ hD co
   have hpde : ∀ t ∈ X.D.regular, ∀ (x : P.M) (v w : TangentSpace I x),
       HasDerivAt (fun s : Real => (co.gInf s).inner x v w)
         ((-2 : Real) * ricciTensor (I := I) (co.gInf t) x v w) t :=
-    fun t ht x v w => OpenConvOut.gInf_pde (I := I) (Φ := Φ) ht₀ hD co
+    fun t ht x v w => OpenMetricConvergenceData.gInf_pde (I := I) (Φ := Φ) ht₀ hD co
       cLow hcLow hbound hcovTail ht x v w
   have hscalarCont : ContinuousOn
       (fun q : Real × P.M => metricScalarAt (I := I) (co.gInf q.1) q.2)
@@ -130,7 +130,7 @@ theorem isSolution
   exact DifferentialGeometry.PDE.RicciFlow.isSolutionOn_of_reg (I := I)
     co.gInf hsmooth hpde hscalarCont hscalarTime hricciCont hrm04Cont
 
-end OpenConvOut
+end OpenMetricConvergenceData
 
 noncomputable def flowUpgradeOfOpen
     (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
@@ -149,7 +149,7 @@ noncomputable def flowUpgradeOfOpen
     (htgt : TgtSigma (I := I) Φ)
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (hLmetric :
       letI : TopologicalSpace L.M := L.topology
       letI : ChartedSpace H L.M := L.charted
@@ -215,7 +215,7 @@ noncomputable def flowUpgradeOfOpen
       intro t ht
       simpa only [hD, RealTimeInterval.openInterval] using hcd ht
     obtain ⟨n, hn⟩ := RealTimeInterval.exists_window_superset ht₀ hcdOpen
-    let coN := OpenConvOut.atWindow Φ co n
+    let coN := OpenMetricConvergenceData.atWindow Φ co n
     have hLmN : ∀ t : Real,
         t ∈ Set.Icc (RealTimeInterval.openWindowLeft a t₀ n)
           (RealTimeInterval.openWindowRight b t₀ n) →
@@ -260,7 +260,7 @@ theorem flowUpgrade_open_L
     (htgt : TgtSigma (I := I) Φ)
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (hLmetric :
       letI : TopologicalSpace L.M := L.topology
       letI : ChartedSpace H L.M := L.charted
@@ -299,7 +299,7 @@ theorem flowLimit_of_open
     (htgt : TgtSigma (I := I) Φ)
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (hLmetric :
       letI : TopologicalSpace L.M := L.topology
       letI : ChartedSpace H L.M := L.charted

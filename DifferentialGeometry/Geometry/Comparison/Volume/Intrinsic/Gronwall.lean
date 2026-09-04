@@ -111,7 +111,7 @@ theorem intrJacobi_ode
       DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
         (I := I) g q
     have hOp :=
-      DifferentialGeometry.Integral.Connection.riemannOp_sq_le
+      DifferentialGeometry.Geometry.Curvature.riemannOp_sq_le
         (I := I) g q basis (by simp) hON Jt V
     have hcardq :
         (Fintype.card (Fin (Module.finrank Real (TangentSpace I q))) : Real) =

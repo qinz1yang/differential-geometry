@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedData
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.FChartEffDef
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.EffectiveSource
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CrossTermIBP
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThree
@@ -38,7 +38,7 @@ open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainVariationalIdentityI
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.DifferentiatedCrossTermIBP
 open DifferentialGeometry.Analysis.Laplacian.DifferentiatedVariationalIdentity
-open DifferentialGeometry.Analysis.Laplacian.FChartEffDef
+open DifferentialGeometry.Analysis.Laplacian.DiffChartEffectiveSource
 open DifferentialGeometry.Analysis.Laplacian.DerivedChartBilinearH1ComplData
 open DifferentialGeometry.Analysis.Laplacian.FChartResidualMemW1p
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpThree
@@ -1129,7 +1129,7 @@ theorem derived_variational_identity_holds
     (I := I) (M := M) g α l hu_h ψ
 
 
-noncomputable def derivedChartBilinearH1ComplDataUnconditional
+noncomputable def canonicalDerivedChartBilinearH1ComplData
     (g : SmoothRiemannianMetric I M) (α : M)
     (l : Fin (Module.finrank ℝ E))
     {u_h : H1Compl (I := I) (M := M) g}

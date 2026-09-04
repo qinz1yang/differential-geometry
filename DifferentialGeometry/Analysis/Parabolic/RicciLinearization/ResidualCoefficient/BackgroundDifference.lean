@@ -275,9 +275,9 @@ private lemma secondCovGrad_pair_antisym (g₀ : SmoothRiemannianMetric I M)
       Fin.cons (Y x) (Fin.cons (X x) ![c, d]) := by
     funext i
     fin_cases i <;> rfl
-  have hXY := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal (I := I) (M := M)
+  have hXY := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval (I := I) (M := M)
     g₀ 2 P hX hY x ![c, d]
-  have hYX := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal (I := I) (M := M)
+  have hYX := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval (I := I) (M := M)
     g₀ 2 P hY hX x ![c, d]
   have hUM : ∀ v : Fin 4 → TangentSpace I x,
       unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 P) x

@@ -760,7 +760,7 @@ noncomputable def leibnizCompensatedSourceResidualCLMOfSmoothFactor
       (H1ComplToLp (I := I) (M := M) g)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma fHLeibnizGeneralResidualCLM_apply
+@[simp] lemma leibnizCompensatedSourceResidualCLMOfSmoothFactor_apply
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     (u_h : H1Compl g) :
     leibnizCompensatedSourceResidualCLMOfSmoothFactor (I := I) (M := M) g φ u_h =
@@ -883,7 +883,7 @@ private lemma smoothScalarMulFun_oneSubLapClassical_pointwise_leibniz
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem fHLeibnizGeneral_smoothToH1Compl
+private theorem leibnizCompensatedSourceOfSmoothFactor_smoothToH1Compl
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (uT : SmoothScalar g) :
     leibnizCompensatedSourceOfSmoothFactor (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g uT)
@@ -902,7 +902,7 @@ private theorem fHLeibnizGeneral_smoothToH1Compl
     rw [H1ComplToLp_smoothToH1Compl, laplacianOp_smoothToH1Compl]
     abel
   rw [h_oneSubLap_arg]
-  rw [fHLeibnizGeneralResidualCLM_apply, H1ComplToLp_smoothToH1Compl,
+  rw [leibnizCompensatedSourceResidualCLMOfSmoothFactor_apply, H1ComplToLp_smoothToH1Compl,
     gradInnerCLM_smoothToH1Compl]
   have h_lhs_aeEq : ((smoothMulLp (I := I) (M := M) g φ
         (smoothToLp (I := I) (M := M) g uT.oneSubLapClassical) +
@@ -983,7 +983,7 @@ private theorem fHLeibnizGeneral_smoothToH1Compl
     (I := I) (M := M) g φ uT x
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem smoothMulH1Compl_smoothToH1Compl_eq_resolvent_fHLeibnizGeneral
+private theorem smoothMulH1Compl_smoothToH1Compl_eq_resolvent_leibnizCompensatedSourceOfSmoothFactor
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (uT : SmoothScalar g) :
     smoothMulH1Compl (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g uT) =
@@ -991,7 +991,7 @@ private theorem smoothMulH1Compl_smoothToH1Compl_eq_resolvent_fHLeibnizGeneral
         (leibnizCompensatedSourceOfSmoothFactor (I := I) (M := M) g φ
           (smoothToH1Compl (I := I) (M := M) g uT)
           (smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) uT)) := by
-  rw [smoothMulH1Compl_smoothToH1Compl, fHLeibnizGeneral_smoothToH1Compl]
+  rw [smoothMulH1Compl_smoothToH1Compl, leibnizCompensatedSourceOfSmoothFactor_smoothToH1Compl]
   exact (smoothToH1Compl_eq_resolvent_oneSubLap (I := I) (M := M)
     (smoothScalarMulFun (I := I) (M := M) g φ uT))
 
@@ -1053,7 +1053,7 @@ private lemma smoothMulH1ComplInner_eq_rewrittenRHS_smoothToH1Compl
     rewrittenRHSCLM (I := I) (M := M) g φ vT
       (smoothToH1Compl (I := I) (M := M) g uT) := by
   rw [rewrittenRHSCLM_apply]
-  rw [smoothMulH1Compl_smoothToH1Compl_eq_resolvent_fHLeibnizGeneral
+  rw [smoothMulH1Compl_smoothToH1Compl_eq_resolvent_leibnizCompensatedSourceOfSmoothFactor
     (I := I) (M := M) g φ uT]
   rw [resolvent_inner_eq_lpFunctional]
   rw [H1ComplToLp_smoothToH1Compl]
@@ -1214,7 +1214,7 @@ private lemma continuous_innerSL_right
   exact ((innerSL ℝ : H1Compl _g →L[ℝ] H1Compl _g →L[ℝ] ℝ).flip x).continuous
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem smoothMulH1Compl_eq_resolvent_fHLeibnizGeneral
+theorem smoothMulH1Compl_eq_resolvent_leibnizCompensatedSourceOfSmoothFactor
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     smoothMulH1Compl (I := I) (M := M) g φ u_h =
@@ -1252,7 +1252,7 @@ theorem smoothMulH1Compl_mem_laplacianDomain
       laplacianDomain (I := I) (M := M) g := by
   rw [laplacianDomain_mem_iff]
   exact ⟨leibnizCompensatedSourceOfSmoothFactor (I := I) (M := M) g φ u_h hu_h,
-    smoothMulH1Compl_eq_resolvent_fHLeibnizGeneral (I := I) (M := M) g φ hu_h⟩
+    smoothMulH1Compl_eq_resolvent_leibnizCompensatedSourceOfSmoothFactor (I := I) (M := M) g φ hu_h⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacianDomain_preimage_smoothMulH1Compl
@@ -1264,7 +1264,7 @@ theorem laplacianDomain_preimage_smoothMulH1Compl
       leibnizCompensatedSourceOfSmoothFactor (I := I) (M := M) g φ u_h hu_h := by
   apply resolvent_injective (I := I) (M := M) g
   rw [resolvent_laplacianDomain_preimage_eq]
-  exact smoothMulH1Compl_eq_resolvent_fHLeibnizGeneral
+  exact smoothMulH1Compl_eq_resolvent_leibnizCompensatedSourceOfSmoothFactor
     (I := I) (M := M) g φ hu_h
 
 end LaplacianDomainSmoothMul

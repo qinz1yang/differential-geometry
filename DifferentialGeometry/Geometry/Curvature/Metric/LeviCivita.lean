@@ -81,12 +81,12 @@ theorem riemannCurvatureAt_lcOfMetric_eq_leviCivita
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem riemannCurvatureAux_tangentConst_eq_riemannOp
+theorem connectionRiemannCurvatureField_tangentConst_eq_riemannOp
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞]
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
     (x : M) (X Y Z : TangentSpace I x) :
-    riemannCurvatureAux cov (CovariantDerivative.tangentConstAt (I := I) x X)
+    connectionRiemannCurvatureField cov (CovariantDerivative.tangentConstAt (I := I) x X)
         (CovariantDerivative.tangentConstAt (I := I) x Y)
         (CovariantDerivative.tangentConstAt (I := I) x Z) x
       = riemannOp cov x X Y Z := by
@@ -96,8 +96,7 @@ theorem riemannCurvatureAux_tangentConst_eq_riemannOp
     exists_contMDiffSection_eventuallyEq_tangentConstAt (I := I) x Y
   obtain ⟨Zc, hZc, hZcx⟩ :=
     exists_contMDiffSection_eventuallyEq_tangentConstAt (I := I) x Z
-  rw [riemannCurvatureAux_eq_connectionRiemannCurvatureField,
-    connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst
+  rw [connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst
       (I := I) cov hcov X Y Z Xc Yc Zc hXc hYc hZc]
   have hsec :
       connectionRiemannCurvatureField cov
@@ -123,8 +122,8 @@ theorem ricciCurvatureAt_leviCivita_apply_eq_ricciTensor
     ricciTensor_apply_basisSum]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [riemannCurvatureAt_apply_const,
-    riemannCurvatureAux_tangentConst_eq_riemannOp (cov := LeviCivita (I := I) g) (hcov := hcov₂),
-    cotangentToDual_dualToCotangent_gen, Module.Basis.coord_apply]
+    connectionRiemannCurvatureField_tangentConst_eq_riemannOp (cov := LeviCivita (I := I) g) (hcov := hcov₂),
+    cotangentToDual_dualToCotangent, Module.Basis.coord_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in

@@ -185,7 +185,7 @@ theorem exists_slotInsertEndoCc_metricComparisonEndomorphismField_covariantJetNo
               (metricComparisonEndomorphismField (I := I) (M := M) g gU)) ≤
         (B R * D2) ^ 2 := by
   obtain ⟨Bh, hBh, hbdd⟩ :=
-    RicciDeTurckLowOrder.full_slot_sobolev_two_bound
+    RicciDeTurckLowOrder.exists_metricComparisonEndomorphism_slot_one_covariantJetNormSq_two_bound
       (I := I) (M := M) g hδ₀0 hδ₀
   obtain ⟨C, hC, happ⟩ :=
     exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 2 2

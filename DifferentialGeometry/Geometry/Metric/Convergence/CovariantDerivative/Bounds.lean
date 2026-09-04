@@ -42,7 +42,7 @@ private theorem componentRS_eq_gen
     (T : Tensor0SBundle.TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
     Tensor0SBundle.componentRS (I := I) basis T upper lower =
-      Tensor0SBundle.componentRSGen (I := I) basis T upper lower := rfl
+      Tensor0SBundle.componentRSField (I := I) basis T upper lower := rfl
 
 omit [FiniteDimensional Real E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem localFrameOneOfInf
@@ -1944,7 +1944,7 @@ theorem normSqRS12_eq_l2
   rw [Tensor0SBundle.normSqRS_one_two_identity_eq_sum
     (I := I) h x basis hinv A]
   rw [DifferentialGeometry.Geometry.Connection.componentL2Sq3_eq_sum_upper_first]
-  simp only [Tensor0SBundle.componentRS_apply_gen, Tensor0SBundle.componentRS_apply]
+  simp only [Tensor0SBundle.componentRSField_apply, Tensor0SBundle.componentRS_apply]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem applyCons3

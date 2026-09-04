@@ -388,7 +388,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
     have hmem : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
         ∃ vσ : TensorHs (I := I) (M := M) g₀ 0 2 σ,
           tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc hσ vσ = u :=
-      allHs_of_weighted_summable_pub (I := I) (M := M) g₀ u hsum_u
+      allHs_of_weighted_summable (I := I) (M := M) g₀ u hsum_u
     obtain ⟨S, hS⟩ := spectralSmoothRealizesAsSmooth_holds (I := I) (M := M) (g := g₀) u hmem
     refine ⟨S, fun i => ?_⟩
     have hSL2 : SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S = u := by

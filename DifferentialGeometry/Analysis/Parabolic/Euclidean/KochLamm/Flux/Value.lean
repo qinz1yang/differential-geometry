@@ -18,7 +18,7 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 def klHeat1 (t : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
-  heatEarly1 t w f x + klFluxFull1 (Real.sqrt t) w f x
+  heatEarly1 t w f x + klFluxPotential (Real.sqrt t) w f x
 
 omit [CompleteSpace F] in
 theorem klEarly1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
@@ -105,7 +105,7 @@ theorem klLate1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
   have hsqrt : 0 < Real.sqrt t := Real.sqrt_pos.2 ht
   choose s hcard hcover using
     fun k : ℕ ↦ exists_shell_cover (V := V) x hsqrt k
-  have hi := klFluxFull_int (V := V) h w x hsqrt (by
+  have hi := klFluxKernel_smul_integrable (V := V) h w x hsqrt (by
     simpa only [Real.sq_sqrt ht.le] using htT) s hcard hcover
   simpa only [Real.sq_sqrt ht.le] using hi
 
@@ -150,12 +150,12 @@ theorem klHeat1_eq_heatPot {T t : ℝ} {A₂ Aₚ : ℝ≥0}
       (setIntegral_prod (f := g) hfull)
   have hlateEq :
       (∫ z in L, g z ∂(stVolume : Measure (ℝ × V))) =
-        klFluxFull1 (V := V) (Real.sqrt t) w f x := by
-    unfold L g klFluxFull1 klFluxKernel klTermMeasure stVolume
+        klFluxPotential (V := V) (Real.sqrt t) w f x := by
+    unfold L g klFluxPotential klFluxKernel klTermMeasure stVolume
     rw [Real.sq_sqrt ht.le, Measure.restrict_prod_eq_prod_univ]
   change
     (∫ z in E, g z ∂(stVolume : Measure (ℝ × V))) +
-        klFluxFull1 (V := V) (Real.sqrt t) w f x =
+        klFluxPotential (V := V) (Real.sqrt t) w f x =
       ∫ s in 0..t, ∫ y : V, g (s, y)
   rw [intervalIntegral.integral_of_le ht.le, ← hprod, hsplit, hlateEq]
 
@@ -170,10 +170,10 @@ theorem klHeat1_norm {T t : ℝ} {A₂ Aₚ : ℝ≥0}
           (klFluxSeries (Module.finrank ℝ V) *
             (‖w‖ * (klFluxTailC V * (Aₚ : ℝ)))) := by
   have hsqrt : 0 < Real.sqrt t := Real.sqrt_pos.2 ht
-  have hlate := klFluxFull_canon (V := V) h w x hsqrt (by
+  have hlate := norm_klFluxPotential_le (V := V) h w x hsqrt (by
     simpa only [Real.sq_sqrt ht.le] using htT)
   have hlateE :
-      (↑‖klFluxFull1 (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) ≤
+      (↑‖klFluxPotential (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) ≤
         ENNReal.ofReal
           (klFluxSeries (Module.finrank ℝ V) *
             (‖w‖ * (klFluxTailC V * (Aₚ : ℝ)))) := by
@@ -183,12 +183,12 @@ theorem klHeat1_norm {T t : ℝ} {A₂ Aₚ : ℝ≥0}
   unfold klHeat1
   calc
     (↑‖heatEarly1 t w f x +
-        klFluxFull1 (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) ≤
+        klFluxPotential (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) ≤
         (↑‖heatEarly1 t w f x‖₊ : ℝ≥0∞) +
-          (↑‖klFluxFull1 (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) := by
+          (↑‖klFluxPotential (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) := by
       simpa only [enorm_eq_nnnorm] using
         enorm_add_le (heatEarly1 t w f x)
-          (klFluxFull1 (V := V) (Real.sqrt t) w f x)
+          (klFluxPotential (V := V) (Real.sqrt t) w f x)
     _ ≤ ENNReal.ofReal ‖w‖ * earlyFluxC V * (A₂ : ℝ≥0∞) *
           fluxShellSeries (Module.finrank ℝ V) +
         ENNReal.ofReal

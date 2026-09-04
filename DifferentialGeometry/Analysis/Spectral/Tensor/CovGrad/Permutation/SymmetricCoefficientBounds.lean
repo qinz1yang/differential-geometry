@@ -61,25 +61,25 @@ private lemma domDomCongr_perm_fin0_apply {A : Type*} [NormedAddCommGroup A] [No
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma reindexCoeffFibGen_fin0 {s : ℕ} {x : M} (σ' : Equiv.Perm (Fin 0))
+private lemma reindexCoefficientInputSlotsFiber_fin0 {s : ℕ} {x : M} (σ' : Equiv.Perm (Fin 0))
     (A : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x) :
-    reindexCoeffFibGen (I := I) 0 s σ' x A = A := by
+    reindexCoefficientInputSlotsFiber (I := I) 0 s σ' x A = A := by
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffFibGen_apply]
+  rw [reindexCoefficientInputSlotsFiber_apply]
   congr 1
   rw [domDomCongr_perm_fin0_apply, Tensor0SSpace.ofModel_toModel]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma reindexCoeffGen_fin0 (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
+private lemma reindexCoefficientInputSlots_fin0 (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (R : SmoothCcTensor g₀ 0 s) (σ' : Equiv.Perm (Fin 0)) :
-    reindexCoeffGen (I := I) (M := M) g₀ 0 s R σ' = R := by
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 0 s R σ' = R := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [reindexCoeffGen_toSection]
-  exact reindexCoeffFibGen_fin0 (I := I) σ' (R.toSection x)
+  rw [reindexCoefficientInputSlots_toSection]
+  exact reindexCoefficientInputSlotsFiber_fin0 (I := I) σ' (R.toSection x)
 
 private def reindexInputSection {r : ℕ} (σ' : Equiv.Perm (Fin r))
     (w : Cₛ^∞⟮I; Tensor0SModel r ℝ E, (fun y : M => Tensor0SSpace r I y)⟯) :
@@ -125,20 +125,20 @@ private lemma section_tensorSectionMDiffAt {n : ℕ}
   (w.contMDiff.contMDiffAt).mdifferentiableAt (by simp)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma tensorCovDerivAt_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : ℕ)
+lemma tensorCovDerivAt_reindexCoefficientInputSlots (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g r s) (σ' : Equiv.Perm (Fin r)) (x : M) (v0 : E) :
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
         tensorCovDerivAt (I := I) (M := M) g r s
-          (reindexCoeffGen (I := I) (M := M) g r s R σ') x v0) =
-      reindexCoeffFibGen (I := I) r s σ' x
+          (reindexCoefficientInputSlots (I := I) (M := M) g r s R σ') x v0) =
+      reindexCoefficientInputSlotsFiber (I := I) r s σ' x
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           tensorCovDerivAt (I := I) (M := M) g r s R x v0) := by
   classical
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffFibGen_apply]
+  rw [reindexCoefficientInputSlotsFiber_apply]
   rcases r with _ | r'
-  · rw [reindexCoeffGen_fin0 (I := I) (M := M) g s R σ']
+  · rw [reindexCoefficientInputSlots_fin0 (I := I) (M := M) g s R σ']
     congr 1
     rw [domDomCongr_perm_fin0_apply, Tensor0SSpace.ofModel_toModel]
   · obtain ⟨w, hw⟩ := ContMDiffSection.exists_eq_at (I := I)
@@ -153,18 +153,18 @@ lemma tensorCovDerivAt_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : �
         (ContinuousMultilinearMap.domDomCongr σ' (Tensor0SSpace.toModel (w x))) := hŵ_apply x
     have hL1 := TensorRSNabla.tensorRSCovariantDerivative_apply (I := I) (M := M) (r' + 1) s
       (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
-      (reindexCoeffGen (I := I) (M := M) g (r' + 1) s R σ').toSection w x v0
+      (reindexCoefficientInputSlots (I := I) (M := M) g (r' + 1) s R σ').toSection w x v0
     have hL2 := TensorRSNabla.tensorRSCovariantDerivative_apply (I := I) (M := M) (r' + 1) s
       (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
       R.toSection ŵ x v0
     have hF : (fun y : M =>
           (show Tensor0SSpace (r' + 1) I y →L[ℝ] Tensor0SSpace s I y from
-            (reindexCoeffGen (I := I) (M := M) g (r' + 1) s R σ').toSection y) (w y)) =
+            (reindexCoefficientInputSlots (I := I) (M := M) g (r' + 1) s R σ').toSection y) (w y)) =
         (fun y : M =>
           (show Tensor0SSpace (r' + 1) I y →L[ℝ] Tensor0SSpace s I y from R.toSection y)
             (ŵ y)) := by
       funext y
-      rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply, hŵ_apply]
+      rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply, hŵ_apply]
     have hcomm : Tensor0SNabla.tensor0SCovariantDerivative I M (r' + 1)
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (fun y => ŵ y) x v0 =
         Tensor0SSpace.ofModel (ContinuousMultilinearMap.domDomCongr σ'
@@ -194,22 +194,22 @@ lemma tensorCovDerivAt_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : �
     change (show Tensor0SSpace (r' + 1) I x →L[ℝ] Tensor0SSpace s I x from
           TensorRSNabla.tensorRSCovariantDerivative I M (r' + 1) s
             (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
-            (reindexCoeffGen (I := I) (M := M) g (r' + 1) s R σ').toSection x v0) (w x) =
+            (reindexCoefficientInputSlots (I := I) (M := M) g (r' + 1) s R σ').toSection x v0) (w x) =
         (show Tensor0SSpace (r' + 1) I x →L[ℝ] Tensor0SSpace s I x from
           TensorRSNabla.tensorRSCovariantDerivative I M (r' + 1) s
             (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             R.toSection x v0) (ŵ x)
     rw [hL1, hL2, hF]
     congr 1
-    rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply]
+    rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply]
     congr 1
     exact hcomm.symm
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma covGrad_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : ℕ)
+lemma covGrad_reindexCoefficientInputSlots (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g r s) (σ' : Equiv.Perm (Fin r)) :
-    covGrad (I := I) (M := M) g r s (reindexCoeffGen (I := I) (M := M) g r s R σ') =
-      reindexCoeffGen (I := I) (M := M) g r (s + 1)
+    covGrad (I := I) (M := M) g r s (reindexCoefficientInputSlots (I := I) (M := M) g r s R σ') =
+      reindexCoefficientInputSlots (I := I) (M := M) g r (s + 1)
         (covGrad (I := I) (M := M) g r s R) σ' := by
   classical
   apply SmoothCcTensor.ext
@@ -220,23 +220,23 @@ lemma covGrad_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : ℕ)
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [covGrad_toSection_apply_eval, reindexCoeffGen_toSection, reindexCoeffFibGen_apply,
+  rw [covGrad_toSection_apply_eval, reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply,
     covGrad_toSection_apply_eval]
-  have hop := tensorCovDerivAt_reindexCoeffGen (I := I) (M := M) g r s R σ' x (v 0)
+  have hop := tensorCovDerivAt_reindexCoefficientInputSlots (I := I) (M := M) g r s R σ' x (v 0)
   have hopD := DFunLike.congr_fun hop D
-  rw [reindexCoeffFibGen_apply] at hopD
+  rw [reindexCoefficientInputSlotsFiber_apply] at hopD
   rw [hopD]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma iteratedCovGrad_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : ℕ)
+lemma iteratedCovGrad_reindexCoefficientInputSlots (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g r s) (σ' : Equiv.Perm (Fin r)) (k : ℕ) :
-    iteratedCovGrad (I := I) g r s k (reindexCoeffGen (I := I) (M := M) g r s R σ') =
-      reindexCoeffGen (I := I) (M := M) g r (s + k)
+    iteratedCovGrad (I := I) g r s k (reindexCoefficientInputSlots (I := I) (M := M) g r s R σ') =
+      reindexCoefficientInputSlots (I := I) (M := M) g r (s + k)
         (iteratedCovGrad (I := I) g r s k R) σ' := by
   induction k with
   | zero => rfl
   | succ k ih =>
-    rw [iteratedCovGrad_succ, ih, covGrad_reindexCoeffGen]
+    rw [iteratedCovGrad_succ, ih, covGrad_reindexCoefficientInputSlots]
     rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -274,66 +274,66 @@ private lemma domDomCongr_compMkPiAlgebra_eq (g : SmoothRiemannianMetric I M) (r
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma fiberNormSqComponent_reindexCoeffFibGen (g : SmoothRiemannianMetric I M)
+private lemma fiberNormSqComponent_reindexCoefficientInputSlotsFiber (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (x : M)
     (A : Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x) (σ' : Equiv.Perm (Fin r))
     {n : ℕ} (e : Fin n → TangentSpace I x) (K : Fin r → Fin n) (J : Fin s → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g x r s
-        (show TensorRSSpace r s I x from reindexCoeffFibGen (I := I) r s σ' x A) n e K J =
+        (show TensorRSSpace r s I x from reindexCoefficientInputSlotsFiber (I := I) r s σ' x A) n e K J =
       fiberNormSqComponent (I := I) (M := M) g x r s
         (show TensorRSSpace r s I x from A) n e (fun k => K (σ'.symm k)) J := by
   classical
   rw [fiberNormSqComponent, fiberNormSqComponent]
-  rw [reindexCoeffFibGen_apply]
+  rw [reindexCoefficientInputSlotsFiber_apply]
   congr 1
   rw [ofModel_domDomCongr_toModel_eq (I := I) σ']
   rw [domDomCongr_compMkPiAlgebra_eq (I := I) (M := M) g r x e K σ']
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma riemannianFiberNormSq_reindexCoeffFibGen (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
+lemma riemannianFiberNormSq_reindexCoefficientInputSlotsFiber (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (σ' : Equiv.Perm (Fin r)) (A : Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x
-        (show TensorRSSpace r s I x from reindexCoeffFibGen (I := I) r s σ' x A) =
+        (show TensorRSSpace r s I x from reindexCoefficientInputSlotsFiber (I := I) r s σ' x A) =
       riemannianFiberNormSq (I := I) (M := M) g r s x
         (show TensorRSSpace r s I x from A) := by
   classical
   obtain ⟨n, e, _hn, _horth, _hpars, hsum⟩ :=
     exists_orthonormal_frame_riemannianFiberNormSq (I := I) (M := M) g r s x
-  rw [hsum (show TensorRSSpace r s I x from reindexCoeffFibGen (I := I) r s σ' x A),
+  rw [hsum (show TensorRSSpace r s I x from reindexCoefficientInputSlotsFiber (I := I) r s σ' x A),
     hsum (show TensorRSSpace r s I x from A)]
   refine Fintype.sum_equiv (Equiv.arrowCongr σ' (Equiv.refl (Fin n)))
     (fun K => ∑ J : Fin s → Fin n,
       fiberNormSqSummand (I := I) (M := M) g x r s
-        (show TensorRSSpace r s I x from reindexCoeffFibGen (I := I) r s σ' x A) n e K J)
+        (show TensorRSSpace r s I x from reindexCoefficientInputSlotsFiber (I := I) r s σ' x A) n e K J)
     (fun K => ∑ J : Fin s → Fin n,
       fiberNormSqSummand (I := I) (M := M) g x r s
         (show TensorRSSpace r s I x from A) n e K J)
     (fun K => ?_)
   refine Finset.sum_congr rfl (fun J _ => ?_)
   rw [fiberNormSqSummand_eq_component_sq, fiberNormSqSummand_eq_component_sq]
-  rw [fiberNormSqComponent_reindexCoeffFibGen (I := I) (M := M) g r s x A σ' e K J]
+  rw [fiberNormSqComponent_reindexCoefficientInputSlotsFiber (I := I) (M := M) g r s x A σ' e K J]
   have hev : (Equiv.arrowCongr σ' (Equiv.refl (Fin n))) K = (fun k => K (σ'.symm k)) := by
     funext a; simp [Equiv.arrowCongr]
   rw [hev]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-lemma norm_reindexCoeffGen_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
+lemma norm_reindexCoefficientInputSlots_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (W : SmoothCcTensor g r s) (σ' : Equiv.Perm (Fin r)) :
-    ‖reindexCoeffGen (I := I) (M := M) g r s W σ'‖ = ‖W‖ := by
+    ‖reindexCoefficientInputSlots (I := I) (M := M) g r s W σ'‖ = ‖W‖ := by
   classical
   have hpt : ∀ x : M,
       tensorInnerPointwise (I := I) (M := M) g r s x
-          ((reindexCoeffGen (I := I) (M := M) g r s W σ').toFun x)
-          ((reindexCoeffGen (I := I) (M := M) g r s W σ').toFun x) =
+          ((reindexCoefficientInputSlots (I := I) (M := M) g r s W σ').toFun x)
+          ((reindexCoefficientInputSlots (I := I) (M := M) g r s W σ').toFun x) =
         tensorInnerPointwise (I := I) (M := M) g r s x (W.toFun x) (W.toFun x) := by
     intro x
     rw [SmoothCcTensor.toFun_apply, SmoothCcTensor.toFun_apply,
       ← riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x
-        ((reindexCoeffGen (I := I) (M := M) g r s W σ').toSection x),
+        ((reindexCoefficientInputSlots (I := I) (M := M) g r s W σ').toSection x),
       ← riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x (W.toSection x),
-      reindexCoeffGen_toSection]
-    exact riemannianFiberNormSq_reindexCoeffFibGen (I := I) (M := M) g r s x σ' (W.toSection x)
+      reindexCoefficientInputSlots_toSection]
+    exact riemannianFiberNormSq_reindexCoefficientInputSlotsFiber (I := I) (M := M) g r s x σ' (W.toSection x)
   rw [SmoothCcTensor.norm_def, SmoothCcTensor.norm_def]
   unfold tensorL2Norm tensorL2Inner
   simp_rw [hpt]
@@ -373,24 +373,24 @@ theorem symmAbsorbedCoeff_riemannianFiberNormSq_le (g₀ : SmoothRiemannianMetri
     TensorRSSpace.toModel (R.toSection x) with hRm
   set Pm : TensorRSModel (2 + i) 2 ℝ E :=
     TensorRSSpace.toModel
-      ((reindexCoeffGen (I := I) (M := M) g₀ (2 + i) 2 R σ').toSection x) with hPm
+      ((reindexCoefficientInputSlots (I := I) (M := M) g₀ (2 + i) 2 R σ').toSection x) with hPm
   have htoModel : TensorRSSpace.toModel
       ((symmAbsorbedCoeff (I := I) (M := M) g₀ i R σ').toSection x) =
       (1 / 2 : ℝ) • Rm + (1 / 2 : ℝ) • Pm := by
     have hsec : (symmAbsorbedCoeff (I := I) (M := M) g₀ i R σ').toSection x =
         (1 / 2 : ℝ) • (R.toSection x) +
-          (1 / 2 : ℝ) • ((reindexCoeffGen (I := I) (M := M) g₀ (2 + i) 2 R σ').toSection x) := rfl
+          (1 / 2 : ℝ) • ((reindexCoefficientInputSlots (I := I) (M := M) g₀ (2 + i) 2 R σ').toSection x) := rfl
     rw [hsec, TensorRSSpace.toModel_add, TensorRSSpace.toModel_smul, TensorRSSpace.toModel_smul,
       ← hRm, ← hPm]
   have hBA : tensorInnerPointwise (I := I) (M := M) g₀ (2 + i) 2 x Pm Pm =
       tensorInnerPointwise (I := I) (M := M) g₀ (2 + i) 2 x Rm Rm := by
     rw [hPm, hRm,
       ← riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g₀ (2 + i) 2 x
-        ((reindexCoeffGen (I := I) (M := M) g₀ (2 + i) 2 R σ').toSection x),
+        ((reindexCoefficientInputSlots (I := I) (M := M) g₀ (2 + i) 2 R σ').toSection x),
       ← riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g₀ (2 + i) 2 x
         (R.toSection x),
-      reindexCoeffGen_toSection]
-    exact riemannianFiberNormSq_reindexCoeffFibGen (I := I) (M := M) g₀ (2 + i) 2 x σ'
+      reindexCoefficientInputSlots_toSection]
+    exact riemannianFiberNormSq_reindexCoefficientInputSlotsFiber (I := I) (M := M) g₀ (2 + i) 2 x σ'
       (R.toSection x)
   have hA_nn : 0 ≤ tensorInnerPointwise (I := I) (M := M) g₀ (2 + i) 2 x Rm Rm := by
     rw [hRm, ← riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g₀ (2 + i) 2 x
@@ -427,14 +427,14 @@ theorem symmAbsorbedCoeff_jet_le (g₀ : SmoothRiemannianMetric I M) (i n : ℕ)
     iteratedCovGrad (I := I) g₀ (2 + i) 2 k R with hX
   set Y : SmoothCcTensor g₀ (2 + i) (2 + k) :=
     iteratedCovGrad (I := I) g₀ (2 + i) 2 k
-      (reindexCoeffGen (I := I) (M := M) g₀ (2 + i) 2 R σ') with hY
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ (2 + i) 2 R σ') with hY
   have hsymm : iteratedCovGrad (I := I) g₀ (2 + i) 2 k
       (symmAbsorbedCoeff (I := I) (M := M) g₀ i R σ') = (1 / 2 : ℝ) • X + (1 / 2 : ℝ) • Y := by
     rw [hX, hY, symmAbsorbedCoeff, iteratedCovGrad_add, iteratedCovGrad_smul_aux,
       iteratedCovGrad_smul_aux]
   have hY_norm : ‖Y‖ = ‖X‖ := by
-    rw [hY, iteratedCovGrad_reindexCoeffGen, ← hX]
-    exact norm_reindexCoeffGen_eq (I := I) (M := M) g₀ (2 + i) (2 + k) X σ'
+    rw [hY, iteratedCovGrad_reindexCoefficientInputSlots, ← hX]
+    exact norm_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ (2 + i) (2 + k) X σ'
   have htri : ‖(1 / 2 : ℝ) • X + (1 / 2 : ℝ) • Y‖ ≤ ‖X‖ := by
     calc ‖(1 / 2 : ℝ) • X + (1 / 2 : ℝ) • Y‖
         ≤ ‖(1 / 2 : ℝ) • X‖ + ‖(1 / 2 : ℝ) • Y‖ := norm_add_le _ _

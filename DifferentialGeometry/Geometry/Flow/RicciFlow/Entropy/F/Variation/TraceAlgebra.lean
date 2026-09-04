@@ -553,7 +553,7 @@ theorem connTraceAction_eq_gamma
   intro j _
   rw [hA x p i j]
 
-theorem weightedTrace_of_raw
+theorem christoffelWeightedDivergenceTrace_eq_connTrace_sub_action
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2)

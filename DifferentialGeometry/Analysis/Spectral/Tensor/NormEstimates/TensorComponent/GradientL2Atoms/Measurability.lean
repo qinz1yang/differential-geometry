@@ -162,7 +162,7 @@ private lemma abs_scalarOnE_raw_aestronglyMeasurable_restrict_pouTsupport
     (pouTsupport_measurableSet_meas (I := I) (M := M) α)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem aestronglyMeasurable_indicator_tsupp_abs_raw
+theorem aestronglyMeasurable_tsupport_indicator_abs_scalarOnE_raw
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensorH1 g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

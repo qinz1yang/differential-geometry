@@ -171,7 +171,7 @@ private theorem ricciOrderZeroCurvCoeff_perOrder_l2_ballUniform_g1
     (norm_nonneg _) (norm_nonneg _) (norm_nonneg _)
     (norm_add_le _ _) le_rfl hD
 
-theorem ricciOrderZeroBaseCoeff_perOrder_l2_ballUniform_generic
+theorem ricciOrderZeroBaseCoeff_perOrder_l2_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

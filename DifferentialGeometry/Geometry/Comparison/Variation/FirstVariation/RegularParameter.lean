@@ -103,7 +103,7 @@ theorem speed_positivity_near
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-private theorem S2_diff_under_interval_integral_general
+private theorem S2_diff_under_interval_integral
     (g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M) (L s₀ : ℝ)
     (hf : IsSmoothVariation (I := I) f) (hL : 0 < L)
     (hpos : ∀ t ∈ Set.Icc (0 : ℝ) L, 0 < speedSq (I := I) g f s₀ t) :
@@ -256,7 +256,7 @@ theorem first_variation_of_arcLength_at_regular_parameter
       = (fun s' : ℝ => ∫ t in (0 : ℝ)..L, Real.sqrt (speedSq (I := I) g f s' t)) := by
     funext s'; exact arcLength_slice_eq_integral_sqrt_speedSq (I := I) g f s' L
   rw [harc]
-  have hS2 := S2_diff_under_interval_integral_general (I := I) g f L s₀ hf hL hpos
+  have hS2 := S2_diff_under_interval_integral (I := I) g f L s₀ hf hL hpos
   set fsh : ℝ → ℝ → M := fun a b : ℝ => f (s₀ + a) b with hfsh
   have hfsh_smooth : IsSmoothVariation (I := I) fsh := by
     have hshift : ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ)

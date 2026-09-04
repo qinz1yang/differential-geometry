@@ -183,12 +183,12 @@ theorem rawTensorConnLapSmooth_domDomCongrSection {s : ℕ}
       (covGrad (I := I) (M := M) g 0 s (domDomCongrSection (I := I) g σ U)) h1 y
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g (fun x => ?_)
   refine ContinuousMultilinearMap.ext (fun v => ?_)
-  rw [unitModel_rawConnLap_eq_frame_sum_gen (I := I) g s
+  rw [unitModel_rawConnLap_eq_frame_sum_covariantTensor (I := I) g s
     (domDomCongrSection (I := I) g σ U) x v]
   rw [domDomCongrSection_unitModel (I := I) g σ
     (rawTensorConnLapSmooth (I := I) g 0 s U) x]
   rw [ContinuousMultilinearMap.domDomCongr_apply]
-  rw [unitModel_rawConnLap_eq_frame_sum_gen (I := I) g s U x (fun k => v (σ k))]
+  rw [unitModel_rawConnLap_eq_frame_sum_covariantTensor (I := I) g s U x (fun k => v (σ k))]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   have h2x := congrArg
     (fun T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 2) => E) ℝ =>

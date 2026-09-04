@@ -352,7 +352,7 @@ theorem lieTop_add_tail
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [← mul_add]
-  rw [← lieTop_cov_eq_raw (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+  rw [← lieTop_cov_eq_principalSymbolExprRaw_add_tail (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k]
 
 omit [SigmaCompactSpace M] in
@@ -396,7 +396,7 @@ theorem lieTop_add_swap
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i k
         (extChartAt I x x)]
-      rw [← lieTop_cov_eq_raw (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+      rw [← lieTop_cov_eq_principalSymbolExprRaw_add_tail (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k i]
     _ = _ := by
       simpa using unitModel_basis_expand_two (I := I) (M := M) g₀
@@ -479,7 +479,7 @@ theorem ricciSum_eq_lin
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t) x i j k j
               (extChartAt I x x)) s)) =
       linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s := by
-  have hderiv := (hasDerivAt_realizedRicciChartSum_general (I := I)
+  have hderiv := (hasDerivAt_realizedRicciChartSum (I := I)
     g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w hs).deriv
   calc
     _ = deriv (realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w) s := hderiv.symm
@@ -528,7 +528,7 @@ theorem rhsSlope_eq_lin
   rw [hscale, ricciSum_eq_lin (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w hs]
 
 omit [SigmaCompactSpace M] in
-theorem rhsSlope_eq_raw [BoundarylessManifold I M]
+theorem rhsSumSlope_eq_covariantJet_expansion [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -624,7 +624,7 @@ def rhsLowTerm
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rhsTop_eq_raw
+theorem rhsTopTerm_eq_principal_lie_expansion
     (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -678,9 +678,9 @@ theorem rhsSlope_eq_split [BoundarylessManifold I M]
     rhsSumSlope (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s =
       rhsTopTerm (I := I) g₀ T T' hδ hδ' x v w s +
         rhsLowTerm (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s := by
-  rw [rhsSlope_eq_raw (I := I) g₀ g_bg T T' hTsymm hT'symm
+  rw [rhsSumSlope_eq_covariantJet_expansion (I := I) g₀ g_bg T T' hTsymm hT'symm
     hδ_lt hδ hδ'_lt hδ' x v w hs]
-  rw [rhsTop_eq_raw (I := I) g₀ T T' hTsymm hT'symm
+  rw [rhsTopTerm_eq_principal_lie_expansion (I := I) g₀ T T' hTsymm hT'symm
     hδ_lt hδ hδ'_lt hδ' x v w s]
   unfold rhsLowTerm
   rw [unitModel_add_app, unitModel_add_app]

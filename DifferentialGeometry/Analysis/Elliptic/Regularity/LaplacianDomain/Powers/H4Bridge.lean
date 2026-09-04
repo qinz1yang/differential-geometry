@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.H4
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartHk.H4NonSmooth
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.Data
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.H1Data
 
 noncomputable section
 

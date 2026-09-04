@@ -183,7 +183,7 @@ private theorem ibp_density_fChartEffPrev
               (chartTargetEuclid (I := I) (M := M) α) y *
             ψ y
           ∂(volume : Measure EuclN))) :=
-  generic_per_pair_ibp (I := I) (M := M) (α := α)
+  chartTarget_integral_mul_fderiv_eq_neg_add_chosenWeakPartial (I := I) (M := M) (α := α)
     h_fChartEffPrev_memW1p (densityOnEuclid_contDiffOn (I := I) g α)
     hψ_smooth hψ_cs hψ_supp l
 

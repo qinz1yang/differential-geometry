@@ -742,7 +742,7 @@ theorem mvfderiv_apply_contMDiffAt
     (mfderiv I 𝓘(𝕜, 𝕜) f p) (e.symmL 𝕜 p (Xcoord p))
   rw [hcancel]
 
-theorem prodExtDerivAt
+theorem prodExtDerivAt_two
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -846,7 +846,7 @@ theorem prodExtDerivAt
         (e.symmL Real p.2 (Xcoord p))
   rw [hcancel]
 
-theorem prodExtDerivAt_gen
+theorem prodExtDerivAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -962,7 +962,7 @@ theorem prodExtDerivAt_smooth
       (t, x) := by
   rw [contMDiffAt_infty]
   intro n
-  exact prodExtDerivAt_gen (m := (n : WithTop ℕ∞))
+  exact prodExtDerivAt (m := (n : WithTop ℕ∞))
     (by exact_mod_cast le_top : ((n : WithTop ℕ∞)) ≤ ∞)
     (hF.of_le (by exact_mod_cast le_top : ((n : WithTop ℕ∞) + 1) ≤ ∞)) hX
 

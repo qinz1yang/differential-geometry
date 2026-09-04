@@ -169,7 +169,7 @@ private theorem hessianTrace_chart_norm_of_boundaryless
     DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) x hbase
   let cgInv : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i j => chartInvGramMatrix (I := I) g x x i j
-  have hcinv : MetricInverseInBasisGen (I := I) g x cbasis cgInv := by
+  have hcinv : MetricInverseInBasis (I := I) g x cbasis cgInv := by
     intro i j
     constructor
     · have hmatrix := congrArg (fun A => A i j)

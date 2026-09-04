@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.Data
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.HatWeights
 
 open DifferentialGeometry.Geometry.Curvature
 

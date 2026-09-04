@@ -81,7 +81,7 @@ theorem metricCovDerivStep_apply
   rfl
 
 omit [SigmaCompactSpace M] in
-theorem metricCovDeriv_succ_eval_smooth_slots_gen
+theorem metricCovDeriv_succ_eval_smooth_slots
     (h gRef : SmoothRiemannianMetric I M) (a : Nat)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))

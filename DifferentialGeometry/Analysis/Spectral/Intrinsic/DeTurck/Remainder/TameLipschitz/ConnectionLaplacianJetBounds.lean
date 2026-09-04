@@ -56,8 +56,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -77,7 +78,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -139,9 +140,9 @@ private theorem pointwiseTensorCurv_iteratedCovGrad_fiberNormSq_jet_le
   obtain ⟨H_R, H_dR, hsec⟩ :=
     exists_pointwiseTensorCurv_firstOrder_homField_section (I := I) (M := M) g₀ s
   obtain ⟨ccR, hccR_nn, hccR⟩ :=
-    exists_appFullSec_iteratedCovGrad_window_bound (I := I) (M := M) g₀ 0 (s + 1) (s + 1) H_R
+    exists_homTensorRSFieldApply_iteratedCovGrad_window_bound (I := I) (M := M) g₀ 0 (s + 1) (s + 1) H_R
   obtain ⟨ccdR, hccdR_nn, hccdR⟩ :=
-    exists_appFullSec_iteratedCovGrad_window_bound (I := I) (M := M) g₀ 0 s (s + 1) H_dR
+    exists_homTensorRSFieldApply_iteratedCovGrad_window_bound (I := I) (M := M) g₀ 0 s (s + 1) H_dR
   refine ⟨fun p => 2 * ccR p + 2 * ccdR p,
     fun p => by have := hccR_nn p; have := hccdR_nn p; positivity, fun p S x => ?_⟩
   set riemannianFiberNormSqS : ℕ → ℝ := fun a =>
@@ -222,7 +223,7 @@ private theorem pointwiseTensorCurv_iteratedCovGrad_fiberNormSq_jet_le
 
 
 omit [SigmaCompactSpace M] in
-private theorem iteratedRoughLapGrad_commutator_fiberNormSq_jet_le_aux
+private theorem iteratedRoughLapGrad_commutator_fiberNormSq_jet_le
     (g₀ : SmoothRiemannianMetric I M) (m : ℕ) :
     ∀ s : ℕ, ∃ Cfun : ℕ → ℝ, (∀ p, 0 ≤ Cfun p) ∧
       ∀ (p : ℕ) (S : SmoothCcTensor g₀ 0 s) (x : M),
@@ -392,7 +393,7 @@ private theorem rawTensorConnLapSmooth_iteratedCovGrad_riemannianFiberNormSq_jet
   obtain ⟨Cpost, hCpost_nn, hCpost⟩ :=
     rawTensorConnLapSmooth_fiberNormSq_le_secondCovGrad_jet (I := I) (M := M) g₀ (2 + a)
   obtain ⟨Cfun, hCfun_nn, hCfun⟩ :=
-    iteratedRoughLapGrad_commutator_fiberNormSq_jet_le_aux (I := I) (M := M) g₀ a 2
+    iteratedRoughLapGrad_commutator_fiberNormSq_jet_le (I := I) (M := M) g₀ a 2
   refine ⟨2 * Cpost + 2 * Cfun 0, by have := hCfun_nn 0; positivity, fun W x => ?_⟩
   set Scol : ℝ := ∑ q ∈ Finset.range (a + 2 + 1),
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + q) x
@@ -543,7 +544,7 @@ private lemma bareChartJetContent_le_sqrt_fiberNormSq_sum_uniform
       ∀ (D : SmoothCcTensor g 0 2) {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))},
         y ∈ DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartPouKernel (I := I) (M := M)
           α →
-        bareChartJetContent (I := I) (M := M) g 0 2 D α N y ≤
+        euclideanChartComponentJetNormSum (I := I) (M := M) g 0 2 D α N y ≤
           C * ∑ i ∈ Finset.range (N + 1),
             Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g 0 (2 + i)
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
@@ -655,7 +656,7 @@ private lemma bareChartJetContent_le_sqrt_fiberNormSq_sum_uniform
     rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
     push_cast
     ring
-  calc bareChartJetContent (I := I) (M := M) g 0 2 D α N y
+  calc euclideanChartComponentJetNormSum (I := I) (M := M) g 0 2 D α N y
       = ∑ q' : (Fin 0 → Fin n) × (Fin 2 → Fin n),
           ∑ m ∈ Finset.range (N + 1),
             ‖iteratedFDeriv ℝ m (tensorComponentEuclideanChart (I := I) (M := M) g 0 2 D α q'.1

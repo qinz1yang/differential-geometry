@@ -409,7 +409,7 @@ theorem insert_h1
   let S : SmoothCcTensor g₀ 2 2 :=
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 ND
   let SS : SmoothCcTensor g₀ 2 2 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 2 2
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2
         (Equiv.swap (0 : Fin 2) 1) S)
       (Equiv.swap (0 : Fin 2) 1)

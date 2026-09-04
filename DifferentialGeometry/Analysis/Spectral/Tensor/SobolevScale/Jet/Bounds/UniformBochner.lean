@@ -418,7 +418,7 @@ theorem rawConnLapIter_unif
           C * ∑ b ∈ Finset.range (a + 3), ‖iteratedCovGrad (I := I) g₀ 0 s b S‖ := by
   intro s
   obtain ⟨K, hK_one, hK⟩ :=
-    exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen (I := I) (M := M) g₀
+    exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_covariantTensor (I := I) (M := M) g₀
   obtain ⟨Cfun, hCfun_nn, hCfun⟩ :=
     roughLapComm_unif (I := I) (M := M) g₀ Fc hFc hcurv a s
   have hK_nn : 0 ≤ K := le_trans (by norm_num) hK_one
@@ -712,7 +712,7 @@ private theorem elliptic_engine
         have hdir :
             ‖iteratedCovGrad (I := I) g₀ 0 s 1 S‖ ^ 2 ≤
               ‖rawTensorConnLapSmooth (I := I) g₀ 0 s S‖ * ‖S‖ := by
-          have h := covGrad_l2NormSq_le_rawConnLap_mul_self_gen (I := I) (M := M) g₀ s S
+          have h := covGrad_l2NormSq_le_rawConnLap_mul_self_covariantTensor (I := I) (M := M) g₀ s S
           rw [tensorL2Norm_toFun_eq_norm (I := I) (M := M) g₀
               (covGrad (I := I) (M := M) g₀ 0 s S),
             tensorL2Norm_toFun_eq_norm (I := I) (M := M) g₀
@@ -1931,7 +1931,7 @@ theorem covsum_hs_two
   have hdir :
       ‖iteratedCovGrad (I := I) g₀ 0 s 1 S‖ ^ 2 ≤
         ‖rawTensorConnLapSmooth (I := I) g₀ 0 s S‖ * ‖S‖ := by
-    have h := covGrad_l2NormSq_le_rawConnLap_mul_self_gen (I := I) (M := M) g₀ s S
+    have h := covGrad_l2NormSq_le_rawConnLap_mul_self_covariantTensor (I := I) (M := M) g₀ s S
     rw [tensorL2Norm_toFun_eq_norm (I := I) (M := M) g₀
         (covGrad (I := I) (M := M) g₀ 0 s S),
       tensorL2Norm_toFun_eq_norm (I := I) (M := M) g₀
@@ -2603,7 +2603,7 @@ private theorem elliptic_engine_const
         have hdir :
             ‖iteratedCovGrad (I := I) g₀ 0 s 1 S‖ ^ 2 ≤
               ‖rawTensorConnLapSmooth (I := I) g₀ 0 s S‖ * ‖S‖ := by
-          have h := covGrad_l2NormSq_le_rawConnLap_mul_self_gen (I := I) (M := M) g₀ s S
+          have h := covGrad_l2NormSq_le_rawConnLap_mul_self_covariantTensor (I := I) (M := M) g₀ s S
           rw [tensorL2Norm_toFun_eq_norm (I := I) (M := M) g₀
               (covGrad (I := I) (M := M) g₀ 0 s S),
             tensorL2Norm_toFun_eq_norm (I := I) (M := M) g₀

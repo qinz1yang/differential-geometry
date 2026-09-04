@@ -65,7 +65,7 @@ theorem pointwiseTensorCurv_toSection_eq_sub
   rfl
 
 omit [CompactSpace M] in
-theorem rawTensorConnLap_gradTensor_toSection_eq_frame_trace_gen
+theorem rawTensorConnLap_gradTensor_toSection_eq_frame_trace_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     (rawTensorConnLapSmooth (I := I) g 0 (s + 1)
         (covGrad (I := I) (M := M) g 0 s S)).toSection x =
@@ -78,7 +78,7 @@ theorem rawTensorConnLap_gradTensor_toSection_eq_frame_trace_gen
     (fun y : M => (covGrad (I := I) (M := M) g 0 s S).toSection y) x
 
 omit [CompactSpace M] in
-theorem covGrad_rawConnLap_toSection_eq_frame_sum_gen
+theorem covGrad_rawConnLap_toSection_eq_frame_sum_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     (covGrad (I := I) (M := M) g 0 s
         (rawTensorConnLapSmooth (I := I) g 0 s S)).toSection x =
@@ -114,8 +114,8 @@ theorem pointwiseTensorCurv_toSection_eq_frame_sum
                 (fun z : M => S.toSection z) y) x)) := by
   classical
   rw [pointwiseTensorCurv_toSection_eq_sub (I := I) (M := M) g s S x]
-  rw [rawTensorConnLap_gradTensor_toSection_eq_frame_trace_gen (I := I) (M := M) g s S x]
-  rw [covGrad_rawConnLap_toSection_eq_frame_sum_gen (I := I) (M := M) g s S x]
+  rw [rawTensorConnLap_gradTensor_toSection_eq_frame_trace_covariantTensor (I := I) (M := M) g s S x]
+  rw [covGrad_rawConnLap_toSection_eq_frame_sum_covariantTensor (I := I) (M := M) g s S x]
   rw [← Finset.sum_sub_distrib]
 
 noncomputable def pointwiseTensorCurvPairing

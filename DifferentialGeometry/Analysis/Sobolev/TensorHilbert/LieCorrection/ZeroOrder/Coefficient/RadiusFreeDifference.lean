@@ -24,8 +24,8 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckLieEndoTermField deTurckLieEndoTermField_toSection deTurckLieCovariantDerivativeInsertionFib
-    reindexCoeffGen reindexCoeffGen_toSection reindexCoeffFibGen reindexCoeffFibGen_apply
-    iteratedCovGrad_reindexCoeffGen norm_reindexCoeffGen_eq
+    reindexCoefficientInputSlots reindexCoefficientInputSlots_toSection reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply
+    iteratedCovGrad_reindexCoefficientInputSlots norm_reindexCoefficientInputSlots_eq
     domDomCongrFibRank domDomCongrFibRank_apply tensor0SProdKappaFib
     metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_contMDiff
     ccTensor02Symm cometricRaiseSlot0Field unitModel unitTensor covGrad covGrad_zero
@@ -543,7 +543,7 @@ private noncomputable def b4Pk3 (g₀ : SmoothRiemannianMetric I M)
 private noncomputable def b4Phi (g₀ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2) (σ : Equiv.Perm (Fin 5)) : SmoothCcTensor g₀ 3 3 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 3 5 3
-    (reindexCoeffGen (I := I) (M := M) g₀ 5 3
+    (reindexCoefficientInputSlots (I := I) (M := M) g₀ 5 3
       (cometricDoubleTraceField (I := I) g₀ 3) σ)
     (b4Pk3 (I := I) (M := M) g₀ P)
 
@@ -674,13 +674,13 @@ private theorem b4_reindex_h2
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (ρ : Equiv.Perm (Fin r)) :
     b4Jet2 (I := I) (M := M) g r s
-        (reindexCoeffGen (I := I) (M := M) g r s Φ ρ) =
+        (reindexCoefficientInputSlots (I := I) (M := M) g r s Φ ρ) =
       b4Jet2 (I := I) (M := M) g r s Φ := by
   unfold b4Jet2
   apply Finset.sum_congr rfl
   intro i _
-  rw [iteratedCovGrad_reindexCoeffGen,
-    norm_reindexCoeffGen_eq]
+  rw [iteratedCovGrad_reindexCoefficientInputSlots,
+    norm_reindexCoefficientInputSlots_eq]
 
 private theorem b4_app_h2_mul
     (hDim : Module.finrank ℝ E = 3)
@@ -780,7 +780,7 @@ private theorem b4_phi_h2
     mul_nonneg (mul_nonneg hCa0 hJtr0) (pow_nonneg hfr 3), ?_⟩
   intro P σ
   have hprod := happ
-    (reindexCoeffGen (I := I) (M := M) g 5 3
+    (reindexCoefficientInputSlots (I := I) (M := M) g 5 3
       (cometricDoubleTraceField (I := I) g 3) σ)
     (b4Pk3 (I := I) (M := M) g P)
   rw [b4_reindex_h2 (I := I) (M := M)] at hprod
@@ -1168,12 +1168,12 @@ theorem metricConnectionDifferenceLoweredCoefficient_expansion (g₀ g₁ g_bg :
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
             (metricLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg).toSection x)
             (unitTensor (I := I) (M := M) x))) =
-        reindexCoeffFibGen (I := I) 5 3 σ x
+        reindexCoefficientInputSlotsFiber (I := I) 5 3 σ x
           (show Tensor0SSpace 5 I x →L[ℝ] Tensor0SSpace 3 I x from
             (cometricDoubleTraceField (I := I) g₀ 3).toSection x)
           ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 5 I x from
             (b4Pk3 (I := I) (M := M) g₀ P).toSection x) D) from rfl]
-    rw [reindexCoeffFibGen_apply]
+    rw [reindexCoefficientInputSlotsFiber_apply]
     rw [show ((show Tensor0SSpace 5 I x →L[ℝ] Tensor0SSpace 3 I x from
         (cometricDoubleTraceField (I := I) g₀ 3).toSection x)
           (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
@@ -1791,10 +1791,10 @@ lemma metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (g
           _ ≤ (1 + Λ₀ ^ 2) * antidiagonalTupleGridWindow := by nlinarith only [hantidiagonalTupleGridWindow_nn, sq_nonneg Λ₀]
   have hΦarm : ∀ i' : ℕ, riemannianFiberNormSq (I := I) (M := M) g₀ 5 (3 + i') x
       ((iteratedCovGrad (I := I) g₀ 5 3 i'
-        (reindexCoeffGen (I := I) (M := M) g₀ 5 3
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 5 3
           (cometricDoubleTraceField (I := I) g₀ 3) σ)).toSection x) ≤ SΦ i' := by
     intro i'
-    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 5 3
+    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 5 3
       (cometricDoubleTraceField (I := I) g₀ 3) σ i' x]
     exact hSΦ i' x
   have hqsum : ∀ i' : ℕ, (∑ q ∈ Finset.range (l + 1 - i'),
@@ -1825,7 +1825,7 @@ lemma metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (g
           ring
   have hleib := riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalProductGrid_rankLeft_le
     (I := I) (M := M) g₀ l 3 5 3
-    (reindexCoeffGen (I := I) (M := M) g₀ 5 3 (cometricDoubleTraceField (I := I) g₀ 3) σ)
+    (reindexCoefficientInputSlots (I := I) (M := M) g₀ 5 3 (cometricDoubleTraceField (I := I) g₀ 3) σ)
     (b4Pk3 (I := I) (M := M) g₀ P) x
   refine le_trans hleib ?_
   rw [show operatorFieldApplicationGdiag (E := E) l * (∑ i' ∈ Finset.range (l + 1), SΦ i') *
@@ -1836,7 +1836,7 @@ lemma metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (g
   calc (∑ i' ∈ Finset.range (l + 1),
         riemannianFiberNormSq (I := I) (M := M) g₀ 5 (3 + i') x
             ((iteratedCovGrad (I := I) g₀ 5 3 i'
-              (reindexCoeffGen (I := I) (M := M) g₀ 5 3
+              (reindexCoefficientInputSlots (I := I) (M := M) g₀ 5 3
                 (cometricDoubleTraceField (I := I) g₀ 3) σ)).toSection x) *
           ∑ q ∈ Finset.range (l + 1 - i'),
             riemannianFiberNormSq (I := I) (M := M) g₀ 3 (5 + q) x

@@ -164,7 +164,7 @@ theorem nabla_riemann_op_le
     letI : T2Space P.M := P.t2
     ∀ (x : P.M) (D X Y Z : TangentSpace I x),
       let R :=
-        DifferentialGeometry.Integral.Connection.nablaRiemannOp
+        DifferentialGeometry.Geometry.Curvature.nablaRiemannOp
           (I := I) P.metric x D X Y Z
       Real.sqrt (P.metric.inner x R R) <=
         C * Real.sqrt (P.metric.inner x D D) *
@@ -178,7 +178,7 @@ theorem nabla_riemann_op_le
   let : T2Space P.M := P.t2
   intro x D X Y Z
   let R :=
-    DifferentialGeometry.Integral.Connection.nablaRiemannOp
+    DifferentialGeometry.Geometry.Curvature.nablaRiemannOp
       (I := I) P.metric x D X Y Z
   let q := Real.sqrt (P.metric.inner x R R)
   let A :=

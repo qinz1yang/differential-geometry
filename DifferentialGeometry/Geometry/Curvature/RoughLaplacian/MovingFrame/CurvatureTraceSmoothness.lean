@@ -323,7 +323,7 @@ private lemma genuinePureRDirCLM_apply_extend
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] in
-private lemma genericTensor0S_curry_covGradBundleEquiv_unit
+private lemma tensor0S_curry_covGradBundleEquiv_unit_apply
     (s : ℕ) (x : M)
     (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x)
     (v : TangentSpace I x) :
@@ -381,7 +381,7 @@ private lemma tensor0S_curry_genuineCurvPureRFib_unit
           (smoothOrthoFrame (I := I) g x) (fun y : M => S.toSection y) x)
         (unitZeroSec (I := I) (M := M) x) := by
   rw [genuineCurvPureRFib]
-  rw [genericTensor0S_curry_covGradBundleEquiv_unit (I := I) (M := M) s x
+  rw [tensor0S_curry_covGradBundleEquiv_unit_apply (I := I) (M := M) s x
     (genuineCurvatureOnlyDirectionalCLM (I := I) (M := M) g s S x) v]
   rw [genuinePureRDirCLM_apply_extend (I := I) (M := M) g s S x v]
 

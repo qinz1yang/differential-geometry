@@ -83,7 +83,7 @@ omit [Nontrivial V]
     klBasisPot 0 f₀ f₁ x = 0 := by
   classical
   simp [klBasisPot, klHeat0, klHeat1, heatEarly0, heatEarly1,
-    klLateFull0, klFluxFull1, klTermMeasure]
+    klLatePotential, klFluxPotential, klTermMeasure]
 
 omit [CompleteSpace F] in
 theorem klHeat0_sub {T t : ℝ} {A₁ A_q B₁ B_q : ℝ≥0}
@@ -94,7 +94,7 @@ theorem klHeat0_sub {T t : ℝ} {A₁ A_q B₁ B_q : ℝ≥0}
   have hgE := klEarly0_int (V := V) ht htT g x hg
   have hfL := klLate0_int (V := V) ht htT f x hf
   have hgL := klLate0_int (V := V) ht htT g x hg
-  unfold klHeat0 heatEarly0 klLateFull0
+  unfold klHeat0 heatEarly0 klLatePotential
   simp only [smul_sub, Real.sq_sqrt ht.le]
   rw [MeasureTheory.integral_sub hfE hgE,
     MeasureTheory.integral_sub hfL hgL]
@@ -110,7 +110,7 @@ theorem klHeat1_sub {T t : ℝ} {A₂ Aₚ B₂ Bₚ : ℝ≥0}
   have hgE := klEarly1_int (V := V) ht htT w g x hg
   have hfL := klLate1_int (V := V) ht htT w f x hf
   have hgL := klLate1_int (V := V) ht htT w g x hg
-  unfold klHeat1 heatEarly1 klFluxFull1
+  unfold klHeat1 heatEarly1 klFluxPotential
   simp only [smul_sub, Real.sq_sqrt ht.le]
   rw [MeasureTheory.integral_sub hfE hgE,
     MeasureTheory.integral_sub hfL hgL]

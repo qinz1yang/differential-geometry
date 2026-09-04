@@ -25,7 +25,7 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace ConvOut
+namespace FlowMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
@@ -35,7 +35,7 @@ theorem lower_of
       letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    {β ψ c : Real} (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    {β ψ c : Real} (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hseq : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted;
       letI : IsManifold I ∞ P.M := P.smooth;
@@ -67,6 +67,6 @@ theorem lower_of
   exact ge_of_tendsto hinner
     (Filter.Eventually.of_forall fun k ↦ hseq k t ht x v)
 
-end ConvOut
+end FlowMetricConvergenceData
 end HCGCompactness
 end DifferentialGeometry

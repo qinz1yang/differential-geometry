@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.Parametric.FiberInnerSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.PartitionOfUnityNormComparison
-import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SimpLemmas
+import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SmoothSectionMap
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -56,7 +56,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private theorem contMDiffWithinAt_curriedSection_prod_full {n : ℕ}
+private theorem contMDiffWithinAt_curriedSection_prod {n : ℕ}
     {s : Set (M × ℝ)} {p₀ : M × ℝ}
     (T : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace (n + 1) I p.1)
     (hT : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
@@ -114,7 +114,7 @@ private theorem contMDiffWithinAt_curriedSection_prod_full {n : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private theorem contMDiffWithinAt_section_apply_prod_full : ∀ (n : ℕ)
+private theorem contMDiffWithinAt_tensor0S_eval : ∀ (n : ℕ)
     {s : Set (M × ℝ)} {p₀ : M × ℝ}
     (T : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace n I p.1)
     (_hT : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
@@ -168,7 +168,7 @@ private theorem contMDiffWithinAt_section_apply_prod_full : ∀ (n : ℕ)
       rw [huniq]
       rfl
   | n + 1, s, p₀, T, hT, v, hv => by
-    have hCurry := contMDiffWithinAt_curriedSection_prod_full (I := I) (M := M) T hT
+    have hCurry := contMDiffWithinAt_curriedSection_prod (I := I) (M := M) T hT
     have hApplied : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
         (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel n ℝ E)) ∞
         (fun p : M × ℝ =>
@@ -183,7 +183,7 @@ private theorem contMDiffWithinAt_section_apply_prod_full : ∀ (n : ℕ)
         (b := Prod.fst) (ϕ := fun p : M × ℝ => tensor0SCurry (I := I) (M := M) n p.1 (T p))
         (v := fun p : M × ℝ => v 0 p)
         hCurry (hv 0)
-    have hRec := contMDiffWithinAt_section_apply_prod_full n
+    have hRec := contMDiffWithinAt_tensor0S_eval n
       (s := s) (p₀ := p₀)
       (fun p : M × ℝ => (tensor0SCurry (I := I) (M := M) n p.1 (T p)) (v 0 p))
       hApplied
@@ -522,7 +522,7 @@ theorem loweredCompose_zero_basis_eval_jointContMDiffOn
       (I := I) α (φ (Fin.natAdd 0 j))
     exact h.mono (Set.prod_mono (subset_refl _) (Set.subset_univ _))
   intro p hp
-  exact contMDiffWithinAt_section_apply_prod_full 2 (s := (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T)
+  exact contMDiffWithinAt_tensor0S_eval 2 (s := (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T)
     (p₀ := p) Tval (hTval p hp)
     (fun j p => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (φ (Fin.natAdd 0 j)) p.1)
     (fun j => hv j p hp)

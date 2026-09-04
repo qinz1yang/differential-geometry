@@ -289,7 +289,7 @@ noncomputable def fChartEffStep
       densityOnEuclid (I := I) g α y)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fChartEffStep_def_unfold
+theorem fChartEffStep_apply
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
@@ -318,7 +318,7 @@ theorem density_mul_fChartEffStep_eq_indicator_numerator
         (fun z => fChartEffStepNumerator
           (I := I) (M := M) g α u_h m dirs fChartEffPrev l z) y := by
   classical
-  rw [fChartEffStep_def_unfold]
+  rw [fChartEffStep_apply]
   by_cases hy_K : y ∈ chartImagePOUTsupport (I := I) (M := M) α
   · rw [Set.indicator_of_mem hy_K, Set.indicator_of_mem hy_K]
     have h_pos : 0 < densityOnEuclid (I := I) g α y :=

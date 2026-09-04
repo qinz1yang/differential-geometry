@@ -130,7 +130,7 @@ variable [I.Boundaryless] [CompleteSpace E]
 
 omit [I.Boundaryless] [CompleteSpace E] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma chartFlowCandidate_contMDiffAt_of_mem_ball
+private lemma chartFlowSlice_contMDiffAt_of_mem_ball
     {p : M} {Φ : (E × E) × ℝ → E × E} {ρ T t' : ℝ} {v₁ : E}
     (hv₁ : ‖v₁‖ < ρ) (ht' : t' ∈ Set.Ioo (-T) T)
     (hcd : ContDiffOn ℝ 1 Φ
@@ -139,7 +139,7 @@ private lemma chartFlowCandidate_contMDiffAt_of_mem_ball
     (hval : (Φ (((extChartAt I p p, v₁) : E × E), t')).1 ∈
       interior (extChartAt I p).target) :
     ContMDiffAt 𝓘(ℝ, E) I 1
-      (chartFlowCandidate (I := I) Φ p t') v₁ := by
+      (chartFlowSlice (I := I) Φ p t') v₁ := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
   have hslice :
@@ -159,16 +159,16 @@ private lemma chartFlowCandidate_contMDiffAt_of_mem_ball
       isOpen_interior, hval⟩
   have hsymm_at : ContMDiffAt 𝓘(ℝ, E) I 1 (extChartAt I p).symm (s v₁) :=
     hsymm_within.contMDiffAt htarget_nhds
-  have hcand_eq : chartFlowCandidate (I := I) Φ p t' =
+  have hcand_eq : chartFlowSlice (I := I) Φ p t' =
       (extChartAt I p).symm ∘ s := by
     funext v
-    simp only [chartFlowCandidate_apply, Function.comp_apply, hs_def, hx₀_def]
+    simp only [chartFlowSlice_apply, Function.comp_apply, hs_def, hx₀_def]
   rw [hcand_eq]
   exact hsymm_at.comp v₁ hs_cmda
 
 omit [I.Boundaryless] [CompleteSpace E] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma chartFlowCandidate_contMDiffAt2_of_mem_ball
+private lemma chartFlowSlice_contMDiffAt2_of_mem_ball
     {p : M} {Φ : (E × E) × ℝ → E × E} {ρ T t' : ℝ} {v₁ : E}
     (hv₁ : ‖v₁‖ < ρ) (ht' : t' ∈ Set.Ioo (-T) T)
     (hcd : ContDiffOn ℝ 2 Φ
@@ -177,7 +177,7 @@ private lemma chartFlowCandidate_contMDiffAt2_of_mem_ball
     (hval : (Φ (((extChartAt I p p, v₁) : E × E), t')).1 ∈
       interior (extChartAt I p).target) :
     ContMDiffAt 𝓘(ℝ, E) I 2
-      (chartFlowCandidate (I := I) Φ p t') v₁ := by
+      (chartFlowSlice (I := I) Φ p t') v₁ := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
   have hslice :
@@ -197,16 +197,16 @@ private lemma chartFlowCandidate_contMDiffAt2_of_mem_ball
       isOpen_interior, hval⟩
   have hsymm_at : ContMDiffAt 𝓘(ℝ, E) I 2 (extChartAt I p).symm (s v₁) :=
     hsymm_within.contMDiffAt htarget_nhds
-  have hcand_eq : chartFlowCandidate (I := I) Φ p t' =
+  have hcand_eq : chartFlowSlice (I := I) Φ p t' =
       (extChartAt I p).symm ∘ s := by
     funext v
-    simp only [chartFlowCandidate_apply, Function.comp_apply, hs_def, hx₀_def]
+    simp only [chartFlowSlice_apply, Function.comp_apply, hs_def, hx₀_def]
   rw [hcand_eq]
   exact hsymm_at.comp v₁ hs_cmda
 
 omit [I.Boundaryless] [CompleteSpace E] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma chartFlowCandidate_contMDiffAt_nat_of_mem_ball
+private lemma chartFlowSlice_contMDiffAt_nat_of_mem_ball
     {p : M} {Φ : (E × E) × ℝ → E × E} {ρ T t' : ℝ} {v₁ : E} (n : ℕ)
     (hv₁ : ‖v₁‖ < ρ) (ht' : t' ∈ Set.Ioo (-T) T)
     (hcd : ContDiffOn ℝ (n : ℕ∞) Φ
@@ -215,7 +215,7 @@ private lemma chartFlowCandidate_contMDiffAt_nat_of_mem_ball
     (hval : (Φ (((extChartAt I p p, v₁) : E × E), t')).1 ∈
       interior (extChartAt I p).target) :
     ContMDiffAt 𝓘(ℝ, E) I ((n : ℕ∞) : WithTop ℕ∞)
-      (chartFlowCandidate (I := I) Φ p t') v₁ := by
+      (chartFlowSlice (I := I) Φ p t') v₁ := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
   have hslice :
@@ -236,10 +236,10 @@ private lemma chartFlowCandidate_contMDiffAt_nat_of_mem_ball
   have hsymm_at : ContMDiffAt 𝓘(ℝ, E) I ((n : ℕ∞) : WithTop ℕ∞)
       (extChartAt I p).symm (s v₁) :=
     hsymm_within.contMDiffAt htarget_nhds
-  have hcand_eq : chartFlowCandidate (I := I) Φ p t' =
+  have hcand_eq : chartFlowSlice (I := I) Φ p t' =
       (extChartAt I p).symm ∘ s := by
     funext v
-    simp only [chartFlowCandidate_apply, Function.comp_apply, hs_def, hx₀_def]
+    simp only [chartFlowSlice_apply, Function.comp_apply, hs_def, hx₀_def]
   rw [hcand_eq]
   exact hsymm_at.comp v₁ hs_cmda
 
@@ -271,7 +271,7 @@ theorem expMap_contMDiffAt_of_norm_lt
   set x₀ : E := extChartAt I p p with hx₀_def
   have hmatch : ∀ v : E, v ∈ Metric.ball (0 : E) ρ →
       (expMap (I := I) g p (show TangentSpace I p from (t' • v)) : M) =
-        chartFlowCandidate (I := I) Φ p t' v := by
+        chartFlowSlice (I := I) Φ p t' v := by
     intro v hv_ball
     have hΦ_init_v_at : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) :=
       hΦ_init_v v hv_ball
@@ -294,7 +294,7 @@ theorem expMap_contMDiffAt_of_norm_lt
     have hproj_def :=
       chartFlowOrbitLiftRescaled_proj (I := I) (p := p) (v := v) (t' := t')
         (Φ := Φ) (s := 1) hΦ_target_t'
-    have hcand_unfold : chartFlowCandidate (I := I) Φ p t' v =
+    have hcand_unfold : chartFlowSlice (I := I) Φ p t' v =
         (extChartAt I p).symm (Φ (((x₀, v) : E × E), t')).1 := rfl
     have hproj_def' :
         (chartFlowOrbitLiftRescaled (I := I) Φ p t' v 1).proj =
@@ -321,8 +321,8 @@ theorem expMap_contMDiffAt_of_norm_lt
     have := hΦ_target v₁ hv₁_ball t' (Set.Ioo_subset_Icc_self ht'_in_Ioo)
     exact this.1
   have hcand_cd : ContMDiffAt 𝓘(ℝ, E) I 1
-      (chartFlowCandidate (I := I) Φ p t') v₁ :=
-    chartFlowCandidate_contMDiffAt_of_mem_ball (I := I) (p := p) (Φ := Φ)
+      (chartFlowSlice (I := I) Φ p t') v₁ :=
+    chartFlowSlice_contMDiffAt_of_mem_ball (I := I) (p := p) (Φ := Φ)
       (ρ := ρ) (T := T) (t' := t') (v₁ := v₁) hv₁_norm ht'_in_Ioo hΦ_cd hval_int
   have hsmul_cd : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, E) 1 (fun u : E => (1 / t') • u) := by
     have h0 : ContDiff ℝ ∞ (fun u : E => (1 / t') • u) :=
@@ -335,16 +335,16 @@ theorem expMap_contMDiffAt_of_norm_lt
   have hsmul_w_eq : (fun u : E => (1 / t') • u) w = v₁ := by
     rw [hv₁_def]
   have hcand_cd' : ContMDiffAt 𝓘(ℝ, E) I 1
-      (chartFlowCandidate (I := I) Φ p t')
+      (chartFlowSlice (I := I) Φ p t')
       ((fun u : E => (1 / t') • u) w) := by
     rw [hsmul_w_eq]; exact hcand_cd
   have hcomp : ContMDiffAt 𝓘(ℝ, E) I 1
-      ((chartFlowCandidate (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) w :=
+      ((chartFlowSlice (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) w :=
     hcand_cd'.comp w hsmul_at
   have hev :
       (fun u : E => (expMap (I := I) g p (show TangentSpace I p from u) : M))
         =ᶠ[𝓝 w]
-      ((chartFlowCandidate (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) := by
+      ((chartFlowSlice (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) := by
     have hsmul_cont : Continuous (fun u : E => (1 / t') • u) :=
       continuous_const.smul continuous_id
     have hpre : (fun u : E => (1 / t') • u) ⁻¹' Metric.ball (0 : E) ρ ∈ 𝓝 w := by
@@ -571,7 +571,7 @@ theorem expMap_contMDiffAt2_of_norm_lt
   set x₀ : E := extChartAt I p p with hx₀_def
   have hmatch : ∀ v : E, v ∈ Metric.ball (0 : E) ρ →
       (expMap (I := I) g p (show TangentSpace I p from (t' • v)) : M) =
-        chartFlowCandidate (I := I) Φ p t' v := by
+        chartFlowSlice (I := I) Φ p t' v := by
     intro v hv_ball
     have hΦ_init_v_at : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) :=
       hΦ_init_v v hv_ball
@@ -594,7 +594,7 @@ theorem expMap_contMDiffAt2_of_norm_lt
     have hproj_def :=
       chartFlowOrbitLiftRescaled_proj (I := I) (p := p) (v := v) (t' := t')
         (Φ := Φ) (s := 1) hΦ_target_t'
-    have hcand_unfold : chartFlowCandidate (I := I) Φ p t' v =
+    have hcand_unfold : chartFlowSlice (I := I) Φ p t' v =
         (extChartAt I p).symm (Φ (((x₀, v) : E × E), t')).1 := rfl
     have hproj_def' :
         (chartFlowOrbitLiftRescaled (I := I) Φ p t' v 1).proj =
@@ -621,8 +621,8 @@ theorem expMap_contMDiffAt2_of_norm_lt
     have := hΦ_target v₁ hv₁_ball t' (Set.Ioo_subset_Icc_self ht'_in_Ioo)
     exact this.1
   have hcand_cd : ContMDiffAt 𝓘(ℝ, E) I 2
-      (chartFlowCandidate (I := I) Φ p t') v₁ :=
-    chartFlowCandidate_contMDiffAt2_of_mem_ball (I := I) (p := p) (Φ := Φ)
+      (chartFlowSlice (I := I) Φ p t') v₁ :=
+    chartFlowSlice_contMDiffAt2_of_mem_ball (I := I) (p := p) (Φ := Φ)
       (ρ := ρ) (T := T) (t' := t') (v₁ := v₁) hv₁_norm ht'_in_Ioo hΦ_cd hval_int
   have hsmul_cd : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, E) 2 (fun u : E => (1 / t') • u) := by
     have h0 : ContDiff ℝ (∞ : WithTop ℕ∞) (fun u : E => (1 / t') • u) :=
@@ -638,16 +638,16 @@ theorem expMap_contMDiffAt2_of_norm_lt
   have hsmul_w_eq : (fun u : E => (1 / t') • u) w = v₁ := by
     rw [hv₁_def]
   have hcand_cd' : ContMDiffAt 𝓘(ℝ, E) I 2
-      (chartFlowCandidate (I := I) Φ p t')
+      (chartFlowSlice (I := I) Φ p t')
       ((fun u : E => (1 / t') • u) w) := by
     rw [hsmul_w_eq]; exact hcand_cd
   have hcomp : ContMDiffAt 𝓘(ℝ, E) I 2
-      ((chartFlowCandidate (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) w :=
+      ((chartFlowSlice (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) w :=
     hcand_cd'.comp w hsmul_at
   have hev :
       (fun u : E => (expMap (I := I) g p (show TangentSpace I p from u) : M))
         =ᶠ[𝓝 w]
-      ((chartFlowCandidate (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) := by
+      ((chartFlowSlice (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) := by
     have hsmul_cont : Continuous (fun u : E => (1 / t') • u) :=
       continuous_const.smul continuous_id
     have hpre : (fun u : E => (1 / t') • u) ⁻¹' Metric.ball (0 : E) ρ ∈ 𝓝 w := by
@@ -915,7 +915,7 @@ private lemma expMap_contMDiffAtN_of_chartData
   set x₀ : E := extChartAt I p p with hx₀_def
   have hmatch : ∀ v : E, v ∈ Metric.ball (0 : E) ρ →
       (expMap (I := I) g p (show TangentSpace I p from (t' • v)) : M) =
-        chartFlowCandidate (I := I) Φ p t' v := by
+        chartFlowSlice (I := I) Φ p t' v := by
     intro v hv_ball
     have hΦ_init_v_at : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) :=
       hΦ_init_v v hv_ball
@@ -938,7 +938,7 @@ private lemma expMap_contMDiffAtN_of_chartData
     have hproj_def :=
       chartFlowOrbitLiftRescaled_proj (I := I) (p := p) (v := v) (t' := t')
         (Φ := Φ) (s := 1) hΦ_target_t'
-    have hcand_unfold : chartFlowCandidate (I := I) Φ p t' v =
+    have hcand_unfold : chartFlowSlice (I := I) Φ p t' v =
         (extChartAt I p).symm (Φ (((x₀, v) : E × E), t')).1 := rfl
     have hproj_def' :
         (chartFlowOrbitLiftRescaled (I := I) Φ p t' v 1).proj =
@@ -963,8 +963,8 @@ private lemma expMap_contMDiffAtN_of_chartData
     have := hΦ_target v₁ hv₁_ball t' (Set.Ioo_subset_Icc_self ht'_in_Ioo)
     exact this.1
   have hcand_cd : ContMDiffAt 𝓘(ℝ, E) I ((n : ℕ∞) : WithTop ℕ∞)
-      (chartFlowCandidate (I := I) Φ p t') v₁ :=
-    chartFlowCandidate_contMDiffAt_nat_of_mem_ball (I := I) (p := p) (Φ := Φ)
+      (chartFlowSlice (I := I) Φ p t') v₁ :=
+    chartFlowSlice_contMDiffAt_nat_of_mem_ball (I := I) (p := p) (Φ := Φ)
       (ρ := ρ) (T := T) (t' := t') (v₁ := v₁) n hv₁_norm ht'_in_Ioo hΦ_cd hval_int
   have hsmul_cd : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, E) ((n : ℕ∞) : WithTop ℕ∞)
       (fun u : E => (1 / t') • u) := by
@@ -983,16 +983,16 @@ private lemma expMap_contMDiffAtN_of_chartData
   have hsmul_w_eq : (fun u : E => (1 / t') • u) w = v₁ := by
     rw [hv₁_def]
   have hcand_cd' : ContMDiffAt 𝓘(ℝ, E) I ((n : ℕ∞) : WithTop ℕ∞)
-      (chartFlowCandidate (I := I) Φ p t')
+      (chartFlowSlice (I := I) Φ p t')
       ((fun u : E => (1 / t') • u) w) := by
     rw [hsmul_w_eq]; exact hcand_cd
   have hcomp : ContMDiffAt 𝓘(ℝ, E) I ((n : ℕ∞) : WithTop ℕ∞)
-      ((chartFlowCandidate (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) w :=
+      ((chartFlowSlice (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) w :=
     hcand_cd'.comp w hsmul_at
   have hev :
       (fun u : E => (expMap (I := I) g p (show TangentSpace I p from u) : M))
         =ᶠ[𝓝 w]
-      ((chartFlowCandidate (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) := by
+      ((chartFlowSlice (I := I) Φ p t') ∘ (fun u : E => (1 / t') • u)) := by
     have hsmul_cont : Continuous (fun u : E => (1 / t') • u) :=
       continuous_const.smul continuous_id
     have hpre : (fun u : E => (1 / t') • u) ⁻¹' Metric.ball (0 : E) ρ ∈ 𝓝 w := by

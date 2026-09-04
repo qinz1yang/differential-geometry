@@ -21,7 +21,7 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad covGrad_zero unitTensor unitModel
-    reindexCoeffGen reindexCoeffGen_toSection reindexCoeffFibGen reindexCoeffFibGen_apply)
+    reindexCoefficientInputSlots reindexCoefficientInputSlots_toSection reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open TensorMultilinear
 
@@ -37,7 +37,7 @@ def ipTracePerm : Equiv.Perm (Fin 3) := Equiv.swap 1 2
 
 noncomputable def ipLowCoeff (g : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 3 1 :=
-  reindexCoeffGen (I := I) (M := M) g 3 1
+  reindexCoefficientInputSlots (I := I) (M := M) g 3 1
     (cometricDoubleTraceField (I := I) g 1) ipTracePerm
 
 noncomputable def ipLowCc (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g 0 1) :
@@ -293,7 +293,7 @@ theorem ipLowCc_toSec_ip (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g
   rw [hRHS]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from
       (ipLowCc (I := I) (M := M) g om).toSection x) A) =
-      reindexCoeffFibGen (I := I) 3 1 ipTracePerm x
+      reindexCoefficientInputSlotsFiber (I := I) 3 1 ipTracePerm x
         (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 1 I x from
           (cometricDoubleTraceField (I := I) g 1).toSection x)
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
@@ -303,7 +303,7 @@ theorem ipLowCc_toSec_ip (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
       (slotExtend (I := I) (M := M) g 1 2
         (slotExtend (I := I) (M := M) g 0 1 om)).toSection x) A with hS_def
-  rw [reindexCoeffFibGen_apply (I := I) 3 1 ipTracePerm x
+  rw [reindexCoefficientInputSlotsFiber_apply (I := I) 3 1 ipTracePerm x
     (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 1 I x from
       (cometricDoubleTraceField (I := I) g 1).toSection x) S]
   rw [show ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 1 I x from
@@ -444,7 +444,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ipLow_le (g : SmoothRiemannianMetr
       (mul_nonneg hn_nn hn_nn), ?_⟩
   intro om l x
   set Carm : SmoothCcTensor g 3 1 :=
-    reindexCoeffGen (I := I) (M := M) g 3 1
+    reindexCoefficientInputSlots (I := I) (M := M) g 3 1
       (cometricDoubleTraceField (I := I) g 1) ipTracePerm with hCarm_def
   set P : SmoothCcTensor g 2 3 :=
     slotExtend (I := I) (M := M) g 1 2 (slotExtend (I := I) (M := M) g 0 1 om) with hP_def
@@ -458,7 +458,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ipLow_le (g : SmoothRiemannianMetr
             (cometricDoubleTraceField (I := I) g 1)).toSection x) := by
     intro i
     rw [hCarm_def]
-    exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g 3 1
+    exact riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g 3 1
       (cometricDoubleTraceField (I := I) g 1) ipTracePerm i x
   have hP_jets : ∀ m : ℕ,
       riemannianFiberNormSq (I := I) (M := M) g 2 (3 + m) x

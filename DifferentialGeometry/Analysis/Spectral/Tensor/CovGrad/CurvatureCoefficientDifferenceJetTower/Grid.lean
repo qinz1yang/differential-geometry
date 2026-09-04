@@ -148,7 +148,7 @@ lemma curvCoeffSlot_one_backgroundDifference_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 1 -
         ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 1 =
-      reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
@@ -174,18 +174,18 @@ lemma curvCoeffSlot_one_backgroundDifference_eq
   rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x) D =
       ricciOrderZeroCurvCoeffFibSlot (I := I) g₀ 1 x D from rfl]
   rw [ricciOrderZeroCurvCoeffFibSlot_toModel, ricciOrderZeroCurvCoeffFibSlot_toModel]
-  rw [show ((reindexCoeffGen (I := I) (M := M) g₀ 2 2
+  rw [show ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
         (Equiv.swap (0 : Fin 2) 1)).toSection x) D =
-      reindexCoeffFibGen (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+      reindexCoefficientInputSlotsFiber (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
         (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (slotInsertEndoCc (I := I) (M := M) g₀ 1
               (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))).toSection x) D
       from rfl]
-  rw [reindexCoeffFibGen_apply]
+  rw [reindexCoefficientInputSlotsFiber_apply]
   rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply, slotInsertEndoCc_toSection,
     slotInsertEndoFib_apply_eval, Tensor0SSpace.toModel_ofModel,
@@ -215,7 +215,7 @@ theorem ricciOrderZeroCurvCoeff_backgroundDifference_decomp
         ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀ =
       slotInsertEndoCc (I := I) (M := M) g₀ 1
           (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁) +
-        reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (slotInsertEndoCc (I := I) (M := M) g₀ 1
               (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))

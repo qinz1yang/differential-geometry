@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Operator.Mix
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Iterates
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Defs
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
-import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SimpLemmas
+import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SmoothSectionMap
 import Mathlib.Topology.Algebra.Module.LinearPMap
 import Mathlib.LinearAlgebra.LinearPMap
 import Mathlib.LinearAlgebra.Basis.VectorSpace

@@ -127,7 +127,7 @@ theorem lCut_split
   ext y
   constructor
   · rintro ⟨Z, hcut, rfl⟩
-    rcases lCut_alt S hS T x Z tau hcut with hconj | ⟨W, hWne, hWmin, hend⟩
+    rcases isLConj_or_exists_distinct_minimizer_same_endpoint S hS T x Z tau hcut with hconj | ⟨W, hWne, hWmin, hend⟩
     · exact Or.inl ⟨Z, hcut, hconj, rfl⟩
     · exact Or.inr ⟨Z, hcut, W, hWne, hWmin, hend, rfl⟩
   · rintro (⟨Z, hcut, hconj, rfl⟩ | ⟨Z, hcut, W, hWne, hWmin, hend, rfl⟩)

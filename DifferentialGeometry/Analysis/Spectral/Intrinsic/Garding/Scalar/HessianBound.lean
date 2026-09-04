@@ -164,7 +164,7 @@ theorem grad_energy_eq
       tensorL2Norm_sq_toFun (I := I) (M := M) g 0 1
         (covGrad (I := I) (M := M) g 0 0 S)]
     simpa only [L] using
-      (tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_gen
+      (tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_covariantTensor
         (I := I) (M := M) g 0 S)
   calc
     ∫ x, normGradSqFun (I := I) g

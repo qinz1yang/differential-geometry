@@ -830,7 +830,7 @@ noncomputable def toBranch
   rcases h with ⟨_, _, _, _, _, _⟩
   rfl
 
-theorem full_transport
+theorem branch_coordinate_transport
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1076,7 +1076,7 @@ theorem chartDiagonalInverseCoordinates_normalPair
     rw [c.tangentHome_source]
     exact hzNormal
   unfold DiagonalInverseBranch.chartDiagonalInverseCoordinates
-  rw [(full_transport (I := I) Y hcomplete hconn x hq h hf).2.2 w hw]
+  rw [(branch_coordinate_transport (I := I) Y hcomplete hconn x hq h hf).2.2 w hw]
   change (c.tangentHome.symm (c.tangent (e.symm w))).2 = (e.symm w).2
   rw [← c.tangentHome_apply (e.symm w) hzNormal]
   rw [c.tangentHome.left_inv hzSource]
@@ -1296,7 +1296,7 @@ theorem inv_pair_normal
     (fun y : Y.M ↦ TangentSpace I y) := Y.riemBundle_cont (I := I)
   let : EMetricSpace Y.M := Y.emetricSpace (I := I)
   let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-  rw [(full_transport (I := I) Y hcomplete hconn x hq h hf).2.2 w hw]
+  rw [(branch_coordinate_transport (I := I) Y hcomplete hconn x hq h hf).2.2 w hw]
   congr 1
   exact Prod.ext (symm_fst_eq (I := I) Y hcomplete hconn x h hf hw) rfl
 
@@ -1492,7 +1492,7 @@ theorem target_of_chart_dom
   let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
   intro hy hp hdom
   let P := normalPairHome (I := I) Y x
-  have htransport := full_transport (I := I) Y hcomplete hconn x hq h hf
+  have htransport := branch_coordinate_transport (I := I) Y hcomplete hconn x hq h hf
   have himage : (y, p) ∈ P '' e.target := by
     change (y, p) ∈
       (c2RadiusNormalBallChart (I := I) Y x).pairHome '' e.target

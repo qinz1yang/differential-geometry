@@ -61,7 +61,7 @@ private lemma chart_source_subset_preimage_target (α : M) :
     rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx
   exact (extChartAt I α).map_source hxsrc
 
-lemma gradChartCoeffWithin_contMDiffOn_full
+lemma gradChartCoeffWithin_contMDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (i : Fin (Module.finrank ℝ E)) :
@@ -91,7 +91,7 @@ lemma gradChartCoeffWithin_contMDiffOn_full
       chart_source_subset_preimage_target (I := I) α
     exact hpartialM.comp hchart hsubset
 
-lemma gradChartLocalWithin_contMDiffOn_total_full
+lemma gradChartLocalWithin_contMDiffOn_total
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -101,7 +101,7 @@ lemma gradChartLocalWithin_contMDiffOn_total_full
   have hcoeff : ∀ i, ContMDiffOn I 𝓘(ℝ) ∞
       (gradChartCoeffWithin (I := I) g α f i)
       (chartAt H α).source :=
-    fun i => gradChartCoeffWithin_contMDiffOn_full (I := I) g α hf i
+    fun i => gradChartCoeffWithin_contMDiffOn (I := I) g α hf i
   have hbasis : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
       (chartAt H α).source := by
@@ -127,14 +127,14 @@ private lemma gradFun_eq_gradChartLocalWithin_on_chart_source
   intro y hy
   exact (gradChartLocalWithin_eq_gradFun (I := I) g α hf hy).symm
 
-lemma gradFun_contMDiffOn_chart_source_full
+lemma gradFun_contMDiffOn_chart_source
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E x (gradFun (I := I) g f x))
       (chartAt H α).source := by
   have hsmooth :=
-    gradChartLocalWithin_contMDiffOn_total_full (I := I) g α hf
+    gradChartLocalWithin_contMDiffOn_total (I := I) g α hf
   have hcongr := gradFun_eq_gradChartLocalWithin_on_chart_source
     (I := I) g α hf
   refine hsmooth.congr ?_
@@ -144,7 +144,7 @@ lemma gradFun_contMDiffOn_chart_source_full
     TotalSpace.mk' E y (gradChartLocalWithin (I := I) g α f y)
   rw [h]
 
-theorem gradFun_contMDiff_total_full
+theorem gradFun_contMDiff_total
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -154,7 +154,7 @@ theorem gradFun_contMDiff_total_full
   intro x _
   refine ⟨(chartAt H x).source, (chartAt H x).open_source,
     mem_chart_source H x, ?_⟩
-  have hsm := gradFun_contMDiffOn_chart_source_full
+  have hsm := gradFun_contMDiffOn_chart_source
     (I := I) g x hf
   have hset_eq : univ ∩ (chartAt H x).source = (chartAt H x).source :=
     Set.univ_inter _
@@ -178,40 +178,40 @@ variable {M : Type*} [TopologicalSpace M]
 
 open DifferentialGeometry.Integral.Measure
 
-theorem grad_g_smooth_section_full
+theorem gradFun_contMDiffSection
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiff (modelWithCornersEuclideanHalfSpace n)
       (modelWithCornersEuclideanHalfSpace n).tangent ∞
       (fun x : M => TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) x
         (gradFun (I := modelWithCornersEuclideanHalfSpace n) g f x)) :=
-  gradFun_contMDiff_total_full
+  gradFun_contMDiff_total
     (I := modelWithCornersEuclideanHalfSpace n) (M := M) g hf
 
-def gradGFullSection
+def gradFunSection
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f) :
     Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
       EuclideanSpace ℝ (Fin n),
       (TangentSpace (modelWithCornersEuclideanHalfSpace n) : M → Type _)⟯ :=
   ⟨fun x : M => gradFun (I := modelWithCornersEuclideanHalfSpace n) g f x,
-    grad_g_smooth_section_full (M := M) (n := n) g hf⟩
+    gradFun_contMDiffSection (M := M) (n := n) g hf⟩
 
-@[simp] lemma grad_g_full_section_apply
+@[simp] lemma gradFunSection_apply
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
     (x : M) :
-    (gradGFullSection (M := M) (n := n) g hf :
+    (gradFunSection (M := M) (n := n) g hf :
       Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
         EuclideanSpace ℝ (Fin n),
         (TangentSpace (modelWithCornersEuclideanHalfSpace n) : M → Type _)⟯) x =
       gradFun (I := modelWithCornersEuclideanHalfSpace n) g f x := rfl
 
-@[simp] lemma grad_g_full_section_coe
+@[simp] lemma gradFunSection_eq_gradGWithBoundary
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
     (x : M) :
-    (gradGFullSection (M := M) (n := n) g hf :
+    (gradFunSection (M := M) (n := n) g hf :
       Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
         EuclideanSpace ℝ (Fin n),
         (TangentSpace (modelWithCornersEuclideanHalfSpace n) : M → Type _)⟯) x =

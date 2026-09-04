@@ -459,7 +459,7 @@ private theorem coeffCap
     exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
       (I := I) (M := M) g₀ b 2
   obtain ⟨C2, hC2_nn, hC2⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs
       (I := I) (M := M) g₀ (a + 2)
   have hW_nn : (0 : ℝ) ≤ Csh ^ 2 * ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 2),
       Kc j * (1 + (C2 * R₀) ^ 2) := by
@@ -550,9 +550,9 @@ theorem firstOrderAction_ladder_background
     exists_coeffAction_iteratedCovGrad_l2_coeffJetEnvelope_dataJetWindow_le
       (I := I) (M := M) g a (by omega) hR₀ Kc1 hKc1_nn Λ1 hΛ1_nn
   choose Chs hChs_nn hhs using fun n : ℕ =>
-    exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general (I := I) (M := M) g n
+    exists_smoothCcToTensorHs_le_iteratedCovGrad_sum (I := I) (M := M) g n
   choose Cjet hCjet_nn hjet using fun n : ℕ =>
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g n
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g n
   refine ⟨fun m => Chs m * (∑ q ∈ Finset.range (m + 1), (Cm0 q + Cm1 q)) *
       Cjet (m + 1),
     fun m => mul_nonneg (mul_nonneg (hChs_nn m)

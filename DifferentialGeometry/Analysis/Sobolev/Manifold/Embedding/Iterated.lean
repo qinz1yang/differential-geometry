@@ -1074,7 +1074,7 @@ end RegularExponent
 
 namespace IteratedC0
 
-private theorem statement_holds_aux :
+private theorem statement_holds :
     ∀ (k : ℕ),
       ∀ {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
         [FiniteDimensional ℝ E]
@@ -1200,7 +1200,7 @@ theorem iterated_sobolev_embedding_chart_C0_of_regular_exponent
     have : ((j + 1 : ℕ) : ℝ) = (j + 1 : ℝ) := by push_cast; ring
     rw [this] at hkp
     exact hkp
-  exact IteratedC0.statement_holds_aux j g hp_one hreg hkp' hu_meas hu
+  exact IteratedC0.statement_holds j g hp_one hreg hkp' hu_meas hu
 
 theorem sobolev_embedding_chart_C0_Hk
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

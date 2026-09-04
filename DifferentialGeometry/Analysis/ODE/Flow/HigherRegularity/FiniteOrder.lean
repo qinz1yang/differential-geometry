@@ -297,36 +297,6 @@ theorem contDiffOn_flow_of_spatial_smooth_seq
 
 end GeneralHeadline
 
-section PublicHeadline
-
-variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax : ℝ} {Φ : E × ℝ → E}
-
-theorem contDiffOn_flow_of_isLocalFlow_of_contDiff_general
-    (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
-    (k : ℕ)
-    (hf_Ck : ContDiffOn ℝ (k : ℕ∞) (uncurry f) (Set.univ : Set (ℝ × E)))
-    {T_out T_mid T M : ℝ} (hT : 0 < T) (hT_lt_mid : T < T_mid) (hT_mid_lt_out : T_mid < T_out)
-    (hM : 0 ≤ M) (hMT_mid : M * T_mid < 1)
-    (hsub : Icc (t₀ - T_out) (t₀ + T_out) ⊆ Icc tmin tmax)
-    {ρ_out ρ_mid ρ : ℝ≥0} {r' : ℝ≥0} (hr' : 0 < r')
-    (hρ_lt_mid : (ρ : ℝ) < (ρ_mid : ℝ)) (hρ_mid_lt_out : (ρ_mid : ℝ) < (ρ_out : ℝ))
-    (hρρ' : (ρ_mid : ℝ) + (r' : ℝ) ≤ (r : ℝ))
-    (hρ_out_le_r : (ρ_out : ℝ) ≤ (r : ℝ))
-    (hA_bd : ∀ x ∈ closedBall x₀ (ρ_out : ℝ), ∀ τ ∈ Icc (t₀ - T_out) (t₀ + T_out),
-      ‖fderiv ℝ (f τ) (Φ ⟨x, τ⟩)‖ ≤ M)
-    (Lsp_seq : ℕ → E × ℝ → (E →L[ℝ] E))
-    (hLsp_smooth : ∀ j : ℕ, j + 1 ≤ k →
-      ContDiffOn ℝ (j : ℕ∞) (Lsp_seq j)
-        ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)))
-    (hLsp_eq : ∀ j : ℕ, j + 1 ≤ k →
-      ∀ q ∈ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)),
-      fderiv ℝ Φ q = (Lsp_seq j q).coprod (timePieceFn f Φ q)) :
-    ContDiffOn ℝ (k : ℕ∞) Φ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)) :=
-  contDiffOn_flow_of_spatial_smooth_seq hΦ hT hT_lt_mid hT_mid_lt_out hM hMT_mid hsub hr'
-    hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd k hf_Ck Lsp_seq hLsp_smooth hLsp_eq
-
-end PublicHeadline
-
 end Flow
 end ODE
 end Analysis

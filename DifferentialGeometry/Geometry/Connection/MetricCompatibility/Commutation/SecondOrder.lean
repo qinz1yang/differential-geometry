@@ -214,7 +214,7 @@ lemma covGrad_covDeriv_innerSlot_secondOrder_eq_abstract
   classical
   set nab := Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g) with hnab
   set V := unitEvalSection (I := I) (M := M) g s S with hV
-  rw [tensor0S_curry_covGradBundleEquiv_unit_genVal (I := I) (M := M) s x
+  rw [tensor0S_curry_covGradBundleEquiv_unit (I := I) (M := M) s x
     ((tensorCov (I := I) g 0 s).toFun
       (fun y : M => tensorSecondCovDeriv (I := I) g 0 s B B
         (fun z : M => S.toSection z) y) x) (w x)]
@@ -254,14 +254,14 @@ lemma covGrad_covDeriv_innerSlot_secondOrder_eq_abstract
   rw [show (fun y : M => tensorSecondCovDeriv (I := I) g 0 s B B
         (fun z : M => S.toSection z) y) = (fun y : M => σ y) from
     funext (fun y => (hσapp y).symm)]
-  rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g s σ x (w x)]
+  rw [covDeriv_unit_eval_eq (I := I) (M := M) g s σ x (w x)]
   rw [show (fun y : M => (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace s I y from σ y)
         (unitZeroSec (I := I) (M := M) y)) =
       (fun y : M => nab.toFun (covApply nab B V) y (B y) - nab.toFun V y
         ((LeviCivita (I := I) g).toFun B y (B y))) from by
     funext y
     rw [hσapp y]
-    exact tensorSecondCovDeriv_unit_eval_genVal (I := I) (M := M) g s S hB y]
+    exact tensorSecondCovDeriv_unit_eval (I := I) (M := M) g s S hB y]
   have hVsm : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel s ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
         (E := fun z : M => Tensor0SSpace s I z) y (V y)) :=
@@ -280,14 +280,14 @@ lemma covGrad_covDeriv_innerSlot_secondOrder_eq_abstract
   simp only [sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-lemma curry_covApply_unitGradFieldGen_eq_abstractHess
+lemma curry_covApply_unitGradFieldCovariantTensor_eq_abstractHess
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {B w : Π b : M, TangentSpace I b}
     (hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% B))
     (hw : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% w)) (y : M) :
     Tensor0SNabla.curriedSection I M
         (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g)) B
-          (unitGradFieldGen (I := I) (M := M) g s S)) y (w y) =
+          (unitGradFieldCovariantTensor (I := I) (M := M) g s S)) y (w y) =
       (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)).toFun
           (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)) w
             (unitEvalSection (I := I) (M := M) g s S)) y (B y) -
@@ -297,7 +297,7 @@ lemma curry_covApply_unitGradFieldGen_eq_abstractHess
   classical
   set nab1 := Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) with hn1
   set nab := Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g) with hn
-  set U := unitGradFieldGen (I := I) (M := M) g s S with hU
+  set U := unitGradFieldCovariantTensor (I := I) (M := M) g s S with hU
   set V := unitEvalSection (I := I) (M := M) g s S with hV
   have hcov : Tensor0SNabla.curriedSection I M (covApply nab1 B U) y (w y) =
       tensor0SCurry (I := I) (M := M) s y (nab1.toFun U y (B y)) (w y) := by
@@ -305,10 +305,10 @@ lemma curry_covApply_unitGradFieldGen_eq_abstractHess
   rw [hcov]
   rw [curry_covDeriv_succ_eq_covDeriv_curriedSection_sub_connCorrection (I := I) (M := M) g s U
     (Vfield := B) (Y := w) (x := y)
-    ((contMDiff_curried_unitGradFieldGen (I := I) (M := M) g s S y).mdifferentiableAt (by simp))
+    ((contMDiff_curried_unitGradFieldCovariantTensor (I := I) (M := M) g s S y).mdifferentiableAt (by simp))
     ((hB y).mdifferentiableAt (by simp)) ((hw y).mdifferentiableAt (by simp))]
-  rw [curriedSection_unitGradFieldGen_eq_covApply_abstract (I := I) (M := M) g s S w]
-  rw [curriedSection_unitGradFieldGen_apply (I := I) (M := M) g s S y
+  rw [curriedSection_unitGradFieldCovariantTensor_eq_covApply_abstract (I := I) (M := M) g s S w]
+  rw [curriedSection_unitGradFieldCovariantTensor_apply (I := I) (M := M) g s S y
     ((LeviCivita (I := I) g).toFun w y (B y))]
   rfl
 
@@ -347,13 +347,13 @@ lemma covGrad_covDeriv_leadingSlot_secondOrder_eq_abstract
   have hUsm : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel (s + 1) ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (Tensor0SModel (s + 1) ℝ E)
         (E := fun z : M => Tensor0SSpace (s + 1) I z) y
-        (unitGradFieldGen (I := I) (M := M) g s S y)) :=
-    contMDiff_unitGradFieldGen (I := I) (M := M) g s S
+        (unitGradFieldCovariantTensor (I := I) (M := M) g s S y)) :=
+    contMDiff_unitGradFieldCovariantTensor (I := I) (M := M) g s S
   have hBUsm : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel (s + 1) ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (Tensor0SModel (s + 1) ℝ E)
         (E := fun z : M => Tensor0SSpace (s + 1) I z) y
         (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
-          (LeviCivita (I := I) g)) B (unitGradFieldGen (I := I) (M := M) g s S) y)) :=
+          (LeviCivita (I := I) g)) B (unitGradFieldCovariantTensor (I := I) (M := M) g s S) y)) :=
     covApply_contMDiff
       (cov := Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
       hB hUsm
@@ -362,33 +362,33 @@ lemma covGrad_covDeriv_leadingSlot_secondOrder_eq_abstract
         (E := fun z : M => (TangentSpace I z →L[ℝ] Tensor0SSpace s I z)) y
         (Tensor0SNabla.curriedSection I M
           (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
-            (LeviCivita (I := I) g)) B (unitGradFieldGen (I := I) (M := M) g s S)) y)) :=
+            (LeviCivita (I := I) g)) B (unitGradFieldCovariantTensor (I := I) (M := M) g s S)) y)) :=
     (Tensor0SNabla.contMDiff_curriedSection_iff_section (I := I) (M := M)
       (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
-        (LeviCivita (I := I) g)) B (unitGradFieldGen (I := I) (M := M) g s S))).mp hBUsm
-  rw [tensorSecondCovDeriv_covGrad_unit_eval_genVal (I := I) (M := M) g s S hB x]
+        (LeviCivita (I := I) g)) B (unitGradFieldCovariantTensor (I := I) (M := M) g s S))).mp hBUsm
+  rw [tensorSecondCovDeriv_covGrad_unit_eval (I := I) (M := M) g s S hB x]
   rw [map_sub, sub_apply]
   rw [curry_covDeriv_succ_eq_covDeriv_curriedSection_sub_connCorrection (I := I) (M := M) g s
     (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
-      (LeviCivita (I := I) g)) B (unitGradFieldGen (I := I) (M := M) g s S))
+      (LeviCivita (I := I) g)) B (unitGradFieldCovariantTensor (I := I) (M := M) g s S))
     (Vfield := B) (Y := w) (x := x)
     ((hcurBU x).mdifferentiableAt (by simp))
     ((hB x).mdifferentiableAt (by simp)) ((hw x).mdifferentiableAt (by simp))]
   rw [show (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g)).toFun
-        (unitGradFieldGen (I := I) (M := M) g s S) x
+        (unitGradFieldCovariantTensor (I := I) (M := M) g s S) x
         ((LeviCivita (I := I) g).toFun B x (B x)) =
       (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g)).toFun
-        (unitGradFieldGen (I := I) (M := M) g s S) x
+        (unitGradFieldCovariantTensor (I := I) (M := M) g s S) x
         ((covApply (LeviCivita (I := I) g) B B) x) from rfl]
   rw [curry_covDeriv_succ_eq_covDeriv_curriedSection_sub_connCorrection (I := I) (M := M) g s
-    (unitGradFieldGen (I := I) (M := M) g s S)
+    (unitGradFieldCovariantTensor (I := I) (M := M) g s S)
     (Vfield := covApply (LeviCivita (I := I) g) B B) (Y := w) (x := x)
-    ((contMDiff_curried_unitGradFieldGen (I := I) (M := M) g s S x).mdifferentiableAt (by simp))
+    ((contMDiff_curried_unitGradFieldCovariantTensor (I := I) (M := M) g s S x).mdifferentiableAt (by simp))
     ((covApply_contMDiff (cov := LeviCivita (I := I) g) hB hB x).mdifferentiableAt (by simp))
     ((hw x).mdifferentiableAt (by simp))]
   rw [show (fun y : M => Tensor0SNabla.curriedSection I M
         (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
-          (LeviCivita (I := I) g)) B (unitGradFieldGen (I := I) (M := M) g s S)) y (w y)) =
+          (LeviCivita (I := I) g)) B (unitGradFieldCovariantTensor (I := I) (M := M) g s S)) y (w y)) =
       (fun y : M =>
         (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)).toFun
             (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)) w
@@ -396,14 +396,14 @@ lemma covGrad_covDeriv_leadingSlot_secondOrder_eq_abstract
           (Tensor0SNabla.tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)).toFun
             (unitEvalSection (I := I) (M := M) g s S) y
             ((covApply (LeviCivita (I := I) g) B w) y)) from
-    funext (fun y => curry_covApply_unitGradFieldGen_eq_abstractHess (I := I) (M := M) g s S hB hw
+    funext (fun y => curry_covApply_unitGradFieldCovariantTensor_eq_abstractHess (I := I) (M := M) g s S hB hw
       y)]
   rw [show ((LeviCivita (I := I) g).toFun w x (B x)) = (covApply (LeviCivita (I := I) g) B w x)
     from rfl]
-  rw [curry_covApply_unitGradFieldGen_eq_abstractHess (I := I) (M := M) g s S
+  rw [curry_covApply_unitGradFieldCovariantTensor_eq_abstractHess (I := I) (M := M) g s S
     (w := covApply (LeviCivita (I := I) g) B w) hB hCwsm x]
-  rw [curriedSection_unitGradFieldGen_eq_covApply_abstract (I := I) (M := M) g s S w]
-  rw [curriedSection_unitGradFieldGen_apply (I := I) (M := M) g s S x
+  rw [curriedSection_unitGradFieldCovariantTensor_eq_covApply_abstract (I := I) (M := M) g s S w]
+  rw [curriedSection_unitGradFieldCovariantTensor_apply (I := I) (M := M) g s S x
     ((LeviCivita (I := I) g).toFun w x ((covApply (LeviCivita (I := I) g) B B) x))]
   have hVsm : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel s ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (Tensor0SModel s ℝ E)

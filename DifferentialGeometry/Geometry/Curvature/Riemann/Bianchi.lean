@@ -998,10 +998,10 @@ theorem contracted_bianchi
 omit [FiniteDimensional ℝ E] in
 theorem dR_zero_nablaEin3
     {x : M}
-    (g : SmoothMetricGen I M)
+    (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (gInv : Fin 3 -> Fin 3 -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (nablaRic :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (dScalar :
@@ -1013,14 +1013,14 @@ theorem dR_zero_nablaEin3
     ∀ X : TangentSpace I x, dScalar (fun _ : Fin 1 => X) = 0 := by
   classical
   intro X
-  let α := cotangentToDualGen (I := I) dScalar
+  let α := cotangentToDual (I := I) dScalar
   have hcoord :
       dScalar (fun _ : Fin 1 => X) =
         ∑ i : Fin 3, basis.repr X i *
           dScalar (fun _ : Fin 1 => basis i) := by
     calc
       dScalar (fun _ : Fin 1 => X) = α X := by
-        simp [α, cotangentToDual_apply_gen]
+        simp [α, cotangentToDual_apply]
       _ = α (∑ i : Fin 3, basis.repr X i • basis i) := by
         rw [basis.sum_repr]
       _ = ∑ i : Fin 3, basis.repr X i *
@@ -1028,7 +1028,7 @@ theorem dR_zero_nablaEin3
         rw [map_sum]
         apply Finset.sum_congr rfl
         intro i _hi
-        simp [α, cotangentToDual_apply_gen, smul_eq_mul]
+        simp [α, cotangentToDual_apply, smul_eq_mul]
   have htrace :
       (∑ i : Fin 3, ∑ j : Fin 3,
         gInv i j * nablaRic (vec3 (I := I) (basis i) (basis j) X)) =

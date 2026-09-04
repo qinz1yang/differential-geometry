@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.IteratedCovariantDerivativeFields
-import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantDerivative
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -34,7 +34,7 @@ theorem nabla_roughLap0S_nablaKRm
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) (S.base.metric t) x basis gInv)
     (X : TangentSpace I x) (tail : Fin (4 + k) -> TangentSpace I x) :
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (4 + k) (S.family.connection t)
@@ -44,7 +44,7 @@ theorem nabla_roughLap0S_nablaKRm
         gInv i j *
           nablaKRm04Field (I := I) S t (k + 3) x
             (Fin.cons X (metricTraceInput (I := I) (basis i) (basis j) tail)) := by
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
       (S.family.connection t) (S.base.metric t) := by
     simpa [SolutionFamily.connection, metricCov] using
       leviCivitaConnectionOfMetric_isMetricCompatible (I := I) (S.base.metric t)
@@ -65,7 +65,7 @@ theorem spatialComm_nablaKRm_traceDiff
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) (S.base.metric t) x basis gInv)
     (X : TangentSpace I x) (tail : Fin (4 + k) -> TangentSpace I x) :
     metricTraceFirstTwo0STensor (I := I) (S.base.metric t)
         (nablaKRm04Field (I := I) S t (k + 3) x)
@@ -104,7 +104,7 @@ theorem spatialComm_nablaKRm_split
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) (S.base.metric (t : Real)) x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) (S.base.metric (t : Real)) x basis gInv)
     (X : TangentSpace I x) (tail : Fin (4 + k) -> TangentSpace I x) :
     metricTraceFirstTwo0STensor (I := I) (S.base.metric (t : Real))
         (nablaKRm04Field (I := I) S (t : Real) (k + 3) x)

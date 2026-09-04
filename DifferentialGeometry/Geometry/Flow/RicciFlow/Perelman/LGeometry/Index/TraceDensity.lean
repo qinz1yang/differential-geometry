@@ -154,7 +154,7 @@ private theorem sum_hessian_diag
         (leviCivita_contMDiffCovariantDerivativeLocally (I := I) g)
         f hf x (vec2 (e i) (e i)) =
       laplacian (I := I) (LeviCivita (I := I) g) g f x := by
-  have hmc : IsMetricCompatibleGen (I := I) (LeviCivita (I := I) g) g := by
+  have hmc : IsMetricCompatible (I := I) (LeviCivita (I := I) g) g := by
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
   have hreal := scalarLap_smooth (I := I) (M := M)

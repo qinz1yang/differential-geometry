@@ -645,7 +645,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
       (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
         reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
       Ct3 ^ 2 * u := by
-    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp3'
   have hd4 : covariantJetNormSq (I := I) (M := M) g 2 (S4T - S4U) ≤
       2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)) := by
@@ -724,7 +724,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
       (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
         reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
       Ct4 ^ 2 * u := by
-    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp4'
   have hd2 : covariantJetNormSq (I := I) (M := M) g 2 (S2T - S2U) ≤
       2 * (K2 R * ((pl2 * pl2) * u) + K23 R * ((pl2 * pl2) * u)) := by
@@ -748,7 +748,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
       (reindexedPureTrace (I := I) (M := M) g gmT 2 σlast -
         reindexedPureTrace (I := I) (M := M) g gmU 2 σlast) ≤
       Ct2 ^ 2 * u := by
-    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp2'
   have hhalf : covariantJetNormSq (I := I) (M := M) g 2
       (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmT g σlast -
@@ -1805,7 +1805,7 @@ theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroVectorBundle_covariantJetNo
     exact htb1'.2
   have hTr1d2 : covariantJetNormSq (I := I) (M := M) g 2 (Tr1T - Tr1U) ≤
       Ct1 ^ 2 * u := by
-    rw [hTr1T, hTr1U, reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [hTr1T, hTr1U, reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp1'
   have hWTform : WT = ccOperatorFieldComp (I := I) (M := M) g 0 3 1 Tr1T cdT := by
     rw [hWTdef, hTr1T, hcdT, deTurckVectorFieldCovector_eq_reindexedPureTrace_ccOperatorFieldComp]
@@ -2595,7 +2595,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
       (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
         reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
       Ct3 ^ 2 * u := by
-    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp3'
   have hd4 : covariantJetNormSq (I := I) (M := M) g 2 (S4T - S4U) ≤
       2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)) := by
@@ -2674,7 +2674,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
       (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
         reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
       Ct4 ^ 2 * u := by
-    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp4'
   have hd2 : covariantJetNormSq (I := I) (M := M) g 2 (S2T - S2U) ≤
       2 * (K2 R * ((pl2 * pl2) * u) + K23 R * ((pl2 * pl2) * u)) := by
@@ -2698,7 +2698,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
       (reindexedPureTrace (I := I) (M := M) g gmT 2 σlast -
         reindexedPureTrace (I := I) (M := M) g gmU 2 σlast) ≤
       Ct2 ^ 2 * u := by
-    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp2'
   have hhalf : covariantJetNormSq (I := I) (M := M) g 2
       (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmT g σlast -

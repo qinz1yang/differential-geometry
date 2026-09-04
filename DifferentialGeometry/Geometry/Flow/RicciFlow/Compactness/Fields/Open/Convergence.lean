@@ -26,7 +26,7 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-structure BumpMetricConv
+structure BumpMetricConvergence
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
@@ -58,7 +58,7 @@ structure BumpMetricConv
           metricDerivNorm (I := I) a
             (gSeqExt (I := I) Φ R bf hsrc htgt (ρ k) t) (gInf t) R x < ε
 
-namespace BumpMetricConv
+namespace BumpMetricConvergence
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
@@ -74,9 +74,9 @@ theorem comp
       letI : IsManifold I ∞ P.M := P.smooth
       Real → SmoothRiemannianMetric I P.M}
     {β ψ : Real}
-    (h : BumpMetricConv (I := I) Φ R bf hsrc htgt ρ gInf β ψ)
+    (h : BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ gInf β ψ)
     (η : Nat → Nat) (hη : StrictMono η) :
-    BumpMetricConv (I := I) Φ R bf hsrc htgt (ρ ∘ η) gInf β ψ := by
+    BumpMetricConvergence (I := I) Φ R bf hsrc htgt (ρ ∘ η) gInf β ψ := by
   refine ⟨?_, ?_⟩
   · intro K hK p ε hε
     obtain ⟨k₀, hk₀⟩ := h.conv K hK p ε hε
@@ -103,11 +103,11 @@ theorem of_compSubseq
       letI : IsManifold I ∞ P.M := P.smooth
       Real -> SmoothRiemannianMetric I P.M}
     {β ψ : Real}
-    (h : BumpMetricConv (I := I) (Φ.compSubseq ρ hρ) R
+    (h : BumpMetricConvergence (I := I) (Φ.compSubseq ρ hρ) R
       (BumpFamily.compSubseq (I := I) Φ bf ρ hρ)
       (SrcSigma.compSubseq (I := I) Φ hsrc ρ hρ)
       (TgtSigma.compSubseq (I := I) Φ htgt ρ hρ) τ gInf β ψ) :
-    BumpMetricConv (I := I) Φ R bf hsrc htgt (ρ ∘ τ) gInf β ψ := by
+    BumpMetricConvergence (I := I) Φ R bf hsrc htgt (ρ ∘ τ) gInf β ψ := by
   let : TopologicalSpace P.M := P.topology
   let : ChartedSpace H P.M := P.charted
   let : T2Space P.M := P.t2
@@ -143,9 +143,9 @@ theorem of_tail
       letI : IsManifold I ∞ P.M := P.smooth
       Real → SmoothRiemannianMetric I P.M}
     {β ψ : Real} (m : Nat)
-    (h : BumpMetricConv (I := I) Φ R bf hsrc htgt
+    (h : BumpMetricConvergence (I := I) Φ R bf hsrc htgt
       (fun k => ρ (k + m)) gInf β ψ) :
-    BumpMetricConv (I := I) Φ R bf hsrc htgt ρ gInf β ψ := by
+    BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ gInf β ψ := by
   refine ⟨?_, ?_⟩
   · intro K hK p ε hε
     obtain ⟨k₀, hk₀⟩ := h.conv K hK p ε hε
@@ -172,9 +172,9 @@ theorem mono
       letI : IsManifold I ∞ P.M := P.smooth
       Real → SmoothRiemannianMetric I P.M}
     {β ψ c d : Real}
-    (h : BumpMetricConv (I := I) Φ R bf hsrc htgt ρ gInf β ψ)
+    (h : BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ gInf β ψ)
     (hsub : Set.Icc c d ⊆ Set.Icc β ψ) :
-    BumpMetricConv (I := I) Φ R bf hsrc htgt ρ gInf c d := by
+    BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ gInf c d := by
   refine ⟨?_, ?_⟩
   · intro K hK p ε hε
     obtain ⟨k₀, hk₀⟩ := h.conv K hK p ε hε
@@ -197,9 +197,9 @@ theorem congr
       letI : IsManifold I ∞ P.M := P.smooth
       Real → SmoothRiemannianMetric I P.M}
     {β ψ : Real}
-    (h : BumpMetricConv (I := I) Φ R bf hsrc htgt ρ A β ψ)
+    (h : BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ A β ψ)
     (hAB : ∀ t, t ∈ Set.Icc β ψ → A t = B t) :
-    BumpMetricConv (I := I) Φ R bf hsrc htgt ρ B β ψ := by
+    BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ B β ψ := by
   refine ⟨?_, ?_⟩
   · intro K hK p ε hε
     obtain ⟨k₀, hk₀⟩ := h.conv K hK p ε hε
@@ -224,8 +224,8 @@ theorem unique
       letI : IsManifold I ∞ P.M := P.smooth
       Real → SmoothRiemannianMetric I P.M}
     {β₁ ψ₁ β₂ ψ₂ t : Real}
-    (hA : BumpMetricConv (I := I) Φ R bf hsrc htgt ρ A β₁ ψ₁)
-    (hB : BumpMetricConv (I := I) Φ R bf hsrc htgt ρ B β₂ ψ₂)
+    (hA : BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ A β₁ ψ₁)
+    (hB : BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ B β₂ ψ₂)
     (htA : t ∈ Set.Icc β₁ ψ₁) (htB : t ∈ Set.Icc β₂ ψ₂) :
     A t = B t := by
   let : TopologicalSpace P.M := P.topology
@@ -242,9 +242,9 @@ theorem unique
     obtain ⟨k₀, hk₀⟩ := hB.conv K hK p ε hε
     exact ⟨k₀, fun k hk => hk₀ k hk t htB⟩
 
-end BumpMetricConv
+end BumpMetricConvergence
 
-namespace ConvOut
+namespace FlowMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
@@ -254,13 +254,13 @@ theorem bump_conv
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    {β ψ : Real} (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ) :
-    BumpMetricConv (I := I) Φ R bf hsrc htgt co.φ co.gInf β ψ :=
+    {β ψ : Real} (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
+    BumpMetricConvergence (I := I) Φ R bf hsrc htgt co.φ co.gInf β ψ :=
   ⟨co.conv, co.convPt⟩
 
-end ConvOut
+end FlowMetricConvergenceData
 
-structure OpenConvOut
+structure OpenMetricConvergenceData
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
@@ -274,11 +274,11 @@ structure OpenConvOut
     letI : IsManifold I ∞ P.M := P.smooth
     Real → SmoothRiemannianMetric I P.M
   convOn : ∀ n : Nat,
-    BumpMetricConv (I := I) Φ R bf hsrc htgt φ gInf
+    BumpMetricConvergence (I := I) Φ R bf hsrc htgt φ gInf
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n)
 
-namespace OpenConvOut
+namespace OpenMetricConvergenceData
 
 noncomputable def atWindow
     {R : letI : TopologicalSpace P.M := P.topology
@@ -287,8 +287,8 @@ noncomputable def atWindow
       SmoothRiemannianMetric I P.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
     {a b t₀ : Real}
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀) (n : Nat) :
-    ConvOut (I := I) Φ R bf hsrc htgt
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀) (n : Nat) :
+    FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n) where
   φ := co.φ
@@ -306,17 +306,17 @@ theorem conv_Icc
       SmoothRiemannianMetric I P.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
     {a b t₀ c d : Real}
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (ht₀ : t₀ ∈ Set.Ioo a b) (hcd : Set.Icc c d ⊆ Set.Ioo a b) :
-    BumpMetricConv (I := I) Φ R bf hsrc htgt co.φ co.gInf c d := by
+    BumpMetricConvergence (I := I) Φ R bf hsrc htgt co.φ co.gInf c d := by
   obtain ⟨n, hn⟩ := RealTimeInterval.exists_window_superset ht₀ hcd
-  exact BumpMetricConv.mono (Φ := Φ) (co.convOn n) hn
+  exact BumpMetricConvergence.mono (Φ := Φ) (co.convOn n) hn
 
-end OpenConvOut
+end OpenMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-theorem exists_openConv
+theorem exists_openMetricConvergenceData
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
@@ -329,17 +329,17 @@ theorem exists_openConv
           letI : ChartedSpace H P.M := P.charted
           letI : IsManifold I ∞ P.M := P.smooth
           Real → SmoothRiemannianMetric I P.M,
-          BumpMetricConv (I := I) Φ R bf hsrc htgt (ρ ∘ τ) gN
+          BumpMetricConvergence (I := I) Φ R bf hsrc htgt (ρ ∘ τ) gN
             (RealTimeInterval.openWindowLeft a t₀ n)
             (RealTimeInterval.openWindowRight b t₀ n)) :
-    Nonempty (OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀) := by
+    Nonempty (OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀) := by
   classical
   let Pwin : Nat → (Nat → Nat) → Prop := fun n ρ =>
     ∃ gN : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       Real → SmoothRiemannianMetric I P.M,
-      BumpMetricConv (I := I) Φ R bf hsrc htgt ρ gN
+      BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ gN
         (RealTimeInterval.openWindowLeft a t₀ n)
         (RealTimeInterval.openWindowRight b t₀ n)
   obtain ⟨φ, hφ, hPφ⟩ := exists_diag_subseq Pwin
@@ -348,10 +348,10 @@ theorem exists_openConv
       exact ⟨τ, hτ, gN, hgN⟩)
     (fun _n _ρ τ hτ hP => by
       obtain ⟨gN, hgN⟩ := hP
-      exact ⟨gN, BumpMetricConv.comp (Φ := Φ) hgN τ hτ⟩)
+      exact ⟨gN, BumpMetricConvergence.comp (Φ := Φ) hgN τ hτ⟩)
     (fun _n ρ m hP => by
       obtain ⟨gN, hgN⟩ := hP
-      exact ⟨gN, BumpMetricConv.of_tail (Φ := Φ) m hgN⟩)
+      exact ⟨gN, BumpMetricConvergence.of_tail (Φ := Φ) m hgN⟩)
   choose gN hgN using hPφ
   let idx : Real → Nat := fun t =>
     if ht : t ∈ Set.Ioo a b then
@@ -376,17 +376,17 @@ theorem exists_openConv
       dsimp only [gInf]
       rw [dif_pos htOpen]
     rw [hdef]
-    exact BumpMetricConv.unique (Φ := Φ) (hgN (idx t)) (hgN n) (hidx htOpen) ht
+    exact BumpMetricConvergence.unique (Φ := Φ) (hgN (idx t)) (hgN n) (hidx htOpen) ht
   exact ⟨{
     φ := φ
     hφ := hφ
     gInf := gInf
     convOn := fun n =>
-      BumpMetricConv.congr (Φ := Φ) (hgN n) fun t ht => (hgInf n t ht).symm
+      BumpMetricConvergence.congr (Φ := Φ) (hgN n) fun t ht => (hgInf n t ht).symm
   }⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_openConv_raw
+theorem exists_openMetricConvergenceData_of_bounds
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
@@ -466,14 +466,14 @@ theorem exists_openConv_raw
                     (srcMetric (I := I) Φ hsrc htgt k s)
                     (srcMetric (I := I) Φ hsrc htgt k t)
                     (refRes (I := I) Φ R k) y <= Ls * |s - t|) :
-    Nonempty (OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀) := by
+    Nonempty (OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀) := by
   classical
   let : TopologicalSpace P.M := P.topology
   let : ChartedSpace H P.M := P.charted
   let : T2Space P.M := P.t2
   let : IsManifold I ∞ P.M := P.smooth
   let : SigmaCompactSpace P.M := P.sigmaCompact
-  refine exists_openConv (Φ := Φ) ht₀ ?_
+  refine exists_openMetricConvergenceData (Φ := Φ) ht₀ ?_
   intro n ρ hρ
   let bfρ := BumpFamily.compSubseq (I := I) Φ bf ρ hρ
   let hsrcρ := SrcSigma.compSubseq (I := I) Φ hsrc ρ hρ
@@ -566,13 +566,13 @@ theorem exists_openConv_raw
       RealTimeInterval.openWindowRight b t₀ n :=
     (RealTimeInterval.initial_mem_window ht₀ n).1.trans
       (RealTimeInterval.initial_mem_window ht₀ n).2
-  let coρ := convOut (I := I) (Φ := Φ.compSubseq ρ hρ) R bfρ hsrcρ htgtρ
+  let coρ := flowMetricConvergenceData (I := I) (Φ := Φ.compSubseq ρ hρ) R bfρ hsrcρ htgtρ
     (RealTimeInterval.openWindowLeft a t₀ n)
     (RealTimeInterval.openWindowRight b t₀ n) hβψ (cLow n) (hcLow n)
     hboundρ hcovTailρ hlipTailρ hlipSrcρ
   refine ⟨coρ.φ, coρ.hφ, coρ.gInf, ?_⟩
-  exact BumpMetricConv.of_compSubseq (Φ := Φ) ρ hρ
-    (ConvOut.bump_conv (Φ := Φ.compSubseq ρ hρ) coρ)
+  exact BumpMetricConvergence.of_compSubseq (Φ := Φ) ρ hρ
+    (FlowMetricConvergenceData.bump_conv (Φ := Φ.compSubseq ρ hρ) coρ)
 
 end HCGCompactness
 end DifferentialGeometry

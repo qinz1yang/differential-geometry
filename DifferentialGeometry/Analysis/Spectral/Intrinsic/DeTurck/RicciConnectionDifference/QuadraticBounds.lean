@@ -128,7 +128,7 @@ private def aaQuad0 (g gm : SmoothRiemannianMetric I M) :
 
 private def aaQuad1 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g aaPerm2301)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -150,7 +150,7 @@ private def aaQuad2 (g gm : SmoothRiemannianMetric I M) :
 
 private def aaQuad3 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g aaPerm1302)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -168,7 +168,7 @@ private def aaQuad4 (g gm : SmoothRiemannianMetric I M) :
 
 private def aaQuad5 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g aaPerm2103)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -218,11 +218,11 @@ private theorem aa_in_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) {r s : Nat}
     (Q : SmoothCcTensor g r s) (rho : Equiv.Perm (Fin r)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r s x
-        ((reindexCoeffGen (I := I) (M := M) g r s Q rho).toSection x) =
+        ((reindexCoefficientInputSlots (I := I) (M := M) g r s Q rho).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g r s x
         (Q.toSection x) := by
   simpa only [iteratedCovGrad_zero, Nat.add_zero] using
-    riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+    riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g r s Q rho 0 x
 
 omit [SigmaCompactSpace M] in

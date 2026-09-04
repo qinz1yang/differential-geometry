@@ -92,12 +92,11 @@ theorem roundMetric_sec_value (x : sphere (0 : E) 1) (X Y : TangentSpace (𝓡 n
             (metricCov (roundMetric (E := E) (n := n)))
             (metricCov_smooth (roundMetric (E := E) (n := n))) x from rfl,
     riemannCurvature04At_apply_const,
-    show CovariantDerivative.riemannCurvatureAux (metricCov (roundMetric (E := E) (n := n)))
+    show DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField (metricCov (roundMetric (E := E) (n := n)))
           (CovariantDerivative.tangentConstAt x X) (CovariantDerivative.tangentConstAt x Y)
           (CovariantDerivative.tangentConstAt x Y) x
-        = CovariantDerivative.riemannCurvatureAux (metricCov (roundMetric (E := E) (n := n)))
+        = DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField (metricCov (roundMetric (E := E) (n := n)))
             (⇑Xc) (⇑Yc) (⇑Yc) x from by
-        simp only [riemannCurvatureAux_eq_connectionRiemannCurvatureField]
         exact connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst
           (metricCov (roundMetric (E := E) (n := n)))
           (metricCov_smooth (roundMetric (E := E) (n := n))) X Y Y Xc Yc Yc hXc hYc hYc,

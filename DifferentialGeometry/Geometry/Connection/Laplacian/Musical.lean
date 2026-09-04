@@ -298,7 +298,7 @@ theorem mixed01_connLap
     connLaplacian_oneForm_def]
   rw [sum_apply, cotCLM_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [tensorSecondCovDeriv_unit_eval_genVal (I := I) (M := M) g 1 S
+  rw [tensorSecondCovDeriv_unit_eval (I := I) (M := M) g 1 S
     (smoothOrthoFrame_smooth (I := I) g x i) x]
   have hw : (fun y : M => w y) = unitEvalSection (I := I) (M := M) g 1 S := by
     funext y
@@ -334,7 +334,7 @@ theorem sharp_connLap
     rawTensorConnLap_eq_frame_trace_secondCovDeriv]
   rw [sum_apply, map_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [tensorSecondCovDeriv_unit_eval_genVal (I := I) (M := M) g 1 S
+  rw [tensorSecondCovDeriv_unit_eval (I := I) (M := M) g 1 S
     (smoothOrthoFrame_smooth (I := I) g x i) x]
   have hw : (fun y : M => w y) = unitEvalSection (I := I) (M := M) g 1 S := by
     funext y

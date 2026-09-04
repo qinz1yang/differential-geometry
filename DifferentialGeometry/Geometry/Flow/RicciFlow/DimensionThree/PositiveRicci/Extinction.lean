@@ -384,7 +384,7 @@ theorem hamilton_scalar_sq_le_three_ricci_norm_sq
       DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) (P.S.family.metric t) x k l (extChartAt I x x)
   have hinv :
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) (P.S.family.metric t) x
+      Tensor0SBundle.MetricInverseInBasis (I := I) (P.S.family.metric t) x
         basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center

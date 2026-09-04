@@ -803,7 +803,7 @@ lemma eLpNorm_rellich_witness_weakGrad_le_wkpNormChart
       (fun α' _ => zero_le) (Finset.mem_univ α_i)
   exact h_in_wkpNorm.trans (ENNReal.le_tsum α)
 
-private lemma exists_chart_rellich_subseq_aux
+private lemma exists_chart_rellich_subseq
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
@@ -1057,7 +1057,7 @@ private lemma exists_diagonal_chart_extraction
       exact absurd hα (Finset.notMem_empty α)
   | insert a S' ha_notin ih =>
       rcases ih with ⟨φ_S', hφ_S'_mono, hP_S'⟩
-      rcases exists_chart_rellich_subseq_aux (I := I) (M := M) g hp_one
+      rcases exists_chart_rellich_subseq (I := I) (M := M) g hp_one
         hu_mem hu_bdd a φ_S' with
         ⟨σ_a, hσ_a_mono, w_a, hw_a_memLp, h_tendsto_a⟩
       refine ⟨φ_S' ∘ σ_a, hφ_S'_mono.comp hσ_a_mono, ?_⟩

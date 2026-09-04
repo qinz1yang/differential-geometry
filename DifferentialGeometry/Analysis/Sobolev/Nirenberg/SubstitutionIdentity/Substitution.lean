@@ -136,7 +136,7 @@ theorem integral_diffQuot_mul_eq_neg_integral_mul_diffQuot_locally_supported
   rw [div_neg, neg_neg]
 
 omit [NeZero d] in
-theorem nirenbergTestFunction_is_admissible_test
+theorem nirenbergTestFunction_contDiff_hasCompactSupport_tsupport_subset
     {η u : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (hu : ContDiff ℝ (⊤ : ℕ∞) u)
     {Ω : Set E}
@@ -342,7 +342,7 @@ theorem nirenberg_substitution_identity
   classical
   have hu : ContDiff ℝ (⊤ : ℕ∞) u := h_weak.1
   obtain ⟨h_v_smooth, h_v_supp, h_v_tsupp⟩ :=
-    nirenbergTestFunction_is_admissible_test (d := d) hη hη_supp hu k hh hh_supp
+    nirenbergTestFunction_contDiff_hasCompactSupport_tsupport_subset (d := d) hη hη_supp hu k hh hh_supp
   have h_bilin : B.bilin u (nirenbergTestFunction k h η u) =
       ∫ x in Ω, f x * nirenbergTestFunction k h η u x :=
     h_weak.2 (nirenbergTestFunction k h η u) h_v_smooth h_v_supp h_v_tsupp

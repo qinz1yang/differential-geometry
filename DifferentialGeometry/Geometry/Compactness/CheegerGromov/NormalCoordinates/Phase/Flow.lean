@@ -61,7 +61,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         (I := modelWithCornersSelf Real E) (0 : E)).symm (0 : E))) = 0
   rw [DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_apply]
   have hz :
-      DifferentialGeometry.Geometry.Connection.leviCivitaConnectionCandidateAt (I := 𝓘(Real, E))
+      DifferentialGeometry.Geometry.Connection.leviCivitaConnectionAt (I := 𝓘(Real, E))
         (normalTotal (I := I) Y x) (constantModelVectorField (0 : E))
         (0 : E)
         ((tangentSpaceModelContinuousLinearEquiv

@@ -373,7 +373,7 @@ private lemma chartCarrier_subset_half_ball (α : M) :
     linarith
   linarith
 
-private lemma chartCarrier_subset_full_ball (α : M) :
+private lemma chartCarrier_subset_radius_ball (α : M) :
     chartCarrier (n := n) (M := M) α ⊆
       Metric.ball (0 : EuN) (chartRadius (n := n) (M := M) α) := by
   refine (chartCarrier_subset_half_ball (n := n) (M := M) α).trans ?_
@@ -542,7 +542,7 @@ private lemma eLpNorm_chartSmoothExt_pou_mul_restrict_ball
   have hK_supp : tsupport h ⊆ K :=
     tsupport_chartSmoothExt_pou_mul_subset_chartCarrier (n := n) (M := M) α u
   have hK_BR : K ⊆ BR :=
-    chartCarrier_subset_full_ball (n := n) (M := M) α
+    chartCarrier_subset_radius_ball (n := n) (M := M) α
   have hBR_meas : MeasurableSet BR := measurableSet_ball
   have h_eq_BR : h = BR.indicator h := by
     funext y
@@ -577,7 +577,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_pou_mul_restrict_ball
   have hK_supp : tsupport h ⊆ K :=
     tsupport_chartSmoothExt_pou_mul_subset_chartCarrier (n := n) (M := M) α u
   have hK_BR : K ⊆ BR :=
-    chartCarrier_subset_full_ball (n := n) (M := M) α
+    chartCarrier_subset_radius_ball (n := n) (M := M) α
   have hBR_meas : MeasurableSet BR := measurableSet_ball
   set fnNorm : EuN → ℝ := fun z => ‖fderiv ℝ h z‖ with hfnNorm_def
   have h_eq_BR : fnNorm = BR.indicator fnNorm := by
@@ -906,7 +906,7 @@ private lemma classical_partial_ae_eq_chosenWeakPartial_local
   classical
   have hf_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := n) 1 q f Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := n) hΩ_open hf_smooth hf_compact hf_supp hq_one 1
   have hf_W1p : DeGiorgi.MemW1p (d := n) q f Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p.mp hf_mem
@@ -1241,7 +1241,7 @@ private lemma per_chart_smooth_sup_bound
             (d := n) 1 (ENNReal.ofReal p) ext_β
             (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
               (chartTargetEuclid (n := n) (M := M) β)) :=
-          DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+          DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
             (d := n) hOpen_int hext_β_smooth hext_β_compact hext_β_supp hp_enn_one 1
         have h_ae : ext_β =ᵐ[volume.restrict
             (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
@@ -1506,7 +1506,7 @@ private lemma chartSmoothExt_holder_uniform_half_ball
           (d := n) 1 (ENNReal.ofReal p) ext_β
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
             (chartTargetEuclid (n := n) (M := M) β)) :=
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
           (d := n) hOpen_int hext_β_smooth hext_β_compact hext_β_supp hp_enn_one 1
       have h_ae : ext_β =ᵐ[volume.restrict
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace

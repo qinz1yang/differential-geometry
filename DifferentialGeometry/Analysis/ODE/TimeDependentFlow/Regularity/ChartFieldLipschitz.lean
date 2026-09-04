@@ -20,7 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
   [IsManifold I ∞ M] [ChartedSpace H M] in
-private lemma lipschitzOnWith_of_tendsto_aux
+private lemma lipschitzOnWith_of_tendsto
     {β : Type*} [PseudoMetricSpace β] (g : ℝ → E → β) (g0 : E → β) (K : ℝ≥0)
     (S : Set E) (l : Filter ℝ) [l.NeBot]
     (hlip : ∀ᶠ t in l, LipschitzOnWith K (g t) S)
@@ -188,7 +188,7 @@ theorem chart_triv_repr_lipschitz_on_ball
     rcases eq_or_lt_of_le ht.1 with h0 | h0
     · subst h0
       have : (nhdsWithin (0:ℝ) (Set.Ioo (0:ℝ) L)).NeBot := left_nhdsWithin_Ioo_neBot hL_pos
-      refine lipschitzOnWith_of_tendsto_aux
+      refine lipschitzOnWith_of_tendsto
         (fun s => fun y : E => chartTrivRepr (I := I) α (X s) y)
         (fun y : E => chartTrivRepr (I := I) α (X 0) y) (Real.toNNReal C)
         (Metric.closedBall center r) (nhdsWithin 0 (Set.Ioo (0:ℝ) L)) ?_ ?_

@@ -642,7 +642,7 @@ theorem diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform
       rw [heq2]
       exact le_add_of_nonneg_right hvol_nn
 
-theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform_generic
+theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -729,7 +729,7 @@ theorem inverseMetricDifferenceSlotCoefficient_metricPerturbationPath_perOrder_l
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (inverseMetricDifferenceSlotCoefficient (I := I) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 ≤ K i := by
-  obtain ⟨K, hK_nn, hK⟩ := inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform_generic
+  obtain ⟨K, hK_nn, hK⟩ := inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform
     (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
   refine ⟨K, hK_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
@@ -1833,7 +1833,7 @@ end RaisedKoszulOrder0SumHelpers
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral in
-theorem raisedKoszul_order0sup_jetL2_ballUniform_generic
+theorem raisedKoszul_order0sup_jetL2_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -2025,7 +2025,7 @@ theorem cometricCastG0_eq_doubleTrace_add_ccOperatorFieldComp
 end CometricCastG0Decomposition
 
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert in
-theorem cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic
+theorem cometricDoubleTraceField_order0sup_jetL2_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -2289,7 +2289,7 @@ theorem cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic
       rw [hsum0]
       exact hFnn i
 
-theorem ricciFirstOrderKoszulCoeff_perOrder_l2_ballUniform_generic
+theorem ricciFirstOrderKoszulCoeff_perOrder_l2_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -2305,9 +2305,9 @@ theorem ricciFirstOrderKoszulCoeff_perOrder_l2_ballUniform_generic
             (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciFirstOrderKoszulCoeff
               (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤ K i := by
   obtain ⟨ΛA, FΦ, hΛA, hFΦ_nn, hΦfeed⟩ :=
-    raisedKoszul_order0sup_jetL2_ballUniform_generic (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
+    raisedKoszul_order0sup_jetL2_ballUniform (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
   obtain ⟨ΛB, FW, hΛB, hFW_nn, hWfeed⟩ :=
-    cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic
+    cometricDoubleTraceField_order0sup_jetL2_ballUniform
       (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
   refine ⟨fun i => diagonalGridGrowthFactor (E := E) i *
       (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le

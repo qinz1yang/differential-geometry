@@ -37,7 +37,7 @@ theorem gramInv_inverse
     [MemTrivializationAtlas e₀]
     (g : SmoothRiemannianMetric I M) (basisE : Module.Basis Idx Real E)
     {y : M} (hy : y ∈ e₀.baseSet) :
-    Tensor0SBundle.MetricInverseInBasisGen (I := I) g y
+    Tensor0SBundle.MetricInverseInBasis (I := I) g y
       ((e₀.isLocalFrameOn_localFrame_baseSet I 1 basisE).toBasisAt hy)
       (fun i j => (gramE (I := I) e₀ g basisE y)⁻¹ i j) := by
   classical

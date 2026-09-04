@@ -114,7 +114,7 @@ theorem intrFrame_deriv_inj
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
-private theorem frame_not_conj_aux
+private theorem frame_not_conj
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -194,7 +194,7 @@ theorem intrFrame_not_conj
       c * ‖v‖ ^ 2 ≤ intrFrameMetric (I := I) g hEnorm p z v v) :
     ¬ IsConjVec (I := I) g hEnorm p
       (normalFrame (I := I) g p z : E) := by
-  apply frame_not_conj_aux (I := I) g hEnorm p z
+  apply frame_not_conj (I := I) g hEnorm p z
   exact intrFrame_deriv_inj (I := I) g hEnorm p z hc hlower
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -213,7 +213,7 @@ theorem framedExp_not_conj
       (intrinsicFramedExp (I := I) g hEnorm p) z) :
     ¬ IsConjVec (I := I) g hEnorm p
       (normalFrame (I := I) g p z : E) := by
-  apply frame_not_conj_aux (I := I) g hEnorm p z
+  apply frame_not_conj (I := I) g hEnorm p z
   exact (hloc.mfderivToContinuousLinearEquiv (by simp)).injective
 
 end NormalCoordinates

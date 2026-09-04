@@ -765,7 +765,7 @@ theorem stage_base_tail
     HasStageBaseTail inp P L hr phi hphi (chart := d.chart) := by
   dsimp only [HasStageBaseTail]
   exact Filter.Eventually.of_forall fun k l =>
-    stageCmp_base_raw inp P (L.subseq hphi) r hr k l
+    stageCompare_base inp P (L.subseq hphi) r hr k l
       (chart := d.chart)
 
 theorem exists_supp_base

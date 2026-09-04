@@ -15,7 +15,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace DiffChartBilinearH1ComplFinal
+namespace DiffChartBilinearH1ComplResidual
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -64,14 +64,18 @@ theorem gradInnerCLM_mem_image_density
       (fun n => smoothToH1Compl (I := I) (M := M) g (h_smooth_seq n))
       atTop (𝓝 u_h))
     (h_conv_candidate : Tendsto
-      (fun n => gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
+      (fun n => gradInnerLaplacianRhs (I := I) (M := M) g φ
         (smoothToH1Compl_mem_laplacianDomainPow_two
           (I := I) (M := M) g (h_smooth_seq n)))
-      atTop (𝓝 (gradInnerLaplacianCandidateUnconditional
+      atTop (𝓝 (gradInnerLaplacianRhs
         (I := I) (M := M) g φ hu_h)))
     (h_smooth_identity : ∀ n,
-      smoothCandidateIdentificationTarget (I := I) (M := M) g φ
-        (h_smooth_seq n)) :
+      gradInnerLaplacianRhs (I := I) (M := M) g φ
+          (smoothToH1Compl_mem_laplacianDomainPow_two
+            (I := I) (M := M) g (h_smooth_seq n)) =
+        smoothToLp (I := I) (M := M) g
+          (gradInnerSmoothBundle (I := I) (M := M) g φ
+            (h_smooth_seq n)).oneSubLapClassical) :
     gradInnerCLM (I := I) (M := M) g φ u_h ∈
       Set.image (H1ComplToLp (I := I) (M := M) g)
         (laplacianDomain (I := I) (M := M) g : Set (H1Compl g)) :=
@@ -98,14 +102,18 @@ theorem smoothMulH1Compl_mem_pow_two_density
       (fun n => smoothToH1Compl (I := I) (M := M) g (h_smooth_seq n))
       atTop (𝓝 u_h))
     (h_conv_candidate : Tendsto
-      (fun n => gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
+      (fun n => gradInnerLaplacianRhs (I := I) (M := M) g φ
         (smoothToH1Compl_mem_laplacianDomainPow_two
           (I := I) (M := M) g (h_smooth_seq n)))
-      atTop (𝓝 (gradInnerLaplacianCandidateUnconditional
+      atTop (𝓝 (gradInnerLaplacianRhs
         (I := I) (M := M) g φ hu_h)))
     (h_smooth_identity : ∀ n,
-      smoothCandidateIdentificationTarget (I := I) (M := M) g φ
-        (h_smooth_seq n)) :
+      gradInnerLaplacianRhs (I := I) (M := M) g φ
+          (smoothToH1Compl_mem_laplacianDomainPow_two
+            (I := I) (M := M) g (h_smooth_seq n)) =
+        smoothToLp (I := I) (M := M) g
+          (gradInnerSmoothBundle (I := I) (M := M) g φ
+            (h_smooth_seq n)).oneSubLapClassical) :
     smoothMulH1Compl (I := I) (M := M) g φ u_h ∈
       laplacianDomainPow (I := I) (M := M) g 2 :=
   smoothMulH1Compl_mem_pow_two_via_density
@@ -185,16 +193,22 @@ theorem fHLeibnizResidualLp_coeFn_memWkpChart_two_two_density
       (fun n => smoothToH1Compl (I := I) (M := M) g (h_smooth_seq n))
       atTop (𝓝 u_h))
     (h_conv_candidate : Tendsto
-      (fun n => gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g
+      (fun n => gradInnerLaplacianRhs (I := I) (M := M) g
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
         (smoothToH1Compl_mem_laplacianDomainPow_two
           (I := I) (M := M) g (h_smooth_seq n)))
-      atTop (𝓝 (gradInnerLaplacianCandidateUnconditional
+      atTop (𝓝 (gradInnerLaplacianRhs
         (I := I) (M := M) g
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) hu_h)))
     (h_smooth_identity : ∀ n,
-      smoothCandidateIdentificationTarget (I := I) (M := M) g
-        (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) (h_smooth_seq n)) :
+      gradInnerLaplacianRhs (I := I) (M := M) g
+          (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
+          (smoothToH1Compl_mem_laplacianDomainPow_two
+            (I := I) (M := M) g (h_smooth_seq n)) =
+        smoothToLp (I := I) (M := M) g
+          (gradInnerSmoothBundle (I := I) (M := M) g
+            (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
+            (h_smooth_seq n)).oneSubLapClassical) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
       (I := I) (M := M) 2 2
       (fun x : M =>
@@ -271,7 +285,7 @@ noncomputable def diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoDensity
   diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoViaResidual
     (I := I) (M := M) g α hu_h direction h_residual_memW1p h_identity
 
-end DiffChartBilinearH1ComplFinal
+end DiffChartBilinearH1ComplResidual
 end Laplacian
 end Analysis
 end DifferentialGeometry

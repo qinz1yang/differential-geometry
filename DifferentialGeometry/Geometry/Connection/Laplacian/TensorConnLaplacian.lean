@@ -1352,7 +1352,7 @@ theorem rawTensorConnLap_eq_frame_trace
 
 end RawPsiTensorial
 
-section UnconditionalSmoothness
+section Smoothness
 
 variable [CompleteSpace E]
 
@@ -1459,7 +1459,7 @@ theorem rawTensorConnLap_contMDiff
       (E := fun z : M => TensorRSSpace r s I z) y) h_fib
   exact h_fixed_at.congr_of_eventuallyEq h_eventuallyEq
 
-end UnconditionalSmoothness
+end Smoothness
 
 end Connection
 end Geometry

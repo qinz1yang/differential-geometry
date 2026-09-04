@@ -73,7 +73,7 @@ omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
       oneMinusConnLapSmooth (I := I) g r s
         (oneMinusConnLapSmoothIter (I := I) g r s k T) := rfl
 
-theorem oneMinusConnLapSmooth_toL2_inner_eq_h1
+theorem oneMinusConnLapSmooth_toL2_inner_eq_h1_two
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2) :
     ⟪((oneMinusConnLapSmooth (I := I) g 0 2 T : SmoothCcTensor g 0 2) :
           TensorL2 0 2 g),

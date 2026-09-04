@@ -87,7 +87,7 @@ private lemma eLpNorm_restrict_eq_of_ae_zero_off
     exact h_ae'
   exact eLpNorm_congr_ae h_ae
 
-lemma wkpNorm_eq_of_tsupport_subset
+lemma wkpNorm_eq_of_tsupport_subset_one
     {d : ℕ}
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
@@ -277,7 +277,7 @@ lemma wkpNorm_eq_of_tsupport_subset
   rw [h_iter1_Ω, h_iter1_Ω']
   exact h_partial_eLp_eq (α 0)
 
-lemma wkpNorm_le_of_tsupport_subset_mem_small
+lemma wkpNorm_le_of_tsupport_subset_mem_small_one
     {d : ℕ}
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
@@ -577,7 +577,7 @@ private lemma iterWeakPartial_ae_eq_tsupport_subset
   exact iterWeakPartial_ae_eq_of_ae_zero_open_subset (d := d) hp_one
     hΩ hΩ' hU_open hΩΩ' hU_sub hU_contains hu_mem hu_zero α
 
-lemma wkpNorm_eq_of_tsupport_subset_general
+lemma wkpNorm_eq_of_tsupport_subset
     {d : ℕ}
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
@@ -822,7 +822,7 @@ private lemma eLpNorm_iterWeakPartial_Ω_le_Ω'_with_U
         rw [eLpNorm_congr_ae h_zero_iter]
         simp
 
-lemma wkpNorm_le_of_tsupport_subset_mem_small_general
+lemma wkpNorm_le_of_tsupport_subset_mem_small
     {d : ℕ}
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
@@ -1246,7 +1246,7 @@ theorem cross_chart_bound_strict_strong_memWkp
     exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.smul_smooth_bounded
       (d := Module.finrank ℝ E) 1 hp_one hΩα_target_open hη_α_loc_smooth h_bound hv_mem
   have hχ_loc_pair_target_Ωαγ :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_eq_of_tsupport_subset
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_eq_of_tsupport_subset_one
       (d := Module.finrank ℝ E) hp_one hΩα_target_open hΩαγ_open
       hΩαγ_subset_target hχ_loc_mem_Ωα_target hχ_loc_supp_in_Ωαγ
   have hχ_loc_mem_Ωαγ : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -1486,7 +1486,7 @@ theorem cross_chart_bound_strict_strong_memWkp
         (d := Module.finrank ℝ E) 1 p ψ_total Ωγ_target ≤
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) 1 p ψ_total Ω_γα :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_le_of_tsupport_subset_mem_small
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_le_of_tsupport_subset_mem_small_one
       (d := Module.finrank ℝ E) hp_one hΩγ_target_open hΩγα_open
       hΩγα_subset_target hψ_total_mem_Ωγα hψ_total_supp_in_Ωγα
   refine h_bridge_γ.trans ?_

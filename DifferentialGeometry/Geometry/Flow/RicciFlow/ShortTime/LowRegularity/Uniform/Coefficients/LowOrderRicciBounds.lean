@@ -116,11 +116,11 @@ theorem linearizedRicciConnectionDifferenceOrder0CoeffField_h1_uniform_bound
   let pureF : SmoothCcTensor g₀ 4 2 :=
     cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁
   let R1 : SmoothCcTensor g₀ 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 4 2 pureF fourTraceArgPerm0231
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 pureF fourTraceArgPerm0231
   let R2 : SmoothCcTensor g₀ 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 4 2 pureF fourTraceArgPerm0321
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 pureF fourTraceArgPerm0321
   let R3 : SmoothCcTensor g₀ 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 4 2 pureF fourTraceArgPerm2301
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 pureF fourTraceArgPerm2301
   have hcomb : ricciCometricFourTraceCastG0 (I := I) g₀ g₁ =
       ((1 : ℝ) / 2) • (R1 + R2 - pureF - R3) := by
     simpa only [pureF, R1, R2, R3] using
@@ -128,11 +128,11 @@ theorem linearizedRicciConnectionDifferenceOrder0CoeffField_h1_uniform_bound
         (I := I) (M := M) g₀ g₁
   have hreindex : ∀ (ρ : Equiv.Perm (Fin 4)) (i : ℕ),
       ‖iteratedCovGrad (I := I) g₀ 4 2 i
-        (reindexCoeffGen (I := I) (M := M) g₀ 4 2 pureF ρ)‖ =
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 pureF ρ)‖ =
       ‖iteratedCovGrad (I := I) g₀ 4 2 i pureF‖ := by
     intro ρ i
-    rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M),
-      norm_reindexCoeffGen_eq (I := I) (M := M)]
+    rw [iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M),
+      norm_reindexCoefficientInputSlots_eq (I := I) (M := M)]
   have hpure : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 4 2 i pureF‖ ^ 2) ≤
       (Bt R) ^ 2 := by
@@ -145,9 +145,9 @@ theorem linearizedRicciConnectionDifferenceOrder0CoeffField_h1_uniform_bound
               (Equiv.refl (Fin 4)))‖ ^ 2 := by
         apply Finset.sum_congr rfl
         intro i _
-        rw [reindexedPureTrace, iteratedCovGrad_reindexCoeffGen
+        rw [reindexedPureTrace, iteratedCovGrad_reindexCoefficientInputSlots
           (I := I) (M := M),
-          norm_reindexCoeffGen_eq (I := I) (M := M)]
+          norm_reindexCoefficientInputSlots_eq (I := I) (M := M)]
         dsimp only [pureF]
         rw [pure_eq (I := I) (M := M) g₀ g₁]
       _ ≤ (Bt R) ^ 2 := ht

@@ -238,7 +238,7 @@ theorem tensorialAt
 
 end ContMDiffVectorBundleHom
 
-section SectionAux
+section SectionConstruction
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H]
@@ -272,7 +272,7 @@ theorem ContMDiffSection.exists_eq_at
   simp_rw [hs'.self_of_nhds, ← hframe.toBasisAt_coe he]
   exact (hframe.toBasisAt he).sum_repr v
 
-end SectionAux
+end SectionConstruction
 
 section ActsHelpers
 

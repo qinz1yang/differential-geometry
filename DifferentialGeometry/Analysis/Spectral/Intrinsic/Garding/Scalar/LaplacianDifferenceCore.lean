@@ -124,7 +124,7 @@ private theorem lapTrace_diag
       (by rw [Fintype.card_fin]; rfl)
   have hbasis (i) : basis i = frame i := by
     simp only [basis, coe_basisOfLinearIndependentOfCardEqFinrank]
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     constructor <;>
@@ -310,7 +310,7 @@ private theorem grad2_cc_diag
           (covGrad (I := I) (M := M) g 0 0 U) := by
     rw [iteratedCovGrad_succ, iteratedCovGrad_succ, iteratedCovGrad_zero]
   have hbridge :=
-    tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
+    tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval
       (I := I) (M := M) g 0 U
       (X := fun y => B y) (Y := fun y => B y)
       B.contMDiff B.contMDiff x m0
@@ -363,11 +363,11 @@ theorem scalarLapDiff_eq
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
         (I := I) (M := M) q)
-  have hmch : IsMetricCompatibleGen (I := I)
+  have hmch : IsMetricCompatible (I := I)
       (LeviCivita (I := I) h) h := by
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) h)
-  have hmcq : IsMetricCompatibleGen (I := I)
+  have hmcq : IsMetricCompatible (I := I)
       (LeviCivita (I := I) q) q := by
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) q)

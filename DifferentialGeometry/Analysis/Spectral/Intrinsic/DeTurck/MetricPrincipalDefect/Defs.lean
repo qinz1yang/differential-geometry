@@ -39,16 +39,16 @@ private theorem lieTrace_reindex (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ ρ : Equiv.Perm (Fin 4))
     (hcomp : ∀ j : Fin 4, traceHessianSlotPerm (ρ j) = σ j) :
     deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
         (traceHessianCoeff (I := I) (M := M) g₀ g₁) ρ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [deTurckLieTraceCoeff_toSection, reindexCoeffGen_toSection,
+  rw [deTurckLieTraceCoeff_toSection, reindexCoefficientInputSlots_toSection,
     traceHessianCoeff_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffFibGen_apply, deTurckLieTraceFib, traceHessianFib,
+  rw [reindexCoefficientInputSlotsFiber_apply, deTurckLieTraceFib, traceHessianFib,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     domDomCongrFibPerm_apply, domDomCongrFib_apply,
     Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
@@ -69,10 +69,10 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 theorem deTurckMetricPrincipalDefectTotal_eq_reindex (g₀ g : SmoothRiemannianMetric I M) :
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
           (traceHessianCoeff (I := I) (M := M) g₀ g)
           (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
           (traceHessianCoeff (I := I) (M := M) g₀ g)
           (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)
         - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g

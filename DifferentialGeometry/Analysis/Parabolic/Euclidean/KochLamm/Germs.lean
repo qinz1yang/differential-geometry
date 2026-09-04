@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Data
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Defs
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 
 noncomputable section

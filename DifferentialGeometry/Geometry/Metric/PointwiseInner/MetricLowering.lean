@@ -250,7 +250,7 @@ private lemma contMDiffOn_separableFormBundleSection
   exact trivializationAt_separableFormBundleSection_eval_basis
     (I := I) (M := M) g r α φ_first ψ
 
-private lemma contMDiffOn_lower_at_chartBasis_aux_general
+private lemma contMDiffOn_lower_at_chartBasis_aux
     (r s : ℕ)
     (g : SmoothRiemannianMetric I M) (α : M)
     (S : ∀ b : M, TensorRSSpace r s I b)
@@ -328,7 +328,7 @@ private lemma contMDiffOn_lower_at_chartBasis_aux_general
   rw [lowerAllUpperIndices_apply]
   rfl
 
-private lemma contMDiffOn_lower_at_chartBasis_aux
+private lemma contMDiffOn_lower_at_chartBasis
     (r s : ℕ)
     (g : SmoothRiemannianMetric I M) (α : M)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
@@ -340,7 +340,7 @@ private lemma contMDiffOn_lower_at_chartBasis_aux
         (fun i : Fin (r + s) =>
           chartBasisModelAt (I := I) α b (φ i)))
       (trivializationAt E (TangentSpace I) α).baseSet :=
-  contMDiffOn_lower_at_chartBasis_aux_general (I := I) (M := M) r s g α
+  contMDiffOn_lower_at_chartBasis_aux (I := I) (M := M) r s g α
     (fun b : M => S b)
     (S.contMDiff.contMDiffOn)
     φ
@@ -359,7 +359,7 @@ theorem contMDiffOn_loweredCompose
   refine ContMDiffOn.congr ?_ (fun b _ =>
     (loweredCompose_at_basis_tuple (I := I) (M := M) g r s α b
       (TensorRSSpace.toModel (S b)) φ).symm)
-  exact contMDiffOn_lower_at_chartBasis_aux r s g α S φ
+  exact contMDiffOn_lower_at_chartBasis r s g α S φ
 
 theorem contMDiffOn_loweredCompose_of_section_contMDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -377,7 +377,7 @@ theorem contMDiffOn_loweredCompose_of_section_contMDiffOn
   refine ContMDiffOn.congr ?_ (fun b _ =>
     (loweredCompose_at_basis_tuple (I := I) (M := M) g r s α b
       (TensorRSSpace.toModel (S b)) φ).symm)
-  exact contMDiffOn_lower_at_chartBasis_aux_general (I := I) (M := M) r s g α S hS φ
+  exact contMDiffOn_lower_at_chartBasis_aux (I := I) (M := M) r s g α S hS φ
 
 theorem continuous_loweredCompose
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCo
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldFlowFamily
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic
@@ -56,7 +56,7 @@ theorem interior_local_flow_existence
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem chartcover_orbit_is_bare_integral_curve
+theorem chartCover_orbit_hasMFDerivWithinAt
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (T : ℝ) (Φcc : ℝ → M → M)
     (hper : ∀ α : M, ChartLocalPicardData (I := I) X α)
@@ -251,7 +251,7 @@ theorem interior_flow_uniqueness_glue
     exact time_dependent_vf_hdiffeo_of_smooth_bijective Φ Ψ T
       hΦsmooth hΨsmooth hΨΦ_T hΦΨ_T t ht.1 ht.2
   · intro t ht x
-    exact chartcover_orbit_is_bare_integral_curve X T Φ hper hTle
+    exact chartCover_orbit_hasMFDerivWithinAt X T Φ hper hTle
       hΦreprU' hconf htgt t ht.1 ht.2 x
 
 end DifferentialGeometry.PDE.RicciFlow

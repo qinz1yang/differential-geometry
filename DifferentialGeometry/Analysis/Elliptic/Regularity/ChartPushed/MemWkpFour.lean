@@ -28,7 +28,7 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChosenThirdMixedPartialChartPushed
-open DifferentialGeometry.Analysis.Laplacian.FChartEffTwiceDef
+open DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource
 open DifferentialGeometry.Analysis.Laplacian.BaseFChartMemW22
 open DifferentialGeometry.Analysis.Laplacian.ChosenFChartDerivMemW1p
 open DifferentialGeometry.Analysis.Laplacian.TwiceDifferentiatedVariationalIdentity

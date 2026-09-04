@@ -32,7 +32,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-private lemma chartLeviCivitaParallelCLM_general_opNorm_le_factors
+private lemma chartLeviCivitaParallelCLM_opNorm_le_factors
     (g : SmoothRiemannianMetric I M) (α b : M)
     (X : Π b' : M, TangentSpace I b')
     (C_J C_Jinv C_χ : ℝ)

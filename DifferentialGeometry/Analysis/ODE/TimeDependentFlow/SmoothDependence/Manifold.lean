@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldFlowFamily
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC
 import DifferentialGeometry.Analysis.ODE.Flow.Defs
@@ -368,7 +368,7 @@ theorem pushforward_velocity_cancellation (p₀ q : M)
   exact h
 
 omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [T2Space M] in
-theorem chartflow_eq_bareflow_on_U
+theorem chartFlow_eq_integralCurve_on
     (X : ℝ → ∀ x : M, TangentSpace I x) (p₀ : M)
     (F : ℝ → E → E) (ΦE : E × ℝ → E) (U : Set M) {a b : ℝ}
     (hchartODE : ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo a b,
@@ -558,7 +558,7 @@ theorem local_flow_jointSmooth_and_integralCurve [CompleteSpace E] [I.Boundaryle
           (Set.Ioo (t₀ - T') (t₀ + T')) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight
             (X t ((extChartAt I p₀).symm (ΦE (extChartAt I p₀ p, t))))) :=
-    chartflow_eq_bareflow_on_U (I := I) X p₀ F ΦE U hchartODE hF_id hconf_tgt
+    chartFlow_eq_integralCurve_on (I := I) X p₀ F ΦE U hchartODE hF_id hconf_tgt
   have hbare :
       ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'),
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ p s) t
@@ -710,7 +710,7 @@ theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundar
           (Set.Ioo (t₀ - T') (t₀ + T')) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight
             (X t ((extChartAt I p₀).symm (ΦE (extChartAt I p₀ p, t))))) :=
-    chartflow_eq_bareflow_on_U (I := I) X p₀ F ΦE U hchartODE hF_id hconf_tgt
+    chartFlow_eq_integralCurve_on (I := I) X p₀ F ΦE U hchartODE hF_id hconf_tgt
   have hbare :
       ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'),
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ p s) t

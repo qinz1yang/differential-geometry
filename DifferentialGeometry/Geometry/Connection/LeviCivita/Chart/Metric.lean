@@ -2,7 +2,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.MetricCompatibility
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 open DifferentialGeometry.Geometry.Operator
 
 

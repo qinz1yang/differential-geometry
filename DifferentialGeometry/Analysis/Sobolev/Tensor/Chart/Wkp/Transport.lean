@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Limit
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.SectionLimit
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.ChartTransition.TensorChartTransition
 open DifferentialGeometry.Geometry.Curvature
 

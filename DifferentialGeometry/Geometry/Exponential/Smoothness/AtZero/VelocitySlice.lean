@@ -66,39 +66,39 @@ lemma contDiffAt_chartFlow_slice_fst_zero
 
 end ChartCoordSlice
 
-section ManifoldCandidate
+section ManifoldFlowSlice
 
 variable [I.Boundaryless]
 
-def chartFlowCandidate (Φ : (E × E) × ℝ → E × E) (p : M) (t' : ℝ) :
+def chartFlowSlice (Φ : (E × E) × ℝ → E × E) (p : M) (t' : ℝ) :
     E → M :=
   fun v => (extChartAt I p).symm (Φ (((extChartAt I p p, v) : E × E), t')).1
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] in
-@[simp] lemma chartFlowCandidate_apply
+@[simp] lemma chartFlowSlice_apply
     (Φ : (E × E) × ℝ → E × E) (p : M) (t' : ℝ) (v : E) :
-    chartFlowCandidate (I := I) Φ p t' v =
+    chartFlowSlice (I := I) Φ p t' v =
       (extChartAt I p).symm (Φ (((extChartAt I p p, v) : E × E), t')).1 := rfl
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] in
-lemma chartFlowCandidate_zero_at_initial
+lemma chartFlowSlice_zero_at_initial
     {Φ : (E × E) × ℝ → E × E} {p : M}
     (hinit : Φ (((extChartAt I p p, (0 : E)) : E × E), 0) =
       (extChartAt I p p, (0 : E))) :
-    chartFlowCandidate (I := I) Φ p 0 (0 : E) = p := by
-  unfold chartFlowCandidate
+    chartFlowSlice (I := I) Φ p 0 (0 : E) = p := by
+  unfold chartFlowSlice
   rw [hinit]
   exact (extChartAt I p).left_inv (mem_extChartAt_source (I := I) p)
 
-end ManifoldCandidate
+end ManifoldFlowSlice
 
-section CandidateChartCoord
+section FlowSliceChartCoord
 
 variable [I.Boundaryless] [CompleteSpace E]
 
 omit [IsManifold I ∞ M] in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-lemma extChartAt_symm_comp_chartFlowCandidate_at_zero
+lemma extChartAt_chartFlowSlice_eventually_eq_at_zero_initial_time
     {p : M} {Φ : (E × E) × ℝ → E × E} {ρ T : ℝ}
     (hρ : 0 < ρ) (hT : 0 < T)
     (hinit : Φ (((extChartAt I p p, (0 : E)) : E × E), 0) =
@@ -107,7 +107,7 @@ lemma extChartAt_symm_comp_chartFlowCandidate_at_zero
       ((Metric.ball ((extChartAt I p p, (0 : E)) : E × E) ρ) ×ˢ
         Set.Ioo (-T) T)) :
     ∀ᶠ v in 𝓝 (0 : E),
-      extChartAt I p (chartFlowCandidate (I := I) Φ p 0 v) =
+      extChartAt I p (chartFlowSlice (I := I) Φ p 0 v) =
         (Φ (((extChartAt I p p, v) : E × E), 0)).1 := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
@@ -135,12 +135,12 @@ lemma extChartAt_symm_comp_chartFlowCandidate_at_zero
     apply hcont0.preimage_mem_nhds
     rw [hval0]; exact htarget_nhds
   filter_upwards [htarget_preimage] with v hv
-  simp only [chartFlowCandidate_apply]
+  simp only [chartFlowSlice_apply]
   exact (extChartAt I p).right_inv hv
 
 omit [IsManifold I ∞ M] in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-lemma chartFlowCandidate_chart_contDiffAt_zero_at_origin
+lemma chartFlowSlice_chart_contDiffAt_zero_at_origin
     {p : M} {Φ : (E × E) × ℝ → E × E} {ρ T : ℝ}
     (hρ : 0 < ρ) (hT : 0 < T)
     (hinit : Φ (((extChartAt I p p, (0 : E)) : E × E), 0) =
@@ -149,7 +149,7 @@ lemma chartFlowCandidate_chart_contDiffAt_zero_at_origin
       ((Metric.ball ((extChartAt I p p, (0 : E)) : E × E) ρ) ×ˢ
         Set.Ioo (-T) T)) :
     ContDiffAt ℝ 1
-      (fun v : E => extChartAt I p (chartFlowCandidate (I := I) Φ p 0 v))
+      (fun v : E => extChartAt I p (chartFlowSlice (I := I) Φ p 0 v))
       (0 : E) := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
@@ -158,11 +158,11 @@ lemma chartFlowCandidate_chart_contDiffAt_zero_at_origin
       ContDiffAt ℝ 1 (fun v : E => (Φ (((x₀, v) : E × E), (0 : ℝ))).1) (0 : E) :=
     contDiffAt_chartFlow_slice_fst_zero (Φ := Φ) (x₀ := x₀)
       (ρ := ρ) (T := T) (t' := 0) hρ ht0 hcd
-  have hev := extChartAt_symm_comp_chartFlowCandidate_at_zero
+  have hev := extChartAt_chartFlowSlice_eventually_eq_at_zero_initial_time
     (I := I) (p := p) (Φ := Φ) (ρ := ρ) (T := T) hρ hT hinit hcd
   exact hslice.congr_of_eventuallyEq hev
 
-end CandidateChartCoord
+end FlowSliceChartCoord
 
 section Headline
 
@@ -199,24 +199,24 @@ theorem exists_chartFlow_slice_contDiffAt_zero
     (ρ := ρ) (T := T) (t' := t') hρ_pos ht' hcd
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_chartFlowCandidate_chart_contDiffAt_zero
+theorem exists_chartFlowSlice_chart_contDiffAt_zero
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ (Φ : (E × E) × ℝ → E × E),
       ContDiffAt ℝ 1
-        (fun v : E => extChartAt I p (chartFlowCandidate (I := I) Φ p 0 v))
+        (fun v : E => extChartAt I p (chartFlowSlice (I := I) Φ p 0 v))
         (0 : E) ∧
-      chartFlowCandidate (I := I) Φ p 0 (0 : E) = p := by
+      chartFlowSlice (I := I) Φ p 0 (0 : E) = p := by
   classical
   obtain ⟨ρ, T, Φ, hρ_pos, hT_pos, hcd, hinit, _⟩ :=
     exists_chartFlow_slice_contDiffAt_zero (I := I) (g := g) (p := p)
   refine ⟨Φ, ?_, ?_⟩
-  · exact chartFlowCandidate_chart_contDiffAt_zero_at_origin
+  · exact chartFlowSlice_chart_contDiffAt_zero_at_origin
       (I := I) (p := p) (Φ := Φ) (ρ := ρ) (T := T) hρ_pos hT_pos hinit hcd
-  · exact chartFlowCandidate_zero_at_initial (I := I) (Φ := Φ) (p := p) hinit
+  · exact chartFlowSlice_zero_at_initial (I := I) (Φ := Φ) (p := p) hinit
 
 omit [IsManifold I ∞ M] [I.Boundaryless] in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-lemma chartFlowCandidate_continuousAt_zero_at_origin
+lemma chartFlowSlice_continuousAt_zero_at_origin
     {p : M} {Φ : (E × E) × ℝ → E × E} {ρ T : ℝ}
     (hρ : 0 < ρ) (hT : 0 < T)
     (hinit : Φ (((extChartAt I p p, (0 : E)) : E × E), 0) =
@@ -224,7 +224,7 @@ lemma chartFlowCandidate_continuousAt_zero_at_origin
     (hcd : ContDiffOn ℝ 1 Φ
       ((Metric.ball ((extChartAt I p p, (0 : E)) : E × E) ρ) ×ˢ
         Set.Ioo (-T) T)) :
-    ContinuousAt (chartFlowCandidate (I := I) Φ p 0) (0 : E) := by
+    ContinuousAt (chartFlowSlice (I := I) Φ p 0) (0 : E) := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
   have ht0 : (0 : ℝ) ∈ Set.Ioo (-T) T := ⟨by linarith, hT⟩
@@ -254,7 +254,7 @@ lemma chartFlowCandidate_continuousAt_zero_at_origin
 
 omit [IsManifold I ∞ M] in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-lemma chartFlowCandidate_contMDiffAt_zero_at_origin
+lemma chartFlowSlice_contMDiffAt_zero_at_origin
     {p : M} {Φ : (E × E) × ℝ → E × E} {ρ T : ℝ}
     (hρ : 0 < ρ) (hT : 0 < T)
     (hinit : Φ (((extChartAt I p p, (0 : E)) : E × E), 0) =
@@ -262,20 +262,20 @@ lemma chartFlowCandidate_contMDiffAt_zero_at_origin
     (hcd : ContDiffOn ℝ 1 Φ
       ((Metric.ball ((extChartAt I p p, (0 : E)) : E × E) ρ) ×ˢ
         Set.Ioo (-T) T)) :
-    ContMDiffAt 𝓘(ℝ, E) I 1 (chartFlowCandidate (I := I) Φ p 0) (0 : E) := by
+    ContMDiffAt 𝓘(ℝ, E) I 1 (chartFlowSlice (I := I) Φ p 0) (0 : E) := by
   classical
   rw [contMDiffAt_iff]
   refine ⟨?_, ?_⟩
-  · exact chartFlowCandidate_continuousAt_zero_at_origin
+  · exact chartFlowSlice_continuousAt_zero_at_origin
       (I := I) (p := p) (Φ := Φ) (ρ := ρ) (T := T) hρ hT hinit hcd
-  · have hval : chartFlowCandidate (I := I) Φ p 0 (0 : E) = p :=
-      chartFlowCandidate_zero_at_initial (I := I) (Φ := Φ) (p := p) hinit
+  · have hval : chartFlowSlice (I := I) Φ p 0 (0 : E) = p :=
+      chartFlowSlice_zero_at_initial (I := I) (Φ := Φ) (p := p) hinit
     rw [hval]
     have hchart_cd :
         ContDiffAt ℝ 1
-          (fun v : E => extChartAt I p (chartFlowCandidate (I := I) Φ p 0 v))
+          (fun v : E => extChartAt I p (chartFlowSlice (I := I) Φ p 0 v))
           (0 : E) :=
-      chartFlowCandidate_chart_contDiffAt_zero_at_origin
+      chartFlowSlice_chart_contDiffAt_zero_at_origin
         (I := I) (p := p) (Φ := Φ) (ρ := ρ) (T := T) hρ hT hinit hcd
     have hsimp_range : (range (𝓘(ℝ, E) : ModelWithCorners ℝ E E)) = Set.univ :=
       ModelWithCorners.range_eq_univ _
@@ -287,31 +287,31 @@ lemma chartFlowCandidate_contMDiffAt_zero_at_origin
       intro v
       simp [extChartAt, chartAt_self_eq]
     change ContDiffWithinAt ℝ 1
-        (extChartAt I p ∘ chartFlowCandidate (I := I) Φ p 0 ∘
+        (extChartAt I p ∘ chartFlowSlice (I := I) Φ p 0 ∘
           (extChartAt (𝓘(ℝ, E) : ModelWithCorners ℝ E E) (0 : E)).symm)
         Set.univ (0 : E)
     have hgoal_eq :
-        (extChartAt I p ∘ chartFlowCandidate (I := I) Φ p 0 ∘
+        (extChartAt I p ∘ chartFlowSlice (I := I) Φ p 0 ∘
           (extChartAt (𝓘(ℝ, E) : ModelWithCorners ℝ E E) (0 : E)).symm) =
-        (fun v : E => extChartAt I p (chartFlowCandidate (I := I) Φ p 0 v)) := by
+        (fun v : E => extChartAt I p (chartFlowSlice (I := I) Φ p 0 v)) := by
       ext v
       simp [Function.comp, extChartAt, chartAt_self_eq]
     rw [hgoal_eq]
     exact hchart_cd.contDiffWithinAt
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_chartFlowCandidate_contMDiffAt_zero
+theorem exists_chartFlowSlice_contMDiffAt_zero
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ (Φ : (E × E) × ℝ → E × E),
-      ContMDiffAt 𝓘(ℝ, E) I 1 (chartFlowCandidate (I := I) Φ p 0) (0 : E) ∧
-      chartFlowCandidate (I := I) Φ p 0 (0 : E) = p := by
+      ContMDiffAt 𝓘(ℝ, E) I 1 (chartFlowSlice (I := I) Φ p 0) (0 : E) ∧
+      chartFlowSlice (I := I) Φ p 0 (0 : E) = p := by
   classical
   obtain ⟨ρ, T, Φ, hρ_pos, hT_pos, hcd, hinit, _⟩ :=
     exists_chartFlow_slice_contDiffAt_zero (I := I) (g := g) (p := p)
   refine ⟨Φ, ?_, ?_⟩
-  · exact chartFlowCandidate_contMDiffAt_zero_at_origin
+  · exact chartFlowSlice_contMDiffAt_zero_at_origin
       (I := I) (p := p) (Φ := Φ) (ρ := ρ) (T := T) hρ_pos hT_pos hinit hcd
-  · exact chartFlowCandidate_zero_at_initial (I := I) (Φ := Φ) (p := p) hinit
+  · exact chartFlowSlice_zero_at_initial (I := I) (Φ := Φ) (p := p) hinit
 
 end Headline
 

@@ -539,7 +539,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
                   g r s S.toCcTensor α Idx Jdx)
                 (extChartAt I α b')|) b)
           μ :=
-      aestronglyMeasurable_indicator_tsupp_abs_raw
+      aestronglyMeasurable_tsupport_indicator_abs_scalarOnE_raw
         (I := I) (M := M) g r s α S Idx Jdx
     have h_rawInd_sq_eq :
         ∀ b, (rawInd b) ^ 2 =

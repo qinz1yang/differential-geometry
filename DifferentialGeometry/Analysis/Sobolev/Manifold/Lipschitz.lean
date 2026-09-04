@@ -292,7 +292,7 @@ private lemma pou_ae_mdiff
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α :
               C^∞⟮I, M; ℝ⟯) y * u y) x := by
   filter_upwards [pou_ae_diff (I := I) g α hu hB] with x hx
-  exact fun hx_source => mdiff_of_raw (I := I) α hx_source (hx hx_source)
+  exact fun hx_source => mdifferentiableAt_of_chartPushedRaw_differentiableAt (I := I) α hx_source (hx hx_source)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

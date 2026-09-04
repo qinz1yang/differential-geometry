@@ -216,7 +216,7 @@ end RegionMatrixLemmas
 section RegionCharacterization
 
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
-private theorem fiberRegion_mem_iff_forall_normalDirections
+private theorem fiberRegion_mem_iff_forall_normalDirections_of_mem_algebraicCurvatureTensorSubmodule
     (g : SmoothRiemannianMetric I M)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) g x (basisAt x))
@@ -817,7 +817,7 @@ private theorem regionSource_lipschitzOn_closedBall_uniform
 
 omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
   [SigmaCompactSpace M] [T2Space M] in
-private theorem fiberRegion_mem_iff_forall_normalDirections_full
+private theorem fiberRegion_mem_iff_forall_normalDirections
     (g : SmoothRiemannianMetric I M)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) g x (basisAt x))
@@ -829,7 +829,7 @@ private theorem fiberRegion_mem_iff_forall_normalDirections_full
           inner0S (I := I) g x 4 ν p ≤ regionSupport (I := I) g basisAt K τ x ν := by
   constructor
   · intro hpC ν hν
-    exact (fiberRegion_mem_iff_forall_normalDirections (I := I) g basisAt horth0 hK hτ x p hpC.1).mp hpC ν hν
+    exact (fiberRegion_mem_iff_forall_normalDirections_of_mem_algebraicCurvatureTensorSubmodule (I := I) g basisAt horth0 hK hτ x p hpC.1).mp hpC ν hν
   · intro hle
     let pν : algebraicCurvatureTensorSubmodule (I := I) (M := M) x := algebraicCurvatureTensorProjection (I := I) g x p
     let q : Tensor04At (I := I) (M := M) x := p - (pν : Tensor04At (I := I) (M := M) x)
@@ -934,7 +934,7 @@ private theorem fiberRegion_mem_iff_forall_normalDirections_full
         exact sub_eq_zero.mp hz
       rw [hpeq]
       exact pν.2
-    exact (fiberRegion_mem_iff_forall_normalDirections (I := I) g basisAt horth0 hK hτ x p hpW).mpr hle
+    exact (fiberRegion_mem_iff_forall_normalDirections_of_mem_algebraicCurvatureTensorSubmodule (I := I) g basisAt horth0 hK hτ x p hpW).mpr hle
 
 end PulledScalarization
 
@@ -1187,7 +1187,7 @@ private theorem fiberRegionPropagationOn_of_flatSupport
           inner ℝ ν p ≤ fiberRegionSupport hT (I := I) (M := M) S basisAt K t x ν := by
     intro t x p
     have hτ : 0 ≤ max t 0 := le_max_right t 0
-    have hmain := fiberRegion_mem_iff_forall_normalDirections_full (I := I) (S.base.metric 0)
+    have hmain := fiberRegion_mem_iff_forall_normalDirections (I := I) (S.base.metric 0)
       basisAt horth0 hK hτ x p
     constructor
     · intro hp ν hν
@@ -1375,74 +1375,6 @@ variable (hS : IsSolutionOn (I := I) S)
 variable (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
 variable (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
 variable (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
-
-omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
-  [I.Boundaryless] in
-private theorem fiberInner_compUhlenbeck_isometry_full
-    {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
-    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
-    (iota : MatrixComp M (Fin 3))
-    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
-    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
-      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
-        movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
-    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
-    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M)
-    (A B : Tensor04At (I := I) (M := M) x) :
-    inner0S (I := I) (S.base.metric 0) x 4
-        (A.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))
-        (B.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)) =
-      inner0S (I := I) (S.base.metric t) x 4 A B := by
-  classical
-  let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
-    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
-  let U : TangentSpace I x →L[ℝ] TangentSpace I x :=
-    uhlenbeckEndomorphismAt (basisAt x) iota t
-  have horth_moving : OrthonormalBasisAt (I := I) (S.base.metric t) x moving :=
-    uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M) hT S basisAt iota hiota0 hgram x
-      (horth0 x) ht
-  have hinv0 : MetricInverseInBasisGen (I := I) (S.base.metric 0) x (basisAt x)
-      (identityInvMetric (Idx := Fin 3)) :=
-    Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
-      (I := I) (S.base.metric 0) (basisAt x) (by
-        intro i j
-        exact horth0 x i j)
-  have hinvt : MetricInverseInBasisGen (I := I) (S.base.metric t) x moving
-      (identityInvMetric (Idx := Fin 3)) :=
-    Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
-      (I := I) (S.base.metric t) moving (by
-        intro i j
-        exact horth_moving i j)
-  have hdiag : ∀ (g : SmoothRiemannianMetric I M)
-      (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
-      (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Fin 3)))
-      (A B : Tensor04At (I := I) (M := M) x),
-      inner0S (I := I) g x 4 A B =
-        ∑ I0 : Fin 4 → Fin 3,
-          tensor0SComponent (I := I) A (fun i => basis i) I0 *
-            tensor0SComponent (I := I) B (fun i => basis i) I0 := by
-    intro g basis hinv A B
-    rw [inner0S_eq_coord (I := I) g x 4 basis (identityInvMetric (Idx := Fin 3)) hinv A B]
-    exact coordInner0S_identity_eq_sum (I := I) (x := x) 4 A B basis
-  calc
-    inner0S (I := I) (S.base.metric 0) x 4
-        (A.compContinuousLinearMap (fun _ : Fin 4 => U))
-        (B.compContinuousLinearMap (fun _ : Fin 4 => U))
-        = ∑ I0 : Fin 4 → Fin 3,
-            tensor0SComponent (I := I) (A.compContinuousLinearMap (fun _ : Fin 4 => U))
-                (fun i => basisAt x i) I0 *
-              tensor0SComponent (I := I) (B.compContinuousLinearMap (fun _ : Fin 4 => U))
-                (fun i => basisAt x i) I0 :=
-          hdiag (S.base.metric 0) (basisAt x) hinv0 _ _
-    _ = ∑ I0 : Fin 4 → Fin 3,
-            tensor0SComponent (I := I) A (fun i => moving i) I0 *
-              tensor0SComponent (I := I) B (fun i => moving i) I0 := by
-          apply Finset.sum_congr rfl
-          intro I0 _
-          rfl
-    _ = inner0S (I := I) (S.base.metric t) x 4 A B :=
-          (hdiag (S.base.metric t) moving hinvt A B).symm
 
 omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M]
   [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
@@ -2098,7 +2030,7 @@ variable (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
 section Helpers
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-private theorem fiberInner_compUhlenbeck_isometry_general
+private theorem fiberInner_compUhlenbeck_isometry_tensor
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (iota : MatrixComp M (Fin 3))
@@ -3380,7 +3312,7 @@ private theorem fiberRegion_roughLapRm04_component_eq
         (metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
           (nablaKRm04Field (I := I) S t 2 x))
         (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := by
-  have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
+  have hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis
       (identityInvMetric (Idx := Fin 3)) := by
     exact Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal (I := I)
       (S.base.metric t) basis (by
@@ -4280,7 +4212,7 @@ private theorem fiber_region_heat_reaction_on
       filter_upwards [heqν] with y hy
       unfold bundleInnerScalarization
       rw [tensor0S_inner_eq_inner0S (I := I) (S.base.metric 0) y (u t y) (ν y)]
-      have hiso := fiberInner_compUhlenbeck_isometry_general (I := I) (M := M) hT S basisAt iota hiota0 hgram
+      have hiso := fiberInner_compUhlenbeck_isometry_tensor (I := I) (M := M) hT S basisAt iota hiota0 hgram
         horth0 ht y (S.base.rm04 t y) (η y)
       have hu : u t y = (S.base.rm04 t y).compContinuousLinearMap
           (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt y) iota t) := rfl
@@ -4361,7 +4293,7 @@ private theorem fiber_region_heat_reaction_on
         filter_upwards [heqν] with y hy
         unfold bundleInnerScalarization
         rw [tensor0S_inner_eq_inner0S (I := I) (S.base.metric 0) y (u t y) (ν y)]
-        have hiso := fiberInner_compUhlenbeck_isometry_general (I := I) (M := M) hT S basisAt iota hiota0 hgram
+        have hiso := fiberInner_compUhlenbeck_isometry_tensor (I := I) (M := M) hT S basisAt iota hiota0 hgram
           horth0 (D.regular_subset ht) y (S.base.rm04 t y) (η y)
         have hu : u t y = (S.base.rm04 t y).compContinuousLinearMap
             (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt y) iota t) := rfl
@@ -4383,7 +4315,7 @@ private theorem fiber_region_heat_reaction_on
         have hA2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5
             (S.base.connection t) (nablaKRm04Field (I := I) S t 1) (nablaKRm04Field (I := I) S t 2) := by
           simpa using (nablaKRm04Field_realizes (I := I) S t 1)
-        have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
+        have hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis
             (identityInvMetric (Idx := Fin 3)) := by
           exact Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal (I := I)
             (S.base.metric t) basis (by
@@ -4454,7 +4386,7 @@ private theorem fiber_region_heat_reaction_on
       have hRalg : uhlenbeckPullbackTensorAt basisAt iota t x R ∈
           algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
         fiberRegion_compU_mem_algebraicCurvatureTensorSubmodule (I := I) (M := M) basisAt iota t x R hR
-      have hiso := fiberInner_compUhlenbeck_isometry_general (I := I) (M := M) hT S basisAt iota hiota0 hgram
+      have hiso := fiberInner_compUhlenbeck_isometry_tensor (I := I) (M := M) hT S basisAt iota hiota0 hgram
         horth0 (D.regular_subset ht) x R (η x)
       have hνx : ν x = uhlenbeckPullbackTensorAt basisAt iota t x (η x) := by
         exact heqν.self_of_nhds
@@ -4664,7 +4596,7 @@ private theorem algebraicCurvatureTensorProjection_compUhlenbeck_commute
     have hqU : q'.compContinuousLinearMap (fun _ : Fin 4 => U) = (q : Tensor04At (I := I) (M := M) x) := by
       dsimp [q']
       exact hcompUinv (q : Tensor04At (I := I) (M := M) x)
-    have hiso := fiberInner_compUhlenbeck_isometry_full hT S basisAt iota hiota0 hgram horth0 ht x A q'
+    have hiso := fiberInner_compUhlenbeck_isometry_tensor hT S basisAt iota hiota0 hgram horth0 ht x A q'
     calc
       inner0S (I := I) (S.base.metric 0) x 4
           (algebraicCurvatureTensorProjection (I := I) (S.base.metric 0) x
@@ -4686,7 +4618,7 @@ private theorem algebraicCurvatureTensorProjection_compUhlenbeck_commute
               (ContinuousMultilinearMap.compContinuousLinearMap
                 (algebraicCurvatureTensorProjection (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
                 (fun _ : Fin 4 => U)) q := by
-              have hiso' := fiberInner_compUhlenbeck_isometry_full hT S basisAt iota hiota0 hgram horth0 ht x
+              have hiso' := fiberInner_compUhlenbeck_isometry_tensor hT S basisAt iota hiota0 hgram horth0 ht x
                 (algebraicCurvatureTensorProjection (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x) q'
               rw [← hqU]
               exact hiso'.symm
@@ -5074,11 +5006,11 @@ private theorem fiberRegion_hasFlatSupportSectionsOn
         (O := O) (ρ := (χ y) ^ 4) hρ hO hν'
       simpa only [hmatrixTotal] using hmain
   · intro y
-    have hisoY := fiberInner_compUhlenbeck_isometry_full
+    have hisoY := fiberInner_compUhlenbeck_isometry_tensor
       (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht y (η y) (η y)
     have hrad := radialTransportTensorExtension_inner_self_le
       (I := I) (S.base.metric t) x₀ (hdim x₀) basis horth η₀ χ W hsupport hW y
-    have hiso0 := fiberInner_compUhlenbeck_isometry_full
+    have hiso0 := fiberInner_compUhlenbeck_isometry_tensor
       (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht x₀ η₀ η₀
     have hinner : inner Real (ν y) (ν y) ≤ inner Real ν' ν' := by
       rw [tensor0S_inner_eq_inner0S (I := I) (S.base.metric 0) y (ν y) (ν y)]
@@ -5184,7 +5116,7 @@ end RadialTransportLinear
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private theorem curvatureOperatorRegionPropagationOn_zero_aux
+private theorem curvatureOperatorRegionPropagationOn_zero
     {T : Real} (hT : 0 < T) [I.Boundaryless] [CompactSpace M] [Nonempty M]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
@@ -5298,7 +5230,7 @@ private theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
         intro x
         simpa [S0, Sshift, SolutionOn.timeRestrict, SolutionOn.timeShift,
           SolutionFamily.timeShift, SolutionFamily.rm04] using hinit x
-      have hprop0 := curvatureOperatorRegionPropagationOn_zero_aux
+      have hprop0 := curvatureOperatorRegionPropagationOn_zero
         (I := I) (M := M) hT S0 hS0 hdimT hK hinit0
       have hpropShift : curvatureOperatorRegionPropagationOn
           (I := I) (M := M) Sshift K 0 T := by

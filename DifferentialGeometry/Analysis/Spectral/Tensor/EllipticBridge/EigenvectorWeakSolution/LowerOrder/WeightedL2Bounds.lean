@@ -233,7 +233,7 @@ private lemma eLpNorm_indicatorFactor_mul_atom_le_uniform
 
 end LowerOrderENormBoundsUniform
 
-section LowerOrderENormBoundsUnconditional
+section LowerOrderENormBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
@@ -1003,7 +1003,7 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
                     EuclN → ℝ) 2 μw)) := by
       rw [mul_add]
 
-end LowerOrderENormBoundsUnconditional
+end LowerOrderENormBounds
 
 end TensorSpectral
 end Parabolic

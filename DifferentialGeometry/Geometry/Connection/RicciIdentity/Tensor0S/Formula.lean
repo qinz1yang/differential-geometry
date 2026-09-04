@@ -296,7 +296,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
                     (XV q x))) := by
       rw [hWYx]
       simpa [WY, Xf, Yf, XV] using
-        sum_update_finCons_raw
+        sum_update_finCons
           (F := fun slots' : Fin (s + 1) → TangentSpace I x =>
             nablaAlphaSec x slots')
           (head := Ysec x)
@@ -321,7 +321,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
                     (YV q x))) := by
       rw [hWXx]
       simpa [WX, Xf, Yf, YV] using
-        sum_update_finCons_raw
+        sum_update_finCons
           (F := fun slots' : Fin (s + 1) → TangentSpace I x =>
             nablaAlphaSec x slots')
           (head := Xsec x)

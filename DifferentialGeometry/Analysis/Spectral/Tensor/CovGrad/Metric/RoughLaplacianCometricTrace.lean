@@ -65,7 +65,7 @@ private lemma secondCovDeriv_frame_unitEval_eq_iteratedCovGrad
   have hiter : iteratedCovGrad (I := I) g₀ 0 2 2 S =
       covGrad (I := I) (M := M) g₀ 0 3 (covGrad (I := I) (M := M) g₀ 0 2 S) := by
     rw [iteratedCovGrad_succ, iteratedCovGrad_succ, iteratedCovGrad_zero]
-  have hbridge := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
+  have hbridge := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval
     (I := I) (M := M) g₀ 2 S
     (X := smoothOrthoFrame (I := I) g₀ x i)
     (Y := smoothOrthoFrame (I := I) g₀ x i)

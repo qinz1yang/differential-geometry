@@ -41,7 +41,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert in
-private theorem cometricCastG0_sup_and_jetL2_bound_generic
+private theorem cometricCastG0_sup_and_jetL2_bound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -542,7 +542,7 @@ private lemma window_grid_le (g₀ : SmoothRiemannianMetric I M)
         intro m _
         rw [Finset.sum_const, nsmul_eq_mul]
 
-private theorem sharpFlatEndoCc_lowOrder_jetL2_succ_generic
+private theorem sharpFlatEndoCc_lowOrder_jetL2_succ
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -673,7 +673,7 @@ private theorem sharpFlatEndoCc_lowOrder_jetL2_succ_generic
           ‖iteratedCovGrad (I := I) g₀ 1 1 q IdIns‖)]
     exact Finset.sum_le_sum hterm
 
-private theorem connectionDifferenceSection_lowOrder_jetL2_succ_generic
+private theorem connectionDifferenceSection_lowOrder_jetL2_succ
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -693,11 +693,11 @@ private theorem connectionDifferenceSection_lowOrder_jetL2_succ_generic
             ‖iteratedCovGrad (I := I) g₀ 1 2 q (connectionDifferenceSection (I := I) g₁ g₀)‖ ^ 2 ≤ F i) := by
   classical
   obtain ⟨ΛK, FK, hΛK_nn, hFK_nn, hK⟩ :=
-    raisedKoszul_order0sup_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    raisedKoszul_order0sup_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛKlow, hΛKlow_nn, hKlow⟩ :=
     raisedKoszul_riemannianFiberNormSq_lowOrder_le (I := I) (M := M) g₀ a ha_super hR
   obtain ⟨ΛS, FS, hΛS_nn, hFS_nn, hS⟩ :=
-    sharpFlatEndoCc_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    sharpFlatEndoCc_lowOrder_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   have hTA_ex : ∀ q : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g₀ 1 2) (T : SmoothCcTensor g₀ 1 1)
         (ΛS' ΛT' : ℝ), 0 ≤ ΛS' → 0 ≤ ΛT' →
@@ -974,7 +974,7 @@ private lemma riemannianFiberNormSq_neg_local'
     tensorInnerPointwise_smul_left, tensorInnerPointwise_smul_right]
   ring
 
-private theorem connectionDifferenceLoweredVariation_lowOrder_jetL2_succ_generic
+private theorem connectionDifferenceLoweredVariation_lowOrder_jetL2_succ
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -996,7 +996,7 @@ private theorem connectionDifferenceLoweredVariation_lowOrder_jetL2_succ_generic
               F i) := by
   classical
   obtain ⟨ΛC, FC, hΛC_nn, hFC_nn, hC⟩ :=
-    connectionDifferenceSection_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    connectionDifferenceSection_lowOrder_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   have hSBackground_ex : ∀ n : ℕ, ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + n) x
         ((iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)).toSection x) ≤
@@ -1213,7 +1213,7 @@ private theorem cometricCastG0_riemannianFiberNormSq_lowOrder_le (g₀ : SmoothR
   have hΦn := hSΦ n x
   linarith [hsplit, happ, hΦn]
 
-private theorem connectionDifferenceVariationTrace_lowOrder_jetL2_succ_generic
+private theorem connectionDifferenceVariationTrace_lowOrder_jetL2_succ
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1234,11 +1234,11 @@ private theorem connectionDifferenceVariationTrace_lowOrder_jetL2_succ_generic
               F i) := by
   classical
   obtain ⟨ΛCsup, FC, hΛCsup_nn, hFC_nn, hCgen⟩ :=
-    cometricCastG0_sup_and_jetL2_bound_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    cometricCastG0_sup_and_jetL2_bound (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛClow, hΛClow_nn, hClow⟩ :=
     cometricCastG0_riemannianFiberNormSq_lowOrder_le (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛX, FX, hΛX_nn, hFX_nn, hXgen⟩ :=
-    connectionDifferenceLoweredVariation_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
+    connectionDifferenceLoweredVariation_lowOrder_jetL2_succ (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   have hTA_ex : ∀ q : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g₀ 3 1) (T : SmoothCcTensor g₀ 0 3)
         (ΛS' ΛT' : ℝ), 0 ≤ ΛS' → 0 ≤ ΛT' →
@@ -1457,7 +1457,7 @@ private lemma norm_iteratedCovGrad_deTurckVectorFieldCovariantDerivativeLoweredB
   exact riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceVariationTraceGrad_eq_succ (I := I) (M := M)
     g₀ g₁ g_bg i x
 
-private theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsertLowered_order0_jetL2_generic
+private theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsertLowered_order0_jetL2
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1477,9 +1477,9 @@ private theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsertLowered_o
             F i) := by
   classical
   obtain ⟨ΛO, FO, hΛO_nn, hFO_nn, hOgen⟩ :=
-    connectionDifferenceVariationTrace_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
+    connectionDifferenceVariationTrace_lowOrder_jetL2_succ (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   obtain ⟨ΛCd, FCd, hΛCd_nn, hFCd_nn, hCdgen⟩ :=
-    connectionDifferenceSection_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    connectionDifferenceSection_lowOrder_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   have hTA_ex : ∀ q : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g₀ 1 2) (T : SmoothCcTensor g₀ 0 1)
         (ΛS' ΛT' : ℝ), 0 ≤ ΛS' → 0 ≤ ΛT' →
@@ -1735,7 +1735,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbati
               ((deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x) ≤ Λ := by
   obtain ⟨Λ0, F, hΛ0_nn, hF_nn, hgen⟩ :=
-    deTurckVectorFieldCovariantDerivativeEndomorphismInsertLowered_order0_jetL2_generic (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsertLowered_order0_jetL2 (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   refine ⟨Λ0, hΛ0_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
   have hs0 : (0 : ℝ) ≤ s := hs.1
@@ -1848,7 +1848,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbati
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤ P i := by
   classical
   obtain ⟨Λ0, F, hΛ0_nn, hF_nn, hgen⟩ :=
-    deTurckVectorFieldCovariantDerivativeEndomorphismInsertLowered_order0_jetL2_generic (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsertLowered_order0_jetL2 (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   refine ⟨F, hF_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
   by_cases hMne : Nonempty M
@@ -2284,9 +2284,9 @@ private theorem wOmega_L2_topsep
   obtain ⟨ΛClow, hΛClow_nn, hClow⟩ :=
     cometricCastG0_riemannianFiberNormSq_lowOrder_le (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛCsup, FC, hΛCsup_nn, hFC_nn, hCgen⟩ :=
-    cometricCastG0_sup_and_jetL2_bound_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    cometricCastG0_sup_and_jetL2_bound (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛX, FX, hΛX_nn, hFX_nn, hXgen⟩ :=
-    connectionDifferenceLoweredVariation_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
+    connectionDifferenceLoweredVariation_lowOrder_jetL2_succ (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   have hTA_ex : ∀ q : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g₀ 3 1) (T : SmoothCcTensor g₀ 0 3)
         (ΛS' ΛT' : ℝ), 0 ≤ ΛS' → 0 ≤ ΛT' →
@@ -2592,9 +2592,9 @@ private theorem wAlpha_L2_topsep
   obtain ⟨Ktop_om, hKtop_om_nn, Com, hCom_nn, hom⟩ :=
     wOmega_L2_topsep (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   obtain ⟨ΛO, FO, hΛO_nn, hFO_nn, hOgen⟩ :=
-    connectionDifferenceVariationTrace_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
+    connectionDifferenceVariationTrace_lowOrder_jetL2_succ (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   obtain ⟨ΛCd, FCd, hΛCd_nn, hFCd_nn, hCdgen⟩ :=
-    connectionDifferenceSection_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    connectionDifferenceSection_lowOrder_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   have hTA_ex : ∀ q : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g₀ 1 2) (T : SmoothCcTensor g₀ 0 1)
         (ΛS' ΛT' : ℝ), 0 ≤ ΛS' → 0 ≤ ΛT' →

@@ -32,7 +32,7 @@ private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 
 omit [IsManifold I ∞ M] in
-private lemma pull_lip_of_raw
+private lemma pull_lipschitz_of_chartPushedRaw
     (α : M) (φ : M → ℝ) {C : NNReal}
     (hφ : LipschitzWith C (chartPushedRaw (I := I) (M := M) α φ)) :
     ∃ D : NNReal, LipschitzWith D (chartPullZero (I := I) α φ) := by
@@ -117,7 +117,7 @@ private theorem global_lip_ibp
   have hφ_lip (α : M) : ∃ D : NNReal,
       LipschitzWith D (chartPullZero (I := I) α (φ α)) := by
     obtain ⟨C, hraw⟩ := chart_pou_lip (I := I) g α hu hB
-    apply pull_lip_of_raw (I := I) α (φ α)
+    apply pull_lipschitz_of_chartPushedRaw (I := I) α (φ α)
     simpa only [φ, ρ] using hraw
   let D : M → NNReal := fun α => Classical.choose (hφ_lip α)
   have hD (α : M) : LipschitzWith (D α)

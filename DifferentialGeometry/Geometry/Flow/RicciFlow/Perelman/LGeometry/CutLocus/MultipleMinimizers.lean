@@ -21,7 +21,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-theorem lCut_other
+theorem mem_lCutDomain_of_distinct_minimizer_same_endpoint
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) {Z W : TangentSpace I x} {tau : Real}
     (hcut : (Z : E) ∈ lCutDomain S T x tau)

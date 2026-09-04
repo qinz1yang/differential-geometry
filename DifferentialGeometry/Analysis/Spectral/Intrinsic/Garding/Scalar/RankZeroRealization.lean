@@ -262,7 +262,7 @@ theorem grad2_repr_diag
             (tensorHsSmoothRepr (I := I) (M := M) v hv)) := by
     rw [iteratedCovGrad_succ, iteratedCovGrad_succ, iteratedCovGrad_zero]
   have hbridge :=
-    tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
+    tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval
       (I := I) (M := M) g 0
       (tensorHsSmoothRepr (I := I) (M := M) v hv)
       (X := fun y => B y) (Y := fun y => B y)
@@ -376,7 +376,7 @@ theorem grad_repr_norm
       SmoothCcTensor.norm_def (I := I) (M := M)
         (rawTensorConnLapSmooth (I := I) g 0 0 S),
       SmoothCcTensor.norm_def (I := I) (M := M) S]
-    exact covGrad_l2NormSq_le_rawConnLap_mul_self_gen
+    exact covGrad_l2NormSq_le_rawConnLap_mul_self_covariantTensor
       (I := I) (M := M) g 0 S
   have hLap : ‖rawTensorConnLapSmooth (I := I) g 0 0 S‖ ≤ ‖v‖ := by
     rw [← SmoothCcTensor.norm_toL2]

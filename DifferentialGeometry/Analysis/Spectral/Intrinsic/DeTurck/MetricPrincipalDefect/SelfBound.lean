@@ -84,15 +84,15 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpa
 omit [I.Boundaryless] in
 private theorem traceSelf_eq (g : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g g =
-      reindexCoeffGen (I := I) (M := M) g 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2
         (cometricDoubleTraceField (I := I) g 2) traceHessianSlotPerm := by
   apply DifferentialGeometry.Integral.L2.SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [traceHessianCoeff_toSection, reindexCoeffGen_toSection]
+  rw [traceHessianCoeff_toSection, reindexCoefficientInputSlots_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffFibGen_apply, cometricDoubleTraceField_toSection,
+  rw [reindexCoefficientInputSlotsFiber_apply, cometricDoubleTraceField_toSection,
     traceHessianFib, ContinuousLinearMap.comp_apply, domDomCongrFib_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -113,7 +113,7 @@ private theorem traceSelf_grid
           (traceHessianCoeff (I := I) (M := M) g g)).toSection x) ≤
       selfTraceC (E := E) i := by
   rw [traceSelf_eq (I := I) (M := M) g]
-  rw [DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+  rw [DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
     (I := I) (M := M) g 4 2
     (cometricDoubleTraceField (I := I) g 2) traceHessianSlotPerm i x]
   exact doubleTrace_grid (I := I) (M := M) g i x
@@ -154,8 +154,8 @@ private theorem ricciSelf_riemannianFiberNormSq_le
             (cometricDoubleTraceField (I := I) g 2)).toSection x) := by
   classical
   set R3 := cometricDoubleTraceField (I := I) g 2 with hR3
-  set R1 := reindexCoeffGen (I := I) (M := M) g 4 2 R3 koszulSlotPerm with hR1
-  set R2 := reindexCoeffGen (I := I) (M := M) g 4 2
+  set R1 := reindexCoefficientInputSlots (I := I) (M := M) g 4 2 R3 koszulSlotPerm with hR1
+  set R2 := reindexCoefficientInputSlots (I := I) (M := M) g 4 2
     (rsDomDomCongrSection (I := I) (M := M) g 4 2
       (Equiv.swap (0 : Fin 2) 1) R3) koszulSlotPerm with hR2
   set A := ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g with hA
@@ -188,13 +188,13 @@ private theorem ricciSelf_riemannianFiberNormSq_le
       riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x PA =
         riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x PC := by
     rw [hPA, hPC, hR1]
-    exact DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+    exact DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g 4 2 R3 koszulSlotPerm i x
   have hbB :
       riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x PB =
         riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x PC := by
     rw [hPB, hPC, hR2]
-    rw [DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+    rw [DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g 4 2
       (rsDomDomCongrSection (I := I) (M := M) g 4 2
         (Equiv.swap (0 : Fin 2) 1) R3) koszulSlotPerm i x]
@@ -288,10 +288,10 @@ theorem phiSelf_grid
   let ρB : Equiv.Perm (Fin 4) :=
     traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
   set A := (iteratedCovGrad (I := I) g 4 2 i
-    (reindexCoeffGen (I := I) (M := M) g 4 2
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2
       (traceHessianCoeff (I := I) (M := M) g g) ρA)).toSection x with hA
   set B := (iteratedCovGrad (I := I) g 4 2 i
-    (reindexCoeffGen (I := I) (M := M) g 4 2
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2
       (traceHessianCoeff (I := I) (M := M) g g) ρB)).toSection x with hB
   set R := (iteratedCovGrad (I := I) g 4 2 i
     (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g)).toSection x with hR
@@ -313,14 +313,14 @@ theorem phiSelf_grid
   have hAbound :
       riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x A ≤
         selfTraceC (E := E) i := by
-    rw [hA, DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+    rw [hA, DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g 4 2
       (traceHessianCoeff (I := I) (M := M) g g) ρA i x]
     exact traceSelf_grid (I := I) (M := M) g i x
   have hBbound :
       riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x B ≤
         selfTraceC (E := E) i := by
-    rw [hB, DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+    rw [hB, DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g 4 2
       (traceHessianCoeff (I := I) (M := M) g g) ρB i x]
     exact traceSelf_grid (I := I) (M := M) g i x

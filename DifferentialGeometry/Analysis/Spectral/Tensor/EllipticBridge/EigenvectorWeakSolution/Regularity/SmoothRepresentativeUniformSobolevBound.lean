@@ -34,10 +34,10 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-section Unconditional
+section MainResults
 
 
-namespace EigenvectorManifoldAggregateUnconditional
+namespace EigenvectorManifoldAggregate
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
 
@@ -99,9 +99,9 @@ private lemma aggregateConstant_nonneg :
   exact perChartCompConstant_nonneg
     (I := I) (M := M) g r s k α Idx Jdx
 
-end EigenvectorManifoldAggregateUnconditional
+end EigenvectorManifoldAggregate
 
-open EigenvectorManifoldAggregateUnconditional
+open EigenvectorManifoldAggregate
 
 omit [CompleteSpace E] in
 private lemma tensorChartComp_eigenvectorSmooth_wkpNorm_le
@@ -283,7 +283,7 @@ theorem eigenvectorSmooth_wtwokTwoNorm_le_uniform
   rw [← Finset.sum_mul]
   exact le_of_eq rfl
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

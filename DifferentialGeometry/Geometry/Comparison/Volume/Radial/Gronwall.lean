@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartMeasure
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
-import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Connection
@@ -694,8 +694,8 @@ private def radialCurvTerm
 private def radialCurvTermFlat
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : Real) :
     Tensor0SBundle.Tensor0SSpace 1 I (radialCurve (I := I) g p x t) :=
-  Tensor0SBundle.dualToCotangentGen (I := I)
-    (Tensor0SBundle.tangentFlatLinearGen (I := I) g
+  Tensor0SBundle.dualToCotangent (I := I)
+    (Tensor0SBundle.tangentFlatLinear (I := I) g
       (radialCurve (I := I) g p x t)
       (radialCurvTerm (I := I) g p x w t))
 
@@ -704,7 +704,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private theorem radialCurvTermFlat_inner
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : Real) :
-    Tensor0SBundle.cotangentInnerGen (I := I) g
+    Tensor0SBundle.cotangentInner (I := I) g
       (radialCurve (I := I) g p x t)
       (radialCurvTermFlat (I := I) g p x w t)
       (radialCurvTermFlat (I := I) g p x w t) =
@@ -712,7 +712,7 @@ private theorem radialCurvTermFlat_inner
           (radialCurvTerm (I := I) g p x w t)
           (radialCurvTerm (I := I) g p x w t) := by
   simpa [radialCurvTermFlat] using
-    (Tensor0SBundle.cotangentInner_dualToCotangent_tangentFlat_gen
+    (Tensor0SBundle.cotangentInner_dualToCotangent_tangentFlat
       (I := I) g (radialCurve (I := I) g p x t)
       (radialCurvTerm (I := I) g p x w t)
       (radialCurvTerm (I := I) g p x w t))
@@ -736,10 +736,10 @@ private theorem radialCurvTermFlat_apply_eq_metricRm04StdAt
         g.inner (radialCurve (I := I) g p x t)
           (radialCurvTerm (I := I) g p x w t) W := by
     with_unfolding_all exact
-      ((Tensor0SBundle.dualToCotangent_apply_gen
-        (Tensor0SBundle.tangentFlatLinearGen (I := I) g
+      ((Tensor0SBundle.dualToCotangent_apply
+        (Tensor0SBundle.tangentFlatLinear (I := I) g
           (radialCurve (I := I) g p x t) (radialCurvTerm (I := I) g p x w t)) W).trans
-        (Tensor0SBundle.tangentFlatLinear_apply_gen (I := I) g
+        (Tensor0SBundle.tangentFlatLinear_apply (I := I) g
           (radialCurve (I := I) g p x t) (radialCurvTerm (I := I) g p x w t) W))
   have hrhs :
       DifferentialGeometry.Geometry.Curvature.metricRm04StdAt
@@ -753,7 +753,7 @@ private theorem radialCurvTermFlat_apply_eq_metricRm04StdAt
     rw [DifferentialGeometry.Geometry.Curvature.metricRm04StdAt_apply,
       DifferentialGeometry.metricRm04At_eq_riemannCurvature04At,
       DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At_apply_const,
-      DifferentialGeometry.riemannCurvatureAux_tangentConst_eq_riemannOp
+      DifferentialGeometry.connectionRiemannCurvatureField_tangentConst_eq_riemannOp
         (cov := DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
         (hcov := hcov)]
     rfl
@@ -786,13 +786,12 @@ private theorem radialCurvTermFlat_normSq_eq_cotangentInner
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : Real) :
     Tensor0SBundle.normSq0S (I := I) g (radialCurve (I := I) g p x t) 1
         (radialCurvTermFlat (I := I) g p x w t) =
-      Tensor0SBundle.cotangentInnerGen (I := I) g
+      Tensor0SBundle.cotangentInner (I := I) g
         (radialCurve (I := I) g p x t)
         (radialCurvTermFlat (I := I) g p x w t)
         (radialCurvTermFlat (I := I) g p x w t) := by
   rw [Tensor0SBundle.normSq0S_eq_inner,
     Tensor0SBundle.inner0S_one_eq_cotangent]
-  rfl
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -865,7 +864,7 @@ theorem radialCurvTermFlat_normSq_le_card
       (Fintype.card (Fin 1 -> Idx) : Real) * B ^ 2 := by
   classical
   have hinv :
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) g
+      Tensor0SBundle.MetricInverseInBasis (I := I) g
         (radialCurve (I := I) g p x t) basis
         (Tensor0SBundle.identityInvMetric (Idx := Idx)) :=
     DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
@@ -1127,7 +1126,7 @@ theorem curv_sq_of_flat_Ioo
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {K b : Real}
     (hK : 0 ≤ K)
     (hcurv : ∀ t ∈ Ioo (0 : Real) b,
-      Real.sqrt (Tensor0SBundle.cotangentInnerGen (I := I) g
+      Real.sqrt (Tensor0SBundle.cotangentInner (I := I) g
         (radialCurve (I := I) g p x t)
         (radialCurvTermFlat (I := I) g p x w t)
         (radialCurvTermFlat (I := I) g p x w t)) ≤
@@ -1276,7 +1275,7 @@ theorem exists_ode_Ico_of_flat
     ∃ r : Real, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r → ∀ {K b : Real},
       0 ≤ K → b ≤ 1 →
       (∀ t ∈ Ioo (0 : Real) b,
-        Real.sqrt (Tensor0SBundle.cotangentInnerGen (I := I) g
+        Real.sqrt (Tensor0SBundle.cotangentInner (I := I) g
           (radialCurve (I := I) g p x t)
           (radialCurvTermFlat (I := I) g p x w t)
           (radialCurvTermFlat (I := I) g p x w t)) ≤

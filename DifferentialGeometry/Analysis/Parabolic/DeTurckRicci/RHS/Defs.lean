@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
-import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Basic
 
 open DifferentialGeometry.Geometry.Curvature
@@ -28,7 +27,7 @@ noncomputable def smoothRiemannianMetricToInfty
     (g : SmoothRiemannianMetric I M) :
     SmoothRiemannianMetric I M := g
 
-private noncomputable def lieDerivMetricClmAux
+private noncomputable def lieDerivMetricLinearMap
     (g : SmoothRiemannianMetric I M)
     (W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     TangentSpace I x →ₗ[ℝ] (TangentSpace I x →L[ℝ] ℝ) :=
@@ -52,11 +51,11 @@ private noncomputable def lieDerivMetricClmAux
              LinearMap.coe_toContinuousLinearMap', smul_eq_mul]}
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] private lemma lieDerivMetricClmAux_apply
+@[simp] private lemma lieDerivMetricLinearMap_apply
     (g : SmoothRiemannianMetric I M)
     (W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M)
     (v w : TangentSpace I x) :
-    lieDerivMetricClmAux (I := I) g W x v w =
+    lieDerivMetricLinearMap (I := I) g W x v w =
       lieDerivMetric (I := I) g W x v w := rfl
 
 noncomputable def lieDerivMetricClm
@@ -66,7 +65,7 @@ noncomputable def lieDerivMetricClm
   haveI : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
-    (lieDerivMetricClmAux (I := I) (smoothRiemannianMetricToInfty (I := I) g) W x)
+    (lieDerivMetricLinearMap (I := I) (smoothRiemannianMetricToInfty (I := I) g) W x)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem lieDerivMetricClm_apply

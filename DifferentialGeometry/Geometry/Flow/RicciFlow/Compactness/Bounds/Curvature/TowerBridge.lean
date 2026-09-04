@@ -124,7 +124,7 @@ theorem curvCovDeriv_normSq_eq
     exact curv_apply_iterCov (I := I) (M := M) g m x v
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv :
-      MetricInverseInBasisGen (I := I) g x basis
+      MetricInverseInBasis (I := I) g x basis
         (identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON

@@ -120,7 +120,7 @@ def nablaKRmFrozenSlotSharpSection
     ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
   ContMDiffSection.mk
     (fun y : M =>
-      cotangentSharpGen (I := I) (S.base.metric t) y
+      cotangentSharp (I := I) (S.base.metric t) y
         (nablaKRmFrozenSlotField (I := I) S t k q Y y))
     (cotangentSharp_gen_contMDiff_total (I := I) (S.base.metric t)
       (β := fun y : M => nablaKRmFrozenSlotField (I := I) S t k q Y y)
@@ -137,7 +137,7 @@ omit [I.Boundaryless] in
       (TangentSpace I : M → Type _))
     (y : M) :
     nablaKRmFrozenSlotSharpSection (I := I) S t k q Y y =
-      cotangentSharpGen (I := I) (S.base.metric t) y
+      cotangentSharp (I := I) (S.base.metric t) y
         (nablaKRmFrozenSlotField (I := I) S t k q Y y) :=
   rfl
 
@@ -154,7 +154,7 @@ theorem nablaKRmFrozenSlotSharp_mdiffAt
     (x : M) :
     MDiffAt
       (T% (fun y : M =>
-        cotangentSharpGen (I := I) (S.base.metric t) y
+        cotangentSharp (I := I) (S.base.metric t) y
           (nablaKRmFrozenSlotField (I := I) S t k q Y y))) x :=
   cotangentSharp_gen_mdiffAt (I := I) (S.base.metric t)
     (β := fun y : M => nablaKRmFrozenSlotField (I := I) S t k q Y y)
@@ -229,16 +229,16 @@ theorem nablaKRmRaise_summand_covDeriv
         (fun y : M =>
           S.base.rm04 (t : Real) y
             (vec4 (I := I) (Vb y) (Vc y) (Vm q y)
-              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) y
+              (cotangentSharp (I := I) (S.base.metric (t : Real)) y
                 (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm y))))
         x₀ (X x₀) =
       nablaRm04Field (I := I) S (t : Real) x₀
           (vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+            (cotangentSharp (I := I) (S.base.metric (t : Real)) x₀
               (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm x₀))) +
         S.base.rm04 (t : Real) x₀
           (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+            (cotangentSharp (I := I) (S.base.metric (t : Real)) x₀
               (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                 (nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Vm x₀) (X x₀)))) := by
   classical
@@ -257,7 +257,7 @@ theorem nablaKRmRaise_summand_covDeriv
         fun y : M =>
           S.base.rm04 (t : Real) y
             (vec4 (I := I) (Vb y) (Vc y) (Vm q y)
-              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) y
+              (cotangentSharp (I := I) (S.base.metric (t : Real)) y
                 (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm y))) := by
     funext y
     congr 1
@@ -268,7 +268,7 @@ theorem nablaKRmRaise_summand_covDeriv
   have hcons :
       (Fin.cons (X x₀) (fun a : Fin 4 => W a x₀) : Fin 5 → TangentSpace I x₀) =
         vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-          (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+          (cotangentSharp (I := I) (S.base.metric (t : Real)) x₀
             (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm x₀)) := by
     funext a
     refine Fin.cases ?_ (fun j => ?_) a
@@ -284,7 +284,7 @@ theorem nablaKRmRaise_summand_covDeriv
               ((cov (fun p : M => W a p) x₀) (X x₀)))) =
         S.base.rm04 (t : Real) x₀
           (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+            (cotangentSharp (I := I) (S.base.metric (t : Real)) x₀
               (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                 (nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Vm x₀) (X x₀)))) := by
     rw [Fin.sum_univ_four]
@@ -293,7 +293,7 @@ theorem nablaKRmRaise_summand_covDeriv
     have hc2 : (cov (fun p : M => W 2 p) x₀) (X x₀) = 0 := by rw [hW2]; exact hVm q
     have hc3 :
         (cov (fun p : M => W 3 p) x₀) (X x₀) =
-          cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+          cotangentSharp (I := I) (S.base.metric (t : Real)) x₀
             (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
               (nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Vm x₀) (X x₀)) := by
       have hsharp :=
@@ -506,11 +506,11 @@ theorem nablaK_antisym_eq_rm04_raise_leibniz
       -∑ q : Fin (4 + k),
         (nablaRm04Field (I := I) S (t : Real) x₀
             (vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+              (cotangentSharp (I := I) (S.base.metric (t : Real)) x₀
                 (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm x₀))) +
           S.base.rm04 (t : Real) x₀
             (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+              (cotangentSharp (I := I) (S.base.metric (t : Real)) x₀
                 (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                   (nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Vm x₀) (X x₀))))) := by
   classical
@@ -524,7 +524,7 @@ theorem nablaK_antisym_eq_rm04_raise_leibniz
           -∑ q : Fin (4 + k),
             S.base.rm04 (t : Real) y
               (vec4 (I := I) (Vb y) (Vc y) (Vm q y)
-                (cotangentSharpGen (I := I) (S.base.metric (t : Real)) y
+                (cotangentSharp (I := I) (S.base.metric (t : Real)) y
                   (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm y))) := by
     funext y
     rw [curvatureAction0SAt_eq_rm04_raise (I := I) (S.base.metric (t : Real))
@@ -537,7 +537,7 @@ theorem nablaK_antisym_eq_rm04_raise_leibniz
   set g : Fin (4 + k) → M → Real := fun q y =>
     S.base.rm04 (t : Real) y
       (vec4 (I := I) (Vb y) (Vc y) (Vm q y)
-        (cotangentSharpGen (I := I) (S.base.metric (t : Real)) y
+        (cotangentSharp (I := I) (S.base.metric (t : Real)) y
           (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm y))) with hg_def
   have hmdiff_q : ∀ q : Fin (4 + k),
       MDifferentiableAt I 𝓘(Real, Real) (g q) x₀ := by
@@ -643,11 +643,11 @@ theorem abs_nablaK_antisym_covConst_le
   have hper : ∀ q : Fin (4 + k),
       |nablaRm04Field (I := I) S (t : Real) x₀
             (vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharpGen (I := I) g x₀
+              (cotangentSharp (I := I) g x₀
                 (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm x₀))) +
           S.base.rm04 (t : Real) x₀
             (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharpGen (I := I) g x₀
+              (cotangentSharp (I := I) g x₀
                 (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                   (nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Vm x₀) (X x₀))))| ≤
         (Fintype.card (Fin n) : Real) * (Nnab * Nk) +
@@ -657,7 +657,7 @@ theorem abs_nablaK_antisym_covConst_le
     have hT1a :
         |nablaRm04Field (I := I) S (t : Real) x₀
             (vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharpGen (I := I) g x₀
+              (cotangentSharp (I := I) g x₀
                 (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm x₀)))| ≤
           (Fintype.card (Fin n) : Real) * (Nnab * Nk) := by
       have hCS := abs_tensor05_sharp_last_le (I := I) g basis horth
@@ -705,7 +705,7 @@ theorem abs_nablaK_antisym_covConst_le
     have hT1b :
         |S.base.rm04 (t : Real) x₀
             (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharpGen (I := I) g x₀
+              (cotangentSharp (I := I) g x₀
                 (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                   (nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Vm x₀) (X x₀))))| ≤
           (Fintype.card (Fin n) : Real) * (NRm * Nk1) := by
@@ -939,7 +939,7 @@ theorem abs_spatialComm_nablaKRm_ortho_le
   set gInv : Fin n → Fin n → Real := fun i j => if i = j then (1 : Real) else 0 with hgInv
   have hdiag : ∀ i : Fin n, gInv i i = 1 := by intro i; simp [hgInv]
   have hoff : ∀ i l : Fin n, i ≠ l → gInv i l = 0 := by intro i l hl; simp [hgInv, hl]
-  have hinv : MetricInverseInBasisGen (I := I) (M := M) (S.base.metric (t : Real)) x₀ basis
+  have hinv : MetricInverseInBasis (I := I) (M := M) (S.base.metric (t : Real)) x₀ basis
       gInv := by
     intro i j
     refine ⟨?_, ?_⟩

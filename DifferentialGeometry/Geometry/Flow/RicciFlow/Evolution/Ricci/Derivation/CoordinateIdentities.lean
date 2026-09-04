@@ -59,7 +59,7 @@ theorem coordInvSymmOn
       coordInv (I := I) S x₀ t x j i := by
   have hframe := coordinateFrameAt_isLocalFrame_one (I := I) x₀
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric t) x
         (hframe.toBasisAt hx)
         (fun a b : CoordinateIdx (𝕜 := Real) E =>
@@ -69,7 +69,7 @@ theorem coordInvSymmOn
       (coordinateFrameAt (I := I) x₀) hframe
       (coordInvLocal (I := I) S x₀) t hx
   exact
-    Tensor0SBundle.invMetric_symm
+    Tensor0SBundle.MetricInverseInBasis.symmetric
       (I := I) (M := M) (S.family.metric t) x
       (hframe.toBasisAt hx)
       (fun a b : CoordinateIdx (𝕜 := Real) E =>
@@ -87,7 +87,7 @@ theorem coordRicSymmOn
       ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) t x j i := by
   have hframe := coordinateFrameAt_isLocalFrame_one (I := I) x₀
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric t) x
         (hframe.toBasisAt hx)
         (fun a b : CoordinateIdx (𝕜 := Real) E =>
@@ -229,11 +229,11 @@ theorem canBianchiAt
   let gInvAt : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun a b => coordInv (I := I) S x₀ t x a b
   have hinv :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric t) x basis gInvAt := by
     have h :=
       DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) (S.family.metric t) x₀ hx
-    change Tensor0SBundle.MetricInverseInBasisGen
+    change Tensor0SBundle.MetricInverseInBasis
       (I := I) (M := M) (S.family.metric t) x basis gInvAt at h
     exact h
   have hmetric :=
@@ -368,7 +368,7 @@ theorem canHessAt
   let gInvAt : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun a b => coordInv (I := I) S x₀ t x₀ a b
   have hinv :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric t) x₀ basis gInvAt := by
     simpa [basis, gInvAt] using coordInvReal (I := I) S x₀ t
   have hcov :

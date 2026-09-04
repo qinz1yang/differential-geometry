@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
 import DifferentialGeometry.Geometry.Curvature.Riemann.RawFields
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
-import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
@@ -440,7 +440,7 @@ theorem gInvChart_symm
 theorem gInvBasisAt
     (g : SmoothRiemannianMetric I M) (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) :
-    MetricInverseInBasisGen (I := I) g x (coordinateFrameAtBasis (I := I) x₀ hx)
+    MetricInverseInBasis (I := I) g x (coordinateFrameAtBasis (I := I) x₀ hx)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
         inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ x)) := by
@@ -564,7 +564,7 @@ theorem gInvBasisAt
 
 theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
-    MetricInverseInBasisGen (I := I) g x₀ (coordinateFrameAtToBasis (I := I) x₀)
+    MetricInverseInBasis (I := I) g x₀ (coordinateFrameAtToBasis (I := I) x₀)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
         inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ x₀)) := by

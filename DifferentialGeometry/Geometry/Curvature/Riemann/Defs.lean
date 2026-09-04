@@ -8,8 +8,8 @@ open scoped Manifold Topology ContDiff Matrix
 
 open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry
-namespace Integral
-namespace DivergenceTheorem
+namespace Geometry
+namespace Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -214,6 +214,6 @@ theorem ricciFun_symm_of_chartRicciTensor_symm
   rw [h_chart_symm x k i]
   ring
 
-end DivergenceTheorem
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry

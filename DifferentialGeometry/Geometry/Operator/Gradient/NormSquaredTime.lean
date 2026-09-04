@@ -12,7 +12,6 @@ namespace DifferentialGeometry.Geometry.Operator
 
 
 open Bundle DifferentialGeometry.Tensor0SBundle
-open DifferentialGeometry.Integral.Measure
 open scoped Manifold ContDiff BigOperators Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]

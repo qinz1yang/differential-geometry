@@ -360,7 +360,7 @@ theorem ricciQuadraticKernelDerivativeNestedTerm_metricPerturbationPath_jointlyS
   simpa only [ricciQuadraticKernelDerivativeNestedTerm] using h₃
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmooth
+theorem ricciQuadraticKernelDerivativeDirectTerm_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T W : SmoothCcTensor g 0 2)
     {δ : ℝ}
     (hδ : gFibreOpBound (I := I) (M := M) g
@@ -371,7 +371,7 @@ theorem ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmo
     (out : Equiv.Perm (Fin 4)) :
     JointlySmoothCcTensorFamily (I := I) g 3 4
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
-      (fun t => ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g
+      (fun t => ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) W out) := by
   let S := metricPerturbationPathDomain (δ := δ) (δ' := δ)
   have hinner := connectionDifferenceInsertionInnerActionCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ
@@ -380,7 +380,7 @@ theorem ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmo
     (permCoeff (I := I) (M := M) g out)
   have h₁ := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g hconn hinner
   have h₂ := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g hout h₁
-  simpa only [ricciQuadraticKernelDerivativeBareTerm] using h₂
+  simpa only [ricciQuadraticKernelDerivativeDirectTerm] using h₂
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_metricPerturbationPath_jointlySmooth
@@ -402,8 +402,8 @@ theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_metricPerturbati
     ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks
   have h₂ := ricciQuadraticKernelDerivativeNestedTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ
     ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo
-  have h₃ := ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ ricciQuadraticPermutationCycleZeroOneThreeTwo
-  have h₄ := ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ ricciQuadraticPermutationCycleZeroOneTwo
+  have h₃ := ricciQuadraticKernelDerivativeDirectTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ ricciQuadraticPermutationCycleZeroOneThreeTwo
+  have h₄ := ricciQuadraticKernelDerivativeDirectTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ ricciQuadraticPermutationCycleZeroOneTwo
   have h₅ := ricciQuadraticKernelDerivativeNestedTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ
     ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo
   have hker := jointlySmoothCcTensorFamily_add (I := I) (M := M) g
@@ -1645,12 +1645,12 @@ theorem ricciQuadraticKernelDerivativeNestedTerm_smul
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-theorem ricciQuadraticKernelDerivativeBareTerm_smul
+theorem ricciQuadraticKernelDerivativeDirectTerm_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) (out : Equiv.Perm (Fin 4)) :
-    ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gm (a • W) out =
-      a • ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gm W out := by
-  simp only [ricciQuadraticKernelDerivativeBareTerm, connectionDifferenceInsertionInnerActionCoefficient_smul, operatorFieldComposition_smul_right]
+    ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gm (a • W) out =
+      a • ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gm W out := by
+  simp only [ricciQuadraticKernelDerivativeDirectTerm, connectionDifferenceInsertionInnerActionCoefficient_smul, operatorFieldComposition_smul_right]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
@@ -1659,7 +1659,7 @@ theorem ricciQuadraticKernelDerivativeCoefficient_smul
     (W : SmoothCcTensor g 0 2) :
     ricciQuadraticKernelDerivativeCoefficient (I := I) (M := M) g gm (a • W) =
       a • ricciQuadraticKernelDerivativeCoefficient (I := I) (M := M) g gm W := by
-  simp only [ricciQuadraticKernelDerivativeCoefficient, ricciQuadraticKernelDerivativeNestedTerm_smul, ricciQuadraticKernelDerivativeBareTerm_smul]
+  simp only [ricciQuadraticKernelDerivativeCoefficient, ricciQuadraticKernelDerivativeNestedTerm_smul, ricciQuadraticKernelDerivativeDirectTerm_smul]
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1946,7 +1946,7 @@ open DifferentialGeometry.Analysis.Elliptic
   (integrable_riemannianFiberNormSq_toSection riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev
   (cometricCastG0 covariantJetNormSq covariantJetNormSq_add_le covariantJetNormSq_nonneg
-    covariantJetNormSq_reindexCoeffGen covariantJetNormSq_rsDomDomCongrSection
+    covariantJetNormSq_reindexCoefficientInputSlots covariantJetNormSq_rsDomDomCongrSection
     covariantJetNormSq_slotExtend_le covariantJetNormSq_smul covariantJetNormSq_sub_le
     covariantJetNormSq_sum_six_le exists_covariantJetNormSq_two_operatorFieldComposition_le iteratedCovGrad
     normSq_le_integral_of_pointwise_fiberNormSq_le_rs
@@ -3468,7 +3468,7 @@ theorem exists_connectionDifferenceInsertionInnerDerivativeCoefficient_covariant
     R A hR hA hT2 hT3
   rw [connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend
       (I := I) (M := M) g gm,
-    covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g]
+    covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g]
   calc
     covariantJetNormSq (I := I) (M := M) g 2
         (slotExtend (I := I) (M := M) g 1 2
@@ -3519,7 +3519,7 @@ theorem exists_connectionDifferenceContravariantInsertionField_covariantJetNormS
     R A hR hA hT2 hT3
   rw [connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two
       (I := I) (M := M) g gm,
-    covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g]
+    covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g]
   calc
     covariantJetNormSq (I := I) (M := M) g 2
         (slotExtend (I := I) (M := M) g 2 3
@@ -4168,27 +4168,27 @@ theorem covariantJetNormSq_ricciFourTraceCombination_le
     (g : SmoothRiemannianMetric I M) (F : SmoothCcTensor g 4 2) :
     covariantJetNormSq (I := I) (M := M) g 2
         (((1 : ℝ) / 2) •
-          (reindexCoeffGen (I := I) (M := M) g 4 2 F
+          (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F
                 fourTraceArgPerm0231 +
-            reindexCoeffGen (I := I) (M := M) g 4 2 F
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F
                 fourTraceArgPerm0321 -
             F -
-            reindexCoeffGen (I := I) (M := M) g 4 2 F
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F
                 fourTraceArgPerm2301)) ≤
       22 * covariantJetNormSq (I := I) (M := M) g 2 F := by
   have h0 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g F
   have h1 := covariantJetNormSq_add_le (I := I) (M := M) g 2
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231)
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321)
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231)
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321)
   have h2 := covariantJetNormSq_sub_le (I := I) (M := M) g 2
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
-      reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321) F
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321) F
   have h3 := covariantJetNormSq_sub_le (I := I) (M := M) g 2
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
-        reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321 - F)
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm2301)
-  rw [covariantJetNormSq_reindexCoeffGen, covariantJetNormSq_reindexCoeffGen] at h1
-  rw [covariantJetNormSq_reindexCoeffGen] at h3
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
+        reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321 - F)
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm2301)
+  rw [covariantJetNormSq_reindexCoefficientInputSlots, covariantJetNormSq_reindexCoefficientInputSlots] at h1
+  rw [covariantJetNormSq_reindexCoefficientInputSlots] at h3
   rw [covariantJetNormSq_smul]
   norm_num at h1 h2 h3 ⊢
   linarith
@@ -7362,7 +7362,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev (covariantJetNormSq
   covariantJetNormSq_add_le covariantJetNormSq_nonneg
-  covariantJetNormSq_reindexCoeffGen covariantJetNormSq_smul)
+  covariantJetNormSq_reindexCoefficientInputSlots covariantJetNormSq_smul)
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
@@ -7681,7 +7681,7 @@ theorem exists_lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_pairing
             (pureTrace (I := I) (M := M) g gT 2 -
               pureTrace (I := I) (M := M) g gU 2) := by
         dsimp only [T2T, T2U]
-        rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+        rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
       _ ≤ (Ct2 * ‖ccTensorToHs (I := I) (M := M) g 2
           (2 : ℝ) (T - U)‖) ^ 2 := hraw
       _ ≤ (Ct2 * D) ^ 2 :=
@@ -7708,7 +7708,7 @@ theorem exists_lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_pairing
             (pureTrace (I := I) (M := M) g gT 3 -
               pureTrace (I := I) (M := M) g gU 3) := by
         dsimp only [T3T, T3U]
-        rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+        rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
       _ ≤ (Ct3 * ‖ccTensorToHs (I := I) (M := M) g 2
           (2 : ℝ) (T - U)‖) ^ 2 := hraw
       _ ≤ (Ct3 * D) ^ 2 :=
@@ -7731,7 +7731,7 @@ theorem exists_lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_pairing
             (pureTrace (I := I) (M := M) g gT 4 -
               pureTrace (I := I) (M := M) g gU 4) := by
         dsimp only [T4T, T4U]
-        rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+        rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
       _ ≤ (Ct4 * ‖ccTensorToHs (I := I) (M := M) g 2
           (2 : ℝ) (T - U)‖) ^ 2 := hraw
       _ ≤ (Ct4 * D) ^ 2 :=
@@ -8073,7 +8073,7 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev (covariantJetNormSq
-  covariantJetNormSq_reindexCoeffGen covariantJetNormSq_smul)
+  covariantJetNormSq_reindexCoefficientInputSlots covariantJetNormSq_smul)
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
@@ -8452,7 +8452,7 @@ theorem exists_lieCorrectionZeroVectorBundleDerivativeCoefficient_pairing_second
             (pureTrace (I := I) (M := M) g gT 1 -
               pureTrace (I := I) (M := M) g gU 1) := by
         dsimp only [TrT, TrU]
-        rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+        rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
       _ ≤ (Ct1 * ‖ccTensorToHs (I := I) (M := M) g 2
           (2 : ℝ) (T - U)‖) ^ 2 := hraw
       _ ≤ (Ct1 * D) ^ 2 :=

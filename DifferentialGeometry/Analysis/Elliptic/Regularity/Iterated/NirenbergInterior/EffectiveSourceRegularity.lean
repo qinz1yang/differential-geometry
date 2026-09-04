@@ -12,7 +12,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace IteratedFChartEffRegularity
+namespace IteratedEffectiveSourceRegularity
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -381,7 +381,7 @@ private def step
 
 end CanonicalBundleWithMemWkp
 
-private def canonicalBundleWithMemWkp_aux
+private def canonicalBundleWithMemWkp
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (dirs_seq : ℕ → Fin (Module.finrank ℝ E))
@@ -473,7 +473,7 @@ def iteratedDiffChartBilinearDataCanonicalMemWkp
     (h_step_memWkp :
       FChartEffStepMemWkpHyp (I := I) (M := M) g α u_h dirs_seq m K) :
     IteratedDiffChartBilinearData (I := I) (M := M) g α u_h m :=
-  (canonicalBundleWithMemWkp_aux (I := I) (M := M) g α dirs_seq m K
+  (canonicalBundleWithMemWkp (I := I) (M := M) g α dirs_seq m K
     hu_h h_base_f_chart_memW1p h_base_f_chart_ae_zero h_base_f_chart_memWkp
     h_chart_H_seq h_step_propagator h_step_memWkp m (le_refl _)).data
 
@@ -514,7 +514,7 @@ theorem fChartEff_at_level_memWkp_K
         h_step_memWkp).diffChartForcing
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  have h_mem := (canonicalBundleWithMemWkp_aux (I := I) (M := M) g α dirs_seq
+  have h_mem := (canonicalBundleWithMemWkp (I := I) (M := M) g α dirs_seq
     m K hu_h h_base_f_chart_memW1p h_base_f_chart_ae_zero h_base_f_chart_memWkp
     h_chart_H_seq h_step_propagator h_step_memWkp m (le_refl _)).fChartEff_memWkp
   have h_idx_eq : K + (m - m) = K := by
@@ -522,7 +522,7 @@ theorem fChartEff_at_level_memWkp_K
   rw [h_idx_eq] at h_mem
   exact h_mem
 
-end IteratedFChartEffRegularity
+end IteratedEffectiveSourceRegularity
 end Laplacian
 end Analysis
 end DifferentialGeometry

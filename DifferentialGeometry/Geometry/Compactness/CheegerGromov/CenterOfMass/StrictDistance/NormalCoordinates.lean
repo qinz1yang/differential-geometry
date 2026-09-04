@@ -33,7 +33,7 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-namespace HasNormalBrFull
+namespace HasControlledNormalBranch
 
 theorem strict_dist_input
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -42,7 +42,7 @@ theorem strict_dist_input
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
     (x : (X.obj k).M) {q : NNReal} {δ ρ : Real}
-    (hfull : HasNormalBrFull (I := I) (X.obj k) hcomplete hconn x q δ ρ)
+    (hfull : HasControlledNormalBranch (I := I) (X.obj k) hcomplete hconn x q δ ρ)
     (hqAcc : 3 * hb.metricC 1 * (2 * (q : Real)) ^ 2 ≤
       (2 / 3 : Real) * (q : Real))
     {ι : Type} [Fintype ι] (pts : ι → (X.obj k).M)
@@ -116,7 +116,7 @@ theorem strict_dist_input
   let hEnorm := normal_enorm (I := I) (X.obj k)
   let join := minJoin (I := I) (X.obj k).metric hEnorm
   have hfullData := hfull
-  dsimp only [HasNormalBrFull] at hfullData
+  dsimp only [HasControlledNormalBranch] at hfullData
   rcases hfullData with
     ⟨hq, e, he, hf, _hclosed, _hδdom, _hhom, _hpair, _hinv,
       _hδinv, _eta, _heta, _happrox⟩
@@ -260,7 +260,7 @@ theorem strict_dist_input
           (CenterOfMass.halfSqDist pt) (γ t)
           (mfderiv 𝓘(Real) I γ t 1) (mfderiv 𝓘(Real) I γ t 1) := by
       intro t ht
-      exact HasNormalBrFull.hess_pos (I := I) hb k hcomplete hconn x hfull
+      exact HasControlledNormalBranch.hess_pos (I := I) hb k hcomplete hconn x hfull
         hqAcc hquarter hρ hρq hρmetric hρexp
           (by
             have hmemt := hmem ht
@@ -305,7 +305,7 @@ theorem strict_dist_input
   · intro i a ha b hbmem hab
     exact hstrict_pt (pts i) (hptsCage i) a ha b hbmem hab
 
-end HasNormalBrFull
+end HasControlledNormalBranch
 
 end HCGCompactness
 end DifferentialGeometry

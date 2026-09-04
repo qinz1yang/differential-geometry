@@ -539,11 +539,11 @@ theorem ricciLichnerowiczSpecializesInFrame_lc
   have hInv : SymmetricInverseMetricComponentsInFrameOn gInv := by
     intro t x i j
     have hinvAt :
-        Tensor0SBundle.MetricInverseInBasisGen
+        Tensor0SBundle.MetricInverseInBasis
           (I := I) (M := M) (S.family.metric t) x
           (hframe.toBasisAt (hcover x)) (fun a b : Idx => gInv t x a b) :=
       metricInverseInBasis_of_local (I := I) S gInv frame hframe hinv t (hcover x)
-    exact Tensor0SBundle.invMetric_symm
+    exact Tensor0SBundle.MetricInverseInBasis.symmetric
       (I := I) (M := M) (S.family.metric t) x
       (hframe.toBasisAt (hcover x)) (fun a b : Idx => gInv t x a b)
       hinvAt i j
@@ -691,7 +691,7 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
   have hx₀ : x₀ ∈ coordinateFrameSet (I := I) x₀ :=
     coordinateFrameAt_mem (I := I) x₀
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric (t : Real)) x₀
         ((coordinateFrameAt_isLocalFrame_one (I := I) x₀).toBasisAt hx₀)
         (fun a b : CoordinateIdx (𝕜 := Real) E => gInv (t : Real) x₀ a b) :=
@@ -704,7 +704,7 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
         gInv (t : Real) x₀ a b = gInv (t : Real) x₀ b a := by
     intro a b
     simpa using
-      Tensor0SBundle.invMetric_symm
+      Tensor0SBundle.MetricInverseInBasis.symmetric
         (I := I) (M := M) (S.family.metric (t : Real)) x₀
         ((coordinateFrameAt_isLocalFrame_one (I := I) x₀).toBasisAt hx₀)
         (fun a b : CoordinateIdx (𝕜 := Real) E => gInv (t : Real) x₀ a b)

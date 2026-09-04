@@ -46,7 +46,7 @@ theorem covNorm0_le [IsManifold I 1 M]
   have hcomp := sqrt_normSq0S_le_of_metric_equiv
     (I := I) (g := h) (h := gRef) x 2 hC1 hpair (metricTensor0S (I := I) h x)
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) h x
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) h x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) h x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) h basis hON
@@ -289,7 +289,7 @@ theorem metricDerivNorm_le_of_equiv
   set nE : ℕ := Module.finrank Real (TangentSpace I y) with hnE
   obtain ⟨basis, hON⟩ :=
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gInf y
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gInf y basis
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) gInf y basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I y)))) := by
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal

@@ -521,7 +521,7 @@ private lemma lieFirstOrder_omega_eval (g₁ : SmoothRiemannianMetric I M) (x : 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma lieFirstOrder_psiB_raw (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
+private lemma lieFirstOrder_backgroundCoefficient_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) (YZ : Fin 2 → TangentSpace I x) :
     ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg).toSection x) om) YZ =
@@ -598,7 +598,7 @@ private lemma lieFirstOrder_psiB_hPsi (g₀ g₁ g_bg : SmoothRiemannianMetric I
     ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (deTurckLieFirstOrderBackgroundCoefficient (I := I) (M := M) g₀ g₁ g_bg).toSection x) om) YZ =
       om (fun _ : Fin 1 => deTurckLieFirstOrderBackgroundCoefficientKernel (I := I) (M := M) g₁ g_bg x (YZ 0) (YZ 1)) := by
-  rw [lieFirstOrder_psiB_raw, lieFirstOrder_omega_eval (I := I) g₁ x om]
+  rw [lieFirstOrder_backgroundCoefficient_apply, lieFirstOrder_omega_eval (I := I) g₁ x om]
   rw [g₁.symm x (inverseMetricSharpFib (I := I) g₁ x om)
     (deTurckLieFirstOrderBackgroundCoefficientKernel (I := I) (M := M) g₁ g_bg x (YZ 0) (YZ 1))]
   rw [deTurckLieFirstOrderBackgroundCoefficientKernel_inner]
@@ -623,7 +623,7 @@ private lemma deTurckLieFirstOrderBackgroundCoefficientKernel_inner_neg (g₁ g_
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma lieFirstOrder_cometric_collapse_full (g₁ : SmoothRiemannianMetric I M) (x : M)
+private lemma lieFirstOrder_cometric_collapse_toModel (g₁ : SmoothRiemannianMetric I M) (x : M)
     (w : TangentSpace I x) :
     ∑ k : Fin (Module.finrank ℝ E),
         g₁.inner x w
@@ -681,7 +681,7 @@ private lemma lieFirstOrder_slot2_collapse (g₁ : SmoothRiemannianMetric I M) (
     exact congrArg
       (fun z : E =>
         Tensor0SSpace.toModel D (Function.update ![c₀, c₁, (0 : E)] 2 z))
-      (lieFirstOrder_cometric_collapse_full (I := I) g₁ x X).symm
+      (lieFirstOrder_cometric_collapse_toModel (I := I) g₁ x X).symm
   rw [hstep1]
   have hms := ((Tensor0SSpace.toModel D).toMultilinearMap).map_update_sum
     (t := (Finset.univ : Finset (Fin (Module.finrank ℝ E)))) (i := (2 : Fin 3))
@@ -744,7 +744,7 @@ private lemma lieFirstOrder_slot0_collapse (g₁ : SmoothRiemannianMetric I M) (
     exact congrArg
       (fun z : E =>
         Tensor0SSpace.toModel D (Function.update ![(0 : E), c₁, c₂] 0 z))
-      (lieFirstOrder_cometric_collapse_full (I := I) g₁ x X).symm
+      (lieFirstOrder_cometric_collapse_toModel (I := I) g₁ x X).symm
   rw [hstep1]
   have hms := ((Tensor0SSpace.toModel D).toMultilinearMap).map_update_sum
     (t := (Finset.univ : Finset (Fin (Module.finrank ℝ E)))) (i := (0 : Fin 3))

@@ -230,7 +230,7 @@ lemma finCons_update_tail_eq_update_finCons_succ
       Function.update (Fin.cons head tail : Fin (s + 1) → V) q.succ newTail :=
   (update_finCons_succ head tail q newTail).symm
 
-lemma sum_update_finCons
+lemma sum_update_finCons_of_cons
     {s : ℕ} {V A : Type*} [AddCommMonoid A]
     (F : (Fin (s + 1) → V) → A)
     (head dHead : V) (tail dTail : Fin s → V) :
@@ -250,7 +250,7 @@ lemma sum_update_finCons
   simp_rw [Fin.cons_succ]
   simp_rw [update_finCons_succ]
 
-lemma sum_update_finCons_raw
+lemma sum_update_finCons
     {s : ℕ} {V A : Type*} [AddCommMonoid A]
     (F : (Fin (s + 1) → V) → A)
     (head : V) (tail : Fin s → V) (d : Fin (s + 1) → V) :
@@ -268,7 +268,7 @@ lemma sum_update_finCons_raw
     · intro q
       simp
   simpa [hd] using
-    sum_update_finCons
+    sum_update_finCons_of_cons
       (F := F) (head := head) (dHead := d 0) (tail := tail)
       (dTail := fun q : Fin s => d q.succ)
 

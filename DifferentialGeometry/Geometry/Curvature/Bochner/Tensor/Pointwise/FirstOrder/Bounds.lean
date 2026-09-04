@@ -856,7 +856,7 @@ lemma nablaTensorCurvSec_tensorRSCov_unitEval
   rw [nablaTensorCurvSec_def, nablaTensor0SCurv_def]
   rw [sub_apply, sub_apply, sub_apply]
   refine congrArg₂ HSub.hSub (congrArg₂ HSub.hSub (congrArg₂ HSub.hSub ?_ ?_) ?_) ?_
-  · have h1 := covDeriv_unit_eval_eq_genVal (I := I) (M := M) g s Rsec x (X x)
+  · have h1 := covDeriv_unit_eval_eq (I := I) (M := M) g s Rsec x (X x)
     have hRsec_app : ∀ b, Rsec b = riemannSec (tensorCov (I := I) g 0 s)
         (fun b' => Y b') (fun b' => Z b') (fun b' => τ b') b := fun b => rfl
     simp only [hRsec_app] at h1
@@ -889,7 +889,7 @@ lemma nablaTensorCurvSec_tensorRSCov_unitEval
     simp only [hcovτ_app] at h4
     rw [h4]
     congr 1
-    rw [covApply_unit_eval_eq_genVal (I := I) (M := M) g s τ (fun b => X b)]
+    rw [covApply_unit_eval_eq (I := I) (M := M) g s τ (fun b => X b)]
 
 private theorem exists_frameSummed_nablaTensorCurvSec_fiberNormSq_le
     (g : SmoothRiemannianMetric I M) :
@@ -1015,7 +1015,7 @@ private lemma riemannianFiberNormSq_tensorCovDerivAt_frame_le
       (tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x (e j) := by
     rw [slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec (I := I) (M := M) g x s e K₀
       ((covGrad (I := I) (M := M) g 0 s S).toSection x) j]
-    rw [curry_covGrad_unit_eval_general (I := I) (M := M) g s S x (e j)]
+    rw [curry_covGrad_unit_eval (I := I) (M := M) g s S x (e j)]
     rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           tensorCovDerivAt (I := I) (M := M) g 0 s S x
             (tangentSpaceModelContinuousLinearEquiv (I := I) x (e j)))

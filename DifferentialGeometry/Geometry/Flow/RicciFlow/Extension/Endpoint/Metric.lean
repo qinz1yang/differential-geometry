@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Limit.Smooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.Estimate
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
-import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Compactness
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import Mathlib.Topology.Order.IsLUB
@@ -95,7 +95,7 @@ theorem exists_endMetric
           exact (hEquivTail (tSeq k)
             ⟨le_of_lt (lt_trans ht1beta (hSeqMem k).1), (hSeqMem k).2⟩ x v).1
       obtain ⟨phi, hPhi, gInf, hInner, _hDerivConv⟩ :=
-        metricPreconvFull (I := I) hM Set.univ isCompact_univ 2 gRef gSeq hbdd hlow
+        exists_metric_subsequence_tendsto_on_compact (I := I) hM Set.univ isCompact_univ 2 gRef gSeq hbdd hlow
       refine ⟨gInf, ?_⟩
       intro x0 x i j
       let v : TangentSpace I x :=

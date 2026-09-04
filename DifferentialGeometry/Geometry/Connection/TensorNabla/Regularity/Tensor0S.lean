@@ -584,7 +584,7 @@ theorem localCovariantDerivTensor0SAt_constInChart_eval_tangentConstInChart_cont
     fun a i =>
       tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
         (I := I) (V a) p (hV_p a) i
-  rw [localCovariantDerivTensor0SAt_eval_moving_raw
+  rw [localCovariantDerivTensor0SAt_eval_moving
     (I := I) cov X βsec V p hpair_md hβmodel_p hV_md hVmodel_p hcoord_p]
 
 theorem localCovariantDerivTensor0SAt_constInChart_contMDiffAt
@@ -714,7 +714,7 @@ theorem nabla0SFun_eval_smooth_slots {s : ℕ}
       tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
         (I := I) (W a) x₀ (hV_at a) i
   simpa [W] using
-    nabla0SFun_eval_coordFrame_moving_raw
+    nabla0SFun_eval_coordFrame_moving
       (I := I) cov X W α x₀ hpair hV_md hVmodel hcoord
 
 omit [IsManifold I 2 M] in
@@ -821,7 +821,7 @@ theorem nabla0SFun_eval_C1_slots {s : ℕ}
       tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt_one
         (I := I) (V a) x₀ (hV_at a) i
   exact
-    nabla0SFun_eval_coordFrame_moving_raw
+    nabla0SFun_eval_coordFrame_moving
       (I := I) cov X V α x₀ hpair hV_md hVmodel hcoord
 
 theorem nabla0SFun_eval_tangentConstInChart_contMDiffAt
@@ -926,7 +926,7 @@ theorem nabla0SFun_eval_tangentConstInChart_contMDiffAt
     fun a i =>
       tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
         (I := I) (V a) p (hV_at a) i
-  rw [nabla0SFun_eval_coordFrame_moving_raw
+  rw [nabla0SFun_eval_coordFrame_moving
     (I := I) cov X V α p hpair_md hV_md hVmodel_p hcoord_p]
 
 theorem nabla0S_reg (s : ℕ)

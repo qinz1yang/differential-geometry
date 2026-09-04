@@ -9,7 +9,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace GradInnerLaplacianFinal
+namespace GradInnerLaplacianDomain
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -22,7 +22,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.GradInnerLpIdentity
-open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianCandidate
+open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianRhs
 open DifferentialGeometry.Analysis.Laplacian.HessianPairingLapDom
 open DifferentialGeometry.Analysis.Laplacian.HessianPairingChart
 open DifferentialGeometry.Analysis.Laplacian.RicciPairingCLM
@@ -41,7 +41,7 @@ noncomputable def gradInnerCLMImageLapWitness
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     H1Compl (I := I) (M := M) g :=
   resolvent (I := I) (M := M) g
-    (gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ hu_h)
+    (gradInnerLaplacianRhs (I := I) (M := M) g φ hu_h)
 
 theorem gradInnerCLM_imageLap_witness_mem_laplacianDomain
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -51,7 +51,7 @@ theorem gradInnerCLM_imageLap_witness_mem_laplacianDomain
       laplacianDomain (I := I) (M := M) g := by
   unfold gradInnerCLMImageLapWitness
   exact (laplacianDomain_mem_iff (I := I) (M := M) g).mpr
-    ⟨gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ hu_h, rfl⟩
+    ⟨gradInnerLaplacianRhs (I := I) (M := M) g φ hu_h, rfl⟩
 
 theorem gradInnerCLM_mem_image_laplacianDomain_of_variational
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -68,13 +68,13 @@ theorem gradInnerCLM_mem_image_laplacianDomain_of_variational
     gradInnerCLM_imageLap_witness_mem_laplacianDomain
       (I := I) (M := M) g φ hu_h, hvar_id.symm⟩
 
-theorem gradInnerCLM_imageLap_witness_eq_resolvent_candidate
+theorem gradInnerCLM_image_laplacianDomain_witness_eq_resolvent_rhs
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     gradInnerCLMImageLapWitness (I := I) (M := M) g φ hu_h =
       resolvent (I := I) (M := M) g
-        (gradInnerLaplacianCandidateUnconditional
+        (gradInnerLaplacianRhs
           (I := I) (M := M) g φ hu_h) := rfl
 
 theorem variational_identity_implies_mem_image
@@ -85,7 +85,7 @@ theorem variational_identity_implies_mem_image
       gradInnerCLM (I := I) (M := M) g φ u_h =
         H1ComplToLp (I := I) (M := M) g
           (resolvent (I := I) (M := M) g
-            (gradInnerLaplacianCandidateUnconditional
+            (gradInnerLaplacianRhs
               (I := I) (M := M) g φ hu_h))) :
     gradInnerCLM (I := I) (M := M) g φ u_h ∈
       Set.image (H1ComplToLp (I := I) (M := M) g)
@@ -93,31 +93,35 @@ theorem variational_identity_implies_mem_image
   gradInnerCLM_eq_H1ComplToLp_resolvent_of_variational
     (I := I) (M := M) g φ hu_h hvar_id
 
-theorem gradInnerCLM_smoothCase_eq_resolventL2_candidate
+theorem gradInnerCLM_smoothToH1Compl_eq_resolventL2_of_rhs_identification
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
-    (h_identify : smoothCandidateIdentificationTarget
-      (I := I) (M := M) g φ v) :
+    (h_identify : gradInnerLaplacianRhs (I := I) (M := M) g φ
+          (smoothToH1Compl_mem_laplacianDomainPow_two (I := I) (M := M) g v) =
+        smoothToLp (I := I) (M := M) g
+          (gradInnerSmoothBundle (I := I) (M := M) g φ v).oneSubLapClassical) :
     gradInnerCLM (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) =
       H1ComplToLp (I := I) (M := M) g
         (resolvent (I := I) (M := M) g
-          (gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
+          (gradInnerLaplacianRhs (I := I) (M := M) g φ
             (smoothToH1Compl_mem_laplacianDomainPow_two
               (I := I) (M := M) g v))) :=
-  smoothCase_via_candidate_identification
+  gradInnerCLM_smoothToH1Compl_eq_resolvent_of_rhs_identification
     (I := I) (M := M) g φ v h_identify
 
-theorem gradInnerCLM_smoothCase_mem_image_laplacianDomain_via_candidate
+theorem gradInnerCLM_smoothToH1Compl_mem_image_laplacianDomain_of_rhs_identification
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
-    (h_identify : smoothCandidateIdentificationTarget
-      (I := I) (M := M) g φ v) :
+    (h_identify : gradInnerLaplacianRhs (I := I) (M := M) g φ
+          (smoothToH1Compl_mem_laplacianDomainPow_two (I := I) (M := M) g v) =
+        smoothToLp (I := I) (M := M) g
+          (gradInnerSmoothBundle (I := I) (M := M) g φ v).oneSubLapClassical) :
     gradInnerCLM (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) ∈
       Set.image (H1ComplToLp (I := I) (M := M) g)
         (laplacianDomain (I := I) (M := M) g : Set (H1Compl g)) :=
   variational_identity_implies_mem_image (I := I) (M := M) g φ
     (smoothToH1Compl_mem_laplacianDomainPow_two (I := I) (M := M) g v)
-    (gradInnerCLM_smoothCase_eq_resolventL2_candidate
+    (gradInnerCLM_smoothToH1Compl_eq_resolventL2_of_rhs_identification
       (I := I) (M := M) g φ v h_identify)
 
 omit [SigmaCompactSpace M] in
@@ -160,7 +164,7 @@ theorem gradInnerCLM_mem_image_laplacianDomain_of_iteratedClosure
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem smoothMulH1Compl_mem_pow_two_iff_via_candidate_resolvent
+theorem smoothMulH1Compl_mem_pow_two_iff_gradInnerCLM_mem_image_laplacianDomain
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
@@ -180,16 +184,16 @@ theorem smoothMulH1Compl_mem_pow_two_of_variational_identity
       gradInnerCLM (I := I) (M := M) g φ u_h =
         H1ComplToLp (I := I) (M := M) g
           (resolvent (I := I) (M := M) g
-            (gradInnerLaplacianCandidateUnconditional
+            (gradInnerLaplacianRhs
               (I := I) (M := M) g φ hu_h))) :
     smoothMulH1Compl (I := I) (M := M) g φ u_h ∈
       laplacianDomainPow (I := I) (M := M) g 2 := by
   have h_image := variational_identity_implies_mem_image
     (I := I) (M := M) g φ hu_h hvar_id
-  exact (smoothMulH1Compl_mem_pow_two_iff_via_candidate_resolvent
+  exact (smoothMulH1Compl_mem_pow_two_iff_gradInnerCLM_mem_image_laplacianDomain
     (I := I) (M := M) g φ hu_h).mpr h_image
 
-end GradInnerLaplacianFinal
+end GradInnerLaplacianDomain
 end Laplacian
 end Analysis
 end DifferentialGeometry

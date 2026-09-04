@@ -280,7 +280,7 @@ theorem crossChartJointK
     exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.smul_smooth_bounded
       (d := Module.finrank ℝ E) k hp_one hΩα_target_open hη_α_loc_smooth h_bound hv_mem
   have hχ_loc_pair_target_Ωαγ :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_eq_of_tsupport_subset_general
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_eq_of_tsupport_subset
       (d := Module.finrank ℝ E) k hp_one hΩα_target_open hΩαγ_open
       hΩαγ_subset_target hχ_loc_mem_Ωα_target hχ_loc_supp_in_Ωαγ
   have hχ_loc_mem_Ωαγ : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -522,7 +522,7 @@ theorem crossChartJointK
         (d := Module.finrank ℝ E) k p ψ_total Ωγ_target ≤
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) k p ψ_total Ω_γα :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_le_of_tsupport_subset_mem_small_general
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_le_of_tsupport_subset_mem_small
       (d := Module.finrank ℝ E) k hp_one hΩγ_target_open hΩγα_open
       hΩγα_subset_target hψ_total_mem_Ωγα hψ_total_supp_Ωγα
   refine h_bridge_γ.trans ?_

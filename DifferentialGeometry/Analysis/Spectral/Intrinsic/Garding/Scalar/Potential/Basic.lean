@@ -241,7 +241,7 @@ omit [BoundarylessManifold I M] in
         (scalarPotOp (I := I) (M := M) q ζ v) := rfl
 
 omit [BoundarylessManifold I M] in
-theorem scalarPotH0_test
+theorem scalarPotH0_inner_eq_smoothCore
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯)
     (u : TensorHs (I := I) (M := M) q 0 0 1)
     (v : ScalarH1Core (I := I) (M := M) q) :

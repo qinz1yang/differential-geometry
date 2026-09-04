@@ -220,13 +220,8 @@ theorem LeviCivita_chart_apply (g : SmoothRiemannianMetric I M) (α : M)
     subst hyx
     exact chartLeviCivita_torsion_free_on (I := I) g α hA hB hx
   have hMC₁ : IsMetricCompatibleOn (leviCivitaConnectionOfMetric (I := I) g).toFun g s := by
-    intro Y Z y hY hZ _ v
-    obtain ⟨W, hWy⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
-      (F := E) (V := (TangentSpace I : M → Type _)) y v
-    have hW : MDiffAt (T% fun b => W b) y := W.mdifferentiableAt
-    have hgen := leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g y W Y Z hW hY hZ
-    rw [hWy] at hgen
-    exact hgen
+    exact (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g).mono
+      (Set.subset_univ s)
   have hMC₂ : IsMetricCompatibleOn (chartLeviCivita (I := I) g α) g s :=
     (chartLeviCivita_isMetricCompatibleOn (I := I) g α).mono
       (by intro y hy; have : y = x := hy; subst this; exact hx)

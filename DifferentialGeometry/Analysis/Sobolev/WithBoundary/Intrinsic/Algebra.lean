@@ -785,7 +785,7 @@ theorem MemWkpChart_of_contMDiff_AllChartsInteriorSupport
       (d := n) 1 p ext_β
       (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
         (chartTargetEuclid (n := n) (M := M) β)) :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := n) hΩ_open hext_β_smooth hext_β_compact hext_β_supp hp 1
   have h_ae : ext_β =ᵐ[volume.restrict
       (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace

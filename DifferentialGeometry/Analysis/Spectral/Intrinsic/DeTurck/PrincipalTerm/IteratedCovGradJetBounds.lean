@@ -323,7 +323,7 @@ private theorem termJet_iterGrad_rawConnLap_le
           C * ∑ b ∈ Finset.range (a + 3), ‖iteratedCovGrad (I := I) g₀ 0 s b S‖ := by
   intro s
   obtain ⟨K, hK_one, hK⟩ :=
-    exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen (I := I) (M := M) g₀
+    exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_covariantTensor (I := I) (M := M) g₀
   obtain ⟨Cfun, hCfun_nn, hCfun⟩ :=
     termJet_lapGrad_commutator_le (I := I) (M := M) g₀ a s
   have hK_nn : 0 ≤ K := le_trans (by norm_num) hK_one

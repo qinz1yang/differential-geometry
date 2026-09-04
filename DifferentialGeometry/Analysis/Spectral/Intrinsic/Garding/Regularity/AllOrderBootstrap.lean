@@ -485,7 +485,7 @@ theorem order1ControlFamily_holds (g : SmoothRiemannianMetric I M) :
   rw [SmoothCcTensor.norm_def (I := I) (M := M) (covGrad (I := I) (M := M) g 0 s S),
     SmoothCcTensor.norm_def (I := I) (M := M) (rawTensorConnLapSmooth (I := I) g 0 s S),
     SmoothCcTensor.norm_def (I := I) (M := M) S]
-  exact covGrad_l2NormSq_le_rawConnLap_mul_self_gen (I := I) (M := M) g s S
+  exact covGrad_l2NormSq_le_rawConnLap_mul_self_covariantTensor (I := I) (M := M) g s S
 
 theorem order2Garding_rank_two_of_pointwise_curv_bound
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (C₀ : ℝ) (hC₀ : 0 ≤ C₀)

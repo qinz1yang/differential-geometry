@@ -68,7 +68,7 @@ private lemma termSlotEndoCc_one_eq_reindex_slotExtend_deTurckLieConnectionDiffe
     (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
     bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term =
-      reindexCoeffGen (I := I) (M := M) g₀ 2 3
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 3
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
           (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)))
         (Equiv.swap (0 : Fin 2) 1) := by

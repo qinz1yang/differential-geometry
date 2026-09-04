@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelB
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formula
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
 import DifferentialGeometry.Tensor.RicciIdentity.ContractionProductRules
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.FieldComponents
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 
 set_option autoImplicit false
@@ -46,10 +46,10 @@ theorem contractUpper_components_eq_component_applyInput
     contractUpper
         (fun L : Fin r -> Idx => component0S (I := I) basis theta L)
         (fun L : Fin r -> Idx => fun K : Fin s -> Idx =>
-          componentRSGen (I := I) basis T L K) K =
+          componentRSField (I := I) basis T L K) K =
       component0S (I := I) basis (T theta) K := by
   classical
-  rw [Tensor0SBundle.componentRS_apply_input_eq_sum (I := I) basis T theta K]
+  rw [Tensor0SBundle.componentRSField_apply_input_eq_sum (I := I) basis T theta K]
   rfl
 
 @[simp] theorem deltaMulti_self {Idx : Type*} {r : ℕ} [DecidableEq Idx]

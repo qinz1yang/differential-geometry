@@ -159,7 +159,7 @@ theorem chartPushed_chosenFirstPartial_memWkp_two_two
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   set D : ChartBilinearH1ComplData (I := I) (M := M) g α :=
-    derivedChartBilinearH1ComplDataUnconditional (I := I) (M := M) g α i hu_h
+    canonicalDerivedChartBilinearH1ComplData (I := I) (M := M) g α i hu_h
     with hD_def
   obtain ⟨Ω'', hΩ''_open, hΩ''_compact_closure, hΩ''_in_chart, hK_in_Ω'',
     h_D_uChart_memWkp22_Ω''⟩ :=

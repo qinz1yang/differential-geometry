@@ -59,7 +59,7 @@ private theorem contractedCurvatureAction_left_eq
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
     (hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) g x basis gInvAt)
     (t : Real) (i j : Idx)
     (hLower : DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x (Rm13 t x)
@@ -91,7 +91,7 @@ private theorem contractedCurvatureAction_left_eq
     intro a b
     simpa [hbasis] using hRic a b
   have hInvAt : forall a b : Idx, gInvAt a b = gInvAt b a := by
-    exact Tensor0SBundle.invMetric_symm (I := I) (M := M) g x basis gInvAt hinvAt
+    exact Tensor0SBundle.MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInvAt hinvAt
   have hmain :=
     DifferentialGeometry.Geometry.Curvature.contracted_curvatureAction0SAt_vec2_eq
       (I := I) g basis gInvAt hinvAt (Rm13 t) (Rm04 t x) (S.ricci t x)
@@ -117,7 +117,7 @@ private theorem contractedCurvatureAction_right_eq
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
     (hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) g x basis gInvAt)
     (t : Real) (i j : Idx)
     (hLower : DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x (Rm13 t x)
@@ -149,7 +149,7 @@ private theorem contractedCurvatureAction_right_eq
     intro a b
     simpa [hbasis] using hRic a b
   have hInvAt : forall a b : Idx, gInvAt a b = gInvAt b a := by
-    exact Tensor0SBundle.invMetric_symm (I := I) (M := M) g x basis gInvAt hinvAt
+    exact Tensor0SBundle.MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInvAt hinvAt
   have hmain :=
     DifferentialGeometry.Geometry.Curvature.contracted_curvatureAction0SAt_vec2_eq
       (I := I) g basis gInvAt hinvAt (Rm13 t) (Rm04 t x) (S.ricci t x)
@@ -238,7 +238,7 @@ theorem ricciSecondDerivativeCommutatorsInFrame_of_tensor0S_ricciIdentity
   classical
   intro t x i j
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric (t : Real)) x
         (hframe.toBasisAt (hcover x))
         (fun a b : Idx => gInv (t : Real) x a b) :=
@@ -521,7 +521,7 @@ theorem ricciSecCommLocId
   classical
   intro t x hx i j
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric (t : Real)) x
         (hframe.toBasisAt hx)
         (fun a b : Idx => gInv (t : Real) x a b) :=

@@ -167,7 +167,7 @@ private lemma eLpNorm_chartPulledWeighted_le_of_ae_zero_off_chartPouKernel_unifo
     rw [Real.sqrt_eq_rpow, ← ENNReal.ofReal_rpow_of_nonneg hc_nn (by positivity)]
   rw [h_pow_eq, smul_eq_mul]
 
-section Unconditional
+section MainResults
 
 
 omit [CompleteSpace E] in
@@ -1104,7 +1104,7 @@ theorem eigenvector_chartComponent_wkpNorm_arbitrary
     wkpNorm_mono_order (d := Module.finrank ℝ E) (by omega : k ≤ k + 2) _ _
   exact h_mono.trans (hC_bd α P₀ i)
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

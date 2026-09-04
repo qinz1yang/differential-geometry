@@ -2097,7 +2097,7 @@ theorem lieCorrectionZeroVectorBundleField_h1_bound
     dsimp only [Vs]
     rw [hVf_field]
   have hT1i_field : T1i =
-      reindexCoeffGen (I := I) (M := M) g₀ 3 1
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 1
         (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1)
         lieCorrectionZeroIVPerm := by
     rfl

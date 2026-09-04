@@ -345,9 +345,9 @@ theorem HasMoserTameBounds.reindexContravariantSlots
     {T : SmoothCcTensor g 0 2} {A : ℕ → ℝ} {S : ℝ} {R : SmoothCcTensor g r c}
     (ρ : Equiv.Perm (Fin r)) (h : HasMoserTameBounds (I := I) (M := M) g T A S R) :
     HasMoserTameBounds (I := I) (M := M) g T A S
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots
         (I := I) (M := M) g r c R ρ) := by
-  have heq := DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+  have heq := DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
     (I := I) (M := M) g r c R ρ
   refine ⟨h.1, fun x => ?_, fun n => ?_⟩
   · have hx := heq 0 x
@@ -355,7 +355,7 @@ theorem HasMoserTameBounds.reindexContravariantSlots
     rw [hx]
     exact h.2.1 x
   · have hstep := covariantJetNormSq_le_of_pointwise_iteratedCovGrad_le (I := I) (M := M) g
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots
         (I := I) (M := M) g r c R ρ) R
       (fun i x => le_of_eq (by rw [heq i x, one_mul])) n
     rw [one_mul] at hstep
@@ -944,10 +944,10 @@ theorem HasMoserTameBounds.deTurckMetricPrincipalDefectDifference
     · simpa only [covariantJetNormSq] using hCRj g₁ i
   have hdev : deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g₁ -
       deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g =
-      (reindexCoeffGen (I := I) (M := M) g 4 2
+      (reindexCoefficientInputSlots (I := I) (M := M) g 4 2
           (traceHessianCoeff (I := I) (M := M) g g₁ -
             traceHessianCoeff (I := I) (M := M) g g) ρA +
-        reindexCoeffGen (I := I) (M := M) g 4 2
+        reindexCoefficientInputSlots (I := I) (M := M) g 4 2
           (traceHessianCoeff (I := I) (M := M) g g₁ -
             traceHessianCoeff (I := I) (M := M) g g) ρAT) -
       ((ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g₁ -
@@ -956,8 +956,8 @@ theorem HasMoserTameBounds.deTurckMetricPrincipalDefectDifference
           ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g)) := by
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g₁,
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g,
-      reindexCoeffGen_sub (I := I) (M := M) (r := 4) (s := 2) g _ _ ρA,
-      reindexCoeffGen_sub (I := I) (M := M) (r := 4) (s := 2) g _ _ ρAT]
+      reindexCoefficientInputSlots_sub (I := I) (M := M) (r := 4) (s := 2) g _ _ ρA,
+      reindexCoefficientInputSlots_sub (I := I) (M := M) (r := 4) (s := 2) g _ _ ρAT]
     abel
   rw [hdev]
   exact HasMoserTameBounds.sub (I := I) (M := M)

@@ -243,7 +243,7 @@ lemma exists_iteratedCovGrad_le_const_mul_tensorHs (g₀ : SmoothRiemannianMetri
         ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤
           CJ j * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((j : ℕ) : ℝ) T‖ := by
   classical
-  have hfam := fun n => exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general
+  have hfam := fun n => exists_iteratedCovGrad_sum_le_smoothCcToTensorHs
     (I := I) (M := M) g₀ n
   choose CJ hCJ using hfam
   refine ⟨CJ, fun j => (hCJ j).1, fun j T => ?_⟩

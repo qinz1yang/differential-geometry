@@ -20,7 +20,7 @@ variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
 theorem inner0S_orthoBasis_eq_compContract
     [Module.Finite Real E]
-    (g : SmoothMetricGen I M) {x : M} {s : ℕ}
+    (g : SmoothRiemannianMetric I M) {x : M} {s : ℕ}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (horth : ∀ i j : Idx,
       g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
@@ -36,7 +36,7 @@ theorem inner0S_orthoBasis_eq_compContract
 
 theorem compNormSqMulti_orthoBasis_eq_normSq0S
     [FiniteDimensional Real E]
-    (g : SmoothMetricGen I M) {x : M} {s : ℕ}
+    (g : SmoothRiemannianMetric I M) {x : M} {s : ℕ}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (horth : ∀ i j : Idx,
       g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)

@@ -33,7 +33,7 @@ theorem nabla0SFun_eval_coordFrame {s : ℕ}
           christoffelAlongInFrame cov (coordinateFrameAt (I := I) x₀)
             (coordinateFrameAt_isLocalFrame_one (I := I) x₀) x₀ (X x₀) (I0 a) k *
             coordComponent0SAt (I := I) (α x₀) (Function.update I0 a k) := by
-  rw [nabla0SFun_eval_coordFrame_moving_raw cov X
+  rw [nabla0SFun_eval_coordFrame_moving cov X
     (fun a => coordinateFrameAt (I := I) x₀ (I0 a)) α x₀ ?hpair ?hV ?hVmodel ?hcoord]
   · rw [mvfderiv_real_eq_mfderiv]
     congr 1

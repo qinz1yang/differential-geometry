@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.Branch
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.NormalCoordinates
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Data
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.HatBounds
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -791,7 +791,7 @@ theorem exists_hat_cm_min
                     (normalPhaseK hb (2 * q gamma)))⁻¹ *
                   PhaseFlow.phaseErr (normalPhaseK hb (2 * q gamma)) < 1 / 24) ∧
             Filter.Eventually
-              (fun n ↦ HasLiveBrFull (I := I) P L pb r n
+              (fun n ↦ HasControlledLiveNormalBranches (I := I) P L pb r n
                 hcomplete hconn aMin q δ)
               Filter.atTop ∧
             (∀ᶠ n in Filter.atTop, ∀ gamma : LiveSlot L pb r,
@@ -890,7 +890,7 @@ theorem exists_hat_cm_min
   obtain ⟨q, δ, hqdata, hqWide, hqAcc, herr, hinvErr, hquarter, hbranch⟩ :=
     hmin P L pb r
   have hbranchFull : Filter.Eventually
-      (fun n ↦ HasLiveBrFull (I := I) P L pb r n
+      (fun n ↦ HasControlledLiveNormalBranches (I := I) P L pb r n
         hcomplete hconn aMin q δ) Filter.atTop := by
     filter_upwards [hbranch] with n hn
     intro gamma
@@ -1026,7 +1026,7 @@ theorem exists_hat_cm_min
       have hstrict : StrictDistInput (I := I) (X.obj (L.φ n)).metric
           pts join x (radSeq a b x) := by
         simpa only [pts, join, x0, rho0] using
-          HasNormalBrFull.strict_dist_input (I := I) hb (L.φ n)
+          HasControlledNormalBranch.strict_dist_input (I := I) hb (L.φ n)
             (hcomplete.complete (L.φ n)) (hconn (L.φ n)) x0 hfull
             (hqAcc alpha) pts x (radSeq a b x)
             (4 * L.lamInf (alpha.1 : Nat)) (hquarterN alpha)

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.MetricTrace.Trace04
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantFourTensor
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.TensorProductNorm
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -22,10 +22,10 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {x : M}
 
 theorem component_le_sqrt
-    (g : SmoothMetricGen I M)
+    (g : SmoothRiemannianMetric I M)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {s : Nat} (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) g x basis
+    (hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx)))
     (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     |component0S (I := I) basis A slots| <=
@@ -41,7 +41,7 @@ theorem trace_normSq_le
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {s : Nat} (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) g x basis
+    (hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx)))
     (T : Tensor0SSpace (s + 2) I x) :
     normSq0S (I := I) g x s (metricTraceFirstTwo0STensor (I := I) g T) <=
@@ -119,7 +119,7 @@ theorem trace_normSq_rank_le
       (Module.finrank Real E : Real) ^ (s + 2) *
         normSq0S (I := I) g x (s + 2) T := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let _ : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let _ : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -133,12 +133,12 @@ theorem trace_normSq_rank_le
     have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
       MetricFiberData.toCore_inner D (ob i) (ob j)
     change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
       (ob.toBasis i) (ob.toBasis j)]
     change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
     rw [← hinner]
     exact ob.inner_eq_ite i j
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j
     constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]

@@ -522,9 +522,9 @@ private lemma ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
           - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)
         + (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
           - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀) =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
           (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁) koszulDoubleTraceSlotPerm
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 4 2 (Equiv.swap (0 : Fin 2) 1)
               (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)) koszulDoubleTraceSlotPerm
         - deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁ := by
@@ -547,7 +547,7 @@ private lemma ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
     ContMDiffSection.coe_add, Pi.sub_apply, Pi.add_apply, sub_apply,
     add_apply, Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_add,
     sub_apply, add_apply]
-  simp only [reindexCoeffGen_toSection, reindexCoeffFibGen_apply, rsDomDomCongrSection_toSection,
+  simp only [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply, rsDomDomCongrSection_toSection,
     toModel_rsDomDomCongr_apply, deTurckPrincipalCometricCoeff_toSection_clm_eq,
     cometricDoubleTraceFib_toModel,
     Tensor0SSpace.toModel_ofModel, Tensor0SSpace.toModel_sub, sub_apply,
@@ -559,37 +559,37 @@ omit [I.Boundaryless] in
 private lemma traceHessianCoeff_sub_eq_reindex_principalCometricCoeff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g₀ g₁ - traceHessianCoeff (I := I) (M := M) g₀ g₀ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
         (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁) traceHessianSlotPerm := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    traceHessianCoeff_toSection, traceHessianCoeff_toSection, reindexCoeffGen_toSection]
+    traceHessianCoeff_toSection, traceHessianCoeff_toSection, reindexCoefficientInputSlots_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [sub_apply, reindexCoeffFibGen_apply,
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply,
     deTurckPrincipalCometricCoeff_toSection_clm_eq, sub_apply,
     traceHessianFib, traceHessianFib, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, domDomCongrFib_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem reindexCoeffGen_map_sub (g₀ : SmoothRiemannianMetric I M)
+theorem reindexCoefficientInputSlots_map_sub (g₀ : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g₀ 4 2) (ρ : Equiv.Perm (Fin 4)) :
-    reindexCoeffGen (I := I) (M := M) g₀ 4 2 (A - B) ρ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2 A ρ -
-        reindexCoeffGen (I := I) (M := M) g₀ 4 2 B ρ := by
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 (A - B) ρ =
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 A ρ -
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 B ρ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    reindexCoeffGen_toSection, reindexCoeffGen_toSection, reindexCoeffGen_toSection,
+    reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlots_toSection,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro D
-  rw [sub_apply, reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
-    reindexCoeffFibGen_apply, sub_apply]
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply, reindexCoefficientInputSlotsFiber_apply,
+    reindexCoefficientInputSlotsFiber_apply, sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -901,13 +901,13 @@ private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
     with hρA_def
   set ρAT : Equiv.Perm (Fin 4) := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
     with hρAT_def
-  set A1 : SmoothCcTensor g₀ 4 2 := reindexCoeffGen (I := I) (M := M) g₀ 4 2
-    (reindexCoeffGen (I := I) (M := M) g₀ 4 2 Δt traceHessianSlotPerm) ρA with hA1_def
-  set A2 : SmoothCcTensor g₀ 4 2 := reindexCoeffGen (I := I) (M := M) g₀ 4 2
-    (reindexCoeffGen (I := I) (M := M) g₀ 4 2 Δt traceHessianSlotPerm) ρAT with hA2_def
-  set R1 : SmoothCcTensor g₀ 4 2 := reindexCoeffGen (I := I) (M := M) g₀ 4 2 Δt
+  set A1 : SmoothCcTensor g₀ 4 2 := reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
+    (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 Δt traceHessianSlotPerm) ρA with hA1_def
+  set A2 : SmoothCcTensor g₀ 4 2 := reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
+    (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 Δt traceHessianSlotPerm) ρAT with hA2_def
+  set R1 : SmoothCcTensor g₀ 4 2 := reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 Δt
     koszulDoubleTraceSlotPerm with hR1_def
-  set R2 : SmoothCcTensor g₀ 4 2 := reindexCoeffGen (I := I) (M := M) g₀ 4 2
+  set R2 : SmoothCcTensor g₀ 4 2 := reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
     (rsDomDomCongrSection (I := I) (M := M) g₀ 4 2 (Equiv.swap (0 : Fin 2) 1) Δt)
     koszulDoubleTraceSlotPerm with hR2_def
   clear_value A1 A2 R1 R2
@@ -929,13 +929,13 @@ private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
   have hΨ : Φ t - C1 - Δ1 = A1 + A2 - R1 - R2 + (Δt - Δ1) := by
     have h327 := traceHessianCoeff_sub_eq_reindex_principalCometricCoeff (I := I) (M := M) g₀ g_t
     calc Φ t - C1 - Δ1
-        = (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+        = (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g_t) ρA
-            - reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            - reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₀) ρA)
-          + (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+          + (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g_t) ρAT
-            - reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            - reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₀) ρAT)
           - ((ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g_t
               + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g_t)
@@ -949,15 +949,15 @@ private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
               deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_t from by rw [hg_t_def]]
           rw [hdec_t, hC1_def, hdec_0, hρA_def, hρAT_def]
           abel
-      _ = (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      _ = (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
             (traceHessianCoeff (I := I) (M := M) g₀ g_t
               - traceHessianCoeff (I := I) (M := M) g₀ g₀) ρA)
-          + (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+          + (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
             (traceHessianCoeff (I := I) (M := M) g₀ g_t
               - traceHessianCoeff (I := I) (M := M) g₀ g₀) ρAT)
           - (R1 + R2 - Δt) - Δ1 := by
-          rw [reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _ ρA,
-            reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _ ρAT, hXX]
+          rw [reindexCoefficientInputSlots_map_sub (I := I) (M := M) g₀ _ _ ρA,
+            reindexCoefficientInputSlots_map_sub (I := I) (M := M) g₀ _ _ ρAT, hXX]
       _ = A1 + A2 - R1 - R2 + (Δt - Δ1) := by
           rw [h327, ← hΔt_def, hA1_def, hA2_def]
           abel
@@ -993,30 +993,30 @@ private theorem deTurckPhiTotPath_integrand_fibreSupremum_le
   have hexA1 : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (A1.toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (Δt.toSection x) := by
     rw [hA1_def]
-    rw [reindexCoeffGen_toSection]
+    rw [reindexCoefficientInputSlots_toSection]
     rw
-      [riemannianFiberNormSq_reindexCoeffFibGen
+      [riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
       (I := I) (M := M) g₀ 4 2 x ρA _]
-    rw [reindexCoeffGen_toSection]
+    rw [reindexCoefficientInputSlots_toSection]
     exact
-      riemannianFiberNormSq_reindexCoeffFibGen
+      riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
       (I := I) (M := M) g₀ 4 2 x traceHessianSlotPerm _
   have hexA2 : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (A2.toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (Δt.toSection x) := by
     rw [hA2_def]
-    rw [reindexCoeffGen_toSection]
+    rw [reindexCoefficientInputSlots_toSection]
     rw
-      [riemannianFiberNormSq_reindexCoeffFibGen
+      [riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
       (I := I) (M := M) g₀ 4 2 x ρAT _]
-    rw [reindexCoeffGen_toSection]
+    rw [reindexCoefficientInputSlots_toSection]
     exact
-      riemannianFiberNormSq_reindexCoeffFibGen
+      riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
       (I := I) (M := M) g₀ 4 2 x traceHessianSlotPerm _
   have hexR1 : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (R1.toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (Δt.toSection x) := by
-    rw [hR1_def, reindexCoeffGen_toSection]
+    rw [hR1_def, reindexCoefficientInputSlots_toSection]
     exact
-      riemannianFiberNormSq_reindexCoeffFibGen
+      riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
       (I := I) (M := M) g₀ 4 2 x koszulDoubleTraceSlotPerm _
   have hexR2 : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (R2.toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (Δt.toSection x) := by

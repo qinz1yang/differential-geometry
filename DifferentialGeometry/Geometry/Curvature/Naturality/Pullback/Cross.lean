@@ -254,9 +254,9 @@ theorem metricCov_pullbackCross
       (metricCov (I := J) (M := N) g
         (fun q : N => pushFwdSectionCross (I := I) (J := J) Phi Y q) (Phi x))
         (mfderiv I J (Phi : M -> N) x v) := by
-  apply tangentFlatLinear_injective_gen (I := J) g (Phi x)
+  apply tangentFlatLinear_injective (I := J) g (Phi x)
   ext u
-  simp only [tangentFlatLinear_apply_gen]
+  simp only [tangentFlatLinear_apply]
   set e := Diffeomorph.mfderivToContinuousLinearEquiv Phi infty_ne_zeroC x with he
   set w : TangentSpace I x := e.symm u with hw_def
   have hdw : mfderiv I J (Phi : M -> N) x w = u := by

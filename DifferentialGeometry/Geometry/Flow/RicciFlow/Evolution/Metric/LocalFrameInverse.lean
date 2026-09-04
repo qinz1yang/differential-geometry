@@ -59,7 +59,7 @@ theorem localFrameInv_real
     InvMetricLocal (I := I) S (localFrameInv (I := I) S frame hframe) frame u := by
   intro t x hx i j
   have hreal :=
-    basisInvMetric_real (I := I) (M := M) (g := S.family.metric t) (x := x)
+    basisInvMetric_isInverse (I := I) (M := M) (g := S.family.metric t) (x := x)
       (basis := hframe.toBasisAt hx)
   simpa [metricCompInFrame, localFrameInv_of_mem (I := I) S frame hframe hx,
     hframe.toBasisAt_coe] using hreal i j

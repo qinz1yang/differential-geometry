@@ -12,7 +12,7 @@ open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
 
 namespace DifferentialGeometry
-namespace HomConnectionGen
+namespace HomConnection
 
 variable
   {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -180,7 +180,10 @@ private theorem Psi_tensorialAt_right
     (cov_U : CovariantDerivative I E_U U)
     (cov_V : CovariantDerivative I F V)
     (τ : Π x : M, (U x →L[ℝ] V x))
-    {x : M} (hτ : MDiffAtHom I M E_U U F V τ x)
+    {x : M}
+    (hτ : MDifferentiableAt I (I.prod 𝓘(ℝ, E_U →L[ℝ] F))
+      (fun y => TotalSpace.mk' (E_U →L[ℝ] F)
+        (E := fun z : M => U z →L[ℝ] V z) y (τ y)) x)
     (V_field : Π x : M, TangentSpace I x) :
     TensorialAt I E_U (fun Y => Psi I M E_U U F V cov_U cov_V τ V_field Y x) x where
   smul := fun hf hY => Psi_smul_right I M E_U U F V cov_U cov_V τ hτ hf hY
@@ -213,7 +216,7 @@ private theorem vec_section_mdiff
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (Y y)) x :=
   Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
 
-noncomputable def homBundleCovariantDerivativeGenFun
+noncomputable def homBundleCovariantDerivativeFun
     (cov_U : CovariantDerivative I E_U U)
     (cov_V : CovariantDerivative I F V)
     (τ : Π x : M, (U x →L[ℝ] V x))
@@ -231,7 +234,7 @@ noncomputable def homBundleCovariantDerivativeGenFun
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompleteSpace E_U] [FiniteDimensional ℝ F]
     [CompleteSpace F] [ContMDiffVectorBundle ∞ F V I] in
-private theorem homBundleCovariantDerivativeGenFun_apply
+private theorem homBundleCovariantDerivativeFun_apply
     (cov_U : CovariantDerivative I E_U U)
     (cov_V : CovariantDerivative I F V)
     (τ : Π x : M, (U x →L[ℝ] V x))
@@ -240,10 +243,11 @@ private theorem homBundleCovariantDerivativeGenFun_apply
     {Y : Π x : M, U x}
     (hV : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (V_field y)) x)
-    (hY : MDiffAtU I M E_U U Y x) :
-    homBundleCovariantDerivativeGenFun I M E_U U F V cov_U cov_V τ x (V_field x) (Y x) =
+    (hY : MDifferentiableAt I (I.prod 𝓘(ℝ, E_U))
+      (fun y => TotalSpace.mk' E_U (E := U) y (Y y)) x) :
+    homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x (V_field x) (Y x) =
       Psi I M E_U U F V cov_U cov_V τ V_field Y x := by
-  unfold homBundleCovariantDerivativeGenFun
+  unfold homBundleCovariantDerivativeFun
   rw [dif_pos hτ]
   exact TensorialAt.mkHom₂_apply
     (Φ := fun V_field Y => Psi I M E_U U F V cov_U cov_V τ V_field Y x)
@@ -252,22 +256,43 @@ private theorem homBundleCovariantDerivativeGenFun_apply
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompleteSpace E_U] [FiniteDimensional ℝ F]
     [CompleteSpace F] [ContMDiffVectorBundle ∞ F V I] in
-private theorem homBundleCovariantDerivativeGenFun_of_not_mdiff
+theorem homBundleCovariantDerivativeFun_apply_eq
+    (cov_U : CovariantDerivative I E_U U)
+    (cov_V : CovariantDerivative I F V)
+    (τ : Π x : M, (U x →L[ℝ] V x))
+    {x : M}
+    (hτ : MDifferentiableAt I (I.prod 𝓘(ℝ, E_U →L[ℝ] F))
+      (fun y => TotalSpace.mk' (E_U →L[ℝ] F)
+        (E := fun z : M => U z →L[ℝ] V z) y (τ y)) x)
+    {V_field : Π x : M, TangentSpace I x}
+    {Y : Π x : M, U x}
+    (hV : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
+      (fun y => TotalSpace.mk' E (E := TangentSpace I) y (V_field y)) x)
+    (hY : MDifferentiableAt I (I.prod 𝓘(ℝ, E_U))
+      (fun y => TotalSpace.mk' E_U (E := U) y (Y y)) x) :
+    homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x (V_field x) (Y x) =
+      cov_V (fun y => τ y (Y y)) x (V_field x) - τ x (cov_U Y x (V_field x)) := by
+  rw [homBundleCovariantDerivativeFun_apply I M E_U U F V cov_U cov_V τ hτ hV hY]
+  rfl
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompleteSpace E_U] [FiniteDimensional ℝ F]
+    [CompleteSpace F] [ContMDiffVectorBundle ∞ F V I] in
+private theorem homBundleCovariantDerivativeFun_of_not_mdiff
     (cov_U : CovariantDerivative I E_U U)
     (cov_V : CovariantDerivative I F V)
     (τ : Π x : M, (U x →L[ℝ] V x))
     {x : M} (hτ : ¬ MDiffAtHom I M E_U U F V τ x) :
-    homBundleCovariantDerivativeGenFun I M E_U U F V cov_U cov_V τ x = 0 := by
-  unfold homBundleCovariantDerivativeGenFun
+    homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x = 0 := by
+  unfold homBundleCovariantDerivativeFun
   rw [dif_neg hτ]
 
 omit [FiniteDimensional ℝ F] [CompleteSpace F] [ContMDiffVectorBundle ∞ F V I] in
 omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] in
-private theorem homBundleCovariantDerivativeGenFun_isCovOn
+private theorem homBundleCovariantDerivativeFun_isCovOn
     (cov_U : CovariantDerivative I E_U U)
     (cov_V : CovariantDerivative I F V) :
     IsCovariantDerivativeOn (E_U →L[ℝ] F)
-      (homBundleCovariantDerivativeGenFun I M E_U U F V cov_U cov_V) Set.univ where
+      (homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V) Set.univ where
   add := by
     intro τ₁ τ₂ x hτ₁ hτ₂ _hx
     have hτ₁' : MDiffAtHom I M E_U U F V τ₁ x := hτ₁
@@ -284,11 +309,11 @@ private theorem homBundleCovariantDerivativeGenFun_isCovOn
     rw [show (v : TangentSpace I x) = (V_field : Π x : M, TangentSpace I x) x from hVx.symm]
     rw [show (w : U x) = (Y : Π x : M, U x) x from hYx.symm]
     rw [add_apply, add_apply]
-    rw [homBundleCovariantDerivativeGenFun_apply I M E_U U F V cov_U cov_V (τ₁ + τ₂)
+    rw [homBundleCovariantDerivativeFun_apply I M E_U U F V cov_U cov_V (τ₁ + τ₂)
       hτ_sum hV_diff hY_diff]
-    rw [homBundleCovariantDerivativeGenFun_apply I M E_U U F V cov_U cov_V τ₁
+    rw [homBundleCovariantDerivativeFun_apply I M E_U U F V cov_U cov_V τ₁
       hτ₁' hV_diff hY_diff]
-    rw [homBundleCovariantDerivativeGenFun_apply I M E_U U F V cov_U cov_V τ₂
+    rw [homBundleCovariantDerivativeFun_apply I M E_U U F V cov_U cov_V τ₂
       hτ₂' hV_diff hY_diff]
     have h_funeq : (fun y => (τ₁ + τ₂) y (Y y)) =
         (fun y => τ₁ y (Y y)) + (fun y => τ₂ y (Y y)) := by
@@ -316,11 +341,11 @@ private theorem homBundleCovariantDerivativeGenFun_isCovOn
     have hY_diff := u_section_mdiff I M E_U U Y x
     rw [show (v : TangentSpace I x) = (V_field : Π x : M, TangentSpace I x) x from hVx.symm]
     rw [show (w : U x) = (Y : Π x : M, U x) x from hYx.symm]
-    rw [homBundleCovariantDerivativeGenFun_apply I M E_U U F V cov_U cov_V (g • τ)
+    rw [homBundleCovariantDerivativeFun_apply I M E_U U F V cov_U cov_V (g • τ)
       hgτ hV_diff hY_diff]
     simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply]
-    rw [homBundleCovariantDerivativeGenFun_apply I M E_U U F V cov_U cov_V τ
+    rw [homBundleCovariantDerivativeFun_apply I M E_U U F V cov_U cov_V τ
       hτ' hV_diff hY_diff]
     have h_funeq : (fun y => (g • τ) y (Y y)) = g • (fun y => τ y (Y y)) := by
       funext y
@@ -338,18 +363,18 @@ private theorem homBundleCovariantDerivativeGenFun_isCovOn
     abel
 
 omit [SigmaCompactSpace M] in
-noncomputable def homBundleCovariantDerivativeGen
+noncomputable def homBundleCovariantDerivative
     (cov_U : CovariantDerivative I E_U U)
     (cov_V : CovariantDerivative I F V) :
     CovariantDerivative I (E_U →L[ℝ] F)
       (fun x => U x →L[ℝ] V x) where
-  toFun := homBundleCovariantDerivativeGenFun I M E_U U F V cov_U cov_V
+  toFun := homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V
   isCovariantDerivativeOnUniv :=
-    homBundleCovariantDerivativeGenFun_isCovOn I M E_U U F V cov_U cov_V
+    homBundleCovariantDerivativeFun_isCovOn I M E_U U F V cov_U cov_V
 
 omit [FiniteDimensional ℝ F] [CompleteSpace F] [ContMDiffVectorBundle ∞ F V I] in
 omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] in
-theorem homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
+theorem homBundleCovariantDerivative_apply_of_mdifferentiableAt
     (cov_U : CovariantDerivative I E_U U)
     (cov_V : CovariantDerivative I F V)
     (τ : Π x : M, (U x →L[ℝ] V x))
@@ -363,11 +388,11 @@ theorem homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (V_field y)) x)
     (hY : MDifferentiableAt I (I.prod 𝓘(ℝ, E_U))
       (fun y => TotalSpace.mk' E_U (E := U) y (Y y)) x) :
-    (homBundleCovariantDerivativeGen I M E_U U F V cov_U cov_V τ x (V_field x)) (Y x) =
+    (homBundleCovariantDerivative I M E_U U F V cov_U cov_V τ x (V_field x)) (Y x) =
       cov_V (fun y => τ y (Y y)) x (V_field x) - τ x (cov_U Y x (V_field x)) := by
-  change homBundleCovariantDerivativeGenFun I M E_U U F V cov_U cov_V τ x
+  change homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x
       (V_field x) (Y x) = _
-  exact homBundleCovariantDerivativeGenFun_apply I M E_U U F V cov_U cov_V τ
+  exact homBundleCovariantDerivativeFun_apply I M E_U U F V cov_U cov_V τ
     hτ hV hY
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
@@ -404,7 +429,7 @@ private theorem contMDiff_cov_U_apply_section
 omit [CompleteSpace F] in
 omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] in
 omit [ContMDiffVectorBundle ∞ F V I] in
-private theorem homBundleCovGen_section_smooth
+private theorem homBundleCovariantDerivative_section_smooth
     (cov_U : CovariantDerivative I E_U U)
     [ContMDiffCovariantDerivative cov_U ∞]
     (cov_V : CovariantDerivative I F V)
@@ -414,10 +439,10 @@ private theorem homBundleCovGen_section_smooth
     ContMDiff I (I.prod 𝓘(ℝ, E_U →L[ℝ] F)) ∞
       (fun x => TotalSpace.mk' (E_U →L[ℝ] F)
         (E := fun x : M => (U x →L[ℝ] V x))
-        x ((homBundleCovariantDerivativeGenFun I M E_U U F V cov_U cov_V τ x) (Y x))) := by
+        x ((homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x) (Y x))) := by
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (V₁ := U) (V₂ := V)
-    (φ := fun x => (homBundleCovariantDerivativeGenFun I M E_U U F V cov_U cov_V τ x) (Y x))
+    (φ := fun x => (homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x) (Y x))
   intro Z
   have hτZ_section : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞
       (fun y => TotalSpace.mk' F (E := V) y (τ y (Z y))) :=
@@ -442,13 +467,13 @@ private theorem homBundleCovGen_section_smooth
       (fun x => TotalSpace.mk' F (E := V) x (τ x (cov_U Z x (Y x)))) :=
     ContMDiff.clm_bundle_apply (b := id) τ.contMDiff h_covUZY
   have h_eq : ∀ x,
-      (homBundleCovariantDerivativeGenFun I M E_U U F V cov_U cov_V τ x) (Y x) (Z x) =
+      (homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x) (Y x) (Z x) =
       cov_V τZ x (Y x) - τ x (cov_U Z x (Y x)) := by
     intro x
     have hτ_diff := hom_section_mdiff I M E_U U F V τ x
     have hY_diff := vec_section_mdiff I M Y x
     have hZ_diff := u_section_mdiff I M E_U U Z x
-    rw [homBundleCovariantDerivativeGenFun_apply I M E_U U F V cov_U cov_V τ
+    rw [homBundleCovariantDerivativeFun_apply I M E_U U F V cov_U cov_V τ
       hτ_diff hY_diff hZ_diff]
     rfl
   have h_diff : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞
@@ -471,13 +496,13 @@ private theorem homBundleCovGen_section_smooth
   filter_upwards with x
   rw [h_eq]
 
-noncomputable instance homBundleCovariantDerivativeGen_contMDiff
+noncomputable instance homBundleCovariantDerivative_contMDiff
     (cov_U : CovariantDerivative I E_U U)
     [ContMDiffCovariantDerivative cov_U ∞]
     (cov_V : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov_V ∞] :
     ContMDiffCovariantDerivative
-      (homBundleCovariantDerivativeGen I M E_U U F V cov_U cov_V) ∞ where
+      (homBundleCovariantDerivative I M E_U U F V cov_U cov_V) ∞ where
   contMDiff := {
     contMDiff := by
       intro τ hτ
@@ -492,32 +517,32 @@ noncomputable instance homBundleCovariantDerivativeGen_contMDiff
       apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
         (V₁ := TangentSpace I)
         (V₂ := fun x => U x →L[ℝ] V x)
-        (φ := fun x => homBundleCovariantDerivativeGenFun I M E_U U F V cov_U cov_V τ x)
+        (φ := fun x => homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x)
       intro Y
-      exact homBundleCovGen_section_smooth I M E_U U F V cov_U cov_V τ_section Y
+      exact homBundleCovariantDerivative_section_smooth I M E_U U F V cov_U cov_V τ_section Y
   }
 
 omit [FiniteDimensional ℝ F] [CompleteSpace F] [ContMDiffVectorBundle ∞ F V I] in
 omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] in
-theorem homBundleCovariantDerivativeGen_apply
+theorem homBundleCovariantDerivative_apply
     (cov_U : CovariantDerivative I E_U U)
     (cov_V : CovariantDerivative I F V)
     (τ : Cₛ^∞⟮I; E_U →L[ℝ] F, (fun x => U x →L[ℝ] V x)⟯)
     (Y : Cₛ^∞⟮I; E_U, U⟯) (x : M) (v : TangentSpace I x) :
-    (homBundleCovariantDerivativeGen I M E_U U F V cov_U cov_V τ x v) (Y x) =
+    (homBundleCovariantDerivative I M E_U U F V cov_U cov_V τ x v) (Y x) =
       cov_V (fun y => τ y (Y y)) x v - τ x (cov_U Y x v) := by
-  change homBundleCovariantDerivativeGenFun I M E_U U F V cov_U cov_V τ x v (Y x) = _
+  change homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x v (Y x) = _
   obtain ⟨V_field, hVx⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := (TangentSpace I : M → Type _)) (n := (⊤ : ℕ∞)) x v
   have hτ_diff := hom_section_mdiff I M E_U U F V τ x
   have hV_diff := vec_section_mdiff I M V_field x
   have hY_diff := u_section_mdiff I M E_U U Y x
   rw [show v = (V_field : Π x : M, TangentSpace I x) x from hVx.symm]
-  rw [homBundleCovariantDerivativeGenFun_apply I M E_U U F V cov_U cov_V τ
+  rw [homBundleCovariantDerivativeFun_apply I M E_U U F V cov_U cov_V τ
     hτ_diff hV_diff hY_diff]
   rfl
 
-end HomConnectionGen
+end HomConnection
 
 end DifferentialGeometry
 end

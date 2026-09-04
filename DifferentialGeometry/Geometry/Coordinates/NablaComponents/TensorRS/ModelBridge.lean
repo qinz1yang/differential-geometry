@@ -37,7 +37,7 @@ theorem tensorRSModelAt_coordComponentRSAt {r s : ℕ} (x₀ : M)
   let : NormedSpace 𝕜 (Tensor0SModel r 𝕜 E) :=
     Tensor0SBundle.tensor0SModelNormedSpace (𝕜 := 𝕜) (E := E) r
   unfold tensorRSModelAt
-  rw [coordComponentRSAt_apply, componentRS_apply_gen]
+  rw [coordComponentRSAt_apply, componentRSField_apply]
   have hx : x₀ ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
     exact mem_baseSet_trivializationAt E (TangentSpace I : M -> Type _) x₀
   rw [TensorRSSpace.trivializationAt_basis_coord

@@ -630,11 +630,11 @@ theorem
   obtain ⟨CPT, hCPT_nn, hCPT⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_movingMetricPairTraceOperator_window (I := I) (M := M) g₀ hδ₀
   obtain ⟨CWA, hCWA_nn, hCWA⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeightGeneral_boundedFactorGridWindow_le
+    exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeight_boundedFactorGridWindow_le
       (I := I) (M := M) g₀
       (Equiv.swap (1 : Fin 6) 3) hδ₀
   obtain ⟨CWB, hCWB_nn, hCWB⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeightGeneral_boundedFactorGridWindow_le
+    exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeight_boundedFactorGridWindow_le
       (I := I) (M := M) g₀ ricciContractionWeightBPerm hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
@@ -1239,7 +1239,7 @@ private lemma qCommContractionWeights_unitModel_eq_kernel (P : SmoothCcTensor g�
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sigmaQ1 P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel (I := I) (M := M) g₀ g₁ sigmaQ1 P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -1298,7 +1298,7 @@ private lemma qCommContractionWeights_unitModel_eq_kernel (P : SmoothCcTensor g�
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sigmaQ2 P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel (I := I) (M := M) g₀ g₁ sigmaQ2 P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x

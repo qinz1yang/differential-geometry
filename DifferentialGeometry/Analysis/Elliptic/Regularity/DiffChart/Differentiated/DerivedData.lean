@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.FChartEffDef
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.EffectiveSource
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CrossTermIBP
 open DifferentialGeometry.Geometry.Curvature
@@ -32,7 +32,7 @@ open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.DifferentiatedCrossTermIBP
 open DifferentialGeometry.Analysis.Laplacian.DifferentiatedVariationalIdentity
-open DifferentialGeometry.Analysis.Laplacian.FChartEffDef
+open DifferentialGeometry.Analysis.Laplacian.DiffChartEffectiveSource
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 private local instance : MeasurableSpace E := borel E

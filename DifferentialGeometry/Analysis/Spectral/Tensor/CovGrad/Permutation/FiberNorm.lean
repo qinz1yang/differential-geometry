@@ -98,31 +98,31 @@ theorem riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr
   exact riemannianFiberNormSq_domDomCongr_covariant (I := I) (M := M) g r (s + i) x τ _
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+theorem riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g r s) (σ' : Equiv.Perm (Fin r)) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r (s + i) x
         ((iteratedCovGrad (I := I) g r s i
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen
+          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots
             (I := I) (M := M) g r s R σ')).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g r (s + i) x
         ((iteratedCovGrad (I := I) g r s i R).toSection x) := by
-  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.iteratedCovGrad_reindexCoeffGen
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.iteratedCovGrad_reindexCoefficientInputSlots
         (I := I) (M := M) g r s R σ' i,
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen_toSection,
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_reindexCoeffFibGen]
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots_toSection,
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_reindexCoefficientInputSlotsFiber]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem norm_sq_iteratedCovGrad_reindexCoeffGen_eq
+theorem norm_sq_iteratedCovGrad_reindexCoefficientInputSlots_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g r s) (σ : Equiv.Perm (Fin r)) (i : ℕ) :
     ‖iteratedCovGrad (I := I) g r s i
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffGen
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoefficientInputSlots
           (I := I) (M := M) g r s R σ)‖ ^ 2 =
       ‖iteratedCovGrad (I := I) g r s i R‖ ^ 2 := by
-  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.iteratedCovGrad_reindexCoeffGen
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.iteratedCovGrad_reindexCoefficientInputSlots
       (I := I) (M := M) g r s R σ i,
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.norm_reindexCoeffGen_eq
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.norm_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g r (s + i)]
 
 end Spectral
@@ -135,8 +135,8 @@ alias exists_iteratedCovGrad_rs_toModel_domDomCongr :=
   DifferentialGeometry.Analysis.Spectral.exists_iteratedCovGrad_rs_toModel_domDomCongr
 alias riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr :=
   DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr
-alias riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq :=
-  DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+alias riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq :=
+  DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
 
 end DifferentialGeometry.Integral.Connection
 

@@ -790,7 +790,7 @@ structure PinchWMPData
         (cov t) (∞ : WithTop ℕ∞)
   hmc :
     forall t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (cov t) (G t)
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) (cov t) (G t)
   spatial : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S
 
 namespace PinchWMPData
@@ -1050,7 +1050,7 @@ def toPinchWMPData
 
 end PinchFlowWMPData
 
-theorem ricci_nonneg_wmp_raw
+theorem ricci_nonneg_wmp_of_hypotheses
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -1107,7 +1107,7 @@ theorem ricci_nonnegative_of_solution_wmp_data
   exact tensor_wmp (I := I) (M := M) (RicciWMPData.toInput
     (I := I) (M := M) data hT)
 
-theorem ricci_pinch_wmp_raw
+theorem ricci_pinch_wmp_of_hypotheses
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}

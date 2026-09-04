@@ -27,18 +27,18 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private theorem fullHomTensorRSSpaceFiniteDimensional {r t : ℕ} {x : M} :
+private theorem homTensorRSSpaceFiniteDimensional {r t : ℕ} {x : M} :
     FiniteDimensional ℝ (TensorRSSpace r t I x) :=
   Tensor0SBundle.tensorRSSpace_finiteDimensional r t x
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem fullHomTensorRSSpaceT2 {r t : ℕ} {x : M} :
+private theorem homTensorRSSpaceT2 {r t : ℕ} {x : M} :
     T2Space (TensorRSSpace r t I x) := by
   unfold TensorRSSpace
   exact ContinuousLinearMap.instT2Space
 
-private noncomputable def chooseSecAtFull
+private noncomputable def chooseSmoothCcTensorAt
     (g : SmoothRiemannianMetric I M) (r a : ℕ) (x : M) (v : TensorRSSpace r a I x) :
     SmoothCcTensor g r a where
   toSection :=
@@ -51,9 +51,9 @@ private noncomputable def chooseSecAtFull
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma chooseSecAtFull_eq
+private lemma chooseSmoothCcTensorAt_eq
     (g : SmoothRiemannianMetric I M) (r a : ℕ) (x : M) (v : TensorRSSpace r a I x) :
-    (chooseSecAtFull (I := I) (M := M) g r a x v).toSection x = v :=
+    (chooseSmoothCcTensorAt (I := I) (M := M) g r a x v).toSection x = v :=
   letI : NormedAddCommGroup (TensorRSModel r a ℝ E) :=
     Tensor0SBundle.tensorRSModelNormedAddCommGroup r a
   letI : NormedSpace ℝ (TensorRSModel r a ℝ E) := Tensor0SBundle.tensorRSModelNormedSpace r a
@@ -83,24 +83,24 @@ private noncomputable def valueLocalLinearHomFib
   letI instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r a
   haveI : FiniteDimensional ℝ (TensorRSSpace r a I x) :=
-    fullHomTensorRSSpaceFiniteDimensional (I := I) (M := M)
+    homTensorRSSpaceFiniteDimensional (I := I) (M := M)
   haveI : T2Space (TensorRSSpace r a I x) :=
-    fullHomTensorRSSpaceT2 (I := I) (M := M)
+    homTensorRSSpaceT2 (I := I) (M := M)
   LinearMap.toContinuousLinearMap
     { toFun := fun v : TensorRSSpace r a I x =>
-        (F (chooseSecAtFull (I := I) (M := M) g r a x v)).toSection x
+        (F (chooseSmoothCcTensorAt (I := I) (M := M) g r a x v)).toSection x
       map_add' := fun v w => by
-        have hsum : (chooseSecAtFull (I := I) (M := M) g r a x (v + w)).toSection x =
-            (chooseSecAtFull (I := I) (M := M) g r a x v +
-              chooseSecAtFull (I := I) (M := M) g r a x w).toSection x := by
+        have hsum : (chooseSmoothCcTensorAt (I := I) (M := M) g r a x (v + w)).toSection x =
+            (chooseSmoothCcTensorAt (I := I) (M := M) g r a x v +
+              chooseSmoothCcTensorAt (I := I) (M := M) g r a x w).toSection x := by
           rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-            chooseSecAtFull_eq, chooseSecAtFull_eq, chooseSecAtFull_eq]
+            chooseSmoothCcTensorAt_eq, chooseSmoothCcTensorAt_eq, chooseSmoothCcTensorAt_eq]
         rw [hloc _ _ x hsum, hadd]
       map_smul' := fun k v => by
-        have hsm : (chooseSecAtFull (I := I) (M := M) g r a x (k • v)).toSection x =
-            (k • chooseSecAtFull (I := I) (M := M) g r a x v).toSection x := by
+        have hsm : (chooseSmoothCcTensorAt (I := I) (M := M) g r a x (k • v)).toSection x =
+            (k • chooseSmoothCcTensorAt (I := I) (M := M) g r a x v).toSection x := by
           rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-            chooseSecAtFull_eq, chooseSecAtFull_eq]
+            chooseSmoothCcTensorAt_eq, chooseSmoothCcTensorAt_eq]
         rw [hloc _ _ x hsm, hsmul]
         rfl }
 
@@ -131,11 +131,11 @@ private lemma valueLocalLinearHomFib_apply
   let instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r a
   have : FiniteDimensional ℝ (TensorRSSpace r a I x) :=
-    fullHomTensorRSSpaceFiniteDimensional (I := I) (M := M)
+    homTensorRSSpaceFiniteDimensional (I := I) (M := M)
   have : T2Space (TensorRSSpace r a I x) :=
-    fullHomTensorRSSpaceT2 (I := I) (M := M)
+    homTensorRSSpaceT2 (I := I) (M := M)
   rw [valueLocalLinearHomFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
-  exact hloc _ W x (chooseSecAtFull_eq (I := I) (M := M) g r a x (W.toSection x))
+  exact hloc _ W x (chooseSmoothCcTensorAt_eq (I := I) (M := M) g r a x (W.toSection x))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -168,7 +168,7 @@ private theorem valueLocalLinearHomFib_contMDiff
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem exists_value_local_appFullSec (g : SmoothRiemannianMetric I M) (r a c : ℕ)
+theorem exists_value_local_homTensorRSFieldApply (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (F : SmoothCcTensor g r a → SmoothCcTensor g r c)
     (hadd : ∀ (W₁ W₂ : SmoothCcTensor g r a) (x : M),
       (F (W₁ + W₂)).toSection x = (F W₁).toSection x + (F W₂).toSection x)
@@ -186,7 +186,7 @@ theorem exists_value_local_appFullSec (g : SmoothRiemannianMetric I M) (r a c : 
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [appFullSec_toSection]
+  rw [homTensorRSFieldApply_toSection]
   exact (valueLocalLinearHomFib_apply (I := I) (M := M) g r a c F hadd hsmul hloc W x).symm
 end Connection
 end Geometry

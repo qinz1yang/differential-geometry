@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.MemW1pResidualFull
+import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.DensityIdentification
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothFChartResidual.BilinearBound
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothFChartResidual.Linearity
 open DifferentialGeometry.Geometry.Curvature
@@ -27,7 +27,7 @@ open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplResidual
-open DifferentialGeometry.Analysis.Laplacian.MemW1pFChartResidualFull
+open DifferentialGeometry.Analysis.Laplacian.FChartResidualDensityIdentification
 open DifferentialGeometry.Analysis.Laplacian.SmoothFChartResidualBilinearBound
 open DifferentialGeometry.Analysis.Laplacian.SmoothFChartResidualLinearity
 open DifferentialGeometry.Analysis.Sobolev.Chart
@@ -64,11 +64,11 @@ theorem smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy
         (fun y =>
           smoothFChartResidual
             (I := I) (M := M) g α
-            (DifferentialGeometry.Analysis.Laplacian.MemW1pFChartResidualFull.smoothApproxSeq
+            (DifferentialGeometry.Analysis.Laplacian.FChartResidualDensityIdentification.smoothApproxSeq
               (I := I) (M := M) g hu_h m) y -
           smoothFChartResidual
             (I := I) (M := M) g α
-            (DifferentialGeometry.Analysis.Laplacian.MemW1pFChartResidualFull.smoothApproxSeq
+            (DifferentialGeometry.Analysis.Laplacian.FChartResidualDensityIdentification.smoothApproxSeq
               (I := I) (M := M) g hu_h n) y)
         (chartTargetEuclid (I := I) (M := M) α) ≤ ENNReal.ofReal ε := by
   classical

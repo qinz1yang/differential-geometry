@@ -58,7 +58,7 @@ def diffNumeratorAggregate
         ((volume : Measure EuclN).restrict
           (chartPouKernel (I := I) (M := M) α))
 
-section AtomBoundsUnconditional
+section AtomBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -155,7 +155,7 @@ lemma eLpNorm_chosenWeakPartial_iteratedPartial_succ_le
   refine le_trans (eLpNorm_le_wkpNorm (d := Module.finrank ℝ E) 1 2 Ω _) ?_
   exact wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E) 1 _ b
 
-end AtomBoundsUnconditional
+end AtomBounds
 
 omit [CompleteSpace E] in
 lemma iter_memLp_volume_restrict

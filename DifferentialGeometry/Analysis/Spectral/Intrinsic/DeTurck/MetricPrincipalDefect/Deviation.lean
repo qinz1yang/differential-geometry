@@ -54,59 +54,59 @@ theorem deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormSq_le_inv
       - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀
   have hdev : deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁
         - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT
         - (DRs + DRs) := by
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₁,
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
-      reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρA,
-      reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρAT]
+      reindexCoefficientInputSlots_sub (I := I) (M := M) g₀ _ _ ρA,
+      reindexCoefficientInputSlots_sub (I := I) (M := M) g₀ _ _ ρAT]
     dsimp [ρA, ρAT, DTHs, DRs]
     abel
   have h0 : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
         ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁
           - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x) ≤
       4 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-          ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x)
+          ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x)
         + 4 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-          ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
+          ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
         + 8 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DRs.toSection x) := by
     have hsection :
-        ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-            + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT
+        ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA
+            + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT
             - (DRs + DRs)).toSection x) =
-          (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-              + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA
+              + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x
             - (DRs + DRs).toSection x := by
       rw [SmoothCcTensor.toSection_sub]
       rfl
     rw [hdev, hsection]
     have h1 := riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 4 2 x
-      ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
+      ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
       ((DRs + DRs).toSection x)
     have h2 := lieCorrectionZero_riemannianFiberNormSq_toSection_add_le
       (I := I) (M := M) g₀ 4 2
-      (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA)
-      (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT) x
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA)
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT) x
     have h3 := lieCorrectionZero_riemannianFiberNormSq_toSection_add_le
       (I := I) (M := M) g₀ 4 2 DRs DRs x
     linarith
   have hAr : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-      ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x) =
+      ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DTHs.toSection x) := by
-    rw [reindexCoeffGen_toSection]
+    rw [reindexCoefficientInputSlots_toSection]
     exact
-      Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_reindexCoeffFibGen
+      Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
       (I := I) (M := M) g₀ 4 2 x ρA
       (show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
         DTHs.toSection x)
   have hATr : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-      ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x) =
+      ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DTHs.toSection x) := by
-    rw [reindexCoeffGen_toSection]
+    rw [reindexCoefficientInputSlots_toSection]
     exact
-      Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_reindexCoeffFibGen
+      Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
       (I := I) (M := M) g₀ 4 2 x ρAT
       (show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
         DTHs.toSection x)

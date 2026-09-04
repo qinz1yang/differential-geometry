@@ -53,7 +53,7 @@ theorem tensorChartComponent_eq_chartPushedRaw_pou_mul_chartPushedRaw_raw_on_tar
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw_raw
+theorem tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -152,7 +152,7 @@ theorem chartPushedRaw_pou_mul_euclidPartial_eq
     rw [euclidPartial_def, euclidPartial_def]
     congr 1
     exact Filter.EventuallyEq.fderiv_eq
-      (tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw_raw
+      (tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw
         (I := I) (M := M) g r s S α Idx Jdx hy)
   have hP_diff : DifferentiableAt ℝ P y :=
     differentiableAt_chartPushedRaw_chartAtlasPOU (I := I) (M := M) α hy

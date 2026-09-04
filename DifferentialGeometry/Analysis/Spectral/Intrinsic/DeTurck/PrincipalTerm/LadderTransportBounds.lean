@@ -410,7 +410,7 @@ theorem termAsm_operatorFieldApplication_jet_window (g₀ : SmoothRiemannianMetr
   exact hsh
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_appFullSec_iteratedCovGrad_shiftedJetWindow_bound (g₀ : SmoothRiemannianMetric I M)
+theorem exists_homTensorRSFieldApply_iteratedCovGrad_shiftedJetWindow_bound (g₀ : SmoothRiemannianMetric I M)
     (base c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) 0 (2 + base) c I) :
     ∃ cc : ℕ → ℝ, (∀ p, 0 ≤ cc p) ∧ ∀ (u₀ : SmoothCcTensor g₀ 0 2) (p : ℕ),
@@ -419,7 +419,7 @@ theorem exists_appFullSec_iteratedCovGrad_shiftedJetWindow_bound (g₀ : SmoothR
             (iteratedCovGrad (I := I) g₀ 0 2 base u₀))‖ ≤
         cc p * ∑ j ∈ Finset.range (p + base + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
   obtain ⟨cq, hcq_nn, hcq⟩ :=
-    exists_appFullSec_iteratedCovGrad_l2_window_bound (I := I) (M := M) g₀ 0 (2 + base) c Q
+    exists_homTensorRSFieldApply_iteratedCovGrad_l2_window_bound (I := I) (M := M) g₀ 0 (2 + base) c Q
   refine ⟨cq, hcq_nn, fun u₀ p => ?_⟩
   refine le_trans (hcq (iteratedCovGrad (I := I) g₀ 0 2 base u₀) p) ?_
   refine mul_le_mul_of_nonneg_left ?_ (hcq_nn p)
@@ -428,7 +428,7 @@ theorem exists_appFullSec_iteratedCovGrad_shiftedJetWindow_bound (g₀ : SmoothR
   exact hsh
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_operatorFieldApplication_appFullSec_iteratedCovGrad_jetWindow_bound (g₀ : SmoothRiemannianMetric I M)
+theorem exists_operatorFieldApplication_homTensorRSFieldApply_iteratedCovGrad_jetWindow_bound (g₀ : SmoothRiemannianMetric I M)
     (base b2 c2 : ℕ) (Q : HomTensorRSField (E := E) (M := M) 0 (2 + base) b2 I)
     (Φ : SmoothCcTensor g₀ b2 c2) :
     ∃ cc : ℕ → ℝ, (∀ p, 0 ≤ cc p) ∧ ∀ (u₀ : SmoothCcTensor g₀ 0 2) (p : ℕ),
@@ -439,7 +439,7 @@ theorem exists_operatorFieldApplication_appFullSec_iteratedCovGrad_jetWindow_bou
         cc p * ∑ j ∈ Finset.range (p + base + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
   obtain ⟨Cf, hCf_nn, hCf⟩ := termJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ b2 c2 Φ
   obtain ⟨cq, hcq_nn, hcq⟩ :=
-    exists_appFullSec_iteratedCovGrad_shiftedJetWindow_bound (I := I) (M := M) g₀ base b2 Q
+    exists_homTensorRSFieldApply_iteratedCovGrad_shiftedJetWindow_bound (I := I) (M := M) g₀ base b2 Q
   refine ⟨fun p => Cf p * ∑ e ∈ Finset.range (p + 1), cq e,
     fun p => mul_nonneg (hCf_nn p) (Finset.sum_nonneg fun e _ => hcq_nn e),
     fun u₀ p => ?_⟩
@@ -570,7 +570,7 @@ theorem termAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private theorem termSwap_appFullSec_sub_right (g : SmoothRiemannianMetric I M) (t : ℕ)
+private theorem termSwap_homTensorRSFieldApply_sub_right (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (A B : SmoothCcTensor g 0 (t + 2)) :
     homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F (A - B) =
@@ -584,7 +584,7 @@ private theorem termSwap_appFullSec_sub_right (g : SmoothRiemannianMetric I M) (
     (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F A).toSection x -
       (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F B).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [appFullSec_toSection, appFullSec_toSection, appFullSec_toSection]
+  rw [homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection]
   rw [show ((A - B).toSection x : TensorRSSpace 0 (t + 2) I x) =
       A.toSection x - B.toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
@@ -608,8 +608,8 @@ private theorem termSwap_oneMinusConnLapSmooth_comm (g : SmoothRiemannianMetric 
       homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F
         (oneMinusConnLapSmooth (I := I) g 0 (t + 2) U) := by
   unfold oneMinusConnLapSmooth
-  rw [appFullSec_swap_rawConnLap_comm (I := I) (M := M) g t F hF U,
-    termSwap_appFullSec_sub_right (I := I) (M := M) g t F U
+  rw [homTensorRSFieldApply_swap_rawConnLap_comm (I := I) (M := M) g t F hF U,
+    termSwap_homTensorRSFieldApply_sub_right (I := I) (M := M) g t F U
       (rawTensorConnLapSmooth (I := I) g 0 (t + 2) U)]
 
 omit [SigmaCompactSpace M] in

@@ -76,7 +76,7 @@ theorem uniformRm04Sup
     uniformCurvSup (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2
   refine ⟨(Module.finrank ℝ E : ℝ) ^ 2 * F, by positivity, fun x => ?_⟩
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
-  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasis (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
     intro i j

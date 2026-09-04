@@ -56,10 +56,10 @@ lemma wkpNorm_eq_of_compactSupport_smooth_subset
     iteratedWeakSobolevNorm (d := d) 1 p ψ Ω = iteratedWeakSobolevNorm (d := d) 1 p ψ Ω' := by
   classical
   have hψ_mem_Ω : MemWkp (d := d) 1 p ψ Ω :=
-    MemWkp_of_smooth_compactSupport_pub
+    MemWkp_of_smooth_compactSupport
       (d := d) hΩ hψ_smooth hψ_cpt (hψ_supp.trans hΩΩ') hp_one 1
   have hψ_mem_Ω' : MemWkp (d := d) 1 p ψ Ω' :=
-    MemWkp_of_smooth_compactSupport_pub
+    MemWkp_of_smooth_compactSupport
       (d := d) hΩ' hψ_smooth hψ_cpt hψ_supp hp_one 1
   have h_partial_classical_Ω : ∀ i : Fin d,
       chosenWeakPartial' (d := d) p i ψ Ω =ᵐ[volume.restrict Ω]
@@ -1080,7 +1080,7 @@ theorem cross_chart_bound_strict_strong
     hη_α_loc_cpt.of_isClosed_subset (isClosed_tsupport _) hχ_loc_supp_in_η_α
   have hχ_loc_mem_Ωαγ : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 p χ_loc Ω_αγ :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
         (d := Module.finrank ℝ E) hΩαγ_open hχ_loc_smooth hχ_loc_cpt
         hχ_loc_supp_in_Ωαγ hp_one 1
   set ψ_total : EuclN → ℝ := fun y => η_combined y * χ_loc (Φ.toFun y) with hψ_total_def
@@ -1389,7 +1389,7 @@ theorem cross_chart_bound_strict_strong
     rw [← hxy]; exact ⟨extChartAt I α x, h_target, rfl⟩
   have hχ_mem_Ωα_target : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 p χ Ωα_target :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
         (d := Module.finrank ℝ E) hΩα_target_open hχ_smooth hχ_cpt hχ_supp_in_Ωα_target
         hp_one 1
   have h_leib_α_step : DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm

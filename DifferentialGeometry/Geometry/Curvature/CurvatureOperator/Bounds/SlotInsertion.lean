@@ -24,7 +24,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma fiberComponent_slotInsertEndoFib_eq
+private lemma fiberComponent_slotInsertEndoFib_eq_two
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -49,7 +49,7 @@ private lemma fiberComponent_slotInsertEndoFib_eq
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul
+lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_two
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (B : ℝ)
     (hΛ : ∀ a : TangentSpace I x, g₀.inner x a a = 1 → g₀.inner x (Λ a) (Λ a) ≤ B)
@@ -71,7 +71,7 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul
           TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) n e K J) ^ 2 =
         (g₀.inner x (e (K 0)) (Λ (e (J 0)))) ^ 2 * (if K 1 = J 1 then (1 : ℝ) else 0) := by
     intro K J
-    rw [fiberComponent_slotInsertEndoFib_eq (I := I) g₀ x Λ e horth K J]
+    rw [fiberComponent_slotInsertEndoFib_eq_two (I := I) g₀ x Λ e horth K J]
     rw [g₀.symm x (Λ (e (J 0))) (e (K 0))]
     by_cases hkj : K 1 = J 1
     · simp only [hkj, if_true, mul_one]
@@ -120,7 +120,7 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma fiberComponent_slotInsertEndoFib_eq_general
+private lemma fiberComponent_slotInsertEndoFib_eq
     (g₀ : SmoothRiemannianMetric I M) (x : M) (s : ℕ) (k : Fin s)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -174,7 +174,7 @@ private lemma sum_compSq_slotInsertEndoFib_eq_normSq
         (g₀.inner x (e (K k)) (Λ (e (J k)))) ^ 2 *
           ∏ l ∈ Finset.univ.erase k, (if K l = J l then (1 : ℝ) else 0) := by
     intro K
-    rw [fiberComponent_slotInsertEndoFib_eq_general (I := I) g₀ x s k Λ e horth K J]
+    rw [fiberComponent_slotInsertEndoFib_eq (I := I) g₀ x s k Λ e horth K J]
     rw [mul_pow]
     congr 1
     rw [← Finset.prod_pow]
@@ -233,11 +233,10 @@ private lemma sum_compSq_slotInsertEndoFib_eq_normSq
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_general
+lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul
     (g₀ : SmoothRiemannianMetric I M) (x : M) (s : ℕ) (k : Fin s)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (B : ℝ)
-    (hΛ : ∀ a : TangentSpace I x, g₀.inner x a a = 1 → g₀.inner x (Λ a) (Λ a) ≤ B)
-    (_hB : 0 ≤ B) :
+    (hΛ : ∀ a : TangentSpace I x, g₀.inner x a a = 1 → g₀.inner x (Λ a) (Λ a) ≤ B) :
     riemannianFiberNormSq (I := I) (M := M) g₀ s s x
         (show TensorRSSpace s s I x from
           TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x Λ)) ≤

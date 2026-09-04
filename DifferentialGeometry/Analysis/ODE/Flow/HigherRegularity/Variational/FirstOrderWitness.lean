@@ -15,7 +15,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E
 
 attribute [local instance] variationalAugmentedEndNormedAddCommGroup
 
-section LevelOneFullWitness
+section LevelOneWitness
 
 variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax : ℝ} {Φ : E × ℝ → E}
 
@@ -83,7 +83,7 @@ theorem exists_isVariationalFlowProjection_one_of_C2
   intro q hq
   exact h_help q (h_eff_sub_help hq)
 
-end LevelOneFullWitness
+end LevelOneWitness
 
 end Flow
 end ODE

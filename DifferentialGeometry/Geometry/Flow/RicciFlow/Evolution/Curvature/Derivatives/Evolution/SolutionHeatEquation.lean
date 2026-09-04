@@ -28,7 +28,7 @@ variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 omit [SigmaCompactSpace M] in
-theorem towerHeatSol_raw
+theorem towerHeatBoundOn_of_solution
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -53,16 +53,16 @@ theorem towerHeatSol_raw
   let gInv : Real → Idx → Idx → Real := fun r =>
     basisInvMetric (I := I) (S'.base.metric r) x basis
   have hinv : ∀ r : Real,
-      MetricInverseInBasisGen (I := I) (S'.base.metric r) x basis (gInv r) := by
+      MetricInverseInBasis (I := I) (S'.base.metric r) x basis (gInv r) := by
     intro r
     simpa only [gInv] using
-      basisInvMetric_real (I := I) (S'.base.metric r) x basis
-  have hinvId : MetricInverseInBasisGen (I := I) (S'.base.metric (t : Real)) x basis
+      basisInvMetric_isInverse (I := I) (S'.base.metric r) x basis
+  have hinvId : MetricInverseInBasis (I := I) (S'.base.metric (t : Real)) x basis
       (identityInvMetric (Idx := Idx)) :=
     metricInverseInBasis_identity_of_orthonormal
       (I := I) (S'.base.metric (t : Real)) basis horth
   have hgInv : gInv (t : Real) = identityInvMetric (Idx := Idx) :=
-    invBasis_unique (I := I) (S'.base.metric (t : Real)) x basis _ _
+    MetricInverseInBasis.unique (I := I) (S'.base.metric (t : Real)) x basis _ _
       (hinv (t : Real)) hinvId
   let ric : Idx → Idx → Real := fun i j =>
     S'.ricciAt (t : Real) x (vec2 (I := I) (basis i) (basis j))
@@ -165,7 +165,7 @@ theorem towerHeatSol_raw
     exact metricRicciComp_le (I := I) (g := S'.base.metric (t : Real))
       basis horth p q
   have hheat := nablaKNormHeatAt (I := I) S' k t x basis gInv ric Tdot
-    (fun r => by simpa only [MetricInverseInBasis, MetricInverseInBasisGen] using hinv r)
+    (fun r => by simpa only [MetricInverseInBasis, MetricInverseInBasis] using hinv r)
     hT hgInvDt
   have hreact0 := nablaKReactionAt_le (I := I) S' (t : Real) x basis
     (gInv (t : Real)) ric Tdot
@@ -204,6 +204,6 @@ theorem towerHeatSol_any
   have hS' : IsSolutionOn (I := I) S' := by
     simpa only [S', D'] using
       isSoln_tailRestrict (I := I) hS halphat0 ht0omega
-  exact towerHeatSol_raw (I := I) S' hS' k
+  exact towerHeatBoundOn_of_solution (I := I) S' hS' k
 
 end DifferentialGeometry.PDE.RicciFlow

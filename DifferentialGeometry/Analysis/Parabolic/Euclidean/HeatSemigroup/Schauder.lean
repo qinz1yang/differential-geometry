@@ -910,7 +910,7 @@ theorem heatDuh_parabolicTimeDerivative_eq_source_add_laplacian
       f p.time p.space + heatLapDuh p.time (fun s ↦ f s) p.space := by
     unfold parabolicTimeDerivative
     rw [htime.hasFDerivAt.fderiv]
-    simp only [heatDuhTimeCandidateField, heatDuhTimeCandidate,
+    simp only [heatDuhTimeDerivativeField, heatDuhTimeDerivative,
       parabolicPoint_time, parabolicPoint_space,
       ContinuousLinearMap.toSpanSingleton_apply, one_smul]
   rw [htimeEq, heatDuh_parabolicLaplacian_eq_heatLapDuh

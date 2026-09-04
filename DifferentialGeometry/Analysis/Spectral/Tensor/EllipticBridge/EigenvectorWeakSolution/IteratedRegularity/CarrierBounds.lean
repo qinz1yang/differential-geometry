@@ -222,7 +222,7 @@ private lemma eLpNorm_chartPulledWeighted_le_of_ae_zero_off_chartPouKernel_unifo
     rw [Real.sqrt_eq_rpow, ← ENNReal.ofReal_rpow_of_nonneg hc_nn (by positivity)]
   rw [h_pow_eq, smul_eq_mul]
 
-section MainBoundUnconditional
+section MainBound
 
 omit [CompleteSpace E] in
 theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le
@@ -386,7 +386,7 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_uniform
           congr 2
           ring
 
-end MainBoundUnconditional
+end MainBound
 
 omit [CompleteSpace E] in
 private lemma diffRHSHead_ne_top

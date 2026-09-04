@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenFull
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenBoundaryIntegral
 import DifferentialGeometry.Geometry.Boundary.SecondFundamentalForm
 import DifferentialGeometry.Geometry.Operator.WithBoundary.BoundaryLaplacian
 open DifferentialGeometry.Geometry.Operator
@@ -24,6 +24,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open DifferentialGeometry.Geometry.Operator.WithBoundary
+open DifferentialGeometry.Geometry.Curvature
 
 private local instance instMeasurableSpaceM : MeasurableSpace M := borel M
 

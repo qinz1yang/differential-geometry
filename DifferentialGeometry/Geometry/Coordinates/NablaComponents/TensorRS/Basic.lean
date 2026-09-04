@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Tensor0S
 import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.FieldComponents
 import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TensorRS

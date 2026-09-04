@@ -495,7 +495,7 @@ theorem ricciEnd_diagVec {x : M}
   let T := DifferentialGeometry.Geometry.Curvature.ricciEndAt (I := I) g Ric
   have hdiagComp := hdiag.2
   have h0 : T (basis 0) = l1 • basis 0 := by
-    apply eq_of_inner_basis_eq_gen (I := I) g x basis
+    apply eq_of_inner_basis_eq (I := I) g x basis
     intro j
     calc
       g.inner x (T (basis 0)) (basis j) =
@@ -508,7 +508,7 @@ theorem ricciEnd_diagVec {x : M}
             fin_cases j <;> simp [DifferentialGeometry.Geometry.Curvature.ricciDiag3,
               DifferentialGeometry.Geometry.Curvature.delta3, horth 0 0, horth 0 1, horth 0 2]
   have h1 : T (basis 1) = l2 • basis 1 := by
-    apply eq_of_inner_basis_eq_gen (I := I) g x basis
+    apply eq_of_inner_basis_eq (I := I) g x basis
     intro j
     calc
       g.inner x (T (basis 1)) (basis j) =
@@ -521,7 +521,7 @@ theorem ricciEnd_diagVec {x : M}
             fin_cases j <;> simp [DifferentialGeometry.Geometry.Curvature.ricciDiag3,
               DifferentialGeometry.Geometry.Curvature.delta3, horth 1 0, horth 1 1, horth 1 2]
   have h2 : T (basis 2) = l3 • basis 2 := by
-    apply eq_of_inner_basis_eq_gen (I := I) g x basis
+    apply eq_of_inner_basis_eq (I := I) g x basis
     intro j
     calc
       g.inner x (T (basis 2)) (basis j) =
@@ -565,7 +565,7 @@ theorem ricciCubeInv_diag {x : M}
     simp [T, LinearMap.comp_apply, hT2, map_smul, pow_three, smul_smul,
       mul_assoc]
   have hinv :
-      MetricInverseInBasisGen (I := I) g x basis DifferentialGeometry.Geometry.Curvature.delta3 :=
+      MetricInverseInBasis (I := I) g x basis DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   unfold ricciCubeInvAt
   change LinearMap.trace Real (TangentSpace I x) (T.comp (T.comp T)) =
@@ -682,11 +682,11 @@ private theorem coordPair04 {x : M}
     hpair, hslots2, mul_assoc]
 
 theorem curvRic_inner {x : M}
-    (g : SmoothMetricGen I M)
+    (g : SmoothRiemannianMetric I M)
     (Ric : DifferentialGeometry.Geometry.Curvature.Tensor02At (I := I) (M := M) x)
     (Rm04 : DifferentialGeometry.Geometry.Curvature.Tensor04At (I := I) (M := M) x)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) g x basis
+    (hinv : MetricInverseInBasis (I := I) g x basis
       DifferentialGeometry.Geometry.Curvature.delta3) :
     curvRicAt (I := I) Ric Rm04 basis =
       inner0S (I := I) g x 4 Rm04 (ricciPair04 (I := I) Ric) := by
@@ -704,7 +704,7 @@ theorem reactAt_eq_react
     reactAt (I := I) (S.ricciAt t x) (S.base.rm04 t x) basis =
       ricciReact (I := I) S t x := by
   have hinv :
-      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
+      MetricInverseInBasis (I := I) (S.base.metric t) x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t) basis
       horth
@@ -721,10 +721,10 @@ theorem react_frame {x : M}
     (h₂ : DifferentialGeometry.Geometry.Curvature.OrthonormalBasisAt (I := I) g x basis₂) :
     reactAt (I := I) Ric Rm04 basis₁ =
       reactAt (I := I) Ric Rm04 basis₂ := by
-  have hinv₁ : MetricInverseInBasisGen (I := I) g x basis₁
+  have hinv₁ : MetricInverseInBasis (I := I) g x basis₁
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis₁ h₁
-  have hinv₂ : MetricInverseInBasisGen (I := I) g x basis₂
+  have hinv₂ : MetricInverseInBasis (I := I) g x basis₂
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis₂ h₂
   unfold reactAt
@@ -811,10 +811,10 @@ private theorem coordRic02 {x : M}
 
 omit [IsManifold I 1 M] in
 theorem ricciNorm_inner {x : M}
-    (g : SmoothMetricGen I M)
+    (g : SmoothRiemannianMetric I M)
     (Ric : DifferentialGeometry.Geometry.Curvature.Tensor02At (I := I) (M := M) x)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) g x basis
+    (hinv : MetricInverseInBasis (I := I) g x basis
       DifferentialGeometry.Geometry.Curvature.delta3) :
     ricciNormAt (I := I) Ric basis =
       normSq0S (I := I) g x 2 Ric := by
@@ -831,10 +831,10 @@ theorem ricciNorm_frame {x : M}
     (h₂ : DifferentialGeometry.Geometry.Curvature.OrthonormalBasisAt (I := I) g x basis₂) :
     ricciNormAt (I := I) Ric basis₁ =
       ricciNormAt (I := I) Ric basis₂ := by
-  have hinv₁ : MetricInverseInBasisGen (I := I) g x basis₁
+  have hinv₁ : MetricInverseInBasis (I := I) g x basis₁
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis₁ h₁
-  have hinv₂ : MetricInverseInBasisGen (I := I) g x basis₂
+  have hinv₂ : MetricInverseInBasis (I := I) g x basis₂
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis₂ h₂
   rw [ricciNorm_inner (I := I) g Ric basis₁ hinv₁,
@@ -1238,7 +1238,7 @@ theorem scalarTrace_delta {x : M}
       Ric DifferentialGeometry.Geometry.Curvature.delta3 basis := by
   classical
   have hinv :
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
+      Tensor0SBundle.MetricInverseInBasis (I := I) g x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   unfold DifferentialGeometry.Geometry.Curvature.ScalarRealizesRicciTraceAt
@@ -1259,7 +1259,7 @@ theorem firstTrace_delta
       DifferentialGeometry.Geometry.Curvature.delta3 basis := by
   classical
   have hinv :
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
+      Tensor0SBundle.MetricInverseInBasis (I := I) g x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   exact DifferentialGeometry.Geometry.Curvature.ricciFirstTraceAt_of_rm13 (I := I) g basis

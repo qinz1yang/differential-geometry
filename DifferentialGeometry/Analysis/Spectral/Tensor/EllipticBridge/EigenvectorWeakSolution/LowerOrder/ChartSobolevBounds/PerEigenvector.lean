@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-section LowerOrderWkpNormBoundsUnconditional
+section LowerOrderWkpNormBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
@@ -837,7 +837,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
                       EuclN → ℝ) y) Ω)) := by
       rw [mul_add]
 
-end LowerOrderWkpNormBoundsUnconditional
+end LowerOrderWkpNormBounds
 
 end TensorSpectral
 end Parabolic

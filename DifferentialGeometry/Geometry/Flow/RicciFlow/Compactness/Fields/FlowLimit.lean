@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
 
-theorem ConvOut.scalar_conv
+theorem FlowMetricConvergenceData.scalar_conv
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat → Nat}
@@ -63,7 +63,7 @@ theorem ConvOut.scalar_conv
         ∀ z : P.M, z ∈ bf.grow k →
           metricCovDerivNorm (I := I) q
             (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ) :
     FunctionPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ)
       (fun k t x ↦
@@ -94,10 +94,10 @@ theorem ConvOut.scalar_conv
         metricScalarAt (I := I) (co.gInf t) x) := by
   intro t ht x
   simpa only [Function.comp_apply, PointedCGHMaps.compSubseq, PointedCGHMaps.map] using
-    ConvOut.scalar_conv_at (I := I) Φ R bf hsrc htgt β ψ cLow hcLow hbound
+    FlowMetricConvergenceData.scalar_conv_at (I := I) Φ R bf hsrc htgt β ψ cLow hcLow hbound
       hcovTail co (hcarrier ht) x
 
-theorem ConvOut.ricNorm_conv
+theorem FlowMetricConvergenceData.ricNorm_conv
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat → Nat}
@@ -135,7 +135,7 @@ theorem ConvOut.ricNorm_conv
         ∀ z : P.M, z ∈ bf.grow k →
           metricCovDerivNorm (I := I) q
             (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ) :
     FunctionPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ)
       (fun k t x ↦
@@ -169,7 +169,7 @@ theorem ConvOut.ricNorm_conv
   intro t ht x
   simpa only [Function.comp_apply, PointedCGHMaps.compSubseq,
     PointedCGHMaps.map] using
-    ConvOut.ricNorm_conv_at (I := I) Φ R bf hsrc htgt β ψ cLow hcLow hbound
+    FlowMetricConvergenceData.ricNorm_conv_at (I := I) Φ R bf hsrc htgt β ψ cLow hcLow hbound
       hcovTail co (hcarrier ht) x
 
 section Endgame
@@ -200,7 +200,7 @@ noncomputable def flowUpgradeOfMaps
     (htgt : TgtSigma (I := I) Φ)
     (β ψ : Real)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hLmetric :
       letI : TopologicalSpace L.M := L.topology
       letI : ChartedSpace H L.M := L.charted
@@ -283,7 +283,7 @@ theorem flowUpgrade_maps_L
     (htgt : TgtSigma (I := I) Φ)
     (β ψ : Real)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hLmetric :
       letI : TopologicalSpace L.M := L.topology
       letI : ChartedSpace H L.M := L.charted
@@ -321,7 +321,7 @@ theorem flowLimit_of_maps
     (htgt : TgtSigma (I := I) Φ)
     (β ψ : Real)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hLmetric :
       letI : TopologicalSpace L.M := L.topology
       letI : ChartedSpace H L.M := L.charted
@@ -355,7 +355,7 @@ theorem flowLimit_of_co
     (htgt : TgtSigma (I := I) (endgamePhi (I := I) mc L hL0))
     (β ψ : Real)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
-    (co : ConvOut (I := I) (endgamePhi (I := I) mc L hL0) R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) (endgamePhi (I := I) mc L hL0) R bf hsrc htgt β ψ)
     (hLmetric :
       letI : TopologicalSpace L.M := L.topology
       letI : ChartedSpace H L.M := L.charted
@@ -385,7 +385,7 @@ noncomputable def flowUpgradeOfMc
     (htgt : TgtSigma (I := I) Φ₀)
     (β ψ : Real)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
-    (co : ConvOut (I := I) Φ₀ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ₀ R bf hsrc htgt β ψ)
     (hzero :
       letI : TopologicalSpace mc.limit.M := mc.limit.topology
       letI : ChartedSpace H mc.limit.M := mc.limit.charted
@@ -440,7 +440,7 @@ theorem flowLimit_of_mc
     (htgt : TgtSigma (I := I) Φ₀)
     (β ψ : Real)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
-    (co : ConvOut (I := I) Φ₀ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ₀ R bf hsrc htgt β ψ)
     (hzero :
       letI : TopologicalSpace mc.limit.M := mc.limit.topology
       letI : ChartedSpace H mc.limit.M := mc.limit.charted
@@ -549,8 +549,8 @@ noncomputable def endgameCo
               metricDerivNorm (I := I) a (srcMetric (I := I) Φ hsrc htgt k s)
                 (srcMetric (I := I) Φ hsrc htgt k t)
                 (refRes (I := I) Φ R k) y <= Lt * |s - t|) :
-    ConvOut (I := I) Φ R bf hsrc htgt β ψ :=
-  convOut (I := I) (Φ := Φ) R bf hsrc htgt β ψ hβψ ((Crel * Bmax)⁻¹)
+    FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ :=
+  flowMetricConvergenceData (I := I) (Φ := Φ) R bf hsrc htgt β ψ hβψ ((Crel * Bmax)⁻¹)
     (inv_pos.2 (mul_pos (lt_of_lt_of_le one_pos hCrel1) (lt_of_lt_of_le one_pos hBmax1)))
     (hbound_of_equiv (I := I) (Φ := Φ) R hsrc htgt β ψ gRefT B Crel Bmax hBmax hCrel1 hequivT hrel)
     (covTail_of_bounds (I := I) (Φ := Φ) R bf hsrc htgt β ψ hcovSrc)
@@ -811,7 +811,7 @@ theorem flowLimit_endgame
   have hL0 :
       (flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime 0 = mc.limit :=
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
-  have hricRaw := ConvOut.ricNorm_conv (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ
+  have hricRaw := FlowMetricConvergenceData.ricNorm_conv (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ
     ((Crel * Bmax)⁻¹)
     (inv_pos.2 (mul_pos (lt_of_lt_of_le one_pos hCrel1)
       (lt_of_lt_of_le one_pos hBmax1)))
@@ -1016,7 +1016,7 @@ theorem flowLimit_of_reg
     have htIcc : t ∈ Set.Icc β ψ := hcarrier (X.D.regular_subset ht)
     have hIcc : Set.Icc β ψ ∈ 𝓝 t :=
       Filter.mem_of_superset (X.D.regular_mem_nhds ht) hcarrier
-    exact (ConvOut.gInf_pde (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ hwin
+    exact (FlowMetricConvergenceData.gInf_pde (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ hwin
       ((Crel * Bmax)⁻¹)
       (inv_pos.2 (mul_pos (lt_of_lt_of_le one_pos hCrel1)
         (lt_of_lt_of_le one_pos hBmax1)))
@@ -1034,7 +1034,7 @@ theorem flowLimit_of_reg
   have hL0 :
       (flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime 0 = mc.limit :=
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
-  have hscalarRaw := ConvOut.scalar_conv (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ
+  have hscalarRaw := FlowMetricConvergenceData.scalar_conv (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ
     ((Crel * Bmax)⁻¹)
     (inv_pos.2 (mul_pos (lt_of_lt_of_le one_pos hCrel1)
       (lt_of_lt_of_le one_pos hBmax1)))

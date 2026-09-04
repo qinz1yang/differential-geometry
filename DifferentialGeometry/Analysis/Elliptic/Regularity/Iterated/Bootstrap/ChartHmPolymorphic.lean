@@ -15,7 +15,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace IteratedChartHmBootstrapFinal
+namespace IteratedChartHmBootstrapPolymorphic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -214,7 +214,7 @@ theorem chartPushed_memWkp_of_laplacianDomainPow_via_bridge
   chartPushed_memWkp_of_laplacianDomainPow
     (I := I) (M := M) g α k h_bridge
 
-end IteratedChartHmBootstrapFinal
+end IteratedChartHmBootstrapPolymorphic
 end Laplacian
 end Analysis
 end DifferentialGeometry

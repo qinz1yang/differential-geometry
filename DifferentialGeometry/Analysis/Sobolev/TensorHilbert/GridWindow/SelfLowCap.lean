@@ -247,13 +247,13 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem aaKerSplit (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g₀ g₁ =
       aaCoreP (I := I) (M := M) g₀ g₁ aaP3201 aaP102 +
-        reindexCoeffGen (I := I) (M := M) g₀ 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 4
           (aaCoreP (I := I) (M := M) g₀ g₁ aaP2301 aaP102) innerCoreInPerm10 +
         aaCoreP (I := I) (M := M) g₀ g₁ aaP3102 aaP120 +
-        reindexCoeffGen (I := I) (M := M) g₀ 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 4
           (aaCore (I := I) (M := M) g₀ g₁ aaP1302) innerCoreInPerm10 +
         aaCore (I := I) (M := M) g₀ g₁ aaP1203 +
-        reindexCoeffGen (I := I) (M := M) g₀ 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 4
           (aaCoreP (I := I) (M := M) g₀ g₁ aaP2103 aaP120) innerCoreInPerm10 := by
   rw [ricciConnectionDifferenceQuadraticKernel]
   apply congrArg₂ (· + ·)

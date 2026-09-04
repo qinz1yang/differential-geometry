@@ -21,7 +21,7 @@ open scoped Manifold ContDiff ENNReal NNReal
 namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
-namespace EquivalenceFull
+namespace Equivalence
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -351,7 +351,7 @@ lemma gNormGrad_le_finset_sum_pou_mul
       linarith
   exact h_triangle S v
 
-end EquivalenceFull
+end Equivalence
 end Sobolev
 end Analysis
 end DifferentialGeometry

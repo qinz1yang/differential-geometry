@@ -33,7 +33,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-def bareChartJetContent (g : SmoothRiemannianMetric I M) (r s : ℕ)
+def euclideanChartComponentJetNormSum (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (X : SmoothCcTensor g r s) (α : M) (N : ℕ) (y : EuclN) : ℝ :=
   ∑ q' : (Fin r → Fin (Module.finrank ℝ E)) × (Fin s → Fin (Module.finrank ℝ E)),
     ∑ m ∈ Finset.range (N + 1),
@@ -43,19 +43,19 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 lemma bareChartJetContent_nonneg (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (X : SmoothCcTensor g r s) (α : M) (N : ℕ) (y : EuclN) :
-    0 ≤ bareChartJetContent (I := I) (M := M) g r s X α N y :=
+    0 ≤ euclideanChartComponentJetNormSum (I := I) (M := M) g r s X α N y :=
   Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma iteratedFDeriv_rawPullR_le_bareChartJetContent
+lemma norm_iteratedFDeriv_tensorComponentEuclideanChart_le_euclideanChartComponentJetNormSum
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (X : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
     {m N : ℕ} (hm : m ≤ N) (y : EuclN) :
     ‖iteratedFDeriv ℝ m (tensorComponentEuclideanChart (I := I) (M := M) g r s X α Idx Jdx) y‖ ≤
-      bareChartJetContent (I := I) (M := M) g r s X α N y := by
+      euclideanChartComponentJetNormSum (I := I) (M := M) g r s X α N y := by
   classical
   set f : (Fin r → Fin (Module.finrank ℝ E)) × (Fin s → Fin (Module.finrank ℝ E)) → ℝ :=
     fun q' => ∑ m' ∈ Finset.range (N + 1),
@@ -80,12 +80,12 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 lemma bareChartJetContent_mono (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (X : SmoothCcTensor g r s) (α : M) {N N' : ℕ} (hN : N ≤ N') (y : EuclN) :
-    bareChartJetContent (I := I) (M := M) g r s X α N y ≤
-      bareChartJetContent (I := I) (M := M) g r s X α N' y := by
+    euclideanChartComponentJetNormSum (I := I) (M := M) g r s X α N y ≤
+      euclideanChartComponentJetNormSum (I := I) (M := M) g r s X α N' y := by
   classical
   have hsub : Finset.range (N + 1) ⊆ Finset.range (N' + 1) :=
     Finset.range_mono (by omega)
-  simp only [bareChartJetContent]
+  simp only [euclideanChartComponentJetNormSum]
   refine Finset.sum_le_sum (fun q' _ => ?_)
   exact Finset.sum_le_sum_of_subset_of_nonneg hsub (fun m _ _ => norm_nonneg _)
 
@@ -123,7 +123,7 @@ lemma iteratedFDeriv_euclidPartial_norm_le
     _ = ‖iteratedFDeriv ℝ (l + 1) u y‖ := h_fderiv_iter
 
 omit [BoundarylessManifold I M] in
-lemma iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent_uniform
+lemma norm_iteratedFDeriv_iteratedCovGradComponent_le_euclideanChartComponentJetNormSum_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) (P : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (X : SmoothCcTensor g r s) (p l : ℕ), l + p ≤ P →
@@ -133,7 +133,7 @@ lemma iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent_uniform
             ‖iteratedFDeriv ℝ l
                 (tensorComponentEuclideanChart (I := I) (M := M) g r (s + p)
                   (iteratedCovGrad (I := I) g r s p X) α Idx Jdx) y‖ ≤
-              C * bareChartJetContent (I := I) (M := M) g r s X α (l + p) y := by
+              C * euclideanChartComponentJetNormSum (I := I) (M := M) g r s X α (l + p) y := by
   classical
   obtain ⟨Γ, hΓ_nn, hΓ⟩ :=
     exists_christoffel_bound_valence_range (I := I) (M := M) g r s α P P
@@ -156,7 +156,7 @@ lemma iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent_uniform
           ‖iteratedFDeriv ℝ l
               (tensorComponentEuclideanChart (I := I) (M := M) g r (s + p)
                 (iteratedCovGrad (I := I) g r s p X) α Idx Jdx) y‖ ≤
-            Cp p * bareChartJetContent (I := I) (M := M) g r s X α (l + p) y := by
+            Cp p * euclideanChartComponentJetNormSum (I := I) (M := M) g r s X α (l + p) y := by
     intro p
     induction p with
     | zero =>
@@ -170,7 +170,7 @@ lemma iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent_uniform
                 (tensorComponentEuclideanChart (I := I) (M := M) g r s X α Idx Jdx) y‖ := by
           congr 1
         rw [hLHS]
-        exact iteratedFDeriv_rawPullR_le_bareChartJetContent (I := I) (M := M)
+        exact norm_iteratedFDeriv_tensorComponentEuclideanChart_le_euclideanChartComponentJetNormSum (I := I) (M := M)
           g r s X α Idx Jdx (by omega) y
     | succ p ih =>
         intro l hlP Idx Jdx y hy
@@ -248,7 +248,7 @@ lemma iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent_uniform
         have hjle : (l : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by exact_mod_cast le_top
         rw [fun_iteratedFDeriv_add_apply (hA_cdAt.of_le hjle) (hB_cdAt.of_le hjle)]
         refine le_trans (norm_add_le _ _) ?_
-        set RHS : ℝ := bareChartJetContent (I := I) (M := M) g r s X α (l + (p + 1)) y
+        set RHS : ℝ := euclideanChartComponentJetNormSum (I := I) (M := M) g r s X α (l + (p + 1)) y
           with hRHS_def
         have hRHS_nn : 0 ≤ RHS := bareChartJetContent_nonneg (I := I) (M := M) g r s X α _ y
         have hA : ‖iteratedFDeriv ℝ l
@@ -265,7 +265,7 @@ lemma iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent_uniform
           have hih := ih (l + 1) (by omega) Idx Jtail y hy
           rw [hZ_def] at hih
           refine hih.trans ?_
-          have hwin : bareChartJetContent (I := I) (M := M) g r s X α ((l + 1) + p) y ≤ RHS := by
+          have hwin : euclideanChartComponentJetNormSum (I := I) (M := M) g r s X α ((l + 1) + p) y ≤ RHS := by
             rw [hRHS_def]
             exact bareChartJetContent_mono (I := I) (M := M) g r s X α (by omega) y
           exact mul_le_mul_of_nonneg_left hwin (hCp_nn p)
@@ -311,7 +311,7 @@ lemma iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent_uniform
                 have hih := ih (l - l') (by omega) q''.1 q''.2 y hy
                 rw [hZ_def] at hih ⊢
                 refine hih.trans ?_
-                have hwin : bareChartJetContent (I := I) (M := M) g r s X α ((l - l') + p) y ≤
+                have hwin : euclideanChartComponentJetNormSum (I := I) (M := M) g r s X α ((l - l') + p) y ≤
                     RHS := by
                   rw [hRHS_def]
                   exact bareChartJetContent_mono (I := I) (M := M) g r s X α (by omega) y
@@ -400,7 +400,7 @@ lemma iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent_uniform
   exact Finset.le_sup' Cp (Finset.mem_range.mpr (by omega))
 
 omit [BoundarylessManifold I M] in
-lemma iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent
+lemma norm_iteratedFDeriv_iteratedCovGradComponent_le_euclideanChartComponentJetNormSum
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (X : SmoothCcTensor g r s) (α : M) (P : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -411,20 +411,20 @@ lemma iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent
             ‖iteratedFDeriv ℝ l
                 (tensorComponentEuclideanChart (I := I) (M := M) g r (s + p)
                   (iteratedCovGrad (I := I) g r s p X) α Idx Jdx) y‖ ≤
-              C * bareChartJetContent (I := I) (M := M) g r s X α (l + p) y := by
+              C * euclideanChartComponentJetNormSum (I := I) (M := M) g r s X α (l + p) y := by
   obtain ⟨C, hC_nn, hC⟩ :=
-    iteratedFDeriv_rawPullR_iteratedCovGrad_le_bareChartJetContent_uniform
+    norm_iteratedFDeriv_iteratedCovGradComponent_le_euclideanChartComponentJetNormSum_uniform
       (I := I) (M := M) g r s α P
   exact ⟨C, hC_nn, fun p l hlP Idx Jdx y hy => hC X p l hlP Idx Jdx y hy⟩
 
 omit [BoundarylessManifold I M] in
-theorem bareJet_le_fiber
+theorem euclideanChartComponentJetNormSum_le_fiberNormSum_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (N : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (D : SmoothCcTensor g r s) {y : EuclN},
         y ∈ chartPouKernel (I := I) (M := M) α →
-        bareChartJetContent (I := I) (M := M) g r s D α N y ≤
+        euclideanChartComponentJetNormSum (I := I) (M := M) g r s D α N y ≤
           C * ∑ i ∈ Finset.range (N + 1),
             Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r (s + i)
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
@@ -530,7 +530,7 @@ theorem bareJet_le_fiber
     rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
     push_cast
     ring
-  calc bareChartJetContent (I := I) (M := M) g r s D α N y
+  calc euclideanChartComponentJetNormSum (I := I) (M := M) g r s D α N y
       = ∑ q' : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
           ∑ m ∈ Finset.range (N + 1),
@@ -550,13 +550,13 @@ lemma bareChartJetContent_le_sqrt_fiberNormSq_sum
     (D : SmoothCcTensor g r s) (α : M) (N : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {y : EuclN}, y ∈ chartPouKernel (I := I) (M := M) α →
-        bareChartJetContent (I := I) (M := M) g r s D α N y ≤
+        euclideanChartComponentJetNormSum (I := I) (M := M) g r s D α N y ≤
           C * ∑ i ∈ Finset.range (N + 1),
             Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r (s + i)
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
               ((iteratedCovGrad (I := I) g r s i D).toSection
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))) := by
-  obtain ⟨C, hC, h⟩ := bareJet_le_fiber (I := I) (M := M) g r s α N
+  obtain ⟨C, hC, h⟩ := euclideanChartComponentJetNormSum_le_fiberNormSum_uniform (I := I) (M := M) g r s α N
   exact ⟨C, hC, h D⟩
 
 end DifferentialGeometry.Analysis.Spectral

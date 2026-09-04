@@ -879,7 +879,7 @@ theorem koszulNablaAt_eq_of_extension
     (tangentConstAt (I := I) x v) X Y x
     (mdifferentiableAt_tangentConstAt_self (I := I) x v) hX hY hconst
 
-def leviCivitaConnectionCandidateAt
+def leviCivitaConnectionAt
     (g : SmoothRiemannianMetric I M)
     (Y : (p : M) -> TangentSpace I p) (x : M) :
     TangentSpace I x →L[Real] TangentSpace I x := by
@@ -891,16 +891,16 @@ def leviCivitaConnectionCandidateAt
     (B.constr Real W)
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-@[simp] theorem leviCivitaConnectionCandidateAt_apply_basis
+@[simp] theorem leviCivitaConnectionAt_apply_basis
     (g : SmoothRiemannianMetric I M)
     (Y : (p : M) -> TangentSpace I p) (x : M)
     (i : Fin (Module.finrank Real (TangentSpace I x))) :
-    leviCivitaConnectionCandidateAt (I := I) g Y x
+    leviCivitaConnectionAt (I := I) g Y x
         ((Module.finBasis Real (TangentSpace I x)) i) =
       koszulNablaField (I := I) g
         (tangentConstAt (I := I) x ((Module.finBasis Real (TangentSpace I x)) i)) Y x := by
   classical
-  unfold leviCivitaConnectionCandidateAt
+  unfold leviCivitaConnectionAt
   let B : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
       (TangentSpace I x) := Module.finBasis Real (TangentSpace I x)
   let W : Fin (Module.finrank Real (TangentSpace I x)) -> TangentSpace I x := fun i =>
@@ -909,23 +909,23 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
   simp [B.constr_basis (S := Real) W i]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem leviCivitaConnectionCandidateAt_basis_agreesWithField
+theorem leviCivitaConnectionAt_basis_agreesWithField
     (g : SmoothRiemannianMetric I M)
     (Y : (p : M) -> TangentSpace I p) (x : M)
     (i : Fin (Module.finrank Real (TangentSpace I x))) :
-    leviCivitaConnectionCandidateAt (I := I) g Y x
+    leviCivitaConnectionAt (I := I) g Y x
         ((Module.finBasis Real (TangentSpace I x)) i) =
       koszulNablaAt (I := I) g Y x
         ((Module.finBasis Real (TangentSpace I x)) i) := by
-  rw [leviCivitaConnectionCandidateAt_apply_basis]
+  rw [leviCivitaConnectionAt_apply_basis]
   rfl
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem leviCivitaConnectionCandidateAt_agreesWithField
+theorem leviCivitaConnectionAt_agreesWithField
     (g : SmoothRiemannianMetric I M)
     (X Y : (p : M) -> TangentSpace I p) (x : M)
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) :
-    leviCivitaConnectionCandidateAt (I := I) g Y x (X x) =
+    leviCivitaConnectionAt (I := I) g Y x (X x) =
       koszulNablaField (I := I) g X Y x := by
   classical
   let Φ : ((p : M) -> TangentSpace I p) -> TangentSpace I x :=
@@ -945,7 +945,7 @@ theorem leviCivitaConnectionCandidateAt_agreesWithField
   intro i _
   rw [map_smul, map_smul]
   congr 1
-  rw [leviCivitaConnectionCandidateAt_apply_basis]
+  rw [leviCivitaConnectionAt_apply_basis]
   have hZi :
       MDiffAt (T% (tangentConstAt (I := I) x (B i) :
         (p : M) -> TangentSpace I p)) x :=
@@ -959,24 +959,24 @@ theorem leviCivitaConnectionCandidateAt_agreesWithField
   exact hLi.symm
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem leviCivitaConnectionCandidateAt_agreesWithDescended
+theorem leviCivitaConnectionAt_agreesWithDescended
     (g : SmoothRiemannianMetric I M)
     (Y : (p : M) -> TangentSpace I p) (x : M)
     (hY : MDiffAt (T% Y) x) (v : TangentSpace I x) :
-    leviCivitaConnectionCandidateAt (I := I) g Y x v =
+    leviCivitaConnectionAt (I := I) g Y x v =
       koszulNablaAt (I := I) g Y x v := by
-  have hfield := leviCivitaConnectionCandidateAt_agreesWithField
+  have hfield := leviCivitaConnectionAt_agreesWithField
     (I := I) g (tangentConstAt (I := I) x v) Y x
     (mdifferentiableAt_tangentConstAt_self (I := I) x v) hY
   unfold koszulNablaAt
   convert hfield using 1
-  exact congrArg (leviCivitaConnectionCandidateAt (I := I) g Y x)
+  exact congrArg (leviCivitaConnectionAt (I := I) g Y x)
     (tangentConstAt_self (I := I) x v).symm
 
 def leviCivitaConnectionOfMetric
     (g : SmoothRiemannianMetric I M) :
     CovariantDerivative I E (TangentSpace I : M -> Type _) where
-  toFun := fun Y x => leviCivitaConnectionCandidateAt (I := I) g Y x
+  toFun := fun Y x => leviCivitaConnectionAt (I := I) g Y x
   isCovariantDerivativeOnUniv := by
     refine
       { add := ?_
@@ -984,11 +984,11 @@ def leviCivitaConnectionOfMetric
     · intro Y Y' x hY hY' _hx
       ext v
       rw [add_apply]
-      rw [leviCivitaConnectionCandidateAt_agreesWithDescended
+      rw [leviCivitaConnectionAt_agreesWithDescended
         (I := I) g (Y + Y') x (mdifferentiableAt_add_section hY hY') v]
-      rw [leviCivitaConnectionCandidateAt_agreesWithDescended
+      rw [leviCivitaConnectionAt_agreesWithDescended
         (I := I) g Y x hY v]
-      rw [leviCivitaConnectionCandidateAt_agreesWithDescended
+      rw [leviCivitaConnectionAt_agreesWithDescended
         (I := I) g Y' x hY' v]
       unfold koszulNablaAt
       exact koszulNablaField_add_second (I := I) g
@@ -998,9 +998,9 @@ def leviCivitaConnectionOfMetric
       ext v
       rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply]
-      rw [leviCivitaConnectionCandidateAt_agreesWithDescended
+      rw [leviCivitaConnectionAt_agreesWithDescended
         (I := I) g (f • Y) x (hf.smul_section hY) v]
-      rw [leviCivitaConnectionCandidateAt_agreesWithDescended
+      rw [leviCivitaConnectionAt_agreesWithDescended
         (I := I) g Y x hY v]
       unfold koszulNablaAt
       rw [koszulNablaField_smul_second (I := I) g
@@ -1015,7 +1015,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
     (g : SmoothRiemannianMetric I M)
     (Y : (p : M) -> TangentSpace I p) (x : M) :
     leviCivitaConnectionOfMetric (I := I) g Y x =
-      leviCivitaConnectionCandidateAt (I := I) g Y x := by
+      leviCivitaConnectionAt (I := I) g Y x := by
   rfl
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -1026,7 +1026,7 @@ theorem leviCivitaConnectionOfMetric_apply_descended
     leviCivitaConnectionOfMetric (I := I) g Y x v =
       koszulNablaAt (I := I) g Y x v := by
   rw [leviCivitaConnectionOfMetric_apply]
-  exact leviCivitaConnectionCandidateAt_agreesWithDescended (I := I) g Y x hY v
+  exact leviCivitaConnectionAt_agreesWithDescended (I := I) g Y x hY v
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivitaConnectionOfMetric_inner_eq_koszulScalar
@@ -1062,8 +1062,14 @@ theorem leviCivitaConnectionOfMetric_inner_eq_koszulScalar_tangent
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivitaConnectionOfMetric_isMetricCompatible
     (g : SmoothRiemannianMetric I M) :
-    IsMetricCompatibleGen (I := I) (leviCivitaConnectionOfMetric (I := I) g) g := by
-  intro x X Y Z hX hY hZ
+    IsMetricCompatible (I := I) (leviCivitaConnectionOfMetric (I := I) g) g := by
+  change IsMetricCompatibleOn
+    (leviCivitaConnectionOfMetric (I := I) g).toFun g Set.univ
+  intro Y Z x hY hZ _ v
+  let X : (p : M) → TangentSpace I p := tangentConstAt (I := I) x v
+  have hX : MDiffAt (T% X) x :=
+    mdifferentiableAt_tangentConstAt_self (I := I) x v
+  rw [← tangentConstAt_self (I := I) x v]
   change directionalDerivAlong (I := I) X
       (fun y : M => g.inner y (Y y) (Z y)) x =
     g.inner x ((leviCivitaConnectionOfMetric (I := I) g Y x) (X x)) (Z x) +

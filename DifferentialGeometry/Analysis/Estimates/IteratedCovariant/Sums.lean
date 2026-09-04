@@ -30,7 +30,7 @@ theorem sum_range_le_sum_range
   · intro i _hi_big _hi_small
     exact hN i
 
-theorem sum_shift_le_full
+theorem sum_range_comp_succ_le_sum_range_succ
     {N : Nat -> Real}
     (hN : forall i : Nat, 0 <= N i)
     (p : Nat) :
@@ -54,7 +54,7 @@ theorem single_le_sum_range
     omega
   exact Finset.single_le_sum (fun j _hj => hN j) hi_mem
 
-theorem oneStep_partial_to_full
+theorem oneStep_mono_sum_range
     {eps E G : Real} {N : Nat -> Real} {k p : Nat}
     (heps : 0 <= eps)
     (hE : 0 <= E)
@@ -237,7 +237,7 @@ theorem recurrence_coefficient_bound
             rw [sum_eps_E_mul]
   have hshift :
       Finset.sum (Finset.range p) (fun k => N (k + 1)) <= S := by
-    simpa [S] using sum_shift_le_full hN p
+    simpa [S] using sum_range_comp_succ_le_sum_range_succ hN p
   have hsumG2 :
       Finset.sum (Finset.range p) (fun k => G k) <= S + eps * S * ESum := by
     linarith
@@ -356,7 +356,7 @@ theorem recurrence_step_bound_of_partials
     (eps := eps) (A := A) (B := B) (N := N) (G := G)
     (p := p) (s := s) heps0 heps1 hB hN hA hGp ?_
   intro k hk
-  exact oneStep_partial_to_full
+  exact oneStep_mono_sum_range
     (eps := eps) (E := oneStepConst B k s) (G := G k) (N := N)
     heps0 (oneStepConst_nonneg hB k s) hN (Nat.le_of_lt hk)
     (hGk k hk)

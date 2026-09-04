@@ -8,8 +8,8 @@ open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curv
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -21,7 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 noncomputable def slotFreeOpCc (g : SmoothRiemannianMetric I M) (s : ℕ) :
-    L2.SmoothCcTensor g s (s + 2) where
+    DifferentialGeometry.Integral.L2.SmoothCcTensor g s (s + 2) where
   toSection :=
     { toFun := fun x => TensorRSSpace.ofCLM
         (slotFreeCurvOpFib (I := I) (M := M) g s x)
@@ -177,7 +177,8 @@ private theorem slotFree_cov_sec
           (Tensor0SNabla.tensor0SCovariantDerivative I M s
             (LeviCivita (I := I) g))
           (fun y => DU y) (fun y => W y) (fun y => Asec y) x) m
-    exact slotFree_riem_eval (I := I) (M := M) g s DU W Asec x m
+    simpa only [V, slotFreeOpCc_apply] using
+      slotFree_riem_eval (I := I) (M := M) g s DU W Asec x m
   have hDW :
       Tensor0SSpace.eval (VU x)
           (Fin.cons ((LeviCivita (I := I) g).toFun (fun y => W y) x (D x)) m) =
@@ -195,7 +196,8 @@ private theorem slotFree_cov_sec
           (fun y => U y) (fun y => DW y) (fun y => Asec y) x) m
     rw [Tensor0SNabla.curriedSection_apply,
       TensorMultilinear.tensor0S_curry_apply_eval]
-    exact slotFree_riem_eval (I := I) (M := M) g s U DW Asec x m
+    simpa only [V, slotFreeOpCc_apply] using
+      slotFree_riem_eval (I := I) (M := M) g s U DW Asec x m
   have hDA :
       Tensor0SSpace.eval
           ((show Tensor0SSpace s I x →L[ℝ] Tensor0SSpace (s + 2) I x from
@@ -288,8 +290,8 @@ theorem slotFree_cov_eval
   simpa only [Q, ContMDiffSection.coeFn_mk,
     smoothExtensionTangent_eq] using h
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry
 
 end

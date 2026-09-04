@@ -1448,7 +1448,7 @@ theorem zeroOrderCoefficient_jet_tower_background
   obtain ⟨K0, K2, hK0_nn, hK2_nn, hQ⟩ :=
     zeroOrderCoefficient_jet_tower_quadratic_background (I := I) (M := M) hDim g g_bg
   obtain ⟨C, hC_nn, hC⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs
       (I := I) (M := M) g (a + 2)
   refine ⟨fun i => K0 i + K2 i * (3 * (C * R₀) ^ 2),
     fun i => add_nonneg (hK0_nn i)

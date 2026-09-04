@@ -217,7 +217,7 @@ theorem tan_mem_of_ctrl
     · rw [hz1]
       exact hyCoord.trans (by nlinarith)
     · exact hz2.trans hρq
-  have htransport := IsNormalDiag.full_transport (I := I) Y
+  have htransport := IsNormalDiag.branch_coordinate_transport (I := I) Y
     hcomplete hconn x hq he hf (c := c)
   rw [← htransport.1]
   exact ⟨z, hzBall, hAz⟩
@@ -1001,7 +1001,7 @@ theorem tan_mem_of_small
     · rw [hz1]
       exact haρ.trans (by nlinarith)
     · exact hz2.trans hρq
-  have htransport := IsNormalDiag.full_transport (I := I) (X.obj k)
+  have htransport := IsNormalDiag.branch_coordinate_transport (I := I) (X.obj k)
     hcomplete hconn x hq he hf
   rw [← htransport.1]
   exact ⟨z, hzBall, hAz⟩

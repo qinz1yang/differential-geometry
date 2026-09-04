@@ -138,14 +138,14 @@ theorem metricDerivNorm_le_of_iterCovComp_le
     have h := (stdOrthonormalBasis Real E).inner_eq_ite i j
     with_unfolding_all
       exact h
-  have hinv0 : Tensor0SBundle.MetricInverseInBasisGen
+  have hinv0 : Tensor0SBundle.MetricInverseInBasis
       (I := 𝓘(Real, E)) g0 z e
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real E))) := by
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g0 e hON0
     with_unfolding_all
-      change Tensor0SBundle.MetricInverseInBasisGen
+      change Tensor0SBundle.MetricInverseInBasis
         (I := modelWithCornersSelf Real E) g0 z e
           (fun i j => if i = j then 1 else 0)
     exact h
@@ -163,14 +163,14 @@ theorem metricDerivNorm_le_of_iterCovComp_le
   obtain ⟨b, hbON⟩ :=
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := 𝓘(Real, E)) g z
-  have hbinv : Tensor0SBundle.MetricInverseInBasisGen
+  have hbinv : Tensor0SBundle.MetricInverseInBasis
       (I := 𝓘(Real, E)) g z b
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace 𝓘(Real, E) z)))) := by
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g b hbON
     with_unfolding_all
-      change Tensor0SBundle.MetricInverseInBasisGen
+      change Tensor0SBundle.MetricInverseInBasis
         (I := modelWithCornersSelf Real E) g z b
           (fun i j => if i = j then 1 else 0)
     exact h

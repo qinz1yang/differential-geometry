@@ -856,7 +856,7 @@ theorem hgLip_gSeqExt
       obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I)
         (refRes (I := I) Φ R k)
         (⟨x, hxU⟩ : SourceDomain (I := I) Φ k)
-      have hinv : MetricInverseInBasisGen (I := I)
+      have hinv : MetricInverseInBasis (I := I)
           (refRes (I := I) Φ R k)
           (⟨x, hxU⟩ : SourceDomain (I := I) Φ k) basis
           (identityInvMetric (Idx := Fin (Module.finrank Real

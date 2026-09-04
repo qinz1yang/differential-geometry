@@ -26,7 +26,7 @@ open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
 
-namespace PerpFrameAux
+namespace PerpendicularFrameConstruction
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
@@ -95,7 +95,7 @@ private lemma bGramSchmidt_self_norm
     rw [mul_inv]; ring]
   rw [hs_sq]; exact inv_mul_cancel₀ (ne_of_gt hpos)
 
-private theorem bGramSchmidt_orth_strong_aux
+private theorem bGramSchmidt_orth_strong
     (B : F →L[ℝ] F →L[ℝ] ℝ)
     (Bsymm : ∀ x y : F, B x y = B y x)
     (Bpos : ∀ x : F, x ≠ 0 → 0 < B x x)
@@ -259,13 +259,13 @@ private theorem bGramSchmidt_orthonormal
     B (bGramSchmidt B v i) (bGramSchmidt B v j) = if i = j then 1 else 0 := by
   classical
   rcases Nat.lt_trichotomy i.val j.val with hlt | heq | hgt
-  · have h := bGramSchmidt_orth_strong_aux B Bsymm Bpos v hLI j.val j (le_refl _)
+  · have h := bGramSchmidt_orth_strong B Bsymm Bpos v hLI j.val j (le_refl _)
     have hne : i ≠ j := fun h_eq => by rw [h_eq] at hlt; omega
     rw [if_neg hne]; exact h.2.1 i hlt
   · have hij : i = j := Fin.ext heq
     rw [if_pos hij, ← hij]
-    exact (bGramSchmidt_orth_strong_aux B Bsymm Bpos v hLI i.val i (le_refl _)).2.2
-  · have h := bGramSchmidt_orth_strong_aux B Bsymm Bpos v hLI i.val i (le_refl _)
+    exact (bGramSchmidt_orth_strong B Bsymm Bpos v hLI i.val i (le_refl _)).2.2
+  · have h := bGramSchmidt_orth_strong B Bsymm Bpos v hLI i.val i (le_refl _)
     have hne : i ≠ j := fun h_eq => by rw [h_eq] at hgt; omega
     rw [if_neg hne, Bsymm]; exact h.2.1 j hgt
 
@@ -284,7 +284,7 @@ private theorem bGramSchmidt_mem
     intro j _
     exact Submodule.smul_mem _ _ (ih j.val j.isLt ⟨j.val, lt_trans j.isLt i.isLt⟩ rfl)
 
-end PerpFrameAux
+end PerpendicularFrameConstruction
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_perp_pos
@@ -327,11 +327,11 @@ theorem exists_perp_pos
     have hb_li : LinearIndependent ℝ (fun i => bW i) := bW.linearIndependent
     exact hb_li.map' W.subtype (Submodule.ker_subtype W)
   let e : Fin (Module.finrank ℝ E - 1) → E :=
-    fun i => PerpFrameAux.bGramSchmidt B v i
+    fun i => PerpendicularFrameConstruction.bGramSchmidt B v i
   have he_on : ∀ i j, B (e i) (e j) = if i = j then 1 else 0 :=
-    fun i j => PerpFrameAux.bGramSchmidt_orthonormal B hBsymm hBpos v hv_li i j
+    fun i j => PerpendicularFrameConstruction.bGramSchmidt_orthonormal B hBsymm hBpos v hv_li i j
   have he_mem : ∀ i, e i ∈ W :=
-    fun i => PerpFrameAux.bGramSchmidt_mem B v W hv_mem i
+    fun i => PerpendicularFrameConstruction.bGramSchmidt_mem B v W hv_mem i
   have he_perp : ∀ i, B (e i) u = 0 := by
     intro i
     have hker : φ (e i) = 0 := (LinearMap.mem_ker).mp (he_mem i)

@@ -65,7 +65,7 @@ theorem riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
   have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := (sq_le_sq₀ hδ0 hδ₀0).2 hδ_le
   exact mul_le_mul_of_nonneg_left hδsq (by positivity)
 
-theorem ricciOrderZeroBaseCoeff_perOrder_l2_topOrderSeparated_generic
+theorem ricciOrderZeroBaseCoeff_perOrder_l2_topOrderSeparated_up_to_order
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

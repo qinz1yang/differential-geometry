@@ -51,7 +51,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
     [SigmaCompactSpace M] in
 private lemma chartInvGram_metricInverse (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    MetricInverseInBasisGen (I := I) g b (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb)
+    MetricInverseInBasis (I := I) g b (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb)
       (fun m n => chartInvGramMatrix (I := I) g α b m n) := by
   intro i j
   refine ⟨?_, ?_⟩

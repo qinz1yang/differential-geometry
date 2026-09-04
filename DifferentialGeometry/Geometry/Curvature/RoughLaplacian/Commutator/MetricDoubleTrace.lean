@@ -309,7 +309,7 @@ theorem roughLap_eq_metricDoubleTrace (g : SmoothRiemannianMetric I M) (r t : â„
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [rawTensorConnLapSmooth_toSection_apply, appFullSec_toSection, metricDoubleTraceField_apply,
+  rw [rawTensorConnLapSmooth_toSection_apply, homTensorRSFieldApply_toSection, metricDoubleTraceField_apply,
     metricDoubleTraceFib_apply]
   rw [rawTensorConnLap_eq_frame_trace_secondCovDeriv (I := I) g r t (fun z : M => W.toSection z) x]
   refine Finset.sum_congr rfl (fun i _ => ?_)

@@ -32,7 +32,7 @@ private noncomputable def chartCompactM (α : M) :
         : C^∞⟮I, M; ℝ⟯) : M → ℝ)))
 
 omit [I.Boundaryless] in
-private lemma extChartAt_image_tsupport_pou_compact_subset_target_aux (α : M) :
+private lemma extChartAt_image_tsupport_pou_compact_subset_target (α : M) :
     IsCompact ((extChartAt I α) ''
         (tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) : M → ℝ))) ∧
@@ -57,7 +57,7 @@ omit [I.Boundaryless] in
 private lemma chartCompactM_isCompact (α : M) :
     IsCompact (chartCompactM (I := I) (M := M) α) := by
   unfold chartCompactM
-  exact (extChartAt_image_tsupport_pou_compact_subset_target_aux
+  exact (extChartAt_image_tsupport_pou_compact_subset_target
     (I := I) (M := M) α).1.image (toEuclidean (E := E)).continuous
 
 omit [I.Boundaryless] in
@@ -66,7 +66,7 @@ private lemma chartCompactM_subset_chartTargetEuclid (α : M) :
   unfold chartCompactM chartTargetEuclid
   rintro y ⟨z, hz, rfl⟩
   refine ⟨z, ?_, rfl⟩
-  exact (extChartAt_image_tsupport_pou_compact_subset_target_aux
+  exact (extChartAt_image_tsupport_pou_compact_subset_target
     (I := I) (M := M) α).2 hz
 
 private noncomputable def chartThickeningRadiusM (α : M) : ℝ :=
@@ -206,7 +206,7 @@ private lemma chartPushedRaw_pou_mul_hasCompactSupport_aux
   exact (chartCompactM_isCompact (I := I) (M := M) α).of_isClosed_subset
     isClosed_closure h_tsupp_sub
 
-private lemma memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
+private lemma memW1p_chartPushedRaw_pou_mul_chartNbhdM
     {p : ℝ≥0∞}
     {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) 1 p u)
@@ -233,7 +233,7 @@ private lemma memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
       (chartNbhdM_subset_chartTargetEuclid (I := I) (M := M) α)
   exact hwN.memW1p
 
-private lemma memW01p_chartPushedRaw_pou_mul_chartNbhdM_aux
+private lemma memW01p_chartPushedRaw_pou_mul_chartNbhdM
     [NeZero (Module.finrank ℝ E)]
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ}
@@ -244,7 +244,7 @@ private lemma memW01p_chartPushedRaw_pou_mul_chartNbhdM_aux
         (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) x * u x))
       (chartNbhdM (I := I) (M := M) α) := by
-  have h_w1p := memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
+  have h_w1p := memW1p_chartPushedRaw_pou_mul_chartNbhdM
     (I := I) (M := M) hu α
   have h_supp := chartPushedRaw_pou_mul_tsupport_subset_chartNbhdM
     (I := I) (M := M) α u
@@ -301,7 +301,7 @@ private lemma exists_chart_rellich_subseq_aux_M
   have hv_mem : ∀ n, DeGiorgi.MemW01p (d := Module.finrank ℝ E) (ENNReal.ofReal p)
       (v n) (chartNbhdM (I := I) (M := M) α) := by
     intro n
-    exact memW01p_chartPushedRaw_pou_mul_chartNbhdM_aux
+    exact memW01p_chartPushedRaw_pou_mul_chartNbhdM
       (I := I) (M := M) hp_one (hu_mem (ψ n)) α
   have hv_bdd_fun : ∀ n, eLpNorm (v n) (ENNReal.ofReal p)
       ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
@@ -925,14 +925,14 @@ private lemma eLpNorm_chartPushed_jk_NbhdM_le_of_tendsto
         : C^∞⟮I, M; ℝ⟯) x * u (φ j) x))
       ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
         (chartNbhdM (I := I) (M := M) α)) :=
-    (memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
+    (memW1p_chartPushedRaw_pou_mul_chartNbhdM
       (I := I) (M := M) (hu_mem (φ j)) α).1.1
   have h_chart_kraw_aestrong : AEStronglyMeasurable (chartPushedRaw (I := I) (M := M) α
       (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) x * u (φ k) x))
       ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
         (chartNbhdM (I := I) (M := M) α)) :=
-    (memW1p_chartPushedRaw_pou_mul_chartNbhdM_aux
+    (memW1p_chartPushedRaw_pou_mul_chartNbhdM
       (I := I) (M := M) (hu_mem (φ k)) α).1.1
   have h_triangle :
       eLpNorm

@@ -724,7 +724,7 @@ lemma chartGramOnE_symm_fun
   exact chartGramOnE_symm (I := I) g α i j y
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chartInvGramOnE_symm_pointwise
+lemma chartInvGramOnE_symm
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : E) :
     chartInvGramOnE (I := I) g α i j y = chartInvGramOnE (I := I) g α j i y := by

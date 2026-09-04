@@ -48,7 +48,7 @@ theorem connectionDifference_koszul_nabla
   let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
   let _ : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
-  have hmc : IsMetricCompatibleGen (I := I) (LeviCivita (I := I) g₁) g₁ := by
+  have hmc : IsMetricCompatible (I := I) (LeviCivita (I := I) g₁) g₁ := by
     simpa [LeviCivita] using
       leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g₁
   have htf : IsTorsionFreeAt (I := I) (LeviCivita (I := I) g₁) x :=

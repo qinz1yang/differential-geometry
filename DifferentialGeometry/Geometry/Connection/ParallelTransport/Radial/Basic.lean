@@ -1349,7 +1349,7 @@ private lemma deriv_chartContraction_constArg_along (g : SmoothRiemannianMetric 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
   [T2Space M] [T2Space (TangentBundle I M)] in
-private lemma chartChristoffelContraction_full_contDiffOn (g : SmoothRiemannianMetric I M)
+private lemma chartChristoffelContraction_joint_contDiffOn (g : SmoothRiemannianMetric I M)
     (α : M) :
     ContDiffOn ℝ 1
       (fun z : E × E × E => chartChristoffelContraction (I := I) g α z.2.1 z.2.2 z.1)
@@ -1412,7 +1412,7 @@ private lemma chartChristoffelContraction_full_contDiffOn (g : SmoothRiemannianM
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
   [T2Space M] [T2Space (TangentBundle I M)] in
-private lemma deriv_chartContraction_full_along (g : SmoothRiemannianMetric I M) (p : M)
+private lemma deriv_chartChristoffelContraction_along (g : SmoothRiemannianMetric I M) (p : M)
     {x u s : ℝ → E} {u0 xu xuu su : E} {x₀ : E}
     (hx₀ : x₀ ∈ interior (extChartAt I p).target)
     (hx₀eq : x 0 = x₀) (hu0 : u 0 = u0)
@@ -1426,7 +1426,7 @@ private lemma deriv_chartContraction_full_along (g : SmoothRiemannianMetric I M)
   set P : E × E × E := (x₀, (u0, s 0)) with hP
   have hcd : ContDiffOn ℝ 1 H
       ((interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) := by
-    simpa [hH] using chartChristoffelContraction_full_contDiffOn (I := I) g p
+    simpa [hH] using chartChristoffelContraction_joint_contDiffOn (I := I) g p
   have hmem : P ∈ (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E) := by
     rw [hP]
     exact ⟨hx₀, Set.mem_univ _, Set.mem_univ _⟩
@@ -1788,7 +1788,7 @@ private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
       (u := u) (u' := deriv (deriv xcrv) 0) hL hu' hu0
   have hL' : deriv (fun t : ℝ => chartChristoffelContraction (I := I) g p (u t) (sec t) (xcrv t)) 0 =
       chartChristoffelContraction (I := I) g p (deriv (deriv xcrv) 0) (sec 0) x₀ := by
-    have hC := deriv_chartContraction_full_along (I := I) g p (x := xcrv) (u := u) (s := sec)
+    have hC := deriv_chartChristoffelContraction_along (I := I) g p (x := xcrv) (u := u) (s := sec)
       (u0 := 0) (xu := v) (xuu := deriv (deriv xcrv) 0) (su := deriv sec 0)
       hx₀_int (by rfl) hu0 hx' hu' hODE_at0'
     have h1 : (fderiv ℝ (fun y : E => chartChristoffelContraction (I := I) g p 0 (sec 0) y) x₀) 0 = 0 := by
@@ -1826,7 +1826,7 @@ private lemma radialTransportSection_chartDirSecondDerivAlongRadial_zero
     have hcd : ContDiffOn ℝ 1
         (fun z : E × E × E => chartChristoffelContraction (I := I) g p z.2.1 z.2.2 z.1)
         ((interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) :=
-      chartChristoffelContraction_full_contDiffOn (I := I) g p
+      chartChristoffelContraction_joint_contDiffOn (I := I) g p
     have hmem : (x₀, (0, sec 0)) ∈
         (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E) :=
       ⟨hx₀_int, Set.mem_univ _, Set.mem_univ _⟩
@@ -2271,7 +2271,7 @@ open DifferentialGeometry.Analysis.ODE.Flow
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
   [T2Space M] [T2Space (TangentBundle I M)] in
-private lemma chartChristoffelContraction_full_contDiffOn_infty (g : SmoothRiemannianMetric I M)
+private lemma chartChristoffelContraction_joint_contDiffOn_infty (g : SmoothRiemannianMetric I M)
     (α : M) :
     ContDiffOn ℝ ∞
       (fun z : E × E × E => chartChristoffelContraction (I := I) g α z.2.1 z.2.2 z.1)
@@ -2499,7 +2499,7 @@ private lemma radialTransportODE_contDiffOn (g : SmoothRiemannianMetric I M) (p 
     change ContDiffOn ℝ ∞
         (fun z : E × E × E => chartChristoffelContraction (I := I) g p z.2.1 z.2.2 z.1)
         ((interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E))
-    exact chartChristoffelContraction_full_contDiffOn_infty (I := I) g p
+    exact chartChristoffelContraction_joint_contDiffOn_infty (I := I) g p
   set ccrv : (ℝ × E × E) → E := fun q =>
     chartCurve (I := I) p
       (fun t : ℝ => expMap (I := I) g p (t • q.2.1)) q.1 with hccrv_def

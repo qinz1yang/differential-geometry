@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Data.Finset.Lattice.Fold
@@ -144,7 +144,7 @@ theorem global_flow_jointContMDiffOn_on_closed_manifold
         (x : M) := by
         simp only
         rw [hΦloc_init i x hxi, hΦloc_init j x hxj]
-      have := bare_integral_flow_eqOn_of_jointC1 (a := t₀ - T) (b := t₀ + T) (t₀ := t₀)
+      have := integral_curves_eqOn_of_jointC1 (a := t₀ - T) (b := t₀ + T) (t₀ := t₀)
         X hX_auto (fun r' _ => Φloc i x r') (fun r' _ => Φloc j x r') x x
         ht₀_mem hflow_i hflow_j hstart t ht
       simpa using this

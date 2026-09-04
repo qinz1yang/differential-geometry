@@ -427,7 +427,7 @@ theorem netList_length_le (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam) (�
       · rw [netList_succ_stop O lam hlam α h]
         omega
 
-theorem netList_length_full (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam) (α : ℕ)
+theorem netList_length_eq_of_available (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam) (α : ℕ)
     (h : ∀ γ < α, (availSet O lam (forbidden O lam (netList O lam hlam γ))).Nonempty) :
     (netList O lam hlam α).length = α + 1 := by
   induction α with
@@ -445,7 +445,7 @@ theorem netList_alive_of_le (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam) 
   have hex : ∃ s < γ, ¬ (availSet O lam (forbidden O lam (netList O lam hlam s))).Nonempty := by
     by_contra hall
     push Not at hall
-    have := netList_length_full O lam hlam γ hall
+    have := netList_length_eq_of_available O lam hlam γ hall
     omega
   obtain ⟨s, hsγ, hs⟩ := hex
   have hstall := netList_stall O lam hlam (le_of_lt (hsγ.trans_le h)) hs
@@ -614,7 +614,7 @@ theorem netList_passes (O : M) {lam : ℝ → ℝ} (hlam : Continuous lam)
   have hav : ∀ α, (availSet O lam (forbidden O lam (netList O lam hlam α))).Nonempty :=
     fun α => (hcon α).1
   have hbd : ∀ α, ∀ c ∈ netList O lam hlam α, dist c O ≤ r := fun α => (hcon α).2
-  have hlen := netList_length_full O lam hlam (A r + 1) fun γ _ => hav γ
+  have hlen := netList_length_eq_of_available O lam hlam (A r + 1) fun γ _ => hav γ
   have hnd := netList_nodup O hlam hpos (A r + 1)
   have hcard : (netList O lam hlam (A r + 1)).toFinset.card = A r + 2 := by
     rw [List.toFinset_card_of_nodup hnd, hlen]

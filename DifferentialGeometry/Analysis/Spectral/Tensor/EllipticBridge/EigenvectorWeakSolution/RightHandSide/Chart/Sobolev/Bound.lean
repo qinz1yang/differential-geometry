@@ -64,9 +64,9 @@ private lemma eigenIdx_val_pos
 
 end MainBound
 
-section Unconditional
+section MainResults
 
-section TermBoundsUnconditional
+section TermBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -586,9 +586,9 @@ private lemma eigenvectorChartCrossRightDivergence_wkpNorm_le
           ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), ENNReal.ofReal_ofNat 2]
         ring
 
-end TermBoundsUnconditional
+end TermBounds
 
-section BracketBoundUnconditional
+section BracketBound
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -752,9 +752,9 @@ private lemma eigenvectorChartRHSNumerator_wkpNorm_le
     ENNReal.ofReal_add hD1_nn hD2_nn]
   rw [add_mul, add_mul, add_mul, add_mul, add_mul, add_mul]
 
-end BracketBoundUnconditional
+end BracketBound
 
-section MainBoundUnconditional
+section MainBound
 
 omit [CompleteSpace E] in
 theorem eigenvectorChartRHS_wkpNorm_le
@@ -920,9 +920,9 @@ theorem eigenvectorChartRHS_wkpNorm_le
     eigenvectorCrossRightLimitWkpNormSum, eigenvectorCutoffPartialLimitWkpNormSum,
     resolventH1ComplChartWkpNorm]
 
-end MainBoundUnconditional
+end MainBound
 
-section UniformMainBoundUnconditional
+section UniformMainBound
 
 omit [CompleteSpace E] in
 theorem eigenvectorChartRHS_wkpNorm_le_uniform
@@ -1090,9 +1090,9 @@ theorem eigenvectorChartRHS_wkpNorm_le_uniform
     eigenvectorCrossRightLimitWkpNormSum, eigenvectorCutoffPartialLimitWkpNormSum,
     resolventH1ComplChartWkpNorm]
 
-end UniformMainBoundUnconditional
+end UniformMainBound
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

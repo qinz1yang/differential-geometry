@@ -1376,14 +1376,14 @@ private lemma permRe (g₀ : SmoothRiemannianMetric I M) {d : ℕ}
     (Φ : SmoothCcTensor g₀ d d) (ρ : Equiv.Perm (Fin d)) :
     ccOperatorFieldComp (I := I) (M := M) g₀ d d d Φ
         (permCoeff (I := I) (M := M) g₀ ρ) =
-      reindexCoeffGen (I := I) (M := M) g₀ d d Φ ρ := by
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ d d Φ ρ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  rw [operatorFieldComposition_toSection, ContinuousLinearMap.comp_apply, reindexCoeffGen_toSection,
-    reindexCoeffFibGen_apply]
+  rw [operatorFieldComposition_toSection, ContinuousLinearMap.comp_apply, reindexCoefficientInputSlots_toSection,
+    reindexCoefficientInputSlotsFiber_apply]
   change (show Tensor0SSpace d I x →L[ℝ] Tensor0SSpace d I x from Φ.toSection x)
       (slotPermCLM (I := I) ρ x D) = _
   rw [slotPermCLM_apply]
@@ -1457,9 +1457,9 @@ private theorem clExact (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ�
           ((show Tensor0SSpace 3 I y →L[ℝ] Tensor0SSpace 3 I y from Y.toSection y) d)) = _
     rw [slotPermCLM_apply, Tensor0SSpace.toModel_ofModel]
   have hYsplit : Y = (1 / 2 : ℝ) •
-      (reindexCoeffGen (I := I) (M := M) g₀ 3 3 E₁ (Equiv.swap (0 : Fin 3) 2) +
-        reindexCoeffGen (I := I) (M := M) g₀ 3 3 E₁ (finRotate 3) -
-        reindexCoeffGen (I := I) (M := M) g₀ 3 3 E₁ (Equiv.swap (1 : Fin 3) 2)) := by
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 3 E₁ (Equiv.swap (0 : Fin 3) 2) +
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 3 E₁ (finRotate 3) -
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 3 E₁ (Equiv.swap (1 : Fin 3) 2)) := by
     rw [hY_def, hZc_def, operatorFieldComposition_smul_right, operatorFieldComposition_sub_right, operatorFieldComposition_add_right,
       permRe, permRe, permRe]
   set q : ℝ := riemannianFiberNormSq (I := I) (M := M) g₀ 3 (3 + (i + 1)) x
@@ -1468,19 +1468,19 @@ private theorem clExact (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ�
   have hre : ∀ ρ : Equiv.Perm (Fin 3),
       riemannianFiberNormSq (I := I) (M := M) g₀ 3 (3 + (i + 1)) x
         ((iteratedCovGrad (I := I) g₀ 3 3 (i + 1)
-          (reindexCoeffGen (I := I) (M := M) g₀ 3 3 E₁ ρ)).toSection x) = q :=
-    fun ρ => riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 3 3 E₁ ρ (i + 1) x
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 3 E₁ ρ)).toSection x) = q :=
+    fun ρ => riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 3 3 E₁ ρ (i + 1) x
   have hYq : riemannianFiberNormSq (I := I) (M := M) g₀ 3 (3 + (i + 1)) x
       ((iteratedCovGrad (I := I) g₀ 3 3 (i + 1) Y).toSection x) ≤ 3 * q := by
     have hA := hre (Equiv.swap (0 : Fin 3) 2)
     have hB := hre (finRotate 3)
     have hC := hre (Equiv.swap (1 : Fin 3) 2)
     set DA : SmoothCcTensor g₀ 3 (3 + (i + 1)) := iteratedCovGrad (I := I) g₀ 3 3 (i + 1)
-      (reindexCoeffGen (I := I) (M := M) g₀ 3 3 E₁ (Equiv.swap (0 : Fin 3) 2)) with hDA_def
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 3 E₁ (Equiv.swap (0 : Fin 3) 2)) with hDA_def
     set DB : SmoothCcTensor g₀ 3 (3 + (i + 1)) := iteratedCovGrad (I := I) g₀ 3 3 (i + 1)
-      (reindexCoeffGen (I := I) (M := M) g₀ 3 3 E₁ (finRotate 3)) with hDB_def
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 3 E₁ (finRotate 3)) with hDB_def
     set DC : SmoothCcTensor g₀ 3 (3 + (i + 1)) := iteratedCovGrad (I := I) g₀ 3 3 (i + 1)
-      (reindexCoeffGen (I := I) (M := M) g₀ 3 3 E₁ (Equiv.swap (1 : Fin 3) 2)) with hDC_def
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 3 E₁ (Equiv.swap (1 : Fin 3) 2)) with hDC_def
     rw [hYsplit, iteratedCovGradSm, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
       Pi.smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul, iteratedCovGrad_sub, iteratedCovGrad_add]
     rw [show ((DA + DB - DC).toSection x) =

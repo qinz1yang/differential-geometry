@@ -98,7 +98,7 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
       ∃ vH : TensorHs (I := I) (M := M) g 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) hσ vH = u := by
-    refine allHs_of_weighted_summable_pub (I := I) (M := M) g u (fun σ hσ => ?_)
+    refine allHs_of_weighted_summable (I := I) (M := M) g u (fun σ hσ => ?_)
     obtain ⟨B, hB_sum, hB_le⟩ := hmass σ hσ
     refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_) hB_sum
     · exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i σ) (sq_nonneg _)

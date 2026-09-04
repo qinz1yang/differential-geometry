@@ -310,7 +310,7 @@ private theorem exists_smoothCcTensor_of_allOrder_spectralMass_local
   have hmem : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
       ∃ vσ : TensorHs (I := I) (M := M) g₀ 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc hσ vσ = u :=
-    allHs_of_weighted_summable_pub (I := I) (M := M) g₀ u hsum_u
+    allHs_of_weighted_summable (I := I) (M := M) g₀ u hsum_u
   obtain ⟨S, hS⟩ := spectralSmoothRealizesAsSmooth_holds (I := I) (M := M) (g := g₀) u hmem
   refine ⟨S, fun i => ?_⟩
   have hSL2 : SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S = u := by
@@ -992,7 +992,7 @@ private theorem anisoOn_realize_chartRicci
               (iteratedDeriv j (φ i) t) ^ 2 ≤ B i)
     (α : M) (i c : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T (interior (extChartAt I α).target)
-      (fun t y => Integral.DivergenceTheorem.chartRicciTensor (I := I)
+      (fun t y => DifferentialGeometry.Geometry.Curvature.chartRicciTensor (I := I)
         (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i c y) := by
   classical
   have hV : IsOpen (interior (extChartAt I α).target) := isOpen_interior
@@ -1001,7 +1001,7 @@ private theorem anisoOn_realize_chartRicci
   have hriem : ∀ j : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
         (interior (extChartAt I α).target)
-        (fun t y => Integral.DivergenceTheorem.chartRiemannTensor (I := I)
+        (fun t y => DifferentialGeometry.Geometry.Curvature.chartRiemannTensor (I := I)
           (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i j c j y) := by
     intro j
     have hterm : DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
@@ -1028,12 +1028,12 @@ private theorem anisoOn_realize_chartRicci
         (fun m _ => ?_)
       exact ((hchr j m j).mul hV (hchr i c m)).sub hV ((hchr c m j).mul hV (hchr i j m))
     refine hterm.congr hV _ (fun t ht y hy => ?_)
-    rw [Integral.DivergenceTheorem.chartRiemannTensor_def]
+    rw [DifferentialGeometry.Geometry.Curvature.chartRiemannTensor_def]
     rfl
   have hsum := DifferentialGeometry.Analysis.anisoOn_finsetSum hV Finset.univ
     (fun j (_ : j ∈ Finset.univ) => hriem j)
   refine hsum.congr hV _ (fun t ht y hy => ?_)
-  rw [Integral.DivergenceTheorem.chartRicciTensor_def]
+  rw [DifferentialGeometry.Geometry.Curvature.chartRicciTensor_def]
 
 private theorem anisoOn_realize_chartLieDeTurckComp
     (hT : 0 < T) (hδ_lt : δ < 1)
@@ -2861,7 +2861,7 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
     have hmem : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
         ∃ vσ : TensorHs (I := I) (M := M) g₀ 0 2 σ,
           tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc hσ vσ = u :=
-      allHs_of_weighted_summable_pub (I := I) (M := M) g₀ u hsum_u
+      allHs_of_weighted_summable (I := I) (M := M) g₀ u hsum_u
     obtain ⟨S, hS⟩ := spectralSmoothRealizesAsSmooth_holds (I := I) (M := M) (g := g₀) u hmem
     refine ⟨S, fun i => ?_⟩
     have hSL2 : SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S = u := by

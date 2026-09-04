@@ -311,19 +311,19 @@ theorem tensorQComplete
   change Tendsto (fun n => dist (u n) v) atTop (𝓝 0)
   simpa only [dist_eq_norm, qdist, hnorm, hsub] using hv'
 
-abbrev FullWkpQ (d k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) : Type _ :=
+abbrev EuclidWkpQUniv (d k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) : Type _ :=
   @EuclidWkpQ d k p hp Set.univ ⟨isOpen_univ⟩
 
 abbrev FineWkpArray (ι : Type*) (r s k : ℕ) (p : ℝ≥0∞)
     (hp : 1 ≤ p) :=
   ι → TensorCompIdx (E := E) r s →
-    FullWkpQ (Module.finrank ℝ E) k p hp
+    EuclidWkpQUniv (Module.finrank ℝ E) k p hp
 
 @[reducible] noncomputable def fineWkpGroup
     (ι : Type*) [Fintype ι] (r s k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     NormedAddCommGroup (FineWkpArray (E := E) ι r s k p hp) := by
   letI : NormedAddCommGroup
-      (FullWkpQ (Module.finrank ℝ E) k p hp) :=
+      (EuclidWkpQUniv (Module.finrank ℝ E) k p hp) :=
     @ewkpNormedGroup (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
   infer_instance
 
@@ -334,10 +334,10 @@ abbrev FineWkpArray (ι : Type*) (r s k : ℕ) (p : ℝ≥0∞)
         (FineWkpArray (E := E) ι r s k p hp)
         (fineWkpGroup (E := E) ι r s k p hp)) := by
   letI : NormedAddCommGroup
-      (FullWkpQ (Module.finrank ℝ E) k p hp) :=
+      (EuclidWkpQUniv (Module.finrank ℝ E) k p hp) :=
     @ewkpNormedGroup (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
   letI : NormedSpace ℝ
-      (FullWkpQ (Module.finrank ℝ E) k p hp) :=
+      (EuclidWkpQUniv (Module.finrank ℝ E) k p hp) :=
     @ewkpNormedSpace (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
   infer_instance
 
@@ -348,13 +348,13 @@ theorem fineWkpComplete
     @CompleteSpace (FineWkpArray (E := E) ι r s k p hp)
       (fineWkpGroup (E := E) ι r s k p hp).toUniformSpace := by
   let : NormedAddCommGroup
-      (FullWkpQ (Module.finrank ℝ E) k p hp) :=
+      (EuclidWkpQUniv (Module.finrank ℝ E) k p hp) :=
     @ewkpNormedGroup (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
   let : NormedSpace ℝ
-      (FullWkpQ (Module.finrank ℝ E) k p hp) :=
+      (EuclidWkpQUniv (Module.finrank ℝ E) k p hp) :=
     @ewkpNormedSpace (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
   let : CompleteSpace
-      (FullWkpQ (Module.finrank ℝ E) k p hp) :=
+      (EuclidWkpQUniv (Module.finrank ℝ E) k p hp) :=
     @ewkpComplete (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
   let : NormedAddCommGroup (FineWkpArray (E := E) ι r s k p hp) :=
     fineWkpGroup (E := E) ι r s k p hp
@@ -725,7 +725,7 @@ noncomputable def fineLocMap
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s) :
     WkpTensorQuot (I := I) (M := M) r s k p hp →
-      FullWkpQ (Module.finrank ℝ E) k p hp :=
+      EuclidWkpQUniv (Module.finrank ℝ E) k p hp :=
   Quotient.lift
     (fun S => Quotient.mk
       (@euclidWkpSetoid (Module.finrank ℝ E) k p hp Set.univ

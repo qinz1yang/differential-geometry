@@ -284,15 +284,15 @@ theorem metricCovDeriv_one_eval_localFrame
           (frame b) x) (frame d x)) := by
     simpa [cov, V] using hcov_b
   have hcov_a_candidate :
-      ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionCandidateAt (I := I) gRef
+      ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionAt (I := I) gRef
           (fun y : M => sec a y) x) (X x)) =
-        ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionCandidateAt (I := I) gRef
+        ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionAt (I := I) gRef
           (frame a) x) (frame d x)) := by
     simpa [DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric] using hcov_a'
   have hcov_b_candidate :
-      ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionCandidateAt (I := I) gRef
+      ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionAt (I := I) gRef
           (fun y : M => sec b y) x) (X x)) =
-        ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionCandidateAt (I := I) gRef
+        ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionAt (I := I) gRef
           (frame b) x) (frame d x)) := by
     simpa [DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric] using hcov_b'
   have hmain :=

@@ -53,20 +53,20 @@ theorem cometricTrace_riemannianFiberNormSq
     (I := I) (M := M) g g z htie
       (show (0 : ℝ) < 1 by norm_num) (show (0 : ℝ) ≤ 0 by norm_num) hz x
   have hreindex :
-      reindexCoeffFibGen (I := I) 4 2 traceHessianSlotPerm x
+      reindexCoefficientInputSlotsFiber (I := I) 4 2 traceHessianSlotPerm x
           ((cometricDoubleTraceField (I := I) g 2).toSection x) =
         (show TensorRSSpace 4 2 I x from traceHessianFib (I := I) g x) := by
     apply ContinuousLinearMap.ext
     intro D
-    rw [reindexCoeffFibGen_apply, cometricDoubleTraceField_toSection,
+    rw [reindexCoefficientInputSlotsFiber_apply, cometricDoubleTraceField_toSection,
       traceHessianFib, ContinuousLinearMap.comp_apply, domDomCongrFib_apply]
   calc
     riemannianFiberNormSq (I := I) (M := M) g 4 2 x
         ((cometricDoubleTraceField (I := I) g 2).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-        (reindexCoeffFibGen (I := I) 4 2 traceHessianSlotPerm x
+        (reindexCoefficientInputSlotsFiber (I := I) 4 2 traceHessianSlotPerm x
           ((cometricDoubleTraceField (I := I) g 2).toSection x)) :=
-        (riemannianFiberNormSq_reindexCoeffFibGen
+        (riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
           (I := I) (M := M) g 4 2 x traceHessianSlotPerm
           ((cometricDoubleTraceField (I := I) g 2).toSection x)).symm
     _ = riemannianFiberNormSq (I := I) (M := M) g 4 2 x
@@ -171,7 +171,7 @@ omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 private theorem traceSucc_fib
     (g : SmoothRiemannianMetric I M) (p : ℕ) (x : M) :
-    reindexCoeffFibGen (I := I) (p + 2 + 1) (p + 1) (traceSuccPerm p) x
+    reindexCoefficientInputSlotsFiber (I := I) (p + 2 + 1) (p + 1) (traceSuccPerm p) x
         (slotExtendFib (I := I) (M := M) (p + 2) p x
           (cometricDoubleTraceFib (I := I) g p x)) =
       cometricDoubleTraceFib (I := I) g (p + 1) x := by
@@ -181,7 +181,7 @@ private theorem traceSucc_fib
   apply Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext fun m => ?_
   rw [show m = Fin.cons (m 0) (Fin.tail m) from (Fin.cons_self_tail m).symm]
-  rw [reindexCoeffFibGen_apply,
+  rw [reindexCoefficientInputSlotsFiber_apply,
     DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval]
   simp only [cometricDoubleTraceFib_toModel, modelDoubleTrace_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -205,7 +205,7 @@ private theorem traceSucc_riemannianFiberNormSq
           ((cometricDoubleTraceField (I := I) g p).toSection x) := by
   rw [cometricDoubleTraceField_toSection, cometricDoubleTraceField_toSection,
     ← traceSucc_fib (I := I) (M := M) g p x,
-    riemannianFiberNormSq_reindexCoeffFibGen]
+    riemannianFiberNormSq_reindexCoefficientInputSlotsFiber]
   exact riemannianFiberNormSq_slotExtendFib_eq (I := I) (M := M) g (p + 2) p x
     (cometricDoubleTraceFib (I := I) g p x)
 
@@ -308,9 +308,9 @@ private theorem ricciSelf_twice_eq
     (g : SmoothRiemannianMetric I M) :
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g +
         ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g =
-      reindexCoeffGen (I := I) (M := M) g 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2
           (cometricDoubleTraceField (I := I) g 2) koszulSlotPerm
-        + reindexCoeffGen (I := I) (M := M) g 4 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g 4 2
             (rsDomDomCongrSection (I := I) (M := M) g 4 2
               (Equiv.swap (0 : Fin 2) 1)
               (cometricDoubleTraceField (I := I) g 2)) koszulSlotPerm
@@ -328,9 +328,9 @@ private theorem ricciSelf_twice_eq
         (ricciDeTurckPrincipalCoefficientFiber (I := I) g x w +
           ricciDeTurckPrincipalCoefficientFiber (I := I) g x w) m =
       Tensor0SSpace.toModel
-        (((reindexCoeffGen (I := I) (M := M) g 4 2
+        (((reindexCoefficientInputSlots (I := I) (M := M) g 4 2
               (cometricDoubleTraceField (I := I) g 2) koszulSlotPerm).toSection x) w +
-          ((reindexCoeffGen (I := I) (M := M) g 4 2
+          ((reindexCoefficientInputSlots (I := I) (M := M) g 4 2
               (rsDomDomCongrSection (I := I) (M := M) g 4 2
                 (Equiv.swap (0 : Fin 2) 1)
                 (cometricDoubleTraceField (I := I) g 2)) koszulSlotPerm).toSection x) w -
@@ -339,11 +339,11 @@ private theorem ricciSelf_twice_eq
     ricciDeTurckPrincipalCoefficientFiber_toModel, combinedTrace42Model_apply_symbolic,
     Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_add,
     sub_apply, add_apply]
-  simp_rw [reindexCoeffGen_toSection, rsDomDomCongrSection_toSection,
+  simp_rw [reindexCoefficientInputSlots_toSection, rsDomDomCongrSection_toSection,
     cometricDoubleTraceField_toSection]
-  rw [reindexCoeffFibGen_apply (I := I) 4 2 koszulSlotPerm x
+  rw [reindexCoefficientInputSlotsFiber_apply (I := I) 4 2 koszulSlotPerm x
     (cometricDoubleTraceFib (I := I) g 2 x) w]
-  rw [reindexCoeffFibGen_apply (I := I) 4 2 koszulSlotPerm x
+  rw [reindexCoefficientInputSlotsFiber_apply (I := I) 4 2 koszulSlotPerm x
     (rsDomDomCongr (I := I) (Equiv.swap (0 : Fin 2) 1)
       (cometricDoubleTraceFib (I := I) g 2 x)) w]
   rw [toModel_rsDomDomCongr_apply (I := I) (M := M)
@@ -361,9 +361,9 @@ theorem ricciSelf_eq
     (g : SmoothRiemannianMetric I M) :
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g =
       (1 / 2 : ℝ) •
-        (reindexCoeffGen (I := I) (M := M) g 4 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g 4 2
             (cometricDoubleTraceField (I := I) g 2) koszulSlotPerm
-          + reindexCoeffGen (I := I) (M := M) g 4 2
+          + reindexCoefficientInputSlots (I := I) (M := M) g 4 2
               (rsDomDomCongrSection (I := I) (M := M) g 4 2
                 (Equiv.swap (0 : Fin 2) 1)
                 (cometricDoubleTraceField (I := I) g 2)) koszulSlotPerm
@@ -382,9 +382,9 @@ theorem ricciSelf_eq
           ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g) := by
           rw [smul_add]
     _ = (1 / 2 : ℝ) •
-        (reindexCoeffGen (I := I) (M := M) g 4 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g 4 2
             (cometricDoubleTraceField (I := I) g 2) koszulSlotPerm
-          + reindexCoeffGen (I := I) (M := M) g 4 2
+          + reindexCoefficientInputSlots (I := I) (M := M) g 4 2
               (rsDomDomCongrSection (I := I) (M := M) g 4 2
                 (Equiv.swap (0 : Fin 2) 1)
                 (cometricDoubleTraceField (I := I) g 2)) koszulSlotPerm

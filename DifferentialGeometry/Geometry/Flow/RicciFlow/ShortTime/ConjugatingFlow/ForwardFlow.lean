@@ -5,11 +5,11 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCo
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatIdentity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.SeeleyTimeExtension
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.FullIntervalFlow
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.ClosedInterval
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ChartBridge
 
 
@@ -277,7 +277,7 @@ theorem forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
           (Set.Ioo lo hi ×ˢ Set.univ)) := by
   obtain ⟨Xext, hXsm, hXeq⟩ := seeley_time_extend X_DT T hT hsmooth0
   obtain ⟨Φ, Ψ, lo, hi, hlo, hhi, hΦ0, hΦsm, hΦvel, hΨsm, hΨΦ, hΦΨ⟩ :=
-    global_flow_full_interval_with_reverse_on_closed_manifold Xext hXsm T hT
+    global_flow_with_reverse_on_closed_interval_of_closed_manifold Xext hXsm T hT
   have hsub : Set.Ioo (0 : ℝ) T ⊆ Set.Ioo lo hi := fun t ht =>
     ⟨lt_trans hlo ht.1, lt_trans ht.2 hhi⟩
   have hIcoSub : Set.Ico (0 : ℝ) T ⊆ Set.Ioo lo hi := fun t ht =>

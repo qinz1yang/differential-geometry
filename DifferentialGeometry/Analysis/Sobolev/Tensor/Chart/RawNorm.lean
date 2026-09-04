@@ -134,7 +134,7 @@ theorem chartPushedRaw_mul_eq_chartSmoothExt_mul_chartPushedRaw_funext
     (I := I) (M := M) α ρ u y
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem tensorChartComp_eq_chartSmoothExt_mul_chartPushedRaw_raw
+theorem tensorChartComp_eq_chartSmoothExt_mul_chartPushedRaw
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -288,7 +288,7 @@ theorem exists_per_chart_leibniz_multiplier_bound
       hΩ_open hη_smooth hC_nn hη_bound_on_Ω
   exact ⟨K, hK_pos, fun {u} hu => hK_bound hu⟩
 
-theorem wkpNorm_tensorChartComp_le_const_mul_wkpNorm_chartPushedRaw_raw
+theorem wkpNorm_tensorChartComp_le_const_mul_wkpNorm_chartPushedRaw
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ) (α : M) :
     ∃ K : ℝ, 0 < K ∧
       ∀ (T : SmoothCcTensor g r s)
@@ -311,7 +311,7 @@ theorem wkpNorm_tensorChartComp_le_const_mul_wkpNorm_chartPushedRaw_raw
     exists_per_chart_leibniz_multiplier_bound (I := I) (M := M) α k
   refine ⟨K, hK_pos, ?_⟩
   intro T Idx Jdx hMem
-  rw [tensorChartComp_eq_chartSmoothExt_mul_chartPushedRaw_raw
+  rw [tensorChartComp_eq_chartSmoothExt_mul_chartPushedRaw
     (I := I) (M := M) g r s T α Idx Jdx]
   exact hK_bound hMem
 

@@ -25,7 +25,7 @@ theorem tensor02CovDerivNormWith_eq_iterCov
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
     (gRef : SmoothRiemannianMetric I M) (a : ℕ) {x : M}
     (basis : Module.Basis Idx ℝ (TangentSpace I x))
-    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
+    (hinv : Tensor0SBundle.MetricInverseInBasis (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric (Idx := Idx))) :
     tensor02CovDerivNormWith (I := I) a A gRef gRef x =
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + a)

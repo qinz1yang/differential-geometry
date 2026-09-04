@@ -360,7 +360,7 @@ private theorem MemWkp_of_cross_chart_pushforward_k
       simpa [Function.mem_support]
     exact hη_α_loc_cpt.of_isClosed_subset (isClosed_tsupport _) h_sub_tsupp
   obtain ⟨hχ_loc_mem_Ωαγ, _⟩ :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_eq_of_tsupport_subset_general
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_eq_of_tsupport_subset
       (d := Module.finrank ℝ E) k hp_one (chartTargetEuclid_isOpen (I := I) (M := M) α)
       hΩαγ_open hΩαγ_subset_target hχ_loc_mem_target hχ_loc_supp
   have hχ_loc_comp_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -756,7 +756,7 @@ theorem contMDiff_dense_in_WkpChart_k
     have hψ_mem :
         DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) k p ψ Ωα :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
         (d := Module.finrank ℝ E) hΩα_open hψ_smooth hψ_cpt hψ_supp hp_one k
     have hfψ_mem :
         DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -930,7 +930,7 @@ theorem contMDiff_dense_in_WkpChart_k
       have hχ_α_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) k p (χ α)
           (chartTargetEuclid (I := I) (M := M) (α : M)) :=
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
           (d := Module.finrank ℝ E)
           (chartTargetEuclid_isOpen (I := I) (M := M) (α : M))
           (hχ_smooth α) (hχ_cpt α) (hχ_supp_target α) hp_one k
@@ -999,7 +999,7 @@ theorem contMDiff_dense_in_WkpChart_k
       have hχ_α_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
           (d := Module.finrank ℝ E) k p (χ α)
           (chartTargetEuclid (I := I) (M := M) (α : M)) :=
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
           (d := Module.finrank ℝ E)
           (chartTargetEuclid_isOpen (I := I) (M := M) (α : M))
           (hχ_smooth α) (hχ_cpt α) (hχ_supp_target α) hp_one k

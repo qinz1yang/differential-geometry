@@ -23,7 +23,7 @@ noncomputable def tensorRSCovariantDerivative (r s : ℕ)
     [ContMDiffCovariantDerivative cov ∞] :
     CovariantDerivative I (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-  HomConnectionGen.homBundleCovariantDerivativeGen I M
+  HomConnection.homBundleCovariantDerivative I M
     (Tensor0SModel r ℝ E) (fun x : M => Tensor0SSpace r I x)
     (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
     (Tensor0SNabla.tensor0SCovariantDerivative I M r cov)
@@ -33,7 +33,7 @@ noncomputable instance tensorRSCovariantDerivative_contMDiff (r s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞] :
     ContMDiffCovariantDerivative (tensorRSCovariantDerivative I M r s cov) ∞ :=
-  HomConnectionGen.homBundleCovariantDerivativeGen_contMDiff I M
+  HomConnection.homBundleCovariantDerivative_contMDiff I M
     (Tensor0SModel r ℝ E) (fun x : M => Tensor0SSpace r I x)
     (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
     (Tensor0SNabla.tensor0SCovariantDerivative I M r cov)
@@ -53,7 +53,7 @@ theorem tensorRSCovariantDerivative_apply (r s : ℕ)
           (show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace s I y from τ y) (w y)) x v -
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from τ x)
         (Tensor0SNabla.tensor0SCovariantDerivative I M r cov w x v) :=
-  HomConnectionGen.homBundleCovariantDerivativeGen_apply I M
+  HomConnection.homBundleCovariantDerivative_apply I M
     (Tensor0SModel r ℝ E) (fun x : M => Tensor0SSpace r I x)
     (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
     (Tensor0SNabla.tensor0SCovariantDerivative I M r cov)
@@ -85,7 +85,7 @@ theorem tensorRSCovariantDerivative_apply_of_mdifferentiableAt (r s : ℕ)
           x (V_field x) -
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from τ x)
         (Tensor0SNabla.tensor0SCovariantDerivative I M r cov w x (V_field x)) := by
-  exact HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
+  exact HomConnection.homBundleCovariantDerivative_apply_of_mdifferentiableAt
     I M (Tensor0SModel r ℝ E) (fun y : M => Tensor0SSpace r I y)
     (Tensor0SModel s ℝ E) (fun y : M => Tensor0SSpace s I y)
     (Tensor0SNabla.tensor0SCovariantDerivative I M r cov)

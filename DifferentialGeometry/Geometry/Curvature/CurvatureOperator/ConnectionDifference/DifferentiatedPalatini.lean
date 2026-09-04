@@ -14,8 +14,8 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -432,6 +432,6 @@ theorem covDerivPal_eq
   unfold covApply
   abel
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry

@@ -24,7 +24,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
-private lemma continuous_g_inner_aux
+private lemma continuous_g_inner
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {v w : ∀ x : M, TangentSpace I x}
     (hv : Continuous (fun x : M => TotalSpace.mk' E
@@ -65,7 +65,7 @@ theorem continuous_g_inner_of_smooth_sections
   have hY : Continuous (fun x : M => TotalSpace.mk' E
       (E := (TangentSpace I : M → Type _)) x (Y x)) :=
     Y.contMDiff.continuous
-  exact DifferentialGeometry.Tensor.TangentRiemannian.continuous_g_inner_aux
+  exact DifferentialGeometry.Tensor.TangentRiemannian.continuous_g_inner
     (I := I) (M := M) g hX hY
 
 end TangentBundle

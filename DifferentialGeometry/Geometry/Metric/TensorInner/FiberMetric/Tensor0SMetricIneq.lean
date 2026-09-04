@@ -15,13 +15,13 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 theorem inner0S_comm
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     inner0S (I := I) g x s A B = inner0S (I := I) g x s B A :=
   (tensor0SMetricData (I := I) g x s).inner_comm A B
 
 theorem inner0S_sub_right
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B C : Tensor0SSpace s I x) :
     inner0S (I := I) g x s A (B - C) =
       inner0S (I := I) g x s A B - inner0S (I := I) g x s A C := by
@@ -29,21 +29,21 @@ theorem inner0S_sub_right
     inner0S_comm (I := I) g x s B A, inner0S_comm (I := I) g x s C A]
 
 theorem inner0S_smul_left
-    (g : SmoothMetric I M) (x : M) (s : Nat) (c : Real)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat) (c : Real)
     (A B : Tensor0SSpace s I x) :
     inner0S (I := I) g x s (c • A) B = c * inner0S (I := I) g x s A B := by
   unfold inner0S MetricFiberData.inner
   rw [map_smul, LinearMap.smul_apply, smul_eq_mul]
 
 theorem inner0S_smul_right
-    (g : SmoothMetric I M) (x : M) (s : Nat) (c : Real)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat) (c : Real)
     (A B : Tensor0SSpace s I x) :
     inner0S (I := I) g x s A (c • B) = c * inner0S (I := I) g x s A B := by
   rw [inner0S_comm (I := I) g x s A (c • B), inner0S_smul_left,
     inner0S_comm (I := I) g x s B A]
 
 theorem normSq0S_add
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     normSq0S (I := I) g x s (A + B) =
       normSq0S (I := I) g x s A + 2 * inner0S (I := I) g x s A B +
@@ -53,7 +53,7 @@ theorem normSq0S_add
   ring
 
 theorem normSq0S_sub
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     normSq0S (I := I) g x s (A - B) =
       normSq0S (I := I) g x s A - 2 * inner0S (I := I) g x s A B +
@@ -63,7 +63,7 @@ theorem normSq0S_sub
   ring
 
 theorem normSq0S_neg
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A : Tensor0SSpace s I x) :
     normSq0S (I := I) g x s (-A) = normSq0S (I := I) g x s A := by
   have h : (-A : Tensor0SSpace s I x) = (-1 : Real) • A := by
@@ -74,7 +74,7 @@ theorem normSq0S_neg
   ring
 
 theorem abs_inner0S_le
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     |inner0S (I := I) g x s A B| ≤
       Real.sqrt (normSq0S (I := I) g x s A) *
@@ -84,7 +84,7 @@ theorem abs_inner0S_le
     Real.sqrt_mul (normSq0S_nonneg (I := I) g x s A)] at hcs
 
 theorem two_inner0S_le
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     2 * inner0S (I := I) g x s A B ≤
       normSq0S (I := I) g x s A + normSq0S (I := I) g x s B := by
@@ -93,7 +93,7 @@ theorem two_inner0S_le
   linarith
 
 theorem neg_two_inner0S_le
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     -(normSq0S (I := I) g x s A + normSq0S (I := I) g x s B) ≤
       2 * inner0S (I := I) g x s A B := by
@@ -102,7 +102,7 @@ theorem neg_two_inner0S_le
   linarith
 
 theorem normSq0S_add_le
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     normSq0S (I := I) g x s (A + B) ≤
       2 * normSq0S (I := I) g x s A + 2 * normSq0S (I := I) g x s B := by
@@ -111,7 +111,7 @@ theorem normSq0S_add_le
   linarith
 
 theorem normSq0S_sub_le
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     normSq0S (I := I) g x s (A - B) ≤
       2 * normSq0S (I := I) g x s A + 2 * normSq0S (I := I) g x s B := by
@@ -120,7 +120,7 @@ theorem normSq0S_sub_le
   linarith
 
 theorem sqrt_normSq0S_add_le
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     Real.sqrt (normSq0S (I := I) g x s (A + B)) ≤
       Real.sqrt (normSq0S (I := I) g x s A) +
@@ -155,7 +155,7 @@ theorem sqrt_normSq0S_add_le
         Real.sqrt_sq (by positivity)
 
 theorem sqrt_normSq0S_sub_le
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     Real.sqrt (normSq0S (I := I) g x s (A - B)) ≤
       Real.sqrt (normSq0S (I := I) g x s A) +

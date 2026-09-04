@@ -37,16 +37,16 @@ private theorem cotangentSharp_ortho_expand
     (horth : ∀ i j : Idx, g.inner x (basis i) (basis j) =
       if i = j then (1 : Real) else 0)
     (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
-    cotangentSharpGen (I := I) g x β =
+    cotangentSharp (I := I) g x β =
       ∑ e : Idx, (β (fun _ : Fin 1 => basis e)) • basis e := by
   classical
   have hinv := metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth
-  rw [cotangentSharp_eq_sum_inv_gen (I := I) g x basis
+  rw [cotangentSharp_eq_sum_inv (I := I) g x basis
     (identityInvMetric (Idx := Idx)) hinv β]
   refine Finset.sum_congr rfl fun i _ => ?_
   congr 1
   rw [Finset.sum_eq_single i]
-  · rw [identityInvMetric_apply_self, one_mul, cotangentToDual_apply_gen]
+  · rw [identityInvMetric_apply_self, one_mul, cotangentToDual_apply]
   · intro j _ hj
     rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne (fun h => hj h.symm), zero_mul]
   · intro h
@@ -164,11 +164,11 @@ private theorem slotdiffBasisEq
   have hq : ∀ q : Fin (4 + k),
       nablaRm04Field (I := I) S (t : Real) x
           (vec5 (I := I) (Xa x) (Vb x) (Vc x) (Vm q x)
-            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+            (cotangentSharp (I := I) (S.base.metric (t : Real)) x
               (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm x))) +
         S.base.rm04 (t : Real) x
           (vec4 (I := I) (Vb x) (Vc x) (Vm q x)
-            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+            (cotangentSharp (I := I) (S.base.metric (t : Real)) x
               (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                 (nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Vm x) (Xa x)))) =
         (∑ e : Idx,
@@ -188,7 +188,7 @@ private theorem slotdiffBasisEq
     have hA :
         nablaRm04Field (I := I) S (t : Real) x
             (vec5 (I := I) (Xa x) (Vb x) (Vc x) (Vm q x)
-              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+              (cotangentSharp (I := I) (S.base.metric (t : Real)) x
                 (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm x))) =
           ∑ e : Idx,
             nablaKRm04Field (I := I) S (t : Real) 1 x
@@ -225,7 +225,7 @@ private theorem slotdiffBasisEq
     have hB :
         S.base.rm04 (t : Real) x
             (vec4 (I := I) (Vb x) (Vc x) (Vm q x)
-              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+              (cotangentSharp (I := I) (S.base.metric (t : Real)) x
                 (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                   (nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Vm x) (Xa x)))) =
           ∑ e : Idx,
@@ -279,11 +279,11 @@ private theorem slotdiffBasisEq
         -∑ q : Fin (4 + k),
           (nablaRm04Field (I := I) S (t : Real) x
               (vec5 (I := I) (Xa x) (Vb x) (Vc x) (Vm q x)
-                (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+                (cotangentSharp (I := I) (S.base.metric (t : Real)) x
                   (nablaKRmFrozenSlotField (I := I) S (t : Real) k q Vm x))) +
             S.base.rm04 (t : Real) x
               (vec4 (I := I) (Vb x) (Vc x) (Vm q x)
-                (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+                (cotangentSharp (I := I) (S.base.metric (t : Real)) x
                   (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                     (nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Vm x) (Xa x))))) := by
           simpa [hXa, hVb, hVc, hVm] using hraw
@@ -325,7 +325,7 @@ private theorem curvactReduce
                 (@Fin.cons (4 + k) (fun _ => TangentSpace I x) (basis i)
                   (fun l : Fin (4 + k) => basis (I0 l.succ)) q) (basis p)) := by
   classical
-  have hinv : MetricInverseInBasisGen (I := I) (M := M) (S.base.metric t) x basis
+  have hinv : MetricInverseInBasis (I := I) (M := M) (S.base.metric t) x basis
       (identityInvMetric (Idx := Idx)) :=
     metricInverseInBasis_identity_of_orthonormal (I := I) (S.base.metric t) basis horth
   have hcompi : ∀ i : Idx,
@@ -629,7 +629,7 @@ private theorem commStarField_data
     ring
   · intro x basis horth I0
     let tail : Fin (4 + k) → TangentSpace I x := fun p => basis (I0 p.succ)
-    have hinvId : MetricInverseInBasisGen (I := I) (M := M)
+    have hinvId : MetricInverseInBasis (I := I) (M := M)
         (S.base.metric (t : Real)) x basis (identityInvMetric (Idx := Idx)) :=
       metricInverseInBasis_identity_of_orthonormal (I := I) (S.base.metric (t : Real)) basis horth
     have hslots :
@@ -793,7 +793,7 @@ theorem spatialCommStarSum
           (commStarCost (Fintype.card Idx) k) ∧
       ∀ (x : M) (basis : Module.Basis Idx Real (TangentSpace I x))
         (gInv : Idx → Idx → Real)
-        (_hinv : MetricInverseInBasisGen (I := I) (M := M)
+        (_hinv : MetricInverseInBasis (I := I) (M := M)
           (S.base.metric (t : Real)) x basis gInv)
         (_horth : ∀ i j : Idx, (S.base.metric (t : Real)).inner x (basis i) (basis j)
             = if i = j then (1 : Real) else 0)

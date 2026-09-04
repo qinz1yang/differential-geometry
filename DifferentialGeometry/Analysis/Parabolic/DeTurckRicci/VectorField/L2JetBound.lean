@@ -403,7 +403,7 @@ private lemma wAlphaA_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I
     (tangentSpaceModelContinuousLinearEquiv (I := I) x w),
     ContinuousLinearEquiv.symm_apply_apply]
   rw [show unitTensor (I := I) (M := M) x = unitZeroSec (I := I) (M := M) x from rfl]
-  rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g₀ 1
+  rw [covDeriv_unit_eval_eq (I := I) (M := M) g₀ 1
     (deTurckVFFlat (I := I) (M := M) g₀ g₁ g_bg).toSection x w]
   have hV : TensorSectionMDiffAt (I := I) 1
       (unitEvalSection (I := I) (M := M) g₀ 1 (deTurckVFFlat (I := I) (M := M) g₀ g₁ g_bg)) x :=

@@ -680,7 +680,7 @@ theorem ricciLapOfSol
     intro x i
     exact DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply (I := I) x i
   have hinv : ∀ t x,
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (G.metric t) x
+      Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) (G.metric t) x
         (basis x) (gInv t x) := by
     intro t x
     simpa [G, basis, gInv, flowG] using coordInvReal (I := I) S x t

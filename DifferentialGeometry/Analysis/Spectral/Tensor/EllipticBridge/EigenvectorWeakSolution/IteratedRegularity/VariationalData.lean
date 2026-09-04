@@ -235,7 +235,7 @@ theorem eigenvector_per_pair_ibp
         dirs l) = dirs := by simp
     rw [h_last, h_init]
   have h_ibp :=
-    generic_per_pair_ibp (I := I) (M := M) (α := α) h_v_memW1p hφ_chart
+    chartTarget_integral_mul_fderiv_eq_neg_add_chosenWeakPartial (I := I) (M := M) (α := α) h_v_memW1p hφ_chart
       hψ_smooth hψ_cs hψ_supp l
   rw [h_w_eq]
   exact h_ibp

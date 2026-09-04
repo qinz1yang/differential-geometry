@@ -227,7 +227,7 @@ theorem exists_iteratedCovGrad_fiberNormSq_le_smoothCcToTensorHs_sq
   refine le_trans hsq_le ?_
   rw [hNm_def, mul_pow]
 
-theorem deTurckPrincipalCometricCoeff_perOrder_l2_ballUniform_generic
+theorem deTurckPrincipalCometricCoeff_perOrder_l2_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -245,7 +245,7 @@ theorem deTurckPrincipalCometricCoeff_perOrder_l2_ballUniform_generic
   obtain ⟨C, hC_nn, hC⟩ :=
     deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient (I := I) (M := M) g₀
   obtain ⟨Kslot, hKslot_nn, hKslot⟩ :=
-    inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨fun i => C i * ∑ j ∈ Finset.range (i + 1), Kslot j,
     fun i => mul_nonneg (hC_nn i) (Finset.sum_nonneg fun j _ => hKslot_nn j), ?_⟩
   intro g₁ P δ hδ_le hδ htie hPball i hi
@@ -961,7 +961,7 @@ private theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_tame
         mul_nonneg hKival_nn (by positivity)
       simpa using this
 
-theorem deTurckPrincipalCometricCoeff_perOrder_l2_tame_generic
+theorem deTurckPrincipalCometricCoeff_perOrder_l2_tame
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

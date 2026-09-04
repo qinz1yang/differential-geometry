@@ -691,7 +691,7 @@ lemma eigenvectorChartRHSDiffNumerator_memWkp_of_iter
   rw [← h_eq]
   exact h_step4
 
-section DivDensityBoundUnconditional
+section DivDensityBound
 
 omit [CompleteSpace E] in
 theorem eigenvectorChartRHSDiffNumerator_div_density_wkpNorm_le
@@ -839,9 +839,9 @@ theorem eigenvectorChartRHSDiffNumerator_div_density_wkpNorm_le_uniform
     _ = ENNReal.ofReal (C₂ * C₁) * A := by
           rw [ENNReal.ofReal_mul hC₂_nn, mul_assoc]
 
-end DivDensityBoundUnconditional
+end DivDensityBound
 
-section IteratedStepBoundUnconditional
+section IteratedStepBound
 
 omit [CompleteSpace E] in
 theorem eigenvectorChartIteratedStep_wkpNorm_le
@@ -1056,7 +1056,7 @@ theorem eigenvectorChartIteratedStep_wkpNorm_le_uniform
   rw [h_norm_eq, hQ_def]
   exact hC_i
 
-end IteratedStepBoundUnconditional
+end IteratedStepBound
 
 end TensorSpectral
 end Parabolic

@@ -92,7 +92,7 @@ lemma liftedTensorSection_zero_eq_natCast_unit
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem loweredCovDerivAt_eq_lower_tensorCovDerivAt_gen
+theorem loweredCovDerivAt_eq_lower_tensorCovDerivAt_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯)
     (x : M) (v : TangentSpace I x) :
@@ -159,19 +159,19 @@ theorem loweredCovDerivAt_eq_lower_tensorCovDerivAt_gen
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma loweringIntertwiner_gen (g : SmoothRiemannianMetric I M) (s : ℕ) :
+lemma loweringIntertwiner (g : SmoothRiemannianMetric I M) (s : ℕ) :
     LoweringIntertwiner (I := I) (M := M) g s :=
-  fun S x v => loweredCovDerivAt_eq_lower_tensorCovDerivAt_gen (I := I) (M := M) g s S x v
+  fun S x v => loweredCovDerivAt_eq_lower_tensorCovDerivAt_covariantTensor (I := I) (M := M) g s S x v
 
-theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_gen
+theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) :
     tensorL2Inner (I := I) (M := M) g 0 (s + 1)
         (covGrad (I := I) (M := M) g 0 s T).toFun
         (covGrad (I := I) (M := M) g 0 s v).toFun =
       - tensorL2Inner (I := I) (M := M) g 0 s
           (rawTensorConnLapSmooth (I := I) g 0 s T).toFun v.toFun :=
-  tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_general
-    (I := I) (M := M) g s (loweringIntertwiner_gen (I := I) (M := M) g s) T v
+  tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap
+    (I := I) (M := M) g s (loweringIntertwiner (I := I) (M := M) g s) T v
 
 end Elliptic
 end Analysis

@@ -2598,7 +2598,7 @@ theorem exists_smoothCcPath_realizing_coeff (g₀ : SmoothRiemannianMetric I M)
     have hmem : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
         ∃ vσ : TensorHs (I := I) (M := M) g₀ 0 2 σ,
           tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc hσ vσ = u :=
-      allHs_of_weighted_summable_pub (I := I) (M := M) g₀ u hsum_u
+      allHs_of_weighted_summable (I := I) (M := M) g₀ u hsum_u
     obtain ⟨S, hS⟩ := spectralSmoothRealizesAsSmooth_holds (I := I) (M := M) (g := g₀) u hmem
     refine ⟨S, fun i => ?_⟩
     have hSL2 : SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S = u := by
@@ -3625,7 +3625,7 @@ private theorem metricPerturbationPathily_flowDeriv_of_repr
         tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc hσ vH =
           SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) (F s) := by
     intro s hs σ hσ
-    refine allHs_of_weighted_summable_pub (I := I) (M := M) g₀
+    refine allHs_of_weighted_summable (I := I) (M := M) g₀
       (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) (F s)) (fun τ hτ => ?_) σ hσ
     obtain ⟨Cmaj, hCmaj_sum, hCmaj⟩ := hφ_mass 0 τ hτ
     refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_) hCmaj_sum
@@ -3840,7 +3840,7 @@ private theorem metricPerturbationPathily_flowDeriv_of_repr
           tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc hσ vH =
             SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) R := by
       intro σ hσ
-      refine allHs_of_weighted_summable_pub (I := I) (M := M) g₀
+      refine allHs_of_weighted_summable (I := I) (M := M) g₀
         (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) R) (fun τ _hτ => ?_) σ hσ
       exact smoothCcTensor_tensorL2Coeff_weighted_summable (I := I) (M := M) g₀ τ R hc
     have hR_sum : Summable (fun i => tensorL2Coeff (I := I) (M := M) hc

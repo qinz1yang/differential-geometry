@@ -113,7 +113,7 @@ private theorem cometricTrace_eq
       metricTraceFirstTwo0STensor (I := I) g D := by
   classical
   obtain ⟨basis, hbasis, horth⟩ := centeredBasis (I := I) g x
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
@@ -156,7 +156,7 @@ private theorem exists_trace31
   | succ k ih =>
       obtain ⟨e, he⟩ := ih
       let cov := leviCivitaConnectionOfMetric (I := I) g
-      have hmc : IsMetricCompatibleGen (I := I) cov g := by
+      have hmc : IsMetricCompatible (I := I) cov g := by
         exact leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g
       have hA := iterCov_realizes (I := I) g A k
       have hreindex := totalNabla0SRealizes_domDomCongr (I := I) cov e _ _ hA
@@ -191,7 +191,7 @@ private theorem trace31_norm_le
       (iterCov (I := I) g 3 A k)) x)
   rw [Tensor0SField.domDomCongr_apply] at htrace
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
@@ -239,7 +239,7 @@ private theorem reverseJetThree
       hrev1' hfwd1' hjet2 hjet3
   intro x _
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
-  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasis (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   rw [metricCovDerivNorm_eq_iterCov (I := I) gBase g₀ 3 basis hinv]
@@ -369,7 +369,7 @@ private theorem connLowTwo_eval
     iterCov (I := I) g₀ 3 (metricLoweredConnectionDifferenceField (I := I) g₀ gBase) 2 x
         (vec5 (I := I) (D x) (X x) (Y x) (Z x) (W x)) =
       g₀.inner x
-        (Integral.Connection.covDerivConnectionDifference2
+        (DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2
           (I := I) g₀ gBase D X Z Y x) (W x) := by
   classical
   let cov := leviCivitaConnectionOfMetric (I := I) g₀
@@ -532,12 +532,12 @@ private theorem connLowTwo_eval
       D slots x]
   rw [hderiv, hcorr]
   have hvalue :
-      Integral.Connection.covDerivConnectionDifference2 (I := I) g₀ gBase D X Z Y x =
+      DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2 (I := I) g₀ gBase D X Z Y x =
         (cov (fun p : M => R p) x) (D x) -
           covDerivConnectionDifference (I := I) g₀ gBase DX Z Y x -
           covDerivConnectionDifference (I := I) g₀ gBase X DZ Y x -
           covDerivConnectionDifference (I := I) g₀ gBase X Z DY x := by
-    rw [Integral.Connection.covDerivConnectionDifference2_eq]
+    rw [DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2_eq]
     rw [LeviCivita_eq_leviCivitaConnectionOfMetric]
     dsimp only [R, DX, DY, DZ, cov]
     rfl
@@ -593,7 +593,7 @@ theorem uniformConnectionDifferenceZero
     positivity
   intro x
   obtain ⟨basis, _hbasis, horth⟩ := centeredBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasis (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
@@ -702,7 +702,7 @@ theorem uniformConnectionDifferenceOne
     positivity
   intro x
   obtain ⟨basis, _hbasis, horth⟩ := centeredBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasis (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
@@ -859,7 +859,7 @@ theorem uniformConnectionDifferenceTwo
     positivity
   intro x
   obtain ⟨basis, _hbasis, horth⟩ := centeredBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasis (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
@@ -911,7 +911,7 @@ theorem uniformConnectionDifferenceTwo
     have hval :
         component0S (I := I) basis T slots =
           g₀.inner x
-            (Integral.Connection.covDerivConnectionDifference2
+            (DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2
               (I := I) g₀ gBase D X Z Y x) (W x) := by
       rw [component0S]
       rw [show (fun a : Fin 5 => basis (slots a)) =
@@ -920,7 +920,7 @@ theorem uniformConnectionDifferenceTwo
         exact hvec]
       exact connLowTwo_eval (I := I) gBase g₀ D X Y Z W x
     let N : TangentSpace I x :=
-      Integral.Connection.covDerivConnectionDifference2
+      DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2
         (I := I) g₀ gBase D X Z Y x
     have hNN : Real.sqrt (g₀.inner x N N) ≤ C := by
       have h := covDConnectionDifference2_gJet_le (I := I)
@@ -1270,7 +1270,7 @@ private theorem uniformRicOne_of
   intro x
   have hcan :
       metricRicci (I := I) (M := M) g₀ =
-        trace04Field (I := I) (M := M) g₀
+        metricTraceCovariantFourField (I := I) (M := M) g₀
           (metricRm04 (I := I) (M := M) g₀) := by
     simpa [metricRicci, metricRm04, metricCov] using
       (levi_civita_ricci_section_eq_riemann_trace (I := I) (M := M) g₀)
@@ -1281,7 +1281,7 @@ private theorem uniformRicOne_of
   calc
     normSq0S (I := I) g₀ x (2 + 1)
         (iterCov (I := I) g₀ 2
-          (trace04Field (I := I) (M := M) g₀
+          (metricTraceCovariantFourField (I := I) (M := M) g₀
             (metricRm04 (I := I) (M := M) g₀)) 1 x)
         ≤ d ^ 5 *
           normSq0S (I := I) g₀ x (4 + 1)

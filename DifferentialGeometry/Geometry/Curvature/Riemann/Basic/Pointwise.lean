@@ -19,19 +19,19 @@ variable {M : Type _} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
 namespace CovariantDerivative
 
 omit [FiniteDimensional ℝ E] in
-private theorem riemannCurvatureAux_tangentConst_add_first
+private theorem connectionRiemannCurvatureField_tangentConst_add_first
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
     (x : M) (X₁ X₂ Y Z : TangentSpace I x) :
-    riemannCurvatureAux cov
+    connectionRiemannCurvatureField cov
         (tangentConstAt (I := I) x (X₁ + X₂))
         (tangentConstAt (I := I) x Y)
         (tangentConstAt (I := I) x Z) x =
-      riemannCurvatureAux cov
+      connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X₁)
           (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x +
-        riemannCurvatureAux cov
+        connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X₂)
           (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x := by
@@ -53,10 +53,10 @@ private theorem riemannCurvatureAux_tangentConst_add_first
     simp [Pi.add_apply, map_add]
   rw [tangentConstAt_add]
   change
-    riemannCurvatureAux cov (X₁c + X₂c) Yc Zc x =
-      riemannCurvatureAux cov X₁c Yc Zc x +
-        riemannCurvatureAux cov X₂c Yc Zc x
-  unfold riemannCurvatureAux
+    connectionRiemannCurvatureField cov (X₁c + X₂c) Yc Zc x =
+      connectionRiemannCurvatureField cov X₁c Yc Zc x +
+        connectionRiemannCurvatureField cov X₂c Yc Zc x
+  unfold connectionRiemannCurvatureField
   rw [hmid]
   rw [cov.isCovariantDerivativeOnUniv.add hZX₁ hZX₂]
   rw [VectorField.mlieBracket_add_left (I := I) hX₁ hX₂]
@@ -64,15 +64,15 @@ private theorem riemannCurvatureAux_tangentConst_add_first
   module
 
 omit [FiniteDimensional ℝ E] in
-private theorem riemannCurvatureAux_tangentConst_smul_first
+private theorem connectionRiemannCurvatureField_tangentConst_smul_first
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
     (x : M) (a : Real) (X Y Z : TangentSpace I x) :
-    riemannCurvatureAux cov
+    connectionRiemannCurvatureField cov
         (tangentConstAt (I := I) x (a • X))
         (tangentConstAt (I := I) x Y)
         (tangentConstAt (I := I) x Z) x =
-      a • riemannCurvatureAux cov
+      a • connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X)
           (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x := by
@@ -89,9 +89,9 @@ private theorem riemannCurvatureAux_tangentConst_smul_first
     simp [Pi.smul_apply, map_smul]
   rw [tangentConstAt_smul]
   change
-    riemannCurvatureAux cov (a • Xc) Yc Zc x =
-      a • riemannCurvatureAux cov Xc Yc Zc x
-  unfold riemannCurvatureAux
+    connectionRiemannCurvatureField cov (a • Xc) Yc Zc x =
+      a • connectionRiemannCurvatureField cov Xc Yc Zc x
+  unfold connectionRiemannCurvatureField
   rw [hmid]
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hZX]
   rw [VectorField.mlieBracket_const_smul_left (I := I) (c := a) hX]
@@ -99,19 +99,19 @@ private theorem riemannCurvatureAux_tangentConst_smul_first
   module
 
 omit [FiniteDimensional ℝ E] in
-private theorem riemannCurvatureAux_tangentConst_add_second
+private theorem connectionRiemannCurvatureField_tangentConst_add_second
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
     (x : M) (X Y₁ Y₂ Z : TangentSpace I x) :
-    riemannCurvatureAux cov
+    connectionRiemannCurvatureField cov
         (tangentConstAt (I := I) x X)
         (tangentConstAt (I := I) x (Y₁ + Y₂))
         (tangentConstAt (I := I) x Z) x =
-      riemannCurvatureAux cov
+      connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X)
           (tangentConstAt (I := I) x Y₁)
           (tangentConstAt (I := I) x Z) x +
-        riemannCurvatureAux cov
+        connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X)
           (tangentConstAt (I := I) x Y₂)
           (tangentConstAt (I := I) x Z) x := by
@@ -133,10 +133,10 @@ private theorem riemannCurvatureAux_tangentConst_add_second
     simp [Pi.add_apply, map_add]
   rw [tangentConstAt_add]
   change
-    riemannCurvatureAux cov Xc (Y₁c + Y₂c) Zc x =
-      riemannCurvatureAux cov Xc Y₁c Zc x +
-        riemannCurvatureAux cov Xc Y₂c Zc x
-  unfold riemannCurvatureAux
+    connectionRiemannCurvatureField cov Xc (Y₁c + Y₂c) Zc x =
+      connectionRiemannCurvatureField cov Xc Y₁c Zc x +
+        connectionRiemannCurvatureField cov Xc Y₂c Zc x
+  unfold connectionRiemannCurvatureField
   rw [hmid]
   rw [cov.isCovariantDerivativeOnUniv.add hZY₁ hZY₂]
   rw [VectorField.mlieBracket_add_right (I := I) hY₁ hY₂]
@@ -144,15 +144,15 @@ private theorem riemannCurvatureAux_tangentConst_add_second
   module
 
 omit [FiniteDimensional ℝ E] in
-private theorem riemannCurvatureAux_tangentConst_smul_second
+private theorem connectionRiemannCurvatureField_tangentConst_smul_second
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
     (x : M) (a : Real) (X Y Z : TangentSpace I x) :
-    riemannCurvatureAux cov
+    connectionRiemannCurvatureField cov
         (tangentConstAt (I := I) x X)
         (tangentConstAt (I := I) x (a • Y))
         (tangentConstAt (I := I) x Z) x =
-      a • riemannCurvatureAux cov
+      a • connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X)
           (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x := by
@@ -169,9 +169,9 @@ private theorem riemannCurvatureAux_tangentConst_smul_second
     simp [Pi.smul_apply, map_smul]
   rw [tangentConstAt_smul]
   change
-    riemannCurvatureAux cov Xc (a • Yc) Zc x =
-      a • riemannCurvatureAux cov Xc Yc Zc x
-  unfold riemannCurvatureAux
+    connectionRiemannCurvatureField cov Xc (a • Yc) Zc x =
+      a • connectionRiemannCurvatureField cov Xc Yc Zc x
+  unfold connectionRiemannCurvatureField
   rw [hmid]
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hZY]
   rw [VectorField.mlieBracket_const_smul_right (I := I) (c := a) hY]
@@ -179,19 +179,19 @@ private theorem riemannCurvatureAux_tangentConst_smul_second
   module
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-private theorem riemannCurvatureAux_tangentConst_add_third
+private theorem connectionRiemannCurvatureField_tangentConst_add_third
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
     (x : M) (X Y Z₁ Z₂ : TangentSpace I x) :
-    riemannCurvatureAux cov
+    connectionRiemannCurvatureField cov
         (tangentConstAt (I := I) x X)
         (tangentConstAt (I := I) x Y)
         (tangentConstAt (I := I) x (Z₁ + Z₂)) x =
-      riemannCurvatureAux cov
+      connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X)
           (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z₁) x +
-        riemannCurvatureAux cov
+        connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X)
           (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z₂) x := by
@@ -247,10 +247,10 @@ private theorem riemannCurvatureAux_tangentConst_add_third
           (I := I) cov x Z₁ Z₂ X] with p hp
         simpa [Z₁₂c, Z₁c, Z₂c, Xc] using hp)
   change
-    riemannCurvatureAux cov Xc Yc Z₁₂c x =
-      riemannCurvatureAux cov Xc Yc Z₁c x +
-        riemannCurvatureAux cov Xc Yc Z₂c x
-  unfold riemannCurvatureAux
+    connectionRiemannCurvatureField cov Xc Yc Z₁₂c x =
+      connectionRiemannCurvatureField cov Xc Yc Z₁c x +
+        connectionRiemannCurvatureField cov Xc Yc Z₂c x
+  unfold connectionRiemannCurvatureField
   rw [hcongrY, hcongrX]
   rw [show Z₁₂c = Z₁c + Z₂c by
     simp [Z₁₂c, Z₁c, Z₂c]]
@@ -261,15 +261,15 @@ private theorem riemannCurvatureAux_tangentConst_add_third
   module
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-private theorem riemannCurvatureAux_tangentConst_smul_third
+private theorem connectionRiemannCurvatureField_tangentConst_smul_third
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
     (x : M) (a : Real) (X Y Z : TangentSpace I x) :
-    riemannCurvatureAux cov
+    connectionRiemannCurvatureField cov
         (tangentConstAt (I := I) x X)
         (tangentConstAt (I := I) x Y)
         (tangentConstAt (I := I) x (a • Z)) x =
-      a • riemannCurvatureAux cov
+      a • connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X)
           (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x := by
@@ -313,9 +313,9 @@ private theorem riemannCurvatureAux_tangentConst_smul_third
           (I := I) cov x a Z X] with p hp
         simpa [Za, Zc, Xc] using hp)
   change
-    riemannCurvatureAux cov Xc Yc Za x =
-      a • riemannCurvatureAux cov Xc Yc Zc x
-  unfold riemannCurvatureAux
+    connectionRiemannCurvatureField cov Xc Yc Za x =
+      a • connectionRiemannCurvatureField cov Xc Yc Zc x
+  unfold connectionRiemannCurvatureField
   rw [hcongrY, hcongrX]
   rw [show Za = a • Zc by
     simp [Za, Zc]]
@@ -334,40 +334,40 @@ private noncomputable def riemannCurvatureZCLM
   let _ : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
   LinearMap.toContinuousLinearMap
     { toFun := fun Z =>
-        cotangentToDualGen α
-          (riemannCurvatureAux cov
+        cotangentToDual α
+          (connectionRiemannCurvatureField cov
             (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
             (tangentConstAt (I := I) x Z) x)
       map_add' := by
         intro Z₁ Z₂
         change
-          cotangentToDualGen α
-              (riemannCurvatureAux cov
+          cotangentToDual α
+              (connectionRiemannCurvatureField cov
                 (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
                 (tangentConstAt (I := I) x (Z₁ + Z₂)) x) =
-            cotangentToDualGen α
-                (riemannCurvatureAux cov
+            cotangentToDual α
+                (connectionRiemannCurvatureField cov
                   (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
                   (tangentConstAt (I := I) x Z₁) x) +
-              cotangentToDualGen α
-                (riemannCurvatureAux cov
+              cotangentToDual α
+                (connectionRiemannCurvatureField cov
                   (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
                   (tangentConstAt (I := I) x Z₂) x)
-        rw [riemannCurvatureAux_tangentConst_add_third cov hcov x X Y Z₁ Z₂]
-        exact map_add (cotangentToDualGen α) _ _
+        rw [connectionRiemannCurvatureField_tangentConst_add_third cov hcov x X Y Z₁ Z₂]
+        exact map_add (cotangentToDual α) _ _
       map_smul' := by
         intro a Z
         change
-          cotangentToDualGen α
-              (riemannCurvatureAux cov
+          cotangentToDual α
+              (connectionRiemannCurvatureField cov
                 (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
                 (tangentConstAt (I := I) x (a • Z)) x) =
-            a • cotangentToDualGen α
-              (riemannCurvatureAux cov
+            a • cotangentToDual α
+              (connectionRiemannCurvatureField cov
                 (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
                 (tangentConstAt (I := I) x Z) x)
-        rw [riemannCurvatureAux_tangentConst_smul_third cov hcov x a X Y Z]
-        exact map_smul (cotangentToDualGen α) a _ }
+        rw [connectionRiemannCurvatureField_tangentConst_smul_third cov hcov x a X Y Z]
+        exact map_smul (cotangentToDual α) a _ }
 
 omit [CompleteSpace E] in
 @[simp] private theorem riemannCurvatureZCLM_apply
@@ -376,8 +376,8 @@ omit [CompleteSpace E] in
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (X Y Z : TangentSpace I x) :
     riemannCurvatureZCLM cov hcov x α X Y Z =
-      cotangentToDualGen α
-        (riemannCurvatureAux cov
+      cotangentToDual α
+        (connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x) := rfl
 
@@ -398,35 +398,35 @@ private noncomputable def riemannCurvatureYZModel
           apply (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).injective
           ext Z
           change
-            cotangentToDualGen α
-                (riemannCurvatureAux cov
+            cotangentToDual α
+                (connectionRiemannCurvatureField cov
                   (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x (Y₁ + Y₂))
                   (tangentConstAt (I := I) x Z) x) =
-              cotangentToDualGen α
-                  (riemannCurvatureAux cov
+              cotangentToDual α
+                  (connectionRiemannCurvatureField cov
                     (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y₁)
                     (tangentConstAt (I := I) x Z) x) +
-                cotangentToDualGen α
-                  (riemannCurvatureAux cov
+                cotangentToDual α
+                  (connectionRiemannCurvatureField cov
                     (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y₂)
                     (tangentConstAt (I := I) x Z) x)
-          rw [riemannCurvatureAux_tangentConst_add_second cov hcov x X Y₁ Y₂ Z]
-          exact map_add (cotangentToDualGen α) _ _
+          rw [connectionRiemannCurvatureField_tangentConst_add_second cov hcov x X Y₁ Y₂ Z]
+          exact map_add (cotangentToDual α) _ _
         map_smul' := by
           intro a Y
           apply (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).injective
           ext Z
           change
-            cotangentToDualGen α
-                (riemannCurvatureAux cov
+            cotangentToDual α
+                (connectionRiemannCurvatureField cov
                   (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x (a • Y))
                   (tangentConstAt (I := I) x Z) x) =
-              a • cotangentToDualGen α
-                (riemannCurvatureAux cov
+              a • cotangentToDual α
+                (connectionRiemannCurvatureField cov
                   (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
                   (tangentConstAt (I := I) x Z) x)
-          rw [riemannCurvatureAux_tangentConst_smul_second cov hcov x a X Y Z]
-          exact map_smul (cotangentToDualGen α) a _ })
+          rw [connectionRiemannCurvatureField_tangentConst_smul_second cov hcov x a X Y Z]
+          exact map_smul (cotangentToDual α) a _ })
 
 @[simp] private theorem riemannCurvatureYZModel_apply_vec2
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -434,8 +434,8 @@ private noncomputable def riemannCurvatureYZModel
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (X Y Z : TangentSpace I x) :
   riemannCurvatureYZModel cov hcov x α X (vec2 Y Z) =
-      cotangentToDualGen α
-        (riemannCurvatureAux cov
+      cotangentToDual α
+        (connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x) := by
   unfold riemannCurvatureYZModel
@@ -444,8 +444,8 @@ private noncomputable def riemannCurvatureYZModel
     ((continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
       (riemannCurvatureZCLM cov hcov x α X Y))
       (fun i : Fin 1 => vec2 Y Z i.succ) =
-    cotangentToDualGen α
-      (riemannCurvatureAux cov
+    cotangentToDual α
+      (connectionRiemannCurvatureField cov
         (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
         (tangentConstAt (I := I) x Z) x)
   rw [show (fun i : Fin 1 => vec2 Y Z i.succ) = fun _ : Fin 1 => Z by
@@ -472,8 +472,8 @@ private noncomputable def riemannCurvatureModel
             fin_cases i <;> simp [vec2]
           rw [hv]
           simp only [riemannCurvatureYZModel_apply_vec2]
-          rw [riemannCurvatureAux_tangentConst_add_first cov hcov x X₁ X₂ (v 0) (v 1)]
-          exact map_add (cotangentToDualGen α) _ _
+          rw [connectionRiemannCurvatureField_tangentConst_add_first cov hcov x X₁ X₂ (v 0) (v 1)]
+          exact map_add (cotangentToDual α) _ _
         map_smul' := by
           intro a X
           apply ContinuousMultilinearMap.ext
@@ -483,8 +483,8 @@ private noncomputable def riemannCurvatureModel
             fin_cases i <;> simp [vec2]
           rw [hv]
           simp only [riemannCurvatureYZModel_apply_vec2]
-          rw [riemannCurvatureAux_tangentConst_smul_first cov hcov x a X (v 0) (v 1)]
-          exact map_smul (cotangentToDualGen α) a _ })
+          rw [connectionRiemannCurvatureField_tangentConst_smul_first cov hcov x a X (v 0) (v 1)]
+          exact map_smul (cotangentToDual α) a _ })
 
 
 noncomputable def riemannCurvatureAt
@@ -500,14 +500,14 @@ noncomputable def riemannCurvatureAt
         intro α β
         apply ContinuousMultilinearMap.ext
         intro v
-        let R := riemannCurvatureAux cov
+        let R := connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x (v 0)) (tangentConstAt (I := I) x (v 1))
           (tangentConstAt (I := I) x (v 2)) x
-        change cotangentToDualGen (I := I)
+        change cotangentToDual (I := I)
             (Tensor0SSpace.ofModel (𝕜 := Real) (I := I) (x := x) (α + β)) R =
-          cotangentToDualGen (I := I)
+          cotangentToDual (I := I)
               (Tensor0SSpace.ofModel (𝕜 := Real) (I := I) (x := x) α) R +
-            cotangentToDualGen (I := I)
+            cotangentToDual (I := I)
               (Tensor0SSpace.ofModel (𝕜 := Real) (I := I) (x := x) β) R
         have hαβ :
             Tensor0SSpace.ofModel (𝕜 := Real) (I := I) (x := x) (α + β) =
@@ -522,12 +522,12 @@ noncomputable def riemannCurvatureAt
         intro c α
         apply ContinuousMultilinearMap.ext
         intro v
-        let R := riemannCurvatureAux cov
+        let R := connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x (v 0)) (tangentConstAt (I := I) x (v 1))
           (tangentConstAt (I := I) x (v 2)) x
-        change cotangentToDualGen (I := I)
+        change cotangentToDual (I := I)
             (Tensor0SSpace.ofModel (𝕜 := Real) (I := I) (x := x) (c • α)) R =
-          c • cotangentToDualGen (I := I)
+          c • cotangentToDual (I := I)
             (Tensor0SSpace.ofModel (𝕜 := Real) (I := I) (x := x) α) R
         have hα :
             Tensor0SSpace.ofModel (𝕜 := Real) (I := I) (x := x) (c • α) =
@@ -545,13 +545,13 @@ theorem riemannCurvatureAt_apply_const
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (X Y Z : TangentSpace I x) :
     riemannCurvatureAt cov hcov x α (vec3 X Y Z) =
-      cotangentToDualGen α
-        (riemannCurvatureAux cov
+      cotangentToDual α
+        (connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x) := by
   change (riemannCurvatureModel cov hcov x α) (vec3 X Y Z) =
-    cotangentToDualGen α
-      (riemannCurvatureAux cov
+    cotangentToDual α
+      (connectionRiemannCurvatureField cov
         (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
         (tangentConstAt (I := I) x Z) x)
   rfl
@@ -562,33 +562,33 @@ private noncomputable def tangentFlatCotangentModelCLM
   LinearMap.toContinuousLinearMap
     { toFun := fun W =>
         (continuousMultilinearCurryFin1 Real E Real).symm
-          (LinearMap.toContinuousLinearMap ((tangentFlatLinearGen (I := I) g x) W))
+          (LinearMap.toContinuousLinearMap ((tangentFlatLinear (I := I) g x) W))
       map_add' := by
         intro W W'
         apply (continuousMultilinearCurryFin1 Real E Real).injective
         ext V
         change
-          ((tangentFlatLinearGen (I := I) g x) (W + W')) V =
-            (((tangentFlatLinearGen (I := I) g x) W) +
-              ((tangentFlatLinearGen (I := I) g x) W')) V
+          ((tangentFlatLinear (I := I) g x) (W + W')) V =
+            (((tangentFlatLinear (I := I) g x) W) +
+              ((tangentFlatLinear (I := I) g x) W')) V
         exact congrArg (fun L : Module.Dual Real (TangentSpace I x) => L V)
-          ((tangentFlatLinearGen (I := I) g x).map_add W W')
+          ((tangentFlatLinear (I := I) g x).map_add W W')
       map_smul' := by
         intro c W
         apply (continuousMultilinearCurryFin1 Real E Real).injective
         ext V
         change
-          ((tangentFlatLinearGen (I := I) g x) (c • W)) V =
-            (c • ((tangentFlatLinearGen (I := I) g x) W)) V
+          ((tangentFlatLinear (I := I) g x) (c • W)) V =
+            (c • ((tangentFlatLinear (I := I) g x) W)) V
         exact congrArg (fun L : Module.Dual Real (TangentSpace I x) => L V)
-          ((tangentFlatLinearGen (I := I) g x).map_smul c W) }
+          ((tangentFlatLinear (I := I) g x).map_smul c W) }
 
 omit [CompleteSpace E] in
 @[simp] private theorem tangentFlatCotangentModelCLM_apply
     (g : SmoothRiemannianMetric I M) (x : M) (W : TangentSpace I x) :
     tangentFlatCotangentModelCLM (I := I) g x W =
       (continuousMultilinearCurryFin1 Real E Real).symm
-        (LinearMap.toContinuousLinearMap ((tangentFlatLinearGen (I := I) g x) W)) := by
+        (LinearMap.toContinuousLinearMap ((tangentFlatLinear (I := I) g x) W)) := by
   simp [tangentFlatCotangentModelCLM]
 
 
@@ -614,7 +614,7 @@ theorem riemannCurvature04At_apply_const
     (X Y Z W : TangentSpace I x) :
     riemannCurvature04At g cov hcov x (vec4 X Y Z W) =
       g.inner x W
-        (riemannCurvatureAux cov
+        (connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x) := by
   dsimp [riemannCurvature04At]
@@ -630,7 +630,7 @@ theorem riemannCurvature04At_apply_const
           E →L[Real] ContinuousMultilinearMap Real (fun _ : Fin 3 => E) Real))
         modelVec =
       g.inner x W
-        (riemannCurvatureAux cov
+        (connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x)
   rw [ContinuousLinearMap.uncurryLeft_apply]
@@ -643,22 +643,22 @@ theorem riemannCurvature04At_apply_const
           (tangentFlatCotangentModelCLM (I := I) g x W))
         (fun i : Fin 3 => vec4 W X Y Z i.succ) =
       g.inner x W
-        (riemannCurvatureAux cov
+        (connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x)
   rw [show (fun i : Fin 3 => vec4 W X Y Z i.succ) = vec3 X Y Z by
     funext i
     fin_cases i <;> simp [vec3, vec4]]
   rw [riemannCurvatureAt_apply_const]
-  rw [cotangentToDual_apply_gen]
+  rw [cotangentToDual_apply]
   change
     (tangentFlatCotangentModelCLM (I := I) g x W)
         (fun _ : Fin 1 =>
-          riemannCurvatureAux cov
+          connectionRiemannCurvatureField cov
             (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
             (tangentConstAt (I := I) x Z) x) =
       g.inner x W
-        (riemannCurvatureAux cov
+        (connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x)
   rw [tangentFlatCotangentModelCLM_apply]
@@ -684,10 +684,10 @@ theorem riemannCurvature04At_eq_lower_riemannCurvatureAt
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞) {x : M}
     (X Y Z W : TangentSpace I x) :
     riemannCurvature04At g cov hcov x (vec4 X Y Z W) =
-      riemannCurvatureAt cov hcov x (dualToCotangentGen ((tangentFlatLinearGen g x) W))
+      riemannCurvatureAt cov hcov x (dualToCotangent ((tangentFlatLinear g x) W))
         (vec3 X Y Z) := by
   rw [riemannCurvature04At_apply_const, riemannCurvatureAt_apply_const]
-  simp [tangentFlatLinear_apply_gen]
+  simp [tangentFlatLinear_apply]
 
 
 end CovariantDerivative

@@ -70,7 +70,7 @@ theorem gradInnerCLM_eq_two_inv_preimageDiff
     rw [laplacianOp_apply]
     abel
   rw [h_diff_eq] at h_preimage
-  have h_residual_apply := fHLeibnizGeneralResidualCLM_apply
+  have h_residual_apply := leibnizCompensatedSourceResidualCLMOfSmoothFactor_apply
     (I := I) (M := M) g φ u_h
   rw [h_residual_apply] at h_preimage
   have h_rearrange :

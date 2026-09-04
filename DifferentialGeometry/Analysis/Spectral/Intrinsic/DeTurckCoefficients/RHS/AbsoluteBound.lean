@@ -7,6 +7,7 @@ namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open scoped ContDiff Manifold Topology BigOperators
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
 
 variable

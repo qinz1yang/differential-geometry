@@ -1108,10 +1108,10 @@ private theorem traceHessian_eq
   apply ContMDiffSection.ext
   intro x
   rw [traceHessianCoeff_toSection, lieCorrectionZeroTr,
-    reindexCoeffGen_toSection]
+    reindexCoefficientInputSlots_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffFibGen_apply, traceHessianFib,
+  rw [reindexCoefficientInputSlotsFiber_apply, traceHessianFib,
     ContinuousLinearMap.comp_apply, domDomCongrFib_apply]
   rfl
 
@@ -1156,8 +1156,8 @@ private theorem piece_h2_const
             (slotExtend (I := I) (M := M) g₀ 1 2 Ψ))) := by
       apply Finset.sum_congr rfl
       intro i hi
-      rw [deTurckLieTraceCoeffPiece, iteratedCovGrad_reindexCoeffGen,
-        norm_reindexCoeffGen_eq]
+      rw [deTurckLieTraceCoeffPiece, iteratedCovGrad_reindexCoefficientInputSlots,
+        norm_reindexCoefficientInputSlots_eq]
     _ ≤ (C * T * (S * Q)) ^ 2 := hApp
     _ = (C * T *
         (Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 2) * Q)) ^ 2 := by
@@ -1212,8 +1212,8 @@ theorem piece_h2_uniform
             (slotExtend (I := I) (M := M) g₀ 1 2 Ψ))) := by
       apply Finset.sum_congr rfl
       intro i hi
-      rw [deTurckLieTraceCoeffPiece, iteratedCovGrad_reindexCoeffGen,
-        norm_reindexCoeffGen_eq]
+      rw [deTurckLieTraceCoeffPiece, iteratedCovGrad_reindexCoefficientInputSlots,
+        norm_reindexCoefficientInputSlots_eq]
     _ ≤ (C * T * (S * Q)) ^ 2 := hApp
     _ = (C * T *
         (Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 2) * Q)) ^ 2 := by

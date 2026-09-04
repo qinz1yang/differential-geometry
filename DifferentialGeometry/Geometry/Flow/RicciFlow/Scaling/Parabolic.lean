@@ -310,11 +310,11 @@ private theorem metricTracePair0SAt_scaleMetric
       DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g x k
         l
         (extChartAt I x x)
-  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv :=
+  have hinv : MetricInverseInBasis (I := I) g x basis gInv :=
     Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
       (I := I) g x
   have hinvScale :
-      MetricInverseInBasisGen (I := I) (scaleMetric (I := I) c hc g) x basis
+      MetricInverseInBasis (I := I) (scaleMetric (I := I) c hc g) x basis
         (fun i j => c⁻¹ * gInv i j) :=
     metricInvBasis_scale (I := I) c hc g basis gInv hinv
   rw [DifferentialGeometry.Geometry.Operator.metricTracePair0SAt_eq_sum_basis (I := I)

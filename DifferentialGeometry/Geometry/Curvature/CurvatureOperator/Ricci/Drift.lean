@@ -58,7 +58,7 @@ noncomputable def ricGradVec [I.Boundaryless]
     (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f) :
     ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
   ContMDiffSection.mk
-    (fun x : M => cotangentSharpGen (I := I) g x
+    (fun x : M => cotangentSharp (I := I) g x
       (ricGradForm (I := I) g hf x))
     (cotangentSharp_gen_contMDiff_total (I := I) g
       (fun a j => by
@@ -69,7 +69,7 @@ noncomputable def ricGradVec [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {f : M -> Real}
     (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f) (x : M) :
     ricGradVec (I := I) g hf x =
-      cotangentSharpGen (I := I) g x (ricGradForm (I := I) g hf x) :=
+      cotangentSharp (I := I) g x (ricGradForm (I := I) g hf x) :=
   rfl
 
 
@@ -119,7 +119,7 @@ private theorem div_ricGrad [I.Boundaryless]
     exact totalNabla0S_realizes (I := I) 2 cov Ric hRicReg
   have hBetaReal : TotalNabla0SRealizes (I := I) 1 cov beta nBeta := by
     exact totalNabla0S_realizes (I := I) 1 cov beta hBetaReg
-  have hmc : IsMetricCompatibleGen (I := I) cov g := by
+  have hmc : IsMetricCompatible (I := I) cov g := by
     rw [show cov =
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g by rfl]
     exact leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g
@@ -127,7 +127,7 @@ private theorem div_ricGrad [I.Boundaryless]
   let delta : Fin (Module.finrank Real (TangentSpace I x)) ->
       Fin (Module.finrank Real (TangentSpace I x)) -> Real :=
     fun i j => if i = j then 1 else 0
-  have hinv : MetricInverseInBasisGen (I := I) g x basis delta :=
+  have hinv : MetricInverseInBasis (I := I) g x basis delta :=
     DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
   let X : Fin (Module.finrank Real (TangentSpace I x)) ->
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -141,7 +141,7 @@ private theorem div_ricGrad [I.Boundaryless]
       (n := (⊤ : ℕ∞)) x (basis i)).choose_spec
   have hsharp (i : Fin (Module.finrank Real (TangentSpace I x))) :
       cov (fun y : M => ricGradVec (I := I) g hf y) x (basis i) =
-        cotangentSharpGen (I := I) g x
+        cotangentSharp (I := I) g x
           (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
             (nBeta x) (basis i)) := by
     have h0 := cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
@@ -243,7 +243,7 @@ private theorem div_ricGrad [I.Boundaryless]
           (hessianSec (I := I) cov hcov f hf x) := by
     have htrace :
         LinearMap.trace Real (TangentSpace I x)
-            ((cotangentSharpLinearGen (I := I) g x).comp
+            ((cotangentSharpLinear (I := I) g x).comp
               ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                   (metricRicciAt (I := I) (M := M) g x)).toLinearMap.comp
                 (cov (fun y : M => G y) x).toLinearMap)) =
@@ -254,7 +254,7 @@ private theorem div_ricGrad [I.Boundaryless]
       intro i _
       simp only [LinearMap.comp_apply]
       change g.inner x
-          (cotangentSharpGen (I := I) g x
+          (cotangentSharp (I := I) g x
             (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
               (metricRicciAt (I := I) (M := M) g x)
               (cov (fun y : M => G y) x (basis i))))

@@ -66,14 +66,14 @@ private theorem cotangentSharp_orthoBasis_expand
     (horth : ∀ i j : Fin n,
       g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
     (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
-    cotangentSharpGen (I := I) g x β =
+    cotangentSharp (I := I) g x β =
       ∑ e : Fin n, (β (fun _ : Fin 1 => basis e)) • basis e := by
   classical
   set gInv : Fin n → Fin n → Real := fun i j => if i = j then 1 else 0 with hgInv
   have hdiag : ∀ i : Fin n, gInv i i = 1 := by intro i; simp [hgInv]
   have hoff : ∀ i k : Fin n, i ≠ k → gInv i k = 0 := by
     intro i k hk; simp [hgInv, hk]
-  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv := by
+  have hinv : MetricInverseInBasis (I := I) g x basis gInv := by
     intro i j
     refine ⟨?_, ?_⟩
     · rw [Finset.sum_eq_single i]
@@ -84,11 +84,11 @@ private theorem cotangentSharp_orthoBasis_expand
       · rw [hdiag j, mul_one]; exact horth i j
       · intro k _ hk; rw [hoff k j hk, mul_zero]
       · intro h; exact absurd (Finset.mem_univ j) h
-  rw [cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv hinv β]
+  rw [cotangentSharp_eq_sum_inv (I := I) g x basis gInv hinv β]
   refine Finset.sum_congr rfl fun i _ => ?_
   congr 1
   rw [Finset.sum_eq_single i]
-  · rw [hdiag i, one_mul, cotangentToDual_apply_gen]
+  · rw [hdiag i, one_mul, cotangentToDual_apply]
   · intro j _ hj; rw [hoff i j (fun h => hj h.symm), zero_mul]
   · intro h; exact absurd (Finset.mem_univ i) h
 

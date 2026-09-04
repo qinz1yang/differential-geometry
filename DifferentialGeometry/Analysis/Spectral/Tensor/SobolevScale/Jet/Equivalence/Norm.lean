@@ -225,7 +225,7 @@ private theorem covGrad_rawConnLapIter_l2NormSq_eq_tsum
     rw [SmoothCcTensor.norm_def (covGrad (I := I) (M := M) g₀ 0 2 U)]
     exact tensorL2Norm_sq_toFun (I := I) (M := M) g₀ 0 3 (covGrad (I := I) (M := M) g₀ 0 2 U)
   rw [hnorm_sq,
-    tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_gen (I := I) (M := M) g₀ 2 U]
+    tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_covariantTensor (I := I) (M := M) g₀ 2 U]
   have hraw_eq : rawTensorConnLapSmooth (I := I) g₀ 0 2 U =
       rawTensorConnLapIter (I := I) g₀ 0 2 (i + 1) S := by
     rw [hU_def, rawTensorConnLapIter_succ]
@@ -500,27 +500,6 @@ private theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_odd
         add_le_add hlowsum htop_le
     _ = (Clow + Cgard * (((k + 1 : ℕ) : ℝ) + Ccommsum * Ceven)) * Nspec := by ring
 
-theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general
-    (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
-    ∃ C : ℝ, 0 ≤ C ∧
-      ∀ S : SmoothCcTensor g₀ 0 2,
-        ∑ j ∈ Finset.range (n + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j S‖ ≤
-          C * ‖smoothCcToTensorHs (I := I) (M := M) g₀ (n : ℝ) S‖ := by
-  classical
-  rcases Nat.even_or_odd n with ⟨k, hk⟩ | ⟨k, hk⟩
-  · obtain ⟨C, hC_nn, hC⟩ :=
-      exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (2 * k)
-    refine ⟨C, hC_nn, fun S => ?_⟩
-    have hn2k : n = 2 * k := by omega
-    subst hn2k
-    exact hC S
-  · obtain ⟨C, hC_nn, hC⟩ :=
-      exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_odd (I := I) (M := M) g₀ k
-    refine ⟨C, hC_nn, fun S => ?_⟩
-    have hn : n = 2 * k + 1 := by omega
-    subst hn
-    exact hC S
-
 private theorem rawConnLapIter_l2NormSq_eq_tsum
     (g₀ : SmoothRiemannianMetric I M) (t : ℕ) (S : SmoothCcTensor g₀ 0 2) :
     ‖SmoothCcTensor.toL2 (rawTensorConnLapIter (I := I) g₀ 0 2 t S)‖ ^ 2 =
@@ -628,7 +607,7 @@ private theorem exists_spectralModeTsum_le_iteratedCovGrad_sum_sq
       _ = (Cfun 1) ^ 2 * (∑ a ∈ Finset.range (j + 1),
             ‖iteratedCovGrad (I := I) g₀ 0 2 a S‖) ^ 2 := by ring
 
-theorem exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general
+theorem exists_smoothCcToTensorHs_le_iteratedCovGrad_sum
     (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ S : SmoothCcTensor g₀ 0 2,

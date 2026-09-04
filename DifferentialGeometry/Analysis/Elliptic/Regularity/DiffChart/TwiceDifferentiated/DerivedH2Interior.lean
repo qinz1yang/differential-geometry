@@ -28,7 +28,7 @@ open DifferentialGeometry.Analysis.Laplacian.ChartH2NonSmooth
 open DifferentialGeometry.Analysis.Laplacian.TwiceDerivedChartBilinearH1ComplData
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChosenThirdMixedPartialChartPushed
-open DifferentialGeometry.Analysis.Laplacian.FChartEffTwiceDef
+open DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.Chart
 

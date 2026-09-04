@@ -379,7 +379,7 @@ omit [I.Boundaryless] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
   simp only [Prod.fst_zero, Prod.snd_zero]
   rw [_root_.DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_apply]
   have hz :
-      _root_.DifferentialGeometry.Geometry.Connection.leviCivitaConnectionCandidateAt
+      _root_.DifferentialGeometry.Geometry.Connection.leviCivitaConnectionAt
           (I := modelWithCornersSelf Real E)
           (c.totalMetric g) (constantModelVectorField (0 : E))
           (0 : E) ((tangentSpaceModelContinuousLinearEquiv

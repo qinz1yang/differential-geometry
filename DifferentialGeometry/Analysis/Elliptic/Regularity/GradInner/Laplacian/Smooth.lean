@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.Bochner.PolarisedLpFull
+import DifferentialGeometry.Analysis.Elliptic.Regularity.Bochner.PolarisedLp
 
 noncomputable section
 
@@ -9,7 +9,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace GradInnerLaplacianSmoothFull
+namespace GradInnerLaplacianSmooth
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -24,11 +24,11 @@ open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.HessianPairingChart
 open DifferentialGeometry.Analysis.Laplacian.HessianPairingLapDom
-open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianCandidate
+open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianRhs
 open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianVariational
 open DifferentialGeometry.Analysis.Laplacian.RicciPairingCLM
-open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianFinal
-open DifferentialGeometry.Analysis.Laplacian.BochnerPolarisedLpFull
+open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianDomain
+open DifferentialGeometry.Analysis.Laplacian.BochnerPolarisedLp
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -50,14 +50,14 @@ theorem gradInnerCLM_eq_H1ComplToLp_resolvent_smooth_of_hessHypothesis
         (smoothToH1Compl (I := I) (M := M) g v) =
       H1ComplToLp (I := I) (M := M) g
         (resolvent (I := I) (M := M) g
-          (gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
+          (gradInnerLaplacianRhs (I := I) (M := M) g φ
             (smoothToH1Compl_mem_laplacianDomainPow_two
               (I := I) (M := M) g v))) :=
-  smoothCase_via_candidate_identification (I := I) (M := M) g φ v
-    (smoothCandidate_identification_target_of_hessHypothesis
+  gradInnerCLM_smoothToH1Compl_eq_resolvent_of_rhs_identification (I := I) (M := M) g φ v
+    (gradInnerLaplacianRhs_smooth_eq_of_hessPairing
       (I := I) (M := M) g φ v h_hess)
 
-theorem smoothCase_full_of_hessHypothesis
+theorem gradInnerCLM_smoothToH1Compl_mem_image_laplacianDomain_of_hessHypothesis
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
     (h_hess :
       hessPairingLpOnLapDom (I := I) (M := M) g φ
@@ -70,12 +70,12 @@ theorem smoothCase_full_of_hessHypothesis
         (smoothToH1Compl (I := I) (M := M) g v) ∈
       Set.image (H1ComplToLp (I := I) (M := M) g)
         (laplacianDomain (I := I) (M := M) g : Set (H1Compl g)) :=
-  gradInnerCLM_smoothCase_mem_image_laplacianDomain_via_candidate
+  gradInnerCLM_smoothToH1Compl_mem_image_laplacianDomain_of_rhs_identification
     (I := I) (M := M) g φ v
-    (smoothCandidate_identification_target_of_hessHypothesis
+    (gradInnerLaplacianRhs_smooth_eq_of_hessPairing
       (I := I) (M := M) g φ v h_hess)
 
-theorem smoothMulH1Compl_smoothToH1Compl_mem_laplacianDomainPow_two_via_candidate
+theorem smoothMulH1Compl_smoothToH1Compl_mem_laplacianDomainPow_two_of_rhs_identification
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
     (h_hess :
       hessPairingLpOnLapDom (I := I) (M := M) g φ
@@ -106,13 +106,13 @@ theorem smoothCase_variational_identity_of_hessHypothesis
         (smoothToH1Compl (I := I) (M := M) g v) =
       H1ComplToLp (I := I) (M := M) g
         (resolvent (I := I) (M := M) g
-          (gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
+          (gradInnerLaplacianRhs (I := I) (M := M) g φ
             (smoothToH1Compl_mem_laplacianDomainPow_two
               (I := I) (M := M) g v))) :=
   gradInnerCLM_eq_H1ComplToLp_resolvent_smooth_of_hessHypothesis
     (I := I) (M := M) g φ v h_hess
 
-end GradInnerLaplacianSmoothFull
+end GradInnerLaplacianSmooth
 end Laplacian
 end Analysis
 end DifferentialGeometry

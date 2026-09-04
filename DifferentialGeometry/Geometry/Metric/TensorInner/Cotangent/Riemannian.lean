@@ -102,42 +102,42 @@ def dualToCotangent {x : M} (α : Module.Dual Real (TangentSpace I x)) :
   ext X
   simp
 
-def cotangentSharpLinear (g : SmoothMetric I M) (x : M) :
+def cotangentSharpLinear (g : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 1 I x →ₗ[Real] TangentSpace I x :=
   ((tangentMetricData (I := I) g x).metric.sharp).toLinearMap.comp
     (cotangentToDualLinear (I := I) (x := x))
 
-def cotangentSharp (g : SmoothMetric I M) (x : M)
+def cotangentSharp (g : SmoothRiemannianMetric I M) (x : M)
     (α : Tensor0SSpace 1 I x) : TangentSpace I x :=
   cotangentSharpLinear (I := I) g x α
 
 @[simp] theorem cotangentSharpLinear_apply
-    (g : SmoothMetric I M) (x : M) (α : Tensor0SSpace 1 I x) :
+    (g : SmoothRiemannianMetric I M) (x : M) (α : Tensor0SSpace 1 I x) :
     cotangentSharpLinear (I := I) g x α = cotangentSharp (I := I) g x α := by
   rfl
 
 theorem cotangentSharpLinear_injective
-    (g : SmoothMetric I M) (x : M) :
+    (g : SmoothRiemannianMetric I M) (x : M) :
     Function.Injective (cotangentSharpLinear (I := I) g x) := by
   intro α β h
   apply cotangentToDualLinear_injective (I := I) (x := x)
   exact ((tangentMetricData (I := I) g x).metric.sharp.injective h)
 
-def cotangentInner (g : SmoothMetric I M) (x : M)
+def cotangentInner (g : SmoothRiemannianMetric I M) (x : M)
     (α β : Tensor0SSpace 1 I x) : Real :=
   g.inner x
     (cotangentSharpLinear (I := I) g x α)
     (cotangentSharpLinear (I := I) g x β)
 
 @[simp] theorem cotangentInner_eq_sharp
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (α β : Tensor0SSpace 1 I x) :
     cotangentInner (I := I) g x α β =
       g.inner x (cotangentSharp (I := I) g x α)
         (cotangentSharp (I := I) g x β) := by
   rfl
 
-def cotangentFlatLinear (g : SmoothMetric I M) (x : M) :
+def cotangentFlatLinear (g : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 1 I x →ₗ[Real] Module.Dual Real (Tensor0SSpace 1 I x) where
   toFun α :=
     { toFun := fun β => cotangentInner (I := I) g x α β
@@ -173,14 +173,14 @@ def cotangentFlatLinear (g : SmoothMetric I M) (x : M) :
     simp
 
 @[simp] theorem cotangentFlatLinear_apply
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (α β : Tensor0SSpace 1 I x) :
     cotangentFlatLinear (I := I) g x α β =
       cotangentInner (I := I) g x α β := by
   rfl
 
 theorem cotangentFlatLinear_injective
-    (g : SmoothMetric I M) (x : M) :
+    (g : SmoothRiemannianMetric I M) (x : M) :
     Function.Injective (cotangentFlatLinear (I := I) g x) := by
   intro α β h
   have hsub : cotangentSharpLinear (I := I) g x (α - β) = 0 := by
@@ -225,7 +225,7 @@ theorem cotangentFlatLinear_injective
     rwa [hmap] at hsub
   exact sub_eq_zero.mp hdiff
 
-def cotangentMetricData (g : SmoothMetric I M) (x : M) :
+def cotangentMetricData (g : SmoothRiemannianMetric I M) (x : M) :
     MetricFiberData (Tensor0SSpace 1 I x) :=
   MetricFiberData.ofFlat
     (cotangentFlatLinear (I := I) g x)
@@ -251,14 +251,14 @@ def cotangentMetricData (g : SmoothMetric I M) (x : M) :
       · exact le_of_lt (g.pos x (cotangentSharpLinear (I := I) g x α) hα))
 
 theorem cotangentMetricData_inner
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (α β : Tensor0SSpace 1 I x) :
     (cotangentMetricData (I := I) g x).inner α β =
       cotangentInner (I := I) g x α β := by
   rfl
 
 def MetricInverseOnFiniteFrameGram {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (frame : Idx -> TangentSpace I x)
     (gInv : Idx -> Idx -> Real) : Prop :=
   forall i j : Idx,
@@ -268,7 +268,7 @@ def MetricInverseOnFiniteFrameGram {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
         (if i = j then 1 else 0)
 
 def MetricInverseInBasis {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real) : Prop :=
   forall i j : Idx,
@@ -278,7 +278,7 @@ def MetricInverseInBasis {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
         (if i = j then 1 else 0)
 
 theorem cotangentSharp_inner
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (α : Tensor0SSpace 1 I x) (X : TangentSpace I x) :
     g.inner x (cotangentSharp (I := I) g x α) X =
       cotangentToDual (I := I) α X := by
@@ -297,7 +297,7 @@ theorem cotangentSharp_inner
 omit [FiniteDimensional ℝ E] in
 theorem eq_of_inner_basis_eq
     {Idx : Type*} [Finite Idx]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     {X Y : TangentSpace I x}
     (h : forall i : Idx, g.inner x X (basis i) = g.inner x Y (basis i)) :
@@ -325,7 +325,7 @@ theorem eq_of_inner_basis_eq
 
 theorem cotangentSharp_eq_sum_inv
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -385,7 +385,7 @@ theorem cotangentSharp_eq_sum_inv
 
 theorem cotangentInner_eq_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -428,7 +428,7 @@ theorem cotangentInner_eq_coord
 
 theorem cotangentMetricData_inner_eq_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)

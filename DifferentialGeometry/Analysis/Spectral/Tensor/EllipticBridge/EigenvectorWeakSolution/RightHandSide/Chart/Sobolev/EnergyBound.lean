@@ -39,7 +39,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-section Unconditional
+section MainResults
 
 
 omit [CompleteSpace E] in
@@ -813,7 +813,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
   rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), hRhs_def,
     show (i.fst.val)⁻¹ * Crhs * Cagg = Crhs * Cagg * (i.fst.val)⁻¹ by ring]
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

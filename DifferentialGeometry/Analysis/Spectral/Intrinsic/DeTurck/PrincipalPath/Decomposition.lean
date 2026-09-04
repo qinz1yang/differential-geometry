@@ -233,12 +233,12 @@ theorem metricPrincipalDefect_cap
   let ρA := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA
   let ρAT := traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
   have hDev : Dev =
-      reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρA +
-        reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρAT - (DR + DR) := by
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρA +
+        reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρAT - (DR + DR) := by
     dsimp only [Dev, DTH, DR]
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g gm,
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g,
-      reindexCoeffGen_sub g _ _ ρA, reindexCoeffGen_sub g _ _ ρAT]
+      reindexCoefficientInputSlots_sub g _ _ ρA, reindexCoefficientInputSlots_sub g _ _ ρAT]
     abel
   let S : ℝ := riemannianFiberNormSq (I := I) (M := M) g 2 2 x
     ((inverseMetricDifferenceSlotCoefficient (I := I) g gm).toSection x)
@@ -260,34 +260,34 @@ theorem metricPrincipalDefect_cap
       (DR.toSection x) ≤ CR 0 * S := by
     simpa [DR, S] using hCR gm 0 x
   have hAr : riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-      ((reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρA).toSection x) =
+      ((reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρA).toSection x) =
         riemannianFiberNormSq (I := I) (M := M) g 4 2 x (DTH.toSection x) := by
-    rw [reindexCoeffGen_toSection]
-    exact riemannianFiberNormSq_reindexCoeffFibGen
+    rw [reindexCoefficientInputSlots_toSection]
+    exact riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
       (I := I) (M := M) g 4 2 x ρA (DTH.toSection x)
   have hATr : riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-      ((reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρAT).toSection x) =
+      ((reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρAT).toSection x) =
         riemannianFiberNormSq (I := I) (M := M) g 4 2 x (DTH.toSection x) := by
-    rw [reindexCoeffGen_toSection]
-    exact riemannianFiberNormSq_reindexCoeffFibGen
+    rw [reindexCoefficientInputSlots_toSection]
+    exact riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
       (I := I) (M := M) g 4 2 x ρAT (DTH.toSection x)
   have hsub := riemannianFiberNormSq_sub_le (I := I) (M := M) g 4 2 x
-    ((reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρA).toSection x +
-      (reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρAT).toSection x)
+    ((reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρA).toSection x +
+      (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρAT).toSection x)
     (DR.toSection x + DR.toSection x)
   have hadd1 := riemannianFiberNormSq_add_le (I := I) (M := M) g 4 2 x
-    ((reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρA).toSection x)
-    ((reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρAT).toSection x)
+    ((reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρA).toSection x)
+    ((reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρAT).toSection x)
   have hadd2 := riemannianFiberNormSq_add_le
     (I := I) (M := M) g 4 2 x (DR.toSection x) (DR.toSection x)
   have h0 : riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-      ((reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρA).toSection x +
-        (reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρAT).toSection x -
+      ((reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρA).toSection x +
+        (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρAT).toSection x -
         (DR.toSection x + DR.toSection x)) ≤
       4 * riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-          ((reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρA).toSection x) +
+          ((reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρA).toSection x) +
         4 * riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-          ((reindexCoeffGen (I := I) (M := M) g 4 2 DTH ρAT).toSection x) +
+          ((reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTH ρAT).toSection x) +
         8 * riemannianFiberNormSq (I := I) (M := M) g 4 2 x
           (DR.toSection x) := by
     linarith
@@ -512,14 +512,14 @@ theorem phi_dev_h2
   let ρAT : Equiv.Perm (Fin 4) :=
     traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
   have hdev_eq : Dev =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA +
-        reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT -
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA +
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT -
           (DRs + DRs) := by
     dsimp [Dev, DTHs, DRs]
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₁,
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
-      reindexCoeffGen_sub g₀ _ _ ρA,
-      reindexCoeffGen_sub g₀ _ _ ρAT]
+      reindexCoefficientInputSlots_sub g₀ _ _ ρA,
+      reindexCoefficientInputSlots_sub g₀ _ _ ρAT]
     abel
   have htarget : (C * R) ^ 2 = K * (Cinv * R) ^ 2 := by
     dsimp [C]
@@ -541,37 +541,37 @@ theorem phi_dev_h2
         (DRs.toSection x) ≤ CR 0 * Ks := by
       simpa [DRs, Ks] using hCR g₁ 0 x
     have hAr : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-        ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x) =
+        ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x) =
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DTHs.toSection x) := by
-      rw [reindexCoeffGen_toSection]
-      exact riemannianFiberNormSq_reindexCoeffFibGen
+      rw [reindexCoefficientInputSlots_toSection]
+      exact riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
         (I := I) (M := M) g₀ 4 2 x ρA
           (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from DTHs.toSection x)
     have hATr : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-        ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x) =
+        ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x) =
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (DTHs.toSection x) := by
-      rw [reindexCoeffGen_toSection]
-      exact riemannianFiberNormSq_reindexCoeffFibGen
+      rw [reindexCoefficientInputSlots_toSection]
+      exact riemannianFiberNormSq_reindexCoefficientInputSlotsFiber
         (I := I) (M := M) g₀ 4 2 x ρAT
           (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from DTHs.toSection x)
     have h0 : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
         (Dev.toSection x) ≤
           4 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-            ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x) +
+            ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x) +
           4 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-            ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x) +
+            ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x) +
           8 * riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
             (DRs.toSection x) := by
       rw [hdev_eq]
       simp only [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
         SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
       have hsub := riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 4 2 x
-        ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x +
-          (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
+        ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x +
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
         (DRs.toSection x + DRs.toSection x)
       have hadd1 := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 4 2 x
-        ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x)
-        ((reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
+        ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA).toSection x)
+        ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT).toSection x)
       have hadd2 := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 4 2 x
         (DRs.toSection x) (DRs.toSection x)
       linarith
@@ -647,16 +647,16 @@ theorem phi_dev_h2
           ‖iteratedCovGrad (I := I) g₀ 4 2 i Dev‖ ^ 2) ≤
           2 * (∑ i ∈ Finset.range 3,
             ‖iteratedCovGrad (I := I) g₀ 4 2 i
-              (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA +
-                reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) +
+              (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA +
+                reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) +
           2 * (∑ i ∈ Finset.range 3,
             ‖iteratedCovGrad (I := I) g₀ 4 2 i (DRs + DRs)‖ ^ 2) := by
         calc
           (∑ i ∈ Finset.range 3, ‖iteratedCovGrad (I := I) g₀ 4 2 i Dev‖ ^ 2)
               ≤ ∑ i ∈ Finset.range 3,
                 (2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
-                    (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA +
-                      reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2 +
+                    (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA +
+                      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2 +
                   2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i (DRs + DRs)‖ ^ 2) := by
                     apply Finset.sum_le_sum
                     intro i hi
@@ -664,23 +664,23 @@ theorem phi_dev_h2
                     exact norm_sq_sub_le _ _
           _ = 2 * (∑ i ∈ Finset.range 3,
                 ‖iteratedCovGrad (I := I) g₀ 4 2 i
-                  (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA +
-                    reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) +
+                  (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA +
+                    reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) +
               2 * (∑ i ∈ Finset.range 3,
                 ‖iteratedCovGrad (I := I) g₀ 4 2 i (DRs + DRs)‖ ^ 2) := by
                   rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
       have hAB : (∑ i ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA +
-              reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) ≤
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA +
+              reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) ≤
           4 * (∑ i ∈ Finset.range 3,
             ‖iteratedCovGrad (I := I) g₀ 4 2 i DTHs‖ ^ 2) := by
         calc
           _ ≤ ∑ i ∈ Finset.range 3,
               (2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
-                  (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA)‖ ^ 2 +
+                  (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA)‖ ^ 2 +
                 2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
-                  (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) := by
+                  (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) := by
                   apply Finset.sum_le_sum
                   intro i hi
                   rw [iteratedCovGrad_add]
@@ -690,7 +690,7 @@ theorem phi_dev_h2
                 rw [Finset.mul_sum]
                 apply Finset.sum_congr rfl
                 intro i hi
-                simp only [norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2]
+                simp only [norm_sq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 4 2]
                 ring
       have hCC : (∑ i ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g₀ 4 2 i (DRs + DRs)‖ ^ 2) ≤

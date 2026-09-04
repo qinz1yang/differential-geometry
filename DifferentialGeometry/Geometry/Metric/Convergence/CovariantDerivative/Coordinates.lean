@@ -36,28 +36,6 @@ theorem metricCovDeriv_succ_apply_section
         (metricCovDeriv (I := I) h gRef a) x slots := by
   rw [metricCovDeriv_succ, metricCovDerivStep_apply, totalNabla0SFun_apply_section]
 
-omit [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
-theorem metricCovDeriv_succ_eval_smooth_slots
-    (h gRef : SmoothRiemannianMetric I M) (a : Nat)
-    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
-    (V : Fin (a + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
-      (TangentSpace I : M → Type _))
-    (x : M) :
-    metricCovDeriv (I := I) h gRef (a + 1) x
-        (Fin.cons (X x) (fun q : Fin (a + 2) => V q x)) =
-      mvfderiv (I := I)
-          (fun y : M => metricCovDeriv (I := I) h gRef a y
-            (fun q : Fin (a + 2) => V q y)) x (X x) -
-        ∑ p : Fin (a + 2),
-          metricCovDeriv (I := I) h gRef a x
-            (Function.update (fun q : Fin (a + 2) => V q x) p
-              (((leviCivitaConnectionOfMetric (I := I) gRef)
-                  (fun y : M => V p y) x) (X x))) := by
-  rw [metricCovDeriv_succ_apply_section]
-  exact nabla0SFun_eval_smooth_slots (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-    (leviCivitaConnectionOfMetric (I := I) gRef) X V (metricCovDeriv (I := I) h gRef a) x
-
 omit [IsManifold I 1 M] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in

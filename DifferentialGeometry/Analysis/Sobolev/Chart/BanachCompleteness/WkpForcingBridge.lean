@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.ManifoldLimitConv
+import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.ManifoldLimitConvergence
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 import Mathlib.Topology.MetricSpace.Contracting

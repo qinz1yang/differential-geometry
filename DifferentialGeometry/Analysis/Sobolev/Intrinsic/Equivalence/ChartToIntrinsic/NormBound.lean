@@ -19,7 +19,7 @@ open scoped Manifold ContDiff ENNReal NNReal
 namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
-namespace EquivalenceFull
+namespace Equivalence
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -165,7 +165,7 @@ theorem eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
   rw [show (∑ α ∈ S, ENNReal.ofReal (Cα α)) = ENNReal.ofReal (∑ α ∈ S, Cα α) from ?_]
   refine (ENNReal.ofReal_sum_of_nonneg (fun α _ => (hCα_pos α).le)).symm
 
-theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth_uniform
+theorem eLpNorm_le_const_mul_wkpNormChart_smooth_uniform
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -184,7 +184,7 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth_uniform
   intro u hu_smooth
   exact hbound hu_smooth.continuous.measurable
 
-end EquivalenceFull
+end Equivalence
 end Sobolev
 end Analysis
 end DifferentialGeometry

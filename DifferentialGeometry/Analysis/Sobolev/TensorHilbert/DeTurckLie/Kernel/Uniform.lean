@@ -524,7 +524,7 @@ private theorem pair_trace_grid_unif
         C2 q * antidiagonalTupleGridPartialSum b (q + 1) := by
     intro q
     have h := hC2 g₀ g₁ T htie hδ_le hδ_nonneg hbound (Equiv.refl _) q x
-    rw [reindexedPureTrace, riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+    rw [reindexedPureTrace, riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g₀ (2 + 2) 2
         (pureTrace (I := I) (M := M) g₀ g₁ 2) (Equiv.refl _) q x] at h
     simpa only [antidiagonalTupleGridPartialSum, b] using h
@@ -535,7 +535,7 @@ private theorem pair_trace_grid_unif
         C4 q * antidiagonalTupleGridPartialSum b (q + 1) := by
     intro q
     have h := hC4 g₀ g₁ T htie hδ_le hδ_nonneg hbound (Equiv.refl _) q x
-    rw [reindexedPureTrace, riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+    rw [reindexedPureTrace, riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g₀ (4 + 2) 4
         (pureTrace (I := I) (M := M) g₀ g₁ 4) (Equiv.refl _) q x] at h
     simpa only [antidiagonalTupleGridPartialSum, b] using h

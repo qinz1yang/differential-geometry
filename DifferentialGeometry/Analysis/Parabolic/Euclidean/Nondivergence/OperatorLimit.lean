@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.LowerOrder
-import DifferentialGeometry.Analysis.Schauder.Parabolic.Jet.Limit
+import DifferentialGeometry.Analysis.Schauder.Parabolic.Jet.Convergence
 
 noncomputable section
 

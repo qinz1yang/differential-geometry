@@ -60,8 +60,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -81,7 +82,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -119,7 +120,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   lieDeTurckChartSlope_eq_orderSplit)
 open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
+  (reindexCoefficientInputSlots reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply reindexCoefficientInputSlots_toSection
   deTurckLieSecondOrderPrincipalCoeff deTurckLieFirstOrderCoeff deTurckLieCoeffField
   deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth
   deTurckLieCoeffField_metricPerturbationPath_jointSmooth deTurckLieSecondOrderPrincipalCoeff_apply_eq
@@ -4885,7 +4886,7 @@ private theorem lieTerm_hjoint_reindex (g₀ : SmoothRiemannianMetric I M) (r : 
     (Φ : ℝ → SmoothCcTensor g₀ r 2) (σ' : Equiv.Perm (Fin r)) {δ δ' : ℝ}
     (hΦ : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r Φ (δ := δ) (δ' := δ')) :
     linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ r
-      (fun s => reindexCoeffGen (I := I) (M := M) g₀ r 2 (Φ s) σ') (δ := δ) (δ' := δ') := by
+      (fun s => reindexCoefficientInputSlots (I := I) (M := M) g₀ r 2 (Φ s) σ') (δ := δ) (δ' := δ') := by
   classical
   rw [linearizedRicciCovariantJetJointSmoothness] at hΦ ⊢
   have htest : ∀ (Y : Cₛ^∞⟮I; Tensor0SBundle.Tensor0SModel r ℝ E,
@@ -4893,7 +4894,7 @@ private theorem lieTerm_hjoint_reindex (g₀ : SmoothRiemannianMetric I M) (r : 
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
         (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
           (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-          ((reindexCoeffFibGen (I := I) r 2 σ' p.1
+          ((reindexCoefficientInputSlotsFiber (I := I) r 2 σ' p.1
             (show Tensor0SBundle.Tensor0SSpace r I p.1 →L[ℝ]
                 Tensor0SBundle.Tensor0SSpace 2 I p.1 from
               (Φ p.2).toSection p.1)) (Y p.1)))
@@ -4937,7 +4938,7 @@ private theorem lieTerm_hjoint_reindex (g₀ : SmoothRiemannianMetric I M) (r : 
     refine hRY.congr (fun p _ => ?_)
     refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
-    exact (reindexCoeffFibGen_apply (I := I) r 2 σ' p.1
+    exact (reindexCoefficientInputSlotsFiber_apply (I := I) r 2 σ' p.1
       (show Tensor0SBundle.Tensor0SSpace r I p.1 →L[ℝ]
           Tensor0SBundle.Tensor0SSpace 2 I p.1 from (Φ p.2).toSection p.1) (Y p.1)).symm
   have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
@@ -4945,14 +4946,14 @@ private theorem lieTerm_hjoint_reindex (g₀ : SmoothRiemannianMetric I M) (r : 
     (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace r I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
-    (φ := fun p : M × ℝ => reindexCoeffFibGen (I := I) r 2 σ' p.1
+    (φ := fun p : M × ℝ => reindexCoefficientInputSlotsFiber (I := I) r 2 σ' p.1
       (show Tensor0SBundle.Tensor0SSpace r I p.1 →L[ℝ]
           Tensor0SBundle.Tensor0SSpace 2 I p.1 from (Φ p.2).toSection p.1))
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) htest
   refine hCLM.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace r 2 I z) p.1 t) ?_
-  rw [reindexCoeffGen_toSection]
+  rw [reindexCoefficientInputSlots_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -4970,7 +4971,7 @@ private theorem lieTerm_hjAbsorb (g₀ : SmoothRiemannianMetric I M) {δ δ' : �
     (fun p : M × ℝ => (Φ p.2).toSection p.1) hΦ
   have hB := jointTotalSpaceRS_const_smul (I := I) (r := 2 + r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) (1 / 2 : ℝ)
-    (fun p : M × ℝ => (reindexCoeffGen (I := I) (M := M) g₀ (2 + r) 2 (Φ p.2) σ').toSection p.1)
+    (fun p : M × ℝ => (reindexCoefficientInputSlots (I := I) (M := M) g₀ (2 + r) 2 (Φ p.2) σ').toSection p.1)
     hRein
   have hAB := jointTotalSpaceRS_add (I := I) (r := 2 + r) (s := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hA hB

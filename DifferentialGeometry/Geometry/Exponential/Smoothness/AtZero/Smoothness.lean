@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Lift
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.ZeroSectionConstancy
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.MatchData
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Data
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Existence
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -23,7 +23,7 @@ open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
-section UnconditionalDischarge
+section Existence
 
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
@@ -73,7 +73,7 @@ theorem hasChartFlowGeodesicMatchData
     have hproj_def :=
       chartFlowOrbitLiftRescaled_proj (I := I) (p := p) (v := v) (t' := t')
         (Φ := Φ) (s := 1) hΦ_target_t'
-    have hcand_unfold : chartFlowCandidate (I := I) Φ p t' v =
+    have hcand_unfold : chartFlowSlice (I := I) Φ p t' v =
         (extChartAt I p).symm (Φ (((extChartAt I p p, v) : E × E), t')).1 := rfl
     have hproj_def' :
         (chartFlowOrbitLiftRescaled (I := I) Φ p t' v 1).proj =
@@ -102,9 +102,9 @@ theorem hasChartFlowGeodesicMatchData
   exact ⟨Φ, ρ, T, t', ρ, hρ_pos, hT_pos, ht'_pos, ht'_in_Ioo, hρ_pos,
     hΦ_cd, hval_target, hval_symm, hmatch⟩
 
-end UnconditionalDischarge
+end Existence
 
-section TrulyUnconditional
+section MainResult
 
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
@@ -117,7 +117,7 @@ theorem expMap_contMDiffAt_zero
   expMap_contMDiffAt_zero_of_chartFlowGeodesicMatchData (I := I) g p
     (hasChartFlowGeodesicMatchData (I := I) g p)
 
-end TrulyUnconditional
+end MainResult
 
 end Exponential
 end Riemannian

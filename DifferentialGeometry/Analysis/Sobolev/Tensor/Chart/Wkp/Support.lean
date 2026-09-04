@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Limit
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.SectionLimit
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartAe
 open DifferentialGeometry.Geometry.Curvature
 

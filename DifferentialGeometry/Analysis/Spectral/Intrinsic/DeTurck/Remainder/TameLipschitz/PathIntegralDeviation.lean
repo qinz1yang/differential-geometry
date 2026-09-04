@@ -71,8 +71,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -92,7 +93,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -114,7 +115,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth
   deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
+  (reindexCoefficientInputSlots reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply reindexCoefficientInputSlots_toSection
   deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib
   domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieSecondOrderDivSlotPermA
   deTurckLieSecondOrderDivSlotPermAT traceHessianCoeff_toSection)
@@ -196,10 +197,10 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
     deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
       - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ with hΨdev_def
   have hdev_eq : ∀ s : ℝ, Ψdev s =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
           (traceHessianCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
             - traceHessianCoeff (I := I) (M := M) g₀ g₀) ρA
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
           (traceHessianCoeff (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
             - traceHessianCoeff (I := I) (M := M) g₀ g₀) ρAT
         - ((ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀
@@ -213,8 +214,8 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s),
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
-      reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρA,
-      reindexCoeffGen_sub (I := I) (M := M) g₀ _ _ ρAT]
+      reindexCoefficientInputSlots_sub (I := I) (M := M) g₀ _ _ ρA,
+      reindexCoefficientInputSlots_sub (I := I) (M := M) g₀ _ _ ρAT]
     abel
   have hj2 : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
       (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
@@ -403,15 +404,15 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
           - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀ with hDRs_def
       have hs1 : (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i (Ψdev s)‖ ^ 2) ≤
           2 * (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-              + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2)
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA
+              + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2)
           + 2 * (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i
             (DRs + DRs)‖ ^ 2) := by
         have h := Finset.sum_le_sum (f := fun i => ‖iteratedCovGrad (I := I) g₀ 4 2 i
             (Ψdev s)‖ ^ 2)
           (g := fun i => 2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
-              (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-                + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2
+              (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA
+                + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2
             + 2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i (DRs + DRs)‖ ^ 2)
           (s := Finset.range (a + 1)) (fun i _ => by
             rw [hdev_eq s, iteratedCovGrad_sub]
@@ -419,27 +420,27 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
         calc (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i (Ψdev s)‖ ^ 2)
             ≤ ∑ i ∈ Finset.range (a + 1),
               (2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
-                  (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-                    + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2
+                  (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA
+                    + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2
                 + 2 * ‖iteratedCovGrad (I := I) g₀ 4 2 i (DRs + DRs)‖ ^ 2) := h
           _ = 2 * (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i
-                (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA
-                  + reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2)
+                (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA
+                  + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2)
               + 2 * (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i
                 (DRs + DRs)‖ ^ 2) := by
             rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
       have hAB := jetTowerSum_add_le (I := I) g₀ 4 2 (a + 1)
-        (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA)
-        (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA)
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)
       have hCC := jetTowerSum_add_le (I := I) g₀ 4 2 (a + 1) DRs DRs
       have hAeq : (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i
-          (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρA)‖ ^ 2) =
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρA)‖ ^ 2) =
           ∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i DTHs‖ ^ 2 :=
-        Finset.sum_congr rfl (fun i _ => norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 DTHs ρA i)
+        Finset.sum_congr rfl (fun i _ => norm_sq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 4 2 DTHs ρA i)
       have hATeq : (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i
-          (reindexCoeffGen (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) =
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 DTHs ρAT)‖ ^ 2) =
           ∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 4 2 i DTHs‖ ^ 2 :=
-        Finset.sum_congr rfl (fun i _ => norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 DTHs ρAT i)
+        Finset.sum_congr rfl (fun i _ => norm_sq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 4 2 DTHs ρAT i)
       have hDTHsum : (∑ i ∈ Finset.range (a + 1),
           ‖iteratedCovGrad (I := I) g₀ 4 2 i DTHs‖ ^ 2) ≤
           ∑ i ∈ Finset.range (a + 1), DTH i :=

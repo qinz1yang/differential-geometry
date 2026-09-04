@@ -589,7 +589,7 @@ theorem exists_galerkin_action_h4_tame_bound_constants (hDim : Module.finrank �
   ring_nf
   exact le_rfl
 
-private theorem exists_galerkin_energy_five_bound_of_three_four_bounds_parameters_raw (hDim : Module.finrank ℝ E = 3)
+private theorem exists_galerkin_energy_five_bound_of_three_four_bounds_parameters_explicit (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ Ctop₄ Kr2 Kr1 Kcap : ℝ,
       0 ≤ Ctop₄ ∧ 0 ≤ Kr2 ∧ 0 ≤ Kr1 ∧ 0 ≤ Kcap ∧
@@ -791,7 +791,7 @@ theorem exists_galerkin_energy_five_bound_parameters (hDim : Module.finrank ℝ 
     ∃ Ctop₄ Kr2 Kr1 Kcap : ℝ,
       HasGalerkinEnergyFiveBound (I := I) (M := M) g₀ Ctop₄ Kr2 Kr1 Kcap := by
   obtain ⟨Ctop₄, Kr2, Kr1, Kcap, hCtop₄, hKr2, hKr1, hKcap, hord⟩ :=
-    exists_galerkin_energy_five_bound_of_three_four_bounds_parameters_raw (I := I) (M := M) hDim g₀
+    exists_galerkin_energy_five_bound_of_three_four_bounds_parameters_explicit (I := I) (M := M) hDim g₀
   exact ⟨Ctop₄, Kr2, Kr1, Kcap, hCtop₄, hKr2, hKr1, hKcap, hord⟩
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

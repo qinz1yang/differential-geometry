@@ -49,7 +49,7 @@ private lemma exists_one_lt_mul_sq_lt {c L : ℝ} (h : c < L) :
   rcases (hev2.and self_mem_nhdsWithin).exists with ⟨r, hr2, hr1⟩
   exact ⟨r, hr1, hr2⟩
 
-private lemma continuous_homBundle_opNorm_generic
+private lemma continuous_homBundle_opNorm
     {B : Type*} [TopologicalSpace B]
     {F₁ : Type*} [NormedAddCommGroup F₁] [NormedSpace ℝ F₁]
     {F₂ : Type*} [NormedAddCommGroup F₂] [NormedSpace ℝ F₂]
@@ -244,7 +244,7 @@ theorem continuous_homTensorRS_opNorm
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r a
   let instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r c
-  exact continuous_homBundle_opNorm_generic
+  exact continuous_homBundle_opNorm
     (F₁ := TensorRSModel r a ℝ E) (F₂ := TensorRSModel r c ℝ E)
     (E₁ := fun z : M => TensorRSSpace r a I z) (E₂ := fun z : M => TensorRSSpace r c I z)
     Ψ hΨ.continuous

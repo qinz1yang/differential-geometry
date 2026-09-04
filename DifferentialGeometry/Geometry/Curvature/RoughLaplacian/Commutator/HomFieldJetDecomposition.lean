@@ -66,7 +66,7 @@ private theorem ricciDefect_eval (g : SmoothRiemannianMetric I M) (r t : ℕ)
           (iteratedCovGrad g r t 2 W)).toSection x) := by
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
   rw [hfib, sub_apply, Tensor0SSpace.eval_sub]
-  rw [appFullSec_toSection, swapTwoSec_apply,
+  rw [homTensorRSFieldApply_toSection, swapTwoSec_apply,
     swapTwoFib_eval (I := I) (M := M) r t x ((iteratedCovGrad g r t 2 W).toSection x) v0 v1 D m]
   rw [show (iteratedCovGrad g r t 2 W).toSection x =
       (covGrad (I := I) (M := M) g r (t + 1)
@@ -131,7 +131,7 @@ private lemma ricciDefect_toSection_add (g : SmoothRiemannianMetric I M) (r t : 
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
-  rw [appFullSec_toSection, appFullSec_toSection, appFullSec_toSection]
+  rw [homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection]
   rw [show ((iteratedCovGrad g r t 2 W₁ + iteratedCovGrad g r t 2 W₂).toSection x
         : TensorRSSpace r (t + 2) I x) =
       (iteratedCovGrad g r t 2 W₁).toSection x + (iteratedCovGrad g r t 2 W₂).toSection x from by
@@ -159,7 +159,7 @@ private lemma ricciDefect_toSection_smul (g : SmoothRiemannianMetric I M) (r t :
   rw [hsmul2]
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
-  rw [appFullSec_toSection, appFullSec_toSection]
+  rw [homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection]
   rw [show ((k • iteratedCovGrad g r t 2 W).toSection x : TensorRSSpace r (t + 2) I x) =
       k • (iteratedCovGrad g r t 2 W).toSection x from by
     rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]]
@@ -175,7 +175,7 @@ private theorem exists_ricciDefect_homField (g : SmoothRiemannianMetric I M) (r 
             homTensorRSFieldApply (I := I) (M := M) g r (t + 2) (t + 2)
               (swapTwoSec (I := I) (M := M) (E := E) r t) (iteratedCovGrad g r t 2 W) =
           homTensorRSFieldApply (I := I) (M := M) g r t (t + 2) RActF W :=
-  exists_value_local_appFullSec (I := I) (M := M) g r t (t + 2)
+  exists_value_local_homTensorRSFieldApply (I := I) (M := M) g r t (t + 2)
     (fun W => iteratedCovGrad g r t 2 W -
       homTensorRSFieldApply (I := I) (M := M) g r (t + 2) (t + 2)
         (swapTwoSec (I := I) (M := M) (E := E) r t) (iteratedCovGrad g r t 2 W))
@@ -198,7 +198,7 @@ private lemma slotExtTrace_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x 
           (Fin.cons v0 (Fin.cons (smoothOrthoFrame (I := I) g x i x)
             (Fin.cons (smoothOrthoFrame (I := I) g x i x) m))) := by
   classical
-  rw [slotExtendFullFib_apply_eval (I := I) (M := M) r (s + 2) s x
+  rw [slotInsertHomTensorRSFib_apply_eval (I := I) (M := M) r (s + 2) s x
     (metricDoubleTraceFib (I := I) (M := M) g r s x) V D v0 m]
   rw [show (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
         metricDoubleTraceFib (I := I) (M := M) g r s x
@@ -252,7 +252,7 @@ private lemma traceConj_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M
     (smoothOrthoFrame (I := I) g x i x) (smoothOrthoFrame (I := I) g x i x) D
     (Fin.cons v0 m)]
   rw [hW_def]
-  rw [slotExtendFullFib_apply_eval (I := I) (M := M) r (s + 2) (s + 2) x
+  rw [slotInsertHomTensorRSFib_apply_eval (I := I) (M := M) r (s + 2) (s + 2) x
     (swapTwoFib (I := I) (M := M) r s x) (swapTwoFib (I := I) (M := M) r (s + 1) x V) D
     (smoothOrthoFrame (I := I) g x i x)
     (Fin.cons (smoothOrthoFrame (I := I) g x i x) (Fin.cons v0 m))]
@@ -289,28 +289,28 @@ private lemma slotExtTrace_eq_traceConj (g : SmoothRiemannianMetric I M) (r s : 
     traceConj_eval (I := I) (M := M) g r s x V D (v 0) (Matrix.vecTail v)]
 
 omit [I.Boundaryless] [BoundarylessManifold I M] in
-private theorem appFullSec_slotExtTrace_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private theorem homTensorRSFieldApply_slotExtTrace_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (V : SmoothCcTensor g r (s + 1 + 2)) :
     homTensorRSFieldApply (I := I) (M := M) g r (s + 2 + 1) (s + 1)
-        (slotExtendFullSec (I := I) r (s + 2) s
+        (slotInsertHomTensorRSField (I := I) r (s + 2) s
           (metricDoubleTraceField (I := I) (M := M) (E := E) g r s)) V =
       homTensorRSFieldApply (I := I) (M := M) g r (s + 1 + 2) (s + 1)
         (metricDoubleTraceField (I := I) (M := M) (E := E) g r (s + 1))
         (homTensorRSFieldApply (I := I) (M := M) g r (s + 1 + 2) (s + 1 + 2)
-          (slotExtendFullSec (I := I) r (s + 2) (s + 2)
+          (slotInsertHomTensorRSField (I := I) r (s + 2) (s + 2)
             (swapTwoSec (I := I) (M := M) (E := E) r s))
           (homTensorRSFieldApply (I := I) (M := M) g r (s + 1 + 2) (s + 1 + 2)
             (swapTwoSec (I := I) (M := M) (E := E) r (s + 1)) V)) := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [appFullSec_toSection, appFullSec_toSection, appFullSec_toSection, appFullSec_toSection]
-  simp only [slotExtendFullSec_apply, metricDoubleTraceField_apply, swapTwoSec_apply]
+  rw [homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection]
+  simp only [slotInsertHomTensorRSField_apply, metricDoubleTraceField_apply, swapTwoSec_apply]
   exact slotExtTrace_eq_traceConj (I := I) (M := M) g r s x (V.toSection x)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     in
-private theorem exists_appFullSec_comp (g : SmoothRiemannianMetric I M) (r a b c : ℕ)
+private theorem exists_homTensorRSFieldApply_comp (g : SmoothRiemannianMetric I M) (r a b c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r b c I)
     (Q' : HomTensorRSField (E := E) (M := M) r a b I) :
     ∃ QQ' : HomTensorRSField (E := E) (M := M) r a c I,
@@ -318,29 +318,29 @@ private theorem exists_appFullSec_comp (g : SmoothRiemannianMetric I M) (r a b c
         homTensorRSFieldApply (I := I) (M := M) g r b c Q
           (homTensorRSFieldApply (I := I) (M := M) g r a b Q' W) =
           homTensorRSFieldApply (I := I) (M := M) g r a c QQ' W :=
-  exists_value_local_appFullSec (I := I) (M := M) g r a c
+  exists_value_local_homTensorRSFieldApply (I := I) (M := M) g r a c
     (fun W => homTensorRSFieldApply (I := I) (M := M) g r b c Q
       (homTensorRSFieldApply (I := I) (M := M) g r a b Q' W))
     (fun W₁ W₂ x => by
-      simp only [appFullSec_toSection]
+      simp only [homTensorRSFieldApply_toSection]
       rw [show ((W₁ + W₂).toSection x : TensorRSSpace r a I x) =
           W₁.toSection x + W₂.toSection x from by
         rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]]
       rw [map_add (show TensorRSSpace r a I x →L[ℝ] TensorRSSpace r b I x from Q' x),
         map_add (show TensorRSSpace r b I x →L[ℝ] TensorRSSpace r c I x from Q x)])
     (fun k W x => by
-      simp only [appFullSec_toSection]
+      simp only [homTensorRSFieldApply_toSection]
       rw [show ((k • W).toSection x : TensorRSSpace r a I x) = k • W.toSection x from by
         rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]]
       rw [map_smul (show TensorRSSpace r a I x →L[ℝ] TensorRSSpace r b I x from Q' x),
         map_smul (show TensorRSSpace r b I x →L[ℝ] TensorRSSpace r c I x from Q x)])
     (fun W₁ W₂ x hW => by
-      simp only [appFullSec_toSection]
+      simp only [homTensorRSFieldApply_toSection]
       rw [hW])
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     in
-private theorem appFullSec_sub_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
+private theorem homTensorRSFieldApply_sub_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r a c I) (W₁ W₂ : SmoothCcTensor g r a) :
     homTensorRSFieldApply (I := I) (M := M) g r a c Q (W₁ - W₂) =
       homTensorRSFieldApply (I := I) (M := M) g r a c Q W₁ - homTensorRSFieldApply (I := I) (M := M)
@@ -349,19 +349,19 @@ private theorem appFullSec_sub_right (g : SmoothRiemannianMetric I M) (r a c : �
   apply ContMDiffSection.ext
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
-  rw [appFullSec_toSection, appFullSec_toSection, appFullSec_toSection]
+  rw [homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection]
   rw [show ((W₁ - W₂).toSection x : TensorRSSpace r a I x) = W₁.toSection x - W₂.toSection x from by
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]]
   rw [map_sub (show TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x from Q x)]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     in
-private theorem appFullSec_add_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
+private theorem homTensorRSFieldApply_add_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r a c I) (W₁ W₂ : SmoothCcTensor g r a) :
     homTensorRSFieldApply (I := I) (M := M) g r a c Q (W₁ + W₂) =
       homTensorRSFieldApply (I := I) (M := M) g r a c Q W₁ + homTensorRSFieldApply (I := I) (M := M)
         g r a c Q W₂ :=
-  appFullRS_add_right (I := I) (M := M) g r a c (fun y : M => Q y) Q.contMDiff W₁ W₂
+  homTensorRSApply_add_right (I := I) (M := M) g r a c (fun y : M => Q y) Q.contMDiff W₁ W₂
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem headDifferenceDrop_bracket (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -380,7 +380,7 @@ private theorem headDifferenceDrop_bracket (g : SmoothRiemannianMetric I M) (r s
     (S : SmoothCcTensor g r s) :
     covGrad (I := I) (M := M) g r (s + 2) (iteratedCovGrad g r s 2 S) -
         homTensorRSFieldApply (I := I) (M := M) g r (s + 3) (s + 3)
-          (slotExtendFullSec (I := I) r (s + 2) (s + 2)
+          (slotInsertHomTensorRSField (I := I) r (s + 2) (s + 2)
             (swapTwoSec (I := I) (M := M) (E := E) r s))
           (homTensorRSFieldApply (I := I) (M := M) g r (s + 3) (s + 3)
             (swapTwoSec (I := I) (M := M) (E := E) r (s + 1))
@@ -388,14 +388,14 @@ private theorem headDifferenceDrop_bracket (g : SmoothRiemannianMetric I M) (r s
       (homTensorRSFieldApply (I := I) (M := M) g r s (s + 3)
             (homTensorRSCovGradSec (I := I) g r s (s + 2) RA_s) S +
           homTensorRSFieldApply (I := I) (M := M) g r (s + 1) (s + 3)
-            (slotExtendFullSec (I := I) r s (s + 2) RA_s)
+            (slotInsertHomTensorRSField (I := I) r s (s + 2) RA_s)
             (covGrad (I := I) (M := M) g r s S) +
           homTensorRSFieldApply (I := I) (M := M) g r (s + 2) (s + 3)
             (homTensorRSCovGradSec (I := I) g r (s + 2) (s + 2)
               (swapTwoSec (I := I) (M := M) (E := E) r s))
             (iteratedCovGrad g r s 2 S)) +
         homTensorRSFieldApply (I := I) (M := M) g r (s + 3) (s + 3)
-          (slotExtendFullSec (I := I) r (s + 2) (s + 2)
+          (slotInsertHomTensorRSField (I := I) r (s + 2) (s + 2)
             (swapTwoSec (I := I) (M := M) (E := E) r s))
           (homTensorRSFieldApply (I := I) (M := M) g r (s + 1) (s + 3) RA_s1
             (covGrad (I := I) (M := M) g r s S)) := by
@@ -403,44 +403,44 @@ private theorem headDifferenceDrop_bracket (g : SmoothRiemannianMetric I M) (r s
       covGrad (I := I) (M := M) g r (s + 2) (iteratedCovGrad g r s 2 S) := rfl
   have hR1 := hRA_s1 (covGrad (I := I) (M := M) g r s S)
   rw [hT3] at hR1
-  have hcg1 := covGrad_appFullSec_eq (I := I) (M := M) g r (s + 2) (s + 2)
+  have hcg1 := covGrad_homTensorRSFieldApply_eq (I := I) (M := M) g r (s + 2) (s + 2)
     (swapTwoSec (I := I) (M := M) (E := E) r s) (iteratedCovGrad g r s 2 S)
   have hR0 := hRA_s S
-  have hcg2 := covGrad_appFullSec_eq (I := I) (M := M) g r s (s + 2) RA_s S
+  have hcg2 := covGrad_homTensorRSFieldApply_eq (I := I) (M := M) g r s (s + 2) RA_s S
   have hsplit : ∀ A C : SmoothCcTensor g r (s + 3),
       A - homTensorRSFieldApply (I := I) (M := M) g r (s + 3) (s + 3)
-            (slotExtendFullSec (I := I) r (s + 2) (s + 2)
+            (slotInsertHomTensorRSField (I := I) r (s + 2) (s + 2)
               (swapTwoSec (I := I) (M := M) (E := E) r s)) A =
         C →
       A - homTensorRSFieldApply (I := I) (M := M) g r (s + 3) (s + 3)
-            (slotExtendFullSec (I := I) r (s + 2) (s + 2)
+            (slotInsertHomTensorRSField (I := I) r (s + 2) (s + 2)
               (swapTwoSec (I := I) (M := M) (E := E) r s))
             (homTensorRSFieldApply (I := I) (M := M) g r (s + 3) (s + 3)
               (swapTwoSec (I := I) (M := M) (E := E) r (s + 1)) A) =
         C + homTensorRSFieldApply (I := I) (M := M) g r (s + 3) (s + 3)
-              (slotExtendFullSec (I := I) r (s + 2) (s + 2)
+              (slotInsertHomTensorRSField (I := I) r (s + 2) (s + 2)
                 (swapTwoSec (I := I) (M := M) (E := E) r s))
               (A - homTensorRSFieldApply (I := I) (M := M) g r (s + 3) (s + 3)
                 (swapTwoSec (I := I) (M := M) (E := E) r (s + 1)) A) := by
     intro A C hC
-    rw [appFullSec_sub_right, ← hC]
+    rw [homTensorRSFieldApply_sub_right, ← hC]
     abel
   have hT3sub : covGrad (I := I) (M := M) g r (s + 2) (iteratedCovGrad g r s 2 S) -
       homTensorRSFieldApply (I := I) (M := M) g r (s + 3) (s + 3)
-        (slotExtendFullSec (I := I) r (s + 2) (s + 2)
+        (slotInsertHomTensorRSField (I := I) r (s + 2) (s + 2)
           (swapTwoSec (I := I) (M := M) (E := E) r s))
         (covGrad (I := I) (M := M) g r (s + 2) (iteratedCovGrad g r s 2 S)) =
       homTensorRSFieldApply (I := I) (M := M) g r s (s + 3)
           (homTensorRSCovGradSec (I := I) g r s (s + 2) RA_s) S +
         homTensorRSFieldApply (I := I) (M := M) g r (s + 1) (s + 3)
-          (slotExtendFullSec (I := I) r s (s + 2) RA_s)
+          (slotInsertHomTensorRSField (I := I) r s (s + 2) RA_s)
           (covGrad (I := I) (M := M) g r s S) +
         homTensorRSFieldApply (I := I) (M := M) g r (s + 2) (s + 3)
           (homTensorRSCovGradSec (I := I) g r (s + 2) (s + 2)
             (swapTwoSec (I := I) (M := M) (E := E) r s))
           (iteratedCovGrad g r s 2 S) := by
     have hσ₂₃T3 : homTensorRSFieldApply (I := I) (M := M) g r (s + 3) (s + 3)
-          (slotExtendFullSec (I := I) r (s + 2) (s + 2)
+          (slotInsertHomTensorRSField (I := I) r (s + 2) (s + 2)
             (swapTwoSec (I := I) (M := M) (E := E) r s))
           (covGrad (I := I) (M := M) g r (s + 2) (iteratedCovGrad g r s 2 S)) =
         covGrad (I := I) (M := M) g r (s + 2)
@@ -480,7 +480,7 @@ private theorem exists_headDifferenceDrop_metricDoubleTrace (g : SmoothRiemannia
             (metricDoubleTraceField (I := I) (M := M) (E := E) g r (s + 1))
             (iteratedCovGrad g r (s + 1) 2 (covGrad (I := I) (M := M) g r s S)) -
           homTensorRSFieldApply (I := I) (M := M) g r (s + 2 + 1) (s + 1)
-            (slotExtendFullSec (I := I) r (s + 2) s
+            (slotInsertHomTensorRSField (I := I) r (s + 2) s
               (metricDoubleTraceField (I := I) (M := M) (E := E) g r s))
             (covGrad (I := I) (M := M) g r (s + 2) (iteratedCovGrad g r s 2 S)) =
         homTensorRSFieldApply (I := I) (M := M) g r s (s + 1) P₀ S +
@@ -491,37 +491,37 @@ private theorem exists_headDifferenceDrop_metricDoubleTrace (g : SmoothRiemannia
   classical
   obtain ⟨RA_s, hRA_s⟩ := exists_ricciDefect_homField (I := I) (M := M) (E := E) g r s
   obtain ⟨RA_s1, hRA_s1⟩ := exists_ricciDefect_homField (I := I) (M := M) (E := E) g r (s + 1)
-  obtain ⟨P₀, hP₀⟩ := exists_appFullSec_comp (I := I) (M := M) g r s (s + 3) (s + 1)
+  obtain ⟨P₀, hP₀⟩ := exists_homTensorRSFieldApply_comp (I := I) (M := M) g r s (s + 3) (s + 1)
     (metricDoubleTraceField (I := I) (M := M) (E := E) g r (s + 1))
     (homTensorRSCovGradSec (I := I) g r s (s + 2) RA_s)
-  obtain ⟨P₂, hP₂⟩ := exists_appFullSec_comp (I := I) (M := M) g r (s + 2) (s + 3) (s + 1)
+  obtain ⟨P₂, hP₂⟩ := exists_homTensorRSFieldApply_comp (I := I) (M := M) g r (s + 2) (s + 3) (s + 1)
     (metricDoubleTraceField (I := I) (M := M) (E := E) g r (s + 1))
     (homTensorRSCovGradSec (I := I) g r (s + 2) (s + 2)
       (swapTwoSec (I := I) (M := M) (E := E) r s))
-  obtain ⟨PA, hPA⟩ := exists_appFullSec_comp (I := I) (M := M) g r (s + 1) (s + 3) (s + 1)
+  obtain ⟨PA, hPA⟩ := exists_homTensorRSFieldApply_comp (I := I) (M := M) g r (s + 1) (s + 3) (s + 1)
     (metricDoubleTraceField (I := I) (M := M) (E := E) g r (s + 1))
-    (slotExtendFullSec (I := I) r s (s + 2) RA_s)
-  obtain ⟨Tσ₂₃, hTσ₂₃⟩ := exists_appFullSec_comp (I := I) (M := M) g r (s + 3) (s + 3) (s + 1)
+    (slotInsertHomTensorRSField (I := I) r s (s + 2) RA_s)
+  obtain ⟨Tσ₂₃, hTσ₂₃⟩ := exists_homTensorRSFieldApply_comp (I := I) (M := M) g r (s + 3) (s + 3) (s + 1)
     (metricDoubleTraceField (I := I) (M := M) (E := E) g r (s + 1))
-    (slotExtendFullSec (I := I) r (s + 2) (s + 2)
+    (slotInsertHomTensorRSField (I := I) r (s + 2) (s + 2)
       (swapTwoSec (I := I) (M := M) (E := E) r s))
-  obtain ⟨PB, hPB⟩ := exists_appFullSec_comp (I := I) (M := M) g r (s + 1) (s + 3) (s + 1)
+  obtain ⟨PB, hPB⟩ := exists_homTensorRSFieldApply_comp (I := I) (M := M) g r (s + 1) (s + 3) (s + 1)
     Tσ₂₃ RA_s1
   refine ⟨P₀, PA + PB, P₂, fun S => ?_⟩
   rw [show iteratedCovGrad g r (s + 1) 2 (covGrad (I := I) (M := M) g r s S) =
       covGrad (I := I) (M := M) g r (s + 2) (iteratedCovGrad g r s 2 S) from rfl]
-  rw [appFullSec_slotExtTrace_eq (I := I) (M := M) (E := E) g r s
+  rw [homTensorRSFieldApply_slotExtTrace_eq (I := I) (M := M) (E := E) g r s
     (covGrad (I := I) (M := M) g r (s + 2) (iteratedCovGrad g r s 2 S))]
-  rw [← appFullSec_sub_right (I := I) (M := M) g r (s + 1 + 2) (s + 1)
+  rw [← homTensorRSFieldApply_sub_right (I := I) (M := M) g r (s + 1 + 2) (s + 1)
     (metricDoubleTraceField (I := I) (M := M) (E := E) g r (s + 1))
     (covGrad (I := I) (M := M) g r (s + 2) (iteratedCovGrad g r s 2 S))]
   rw [headDifferenceDrop_bracket (I := I) (M := M) (E := E) g r s RA_s RA_s1 hRA_s hRA_s1 S]
-  rw [appFullSec_add_right, appFullSec_add_right, appFullSec_add_right]
+  rw [homTensorRSFieldApply_add_right, homTensorRSFieldApply_add_right, homTensorRSFieldApply_add_right]
   rw [hP₀ S, hP₂ (iteratedCovGrad g r s 2 S), hPA (covGrad (I := I) (M := M) g r s S)]
   rw [hTσ₂₃ (homTensorRSFieldApply (I := I) (M := M) g r (s + 1) (s + 3) RA_s1
     (covGrad (I := I) (M := M) g r s S))]
   rw [hPB (covGrad (I := I) (M := M) g r s S)]
-  rw [appFullSec_add_left (I := I) (M := M) g r (s + 1) (s + 1) PA PB
+  rw [homTensorRSFieldApply_add_left (I := I) (M := M) g r (s + 1) (s + 1) PA PB
     (covGrad (I := I) (M := M) g r s S)]
   abel
 
@@ -539,7 +539,7 @@ private theorem exists_roughLapCommutatorTrace_homField
           homTensorRSFieldApply (I := I) (M := M) g r (s + 1 + 2) (s + 1) (Tr (s + 1))
               (iteratedCovGrad g r (s + 1) 2 (covGrad (I := I) (M := M) g r s S)) -
             homTensorRSFieldApply (I := I) (M := M) g r (s + 2 + 1) (s + 1)
-              (slotExtendFullSec (I := I) r (s + 2) s (Tr s))
+              (slotInsertHomTensorRSField (I := I) r (s + 2) s (Tr s))
               (covGrad (I := I) (M := M) g r (s + 2) (iteratedCovGrad g r s 2 S)) =
           homTensorRSFieldApply (I := I) (M := M) g r s (s + 1) P₀ S +
             homTensorRSFieldApply (I := I) (M := M) g r (s + 1) (s + 1) P₁
@@ -578,8 +578,8 @@ theorem exists_pointwiseTensorCurvRS_homField_jetDecomposition
         (homTensorRSFieldApply (I := I) (M := M) g r (s + 2) s (Tr s)
           (iteratedCovGrad g r s 2 S)) from
     congrArg (covGrad (I := I) (M := M) g r s) (hfac s S)]
-  rw [covGrad_appFullSec_eq (I := I) (M := M) g r (s + 2) s (Tr s) (iteratedCovGrad g r s 2 S)]
-  rw [appFullSec_sub_left (I := I) (M := M) g r (s + 2) (s + 1) P₂
+  rw [covGrad_homTensorRSFieldApply_eq (I := I) (M := M) g r (s + 2) s (Tr s) (iteratedCovGrad g r s 2 S)]
+  rw [homTensorRSFieldApply_sub_left (I := I) (M := M) g r (s + 2) (s + 1) P₂
     (homTensorRSCovGradSec (I := I) g r (s + 2) s (Tr s)) (iteratedCovGrad g r s 2 S)]
   rw [sub_add_eq_sub_sub, sub_right_comm, hhead S]
   abel

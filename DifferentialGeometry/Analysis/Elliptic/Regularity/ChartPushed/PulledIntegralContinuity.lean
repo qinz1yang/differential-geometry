@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.LeibnizSource
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.Limit
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.SmoothApproximation
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.ArbitraryTest
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1ComplFromDom
 import DifferentialGeometry.Analysis.Elliptic.Operator.ChartMeasureEquiv
@@ -287,7 +287,7 @@ noncomputable def chartPulledIntegralWeightLp
     hθ_cont hθ_cs hθ_supp).toLp _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma weight_smul_continuous_aux
+private lemma weight_smul_continuous
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
     (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
@@ -353,7 +353,7 @@ private lemma integral_weight_smul_eq_chartPulled
   set f : M → ℝ := fun x : M =>
     chartPulledIntegralWeight (I := I) (M := M) g α θ x * v x with hf_def
   have hf_cont : Continuous f :=
-    weight_smul_continuous_aux (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp hv_cont
+    weight_smul_continuous (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp hv_cont
   have hf_supp : tsupport f ⊆ (chartAt H α).source :=
     weight_smul_tsupport_subset_chartSource (I := I) (M := M) g α hθ_cs hθ_supp v
   have h_main := integral_riemannianVolumeMeasure_eq_euclidean_chartTarget
@@ -721,7 +721,7 @@ theorem rhs_integral_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
     (I := I) (M := M) g α u_h hu_h hθ_cont hθ_cs hθ_supp h_fHLeibniz_tendsto
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem laplacianDomain_variational_identity_general_partial
+theorem laplacianDomain_variational_identity_partial
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl g) (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)

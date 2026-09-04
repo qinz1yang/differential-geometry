@@ -161,7 +161,7 @@ private lemma raisedKoszul_norm_iteratedCovGrad_koszul_le
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral in
-theorem raisedKoszul_order0sup_jetL2_succ_generic
+theorem raisedKoszul_order0sup_jetL2_succ
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

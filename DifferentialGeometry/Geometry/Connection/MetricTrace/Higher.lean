@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTrace02
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantTwoTensor
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 open DifferentialGeometry.Tensor.RSTensor
@@ -136,13 +136,13 @@ theorem nabla2Trace02
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (X Y : TangentSpace I x) :
     let traceA : M -> Real := fun y => metricTracePair0SAt (I := I) g (A y)
     let htrace : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) traceA :=
@@ -215,7 +215,7 @@ theorem nabla2Trace02
           duSec (I := I) traceA htrace p (fun _ : Fin 1 => Ysec p)) =
         fun p : M => metricTracePair0SAt (I := I) g (B p) := by
     funext p
-    have hd := dTrace02_eq (I := I) (M := M) cov g hmc A Ysec p
+    have hd := differential_metricTrace_eq_metricTrace_nabla (I := I) (M := M) cov g hmc A Ysec p
     dsimp [traceA] at hd
     rw [duSec_apply]
     change differential1FormFun (I := I)
@@ -277,7 +277,7 @@ theorem nabla2Trace02
           (fun y : M => metricTracePair0SAt (I := I) g (B y)) x
           (fun _ : Fin 1 => X) := by
           simp [differential1FormFun_apply_eq_mvfderiv, hXsec]
-  have htraceB := dTrace02_eq (I := I) (M := M) cov g hmc B Xsec x
+  have htraceB := differential_metricTrace_eq_metricTrace_nabla (I := I) (M := M) cov g hmc B Xsec x
   have htraceB_sum :
       metricTracePair0SAt (I := I) g
           (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -513,10 +513,10 @@ private theorem middleFreezeNabla
       simp only [B, freezeMiddle04Field_apply, freezeFirstTwo0S_apply]
       rw [metricTrace_input_vec2_eq_vec4]
       change (A p) (fun i =>
-        vec4 (I := I) (Usec p) (Vsec p) (Y p) (Z p) (trace04Perm i)) = _
+        vec4 (I := I) (Usec p) (Vsec p) (Y p) (Z p) (covariantFourTracePerm i)) = _
       apply congrArg (A p)
       funext q
-      fin_cases q <;> simp [trace04Perm, DifferentialGeometry.Geometry.Curvature.vec4]
+      fin_cases q <;> simp [covariantFourTracePerm, DifferentialGeometry.Geometry.Curvature.vec4]
     rw [hfun]
   have hBcorr :
       (∑ a : Fin 2,
@@ -558,20 +558,20 @@ private theorem middleFreezeNabla
         4 cov A x (Fin.cons (X x) (vec4 (I := I) U (Y x) (Z x) V)) := by
         simpa [hUsec, hVsec] using hAtot.symm
 
-theorem nablaTrace04
+theorem nabla_metricTraceCovariantFourField
     [T2Space M] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (X Y Z : TangentSpace I x) :
-    let traceA := trace04Field (I := I) (M := M) g A
+    let traceA := metricTraceCovariantFourField (I := I) (M := M) g A
     let nablaA :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         4 cov A x
@@ -582,7 +582,7 @@ theorem nablaTrace04
       ∑ i : Idx, ∑ j : Idx,
         gInv i j * nablaA (Fin.cons X (vec4 (I := I) (basis i) Y Z (basis j))) := by
   classical
-  let traceA := trace04Field (I := I) (M := M) g A
+  let traceA := metricTraceCovariantFourField (I := I) (M := M) g A
   let nablaA :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       4 cov A x
@@ -655,7 +655,7 @@ theorem nablaTrace04
             (totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
               2 cov B x) (vec3 (I := I) X (basis i) (basis j)) := by
     simpa [B, traceB, dTraceB] using
-      nablaTrace02 (I := I) (M := M) cov g hmc B basis gInv hinv X
+      differential_metricTrace_eq_trace_totalNabla_inBasis (I := I) (M := M) cov g hmc B basis gInv hinv X
   dsimp
   rw [hleft, htrace02]
   apply Finset.sum_congr rfl

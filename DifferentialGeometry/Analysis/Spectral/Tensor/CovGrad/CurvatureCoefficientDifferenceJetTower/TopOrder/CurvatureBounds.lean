@@ -1171,7 +1171,7 @@ lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     slotInsertEndoCc (I := I) (M := M) g₀ (s + 1) Λ =
-      reindexCoeffGen (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
         (rsDomDomCongrSection (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
           (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
           (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
@@ -1191,14 +1191,14 @@ lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
         (slotInsertEndoCc (I := I) (M := M) g₀ (s + 1) Λ).toSection x) D) m =
     Tensor0SSpace.toModel
       ((show Tensor0SSpace (s + 1 + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
           (rsDomDomCongrSection (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
             (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
             (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
               (slotInsertEndoCc (I := I) (M := M) g₀ s Λ)))
           (Equiv.swap (0 : Fin (s + 1 + 1)) 1)).toSection x) D) m
   rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval]
-  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply, rsDomDomCongrSection_toSection,
+  rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply, rsDomDomCongrSection_toSection,
     toModel_rsDomDomCongr_apply, ContinuousMultilinearMap.domDomCongr_apply, slotExtend_toSection]
   rw [show (fun k : Fin (s + 1 + 1) => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) k)) =
       Fin.cons (m 1) (fun j : Fin (s + 1) =>
@@ -1237,12 +1237,12 @@ lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
       rw [Equiv.swap_apply_of_ne_of_ne hne0 hne1]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma riemannianFiberNormSq_reindexCoeffGen_eq (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
+lemma riemannianFiberNormSq_reindexCoefficientInputSlots_eq (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g₀ r s) (σ' : Equiv.Perm (Fin r)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ r s x
-        ((reindexCoeffGen (I := I) (M := M) g₀ r s R σ').toSection x) =
+        ((reindexCoefficientInputSlots (I := I) (M := M) g₀ r s R σ').toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ r s x (R.toSection x) := by
-  have h := riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r s R σ' 0 x
+  have h := riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ r s R σ' 0 x
   rw [iteratedCovGrad_zero, iteratedCovGrad_zero] at h
   exact h
 
@@ -1393,7 +1393,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_background
   set X : SmoothCcTensor g₀ 1 1 := slotInsertEndoCc (I := I) (M := M) g₀ 0 Lam with hX_def
   set V : SmoothCcTensor g₀ 2 2 := slotInsertEndoCc (I := I) (M := M) g₀ 1 Lam with hV_def
   have hVrepr : V =
-      reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (slotExtend (I := I) (M := M) g₀ 1 1 X))
         (Equiv.swap (0 : Fin 2) 1) := by
@@ -1404,13 +1404,13 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_background
   obtain ⟨HdX2, hX2_head, hX2_res⟩ := exists_rsDomDomCongrSection_head_transport (I := I) (M := M)
     g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) (slotExtend (I := I) (M := M) g₀ 1 1 X) i HdX1
   set HdV : SmoothCcTensor g₀ 2 (2 + i) :=
-    reindexCoeffGen (I := I) (M := M) g₀ 2 (2 + i) HdX2 (Equiv.swap (0 : Fin 2) 1)
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 (2 + i) HdX2 (Equiv.swap (0 : Fin 2) 1)
     with hHdV_def
   have hHdV_head : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x (HdV.toSection x) ≤
         n * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x (HdB.toSection x) := by
     intro x
-    rw [hHdV_def, riemannianFiberNormSq_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 (2 + i) HdX2 _ x]
+    rw [hHdV_def, riemannianFiberNormSq_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 2 (2 + i) HdX2 _ x]
     exact le_trans (hX2_head x) (hX1_head x)
   have hHdV_res : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
@@ -1419,31 +1419,31 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_background
           ((iteratedCovGrad (I := I) g₀ 1 1 i X - HdB).toSection x) := by
     intro x
     have hVd : iteratedCovGrad (I := I) g₀ 2 2 i V - HdV =
-        reindexCoeffGen (I := I) (M := M) g₀ 2 (2 + i)
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 (2 + i)
           (iteratedCovGrad (I := I) g₀ 2 2 i
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (slotExtend (I := I) (M := M) g₀ 1 1 X)) - HdX2)
           (Equiv.swap (0 : Fin 2) 1) := by
       rw [hVrepr, hHdV_def]
-      rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M) g₀ 2 2 _ _ i]
-      rw [reindexCoeffGen_sub (I := I) (M := M) (r := 2) (s := 2 + i) g₀]
+      rw [iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 _ _ i]
+      rw [reindexCoefficientInputSlots_sub (I := I) (M := M) (r := 2) (s := 2 + i) g₀]
     rw [hVd]
-    rw [riemannianFiberNormSq_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 (2 + i) _ _ x]
+    rw [riemannianFiberNormSq_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 2 (2 + i) _ _ x]
     exact le_trans (hX2_res x) (hX1_res x)
   obtain ⟨HdV2i, h2i_head, h2i_res⟩ := exists_rsDomDomCongrSection_head_transport (I := I) (M := M)
     g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) V i HdV
   set HdV2 : SmoothCcTensor g₀ 2 (2 + i) :=
-    reindexCoeffGen (I := I) (M := M) g₀ 2 (2 + i) HdV2i (Equiv.swap (0 : Fin 2) 1)
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 (2 + i) HdV2i (Equiv.swap (0 : Fin 2) 1)
     with hHdV2_def
   set V2 : SmoothCcTensor g₀ 2 2 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 2 2
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) V)
       (Equiv.swap (0 : Fin 2) 1) with hV2_def
   have hHdV2_head : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x (HdV2.toSection x) ≤
         n * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x (HdB.toSection x) := by
     intro x
-    rw [hHdV2_def, riemannianFiberNormSq_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 (2 + i) HdV2i _ x]
+    rw [hHdV2_def, riemannianFiberNormSq_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 2 (2 + i) HdV2i _ x]
     exact le_trans (h2i_head x) (hHdV_head x)
   have hHdV2_res : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
@@ -1452,16 +1452,16 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_background
           ((iteratedCovGrad (I := I) g₀ 1 1 i X - HdB).toSection x) := by
     intro x
     have hV2d : iteratedCovGrad (I := I) g₀ 2 2 i V2 - HdV2 =
-        reindexCoeffGen (I := I) (M := M) g₀ 2 (2 + i)
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 (2 + i)
           (iteratedCovGrad (I := I) g₀ 2 2 i
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) V) -
             HdV2i)
           (Equiv.swap (0 : Fin 2) 1) := by
       rw [hV2_def, hHdV2_def]
-      rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M) g₀ 2 2 _ _ i]
-      rw [reindexCoeffGen_sub (I := I) (M := M) (r := 2) (s := 2 + i) g₀]
+      rw [iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 _ _ i]
+      rw [reindexCoefficientInputSlots_sub (I := I) (M := M) (r := 2) (s := 2 + i) g₀]
     rw [hV2d]
-    rw [riemannianFiberNormSq_reindexCoeffGen_eq (I := I) (M := M) g₀ 2 (2 + i) _ _ x]
+    rw [riemannianFiberNormSq_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 2 (2 + i) _ _ x]
     exact le_trans (h2i_res x) (hHdV_res x)
   refine ⟨HdV + HdV2, ?_, ?_⟩
   · intro x

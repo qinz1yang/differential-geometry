@@ -848,7 +848,7 @@ private lemma coeffContraction_Hs_bound_sharp
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((j + 3 : ℕ) : ℝ)
           (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 p T₀)‖ := by
     intro j
-    obtain ⟨C1, hC1_nn, hC1⟩ := exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general g₀ j
+    obtain ⟨C1, hC1_nn, hC1⟩ := exists_smoothCcToTensorHs_le_iteratedCovGrad_sum g₀ j
     refine ⟨C1 * ∑ q ∈ Finset.range (j + 1), Cm q,
       mul_nonneg hC1_nn (Finset.sum_nonneg (fun q _ => hCm_nn q)),
       fun {R₀} p T₀ hball Φ hΦ W hW => ?_⟩
@@ -899,7 +899,7 @@ private lemma fixed_coeffContraction_Hs_of_jet_le
   obtain ⟨Capp, hCapp_nn, hCapp⟩ :=
     exists_operatorFieldApplication_iteratedCovGrad_l2_window_bound (I := I) (M := M) g₀ b₀ 2 Φ
   choose Chs hChs_nn hChs using fun j : ℕ =>
-    exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general
+    exists_smoothCcToTensorHs_le_iteratedCovGrad_sum
       (I := I) (M := M) g₀ j
   refine ⟨fun j => Chs j *
       ∑ q ∈ Finset.range (j + 1), Capp q * ∑ l ∈ Finset.range (q + 1), Kw l,
@@ -1026,7 +1026,7 @@ theorem exists_coeffContraction_covGrad_secondCovGrad_affine_l2_le
   set w := Module.finrank ℝ E / 2 + 2 with hwdef
   obtain ⟨Cemb, hCemb_nn, hCemb⟩ := jet_fibreNormSq_sup_le_sharp (I := I) (M := M) g₀ (2 + 2) 2
   obtain ⟨CbrA, hCbrA_nn, hCbrA⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   obtain ⟨Cj0, hCj0_nn, hCj0⟩ := iteratedCovGrad_le_connLap_add (I := I) (M := M) g₀ 0
   set BackgroundradSq : ℝ := Cemb 1 *
     ∑ m ∈ Finset.range w, Kc (1 + m) * (1 + CbrA ^ 2) with hBackgroundradSq_def
@@ -1190,15 +1190,15 @@ theorem exists_rawConnLap_coeffContraction_secondCovGrad_commutator_Hs_family_af
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((j + 3 : ℕ) : ℝ) S‖ := by
   classical
   set Cbr : ℕ → ℝ := fun m =>
-    (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ m).choose
+    (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ m).choose
     with hCbrdef
   have hCbr_nn : ∀ m, 0 ≤ Cbr m := fun m =>
-    (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ m).choose_spec.1
+    (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ m).choose_spec.1
   have hCbr : ∀ (m : ℕ) (Z : SmoothCcTensor g₀ 0 2),
       ∑ j ∈ Finset.range (m + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j Z‖ ≤
         Cbr m * ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ) Z‖ :=
     fun m Z =>
-      (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general
+      (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs
         (I := I) (M := M) g₀ m).choose_spec.2 Z
   set KcLin : ℕ → ℝ := fun i => Real.sqrt (Kc i) * (1 + Cbr (i + 1)) with hKcLindef
   have hKcLin_nn : ∀ i, 0 ≤ KcLin i := fun i =>

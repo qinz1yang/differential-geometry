@@ -203,9 +203,9 @@ theorem smoothRemainderDiff_ballLipschitz_sobolev
   classical
   have hordB : (((a + 2 : ℕ)) : ℝ) = (a : ℝ) + 2 := by push_cast; ring
   obtain ⟨Ca, hCa_nn, hCa⟩ :=
-    exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general (I := I) (M := M) g₀ a
+    exists_smoothCcToTensorHs_le_iteratedCovGrad_sum (I := I) (M := M) g₀ a
   obtain ⟨Cb, hCb_nn, hCb⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   have hR'_nn : (0 : ℝ) ≤ Cb * R := mul_nonneg hCb_nn hR.le
   obtain ⟨Ccol, hCcol_nn, hCcol⟩ :=
     deTurckRemainderDiff_iteratedCovGradSum_ballLipschitz (I := I) (M := M) g₀ g_bg a ha_super
@@ -334,9 +334,9 @@ theorem deTurckRemainderDiff_iteratedCovGrad_ballLipschitz_dataWeighted_of_symm
     deTurckSmoothRemainderDiff_iteratedCovGrad_l2_dataWeighted_ballUniform_of_symm
       (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   obtain ⟨Cb2, hCb2_nn, hCb2⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   obtain ⟨Cb1, hCb1_nn, hCb1⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 1)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 1)
   refine ⟨Ccov * max Cb2 Cb1, by positivity, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTsymm hT'symm hTball hT'ball q hq
   set H2 : ℝ := ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (T - T')‖ with hH2_def
@@ -444,9 +444,9 @@ theorem smoothRemainderDiff_ballLipschitz_sobolev_dataWeighted_of_symm
   classical
   have hordB : (((a + 2 : ℕ)) : ℝ) = (a : ℝ) + 2 := by push_cast; ring
   obtain ⟨Ca, hCa_nn, hCa⟩ :=
-    exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general (I := I) (M := M) g₀ a
+    exists_smoothCcToTensorHs_le_iteratedCovGrad_sum (I := I) (M := M) g₀ a
   obtain ⟨Cb, hCb_nn, hCb⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   have hR'_nn : (0 : ℝ) ≤ Cb * R := mul_nonneg hCb_nn hR.le
   obtain ⟨Ccol, hCcol_nn, hCcol⟩ :=
     deTurckRemainderDiff_iteratedCovGrad_ballLipschitz_dataWeighted_of_symm
@@ -1081,9 +1081,9 @@ theorem exists_norm_smoothCcToTensorHs_ccTensor02Symm_le (g₀ : SmoothRiemannia
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (n : ℝ) (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ≤
         C * ‖smoothCcToTensorHs (I := I) (M := M) g₀ (n : ℝ) T‖ := by
   obtain ⟨Ca, hCa_nn, hCa⟩ :=
-    exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general (I := I) (M := M) g₀ n
+    exists_smoothCcToTensorHs_le_iteratedCovGrad_sum (I := I) (M := M) g₀ n
   obtain ⟨Cb, hCb_nn, hCb⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ n
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ n
   refine ⟨Ca * Cb, mul_nonneg hCa_nn hCb_nn, fun T => ?_⟩
   have h1 := hCa (ccTensor02Symm (I := I) (M := M) g₀ T)
   have hterm : ∑ j ∈ Finset.range (n + 1),

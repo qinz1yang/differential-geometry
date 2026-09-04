@@ -209,7 +209,7 @@ private lemma wkpNorm_offKernelSmoothCoef_mul_le_uniform
 
 end OffKernelCoefBoundUniform
 
-section MainBoundUnconditional
+section MainBound
 
 omit [CompleteSpace E] in
 theorem wkpNorm_crossRightGradCoeffDivLimit_le
@@ -518,9 +518,9 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le
               ((Fintype.card ι : ℝ) * Cpart)) * (Sumcomp + Sumpart) :=
         (mul_add _ _ _).symm
 
-end MainBoundUnconditional
+end MainBound
 
-section MainBoundUniformUnconditional
+section MainBoundUniform
 
 omit [CompleteSpace E] in
 theorem wkpNorm_crossRightGradCoeffDivLimit_le_uniform
@@ -861,7 +861,7 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le_uniform
               ((Fintype.card ι : ℝ) * Cpart)) * (Sumcomp + Sumpart) :=
         (mul_add _ _ _).symm
 
-end MainBoundUniformUnconditional
+end MainBoundUniform
 
 end TensorSpectral
 end Parabolic

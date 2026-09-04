@@ -107,7 +107,7 @@ theorem timeLipschitz_of_hasDerivAt
   classical
   intro s hs t ht x hxK
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gRef basis hON

@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Bas
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
-import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry
+import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Geodesic
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Construction.CompactPerturbationCompleteness
 
@@ -2063,7 +2063,7 @@ private theorem intrExt_quad_le
             z J V V) := gExt.symm _ _ _
     _ = Geometry.Curvature.metricRm04StdAt
           (I := 𝓘(Real, E)) (M := E) gExt z J V V J := by
-      exact (Integral.Connection.rm04_eq_inner
+      exact (DifferentialGeometry.Geometry.Curvature.rm04_eq_inner
         (I := 𝓘(Real, E)) gExt z J V J).symm
     _ = Geometry.Curvature.metricRm04StdAt
           (I := 𝓘(Real, E)) (M := U)
@@ -2123,7 +2123,7 @@ private theorem intrExt_quad_le
           (Geometry.Curvature.riemannOp
             (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gPull)
             zU J V V) := by
-      exact Integral.Connection.rm04_eq_inner
+      exact DifferentialGeometry.Geometry.Curvature.rm04_eq_inner
         (I := 𝓘(Real, E)) gPull zU J V J
     _ = gPull.inner zU
           (Geometry.Curvature.riemannOp

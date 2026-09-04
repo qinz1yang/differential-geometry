@@ -50,7 +50,7 @@ namespace BochnerInternal
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma contMDiff_g_inner_aux
+private lemma contMDiff_g_inner
     (g : SmoothRiemannianMetric I M)
     {v w : ∀ x : M, TangentSpace I x}
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -81,7 +81,7 @@ theorem contMDiff_g_inner_of_smooth_sections
   have hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _)) x (Y x)) := Y.contMDiff
-  exact BochnerInternal.contMDiff_g_inner_aux (I := I) (M := M) g hX hY
+  exact BochnerInternal.contMDiff_g_inner (I := I) (M := M) g hX hY
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normGradSqFun_continuous [I.Boundaryless]

@@ -214,7 +214,7 @@ theorem lieCorrectionZeroInsDiffAntidiagonalTupleGridWindow
       (I := I) (M := M) g₀ 0 AD i x]
     exact hα g₁ P htie hδ_le hδ0 hδ i x
   let A := endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 N
-  let B := reindexCoeffGen (I := I) (M := M) g₀ 2 2
+  let B := reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
     (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2
       (Equiv.swap (0 : Fin 2) 1) A) (Equiv.swap (0 : Fin 2) 1)
   have hA : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x

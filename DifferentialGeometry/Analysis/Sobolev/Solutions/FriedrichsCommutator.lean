@@ -359,7 +359,7 @@ private lemma aemeasurable_enorm_sq
   ((hu.aestronglyMeasurable.aemeasurable.enorm).pow_const _)
 
 omit [NeZero d] in
-private lemma eLpNorm_commutatorPointwise_sq_le_aux
+private lemma eLpNorm_commutatorPointwise_sq_le
     {a u φ : E → ℝ} {Λ ε : ℝ}
     (hΛ_nn : 0 ≤ Λ) (hε_nn : 0 ≤ ε)
     (ha_cont : Continuous a)
@@ -510,7 +510,7 @@ theorem eLpNorm_commutatorPointwise_le
         (∫⁻ y, ENNReal.ofReal (φ y) ∂(volume : Measure E)) *
         eLpNorm u 2 (volume : Measure E) := by
   classical
-  have h_sq := eLpNorm_commutatorPointwise_sq_le_aux
+  have h_sq := eLpNorm_commutatorPointwise_sq_le
     hΛ_nn hε_nn ha_cont ha_bd ha_lip hu hφ_cont hφ_compact hφ_nn hφ_supp
   have h_root := ENNReal.rpow_le_rpow h_sq (by norm_num : (0 : ℝ) ≤ (1 : ℝ) / 2)
   have hLHS : (eLpNorm (commutatorPointwise a u φ) 2 (volume : Measure E)

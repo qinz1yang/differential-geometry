@@ -45,7 +45,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 
-theorem exists_secondCovGrad_l2NormSq_le_rawConnLap_rankGen
+theorem exists_secondCovGrad_l2NormSq_le_rawConnLap_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ∃ Cg : ℝ, 0 ≤ Cg ∧
       ∀ S : SmoothCcTensor g 0 s,
@@ -93,9 +93,9 @@ theorem exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le
   obtain ⟨H_R, H_dR, hsec⟩ :=
     exists_pointwiseTensorCurv_firstOrder_homField_section (I := I) (M := M) g s
   obtain ⟨ccR, hccR_nn, hccR⟩ :=
-    exists_appFullSec_on_jet_iteratedCovGrad_window_bound (I := I) (M := M) g 0 s 1 (s + 1) H_R
+    exists_homTensorRSFieldApply_on_jet_iteratedCovGrad_window_bound (I := I) (M := M) g 0 s 1 (s + 1) H_R
   obtain ⟨ccdR, hccdR_nn, hccdR⟩ :=
-    exists_appFullSec_on_jet_iteratedCovGrad_window_bound (I := I) (M := M) g 0 s 0 (s + 1) H_dR
+    exists_homTensorRSFieldApply_on_jet_iteratedCovGrad_window_bound (I := I) (M := M) g 0 s 0 (s + 1) H_dR
   refine ⟨fun p => Real.sqrt (2 * ccR p + 2 * ccdR p), fun p => Real.sqrt_nonneg _,
     fun p S => ?_⟩
   set Kp : ℝ := Real.sqrt (2 * ccR p + 2 * ccdR p) with hKp_def
@@ -199,7 +199,7 @@ theorem exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le
   simpa only using hL2
 
 
-private theorem iteratedRoughLapGrad_commutator_l2Norm_le_aux
+private theorem iteratedRoughLapGrad_commutator_l2Norm_le
     (g : SmoothRiemannianMetric I M) (m : ℕ) :
     ∀ s : ℕ, ∃ Cfun : ℕ → ℝ, (∀ p, 0 ≤ Cfun p) ∧
       ∀ (p : ℕ) (S : SmoothCcTensor g 0 s),
@@ -327,7 +327,7 @@ theorem exists_iteratedRoughLapGrad_commutator_l2Norm_le
             iteratedCovGrad g 0 s m (rawTensorConnLapSmooth (I := I) g 0 s S)‖ ≤
           C * ∑ a ∈ Finset.range (m + 1), ‖iteratedCovGrad g 0 s a S‖ := by
   obtain ⟨Cfun, _hCfun_nn, hbound⟩ :=
-    iteratedRoughLapGrad_commutator_l2Norm_le_aux (I := I) (M := M) g m s
+    iteratedRoughLapGrad_commutator_l2Norm_le (I := I) (M := M) g m s
   refine ⟨Cfun 0, _hCfun_nn 0, fun S => ?_⟩
   have h := hbound 0 S
   simpa only [iteratedCovGrad_zero, Nat.add_zero, Nat.add_zero] using h
@@ -353,9 +353,9 @@ private theorem exists_iteratedCovGrad_rawConnLap_l2Norm_le
           C * ∑ b ∈ Finset.range (a + 3), ‖iteratedCovGrad g 0 s b S‖ := by
   intro s
   obtain ⟨K, hK_one, hK⟩ :=
-    exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen (I := I) (M := M) g
+    exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_covariantTensor (I := I) (M := M) g
   obtain ⟨Cfun, hCfun_nn, hCfun⟩ :=
-    iteratedRoughLapGrad_commutator_l2Norm_le_aux (I := I) (M := M) g a s
+    iteratedRoughLapGrad_commutator_l2Norm_le (I := I) (M := M) g a s
   have hK_nn : 0 ≤ K := le_trans (by norm_num) hK_one
   refine ⟨K + Cfun 0, add_nonneg hK_nn (hCfun_nn 0), fun S => ?_⟩
   set FULL : ℝ := ∑ b ∈ Finset.range (a + 3), ‖iteratedCovGrad g 0 s b S‖ with hFULL
@@ -657,7 +657,7 @@ private theorem covGrad_norm_sq_le_rawConnLap_mul_self
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     ‖covGrad (I := I) (M := M) g 0 s S‖ ^ 2 ≤
       ‖rawTensorConnLapSmooth (I := I) g 0 s S‖ * ‖S‖ := by
-  have h := covGrad_l2NormSq_le_rawConnLap_mul_self_gen (I := I) (M := M) g s S
+  have h := covGrad_l2NormSq_le_rawConnLap_mul_self_covariantTensor (I := I) (M := M) g s S
   rwa [tensorL2Norm_toFun_eq_norm (I := I) (M := M) g (covGrad (I := I) (M := M) g 0 s S),
     tensorL2Norm_toFun_eq_norm (I := I) (M := M) g (rawTensorConnLapSmooth (I := I) g 0 s S),
     tensorL2Norm_toFun_eq_norm (I := I) (M := M) g S] at h
@@ -668,7 +668,7 @@ private theorem exists_secondCovGrad_norm_sq_le_rawConnLap
       ∀ S : SmoothCcTensor g 0 s,
         ‖covGrad (I := I) (M := M) g 0 (s + 1) (covGrad (I := I) (M := M) g 0 s S)‖ ^ 2 ≤
           Cg * (‖rawTensorConnLapSmooth (I := I) g 0 s S‖ ^ 2 + ‖S‖ ^ 2) := by
-  obtain ⟨Cg, hCg, hbound⟩ := exists_secondCovGrad_l2NormSq_le_rawConnLap_rankGen (I := I) (M := M)
+  obtain ⟨Cg, hCg, hbound⟩ := exists_secondCovGrad_l2NormSq_le_rawConnLap_covariantTensor (I := I) (M := M)
     g s
   refine ⟨Cg, hCg, fun S => ?_⟩
   have h := hbound S

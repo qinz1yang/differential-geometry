@@ -23,7 +23,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bound
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Fin.Tuple.NatAntidiagonal
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TraceGrid
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -552,7 +551,7 @@ theorem ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_ballUniform
             (slotInsertEndoCc (I := I) (M := M) g₀ 1
               (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))).toSection x +
           (iteratedCovGrad (I := I) g₀ 2 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (slotInsertEndoCc (I := I) (M := M) g₀ 1
                   (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
@@ -561,7 +560,7 @@ theorem ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_ballUniform
         iteratedCovGrad_add (I := I) g₀ 2 2 i
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (slotInsertEndoCc (I := I) (M := M) g₀ 1
                 (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
@@ -572,7 +571,7 @@ theorem ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_ballUniform
     refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
     have hswap : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 2 2 i
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (slotInsertEndoCc (I := I) (M := M) g₀ 1
                 (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
@@ -1177,7 +1176,7 @@ theorem ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_tameEnvelope
             (slotInsertEndoCc (I := I) (M := M) g₀ 1
               (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))).toSection x +
           (iteratedCovGrad (I := I) g₀ 2 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (slotInsertEndoCc (I := I) (M := M) g₀ 1
                   (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
@@ -1186,7 +1185,7 @@ theorem ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_tameEnvelope
         iteratedCovGrad_add (I := I) g₀ 2 2 i
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (slotInsertEndoCc (I := I) (M := M) g₀ 1
                 (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
@@ -1197,7 +1196,7 @@ theorem ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_tameEnvelope
     refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
     have hswap : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 2 2 i
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (slotInsertEndoCc (I := I) (M := M) g₀ 1
                 (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
@@ -1332,7 +1331,7 @@ theorem ricciOrderZeroBaseCoeff_backgroundDifference_perOrder_l2_tameEnvelope
   refine le_trans hkey (le_of_eq ?_)
   ring
 
-theorem ricciOrderZeroBaseCoeff_perOrder_l2_tameEnvelope_generic
+theorem ricciOrderZeroBaseCoeff_perOrder_l2_tameEnvelope
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

@@ -1202,7 +1202,7 @@ private theorem termJet_iterGrad_rawConnLap_le
           C * ∑ b ∈ Finset.range (a + 3), ‖iteratedCovGrad (I := I) g₀ 0 s b S‖ := by
   intro s
   obtain ⟨K, hK_one, hK⟩ :=
-    exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen (I := I) (M := M) g₀
+    exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_covariantTensor (I := I) (M := M) g₀
   obtain ⟨Cfun, hCfun_nn, hCfun⟩ :=
     termJet_lapGrad_commutator_le (I := I) (M := M) g₀ a s
   have hK_nn : 0 ≤ K := le_trans (by norm_num) hK_one
@@ -1648,7 +1648,7 @@ private theorem termAsm_operatorFieldApplication_jet_window (g₀ : SmoothRieman
   exact hsh
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem termAsm_appFullSec_jet_window (g₀ : SmoothRiemannianMetric I M) (base c : ℕ)
+private theorem termAsm_homTensorRSFieldApply_jet_window (g₀ : SmoothRiemannianMetric I M) (base c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) 0 (2 + base) c I) :
     ∃ cc : ℕ → ℝ, (∀ p, 0 ≤ cc p) ∧ ∀ (u₀ : SmoothCcTensor g₀ 0 2) (p : ℕ),
       ‖iteratedCovGrad (I := I) g₀ 0 c p
@@ -1656,7 +1656,7 @@ private theorem termAsm_appFullSec_jet_window (g₀ : SmoothRiemannianMetric I M
             (iteratedCovGrad (I := I) g₀ 0 2 base u₀))‖ ≤
         cc p * ∑ j ∈ Finset.range (p + base + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
   obtain ⟨cq, hcq_nn, hcq⟩ :=
-    exists_appFullSec_iteratedCovGrad_l2_window_bound (I := I) (M := M) g₀ 0 (2 + base) c Q
+    exists_homTensorRSFieldApply_iteratedCovGrad_l2_window_bound (I := I) (M := M) g₀ 0 (2 + base) c Q
   refine ⟨cq, hcq_nn, fun u₀ p => ?_⟩
   refine le_trans (hcq (iteratedCovGrad (I := I) g₀ 0 2 base u₀) p) ?_
   refine mul_le_mul_of_nonneg_left ?_ (hcq_nn p)
@@ -1665,7 +1665,7 @@ private theorem termAsm_appFullSec_jet_window (g₀ : SmoothRiemannianMetric I M
   exact hsh
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem termAsm_operatorFieldApplication_appFullSec_jet_window (g₀ : SmoothRiemannianMetric I M)
+private theorem termAsm_operatorFieldApplication_homTensorRSFieldApply_jet_window (g₀ : SmoothRiemannianMetric I M)
     (base b2 c2 : ℕ) (Q : HomTensorRSField (E := E) (M := M) 0 (2 + base) b2 I)
     (Φ : SmoothCcTensor g₀ b2 c2) :
     ∃ cc : ℕ → ℝ, (∀ p, 0 ≤ cc p) ∧ ∀ (u₀ : SmoothCcTensor g₀ 0 2) (p : ℕ),
@@ -1676,7 +1676,7 @@ private theorem termAsm_operatorFieldApplication_appFullSec_jet_window (g₀ : S
         cc p * ∑ j ∈ Finset.range (p + base + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
   obtain ⟨Cf, hCf_nn, hCf⟩ := termJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ b2 c2 Φ
   obtain ⟨cq, hcq_nn, hcq⟩ :=
-    termAsm_appFullSec_jet_window (I := I) (M := M) g₀ base b2 Q
+    termAsm_homTensorRSFieldApply_jet_window (I := I) (M := M) g₀ base b2 Q
   refine ⟨fun p => Cf p * ∑ e ∈ Finset.range (p + 1), cq e,
     fun p => mul_nonneg (hCf_nn p) (Finset.sum_nonneg fun e _ => hcq_nn e),
     fun u₀ p => ?_⟩
@@ -1807,7 +1807,7 @@ private theorem termAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem termSwap_appFullSec_sub_right (g : SmoothRiemannianMetric I M) (t : ℕ)
+private theorem termSwap_homTensorRSFieldApply_sub_right (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (A B : SmoothCcTensor g 0 (t + 2)) :
     homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F (A - B) =
@@ -1821,7 +1821,7 @@ private theorem termSwap_appFullSec_sub_right (g : SmoothRiemannianMetric I M) (
     (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F A).toSection x -
       (homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F B).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [appFullSec_toSection, appFullSec_toSection, appFullSec_toSection]
+  rw [homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection]
   rw [show ((A - B).toSection x : TensorRSSpace 0 (t + 2) I x) =
       A.toSection x - B.toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
@@ -1845,8 +1845,8 @@ private theorem termSwap_oneMinusConnLapSmooth_comm (g : SmoothRiemannianMetric 
       homTensorRSFieldApply (I := I) (M := M) g 0 (t + 2) (t + 2) F
         (oneMinusConnLapSmooth (I := I) g 0 (t + 2) U) := by
   unfold oneMinusConnLapSmooth
-  rw [appFullSec_swap_rawConnLap_comm (I := I) (M := M) g t F hF U,
-    termSwap_appFullSec_sub_right (I := I) (M := M) g t F U
+  rw [homTensorRSFieldApply_swap_rawConnLap_comm (I := I) (M := M) g t F hF U,
+    termSwap_homTensorRSFieldApply_sub_right (I := I) (M := M) g t F U
       (rawTensorConnLapSmooth (I := I) g 0 (t + 2) U)]
 
 omit [SigmaCompactSpace M] in
@@ -2253,8 +2253,8 @@ private theorem termStep_pairing_diff_abs_le (g₀ g₁ : SmoothRiemannianMetric
     (covGrad (I := I) (M := M) g₀ (2 + m + 1) (2 + m + 1)
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ (2 + m) (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)))
   obtain ⟨cDD, hcDD_nn, hcDD⟩ :=
-    termAsm_appFullSec_jet_window (I := I) (M := M) g₀ m ((2 + m) + 2) R
-  obtain ⟨cD2Y, hcD2Y_nn, hcD2Y⟩ := termAsm_operatorFieldApplication_appFullSec_jet_window (I := I) (M := M) g₀ m
+    termAsm_homTensorRSFieldApply_jet_window (I := I) (M := M) g₀ m ((2 + m) + 2) R
+  obtain ⟨cD2Y, hcD2Y_nn, hcD2Y⟩ := termAsm_operatorFieldApplication_homTensorRSFieldApply_jet_window (I := I) (M := M) g₀ m
     ((2 + m) + 2) (2 + m + 1 + 1) R
     (slotExtend (I := I) (M := M) g₀ (2 + m + 1) (2 + m + 1)
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ (2 + m) (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)))
@@ -2632,7 +2632,7 @@ private theorem termStep_pairing_diff_abs_le (g₀ g₁ : SmoothRiemannianMetric
       (homTensorRSFieldApply (I := I) (M := M) g₀ 0 ((2 + m) + 2) ((2 + m) + 2) F
         (covGrad (I := I) (M := M) g₀ 0 (2 + m + 1)
           (iteratedCovGrad (I := I) g₀ 0 2 (m + 1) u₀)))]
-    exact operatorFieldApplication_slotExtend_slotInsert_appFullSec_swap_conj (I := I) (M := M) g₀ (2 + m)
+    exact operatorFieldApplication_slotExtend_slotInsert_homTensorRSFieldApply_swap_conj (I := I) (M := M) g₀ (2 + m)
       (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) F hF
       (covGrad (I := I) (M := M) g₀ 0 (2 + m + 1)
         (iteratedCovGrad (I := I) g₀ 0 2 (m + 1) u₀))
@@ -2657,7 +2657,7 @@ private theorem termStep_pairing_diff_abs_le (g₀ g₁ : SmoothRiemannianMetric
           (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))
         (iteratedCovGrad (I := I) g₀ 0 2 (m + 1 + 1) u₀)).toFun := by
     rw [hconj]
-    exact (appFullSec_swap_l2Inner_hop (I := I) (M := M) g₀ (2 + m) F hF
+    exact (homTensorRSFieldApply_swap_l2Inner_hop (I := I) (M := M) g₀ (2 + m) F hF
       (oneMinusConnLapSmoothIter (I := I) g₀ 0 (2 + m + 1 + 1) k
         (covGrad (I := I) (M := M) g₀ 0 (2 + m + 1)
           (iteratedCovGrad (I := I) g₀ 0 2 (m + 1) u₀)))

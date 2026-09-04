@@ -21,7 +21,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.Analysis.Sobolev
   (covariantJetNormSq covariantJetNormSq_add_le
     covariantJetNormSq_domDomCongrSection covariantJetNormSq_nonneg
-    covariantJetNormSq_reindexCoeffGen covariantJetNormSq_rsDomDomCongrSection
+    covariantJetNormSq_reindexCoefficientInputSlots covariantJetNormSq_rsDomDomCongrSection
     covariantJetNormSq_smul domDomCongrSection_sub rsDomDomCongrSection_sub
     covariantJetNormSq_zero)
 open DifferentialGeometry.Analysis.Sobolev
@@ -452,7 +452,7 @@ private theorem exists_backgroundMixedConnectionHalf_pairing_secondOrder_bound
   have hTr2D : covariantJetNormSq (I := I) (M := M) g 2 (Tr2T - Tr2U) ≤
       (Ct2 * N) ^ 2 := by
     rw [show Tr2T - Tr2U = reindexedPureTrace (I := I) (M := M) g gT 2 σ -
-        reindexedPureTrace (I := I) (M := M) g gU 2 σ by rfl, reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+        reindexedPureTrace (I := I) (M := M) g gU 2 σ by rfl, reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     simpa only [N] using hp2 T U gT gU hTtie hUtie hTHs2p hUHs2p
   have hTr3T : covariantJetNormSq (I := I) (M := M) g 2 Tr3T ≤ Bt3 ^ 2 := by
     rw [show Tr3T = reindexedPureTrace (I := I) (M := M) g gT 3
@@ -466,7 +466,7 @@ private theorem exists_backgroundMixedConnectionHalf_pairing_secondOrder_bound
       (Ct3 * N) ^ 2 := by
     rw [show Tr3T - Tr3U = reindexedPureTrace (I := I) (M := M) g gT 3
         lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour - reindexedPureTrace (I := I) (M := M) g gU 3
-          lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour by rfl, reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+          lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour by rfl, reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     simpa only [N] using hp3 T U gT gU hTtie hUtie hTHs3p hUHs3p
   have hTr4T : covariantJetNormSq (I := I) (M := M) g 2 Tr4T ≤ Bt4 ^ 2 := by
     rw [show Tr4T = reindexedPureTrace (I := I) (M := M) g gT 4
@@ -480,7 +480,7 @@ private theorem exists_backgroundMixedConnectionHalf_pairing_secondOrder_bound
       (Ct4 * N) ^ 2 := by
     rw [show Tr4T - Tr4U = reindexedPureTrace (I := I) (M := M) g gT 4
         lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne - reindexedPureTrace (I := I) (M := M) g gU 4
-          lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne by rfl, reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+          lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne by rfl, reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     simpa only [N] using hp4 T U gT gU hTtie hUtie hTHs4p hUHs4p
   have hK0T : covariantJetNormSq (I := I) (M := M) g 2 K0T ≤ (4 * A) ^ 2 := by
     simpa only [K0T, covariantJetNormSq, Nat.reduceAdd] using

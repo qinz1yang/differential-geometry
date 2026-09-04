@@ -396,7 +396,7 @@ theorem open_upgrade_of_canonical_metric_compactness
       (by simpa only [beta, psi, RealTimeInterval.openWindow] using ht)
       q hq y
   simpa only [mc] using
-    (open_upgrade_of_raw (I := I) (X := X) mc Phi bf hsrc htgt
+    (exists_complete_flowUpgrade_of_open_metric_bounds (I := I) (X := X) mc Phi bf hsrc htgt
       hzero hD cLow hcLow hbound hcovTail hlipTail hlipSrc hcp)
 
 end HCGCompactness

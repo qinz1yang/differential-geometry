@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Reduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.UhlenbeckReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Derivation.Trace
 import DifferentialGeometry.Geometry.Curvature.Contractions.CurvatureActionLowering
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Curvature.Difference
@@ -367,7 +367,7 @@ theorem n2RicTr
   let gInvAt : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
     fun k l => coordInv (I := I) S x₀ t x₀ k l
   have hinv :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric t) x₀ basis gInvAt := by
     have h :=
       DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) (S.family.metric t) x₀ hx₀
@@ -403,7 +403,7 @@ theorem ricTr
   have hx₀ : x₀ ∈ coordinateFrameSet (I := I) x₀ := coordinateFrameAt_mem (I := I) x₀
   have hframe := coordinateFrameAt_isLocalFrame_one (I := I) x₀
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric (t : Real)) x₀
         (hframe.toBasisAt hx₀)
         (fun k l : CoordinateIdx (𝕜 := Real) E =>
@@ -457,7 +457,7 @@ theorem rmRicciId
   have hx₀ : x₀ ∈ coordinateFrameSet (I := I) x₀ := coordinateFrameAt_mem (I := I) x₀
   have hframe := coordinateFrameAt_isLocalFrame_one (I := I) x₀
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric (t : Real)) x₀
         (hframe.toBasisAt hx₀)
         (fun k l : CoordinateIdx (𝕜 := Real) E =>
@@ -775,7 +775,7 @@ theorem ricCommOfSol
   have hx₀ : x₀ ∈ coordinateFrameSet (I := I) x₀ := coordinateFrameAt_mem (I := I) x₀
   have hframe := coordinateFrameAt_isLocalFrame_one (I := I) x₀
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric (t : Real)) x₀
         (hframe.toBasisAt hx₀)
         (fun p r : CoordinateIdx (𝕜 := Real) E =>
@@ -1069,7 +1069,7 @@ theorem rm04LapFam_real
   have hy : y ∈ coordinateFrameSet (I := I) y := coordinateFrameAt_mem (I := I) y
   have hframe := coordinateFrameAt_isLocalFrame_one (I := I) y
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric r) y (coordBasisAt (I := I) y)
         (fun p q : CoordinateIdx (𝕜 := Real) E => coordInv (I := I) S y r y p q) :=
     metricInverseInBasis_of_local

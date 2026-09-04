@@ -95,11 +95,11 @@ theorem iterCovGrad_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ)
       refine Fin.cases ?_ ?_ i
       · simp
       · intro k; simp [Matrix.vecTail]
-    rw [covGrad_apply_unit_eval_genVal (I := I) (M := M) g (s + j) Tj x v]
+    rw [covGrad_apply_unit_eval (I := I) (M := M) g (s + j) Tj x v]
     rw [tensorCovDerivAt_def (I := I) (M := M) g 0 (s + j) Tj x
       (tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0)),
       ContinuousLinearEquiv.symm_apply_apply]
-    rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g (s + j) (Tj.toSection) x (v 0)]
+    rw [covDeriv_unit_eval_eq (I := I) (M := M) g (s + j) (Tj.toSection) x (v 0)]
     rw [ih]
     rw [← hXx]
     rw [← nabla0SFun_eq_tensor0SCovariantDerivative (I := I) g (s + j) X

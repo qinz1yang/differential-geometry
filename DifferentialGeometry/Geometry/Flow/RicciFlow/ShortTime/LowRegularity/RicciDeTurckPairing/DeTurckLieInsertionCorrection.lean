@@ -18,10 +18,10 @@ open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.Analysis.Sobolev
   (covariantJetNormSq covariantJetNormSq_add_le covariantJetNormSq_domDomCongrSection
-    covariantJetNormSq_mono covariantJetNormSq_nonneg covariantJetNormSq_reindexCoeffGen
+    covariantJetNormSq_mono covariantJetNormSq_nonneg covariantJetNormSq_reindexCoefficientInputSlots
     covariantJetNormSq_rsDomDomCongrSection deTurckLieCovariantDerivativeInsertionField
     domDomCongrSection_sub exists_covariantJetNormSq_three_operatorFieldComposition_tame_bound
-    covariantJetNormSq_two_covGrad_le_three reindexCoeffGen_sub rsDomDomCongrSection
+    covariantJetNormSq_two_covGrad_le_three reindexCoefficientInputSlots_sub rsDomDomCongrSection
     rsDomDomCongrSection_sub rsDomDomCongrSection_toSection)
 open DifferentialGeometry.Analysis.Spectral
   (ccOperatorFieldComp operatorFieldComposition_sub_left covGrad_sub lieCorrectionZeroInsertion nEndo_diff
@@ -52,7 +52,7 @@ private noncomputable def symmetrizedSlotInsertion
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     SmoothCcTensor g 2 2 :=
   let X := slotInsertEndoCc (I := I) (M := M) g 1 Λ
-  X + reindexCoeffGen (I := I) (M := M) g 2 2
+  X + reindexCoefficientInputSlots (I := I) (M := M) g 2 2
     (rsDomDomCongrSection (I := I) (M := M) g 2 2
       (Equiv.swap (0 : Fin 2) 1) X)
     (Equiv.swap (0 : Fin 2) 1)
@@ -69,14 +69,14 @@ private theorem covariantJetNormSq_symmetrizedSlotInsertion_le
   let X : SmoothCcTensor g 2 2 :=
     slotInsertEndoCc (I := I) (M := M) g 1 Λ
   let Y : SmoothCcTensor g 2 2 :=
-    reindexCoeffGen (I := I) (M := M) g 2 2
+    reindexCoefficientInputSlots (I := I) (M := M) g 2 2
       (rsDomDomCongrSection (I := I) (M := M) g 2 2
         (Equiv.swap (0 : Fin 2) 1) X)
       (Equiv.swap (0 : Fin 2) 1)
   have hY : covariantJetNormSq (I := I) (M := M) g 2 Y =
       covariantJetNormSq (I := I) (M := M) g 2 X := by
     dsimp only [Y]
-    rw [covariantJetNormSq_reindexCoeffGen, covariantJetNormSq_rsDomDomCongrSection]
+    rw [covariantJetNormSq_reindexCoefficientInputSlots, covariantJetNormSq_rsDomDomCongrSection]
   have hX : covariantJetNormSq (I := I) (M := M) g 2 X ≤
       (Module.finrank ℝ E : ℝ) *
         covariantJetNormSq (I := I) (M := M) g 2
@@ -110,7 +110,7 @@ private theorem symmetrizedSlotInsertion_sub
         symmetrizedSlotInsertion (I := I) (M := M) g Γ := by
   unfold symmetrizedSlotInsertion
   dsimp only
-  rw [slotInsertEndoCc_sub, rsDomDomCongrSection_sub, reindexCoeffGen_sub]
+  rw [slotInsertEndoCc_sub, rsDomDomCongrSection_sub, reindexCoefficientInputSlots_sub]
   module
 
 private noncomputable def deTurckLieInsertionCorrectionEndomorphism
@@ -161,7 +161,7 @@ private theorem deTurckLieInsertionCorrection_eq_pair
   intro m
   let Λ := deTurckLieInsertionCorrectionEndomorphism (I := I) (M := M) g gm g_bg
   let X := slotInsertEndoCc (I := I) (M := M) g 1 Λ
-  let Y := reindexCoeffGen (I := I) (M := M) g 2 2
+  let Y := reindexCoefficientInputSlots (I := I) (M := M) g 2 2
     (rsDomDomCongrSection (I := I) (M := M) g 2 2
       (Equiv.swap (0 : Fin 2) 1) X)
     (Equiv.swap (0 : Fin 2) 1)
@@ -208,11 +208,11 @@ private theorem deTurckLieInsertionCorrection_eq_pair
   have hY :
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         Y.toSection x) D =
-      reindexCoeffFibGen (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+      reindexCoefficientInputSlotsFiber (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
         (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
           (rsDomDomCongrSection (I := I) (M := M) g 2 2
             (Equiv.swap (0 : Fin 2) 1) X).toSection x) D := rfl
-  rw [hY, reindexCoeffFibGen_apply]
+  rw [hY, reindexCoefficientInputSlotsFiber_apply]
   rw [show
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (rsDomDomCongrSection (I := I) (M := M) g 2 2
@@ -409,7 +409,7 @@ private theorem exists_deTurckVectorFieldCovector_backgroundDifference_covariant
     have hΦ3 : covariantJetNormSq (I := I) (M := M) g 3 Φ ≤
         (Bt R * Q) ^ 2 := by
       dsimp only [Φ, Q]
-      rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+      rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
       exact htrace gT gU T U hT hU hTtie hUtie
         hδT_le hδT0 hδT hδU_le hδU0 hδU
         R A D2 D3 hR hA hD2 hD3 hT2 hU2 hT3 hU3 hTU2 hTU3

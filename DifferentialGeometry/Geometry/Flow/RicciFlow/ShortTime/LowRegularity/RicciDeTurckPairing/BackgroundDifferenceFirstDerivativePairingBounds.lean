@@ -725,12 +725,12 @@ private theorem slotExtend_add
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem reindexCoeffGen_add
+private theorem reindexCoefficientInputSlots_add
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (P Q : SmoothCcTensor g r s) (σ : Equiv.Perm (Fin r)) :
-    reindexCoeffGen (I := I) (M := M) g r s (P + Q) σ =
-      reindexCoeffGen (I := I) (M := M) g r s P σ +
-        reindexCoeffGen (I := I) (M := M) g r s Q σ := by
+    reindexCoefficientInputSlots (I := I) (M := M) g r s (P + Q) σ =
+      reindexCoefficientInputSlots (I := I) (M := M) g r s P σ +
+        reindexCoefficientInputSlots (I := I) (M := M) g r s Q σ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
@@ -739,12 +739,12 @@ private theorem reindexCoeffGen_add
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem reindexCoeffGen_sub
+private theorem reindexCoefficientInputSlots_sub
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (P Q : SmoothCcTensor g r s) (σ : Equiv.Perm (Fin r)) :
-    reindexCoeffGen (I := I) (M := M) g r s (P - Q) σ =
-      reindexCoeffGen (I := I) (M := M) g r s P σ -
-        reindexCoeffGen (I := I) (M := M) g r s Q σ := by
+    reindexCoefficientInputSlots (I := I) (M := M) g r s (P - Q) σ =
+      reindexCoefficientInputSlots (I := I) (M := M) g r s P σ -
+        reindexCoefficientInputSlots (I := I) (M := M) g r s Q σ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
@@ -763,7 +763,7 @@ private theorem deTurckLieTraceCoeffPiece_add
         deTurckLieTraceCoeffPiece (I := I) (M := M) g gm σ ρ Q := by
   unfold deTurckLieTraceCoeffPiece
   rw [slotExtend_add (I := I) (M := M), slotExtend_add (I := I) (M := M),
-    operatorFieldComposition_add_right, reindexCoeffGen_add (I := I) (M := M)]
+    operatorFieldComposition_add_right, reindexCoefficientInputSlots_add (I := I) (M := M)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
@@ -776,7 +776,7 @@ private theorem deTurckLieTraceCoeffPiece_sub
         deTurckLieTraceCoeffPiece (I := I) (M := M) g gm σ ρ Q := by
   unfold deTurckLieTraceCoeffPiece
   rw [slotExtend_sub, slotExtend_sub, operatorFieldComposition_sub_right,
-    reindexCoeffGen_sub (I := I) (M := M)]
+    reindexCoefficientInputSlots_sub (I := I) (M := M)]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem deTurckLieFirstOrderBackgroundConnectionDifference_self
@@ -824,17 +824,17 @@ private theorem deTurckLieFirstOrderCoefficient_backgroundDifference_decompositi
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem covariantJetNormSq_two_reindexCoeffGen
+private theorem covariantJetNormSq_two_reindexCoefficientInputSlots
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (S : SmoothCcTensor g r s) (ρ : Equiv.Perm (Fin r)) :
     covariantJetNormSq (I := I) (M := M) g 2
-        (reindexCoeffGen (I := I) (M := M) g r s S ρ) =
+        (reindexCoefficientInputSlots (I := I) (M := M) g r s S ρ) =
       covariantJetNormSq (I := I) (M := M) g 2 S := by
   unfold covariantJetNormSq
   apply Finset.sum_congr rfl
   intro q _
-  rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M),
-    norm_reindexCoeffGen_eq (I := I) (M := M)]
+  rw [iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M),
+    norm_reindexCoefficientInputSlots_eq (I := I) (M := M)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -842,16 +842,16 @@ private theorem deTurckLieTraceCoeff_eq_reindexedPureTrace
     (g gm : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
     deTurckLieTraceCoeff (I := I) (M := M) g gm σ =
-      reindexCoeffGen (I := I) (M := M) g 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2
         (pureTrace (I := I) (M := M) g gm 2) σ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [deTurckLieTraceCoeff_toSection, reindexCoeffGen_toSection,
+  rw [deTurckLieTraceCoeff_toSection, reindexCoefficientInputSlots_toSection,
     pureTrace_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffFibGen_apply, deTurckLieTraceFib,
+  rw [reindexCoefficientInputSlotsFiber_apply, deTurckLieTraceFib,
     ContinuousLinearMap.comp_apply, domDomCongrFibPerm_apply]
 
 
@@ -1381,7 +1381,7 @@ private theorem exists_deTurckLieFirstOrderCoefficient_backgroundDifference_diff
         Tb ^ 2 := by
     intro σ
     rw [deTurckLieTraceCoeff_eq_reindexedPureTrace (I := I) (M := M) g gU σ,
-      covariantJetNormSq_two_reindexCoeffGen (I := I) (M := M)]
+      covariantJetNormSq_two_reindexCoefficientInputSlots (I := I) (M := M)]
     exact htraceBdd U gU hUtie hUHsb
   have hTrD : ∀ σ : Equiv.Perm (Fin 4),
       covariantJetNormSq (I := I) (M := M) g 2
@@ -1392,13 +1392,13 @@ private theorem exists_deTurckLieFirstOrderCoefficient_backgroundDifference_diff
     have heq :
         deTurckLieTraceCoeff (I := I) (M := M) g gT σ -
             deTurckLieTraceCoeff (I := I) (M := M) g gU σ =
-          reindexCoeffGen (I := I) (M := M) g 4 2
+          reindexCoefficientInputSlots (I := I) (M := M) g 4 2
             (pureTrace (I := I) (M := M) g gT 2 -
               pureTrace (I := I) (M := M) g gU 2) σ := by
       rw [deTurckLieTraceCoeff_eq_reindexedPureTrace (I := I) (M := M) g gT σ,
         deTurckLieTraceCoeff_eq_reindexedPureTrace (I := I) (M := M) g gU σ,
-        reindexCoeffGen_sub (I := I) (M := M)]
-    rw [heq, covariantJetNormSq_two_reindexCoeffGen (I := I) (M := M)]
+        reindexCoefficientInputSlots_sub (I := I) (M := M)]
+    rw [heq, covariantJetNormSq_two_reindexCoefficientInputSlots (I := I) (M := M)]
     simpa only [N] using
       htracePair T U gT gU hTtie hUtie hTHst hUHst
   have hPsiRaw := hpsi gT gU T U hT hU hTtie hUtie

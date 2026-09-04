@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Data.DifferenceFields
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Linearity
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TotalNabla0S
-import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantDerivative
 
 set_option autoImplicit false
 

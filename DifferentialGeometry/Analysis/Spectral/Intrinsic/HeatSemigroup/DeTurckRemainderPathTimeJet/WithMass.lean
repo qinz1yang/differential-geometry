@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.Parametric.FiberInnerSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.PartitionOfUnityNormComparison
-import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SimpLemmas
+import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SmoothSectionMap
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DeTurckRemainderPathTimeJet.JointSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DeTurckRemainderPathTimeJet.OneMinusConnectionLaplacianNormContinuity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DeTurckRemainderPathTimeJet.FiniteOrderPairing
@@ -73,7 +73,7 @@ private theorem exists_smoothCcTensor_of_allOrder_spectralMass
   have hmem : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
       ∃ vσ : TensorHs (I := I) (M := M) g₀ 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc hσ vσ = u :=
-    allHs_of_weighted_summable_pub (I := I) (M := M) g₀ u hsum_u
+    allHs_of_weighted_summable (I := I) (M := M) g₀ u hsum_u
   obtain ⟨S, hS⟩ := spectralSmoothRealizesAsSmooth_holds (I := I) (M := M) (g := g₀) u hmem
   refine ⟨S, fun i => ?_⟩
   have hSL2 : SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S = u := by

@@ -260,7 +260,7 @@ theorem covIter_tsum
     exact tensorL2Norm_sq_toFun (I := I) (M := M) g₀ 0 (s + 1)
       (covGrad (I := I) (M := M) g₀ 0 s U)
   rw [hnorm_sq,
-    tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_gen (I := I) (M := M) g₀ s U]
+    tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_covariantTensor (I := I) (M := M) g₀ s U]
   have hraw_eq : rawTensorConnLapSmooth (I := I) g₀ 0 s U =
       rawTensorConnLapIter (I := I) g₀ 0 s (i + 1) S := by
     rw [hU_def, rawTensorConnLapIter_succ]

@@ -39,7 +39,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-section Unconditional
+section MainResults
 
 open DifferentialGeometry.Analysis.Spectral in
 structure EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
@@ -1258,7 +1258,7 @@ theorem eigenvectorChartRHSDiff_wkpNorm_le_chartcpt_sharp_bdd
   sharpDiffBdd_recursion (I := I) (M := M) g r s α P₀ (K + m + 1)
     H m K (le_refl _) l
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

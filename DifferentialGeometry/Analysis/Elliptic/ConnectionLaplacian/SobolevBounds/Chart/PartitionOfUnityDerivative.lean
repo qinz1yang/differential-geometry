@@ -301,7 +301,7 @@ lemma tensorChartComponentRaw_symm_differentiableAt
   exact hwithin.differentiableAt (h_open.mem_nhds he)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma tensorChartComp_eq_pou_mul_raw_pulled
+private lemma tensorChartComp_eq_pou_mul_componentRaw_pulled
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -318,7 +318,7 @@ private lemma tensorChartComp_eq_pou_mul_raw_pulled
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComp_toEuclidean_eq_pou_mul_raw
+private lemma tensorChartComp_toEuclidean_eq_pou_mul_componentRaw
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -334,7 +334,7 @@ private lemma tensorChartComp_toEuclidean_eq_pou_mul_raw
     ⟨e, he, rfl⟩
   have h_eq : (toEuclidean (E := E)).symm ((toEuclidean (E := E)) e) = e :=
     (toEuclidean (E := E)).symm_apply_apply e
-  rw [tensorChartComp_eq_pou_mul_raw_pulled
+  rw [tensorChartComp_eq_pou_mul_componentRaw_pulled
     (I := I) (M := M) g r s T α Idx Jdx hy, h_eq]
 
 omit [BoundarylessManifold I M] in
@@ -351,7 +351,7 @@ private lemma pou_mul_raw_eq_tensorChartComp_toEuclidean
           ((extChartAt I α).symm e) =
       tensorChartComp (I := I) (M := M) g r s T α Idx Jdx
         ((toEuclidean (E := E)) e) :=
-  (tensorChartComp_toEuclidean_eq_pou_mul_raw
+  (tensorChartComp_toEuclidean_eq_pou_mul_componentRaw
     (I := I) (M := M) g r s T α Idx Jdx he).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in

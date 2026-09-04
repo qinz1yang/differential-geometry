@@ -1197,7 +1197,7 @@ private lemma cutoffComponentEuclid_eq_cutoff_mul_tensorComponentEuclid
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-private lemma cutoff_chartPull_integrand_eq_raw
+private lemma cutoff_chartPull_integrand_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Sg T : SmoothCcTensor g r s)
     (hSg : tsupport Sg.toFun ⊆
@@ -1570,7 +1570,7 @@ private lemma cutoff_headline_on_smooth
     (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
       (I := I) (M := M) α).measurableSet
   rw [setIntegral_congr_fun hctE_meas (fun y hy => by
-    rw [← (cutoff_chartPull_integrand_eq_raw (I := I) (M := M) g r s α Sg T
+    rw [← (cutoff_chartPull_integrand_eq (I := I) (M := M) g r s α Sg T
       hSg_pou hy)])]
   have h_ae :
       (fun y : EuclN => densityOnEuclid (I := I) g α y *

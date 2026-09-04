@@ -263,7 +263,7 @@ theorem curv_pair_abs_uniform
   have hgreen :
       (inner ℝ Au Av : ℝ) = (inner ℝ u v : ℝ) := by
     simpa only [Au, Av, u, v] using
-      (oneMinusConnLapSmooth_toL2_inner_eq_h1_general
+      (oneMinusConnLapSmooth_toL2_inner_eq_h1
         (I := I) (M := M) g 2
         (DifferentialGeometry.Analysis.Elliptic.loweringIntertwiner_two
           (I := I) (M := M) g) LT Y)

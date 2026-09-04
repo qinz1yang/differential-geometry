@@ -35,7 +35,7 @@ open DifferentialGeometry.Analysis.Laplacian.IteratedBaseFChartRegularity
 open DifferentialGeometry.Analysis.Laplacian.SmoothFChartResidualLinearity
 open DifferentialGeometry.Analysis.Laplacian.SmoothApproxSeqH1ComplTendsto
 open DifferentialGeometry.Analysis.Sobolev.Chart
-open Analysis.Sobolev.EquivalenceFull
+open Analysis.Sobolev.Equivalence
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -1036,7 +1036,7 @@ theorem fChartResidual_memWkp_m
     (smoothApproxSeqWkpM_smoothFChartResidual_limit_eq_fChartResidual_wkpM
       (I := I) (M := M) g α m hu_chart)
 
-noncomputable def fChartPiecePreimageGeneral
+noncomputable def fChartLaplacianPreimage
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h_lapdom : u_h ∈ laplacianDomain (I := I) (M := M) g) : EuclN → ℝ :=
@@ -1045,7 +1045,7 @@ noncomputable def fChartPiecePreimageGeneral
     ((laplacianDomain.preimage (I := I) (M := M) g ⟨u_h, hu_h_lapdom⟩ :
       Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)
 
-private noncomputable def smoothMulLpRhoPreimageGeneral
+private noncomputable def smoothMulLpRhoLaplacianPreimage
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h_lapdom : u_h ∈ laplacianDomain (I := I) (M := M) g) :
@@ -1054,15 +1054,15 @@ private noncomputable def smoothMulLpRhoPreimageGeneral
     (laplacianDomain.preimage (I := I) (M := M) g ⟨u_h, hu_h_lapdom⟩)
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma fHLeibniz_eq_piecePreimage_add_residual_general
+private lemma leibnizCompensatedSource_eq_laplacianPreimage_add_residual
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h_lapdom : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     leibnizCompensatedSource (I := I) (M := M) g α u_h hu_h_lapdom =
-      smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom +
+      smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom +
         fHLeibnizResidualLp (I := I) (M := M) g α u_h := by
   classical
-  unfold smoothMulLpRhoPreimageGeneral fHLeibnizResidualLp
+  unfold smoothMulLpRhoLaplacianPreimage fHLeibnizResidualLp
   rw [fHLeibniz_def]
   have h_diff_eq :
       H1ComplToLp (I := I) (M := M) g u_h -
@@ -1074,30 +1074,30 @@ private lemma fHLeibniz_eq_piecePreimage_add_residual_general
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma chartPushedRawLpFromLp_smoothMulLpRhoPreimageGeneral_coeFn_aeEq
+private lemma chartPushedRawLpFromLp_smoothMulLpRhoLaplacianPreimage_coeFn_aeEq
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h_lapdom : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     ((chartPushedRawLpFromLp (I := I) (M := M) g α
-        (smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom) :
+        (smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom) :
         Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ)
       =ᵐ[(chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
-      fChartPiecePreimageGeneral (I := I) (M := M) g α hu_h_lapdom := by
+      fChartLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom := by
   classical
   have h_coeFn := chartPushedRawLpFromLp_coeFn (I := I) (M := M) g α
-    (smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom)
-  have h_smoothMulLp_ae : (smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom :
+    (smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom)
+  have h_smoothMulLp_ae : (smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g]
       (fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x *
         ((laplacianDomain.preimage (I := I) (M := M) g ⟨u_h, hu_h_lapdom⟩ :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x) := by
-    unfold smoothMulLpRhoPreimageGeneral
+    unfold smoothMulLpRhoLaplacianPreimage
     exact smoothMulLp_apply_coeFn (I := I) (M := M) g _ _
   have h_smoothMul_meas :
-      Measurable ((smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom :
+      Measurable ((smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) :=
     (Lp.stronglyMeasurable _).measurable
   have h_prod_meas :
@@ -1109,7 +1109,7 @@ private lemma chartPushedRawLpFromLp_smoothMulLpRhoPreimageGeneral_coeFn_aeEq
     · exact (Lp.stronglyMeasurable _).measurable
   have h_chartPushedRaw_ae :
       DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw (I := I) α
-        ((smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom :
+        ((smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =ᵐ[
         (chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
@@ -1131,13 +1131,13 @@ private lemma chartPushedRawLpFromLp_smoothMulLpRhoPreimageGeneral_coeFn_aeEq
   filter_upwards [h_coeFn, h_chartPushedRaw_ae, h_weighted_restrict_self]
     with y hy_coeFn hy_chart hy_in
   rw [hy_coeFn, hy_chart]
-  unfold fChartPiecePreimageGeneral
+  unfold fChartLaplacianPreimage
   exact (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed_eq_chartPushedRaw_pou_mul_on_target
     (I := I) (M := M) (chartAtlasPOU I M) α
     ((laplacianDomain.preimage (I := I) (M := M) g ⟨u_h, hu_h_lapdom⟩ :
     Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) hy_in).symm
 
-private lemma base_f_chart_ae_eq_piecePreimage_add_residual_general_weighted
+private lemma base_f_chart_ae_eq_piecePreimage_add_residual_weighted
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h_lapdom : u_h ∈ laplacianDomain (I := I) (M := M) g) :
@@ -1145,17 +1145,17 @@ private lemma base_f_chart_ae_eq_piecePreimage_add_residual_general_weighted
       hu_h_lapdom).fChart
       =ᵐ[(chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
-      (fun y => fChartPiecePreimageGeneral (I := I) (M := M) g α hu_h_lapdom y +
+      (fun y => fChartLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom y +
         DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fChartResidual
           (I := I) (M := M) g α u_h y) := by
   classical
   have h_base_def := chartBilinearH1ComplData_of_laplacianDomain_f_chart_def
     (I := I) (M := M) g α hu_h_lapdom
-  have h_fHLeibniz_decomp := fHLeibniz_eq_piecePreimage_add_residual_general
+  have h_fHLeibniz_decomp := leibnizCompensatedSource_eq_laplacianPreimage_add_residual
     (I := I) (M := M) g α hu_h_lapdom
   have h_chartPushedRaw_add_ae :
       ((chartPushedRawLpFromLp (I := I) (M := M) g α
-          (smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom +
+          (smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom +
             fHLeibnizResidualLp (I := I) (M := M) g α u_h) :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ)
@@ -1163,7 +1163,7 @@ private lemma base_f_chart_ae_eq_piecePreimage_add_residual_general_weighted
             (chartTargetEuclid (I := I) (M := M) α)]
         (fun y =>
           ((chartPushedRawLpFromLp (I := I) (M := M) g α
-              (smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom) :
+              (smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom) :
               Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y +
           ((chartPushedRawLpFromLp (I := I) (M := M) g α
@@ -1171,14 +1171,14 @@ private lemma base_f_chart_ae_eq_piecePreimage_add_residual_general_weighted
               Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) := by
     have h_FG_coeFn := chartPushedRawLpFromLp_coeFn (I := I) (M := M) g α
-      (smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom +
+      (smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom +
         fHLeibnizResidualLp (I := I) (M := M) g α u_h)
     have h_F_coeFn := chartPushedRawLpFromLp_coeFn (I := I) (M := M) g α
-      (smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom)
+      (smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom)
     have h_G_coeFn := chartPushedRawLpFromLp_coeFn (I := I) (M := M) g α
       (fHLeibnizResidualLp (I := I) (M := M) g α u_h)
     set F : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
-      smoothMulLpRhoPreimageGeneral (I := I) (M := M) g α hu_h_lapdom with hF_def
+      smoothMulLpRhoLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom with hF_def
     set G : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
       fHLeibnizResidualLp (I := I) (M := M) g α u_h with hG_def
     set sumFun : M → ℝ := fun x =>
@@ -1229,14 +1229,14 @@ private lemma base_f_chart_ae_eq_piecePreimage_add_residual_general_weighted
       with y hy_FG hy_F hy_G hy_chart
     rw [hy_FG, hy_chart, h_chartPushedRaw_sum_pointwise y]
     rw [← hy_F, ← hy_G]
-  have h_piece1 := chartPushedRawLpFromLp_smoothMulLpRhoPreimageGeneral_coeFn_aeEq
+  have h_piece1 := chartPushedRawLpFromLp_smoothMulLpRhoLaplacianPreimage_coeFn_aeEq
     (I := I) (M := M) g α hu_h_lapdom
   rw [h_base_def, h_fHLeibniz_decomp]
   filter_upwards [h_chartPushedRaw_add_ae, h_piece1] with y hy_add hy_piece1
   rw [hy_add, hy_piece1]
   rfl
 
-lemma base_f_chart_ae_eq_piecePreimage_add_residual_general
+lemma base_f_chart_ae_eq_piecePreimage_add_residual
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h_lapdom : u_h ∈ laplacianDomain (I := I) (M := M) g) :
@@ -1244,17 +1244,17 @@ lemma base_f_chart_ae_eq_piecePreimage_add_residual_general
       hu_h_lapdom).fChart
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
-      (fun y => fChartPiecePreimageGeneral (I := I) (M := M) g α hu_h_lapdom y +
+      (fun y => fChartLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom y +
         DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fChartResidual
           (I := I) (M := M) g α u_h y) := by
   classical
   exact (volume_restrict_chartTarget_absolutelyContinuous_weighted
     (I := I) (M := M) g α).ae_le
-    (base_f_chart_ae_eq_piecePreimage_add_residual_general_weighted
+    (base_f_chart_ae_eq_piecePreimage_add_residual_weighted
       (I := I) (M := M) g α hu_h_lapdom)
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma fChartPiecePreimageGeneral_memWkp_of_memWkpChart
+lemma fChartLaplacianPreimage_memWkp_of_memWkpChart
     (g : SmoothRiemannianMetric I M) (α : M) (m : ℕ)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h_lapdom : u_h ∈ laplacianDomain (I := I) (M := M) g)
@@ -1263,10 +1263,10 @@ lemma fChartPiecePreimageGeneral_memWkp_of_memWkpChart
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) m 2
-      (fChartPiecePreimageGeneral (I := I) (M := M) g α hu_h_lapdom)
+      (fChartLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  unfold fChartPiecePreimageGeneral
+  unfold fChartLaplacianPreimage
   exact h_rhs α
 
 theorem base_f_chart_memWkp_m
@@ -1287,9 +1287,9 @@ theorem base_f_chart_memWkp_m
         hu_h_lapdom).fChart
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  have h_decomp := base_f_chart_ae_eq_piecePreimage_add_residual_general
+  have h_decomp := base_f_chart_ae_eq_piecePreimage_add_residual
     (I := I) (M := M) g α hu_h_lapdom
-  have h_piece1_memWkp := fChartPiecePreimageGeneral_memWkp_of_memWkpChart
+  have h_piece1_memWkp := fChartLaplacianPreimage_memWkp_of_memWkpChart
     (I := I) (M := M) g α m hu_h_lapdom h_chart_H_m_RHS
   have h_residual_memWkp := fChartResidual_memWkp_m
     (I := I) (M := M) g α m h_chart_H_m_plus_1_u
@@ -1299,7 +1299,7 @@ theorem base_f_chart_memWkp_m
   have h_sum_memWkp :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) m 2
-        (fun y => fChartPiecePreimageGeneral (I := I) (M := M) g α hu_h_lapdom y +
+        (fun y => fChartLaplacianPreimage (I := I) (M := M) g α hu_h_lapdom y +
           DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fChartResidual
             (I := I) (M := M) g α u_h y)
         (chartTargetEuclid (I := I) (M := M) α) :=

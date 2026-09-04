@@ -180,7 +180,7 @@ theorem flow_slice_smooth [CompleteSpace E] [I.Boundaryless]
         simpa only [X] using (hright t ht).hasMFDerivWithinAt
       have hstart : left s₀ = F y s₀ := by
         simpa only [left, sub_self] using hPhi₀ (F y s₀) hyState
-      have hunique := bare_integral_flow_eqOn_of_jointC1
+      have hunique := integral_curves_eqOn_of_jointC1
         (a := lo) (b := hi) (t₀ := s₀) X hXauto
         (fun t _ => left t) (fun t _ => F y t) y y hs₀J
         hleft_on hright_on hstart s hsJ

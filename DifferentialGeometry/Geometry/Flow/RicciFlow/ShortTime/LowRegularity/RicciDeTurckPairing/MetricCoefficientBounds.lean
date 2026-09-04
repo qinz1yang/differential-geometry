@@ -242,7 +242,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_covariantJetNormSq_tame_di
             inverseMetricDifferenceSlotCoefficient (I := I) g gU) ≤
         (B R * (D3 + D2 + A * D2)) ^ 2 := by
   obtain ⟨Bh, hBh, hbdd⟩ :=
-    RicciDeTurckLowOrder.full_slot_sobolev_two_bound
+    RicciDeTurckLowOrder.exists_metricComparisonEndomorphism_slot_one_covariantJetNormSq_two_bound
       (I := I) (M := M) g hδ₀0 hδ₀
   obtain ⟨Kh, hKh, hh3⟩ :=
     exists_slotInsertEndoCc_metricComparisonEndomorphismField_covariantJetNormSq_bound (I := I) (M := M) g hδ₀0 hδ₀

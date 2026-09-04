@@ -2527,7 +2527,7 @@ private lemma hasDerivAt_star_point
   field_simp [hden.ne']
   ring
 
-private lemma hasDerivAt_candidate_A
+private lemma hasDerivAt_lowerBarrier_starPoint_combination
     {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀)
     {ν : Fin 3 → ℝ} :
     HasDerivAt (fun τ : ℝ =>
@@ -2555,7 +2555,7 @@ private lemma hasDerivAt_candidate_A
     rfl]
   exact h1'.add h2'
 
-private lemma hasDerivAt_candidate_B
+private lemma hasDerivAt_neg_starPoint_mul
     {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀)
     {ν : Fin 3 → ℝ} :
     HasDerivAt (fun τ : ℝ =>
@@ -2849,7 +2849,7 @@ private lemma antitoneOn_Fh_right
   exact antitoneOn_of_deriv_nonpos (D := Set.Ici Xs)
     (convex_Ici (r := Xs)) hFh_cont hFh_diff hFh_deriv
 
-private lemma support_formula_le_candidate_star_of_le
+private lemma support_formula_le_at_starPoint_of_le
     {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
     {ν : Fin 3 → ℝ} (hν : Antitone ν) (hν0 : ν 0 < 0)
     {X : ℝ} (hX : 0 ≤ X)
@@ -4237,7 +4237,7 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
     exact hnum.div hlin hden
   have hG₁deriv : HasDerivAt G₁
       (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ := by
-    have h := hasDerivAt_candidate_B (K := K) (τ₀ := τ₀) hK hτ₀.le (ν := ν)
+    have h := hasDerivAt_neg_starPoint_mul (K := K) (τ₀ := τ₀) hK hτ₀.le (ν := ν)
     simpa [G₁, Xs] using h
   have hG₂deriv : HasDerivAt G₂
       (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +

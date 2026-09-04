@@ -257,12 +257,12 @@ theorem diffCurvOp_zero_eq_operatorFieldApply (g : SmoothRiemannianMetric I M)
           (fun b => W.toSection b) x) (dSec x) =
       riemannSec (Tensor0SNabla.tensor0SCovariantDerivative I M r (LeviCivita (I := I) g))
           (fun b => X b) (fun b => Y b)
-          (HomConnectionGen.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
+          (HomConnection.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
             (V := fun z : M => Tensor0SSpace r I z) (fun b => W.toSection b) (fun b => dSec b)) x -
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W.toSection x)
           (riemannSec (Tensor0SNabla.tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
             (fun b => X b) (fun b => Y b) (fun b => dSec b) x) from
-    HomConnectionGen.riemannSec_homBundleGen_apply_eq I M
+    HomConnection.riemannSec_homBundle_apply_eq I M
       (Tensor0SModel 0 ℝ E) (fun z : M => Tensor0SSpace 0 I z)
       (Tensor0SModel r ℝ E) (fun z : M => Tensor0SSpace r I z)
       (Tensor0SNabla.tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
@@ -279,20 +279,20 @@ theorem diffCurvOp_zero_eq_operatorFieldApply (g : SmoothRiemannianMetric I M)
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W.toSection x) d) =
       riemannSec (Tensor0SNabla.tensor0SCovariantDerivative I M r (LeviCivita (I := I) g))
           (fun b => X b) (fun b => Y b)
-          (HomConnectionGen.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
+          (HomConnection.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
             (V := fun z : M => Tensor0SSpace r I z) (fun b => W.toSection b) (fun b => dSec b)) x
               from by
     rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W.toSection x) d =
-        HomConnectionGen.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
+        HomConnection.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
           (V := fun z : M => Tensor0SSpace r I z) (fun b => W.toSection b) (fun b => dSec b) x
             from by
-      rw [HomConnectionGen.pairedSection_apply, show d = dSec x from hdSec.symm]]
+      rw [HomConnection.pairedSection_apply, show d = dSec x from hdSec.symm]]
     rw [riemannOp_apply_smooth
       (cov := Tensor0SNabla.tensor0SCovariantDerivative I M r (LeviCivita (I := I) g)) hX hY
       (show ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel r ℝ E)) ∞
         (fun y : M => TotalSpace.mk' (Tensor0SModel r ℝ E)
           (E := fun z : M => Tensor0SSpace r I z) y
-          (HomConnectionGen.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
+          (HomConnection.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
             (V := fun z : M => Tensor0SSpace r I z) (fun b => W.toSection b) (fun b => dSec b) y))
         from hWd_smooth)]]
 

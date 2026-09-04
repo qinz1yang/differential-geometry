@@ -349,7 +349,7 @@ theorem riemannianFiberNormSq_covGrad_inverseMetricDifferenceSlotCoefficient_le
         (tensorCovDerivAt_slotInsertEndoCc_eq (I := I) (M := M) g₀ 1 Λ x
           (tangentSpaceModelContinuousLinearEquiv (I := I) x v))
     rw [hΦ]
-    refine riemannianFiberNormSq_slotInsertEndoFib_le_card_mul (I := I) g₀ x
+    refine riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_two (I := I) g₀ x
       ((endoCovariantDerivative (I := I) (M := M) g₀) Λ x v) ((4 * C₀ * G) ^ 2) ?_
     intro a ha
     obtain ⟨Y, hYx⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))

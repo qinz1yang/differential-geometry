@@ -17,7 +17,7 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-def klFluxFull1 {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+def klFluxPotential {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (R : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
   ∫ z : ℝ × V, klFluxKernel (R ^ 2) w x z • f z
     ∂klTermMeasure (V := V) (R ^ 2)
@@ -87,7 +87,7 @@ theorem klFluxAbs_sum {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     ((klFluxWeight_sum (Module.finrank ℝ V)).mul_right C)
 
 omit [CompleteSpace F] in
-theorem klFluxFull_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+theorem klFluxKernel_smul_integrable {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
     (hcard : ∀ k, (s k).card ≤
@@ -105,7 +105,7 @@ theorem klFluxFull_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   simpa only [IntegrableOn, Measure.restrict_univ] using hU
 
 omit [CompleteSpace F] in
-theorem klFluxFull_sum {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+theorem hasSum_klFluxPiece_klFluxPotential {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
     (hcard : ∀ k, (s k).card ≤
@@ -114,14 +114,14 @@ theorem klFluxFull_sum {T R : ℝ} {A₂ Aₚ : ℝ≥0}
       ⋃ c ∈ s k, Metric.ball c R) :
     HasSum (fun k : ℕ ↦
       klFluxPiece1 R w f x (klLateShell x R k))
-      (klFluxFull1 R w f x) := by
+      (klFluxPotential R w f x) := by
   let μ := klTailMeasure (V := V) R Set.univ
   let g : ℝ × V → F := fun z ↦ klFluxKernel (R ^ 2) w x z • f z
   have hU : IntegrableOn g (⋃ k : ℕ, klLateStShell x R k) μ := by
     rw [klLateSt_union (V := V) x hR]
     simpa only [IntegrableOn, Measure.restrict_univ, μ, g,
       ← klTerm_eq_tail (V := V) R] using
-      (klFluxFull_int (V := V) h w x hR hRT s hcard hcover)
+      (klFluxKernel_smul_integrable (V := V) h w x hR hRT s hcard hcover)
   have hsum := hasSum_integral_iUnion
     (f := g) (μ := μ) (fun k ↦ klLateSt_mble (V := V) x R k)
     (klLateSt_disj (V := V) x hR) hU
@@ -129,19 +129,19 @@ theorem klFluxFull_sum {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   · funext k
     simp only [klFluxPiece1, g, μ, klLateStShell]
     rw [klTail_restrict]
-  · simp only [klFluxFull1, g, μ]
+  · simp only [klFluxPotential, g, μ]
     rw [klLateSt_union (V := V) x hR, Measure.restrict_univ,
       klTerm_eq_tail (V := V) R]
 
 omit [CompleteSpace F] in
-theorem klFluxFull_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+theorem norm_klFluxPotential_le_of_shellCover {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
     (hcard : ∀ k, (s k).card ≤
       (5 * (k + 1)) ^ Module.finrank ℝ V)
     (hcover : ∀ k, Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) ⊆
       ⋃ c ∈ s k, Metric.ball c R) :
-    ‖klFluxFull1 R w f x‖ ≤
+    ‖klFluxPotential R w f x‖ ≤
       klFluxSeries (Module.finrank ℝ V) *
         (‖w‖ * (klFluxTailC V * (Aₚ : ℝ))) := by
   let μ := klTailMeasure (V := V) R Set.univ
@@ -149,7 +149,7 @@ theorem klFluxFull_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   let C : ℝ := ‖w‖ * (klFluxTailC V * (Aₚ : ℝ))
   have hint : Integrable g μ := by
     simpa only [μ, g, ← klTerm_eq_tail (V := V) R] using
-      (klFluxFull_int (V := V) h w x hR hRT s hcard hcover)
+      (klFluxKernel_smul_integrable (V := V) h w x hR hRT s hcard hcover)
   have habs := klFluxAbs_sum (V := V) h w x hR hRT s hcard hcover
   have hmaj : Summable
       (fun k : ℕ ↦ klFluxWeight (Module.finrank ℝ V) k * C) :=
@@ -164,8 +164,8 @@ theorem klFluxFull_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     (klLateSt_disj (V := V) x hR) hnormU
   rw [klLateSt_union (V := V) x hR, Measure.restrict_univ] at hdecomp
   calc
-    ‖klFluxFull1 R w f x‖ = ‖∫ z, g z ∂μ‖ := by
-      simp only [klFluxFull1, g, μ]
+    ‖klFluxPotential R w f x‖ = ‖∫ z, g z ∂μ‖ := by
+      simp only [klFluxPotential, g, μ]
       rw [klTerm_eq_tail (V := V) R]
     _ ≤ ∫ z, ‖g z‖ ∂μ := norm_integral_le_integral_norm g
     _ = ∑' k : ℕ, ∫ z in klLateStShell x R k, ‖g z‖ ∂μ := hdecomp
@@ -182,16 +182,16 @@ theorem klFluxFull_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
         (‖w‖ * (klFluxTailC V * (Aₚ : ℝ))) := rfl
 
 omit [CompleteSpace F] in
-theorem klFluxFull_canon {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+theorem norm_klFluxPotential_le {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :
-    ‖klFluxFull1 R w f x‖ ≤
+    ‖klFluxPotential R w f x‖ ≤
       klFluxSeries (Module.finrank ℝ V) *
         (‖w‖ * (klFluxTailC V * (Aₚ : ℝ))) := by
   classical
   choose s hcard hcover using
     fun k : ℕ ↦ exists_shell_cover (V := V) x hR k
-  exact klFluxFull_norm (V := V) h w x hR hRT s hcard hcover
+  exact norm_klFluxPotential_le_of_shellCover (V := V) h w x hR hRT s hcard hcover
 
 end Euclidean
 end Parabolic

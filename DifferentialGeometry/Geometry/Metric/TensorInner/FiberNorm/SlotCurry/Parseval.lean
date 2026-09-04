@@ -162,7 +162,7 @@ lemma slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec
   unfold slot0Curry tensor0SToTensorRS
   rw [coframeS_zero_eq_unitZeroSec (I := I) (M := M) g x e K₀]
 
-theorem riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry
+theorem riemannianFiberNormSq_succ_eq_sum_tensor0SCurry
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (T : TensorRSSpace 0 (s + 1) I x) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x),
@@ -182,7 +182,7 @@ theorem riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec (I := I) (M := M) g x s e K₀ T a]
 
-theorem riemannianFiberNormSq_three_eq_sum_bareSlot0Curry
+theorem riemannianFiberNormSq_three_eq_sum_tensor0SCurry
     (g : SmoothRiemannianMetric I M) (x : M)
     (T : TensorRSSpace 0 3 I x) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x),
@@ -194,7 +194,7 @@ theorem riemannianFiberNormSq_three_eq_sum_bareSlot0Curry
               (tensor0SCurry (I := I) (M := M) 2 x
                 ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x)
                   (unitZeroSec (I := I) (M := M) x)) (e a))) :=
-  riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry (I := I) (M := M) g 2 x T
+  riemannianFiberNormSq_succ_eq_sum_tensor0SCurry (I := I) (M := M) g 2 x T
 
 end Elliptic
 end Analysis

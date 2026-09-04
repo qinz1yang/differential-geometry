@@ -86,11 +86,11 @@ theorem covariantJetNormSq_slotExtend_le
       rw [Finset.mul_sum]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem covariantJetNormSq_reindexCoeffGen
+theorem covariantJetNormSq_reindexCoefficientInputSlots
     (g : SmoothRiemannianMetric I M) {r s m : ℕ}
     (R : SmoothCcTensor g r s) (σ : Equiv.Perm (Fin r)) :
     covariantJetNormSq (I := I) (M := M) g m
-        (reindexCoeffGen (I := I) (M := M) g r s R σ) =
+        (reindexCoefficientInputSlots (I := I) (M := M) g r s R σ) =
       covariantJetNormSq (I := I) (M := M) g m R := by
   unfold covariantJetNormSq
   apply Finset.sum_congr rfl
@@ -101,28 +101,28 @@ theorem covariantJetNormSq_reindexCoeffGen
     tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs]
   apply integral_congr_ae
   exact Filter.Eventually.of_forall fun x =>
-    riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+    riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g r s R σ q x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem reindexCoeffGen_sub
+theorem reindexCoefficientInputSlots_sub
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (A B : SmoothCcTensor g r s) (σ : Equiv.Perm (Fin r)) :
-    reindexCoeffGen (I := I) (M := M) g r s (A - B) σ =
-      reindexCoeffGen (I := I) (M := M) g r s A σ -
-        reindexCoeffGen (I := I) (M := M) g r s B σ := by
+    reindexCoefficientInputSlots (I := I) (M := M) g r s (A - B) σ =
+      reindexCoefficientInputSlots (I := I) (M := M) g r s A σ -
+        reindexCoefficientInputSlots (I := I) (M := M) g r s B σ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    reindexCoeffGen_toSection, reindexCoeffGen_toSection,
-    reindexCoeffGen_toSection,
+    reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlots_toSection,
+    reindexCoefficientInputSlots_toSection,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro D
-  rw [sub_apply, reindexCoeffFibGen_apply,
-    reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply,
+    reindexCoefficientInputSlotsFiber_apply, reindexCoefficientInputSlotsFiber_apply,
     sub_apply]
 
 theorem iteratedCovGrad_rsDomDomCongrSection_norm_sq
@@ -229,7 +229,7 @@ theorem covariantJetNormSq_bilinearSlotInsertionCoefficient_succ_le
         covariantJetNormSq (I := I) (M := M) g m
           (bilinearSlotInsertionCoefficient (I := I) (M := M) g s A) := by
   rw [termSlotEndoCc_succ (I := I) (M := M) g s A,
-    covariantJetNormSq_reindexCoeffGen,
+    covariantJetNormSq_reindexCoefficientInputSlots,
     covariantJetNormSq_rsDomDomCongrSection]
   exact covariantJetNormSq_slotExtend_le
     (I := I) (M := M) g (s + 1) (s + 1 + 1) _

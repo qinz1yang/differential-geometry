@@ -43,11 +43,11 @@ theorem riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq
     (R : SmoothCcTensor g r s) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r (s + i) x
         ((iteratedCovGrad (I := I) g r s i
-          (reindexCoeffGen (I := I) (M := M) g r s
+          (reindexCoefficientInputSlots (I := I) (M := M) g r s
             (rsDomDomCongrSection (I := I) (M := M) g r s σ R) σ')).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g r (s + i) x
         ((iteratedCovGrad (I := I) g r s i R).toSection x) := by
-  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g r s
+  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g r s
     (rsDomDomCongrSection (I := I) (M := M) g r s σ R) σ' i x]
   exact riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M) g r s σ
     R
@@ -62,7 +62,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ (s + 1) Λ =
-      reindexCoeffGen (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
         (rsDomDomCongrSection (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
           (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
           (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
@@ -82,14 +82,14 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ (s + 1) Λ).toSection x) D) m =
     Tensor0SSpace.toModel
       ((show Tensor0SSpace (s + 1 + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
           (rsDomDomCongrSection (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
             (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
             (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ)))
           (Equiv.swap (0 : Fin (s + 1 + 1)) 1)).toSection x) D) m
   rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval]
-  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply, rsDomDomCongrSection_toSection,
+  rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply, rsDomDomCongrSection_toSection,
     toModel_rsDomDomCongr_apply, ContinuousMultilinearMap.domDomCongr_apply, slotExtend_toSection]
   rw [show (fun k : Fin (s + 1 + 1) => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) k)) =
       Fin.cons (m 1) (fun j : Fin (s + 1) =>

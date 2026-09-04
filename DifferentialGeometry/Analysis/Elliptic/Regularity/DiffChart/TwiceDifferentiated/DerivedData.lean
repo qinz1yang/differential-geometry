@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.FChartEffDef
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.EffectiveSource
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.ThirdMixedPartial
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThreeSmooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThree
@@ -36,7 +36,7 @@ open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpThreeSmooth
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpThree
 open DifferentialGeometry.Analysis.Laplacian.ChosenThirdMixedPartialChartPushed
-open DifferentialGeometry.Analysis.Laplacian.FChartEffTwiceDef
+open DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource
 open DifferentialGeometry.Analysis.Laplacian.DerivedChartBilinearH1ComplData
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
@@ -129,7 +129,7 @@ private lemma mixed_smooth_classical_partial_swap_aux
   exact h_symm
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma integral_chosenSecond_mul_eq_integral_u_mixed_aux
+private lemma integral_chosenSecond_mul_eq_integral_u_mixed
     {u : EuclN → ℝ} {Ω : Set EuclN} (_hΩ_open : IsOpen Ω)
     (hu : MemWkp (d := Module.finrank ℝ E) 2 2 u Ω)
     (i j : Fin (Module.finrank ℝ E))
@@ -177,7 +177,7 @@ private lemma integral_chosenSecond_mul_eq_integral_u_mixed_aux
   linarith [h_ibp_outer, h_ibp_inner, hA_eq]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma integral_u_mixed_partial_swap_aux
+private lemma integral_u_mixed_partial_swap
     {u : EuclN → ℝ} {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     (i j : Fin (Module.finrank ℝ E))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ) :
@@ -198,7 +198,7 @@ private lemma integral_u_mixed_partial_swap_aux
   rw [mixed_smooth_classical_partial_swap_aux (ψ := ψ) hψ_smooth i j y]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma integral_chosenSecond_mul_swap_aux
+private lemma integral_chosenSecond_mul_swap
     {u : EuclN → ℝ} {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     (hu : MemWkp (d := Module.finrank ℝ E) 2 2 u Ω)
     (i j : Fin (Module.finrank ℝ E))
@@ -214,10 +214,10 @@ private lemma integral_chosenSecond_mul_swap_aux
           (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y
         ∂(volume : Measure EuclN) := by
   classical
-  rw [integral_chosenSecond_mul_eq_integral_u_mixed_aux hΩ_open hu i j
+  rw [integral_chosenSecond_mul_eq_integral_u_mixed hΩ_open hu i j
       hψ_smooth hψ_cs hψ_supp]
-  rw [integral_u_mixed_partial_swap_aux (u := u) hΩ_open i j hψ_smooth]
-  rw [← integral_chosenSecond_mul_eq_integral_u_mixed_aux hΩ_open hu j i
+  rw [integral_u_mixed_partial_swap (u := u) hΩ_open i j hψ_smooth]
+  rw [← integral_chosenSecond_mul_eq_integral_u_mixed hΩ_open hu j i
       hψ_smooth hψ_cs hψ_supp]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -476,7 +476,7 @@ theorem chosenWeakPartial'_swap_ae_of_memWkp_two
       intro y; simp [hd_fn_def]; ring
     simp_rw [h_d_mul]
     rw [integral_sub h_int_first h_int_second]
-    rw [integral_chosenSecond_mul_swap_aux hΩ_open hu i j hψ_smooth hψ_cs hψ_supp]
+    rw [integral_chosenSecond_mul_swap hΩ_open hu i j hψ_smooth hψ_cs hψ_supp]
     ring
   have h_ae_d_zero : ∀ᵐ x ∂(volume : Measure EuclN), x ∈ Ω → d_fn x = 0 :=
     hΩ_open.ae_eq_zero_of_integral_contDiff_smul_eq_zero h_d_li h_zero

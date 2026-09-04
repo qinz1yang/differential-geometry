@@ -28,10 +28,10 @@ theorem reindexedPureTrace_sub
     (σ : Equiv.Perm (Fin (p + 2))) :
     reindexedPureTrace (I := I) (M := M) g gT p σ -
       reindexedPureTrace (I := I) (M := M) g gU p σ =
-      reindexCoeffGen (I := I) (M := M) g (p + 2) p
+      reindexCoefficientInputSlots (I := I) (M := M) g (p + 2) p
         (pureTrace (I := I) (M := M) g gT p -
           pureTrace (I := I) (M := M) g gU p) σ := by
-  rw [reindexedPureTrace, reindexedPureTrace, ← reindexCoeffGen_sub]
+  rw [reindexedPureTrace, reindexedPureTrace, ← reindexCoefficientInputSlots_sub]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covariantJetNormSq_reindexedPureTrace
@@ -41,6 +41,6 @@ theorem covariantJetNormSq_reindexedPureTrace
         (reindexedPureTrace (I := I) (M := M) g gm p σ) =
       covariantJetNormSq (I := I) (M := M) g m
         (pureTrace (I := I) (M := M) g gm p) := by
-  rw [reindexedPureTrace, covariantJetNormSq_reindexCoeffGen]
+  rw [reindexedPureTrace, covariantJetNormSq_reindexCoefficientInputSlots]
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

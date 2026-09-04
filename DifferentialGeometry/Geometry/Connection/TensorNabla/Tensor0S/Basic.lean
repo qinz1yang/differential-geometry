@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.Realization.Tensor0SBridge
-import DifferentialGeometry.Geometry.Connection.Realization.HomNabla
+import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 open DifferentialGeometry.Geometry.Connection.Realization
 
 
@@ -75,7 +75,7 @@ noncomputable def tensor0SCovariantDerivativeSuccFun {s : ℕ}
     (T : Π x : M, Tensor0SSpace (s+1) I x) (x : M) :
     TangentSpace I x →L[ℝ] Tensor0SSpace (s+1) I x :=
   ((tensor0SCurry (I := I) (M := M) s x).symm.toContinuousLinearMap).comp
-    (HomConnection.homBundleCovariantDerivativeFun I M
+    (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
       (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
       cov_TM cov_s (curriedSection I M T) x)
 
@@ -87,7 +87,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
     (T : Π x : M, Tensor0SSpace (s+1) I x) (x : M) (v : TangentSpace I x) :
     tensor0SCovariantDerivativeSuccFun I M cov_TM cov_s T x v =
       (tensor0SCurry (I := I) (M := M) s x).symm
-        (HomConnection.homBundleCovariantDerivativeFun I M
+        (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
           cov_TM cov_s (curriedSection I M T) x v) := rfl
 noncomputable def tensor0SCovariantDerivativeZero
@@ -193,20 +193,20 @@ noncomputable def tensor0SCovariantDerivativeSucc {s : ℕ}
       have h_curried_add : curriedSection I M (T₁ + T₂) =
           curriedSection I M T₁ + curriedSection I M T₂ :=
         curriedSection_add (I := I) (M := M) T₁ T₂
-      have h_homAdd := (HomConnection.homBundleCovariantDerivative I M
+      have h_homAdd := (HomConnection.homBundleCovariantDerivative I M E (TangentSpace I)
         (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
         cov_TM cov_s).isCovariantDerivativeOnUniv.add hC₁ hC₂
       refine ContinuousLinearMap.ext (fun v => ?_)
       simp only [tensor0SCovariantDerivative_succ_fun_apply, add_apply]
       rw [h_curried_add]
       have h_hom_add_apply :
-          HomConnection.homBundleCovariantDerivativeFun I M
+          HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (curriedSection I M T₁ + curriedSection I M T₂) x =
-          HomConnection.homBundleCovariantDerivativeFun I M
+          HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (curriedSection I M T₁) x +
-          HomConnection.homBundleCovariantDerivativeFun I M
+          HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (curriedSection I M T₂) x := h_homAdd
       rw [h_hom_add_apply]
@@ -215,7 +215,7 @@ noncomputable def tensor0SCovariantDerivativeSucc {s : ℕ}
     leibniz := by
       intro T g x hT hg _hx
       have hC := (mdifferentiableAt_curriedSection_iff_section I M T).mp hT
-      have h_homLeib := (HomConnection.homBundleCovariantDerivative I M
+      have h_homLeib := (HomConnection.homBundleCovariantDerivative I M E (TangentSpace I)
         (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
         cov_TM cov_s).isCovariantDerivativeOnUniv.leibniz hC hg
       have h_curried_smul : curriedSection I M (g • T) = g • curriedSection I M T :=
@@ -224,10 +224,10 @@ noncomputable def tensor0SCovariantDerivativeSucc {s : ℕ}
       simp only [tensor0SCovariantDerivative_succ_fun_apply]
       rw [h_curried_smul]
       have h_hom_leib_apply :
-          HomConnection.homBundleCovariantDerivativeFun I M
+          HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (g • curriedSection I M T) x =
-          g x • HomConnection.homBundleCovariantDerivativeFun I M
+          g x • HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (curriedSection I M T) x +
           (mvfderiv (I := I) g x).smulRight (curriedSection I M T x) := h_homLeib
@@ -273,7 +273,7 @@ private theorem contMDiff_tensor0SCov_succ_section {s : ℕ}
       (fun x => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] Tensor0SModel s ℝ E)
         (E := fun x : M =>
           TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] Tensor0SSpace s I x))
-        x (HomConnection.homBundleCovariantDerivativeFun I M
+        x (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
           cov_TM cov_s (curriedSection I M T) x)) := by
     have hτ_plus : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SModel s ℝ E)) (∞ + 1)
@@ -283,14 +283,14 @@ private theorem contMDiff_tensor0SCov_succ_section {s : ℕ}
       rw [show (∞ : WithTop ℕ∞) + 1 = ∞ from by simp]
       exact τ_section.contMDiff
     have : ContMDiffCovariantDerivative
-      (HomConnection.homBundleCovariantDerivative I M
+      (HomConnection.homBundleCovariantDerivative I M E (TangentSpace I)
         (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
         cov_TM cov_s) ∞ :=
-      HomConnection.homBundleCovariantDerivative_contMDiff I M
+      HomConnection.homBundleCovariantDerivative_contMDiff I M E (TangentSpace I)
         (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov_TM cov_s
     have h_hom_cov :=
       (‹ContMDiffCovariantDerivative
-        (HomConnection.homBundleCovariantDerivative I M
+        (HomConnection.homBundleCovariantDerivative I M E (TangentSpace I)
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
           cov_TM cov_s) ∞›).contMDiff.contMDiff hτ_plus.contMDiffOn
     rwa [← contMDiffOn_univ]
@@ -303,7 +303,7 @@ private theorem contMDiff_tensor0SCov_succ_section {s : ℕ}
       ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SModel s ℝ E)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] Tensor0SModel s ℝ E)
         (E := fun x : M => TangentSpace I x →L[ℝ] Tensor0SSpace s I x)
-        x (HomConnection.homBundleCovariantDerivativeFun I M
+        x (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (curriedSection I M T) x (Y x))) :=
     ContMDiff.clm_bundle_apply (b := id) h_hom_smooth Y.contMDiff
@@ -315,17 +315,17 @@ private theorem contMDiff_tensor0SCov_succ_section {s : ℕ}
         x (curriedSection I M S x)) =
       (fun x => TotalSpace.mk' (E →L[ℝ] Tensor0SModel s ℝ E)
         (E := fun x : M => TangentSpace I x →L[ℝ] Tensor0SSpace s I x)
-        x (HomConnection.homBundleCovariantDerivativeFun I M
+        x (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (curriedSection I M T) x (Y x))) := by
     funext x
     have h_S_val : tensor0SCurry (I := I) (M := M) s x (S x) =
-      HomConnection.homBundleCovariantDerivativeFun I M
+      HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
         (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
         cov_TM cov_s (curriedSection I M T) x (Y x) := by
       change tensor0SCurry (I := I) (M := M) s x
         ((tensor0SCurry (I := I) (M := M) s x).symm
-          (HomConnection.homBundleCovariantDerivativeFun I M
+          (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (curriedSection I M T) x (Y x))) = _
       exact (tensor0SCurry (I := I) (M := M) s x).apply_symm_apply _
@@ -334,7 +334,7 @@ private theorem contMDiff_tensor0SCov_succ_section {s : ℕ}
         x (curriedSection I M S x) =
       TotalSpace.mk' (E →L[ℝ] Tensor0SModel s ℝ E)
         (E := fun x : M => TangentSpace I x →L[ℝ] Tensor0SSpace s I x)
-        x (HomConnection.homBundleCovariantDerivativeFun I M
+        x (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
             cov_TM cov_s (curriedSection I M T) x (Y x))
     rw [← h_S_val]
@@ -425,7 +425,7 @@ theorem tensor0SCovariantDerivative_succ_apply {s : ℕ}
     (T : Π x : M, Tensor0SSpace (s+1) I x) (x : M) (v : TangentSpace I x) :
     tensor0SCovariantDerivativeSucc I M cov_TM cov_s T x v =
       (tensor0SCurry (I := I) (M := M) s x).symm
-        (HomConnection.homBundleCovariantDerivativeFun I M
+        (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
           cov_TM cov_s (curriedSection I M T) x v) := rfl
 

@@ -61,10 +61,10 @@ theorem sum_fin_one_fun {Idx : Type*} [Fintype Idx]
 omit [FiniteDimensional ℝ E] in
 theorem basis_repr_eq_sum_inv_inner
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (Z : TangentSpace I x) (i : Idx) :
     basis.repr Z i =
       ∑ j : Idx, gInv i j * g.inner x Z (basis j) := by
@@ -72,7 +72,7 @@ theorem basis_repr_eq_sum_inv_inner
   let Z' : TangentSpace I x :=
     ∑ i : Idx, (∑ j : Idx, gInv i j * g.inner x Z (basis j)) • basis i
   have hZ : Z = Z' := by
-    apply eq_of_inner_basis_eq_gen (I := I) g x basis
+    apply eq_of_inner_basis_eq (I := I) g x basis
     intro l
     calc
       g.inner x Z (basis l)
@@ -141,10 +141,10 @@ theorem basis_repr_eq_sum_inv_inner
 omit [FiniteDimensional ℝ E] in
 theorem linearMap_trace_eq_sum_inv_inner_apply
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (A : TangentSpace I x →ₗ[Real] TangentSpace I x) :
     LinearMap.trace Real (TangentSpace I x) A =
       ∑ i : Idx, ∑ j : Idx, gInv i j * g.inner x (A (basis i)) (basis j) := by
@@ -158,12 +158,12 @@ theorem linearMap_trace_eq_sum_inv_inner_apply
   exact basis_repr_eq_sum_inv_inner (I := I) g x basis gInv hinv (A (basis i)) i
 
 theorem linearMap_trace_nonneg_of_metric_inner_apply_self_nonneg
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (A : TangentSpace I x →ₗ[Real] TangentSpace I x)
     (hA : ∀ v : TangentSpace I x, 0 <= g.inner x (A v) v) :
     0 <= LinearMap.trace Real (TangentSpace I x) A := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -193,22 +193,22 @@ theorem linearMap_trace_nonneg_of_metric_inner_apply_self_nonneg
 theorem hom_normSq_eq_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (D : MetricFiberData W)
     (A : TangentSpace I x →ₗ[Real] W) :
-    MetricFiberData.homFlatLinear (tangentMetricDataGen (I := I) g x).metric D A A =
+    MetricFiberData.homFlatLinear (tangentMetricData (I := I) g x).metric D A A =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j * D.inner (A (basis i)) (A (basis j)) := by
   change LinearMap.trace Real (TangentSpace I x)
-      ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D A).comp A) =
+      ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D A).comp A) =
     ∑ i : Idx, ∑ j : Idx,
       gInv i j * D.inner (A (basis i)) (A (basis j))
   classical
   rw [LinearMap.trace_eq_matrix_trace Real basis
-    ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D A).comp A)]
+    ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D A).comp A)]
   rw [Matrix.trace]
   simp only [Matrix.diag_apply]
   apply Finset.sum_congr rfl
@@ -220,39 +220,39 @@ theorem hom_normSq_eq_basis
   congr 1
   change
     g.inner x
-        ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D A)
+        ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D A)
           (A (basis i)))
         (basis j) =
       D.inner (A (basis i)) (A (basis j))
-  rw [← TangentMetricDataGen.inner_eq_gen (I := I)
-    (tangentMetricDataGen (I := I) g x)
-    ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D A)
+  rw [← TangentMetricData.inner_eq (I := I)
+    (tangentMetricData (I := I) g x)
+    ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D A)
       (A (basis i)))
     (basis j)]
   exact MetricFiberData.adjoint_inner
-    (tangentMetricDataGen (I := I) g x).metric D A (A (basis i)) (basis j)
+    (tangentMetricData (I := I) g x).metric D A (A (basis i)) (basis j)
 
 theorem hom_inner_eq_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (D : MetricFiberData W)
     (A B : TangentSpace I x →ₗ[Real] W) :
-    MetricFiberData.homFlatLinear (tangentMetricDataGen (I := I) g x).metric D A B =
+    MetricFiberData.homFlatLinear (tangentMetricData (I := I) g x).metric D A B =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j * D.inner (A (basis i)) (B (basis j)) := by
   rw [MetricFiberData.homFlatLinear_comm
-    (tangentMetricDataGen (I := I) g x).metric D A B]
+    (tangentMetricData (I := I) g x).metric D A B]
   change LinearMap.trace Real (TangentSpace I x)
-      ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D B).comp A) =
+      ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D B).comp A) =
     ∑ i : Idx, ∑ j : Idx,
       gInv i j * D.inner (A (basis i)) (B (basis j))
   classical
   rw [LinearMap.trace_eq_matrix_trace Real basis
-    ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D B).comp A)]
+    ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D B).comp A)]
   rw [Matrix.trace]
   simp only [Matrix.diag_apply]
   apply Finset.sum_congr rfl
@@ -264,27 +264,27 @@ theorem hom_inner_eq_basis
   congr 1
   change
     g.inner x
-        ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D B)
+        ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D B)
           (A (basis i)))
         (basis j) =
       D.inner (A (basis i)) (B (basis j))
-  rw [← TangentMetricDataGen.inner_eq_gen (I := I)
-    (tangentMetricDataGen (I := I) g x)
-    ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D B)
+  rw [← TangentMetricData.inner_eq (I := I)
+    (tangentMetricData (I := I) g x)
+    ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D B)
       (A (basis i)))
     (basis j)]
   exact MetricFiberData.adjoint_inner
-    (tangentMetricDataGen (I := I) g x).metric D B (A (basis i)) (basis j)
+    (tangentMetricData (I := I) g x).metric D B (A (basis i)) (basis j)
 
 theorem homCLM_normSq_eq_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {W : Type*} [AddCommGroup W] [Module Real W] [TopologicalSpace W]
     (hTopAdd : IsTopologicalAddGroup W) (hContSMul : ContinuousSMul Real W)
     [FiniteDimensional Real W]
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (D : MetricFiberData W)
     (A : TangentSpace I x →L[Real] W) :
     (@MetricFiberData.homCLM
@@ -292,7 +292,7 @@ theorem homCLM_normSq_eq_basis
       inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
         inferInstance
       inferInstance inferInstance inferInstance hTopAdd hContSMul inferInstance
-      (tangentMetricDataGen (I := I) g x).metric D).flat A A =
+      (tangentMetricData (I := I) g x).metric D).flat A A =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j * D.inner (A (basis i)) (A (basis j)) := by
   exact hom_normSq_eq_basis (I := I) g x basis gInv hinv D A.toLinearMap
@@ -302,10 +302,10 @@ theorem homCLM_inner_eq_basis
     {W : Type*} [AddCommGroup W] [Module Real W] [TopologicalSpace W]
     (hTopAdd : IsTopologicalAddGroup W) (hContSMul : ContinuousSMul Real W)
     [FiniteDimensional Real W]
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (D : MetricFiberData W)
     (A B : TangentSpace I x →L[Real] W) :
     (@MetricFiberData.homCLM
@@ -313,7 +313,7 @@ theorem homCLM_inner_eq_basis
       inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
         inferInstance
       inferInstance inferInstance inferInstance hTopAdd hContSMul inferInstance
-      (tangentMetricDataGen (I := I) g x).metric D).flat A B =
+      (tangentMetricData (I := I) g x).metric D).flat A B =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j * D.inner (A (basis i)) (B (basis j)) := by
   exact hom_inner_eq_basis (I := I) g x basis gInv hinv D A.toLinearMap B.toLinearMap
@@ -377,8 +377,8 @@ theorem coordInner0S_one_eq
     (basis : Module.Basis Idx Real (TangentSpace I x)) :
     coordInner0S (I := I) (x := x) 1 gInv α β basis =
       ∑ i : Idx, ∑ j : Idx,
-        gInv i j * cotangentToDualGen (I := I) α (basis i) *
-          cotangentToDualGen (I := I) β (basis j) := by
+        gInv i j * cotangentToDual (I := I) α (basis i) *
+          cotangentToDual (I := I) β (basis j) := by
   classical
   unfold coordInner0S tensor0SComponent
   rw [sum_fin_one_fun]
@@ -387,7 +387,7 @@ theorem coordInner0S_one_eq
   rw [sum_fin_one_fun]
   apply Finset.sum_congr rfl
   intro j _
-  simp [cotangentToDual_apply_gen]
+  simp [cotangentToDual_apply]
 
 omit [FiniteDimensional ℝ E] in
 theorem coordInner0S_succ_summand_eq

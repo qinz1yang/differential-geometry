@@ -340,7 +340,7 @@ theorem spdHeatDuh_pde
     rfl
   · rw [hlap]
     simpa only [spdHeatDuh, fp, spdHeatSource, linPullBcf_apply,
-      heatDuhTimeCandidateField, heatDuhTimeCandidate, parabolicPoint_time,
+      heatDuhTimeDerivativeField, heatDuhTimeDerivative, parabolicPoint_time,
       parabolicPoint_space, L, ContinuousLinearEquiv.apply_symm_apply,
       add_comm] using htime
 

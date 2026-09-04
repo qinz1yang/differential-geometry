@@ -336,15 +336,15 @@ noncomputable def solWindowDataPullback
     rw [hset]
     exact hK.image Φ.symm.continuous
 
-noncomputable def winGInfOfPullback
+noncomputable def windowMetricPrecompactnessConclusionOfPullback
     [NeZero (Module.finrank ℝ E)]
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     [T2Space N]
     (hne : Nonempty M) (W : SolWindowData (I := I) (M := N)) (Φ : M ≃ₘ⟮I, I⟯ N) :
-    WindowMetricPreconvConclusion (E := E) (H := H) (I := I) (M := M) :=
-  winGInfOfData (I := I) hne (solWindowDataPullback (I := I) W Φ)
+    WindowMetricPrecompactnessConclusion (E := E) (H := H) (I := I) (M := M) :=
+  windowMetricPrecompactnessConclusion (I := I) hne (solWindowDataPullback (I := I) W Φ)
 
 end HCGCompactness
 end DifferentialGeometry

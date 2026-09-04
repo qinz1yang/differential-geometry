@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.TangentLift
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.InverseManifoldChain
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.PreconnectedPropagation
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Data
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Existence
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Basic
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Rescaling

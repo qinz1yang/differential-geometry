@@ -66,11 +66,11 @@ theorem derivedChartBilinear_memWkp_two_two_interior
       chartImagePOUTsupport (I := I) (M := M) α ⊆ Ω'' ∧
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) 2 2
-        ((derivedChartBilinearH1ComplDataUnconditional
+        ((canonicalDerivedChartBilinearH1ComplData
           (I := I) (M := M) g α l hu_h).uChart) Ω'' := by
   classical
   set D : ChartBilinearH1ComplData (I := I) (M := M) g α :=
-    derivedChartBilinearH1ComplDataUnconditional (I := I) (M := M) g α l hu_h
+    canonicalDerivedChartBilinearH1ComplData (I := I) (M := M) g α l hu_h
     with hD_def
   set K_α : Set EuclN := chartImagePOUTsupport (I := I) (M := M) α with hK_α_def
   have hK_α_compact : IsCompact K_α :=

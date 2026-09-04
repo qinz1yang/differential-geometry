@@ -1167,7 +1167,7 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_metric_
       gInv t x i j = DifferentialGeometry.Geometry.Curvature.delta3 i j)
     (hframe : ∀ x i, basis x i = frame i x)
     (hinv : ∀ t x,
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M)
+      Tensor0SBundle.MetricInverseInBasis (I := I) (M := M)
         (S.base.metric t) x (basis x) (gInv t x))
     (hfields : ∀ x,
       DifferentialGeometry.Geometry.Operator.SmoothBasisFieldsAt (I := I) (basis x) (X x))

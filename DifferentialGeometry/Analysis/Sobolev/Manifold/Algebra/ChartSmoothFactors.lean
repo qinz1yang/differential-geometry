@@ -171,7 +171,7 @@ lemma chosenWeakPartial_eq_classical_ae
   classical
   have hf_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 p f Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := Module.finrank ℝ E) hΩ_open hf_smooth hf_compact hf_supp hp_one 1
   have hf_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) p f Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p.mp hf_mem
@@ -374,7 +374,7 @@ lemma leftSmoothFactor_memW1p
   have h_tsupp : tsupport (leftSmoothFactor (I := I) (M := M) α b u) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
     tsupport_leftSmoothFactor_subset_chartTarget (I := I) (M := M) α hb_supp
-  exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+  exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
     (d := Module.finrank ℝ E) hΩ_open hSmooth hCompact h_tsupp hp_one 1).memW1p
 
 lemma smoothPushed_memW1p
@@ -394,7 +394,7 @@ lemma smoothPushed_memW1p
   have h_tsupp : tsupport (smoothPushed (I := I) (M := M) α u) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
     tsupport_smoothPushed_subset_chartTarget (I := I) (M := M) α u
-  exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+  exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
     (d := Module.finrank ℝ E) hΩ_open hSmooth hCompact h_tsupp hp_one 1).memW1p
 
 private lemma liftedPou_apply_in_unit_interval

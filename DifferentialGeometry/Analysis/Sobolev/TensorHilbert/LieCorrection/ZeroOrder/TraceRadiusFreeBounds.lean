@@ -191,7 +191,7 @@ private theorem trace_grid_of
           ((iteratedCovGrad (I := I) g₀ (p + 2) p i Φ).toSection x) ≤
         S i * G := by
     exact (hS i x).trans (by nlinarith [hS_nn i, hG_one])
-  rw [reindexedPureTrace, DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+  rw [reindexedPureTrace, DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
     (I := I) (M := M) g₀ (p + 2) p
       (pureTrace (I := I) (M := M) g₀ g₁ p) σ i x]
   rw [pureTrace_split (I := I) (M := M) g₀ g₁ p,

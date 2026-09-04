@@ -349,7 +349,7 @@ theorem chartPushLift_eventually_hasDerivAt_chartPhaseVF_and_target_interior
 
 end EventualChartPhase
 
-section UnconditionalBridge
+section Bridge
 
 variable [I.Boundaryless] [CompleteSpace E]
 
@@ -395,7 +395,7 @@ theorem chartPushedFlow_eq_maximalGeodesicChosenCurve_eventually
     (γ := maximalGeodesicChosenCurve (I := I) g p v ht₁)
     (f := f) hproj_chosen hf0 hf_int_at0
 
-end UnconditionalBridge
+end Bridge
 
 end Exponential
 end Riemannian

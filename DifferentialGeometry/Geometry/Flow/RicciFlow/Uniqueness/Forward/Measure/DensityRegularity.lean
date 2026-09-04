@@ -364,7 +364,7 @@ theorem rm04ChartComp (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
   have : CovariantDerivative.ContMDiffCovariantDerivative
       (metricCov (I := I) g₂) (∞ : WithTop ℕ∞) := LeviCivita_isContMDiff (I := I) g₂
   rw [CovariantDerivative.riemannCurvature04At_apply_const,
-    riemannCurvatureAux_tangentConst_eq_riemannOp (metricCov (I := I) g₂)
+    connectionRiemannCurvatureField_tangentConst_eq_riemannOp (metricCov (I := I) g₂)
       (metricCov_smooth (I := I) g₂) x _ _ _,
     show riemannOp (cov := metricCov (I := I) g₂) x
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)

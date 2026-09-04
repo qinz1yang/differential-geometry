@@ -338,7 +338,7 @@ theorem tensorNormBochnerSplit_coord {s : Nat} {x : M}
   rw [hRL, hNN]
 
 theorem tensorNormBochnerSplit {s : Nat} {x : M}
-    (g : SmoothMetric I M)
+    (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)

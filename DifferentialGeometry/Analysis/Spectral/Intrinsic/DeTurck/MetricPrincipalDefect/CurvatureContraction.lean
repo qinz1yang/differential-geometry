@@ -69,8 +69,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
+  (extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
   pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
@@ -90,7 +91,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
-  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+  hasDerivAt_realizedRicciChartSum metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -834,7 +835,7 @@ theorem exists_iteratedCovGradTwo_gradSlotAntisym_curvatureCoeff
     rw [iteratedCovGrad_succ, iteratedCovGrad_succ, iteratedCovGrad_zero]
     rw [show unitTensor (I := I) (M := M) x = unitZeroSec (I := I) (M := M) x from rfl]
     simpa only [mE, Tensor0SSpace.toModel_apply_tangent] using
-      tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal (I := I) (M := M) g₀ 2 S
+      tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval (I := I) (M := M) g₀ 2 S
         Xs.contMDiff Ys.contMDiff x m
   have h2 : unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 S) x
         (fun i => v ((Equiv.swap (0 : Fin 4) 1) i)) =
@@ -848,7 +849,7 @@ theorem exists_iteratedCovGradTwo_gradSlotAntisym_curvatureCoeff
     rw [iteratedCovGrad_succ, iteratedCovGrad_succ, iteratedCovGrad_zero]
     rw [show unitTensor (I := I) (M := M) x = unitZeroSec (I := I) (M := M) x from rfl]
     simpa only [mE, Tensor0SSpace.toModel_apply_tangent] using
-      tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal (I := I) (M := M) g₀ 2 S
+      tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval (I := I) (M := M) g₀ 2 S
         Ys.contMDiff Xs.contMDiff x m
   have h3 : tensorSecondCovDeriv (I := I) g₀ 0 2 (fun b => Xs b) (fun b => Ys b)
         (fun y : M => S.toSection y) x -

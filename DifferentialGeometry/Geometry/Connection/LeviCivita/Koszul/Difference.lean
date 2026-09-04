@@ -74,7 +74,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem nabla_metric_two_term
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M) :
     nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 cov' X
@@ -100,7 +100,7 @@ theorem koszul_difference
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {x : M}
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (htf : DifferentialGeometry.Geometry.Connection.IsTorsionFreeAt (I := I) cov x)
     (htf' : DifferentialGeometry.Geometry.Connection.IsTorsionFreeAt (I := I) cov' x)
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)) :

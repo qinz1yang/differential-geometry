@@ -20,7 +20,7 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
 namespace WithBoundary
-namespace EquivalenceFull
+namespace Equivalence
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -855,27 +855,7 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth
       wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_finite
         (n := n) (M := M) g hu_smooth h_chart_lt_top h_intr_zero
     exact ⟨C, hC_nn, hC_bound⟩
-
-theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_uniform_full
-    {n : ℕ} [NeZero n]
-    {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace n) M]
-    [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) :
-    ∀ {u : M → ℝ}, ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ u →
-      DifferentialGeometry.Analysis.Sobolev.WithBoundary.AllChartsInteriorSupport
-        (n := n) (M := M) u →
-      ∃ C : ℝ, 0 ≤ C ∧
-        DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
-            (n := n) (M := M) 1 p u ≤
-          ENNReal.ofReal C *
-            w1pNormIntrinsicLpWithBoundary
-              (I := modelWithCornersEuclideanHalfSpace n) (M := M) g p u :=
-  wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth
-    (n := n) (M := M) g hp_one
-
-end EquivalenceFull
+end Equivalence
 end WithBoundary
 end Sobolev
 end Analysis

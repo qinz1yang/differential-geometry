@@ -420,7 +420,7 @@ omit [ConnectedSpace M] in
   rfl
 
 omit [ConnectedSpace M] in
-theorem intrFrame_eq_old
+theorem intrinsicFramedExp_eq_framedExpDiffeo
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -508,7 +508,7 @@ theorem intrFrameMetric_eq
       (fun q : E => framedExpDiffeo (I := I) g p q) :=
     Filter.eventuallyEq_of_mem
       ((intrFrameDiffeo (I := I) g hEnorm p).open_source.mem_nhds hz)
-      (fun _ hq => intrFrame_eq_old (I := I) g hEnorm p hq)
+      (fun _ hq => intrinsicFramedExp_eq_framedExpDiffeo (I := I) g hEnorm p hq)
   have hD : mfderiv (modelWithCornersSelf Real E) I
       (intrinsicFramedExp (I := I) g hEnorm p) z =
       mfderiv (modelWithCornersSelf Real E) I
@@ -517,7 +517,7 @@ theorem intrFrameMetric_eq
       (I := modelWithCornersSelf Real E) (I' := I) hev
   ext v w
   rw [intrFrameMetric_apply, framedMetric_apply,
-    intrFrame_eq_old (I := I) g hEnorm p hz, hD]
+    intrinsicFramedExp_eq_framedExpDiffeo (I := I) g hEnorm p hz, hD]
 
 end
 

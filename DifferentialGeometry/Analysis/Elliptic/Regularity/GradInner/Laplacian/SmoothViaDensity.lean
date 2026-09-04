@@ -27,12 +27,12 @@ open DifferentialGeometry.Analysis.Laplacian.HessianPairingChart
 open DifferentialGeometry.Analysis.Laplacian.HessianPairingLapDom
 open DifferentialGeometry.Analysis.Laplacian.HessianBridgeSmoothLp
 open DifferentialGeometry.Analysis.Laplacian.HessianChartAlphaChristoffelDischarge
-open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianCandidate
+open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianRhs
 open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianVariational
 open DifferentialGeometry.Analysis.Laplacian.RicciPairingCLM
-open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianFinal
-open DifferentialGeometry.Analysis.Laplacian.BochnerPolarisedLpFull
-open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianSmoothFull
+open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianDomain
+open DifferentialGeometry.Analysis.Laplacian.BochnerPolarisedLp
+open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianSmooth
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -49,7 +49,7 @@ theorem gradInnerCLM_eq_H1ComplToLp_resolvent_smooth_of_christoffel_discharge
         (smoothToH1Compl (I := I) (M := M) g v) =
       H1ComplToLp (I := I) (M := M) g
         (resolvent (I := I) (M := M) g
-          (gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
+          (gradInnerLaplacianRhs (I := I) (M := M) g φ
             (smoothToH1Compl_mem_laplacianDomainPow_two
               (I := I) (M := M) g v))) :=
   gradInnerCLM_eq_H1ComplToLp_resolvent_smooth_of_hessHypothesis
@@ -57,7 +57,7 @@ theorem gradInnerCLM_eq_H1ComplToLp_resolvent_smooth_of_christoffel_discharge
     (hessPairingLpOnLapDom_eq_hessPairingSmoothLp_smoothCase_connector
       (I := I) (M := M) g φ v h_transfer h_discharge)
 
-theorem smoothCase_full_of_christoffel_discharge
+theorem gradInnerCLM_smoothToH1Compl_mem_image_laplacianDomain_of_christoffel_discharge
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
     (h_transfer : perChartAeTransferableSmoothCase (I := I) (M := M) g φ v)
     (h_discharge : christoffelDischargeSmoothCase (I := I) (M := M) g φ v) :
@@ -65,7 +65,7 @@ theorem smoothCase_full_of_christoffel_discharge
         (smoothToH1Compl (I := I) (M := M) g v) ∈
       Set.image (H1ComplToLp (I := I) (M := M) g)
         (laplacianDomain (I := I) (M := M) g : Set (H1Compl g)) :=
-  smoothCase_full_of_hessHypothesis
+  gradInnerCLM_smoothToH1Compl_mem_image_laplacianDomain_of_hessHypothesis
     (I := I) (M := M) g φ v
     (hessPairingLpOnLapDom_eq_hessPairingSmoothLp_smoothCase_connector
       (I := I) (M := M) g φ v h_transfer h_discharge)
@@ -77,7 +77,7 @@ theorem smoothMulH1Compl_smoothToH1Compl_mem_laplacianDomainPow_two_of_christoff
     smoothMulH1Compl (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) ∈
       laplacianDomainPow (I := I) (M := M) g 2 :=
-  smoothMulH1Compl_smoothToH1Compl_mem_laplacianDomainPow_two_via_candidate
+  smoothMulH1Compl_smoothToH1Compl_mem_laplacianDomainPow_two_of_rhs_identification
     (I := I) (M := M) g φ v
     (hessPairingLpOnLapDom_eq_hessPairingSmoothLp_smoothCase_connector
       (I := I) (M := M) g φ v h_transfer h_discharge)
@@ -90,7 +90,7 @@ theorem smoothCase_variational_identity_of_christoffel_discharge
         (smoothToH1Compl (I := I) (M := M) g v) =
       H1ComplToLp (I := I) (M := M) g
         (resolvent (I := I) (M := M) g
-          (gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
+          (gradInnerLaplacianRhs (I := I) (M := M) g φ
             (smoothToH1Compl_mem_laplacianDomainPow_two
               (I := I) (M := M) g v))) :=
   gradInnerCLM_eq_H1ComplToLp_resolvent_smooth_of_christoffel_discharge
@@ -103,21 +103,21 @@ theorem gradInnerCLM_eq_H1ComplToLp_resolvent_smoothCase_of_discharge
         (smoothToH1Compl (I := I) (M := M) g v) =
       H1ComplToLp (I := I) (M := M) g
         (resolvent (I := I) (M := M) g
-          (gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
+          (gradInnerLaplacianRhs (I := I) (M := M) g φ
             (smoothToH1Compl_mem_laplacianDomainPow_two
               (I := I) (M := M) g v))) :=
   gradInnerCLM_eq_H1ComplToLp_resolvent_smooth_of_christoffel_discharge
     (I := I) (M := M) g φ v
     (perChartAeTransferableSmoothCase_holds (I := I) (M := M) g φ v) h_discharge
 
-theorem smoothCase_full_of_discharge
+theorem gradInnerCLM_smoothToH1Compl_mem_image_laplacianDomain_of_discharge
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
     (h_discharge : christoffelDischargeSmoothCase (I := I) (M := M) g φ v) :
     gradInnerCLM (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) ∈
       Set.image (H1ComplToLp (I := I) (M := M) g)
         (laplacianDomain (I := I) (M := M) g : Set (H1Compl g)) :=
-  smoothCase_full_of_christoffel_discharge
+  gradInnerCLM_smoothToH1Compl_mem_image_laplacianDomain_of_christoffel_discharge
     (I := I) (M := M) g φ v
     (perChartAeTransferableSmoothCase_holds (I := I) (M := M) g φ v) h_discharge
 
@@ -138,7 +138,7 @@ theorem smoothCase_variational_identity_of_discharge
         (smoothToH1Compl (I := I) (M := M) g v) =
       H1ComplToLp (I := I) (M := M) g
         (resolvent (I := I) (M := M) g
-          (gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
+          (gradInnerLaplacianRhs (I := I) (M := M) g φ
             (smoothToH1Compl_mem_laplacianDomainPow_two
               (I := I) (M := M) g v))) :=
   gradInnerCLM_eq_H1ComplToLp_resolvent_smoothCase_of_discharge

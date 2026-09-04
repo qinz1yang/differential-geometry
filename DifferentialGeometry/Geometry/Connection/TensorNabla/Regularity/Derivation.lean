@@ -507,7 +507,7 @@ noncomputable def localCovariantDerivTensor0SAt (r : ℕ)
         (M := M) r x₀ β)
       (Set.range I) (extChartAt I x₀ x₀))
 
-theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
+theorem localCovariantDerivTensor0SAt_eval_moving {r : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
@@ -790,10 +790,10 @@ theorem localCovDeriv0S_sub {r : ℕ}
             (((CovariantDerivative.difference cov cov' x₀) (V a x₀)) (X x₀))) := by
   classical
   let slots : Fin r -> TangentSpace I x₀ := fun a => V a x₀
-  have hcov := localCovariantDerivTensor0SAt_eval_moving_raw
+  have hcov := localCovariantDerivTensor0SAt_eval_moving
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     cov X β V x₀ hpair hβmodel hV hVmodel hcoord
-  have hcov' := localCovariantDerivTensor0SAt_eval_moving_raw
+  have hcov' := localCovariantDerivTensor0SAt_eval_moving
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     cov' X β V x₀ hpair hβmodel hV hVmodel hcoord
   have hdiff (a : Fin r) :
@@ -845,7 +845,7 @@ theorem localCovDeriv0S_sub {r : ℕ}
   rw [← hsum]
   abel
 
-theorem nablaRSFun_eval_moving_raw {r s : ℕ}
+theorem nablaRSFun_eval_moving {r s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -1080,7 +1080,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
               ((cov (V a) x₀) (X x₀))) := by
           rw [hpair_deriv, hinput, houtput_sum]
 
-theorem nablaRSFun_sub_raw {r s : ℕ}
+theorem nablaRSFun_connection_difference_apply {r s : ℕ}
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -1123,10 +1123,10 @@ theorem nablaRSFun_sub_raw {r s : ℕ}
             (((CovariantDerivative.difference cov cov' x₀) (V a x₀)) (X x₀))) := by
   classical
   let slots : Fin s -> TangentSpace I x₀ := fun a => V a x₀
-  have hcov := nablaRSFun_eval_moving_raw
+  have hcov := nablaRSFun_eval_moving
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     cov X T β V x₀ hpair hβmodel hV hVmodel hcoord
-  have hcov' := nablaRSFun_eval_moving_raw
+  have hcov' := nablaRSFun_eval_moving
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     cov' X T β V x₀ hpair hβmodel hV hVmodel hcoord
   have hdiff (a : Fin s) :
@@ -1182,7 +1182,7 @@ theorem nablaRSFun_sub_raw {r s : ℕ}
   rw [← hsum]
   abel
 
-theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
+theorem nabla0SFun_eval_coordFrame_moving {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (V : Fin s -> (x : M) -> TangentSpace I x)

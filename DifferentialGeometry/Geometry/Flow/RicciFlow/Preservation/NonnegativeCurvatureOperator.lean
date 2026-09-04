@@ -348,7 +348,7 @@ private theorem ricciUpperBoundHeat_coord
       DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) (S.base.metric t) x k l (extChartAt I x x)
   have hinv :
-      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv := by
+      MetricInverseInBasis (I := I) (S.base.metric t) x basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) (S.base.metric t) x
@@ -704,7 +704,7 @@ private theorem ricciUpperBoundReact_realizes_block
     (I := I) (M := M) (fun _t g x A => ricciUpperBoundReactAt (I := I) g A)
     t g Araw x hbilin]
 
-private theorem ricciUpperBoundReactAt_block_of_raw
+private theorem ricciUpperBoundReactAt_block_of_rawTwoTensor
     (g : SmoothRiemannianMetric I M) {x : M}
     {Araw : RawTwoTensorField (I := I) (M := M)}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
@@ -770,7 +770,7 @@ private theorem ricci_upper_bound_reaction_null_symm
       rw [hBout.smul_left r (nb.basis 0) (r • nb.basis 0)]
       rw [hBout.smul_right r (nb.basis 0) (nb.basis 0)]
       rw [ricciUpperBoundReact_realizes_block (I := I) (M := M) hbilin]
-      rw [ricciUpperBoundReactAt_block_of_raw (I := I) (G t) hsym hbilin hblock]
+      rw [ricciUpperBoundReactAt_block_of_rawTwoTensor (I := I) (G t) hsym hbilin hblock]
       ring
     rw [heval]
     exact mul_nonneg (sq_nonneg r)

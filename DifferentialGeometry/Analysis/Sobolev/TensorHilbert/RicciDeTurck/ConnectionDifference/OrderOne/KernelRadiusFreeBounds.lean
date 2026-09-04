@@ -202,14 +202,14 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpa
 omit [I.Boundaryless] in
 theorem dltcEqPure (g₀ g₁ : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 4)) :
     deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
         (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁) σ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply]
+  rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply]
   rfl
 
 theorem dltcAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -230,7 +230,7 @@ theorem dltcAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ�
   refine ⟨Kp, hKp_nn, ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ σ l x
   rw [dltcEqPure (I := I) (M := M) g₀ g₁ σ,
-    riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2
+    riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 4 2
       (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁) σ l x]
   exact hp g₁ P htie hδ_le hδ0 hδ l x
 
@@ -572,11 +572,11 @@ theorem pieceAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ
   have hidx : n + 0 + 1 + 1 = n + 2 := by omega
   rw [hidx] at hfold
   have hdef : lieFirstOrderPiece (I := I) (M := M) g₀ g₁ σ' ρ Ψ =
-      reindexCoeffGen (I := I) (M := M) g₀ 3 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 2
         (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 2 (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ')
           (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2 Ψ)))
         ρ := rfl
-  rw [hdef, riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 3 2 _ ρ n x]
+  rw [hdef, riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 3 2 _ ρ n x]
   exact hfold
 
 theorem lieA1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannianMetric I M)

@@ -78,7 +78,7 @@ theorem derivNorm_le_sup_sing
   exact le_csSup hbdd ⟨a, ha, z, Set.mem_singleton z, rfl⟩
 
 omit [Module.Finite ℝ E] in
-theorem windowGInfAll_pt
+theorem exists_metric_subsequence_tendsto_in_derivative_norm_on_compacts_uniformly_on_time_interval
     [Module.Finite ℝ E]
     [WeaklyLocallyCompactSpace M]
     (hne : Nonempty M)
@@ -108,7 +108,7 @@ theorem windowGInfAll_pt
               metricDerivNorm (I := I) a (gSeq (phi k) t) (gInf t) gRef x < eps := by
   classical
   obtain ⟨phi, hphi, gInf, hsup⟩ :=
-    windowGInfAll (I := I) hne beta psiT gRef gSeq e he hdense hgLip hbdd hlow
+    exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uniformly_on_time_interval (I := I) hne beta psiT gRef gSeq e he hdense hgLip hbdd hlow
   refine ⟨phi, hphi, gInf, ?_⟩
   intro K hK p eps heps
   obtain ⟨k0, hk0⟩ := hsup K hK p eps heps

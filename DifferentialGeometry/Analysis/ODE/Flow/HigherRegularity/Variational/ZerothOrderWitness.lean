@@ -15,7 +15,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E
 
 attribute [local instance] variationalAugmentedEndNormedAddCommGroup
 
-section LevelZeroFullWitness
+section LevelZeroWitness
 
 variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax : ℝ} {Φ : E × ℝ → E}
 
@@ -250,7 +250,7 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
   exact ⟨T_final, ρ_innerN, hT_final_pos, hρ_inner_pos, Y,
     { contDiffOn := hY_C0, fderiv_eq := h_fderiv_eq }⟩
 
-end LevelZeroFullWitness
+end LevelZeroWitness
 
 end Flow
 end ODE

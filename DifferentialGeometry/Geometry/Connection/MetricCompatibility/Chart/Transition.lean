@@ -104,7 +104,7 @@ private theorem chartGramOnE_eq_sum_chartTransition' [I.Boundaryless]
     rw [tangentCoordChange_eq_chartTransitionAt' (I := I) α β p]
     simp only [chartTransitionJacEntry_def, hx_eq]
 
-private def invGramPullbackCandidate
+private def invGramPullback
     (g : SmoothRiemannianMetric I M) (α β : M) (p : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i j =>
@@ -116,11 +116,11 @@ private def invGramPullbackCandidate
         (chartTransitionMap (I := I) α β (extChartAt I α p)) j b *
       chartInvGramMatrix (I := I) g β p a b
 
-private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
+private theorem chartGramMatrix_mul_invGramPullback [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α β : M) {p : M}
     (hp_α : p ∈ (chartAt H α).source) (hp_β : p ∈ (chartAt H β).source) :
     DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p *
-        invGramPullbackCandidate (I := I) g α β p = 1 := by
+        invGramPullback (I := I) g α β p = 1 := by
   classical
   set x := extChartAt I α p with hx_def
   set Tx := chartTransitionMap (I := I) α β x with hTx_def
@@ -193,7 +193,7 @@ private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
   ext k l
   rw [Matrix.mul_apply, Matrix.one_apply]
   have hH : ∀ m : Fin (Module.finrank ℝ E),
-      invGramPullbackCandidate (I := I) g α β p m l =
+      invGramPullback (I := I) g α β p m l =
         ∑ i, ∑ j, K m i * K l j * Gβinv i j := by
     intro m
     rfl
@@ -204,7 +204,7 @@ private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
       (J a k * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv i j) *
         (J b m * K m i) with hΦ_def
   calc ∑ m, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p k m *
-          invGramPullbackCandidate (I := I) g α β p m l
+          invGramPullback (I := I) g α β p m l
       = ∑ m, (∑ a, ∑ b, J a k * J b m *
             DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) *
           (∑ i, ∑ j, K m i * K l j * Gβinv i j) := by
@@ -297,9 +297,9 @@ theorem chartInvGramMatrix_eq_sum_chartTransition [I.Boundaryless]
         chartTransitionJacEntry (I := I) β α
           (chartTransitionMap (I := I) α β (extChartAt I α p)) j b *
         chartInvGramMatrix (I := I) g β p a b := by
-  have hright := chartGramMatrix_mul_invGramPullbackCandidate (I := I) g α β hp_α hp_β
+  have hright := chartGramMatrix_mul_invGramPullback (I := I) g α β hp_α hp_β
   have hinv : chartInvGramMatrix (I := I) g α p =
-      invGramPullbackCandidate (I := I) g α β p := by
+      invGramPullback (I := I) g α β p := by
     unfold chartInvGramMatrix
     exact Matrix.inv_eq_right_inv hright
   have hentry := congrFun (congrFun hinv i) j
@@ -1574,7 +1574,7 @@ theorem chartCoord_chartTransitionAt_comp_hasDerivAt [I.Boundaryless]
     chartTransitionJacEntry_comp_hasDerivAt (I := I) α β a i hc hmem
   simpa using hJ.mul_const (chartCoord (E := E) i v)
 
-lemma chartCoord_fderiv_chartTransitionAt_general [I.Boundaryless]
+lemma chartCoord_fderiv_chartTransitionAt [I.Boundaryless]
     (α β : M) {x : E} (hx : x ∈ chartTransitionSource (I := I) α β)
     (a : Fin (Module.finrank ℝ E)) (v w : E) :
     chartCoord (E := E) a
@@ -1663,7 +1663,7 @@ lemma fderiv_chartTransitionAt_apply_eq_pushCorrection [I.Boundaryless]
     chartCoord (E := E) a
       (chartTransitionAt (I := I) α β x
         (chartTransitionSecondDerivCorrection (I := I) α β v w x))
-  rw [chartCoord_fderiv_chartTransitionAt_general (I := I) α β hx a v w]
+  rw [chartCoord_fderiv_chartTransitionAt (I := I) α β hx a v w]
   rw [chartCoord_chartTransitionAt (I := I) α β x
     (chartTransitionSecondDerivCorrection (I := I) α β v w x) a]
   have hcorrCoord : ∀ c : Fin (Module.finrank ℝ E),

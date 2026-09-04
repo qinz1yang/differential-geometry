@@ -248,9 +248,9 @@ theorem metricCov_pullback
       (metricCov (I := I) (M := N) g
         (fun q : N => pushFwdSection (I := I) Phi Y q) (Phi x))
         (mfderiv I I (Phi : M -> N) x v) := by
-  apply tangentFlatLinear_injective_gen (I := I) g (Phi x)
+  apply tangentFlatLinear_injective (I := I) g (Phi x)
   ext u
-  simp only [tangentFlatLinear_apply_gen]
+  simp only [tangentFlatLinear_apply]
   set e := Diffeomorph.mfderivToContinuousLinearEquiv Phi infty_ne_zero x with he
   set w : TangentSpace I x := e.symm u with hw_def
   have hdw : mfderiv I I (Phi : M -> N) x w = u := by

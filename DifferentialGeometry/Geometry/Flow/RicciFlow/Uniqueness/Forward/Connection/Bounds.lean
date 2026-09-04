@@ -33,7 +33,7 @@ private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (b : Module.Basis Idx Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasisGen (I := I) g x b (identityInvMetric (Idx := Idx)) := by
+    MetricInverseInBasis (I := I) g x b (identityInvMetric (Idx := Idx)) := by
   intro i j
   constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
 
@@ -521,7 +521,7 @@ theorem lower_raise_cancel [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     (b : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x b gInv)
+    (hinv : MetricInverseInBasis (I := I) g x b gInv)
     (L : Idx -> Real) (k : Idx) :
     ∑ m : Idx, (∑ l : Idx, gInv m l * L l) * g.inner x (b m) (b k) = L k := by
   classical
@@ -655,7 +655,7 @@ theorem lowerHamRHS_comp [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     (b : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x b gInv)
+    (hinv : MetricInverseInBasis (I := I) g x b gInv)
     (L : Idx -> Idx -> Idx -> Real) (i j k : Idx) :
     component0S (I := I) b
         (lowerBilin (I := I) (metricTensorField (I := I) g x)
@@ -716,7 +716,7 @@ theorem lower_connection_difference_eq_hamilton_combination [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     (b : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x b gInv)
+    (hinv : MetricInverseInBasis (I := I) g x b gInv)
     (N : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (nr : Idx -> Idx -> Idx -> Real)
     (hnr : ∀ d a c : Idx, nr d a c =
@@ -1082,9 +1082,9 @@ theorem connSpeedLow_normSq_le
     (hRic₂ : ∀ y : M, Ric₂ y = metricRicciAt (I := I) (g₂ t) y)
     (gInv₁ gInv₂ : Real ->
       DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
-    (hgInv₁ : MetricInverseInBasisGen (I := I) (g₁ t) x (hframe.toBasisAt hx)
+    (hgInv₁ : MetricInverseInBasis (I := I) (g₁ t) x (hframe.toBasisAt hx)
       (fun i j : Idx => gInv₁ t x i j))
-    (hgInv₂ : MetricInverseInBasisGen (I := I) (g₂ t) x (hframe.toBasisAt hx)
+    (hgInv₂ : MetricInverseInBasis (I := I) (g₂ t) x (hframe.toBasisAt hx)
       (fun i j : Idx => gInv₂ t x i j))
     (nablaRic₁ nablaRic₂ : Real -> M -> Idx -> Idx -> Idx -> Real)
     (hNR₁ : ∀ d a b : Idx, nablaRic₁ t x d a b =
@@ -1198,9 +1198,9 @@ theorem connectionDifferenceDot_normSq_le
     (hRic₂ : ∀ y : M, Ric₂ y = metricRicciAt (I := I) (g₂ t) y)
     (gInv₁ gInv₂ : Real ->
       DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
-    (hgInv₁ : MetricInverseInBasisGen (I := I) (g₁ t) x (hframe.toBasisAt hx)
+    (hgInv₁ : MetricInverseInBasis (I := I) (g₁ t) x (hframe.toBasisAt hx)
       (fun i j : Idx => gInv₁ t x i j))
-    (hgInv₂ : MetricInverseInBasisGen (I := I) (g₂ t) x (hframe.toBasisAt hx)
+    (hgInv₂ : MetricInverseInBasis (I := I) (g₂ t) x (hframe.toBasisAt hx)
       (fun i j : Idx => gInv₂ t x i j))
     (nablaRic₁ nablaRic₂ : Real -> M -> Idx -> Idx -> Idx -> Real)
     (hNR₁ : ∀ d a b : Idx, nablaRic₁ t x d a b =

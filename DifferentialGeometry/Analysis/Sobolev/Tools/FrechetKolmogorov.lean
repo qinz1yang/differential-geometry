@@ -71,7 +71,7 @@ theorem lintegral_pow_le_pow_lintegral_prob
   rw [← ENNReal.rpow_mul, show (1 / pr) * pr = 1 by field_simp, ENNReal.rpow_one]
 
 omit [NeZero d] in
-private lemma convolution_sub_eq_integral_aux
+private lemma convolution_sub_eq_integral
     {η u : E → ℝ}
     (hη_cont : Continuous η) (hη_compact : HasCompactSupport η)
     (hη_int_eq_one : ∫ s, η s ∂(volume : Measure E) = 1)
@@ -145,7 +145,7 @@ private lemma enorm_convolution_sub_le_lintegral
       ∫⁻ s, ENNReal.ofReal (η s) * (‖u (x - s) - u x‖ₑ : ℝ≥0∞) ∂volume := by
   classical
   have hf_eq :=
-    convolution_sub_eq_integral_aux hη_cont hη_compact hη_int_eq_one hu_loc x
+    convolution_sub_eq_integral hη_cont hη_compact hη_int_eq_one hu_loc x
   have hint_diff_vol :
       Integrable (fun s : E => η s • (u (x - s) - u x)) volume :=
     integrable_eta_smul_translate_sub hη_cont hη_compact hu_loc x

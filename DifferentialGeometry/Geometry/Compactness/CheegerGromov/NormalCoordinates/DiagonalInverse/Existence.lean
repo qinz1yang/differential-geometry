@@ -25,7 +25,7 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-theorem normalDiagAtFull
+theorem exists_normalDiagonal
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) {r : Real}
@@ -197,7 +197,7 @@ theorem normalDiagAt
         ((q : Real) / 2) ∧
       IsNormalDiag (I := I) (X.obj k) hcomplete hconn x q δ e := by
   obtain ⟨δ, e, hδ, hδeq, he, _hfence, _hinvApprox⟩ :=
-    normalDiagAtFull (I := I) h k x hcomplete hconn hrMetric hrQuarter
+    exists_normalDiagonal (I := I) h k x hcomplete hconn hrMetric hrQuarter
       q hq hqWide hqAccel herr
   exact ⟨δ, e, hδ, hδeq, he⟩
 

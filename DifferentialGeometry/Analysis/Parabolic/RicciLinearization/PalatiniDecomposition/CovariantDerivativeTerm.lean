@@ -645,7 +645,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdFullRaised_diff_split (g₀ g₁ : SmoothRiemannianMetric I M) :
+private lemma bdRaised_diff_split (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
         metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ := by
@@ -783,7 +783,7 @@ private theorem metricComparisonEndomorphismField_iteratedCovGrad_gridWindow (g�
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) +
         endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) := by
-    rw [bdFullRaised_diff_split (I := I) (M := M) g₀ g₁,
+    rw [bdRaised_diff_split (I := I) (M := M) g₀ g₁,
       bdSlotInsertEndoCc_add (I := I) (M := M) g₀ 0]
   rw [hsplit]
   refine le_trans (bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 1 1 l _ _ x) ?_
@@ -1338,7 +1338,7 @@ private lemma bdTermSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannia
     (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
     bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term =
-      reindexCoeffGen (I := I) (M := M) g₀ 2 3
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 3
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
           (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)))
         (Equiv.swap (0 : Fin 2) 1) := by
@@ -1368,7 +1368,7 @@ private lemma bdTermSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannia
     rw [slotInsertEndoFib_apply_natural]
   have e1 : Tensor0SSpace.eval
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 3
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 3
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
             (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)))
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) w =
@@ -1378,7 +1378,7 @@ private lemma bdTermSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannia
             ((slotExtend (I := I) (M := M) g₀ 1 2
               (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)).toSection x)) D') w := by
     have h1 : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 3
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 3
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
             (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)))
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) =
@@ -1386,8 +1386,8 @@ private lemma bdTermSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannia
           rsDomDomCongr (finRotate 3).symm
             ((slotExtend (I := I) (M := M) g₀ 1 2
               (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Term)).toSection x)) D') := by
-      rw [reindexCoeffGen_toSection]
-      rw [reindexCoeffFibGen_apply (I := I) 2 3 (Equiv.swap (0 : Fin 2) 1) x
+      rw [reindexCoefficientInputSlots_toSection]
+      rw [reindexCoefficientInputSlotsFiber_apply (I := I) 2 3 (Equiv.swap (0 : Fin 2) 1) x
         (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
             (slotExtend (I := I) (M := M) g₀ 1 2
@@ -1503,7 +1503,7 @@ private lemma bdTermSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRiemannia
     (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
     bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 2 Term =
-      reindexCoeffGen (I := I) (M := M) g₀ 3 4
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
         (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 bilinearSlotInsertionCoefficientReindexPermFour
           (slotExtend (I := I) (M := M) g₀ 2 3 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term)))
         (Equiv.swap (0 : Fin 3) 1) := by
@@ -1534,7 +1534,7 @@ private lemma bdTermSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRiemannia
     rw [slotInsertEndoFib_apply_natural]
   have e1 : Tensor0SSpace.eval
       ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 4 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 3 4
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
           (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 bilinearSlotInsertionCoefficientReindexPermFour
             (slotExtend (I := I) (M := M) g₀ 2 3 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term)))
           (Equiv.swap (0 : Fin 3) 1)).toSection x) D) w =
@@ -1544,7 +1544,7 @@ private lemma bdTermSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRiemannia
             ((slotExtend (I := I) (M := M) g₀ 2 3
               (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term)).toSection x)) D') w := by
     have h1 : ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 4 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 3 4
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
           (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 bilinearSlotInsertionCoefficientReindexPermFour
             (slotExtend (I := I) (M := M) g₀ 2 3 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term)))
           (Equiv.swap (0 : Fin 3) 1)).toSection x) D) =
@@ -1552,8 +1552,8 @@ private lemma bdTermSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRiemannia
           rsDomDomCongr bilinearSlotInsertionCoefficientReindexPermFour
             ((slotExtend (I := I) (M := M) g₀ 2 3
               (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term)).toSection x)) D') := by
-      rw [reindexCoeffGen_toSection]
-      rw [reindexCoeffFibGen_apply (I := I) 3 4 (Equiv.swap (0 : Fin 3) 1) x
+      rw [reindexCoefficientInputSlots_toSection]
+      rw [reindexCoefficientInputSlotsFiber_apply (I := I) 3 4 (Equiv.swap (0 : Fin 3) 1) x
         (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 4 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 bilinearSlotInsertionCoefficientReindexPermFour
             (slotExtend (I := I) (M := M) g₀ 2 3
@@ -3608,7 +3608,7 @@ theorem bdCovDerivTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMet
     (operatorFieldApplicationGdiag_nonneg (E := E) i)) ?_
   rw [← Finset.sum_mul, ← mul_assoc]
 
-theorem exists_deTurckLieCovariantDerivativeTerm_backgroundDifference_perOrder_l2_tameEnvelope_generic
+theorem exists_deTurckLieCovariantDerivativeTerm_backgroundDifference_perOrder_l2_tameEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -3681,7 +3681,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_backgroundDifference_l2JetWindo
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2) := by
   classical
   obtain ⟨K, hK_nn, hK⟩ :=
-    exists_deTurckLieCovariantDerivativeTerm_backgroundDifference_perOrder_l2_tameEnvelope_generic
+    exists_deTurckLieCovariantDerivativeTerm_backgroundDifference_perOrder_l2_tameEnvelope
       (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   refine ⟨K, hK_nn, ?_⟩
   intro T δ hδ_le hδ hδZ hball i s hs

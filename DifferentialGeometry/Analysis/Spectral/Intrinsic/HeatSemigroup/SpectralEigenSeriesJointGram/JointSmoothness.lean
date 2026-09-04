@@ -106,7 +106,7 @@ private theorem tensorL2_ext_of_tensorL2Coeff'
   rw [hS, hT, h i]
 
 omit [BoundarylessManifold I M] in
-private theorem allHs_of_weighted_summable
+theorem allHs_of_weighted_summable
     (g : SmoothRiemannianMetric I M) (u : TensorL2 0 2 g)
     (hsum : ∀ σ : ℝ, 0 ≤ σ →
       Summable (fun i : TensorEigenIdx (I := I) (M := M) g 0 2 =>

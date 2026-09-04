@@ -37,7 +37,7 @@ theorem tensor12Comp_connectionDifferenceTensorAt
   unfold tensor12CompInFrame tensorRSComponentInFrame
     christoffelSymbolDifferenceInFrame
   change
-    componentRSGen (I := I) (hframe.toBasisAt hx)
+    componentRSField (I := I) (hframe.toBasisAt hx)
         (connectionDifferenceTensorAt (I := I) cov cov' x)
         (fun _ : Fin 1 => k)
         (fun q : Fin 2 => if q = 0 then i else j) =
@@ -50,13 +50,13 @@ theorem normSqRS_connectionDifferenceTensorAt_eq_christoffel_sum
     [IsManifold I ∞ M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
-    (g : SmoothMetricGen I M)
+    (g : SmoothRiemannianMetric I M)
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     {x : M} (hx : x ∈ u)
     (hinv :
-      MetricInverseInBasisGen (I := I) g x (hframe.toBasisAt hx)
+      MetricInverseInBasis (I := I) g x (hframe.toBasisAt hx)
         (identityInvMetric (Idx := Idx))) :
     normSqRS (I := I) (g := g) (x := x) 1 2
         (connectionDifferenceTensorAt (I := I) cov cov' x) =

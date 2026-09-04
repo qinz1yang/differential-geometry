@@ -354,7 +354,7 @@ def scalarMetricData (x : M) :
     MetricFiberData.real
 
 def tensor0SMetricStep
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (D : MetricFiberData (Tensor0SSpace s I x)) :
     MetricFiberData (Tensor0SSpace (s + 1) I x) :=
   have hTopAdd0 : IsTopologicalAddGroup (Tensor0SSpace s I x) :=
@@ -403,7 +403,7 @@ def tensor0SMetricStep
       inferInstance inferInstance inferInstance hTopAdd0 hContSMul0 inferInstance
       (tangentMetricData (I := I) g x).metric D)
 
-def tensor0SMetricData (g : SmoothMetric I M) (x : M) :
+def tensor0SMetricData (g : SmoothRiemannianMetric I M) (x : M) :
     (s : Nat) -> MetricFiberData (Tensor0SSpace s I x)
   | 0 => scalarMetricData (I := I) x
   | 1 => cotangentMetricData (I := I) g x
@@ -411,25 +411,25 @@ def tensor0SMetricData (g : SmoothMetric I M) (x : M) :
       tensor0SMetricStep (I := I) g x (s + 1) (tensor0SMetricData g x (s + 1))
 
 def inner0S
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) : Real :=
   (tensor0SMetricData (I := I) g x s).inner A B
 
 theorem inner0S_symm {s : Nat}
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (A B : Tensor0SSpace s I x) :
     inner0S (I := I) g x s A B = inner0S (I := I) g x s B A :=
   (tensor0SMetricData (I := I) g x s).inner_comm A B
 
 theorem inner0S_add_left
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B C : Tensor0SSpace s I x) :
     inner0S (I := I) g x s (A + B) C =
       inner0S (I := I) g x s A C + inner0S (I := I) g x s B C := by
   simp [inner0S, MetricFiberData.inner, map_add]
 
 theorem inner0S_add_right
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B C : Tensor0SSpace s I x) :
     inner0S (I := I) g x s A (B + C) =
       inner0S (I := I) g x s A B + inner0S (I := I) g x s A C := by
@@ -437,34 +437,34 @@ theorem inner0S_add_right
     inner0S_symm (s := s) g x C A]
 
 theorem inner0S_sub_left
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B C : Tensor0SSpace s I x) :
     inner0S (I := I) g x s (A - B) C =
       inner0S (I := I) g x s A C - inner0S (I := I) g x s B C := by
   simp [inner0S, MetricFiberData.inner, map_sub]
 
 def flat0S
-    (g : SmoothMetric I M) (x : M) (s : Nat) :
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat) :
     Tensor0SSpace s I x ≃ₗ[Real] Module.Dual Real (Tensor0SSpace s I x) :=
   (tensor0SMetricData (I := I) g x s).flat
 
 def normSq0S
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A : Tensor0SSpace s I x) : Real :=
   inner0S (I := I) g x s A A
 
 noncomputable def tensor0SFiberNorm
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A : Tensor0SSpace s I x) : Real :=
   Real.sqrt (normSq0S (I := I) g x s A)
 
 noncomputable def tensor04FiberNorm
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (A : Tensor0SSpace 4 I x) : Real :=
   tensor0SFiberNorm (I := I) g x 4 A
 
 theorem tensor0S_inner_eq_inner0S
-    (g : SmoothMetric I M) (x : M) {s : Nat}
+    (g : SmoothRiemannianMetric I M) (x : M) {s : Nat}
     (A B : Tensor0SSpace s I x) :
     letI : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
       (tensor0SMetricData (I := I) g x s).toCore
@@ -479,7 +479,7 @@ theorem tensor0S_inner_eq_inner0S
   rfl
 
 theorem tensor0S_norm_sq_eq_normSq0S
-    (g : SmoothMetric I M) (x : M) {s : Nat}
+    (g : SmoothRiemannianMetric I M) (x : M) {s : Nat}
     (A : Tensor0SSpace s I x) :
     letI : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
       (tensor0SMetricData (I := I) g x s).toCore
@@ -495,7 +495,7 @@ theorem tensor0S_norm_sq_eq_normSq0S
   exact (tensor0SMetricData (I := I) g x s).nonneg A
 
 theorem tensor0SFiberNorm_eq_norm
-    (g : SmoothMetric I M) (x : M) {s : Nat}
+    (g : SmoothRiemannianMetric I M) (x : M) {s : Nat}
     (A : Tensor0SSpace s I x) :
     letI : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
       (tensor0SMetricData (I := I) g x s).toCore
@@ -508,7 +508,7 @@ theorem tensor0SFiberNorm_eq_norm
   rfl
 
 noncomputable def tensor0SFiberNormHomeomorph
-    (g : SmoothMetric I M) (x : M) (s : Nat) :
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat) :
     let metricNorm : NormedAddCommGroup (Tensor0SSpace s I x) :=
       @InnerProductSpace.Core.toNormedAddCommGroup Real
         (Tensor0SSpace s I x) _ _ _
@@ -558,7 +558,7 @@ noncomputable def tensor0SFiberNormHomeomorph
       (LinearMap.id : Tensor0SSpace s I x →ₗ[Real] Tensor0SSpace s I x)
 
 theorem tensor0SFiberNorm_sq_eq_normSq0S
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A : Tensor0SSpace s I x) :
     tensor0SFiberNorm (I := I) g x s A ^ 2 =
       normSq0S (I := I) g x s A := by
@@ -567,13 +567,13 @@ theorem tensor0SFiberNorm_sq_eq_normSq0S
   exact (tensor0SMetricData (I := I) g x s).nonneg A
 
 @[simp] theorem normSq0S_eq_inner
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A : Tensor0SSpace s I x) :
     normSq0S (I := I) g x s A = inner0S (I := I) g x s A A := by
   rfl
 
 theorem inner0S_sq_le_mul
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :
     (inner0S (I := I) g x s A B) ^ 2 <=
       normSq0S (I := I) g x s A * normSq0S (I := I) g x s B := by
@@ -602,13 +602,13 @@ theorem inner0S_sq_le_mul
   simpa [Real.norm_eq_abs, pow_two] using hcs
 
 theorem normSq0S_nonneg
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A : Tensor0SSpace s I x) :
     0 <= normSq0S (I := I) g x s A := by
   exact (tensor0SMetricData (I := I) g x s).nonneg A
 
 theorem inner0S_one_eq_cotangent
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (α β : Tensor0SSpace 1 I x) :
     inner0S (I := I) g x 1 α β =
       cotangentInner (I := I) g x α β := by
@@ -683,7 +683,7 @@ private theorem sum_fin_one_fun {Idx : Type*} [Fintype Idx]
 omit [FiniteDimensional ℝ E] in
 private theorem basis_repr_eq_sum_inv_inner
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -763,7 +763,7 @@ private theorem basis_repr_eq_sum_inv_inner
 private theorem hom_normSq_eq_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -805,7 +805,7 @@ private theorem hom_normSq_eq_basis
 private theorem hom_inner_eq_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -851,7 +851,7 @@ private theorem homCLM_normSq_eq_basis
     {W : Type*} [AddCommGroup W] [Module Real W] [TopologicalSpace W]
     (hTopAdd : IsTopologicalAddGroup W) (hContSMul : ContinuousSMul Real W)
     [FiniteDimensional Real W]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -872,7 +872,7 @@ private theorem homCLM_inner_eq_basis
     {W : Type*} [AddCommGroup W] [Module Real W] [TopologicalSpace W]
     (hTopAdd : IsTopologicalAddGroup W) (hContSMul : ContinuousSMul Real W)
     [FiniteDimensional Real W]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -926,7 +926,7 @@ private theorem tensor0S_curry_apply_cons
 
 theorem normSq0S_two_eq_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -1037,7 +1037,7 @@ theorem normSq0S_two_eq_coord
 
 theorem inner0S_two_eq_coord_direct
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -1148,7 +1148,7 @@ theorem inner0S_two_eq_coord_direct
           ring
 
 private theorem inner0S_zero_eq
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (A B : Tensor0SSpace 0 I x) :
     inner0S (I := I) g x 0 A B = A Fin.elim0 * B Fin.elim0 := by
   unfold inner0S tensor0SMetricData scalarMetricData MetricFiberData.inner
@@ -1203,7 +1203,7 @@ private theorem coordInner0S_one_eq
 
 private theorem tensor0SMetricStep_inner_eq_coordStep
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -1391,7 +1391,7 @@ private theorem coordInner0S_succ_eq
 
 theorem inner0S_eq_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -1446,7 +1446,7 @@ theorem inner0S_eq_coord
 
 theorem normSq0S_eq_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -1457,7 +1457,7 @@ theorem normSq0S_eq_coord
 
 theorem inner0S_two_eq_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -1472,7 +1472,7 @@ theorem inner0S_two_eq_coord
 theorem coord_normSq0S_eq_coord
     {Idx₁ Idx₂ : Type*} [Fintype Idx₁] [DecidableEq Idx₁]
     [Fintype Idx₂] [DecidableEq Idx₂]
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis₁ : Module.Basis Idx₁ Real (TangentSpace I x))
     (gInv₁ : Idx₁ -> Idx₁ -> Real)
     (hinv₁ : MetricInverseInBasis (I := I) g x basis₁ gInv₁)

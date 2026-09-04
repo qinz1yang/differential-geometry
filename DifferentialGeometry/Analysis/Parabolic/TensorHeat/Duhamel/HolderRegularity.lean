@@ -156,7 +156,7 @@ theorem tensorHeatMildSolutionHsHolderDeriv_eq_tensorScaleLaplacian_add
     tensorHeatMildSolutionHsLiftOfHolder_coeff]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem tensorHeatMildSolutionHs_hasDerivAt_holder_candidate
+private theorem tensorHeatMildSolutionHs_hasDerivAt_holder
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
     (T₀ : TensorHs (I := I) (M := M) g r s σ)
     {F : ℝ → TensorHs (I := I) (M := M) g r s σ}
@@ -192,7 +192,7 @@ theorem tensorHeatMildSolutionHs_hasDerivAt_of_holder
       (tensorScaleLaplacian (I := I) (M := M) σ
           (tensorHeatMildSolutionHsLiftOfHolder (I := I) (M := M)
             g r s σ T₀ F hα hF t ht) + F t) t := by
-  have hcandidate := tensorHeatMildSolutionHs_hasDerivAt_holder_candidate
+  have hcandidate := tensorHeatMildSolutionHs_hasDerivAt_holder
     (I := I) (M := M) g r s σ T₀ hα hF ht
   apply hcandidate.congr_deriv
   exact tensorHeatMildSolutionHsHolderDeriv_eq_tensorScaleLaplacian_add
@@ -265,7 +265,7 @@ theorem tensorHeatMildSolutionHs_contDiffOn_one_of_holder
     refine (tensorHeatMildSolutionHsHolderDeriv_continuousOn
       (I := I) (M := M) g r s σ T₀ hα hF).congr ?_
     intro t ht
-    exact (tensorHeatMildSolutionHs_hasDerivAt_holder_candidate
+    exact (tensorHeatMildSolutionHs_hasDerivAt_holder
       (I := I) (M := M) g r s σ T₀ hα hF ht).deriv
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -390,7 +390,7 @@ theorem tensorHeatMildSolutionHsHolderDeriv_eq_tensorScaleLaplacian_add_of_holde
     tensorHeatMildSolutionHsLiftOfHolderOn_coeff]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem tensorHeatMildSolutionHs_hasDerivAt_holderOn_candidate
+private theorem tensorHeatMildSolutionHs_hasDerivAt_holderOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
     (T₀ : TensorHs (I := I) (M := M) g r s σ)
     {F : ℝ → TensorHs (I := I) (M := M) g r s σ}
@@ -428,7 +428,7 @@ theorem tensorHeatMildSolutionHs_hasDerivAt_of_holderOn
       (tensorScaleLaplacian (I := I) (M := M) σ
           (tensorHeatMildSolutionHsLiftOfHolderOn (I := I) (M := M)
             g r s σ T₀ F hα hF t ht) + F t) t := by
-  have hcandidate := tensorHeatMildSolutionHs_hasDerivAt_holderOn_candidate
+  have hcandidate := tensorHeatMildSolutionHs_hasDerivAt_holderOn
     (I := I) (M := M) g r s σ T₀ hα hF ht
   apply hcandidate.congr_deriv
   exact tensorHeatMildSolutionHsHolderDeriv_eq_tensorScaleLaplacian_add_of_holderOn
@@ -505,7 +505,7 @@ theorem tensorHeatMildSolutionHs_contDiffOn_one_of_holderOn
     refine (tensorHeatMildSolutionHsHolderDeriv_continuousOn_of_holderOn
       (I := I) (M := M) g r s σ T₀ hα hF).congr ?_
     intro t ht
-    exact (tensorHeatMildSolutionHs_hasDerivAt_holderOn_candidate
+    exact (tensorHeatMildSolutionHs_hasDerivAt_holderOn
       (I := I) (M := M) g r s σ T₀ hα hF ht).deriv
 
 end TensorHeatEquation

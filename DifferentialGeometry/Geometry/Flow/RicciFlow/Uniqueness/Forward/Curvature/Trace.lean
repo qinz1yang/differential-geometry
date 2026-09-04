@@ -78,8 +78,8 @@ theorem ricci_eq_trace_rm04 (g : SmoothRiemannianMetric I M) {x : M}
   classical
   set basis := Module.finBasis Real (TangentSpace I x) with hbasisdef
   set gInv := basisInvMetric (I := I) g x basis with hgInvdef
-  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv :=
-    basisInvMetric_real (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis gInv :=
+    basisInvMetric_isInverse (I := I) g x basis
   refine tensor0SSpace_ext (𝕜 := Real) 2 x fun u => ?_
   set L : ContinuousMultilinearMap Real (fun _ : Fin 2 => TangentSpace I x) Real :=
     ricciFromRm13At (I := I) (M := M) Rm13 with hLdef
@@ -147,8 +147,8 @@ private theorem trace_sub (g : SmoothRiemannianMetric I M) {x : M} {s : Nat}
   classical
   set basis := Module.finBasis Real (TangentSpace I x) with hbasisdef
   set gInv := basisInvMetric (I := I) g x basis with hgInvdef
-  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv :=
-    basisInvMetric_real (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis gInv :=
+    basisInvMetric_isInverse (I := I) g x basis
   refine tensor0SSpace_ext (𝕜 := Real) s x fun tail => ?_
   have key : ∀ T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 2) x,
       metricTraceFirstTwo0SAt (I := I) g T tail =
@@ -232,7 +232,7 @@ private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
+    MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
   intro i j
   constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
 

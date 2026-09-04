@@ -149,7 +149,7 @@ theorem lieFirstOrder_cometric_collapse (g₁ : SmoothRiemannianMetric I M) (x :
 
 def deTurckLieTraceCoeffPiece (g₀ g₁ : SmoothRiemannianMetric I M) (σ' : Equiv.Perm (Fin 4))
     (ρ : Equiv.Perm (Fin 3)) (Ψ : SmoothCcTensor g₀ 1 2) : SmoothCcTensor g₀ 3 2 :=
-  reindexCoeffGen (I := I) (M := M) g₀ 3 2
+  reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 2
     (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 2
       (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ')
       (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2 Ψ)))
@@ -199,8 +199,8 @@ theorem lieFirstOrderPiece_toModel (g₀ g₁ : SmoothRiemannianMetric I M)
         (slotExtendPointwise (I := I) (M := M) 2 3 x
           (slotExtendPointwise (I := I) (M := M) 1 2 x
             (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from Ψ.toSection x)) D') := by
-    rw [deTurckLieTraceCoeffPiece, reindexCoeffGen_toSection]
-    rw [reindexCoeffFibGen_apply (I := I) 3 2 ρ x
+    rw [deTurckLieTraceCoeffPiece, reindexCoefficientInputSlots_toSection]
+    rw [reindexCoefficientInputSlotsFiber_apply (I := I) 3 2 ρ x
       (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 2 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 2
           (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ')
@@ -352,11 +352,11 @@ private theorem lieFirstOrder_iteratedCovGrad_smul (g : SmoothRiemannianMetric I
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieFirstOrder_normSq_iteratedCovGrad_reindex_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (W : SmoothCcTensor g r s) (ρ : Equiv.Perm (Fin r)) (i : ℕ) :
-    ‖iteratedCovGrad (I := I) g r s i (reindexCoeffGen (I := I) (M := M) g r s W ρ)‖ ^ 2 =
+    ‖iteratedCovGrad (I := I) g r s i (reindexCoefficientInputSlots (I := I) (M := M) g r s W ρ)‖ ^ 2 =
       ‖iteratedCovGrad (I := I) g r s i W‖ ^ 2 := by
   rw [lieFirstOrder_normSq_eq_integral, lieFirstOrder_normSq_eq_integral]
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g r s W ρ i x
+  exact riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g r s W ρ i x
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieFirstOrder_normSq_iteratedCovGrad_domDom_eq (g : SmoothRiemannianMetric I M) {s : ℕ}
@@ -398,15 +398,15 @@ private theorem lieFirstOrder_dLTC_eq_reindex_traceHessian
     (g₀ g₁ : SmoothRiemannianMetric I M) (σ ρ : Equiv.Perm (Fin 4))
     (hcomp : ∀ j : Fin 4, traceHessianSlotPerm (ρ j) = σ j) :
     deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
         (traceHessianCoeff (I := I) (M := M) g₀ g₁) ρ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [deTurckLieTraceCoeff_toSection, reindexCoeffGen_toSection, traceHessianCoeff_toSection]
+  rw [deTurckLieTraceCoeff_toSection, reindexCoefficientInputSlots_toSection, traceHessianCoeff_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffFibGen_apply, deTurckLieTraceFib, traceHessianFib,
+  rw [reindexCoefficientInputSlotsFiber_apply, deTurckLieTraceFib, traceHessianFib,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     domDomCongrFibPerm_apply, domDomCongrFib_apply,
     Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
@@ -433,8 +433,8 @@ theorem lieFirstOrder_riemannianFiberNormSq_dLTC_toSection_eq (g₀ g₁ : Smoot
         ((traceHessianCoeff (I := I) (M := M) g₀ g₁).toSection x) := by
   rw [lieFirstOrder_dLTC_eq_reindex_traceHessian (I := I) (M := M) g₀ g₁ σ'
       (traceHessianSlotPerm⁻¹ * σ') (lieFirstOrder_traceHessianSlotPerm_inv_mul_apply σ'),
-    reindexCoeffGen_toSection]
-  exact riemannianFiberNormSq_reindexCoeffFibGen (I := I) (M := M) g₀ 4 2 x
+    reindexCoefficientInputSlots_toSection]
+  exact riemannianFiberNormSq_reindexCoefficientInputSlotsFiber (I := I) (M := M) g₀ 4 2 x
     (traceHessianSlotPerm⁻¹ * σ')
     (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
       (traceHessianCoeff (I := I) (M := M) g₀ g₁).toSection x)
@@ -780,7 +780,7 @@ theorem lieFirstOrder_connectionDifference_bounds (g₀ : SmoothRiemannianMetric
             ‖iteratedCovGrad (I := I) g₀ 1 2 q (connectionDifferenceSection (I := I) g₁ g₀)‖ ^ 2 ≤ F i) := by
   classical
   obtain ⟨ΛK, FK, hΛK_nn, hFK_nn, hK⟩ :=
-    raisedKoszul_order0sup_jetL2_ballUniform_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    raisedKoszul_order0sup_jetL2_ballUniform (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Λsf, Fsf, hΛsf_nn, hFsf_nn, hsf⟩ :=
     lieFirstOrder_sharpFlat_bounds (I := I) (M := M) g₀ a ha_super hR hδ₀
   have h2A : ∀ k : ℕ, k ≤ a → ∃ c : ℝ, 0 ≤ c ∧
@@ -1039,13 +1039,13 @@ theorem lieFirstOrder_piece_riemannianFiberNormSq_le (g₀ g₁ : SmoothRiemanni
         ((Module.finrank ℝ E : ℝ) ^ 2 *
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x (Ψ.toSection x)) := by
   have hdef : deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ σ' ρ Ψ =
-      reindexCoeffGen (I := I) (M := M) g₀ 3 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 2
         (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 2
           (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ')
           (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2 Ψ)))
         ρ := rfl
-  rw [hdef, reindexCoeffGen_toSection]
-  rw [riemannianFiberNormSq_reindexCoeffFibGen (I := I) (M := M) g₀ 3 2 x ρ
+  rw [hdef, reindexCoefficientInputSlots_toSection]
+  rw [riemannianFiberNormSq_reindexCoefficientInputSlotsFiber (I := I) (M := M) g₀ 3 2 x ρ
     (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 2 I x from
       (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 2
         (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ')
@@ -1103,7 +1103,7 @@ theorem lieFirstOrder_piece_normSq_le (g₀ g₁ : SmoothRiemannianMetric I M)
       diagonalGridGrowthFactor (E := E) i * (C2i * (ΛT ^ 2 * FSi + ΛS ^ 2 * FTi)) := by
   obtain ⟨hgi, hgb⟩ := htwo
   have hdef : deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ σ' ρ Ψ =
-      reindexCoeffGen (I := I) (M := M) g₀ 3 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 2
         (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 2
           (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ')
           (slotExtend (I := I) (M := M) g₀ 2 3 (slotExtend (I := I) (M := M) g₀ 1 2 Ψ)))

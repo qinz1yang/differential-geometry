@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Generic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Riemannian
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 set_option autoImplicit false
@@ -23,7 +23,7 @@ theorem sqrt_inner_add_le
     (v w : TangentSpace I x) :
     Real.sqrt (g.inner x (v + w) (v + w)) <=
       Real.sqrt (g.inner x v v) + Real.sqrt (g.inner x w w) := by
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x)
@@ -33,8 +33,8 @@ theorem sqrt_inner_add_le
   have hnorm : ∀ z : TangentSpace I x,
       Real.sqrt (g.inner x z z) = ‖z‖ := by
     intro z
-    rw [← TangentMetricDataGen.inner_eq_gen
-      (tangentMetricDataGen (I := I) g x) z z]
+    rw [← TangentMetricData.inner_eq
+      (tangentMetricData (I := I) g x) z z]
     change Real.sqrt (D.inner z z) = ‖z‖
     rw [← MetricFiberData.toCore_inner D z z,
       real_inner_self_eq_norm_sq, Real.sqrt_sq_eq_abs, abs_norm]
@@ -46,7 +46,7 @@ theorem sqrt_inner_smul
     (c : Real) (v : TangentSpace I x) :
     Real.sqrt (g.inner x (c • v) (c • v)) =
       |c| * Real.sqrt (g.inner x v v) := by
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x)
@@ -56,8 +56,8 @@ theorem sqrt_inner_smul
   have hnorm : ∀ z : TangentSpace I x,
       Real.sqrt (g.inner x z z) = ‖z‖ := by
     intro z
-    rw [← TangentMetricDataGen.inner_eq_gen
-      (tangentMetricDataGen (I := I) g x) z z]
+    rw [← TangentMetricData.inner_eq
+      (tangentMetricData (I := I) g x) z z]
     change Real.sqrt (D.inner z z) = ‖z‖
     rw [← MetricFiberData.toCore_inner D z z,
       real_inner_self_eq_norm_sq, Real.sqrt_sq_eq_abs, abs_norm]
@@ -93,7 +93,7 @@ theorem expand_orthonormal (g : SmoothRiemannianMetric I M) (x : M)
     (u : TangentSpace I x) :
     u = ∑ i, g.inner x (v i) u • v i := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core ℝ (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (TangentSpace I x) _ _ _ D.toCore
@@ -101,7 +101,7 @@ theorem expand_orthonormal (g : SmoothRiemannianMetric I M) (x : M)
     @InnerProductSpace.ofCore ℝ (TangentSpace I x) _ _ _ D.toCore.toCore
   have hg : ∀ a b : TangentSpace I x, g.inner x a b = Inner.inner ℝ a b := by
     intro a b
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x) a b]
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x) a b]
     change D.inner a b = Inner.inner ℝ a b
     exact (MetricFiberData.toCore_inner D a b).symm
   have hONi : Orthonormal ℝ v := by

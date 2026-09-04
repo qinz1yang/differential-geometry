@@ -45,7 +45,7 @@ theorem cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (alpha : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 1)
     (nablaAlpha : Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -55,33 +55,31 @@ theorem cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M)
     (hSharp : MDiffAt
-      (T% (fun y : M => cotangentSharpGen (I := I) g y (alpha y))) x) :
-    cov (fun y : M => cotangentSharpGen (I := I) g y (alpha y)) x (X x) =
-      cotangentSharpGen (I := I) g x
+      (T% (fun y : M => cotangentSharp (I := I) g y (alpha y))) x) :
+    cov (fun y : M => cotangentSharp (I := I) g y (alpha y)) x (X x) =
+      cotangentSharp (I := I) g x
         (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
           (nablaAlpha x) (X x)) := by
   classical
   let Ysharp : (y : M) -> TangentSpace I y :=
-    fun y => cotangentSharpGen (I := I) g y (alpha y)
+    fun y => cotangentSharp (I := I) g y (alpha y)
   let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x)))
       Real (TangentSpace I x) := Module.finBasis Real (TangentSpace I x)
-  apply eq_of_inner_basis_eq_gen (I := I) g x basis
+  apply eq_of_inner_basis_eq (I := I) g x basis
   intro i
   obtain ⟨Zsec, hZsec⟩ :=
     ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (basis i)
-  have hX : MDiffAt (T% (fun y : M => X y)) x :=
-    X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hZ : MDiffAt (T% (fun y : M => Zsec y)) x :=
     Zsec.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hmc_apply :=
-    DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
-      (fun y : M => X y) Ysharp (fun y : M => Zsec y) hX hSharp hZ
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner (I := I) hmc
+      (X x) hSharp hZ
   have hpair_fun :
       (fun y : M => g.inner y (Ysharp y) (Zsec y)) =
         fun y : M => alpha y (fun _ : Fin 1 => Zsec y) := by
     funext y
-    simp [Ysharp, cotangentSharp_inner_gen, cotangentToDual_apply_gen]
+    simp [Ysharp, cotangentSharp_inner, cotangentToDual_apply]
   have hderiv_pair :
       mvfderiv (I := I)
           (fun y : M => g.inner y (Ysharp y) (Zsec y)) x (X x) =
@@ -93,13 +91,13 @@ theorem cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
       hAlpha (X x) (fun _ : Fin 1 => Zsec)
   have hnabla_pair :
       g.inner x
-          (cotangentSharpGen (I := I) g x
+          (cotangentSharp (I := I) g x
             (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
               (nablaAlpha x) (X x))) (Zsec x) =
         mvfderiv (I := I)
           (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x) -
           alpha x (fun _ : Fin 1 => (cov (fun y : M => Zsec y) x) (X x)) := by
-    rw [cotangentSharp_inner_gen, cotangentToDual_apply_gen]
+    rw [cotangentSharp_inner, cotangentToDual_apply]
     rw [tensor0S_curry_apply_cons]
     have hupdate :
         Function.update (fun r : Fin 1 => Zsec x) 0
@@ -111,7 +109,7 @@ theorem cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
     simpa [hupdate] using hnabla_eval
   calc
     g.inner x
-        (cov (fun y : M => cotangentSharpGen (I := I) g y (alpha y)) x (X x))
+        (cov (fun y : M => cotangentSharp (I := I) g y (alpha y)) x (X x))
         (basis i)
         = g.inner x
             (cov Ysharp x (X x)) (Zsec x) := by
@@ -145,14 +143,14 @@ theorem cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
           rw [show
             g.inner x (Ysharp x) ((cov (fun y : M => Zsec y) x) (X x)) =
               alpha x (fun _ : Fin 1 => (cov (fun y : M => Zsec y) x) (X x)) by
-                simp [Ysharp, cotangentSharp_inner_gen, cotangentToDual_apply_gen]]
+                simp [Ysharp, cotangentSharp_inner, cotangentToDual_apply]]
     _ = g.inner x
-          (cotangentSharpGen (I := I) g x
+          (cotangentSharp (I := I) g x
             (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
               (nablaAlpha x) (X x))) (Zsec x) := by
           exact hnabla_pair.symm
     _ = g.inner x
-          (cotangentSharpGen (I := I) g x
+          (cotangentSharp (I := I) g x
           (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
               (nablaAlpha x) (X x))) (basis i) := by
           simp [hZsec]
@@ -161,7 +159,7 @@ private theorem cotangentInner_metricCompatible_mvfderiv_of_sharp_mdiffAt
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (alpha beta : Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1)
     (nablaAlpha nablaBeta :
@@ -174,31 +172,29 @@ private theorem cotangentInner_metricCompatible_mvfderiv_of_sharp_mdiffAt
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M)
     (hSharpAlpha : MDiffAt
-      (T% (fun y : M => cotangentSharpGen (I := I) g y (alpha y))) x)
+      (T% (fun y : M => cotangentSharp (I := I) g y (alpha y))) x)
     (hSharpBeta : MDiffAt
-      (T% (fun y : M => cotangentSharpGen (I := I) g y (beta y))) x) :
+      (T% (fun y : M => cotangentSharp (I := I) g y (beta y))) x) :
     mvfderiv (I := I)
-        (fun y : M => cotangentInnerGen (I := I) g y (alpha y) (beta y))
+        (fun y : M => cotangentInner (I := I) g y (alpha y) (beta y))
         x (X x) =
-      cotangentInnerGen (I := I) g x
+      cotangentInner (I := I) g x
         (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
           (nablaAlpha x) (X x)) (beta x) +
-        cotangentInnerGen (I := I) g x (alpha x)
+        cotangentInner (I := I) g x (alpha x)
           (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
             (nablaBeta x) (X x)) := by
   let Asharp : (y : M) -> TangentSpace I y :=
-    fun y => cotangentSharpGen (I := I) g y (alpha y)
+    fun y => cotangentSharp (I := I) g y (alpha y)
   let Bsharp : (y : M) -> TangentSpace I y :=
-    fun y => cotangentSharpGen (I := I) g y (beta y)
-  have hX : MDiffAt (T% (fun y : M => X y)) x :=
-    X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+    fun y => cotangentSharp (I := I) g y (beta y)
   have hmc_apply :=
-    DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
-      (fun y : M => X y) Asharp Bsharp hX (by simpa [Asharp] using hSharpAlpha)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner (I := I) hmc
+      (X x) (by simpa [Asharp] using hSharpAlpha)
       (by simpa [Bsharp] using hSharpBeta)
   have hcovA :
       cov Asharp x (X x) =
-        cotangentSharpGen (I := I) g x
+        cotangentSharp (I := I) g x
           (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
             (nablaAlpha x) (X x)) := by
     simpa [Asharp] using
@@ -206,7 +202,7 @@ private theorem cotangentInner_metricCompatible_mvfderiv_of_sharp_mdiffAt
         cov g hmc alpha nablaAlpha hAlpha X x hSharpAlpha
   have hcovB :
       cov Bsharp x (X x) =
-        cotangentSharpGen (I := I) g x
+        cotangentSharp (I := I) g x
           (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
             (nablaBeta x) (X x)) := by
     simpa [Bsharp] using
@@ -334,7 +330,7 @@ theorem inner0S_two_mdiff
 theorem inner0S_two_nabla
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -774,7 +770,7 @@ theorem inner0S_two_nabla
 theorem inner0S_two_metricCompatible_mvfderiv
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA nablaB :

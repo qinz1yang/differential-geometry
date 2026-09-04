@@ -71,21 +71,21 @@ private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma reindexCoeffGen_sub (g₀ : SmoothRiemannianMetric I M)
+private lemma reindexCoefficientInputSlots_sub (g₀ : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g₀ 2 2) (ρ : Equiv.Perm (Fin 2)) :
-    reindexCoeffGen (I := I) (M := M) g₀ 2 2 (A - B) ρ =
-      reindexCoeffGen (I := I) (M := M) g₀ 2 2 A ρ -
-        reindexCoeffGen (I := I) (M := M) g₀ 2 2 B ρ := by
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 (A - B) ρ =
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 A ρ -
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 B ρ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    reindexCoeffGen_toSection, reindexCoeffGen_toSection, reindexCoeffGen_toSection,
+    reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlots_toSection,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro D
-  rw [sub_apply, reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
-    reindexCoeffFibGen_apply, sub_apply]
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply, reindexCoefficientInputSlotsFiber_apply,
+    reindexCoefficientInputSlotsFiber_apply, sub_apply]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem lieCorrectionZeroNEndoSec_sub_insert_eq_lieCorrectionZeroCdVField_sub
@@ -108,7 +108,7 @@ theorem lieCorrectionZeroInsertionField_sub_eq_nEndoInsert
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ gB -
             lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀)
-        + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2
               (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
@@ -117,7 +117,7 @@ theorem lieCorrectionZeroInsertionField_sub_eq_nEndoInsert
             (Equiv.swap (0 : Fin 2) 1) := by
   rw [endoSlotZeroCcTensor_sub (I := I) (M := M) g₀ 1,
     rsDomDomCongrSection_sub (I := I) (M := M) g₀ (Equiv.swap (0 : Fin 2) 1),
-    reindexCoeffGen_sub (I := I) (M := M) g₀]
+    reindexCoefficientInputSlots_sub (I := I) (M := M) g₀]
   change (_ + _) - (_ + _) = _
   abel
 

@@ -18,10 +18,10 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 theorem inner0S_product_one_two
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (α β : Tensor0SSpace 1 I x)
     (A B : Tensor0SSpace 2 I x) :
     inner0S (I := I) g x 3
@@ -39,7 +39,7 @@ theorem inner0S_product_one_two
   simp_rw [tensor0S_curry_product_one_two (I := I)]
   simp_rw [coordInner0S_smul_smul (I := I) 2 gInv A B basis]
   rw [coordInner0S_one_eq (I := I) gInv α β basis]
-  simp only [cotangentToDual_apply_gen]
+  simp only [cotangentToDual_apply]
   rw [Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro i _
@@ -50,10 +50,10 @@ theorem inner0S_product_one_two
 
 theorem inner0S_three_product_right
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (N : Tensor0SSpace 3 I x)
     (α : Tensor0SSpace 1 I x)
     (A : Tensor0SSpace 2 I x) :
@@ -61,7 +61,7 @@ theorem inner0S_three_product_right
         (Tensor0SSpace.product (r := 1) (s := 2) α A) =
       inner0S (I := I) g x 2
         ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x N)
-          (cotangentSharpGen (I := I) g x α))
+          (cotangentSharp (I := I) g x α))
         A := by
   classical
   rw [inner0S_eq_coord (I := I) g x 3 basis gInv hinv,
@@ -70,8 +70,8 @@ theorem inner0S_three_product_right
     (Tensor0SSpace.product (r := 1) (s := 2) α A) basis]
   simp_rw [tensor0S_curry_product_one_two (I := I)]
   simp_rw [coordInner0S_smul_right (I := I) 2 gInv _ A basis]
-  rw [cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv hinv α]
-  simp_rw [cotangentToDual_apply_gen]
+  rw [cotangentSharp_eq_sum_inv (I := I) g x basis gInv hinv α]
+  simp_rw [cotangentToDual_apply]
   rw [map_sum]
   simp_rw [map_smul]
   rw [coordInner0S_sum_left (I := I) 2 gInv
@@ -89,10 +89,10 @@ theorem inner0S_three_product_right
 
 theorem normSq0S_smul_sub_product_one_two
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (r : Real)
     (N : Tensor0SSpace 3 I x)
     (α : Tensor0SSpace 1 I x)

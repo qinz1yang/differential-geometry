@@ -419,7 +419,7 @@ private theorem cross_chart_strictCutoff_pushedRaw_joint
       (d := Module.finrank ℝ E) k hp_one hΩγ_target_open hη_γ_loc_smooth
       hη_γ_loc_iter_bound hchartPushedγV_mem
   have hψ_γ_loc_pair_Ωγ :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_eq_of_tsupport_subset_general
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_eq_of_tsupport_subset
       (d := Module.finrank ℝ E) k hp_one hΩγ_target_open hΩγ_open
       hΩγ_subset_target hψ_γ_loc_mem_Ωγ_target hψ_γ_loc_supp_in_Ωγ
   have hψ_γ_loc_mem_Ωγ : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -672,7 +672,7 @@ private theorem cross_chart_strictCutoff_pushedRaw_joint
         (d := Module.finrank ℝ E) k p ψ_total Ωα_target ≤
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) k p ψ_total Ω_α :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_le_of_tsupport_subset_mem_small_general
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_le_of_tsupport_subset_mem_small
       (d := Module.finrank ℝ E) k hp_one hΩα_target_open hΩα_open
       hΩα_subset_target hψ_total_mem_Ωα hψ_total_supp_Ωα
   refine h_bridge_α.trans ?_

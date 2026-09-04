@@ -31,7 +31,7 @@ open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmJump
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpFour
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapCanonical
-open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapFinal
+open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapPolymorphic
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH2kBridge
 
 private local instance : MeasurableSpace E := borel E

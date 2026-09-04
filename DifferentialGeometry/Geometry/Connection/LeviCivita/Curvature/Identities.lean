@@ -25,8 +25,8 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Tangent
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Endomorphism
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.OneJet
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Connection
-import DifferentialGeometry.Geometry.Connection.MetricTrace.Trace04
-import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTrace02
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantFourTensor
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantTwoTensor
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
@@ -113,10 +113,10 @@ private theorem oneForm_eval_const_add {x : M}
     (A B : TangentSpace I x) :
     alpha (fun _ : Fin 1 => A + B) =
       alpha (fun _ : Fin 1 => A) + alpha (fun _ : Fin 1 => B) := by
-  rw [← cotangentToDual_apply_gen (I := I) alpha (A + B)]
-  rw [← cotangentToDual_apply_gen (I := I) alpha A]
-  rw [← cotangentToDual_apply_gen (I := I) alpha B]
-  exact map_add (cotangentToDualGen (I := I) alpha) A B
+  rw [← cotangentToDual_apply (I := I) alpha (A + B)]
+  rw [← cotangentToDual_apply (I := I) alpha A]
+  rw [← cotangentToDual_apply (I := I) alpha B]
+  exact map_add (cotangentToDual (I := I) alpha) A B
 
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] in
@@ -126,10 +126,10 @@ private theorem oneForm_eval_const_sub {x : M}
     (A B : TangentSpace I x) :
     alpha (fun _ : Fin 1 => A - B) =
       alpha (fun _ : Fin 1 => A) - alpha (fun _ : Fin 1 => B) := by
-  rw [← cotangentToDual_apply_gen (I := I) alpha (A - B)]
-  rw [← cotangentToDual_apply_gen (I := I) alpha A]
-  rw [← cotangentToDual_apply_gen (I := I) alpha B]
-  exact map_sub (cotangentToDualGen (I := I) alpha) A B
+  rw [← cotangentToDual_apply (I := I) alpha (A - B)]
+  rw [← cotangentToDual_apply (I := I) alpha A]
+  rw [← cotangentToDual_apply (I := I) alpha B]
+  exact map_sub (cotangentToDual (I := I) alpha) A B
 
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] in
@@ -138,9 +138,9 @@ private theorem oneForm_eval_const_neg {x : M}
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (A : TangentSpace I x) :
     alpha (fun _ : Fin 1 => -A) = -alpha (fun _ : Fin 1 => A) := by
-  rw [← cotangentToDual_apply_gen (I := I) alpha (-A)]
-  rw [← cotangentToDual_apply_gen (I := I) alpha A]
-  exact map_neg (cotangentToDualGen (I := I) alpha) A
+  rw [← cotangentToDual_apply (I := I) alpha (-A)]
+  rw [← cotangentToDual_apply (I := I) alpha A]
+  exact map_neg (cotangentToDual (I := I) alpha) A
 
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] in
@@ -149,8 +149,8 @@ private theorem oneForm_eval_const_smul {x : M}
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (c : Real) (A : TangentSpace I x) :
     alpha (fun _ : Fin 1 => c • A) = c * alpha (fun _ : Fin 1 => A) := by
-  rw [← cotangentToDual_apply_gen (I := I) alpha (c • A)]
-  rw [← cotangentToDual_apply_gen (I := I) alpha A]
+  rw [← cotangentToDual_apply (I := I) alpha (c • A)]
+  rw [← cotangentToDual_apply (I := I) alpha A]
   simp [smul_eq_mul]
 
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
@@ -269,7 +269,7 @@ theorem nabla0S_two_apply
     exact
       tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
         (I := I) (V a) x (Vsec a).contMDiff.contMDiffAt i
-  have h := Tensor0SBundle.nabla0SFun_eval_coordFrame_moving_raw
+  have h := Tensor0SBundle.nabla0SFun_eval_coordFrame_moving
     (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (s := 2) cov X V A x hpair hV hVmodel hcoord
   have hsum :
@@ -448,7 +448,7 @@ private theorem nablaOneFormSectionRealizes_eval_moving_C1_slot
     nablaAlpha x (vec2 (X x) (Z x)) =
       mvfderiv (I := I) (fun y : M => alpha y (fun _ : Fin 1 => Z y)) x (X x) -
         alpha x (fun _ : Fin 1 => (cov Z x) (X x)) := by
-  have hraw := nabla0SFun_one_eval_coordFrame_moving_raw
+  have hraw := nabla0SFun_one_eval_coordFrame_moving
     (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     cov X Z alpha x
     (modelDeriv_eq_coordDeriv0SAt (𝕜 := Real) (E := E) (H := H)
@@ -806,7 +806,7 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (1 : WithTop ℕ∞))
-    (hmc : IsMetricCompatibleGen (I := I) cov g)
+    (hmc : IsMetricCompatible (I := I) cov g)
     {x : M} (W X Y Z : TangentSpace I x) :
     g.inner x W
         ((connectionRiemannCurvatureField (I := I) cov
@@ -889,14 +889,12 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
     let e := trivializationAt E (TangentSpace I) x
     filter_upwards [e.open_baseSet.mem_nhds
       (mem_baseSet_trivializationAt E (TangentSpace I) x)] with p hp
-    have hYp : MDiffAt (T% Yc) p := by
-      simpa [Yc] using mdifferentiableAt_tangentConstAt_of_mem (I := I) x Y hp
     have hZp : MDiffAt (T% Zc) p := by
       simpa [Zc] using mdifferentiableAt_tangentConstAt_of_mem (I := I) x Z hp
     have hWp : MDiffAt (T% Wc) p := by
       simpa [Wc] using mdifferentiableAt_tangentConstAt_of_mem (I := I) x W hp
-    have hmetric := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
-      (x := p) Yc Zc Wc hYp hZp hWp
+    have hmetric := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner (I := I) hmc
+      (x := p) (Yc p) hZp hWp
     simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace, f, YZc, YWc]
       using hmetric
   have hXf_eq :
@@ -905,14 +903,12 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
     let e := trivializationAt E (TangentSpace I) x
     filter_upwards [e.open_baseSet.mem_nhds
       (mem_baseSet_trivializationAt E (TangentSpace I) x)] with p hp
-    have hXp : MDiffAt (T% Xc) p := by
-      simpa [Xc] using mdifferentiableAt_tangentConstAt_of_mem (I := I) x X hp
     have hZp : MDiffAt (T% Zc) p := by
       simpa [Zc] using mdifferentiableAt_tangentConstAt_of_mem (I := I) x Z hp
     have hWp : MDiffAt (T% Wc) p := by
       simpa [Wc] using mdifferentiableAt_tangentConstAt_of_mem (I := I) x W hp
-    have hmetric := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
-      (x := p) Xc Zc Wc hXp hZp hWp
+    have hmetric := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner (I := I) hmc
+      (x := p) (Xc p) hZp hWp
     simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace, f, XZc, XWc]
       using hmetric
   have hYZ_W : MDiffAt (fun p : M => g.inner p (YZc p) (Wc p)) x :=
@@ -930,15 +926,15 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
           g.inner x (YZc x) ((cov Wc x) (Xc x))) +
         (g.inner x ((cov Zc x) (Xc x)) (YWc x) +
           g.inner x (Zc x) ((cov YWc x) (Xc x))) := by
-    have h1 := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
-      (x := x) Xc YZc Wc hX hYZ hW
+    have h1 := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner (I := I) hmc
+      (x := x) (Xc x) hYZ hW
     have h1' :
         directionalDerivAlong (I := I) Xc (fun p : M => g.inner p (YZc p) (Wc p)) x =
           g.inner x ((cov YZc x) (Xc x)) (Wc x) +
             g.inner x (YZc x) ((cov Wc x) (Xc x)) := by
       simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace] using h1
-    have h2 := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
-      (x := x) Xc Zc YWc hX hZ hYW
+    have h2 := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner (I := I) hmc
+      (x := x) (Xc x) hZ hYW
     have h2' :
         directionalDerivAlong (I := I) Xc (fun p : M => g.inner p (Zc p) (YWc p)) x =
           g.inner x ((cov Zc x) (Xc x)) (YWc x) +
@@ -964,15 +960,15 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
           g.inner x (XZc x) ((cov Wc x) (Yc x))) +
         (g.inner x ((cov Zc x) (Yc x)) (XWc x) +
           g.inner x (Zc x) ((cov XWc x) (Yc x))) := by
-    have h1 := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
-      (x := x) Yc XZc Wc hY hXZ hW
+    have h1 := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner (I := I) hmc
+      (x := x) (Yc x) hXZ hW
     have h1' :
         directionalDerivAlong (I := I) Yc (fun p : M => g.inner p (XZc p) (Wc p)) x =
           g.inner x ((cov XZc x) (Yc x)) (Wc x) +
             g.inner x (XZc x) ((cov Wc x) (Yc x)) := by
       simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace] using h1
-    have h2 := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
-      (x := x) Yc Zc XWc hY hZ hXW
+    have h2 := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner (I := I) hmc
+      (x := x) (Yc x) hZ hXW
     have h2' :
         directionalDerivAlong (I := I) Yc (fun p : M => g.inner p (Zc p) (XWc p)) x =
           g.inner x ((cov Zc x) (Yc x)) (XWc x) +
@@ -995,8 +991,8 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
       directionalDerivAlong (I := I) Bc f x =
         g.inner x ((cov Zc x) (Bc x)) (Wc x) +
           g.inner x (Zc x) ((cov Wc x) (Bc x)) := by
-    have hmetric := DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) hmc
-      (x := x) Bc Zc Wc hB hZ hW
+    have hmetric := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner (I := I) hmc
+      (x := x) (Bc x) hZ hW
     simpa [directionalDerivAlong, mvfderiv, NormedSpace.fromTangentSpace, f] using hmetric
   have hcomm :=
     directionalDeriv_directionalDeriv_sub_commutator
@@ -1261,7 +1257,7 @@ theorem rm04OutputSkew_ofMC
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (1 : WithTop ℕ∞))
-    (hmc : IsMetricCompatibleGen (I := I) cov g)
+    (hmc : IsMetricCompatible (I := I) cov g)
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : rm04RealizesConnection (I := I) g cov Rm04)
     {x : M} :
@@ -1601,9 +1597,9 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
       _ = alpha (fun _ : Fin 1 => -R) := by
             rw [hnegR]
             rw [halpha]
-      _ = -cotangentToDualGen (I := I) alpha R := by
+      _ = -cotangentToDual (I := I) alpha R := by
             rw [oneForm_eval_const_neg (I := I) alpha R]
-            rw [← cotangentToDual_apply_gen (I := I) alpha R]
+            rw [← cotangentToDual_apply (I := I) alpha R]
       _ = -Rm13 x alpha (vec3 (I := I) X Y Z) := by
             simpa [R, cov, Xf, Yf, Zf, hXx, hYx, hZx] using
               congrArg Neg.neg hRm.symm

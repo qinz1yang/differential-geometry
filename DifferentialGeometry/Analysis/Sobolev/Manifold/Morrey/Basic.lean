@@ -419,7 +419,7 @@ lemma chartCarrier_subset_half_ball (α : M) :
   linarith
 
 omit [I.Boundaryless] in
-lemma chartCarrier_subset_full_ball (α : M) :
+lemma chartCarrier_subset_radius_ball (α : M) :
     chartCarrier (I := I) (M := M) α ⊆
       Metric.ball (0 : EuclN) (chartRadius (I := I) (M := M) α) := by
   refine (chartCarrier_subset_half_ball (I := I) (M := M) α).trans ?_
@@ -621,7 +621,7 @@ private lemma eLpNorm_chartSmoothExt_pou_mul_restrict_ball_eq_restrict_target
   have hK_supp : tsupport h ⊆ K :=
     tsupport_chartSmoothExt_pou_mul_subset_chartCarrier (I := I) (M := M) α u
   have hK_BR : K ⊆ BR :=
-    chartCarrier_subset_full_ball (I := I) (M := M) α
+    chartCarrier_subset_radius_ball (I := I) (M := M) α
   have hK_Ω : K ⊆ Ω :=
     chartCarrier_subset_chartTargetEuclid (I := I) (M := M) α
   have hBR_meas : MeasurableSet BR := measurableSet_ball
@@ -672,7 +672,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_pou_mul_restrict_ball_eq_restri
   have hK_supp : tsupport h ⊆ K :=
     tsupport_chartSmoothExt_pou_mul_subset_chartCarrier (I := I) (M := M) α u
   have hK_BR : K ⊆ BR :=
-    chartCarrier_subset_full_ball (I := I) (M := M) α
+    chartCarrier_subset_radius_ball (I := I) (M := M) α
   have hK_Ω : K ⊆ Ω :=
     chartCarrier_subset_chartTargetEuclid (I := I) (M := M) α
   have hBR_meas : MeasurableSet BR := measurableSet_ball
@@ -867,7 +867,7 @@ private lemma classical_partial_ae_eq_chosenWeakPartial_local
   classical
   have hf_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 q f Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := Module.finrank ℝ E) hΩ_open hf_smooth hf_compact hf_supp hq_one 1
   have hf_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) q f Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p.mp hf_mem

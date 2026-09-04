@@ -187,7 +187,7 @@ lemma continuousOn_symm_toEuclideanSymm (α : M) :
   exact (continuousOn_extChartAt_symm (I := I) α).comp
     (toEuclidean (E := E)).symm.continuous.continuousOn hy_target
 
-theorem mdiff_of_raw (α : M) {f : M → ℝ} {x : M}
+theorem mdifferentiableAt_of_chartPushedRaw_differentiableAt (α : M) {f : M → ℝ} {x : M}
     (hx : x ∈ (chartAt H α).source)
     (hf : DifferentiableAt ℝ (chartPushedRaw (I := I) (M := M) α f)
       ((toEuclidean (E := E)) (extChartAt I α x))) :

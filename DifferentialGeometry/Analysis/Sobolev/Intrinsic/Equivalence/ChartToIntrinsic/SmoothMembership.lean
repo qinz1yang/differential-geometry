@@ -20,7 +20,7 @@ open scoped Manifold ContDiff ENNReal NNReal
 namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
-namespace EquivalenceFull
+namespace Equivalence
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -450,7 +450,7 @@ theorem eLpNorm_g_norm_gradFun_chart_local_le_const_mul_wkpNormChart_smooth
   rw [hCb_eq]
   linarith
 
-end EquivalenceFull
+end Equivalence
 end Sobolev
 end Analysis
 end DifferentialGeometry

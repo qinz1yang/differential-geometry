@@ -671,7 +671,7 @@ private theorem bdDLb_eq_slotInsert_sum
     deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)
-        + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
@@ -693,7 +693,7 @@ private theorem bdDLb_eq_slotInsert_sum
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
             (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x
-          + (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          + (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                   (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
@@ -701,7 +701,7 @@ private theorem bdDLb_eq_slotInsert_sum
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
             (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x
-          + (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          + (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                   (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
@@ -710,7 +710,7 @@ private theorem bdDLb_eq_slotInsert_sum
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
             (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x) D
         + (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                   (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
@@ -728,17 +728,17 @@ private theorem bdDLb_eq_slotInsert_sum
   rw [slotInsertEndoFib_apply_eval (I := I) (M := M) 2 0 x
     (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) D m]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
             (Equiv.swap (0 : Fin 2) 1)).toSection x) D
-      = reindexCoeffFibGen (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+      = reindexCoefficientInputSlotsFiber (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
           (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))).toSection x) D from rfl]
-  rw [reindexCoeffFibGen_apply (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+  rw [reindexCoefficientInputSlotsFiber_apply (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
@@ -810,13 +810,13 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
     (X Y : SmoothCcTensor g₀ 2 2) :
-    reindexCoeffGen (I := I) (M := M) g₀ 2 2
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) X)
         (Equiv.swap (0 : Fin 2) 1) -
-      reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) Y)
         (Equiv.swap (0 : Fin 2) 1) =
-      reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) (X - Y))
         (Equiv.swap (0 : Fin 2) 1) := by
   apply SmoothCcTensor.ext
@@ -827,23 +827,23 @@ private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
-  rw [show ((reindexCoeffGen (I := I) (M := M) g₀ 2 2
+  rw [show ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) X)
         (Equiv.swap (0 : Fin 2) 1) -
-      reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) Y)
         (Equiv.swap (0 : Fin 2) 1)).toSection x) =
-      (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) X)
         (Equiv.swap (0 : Fin 2) 1)).toSection x -
-      (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) Y)
         (Equiv.swap (0 : Fin 2) 1)).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
   have hpt : ∀ (Z : SmoothCcTensor g₀ 2 2),
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) Z)
             (Equiv.swap (0 : Fin 2) 1)).toSection x) D) m =
       Tensor0SSpace.toModel
@@ -854,14 +854,14 @@ private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
         (fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) := by
     intro Z
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) Z)
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) =
-        reindexCoeffFibGen (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+        reindexCoefficientInputSlotsFiber (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
           (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               Z).toSection x) D from rfl]
-    rw [reindexCoeffFibGen_apply]
+    rw [reindexCoefficientInputSlotsFiber_apply]
     rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           Z).toSection x) =
@@ -872,34 +872,34 @@ private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
     rw [toModel_rsDomDomCongr_apply]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [show Tensor0SSpace.toModel
-      (((reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      (((reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) X)
           (Equiv.swap (0 : Fin 2) 1)).toSection x -
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) Y)
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) m =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) X)
             (Equiv.swap (0 : Fin 2) 1)).toSection x) D) m -
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) Y)
             (Equiv.swap (0 : Fin 2) 1)).toSection x) D) m from by
-    rw [show (((reindexCoeffGen (I := I) (M := M) g₀ 2 2
+    rw [show (((reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) X)
           (Equiv.swap (0 : Fin 2) 1)).toSection x -
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) Y)
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) X)
             (Equiv.swap (0 : Fin 2) 1)).toSection x) D) -
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) Y)
             (Equiv.swap (0 : Fin 2) 1)).toSection x) D) from rfl]
     rw [Tensor0SSpace.toModel_sub, sub_apply]]
@@ -936,7 +936,7 @@ private theorem bdDLbDiff_eq_slotInsert_sum
         deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)
-        + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)))
@@ -945,14 +945,14 @@ private theorem bdDLbDiff_eq_slotInsert_sum
     bdDLb_eq_slotInsert_sum (I := I) (M := M) g₀ g₁ g₀]
   rw [show (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)
-        + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
             (Equiv.swap (0 : Fin 2) 1))
       - (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g₀)
-        + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g₀)))
@@ -961,12 +961,12 @@ private theorem bdDLbDiff_eq_slotInsert_sum
           (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)
         - endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g₀))
-      + (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      + (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
             (Equiv.swap (0 : Fin 2) 1)
-        - reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        - reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g₀)))
@@ -1048,7 +1048,7 @@ theorem bdEndoTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMetric 
     exact mul_le_mul_of_nonneg_left hbase hfr_nn
   have hB : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 2 i
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)))
@@ -1069,7 +1069,7 @@ theorem bdEndoTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMetric 
           (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀))).toSection x),
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 2 i
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)))

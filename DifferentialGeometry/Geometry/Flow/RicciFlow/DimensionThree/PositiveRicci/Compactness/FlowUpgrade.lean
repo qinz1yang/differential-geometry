@@ -936,7 +936,7 @@ theorem hamilton_source_chart_jet_bound
     dsimp only [hamiltonShiLeft]
     have htleft := ht.1
     nlinarith [sq_pos_of_pos hamilton_reference_radius_pos]
-  apply ConvOut.gSeqJet_of_soln (Φ := Φ) (R := R) (bf := bf)
+  apply FlowMetricConvergenceData.gSeqJet_of_soln (Φ := Φ) (R := R) (bf := bf)
     (hsrc := hsrc) (htgt := htgt) k S hS hreg
   · intro t x v w
     rfl
@@ -963,7 +963,7 @@ theorem hamilton_limit_chart_jets_continuous
       letI : IsManifold I ∞ P₀.M := P₀.smooth
       SmoothRiemannianMetric I P₀.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0) :
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0) :
     letI : TopologicalSpace P₀.M := P₀.topology
     letI : ChartedSpace H P₀.M := P₀.charted
     letI : T2Space P₀.M := P₀.t2
@@ -981,7 +981,7 @@ theorem hamilton_limit_chart_jets_continuous
   let : T2Space P₀.M := P₀.t2
   let : IsManifold I ∞ P₀.M := P₀.smooth
   let : SigmaCompactSpace P₀.M := P₀.sigmaCompact
-  apply ConvOut.gramJets_of_stage (I := I) (Φ := Φ) co
+  apply FlowMetricConvergenceData.gramJets_of_stage (I := I) (Φ := Φ) co
   intro r x₀ i j C hCc hCtgt
   let K : Set P₀.M := (extChartAt I x₀).symm '' C
   have hKc : IsCompact K := by
@@ -1014,7 +1014,7 @@ theorem hamilton_limit_chart_gram_smooth
       letI : IsManifold I ∞ P₀.M := P₀.smooth
       SmoothRiemannianMetric I P₀.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0) :
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0) :
     letI : TopologicalSpace P₀.M := P₀.topology
     letI : ChartedSpace H P₀.M := P₀.charted
     letI : T2Space P₀.M := P₀.t2
@@ -1031,7 +1031,7 @@ theorem hamilton_limit_chart_gram_smooth
   let : T2Space P₀.M := P₀.t2
   let : IsManifold I ∞ P₀.M := P₀.smooth
   let : SigmaCompactSpace P₀.M := P₀.sigmaCompact
-  apply ConvOut.gramSmoothIcc (I := I) (Φ := Φ)
+  apply FlowMetricConvergenceData.gramSmoothIcc (I := I) (Φ := Φ)
     (neg_lt_zero.mpr (sq_pos_of_pos hamilton_reference_radius_pos))
   · exact Set.Subset.rfl
   · exact Set.Subset.rfl
@@ -1057,7 +1057,7 @@ theorem hamilton_limit_is_solution
       letI : IsManifold I ∞ P₀.M := P₀.smooth
       SmoothRiemannianMetric I P₀.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0) :
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0) :
     letI : TopologicalSpace P₀.M := P₀.topology
     letI : ChartedSpace H P₀.M := P₀.charted
     letI : T2Space P₀.M := P₀.t2
@@ -1086,7 +1086,7 @@ theorem hamilton_limit_is_solution
     simpa only [hcarrier] using (Set.Subset.rfl : J ⊆ J)
   have hjoint := hamilton_limit_chart_gram_smooth (I := I) h0omega P hD Q hsel hwindow Φ co
   have hsmooth :=
-    ConvOut.metricSmooth (I := I) (Φ := Φ) hcarrier co
+    FlowMetricConvergenceData.metricSmooth (I := I) (Φ := Φ) hcarrier co
   have hpde : ∀ t ∈
       (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).D.regular,
       ∀ (x : P₀.M) (v w : TangentSpace I x),
@@ -1095,7 +1095,7 @@ theorem hamilton_limit_is_solution
             DifferentialGeometry.Geometry.Curvature.ricciTensor
               (I := I) (co.gInf t) x v w) t := by
     intro t ht x v w
-    exact ConvOut.metricPDE_regular (I := I) (Φ := Φ)
+    exact FlowMetricConvergenceData.metricPDE_regular (I := I) (Φ := Φ)
       hcarrierSub co ht x v w
   have hscalarCont :
       ContinuousOn
@@ -1723,7 +1723,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       exact ⟨C, hC, fun k t ht y _hy => hcov k t ht y⟩
     exact covTail_of_bounds (I := I) Phi mc.limit.metric bf hsrc htgt
       (-(hamiltonReferenceRadius ^ 2)) 0 hcovSrc
-  let co := convOutOfSrc (I := I) Phi mc.limit.metric bf hsrc htgt
+  let co := metricConvergenceDataOfSourceCovariantLipschitz (I := I) Phi mc.limit.metric bf hsrc htgt
     (neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius)) hBsrc hequivSrc srcData
   have hcarrier : X.D.carrier ⊆ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 := by
     intro t ht
@@ -1741,10 +1741,10 @@ theorem hamilton_flow_upgrade_of_metric_compactness
   let L := flowOfMetric (I := I) X.D mc.limit co.gInf hsol
   have hL0 : L.atTime (I := I) 0 = mc.limit :=
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
-  have hscalarRaw := ConvOut.scalar_conv (I := I) (Φ := Phi)
+  have hscalarRaw := FlowMetricConvergenceData.scalar_conv (I := I) (Φ := Phi)
     mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 cLow hcLow
     hbound hcovTail co hcarrier
-  have hricRaw := ConvOut.ricNorm_conv (I := I) (Φ := Phi)
+  have hricRaw := FlowMetricConvergenceData.ricNorm_conv (I := I) (Φ := Phi)
     mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 cLow hcLow
     hbound hcovTail co hcarrier
   have map_cast {P₁ P₂ : PointedRiemannianManifold (I := I)}
@@ -1847,7 +1847,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
     intro k s hs x v
     exact gSeqExt_lower (I := I) Phi mc.limit.metric bf hsrc htgt
       cLow (-(hamiltonReferenceRadius ^ 2)) 0 hcLow hbound (co.φ k) s hs x v
-  have hcomplete := ConvOut.complete_at (I := I) Phi mc.limit_complete co
+  have hcomplete := FlowMetricConvergenceData.complete_at (I := I) Phi mc.limit_complete co
     (lt_min hcLow one_pos) hseq htWindow
   have hdL : d.data.L = L :=
     flowUpgrade_maps_L (I := I) (X := X) mc L mc.limit rfl hL0

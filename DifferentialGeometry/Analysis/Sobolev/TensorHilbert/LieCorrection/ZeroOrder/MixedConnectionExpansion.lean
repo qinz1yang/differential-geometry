@@ -31,7 +31,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 def reindexedPureTrace (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) : SmoothCcTensor g₀ (p + 2) p :=
-  reindexCoeffGen (I := I) (M := M) g₀ (p + 2) p
+  reindexCoefficientInputSlots (I := I) (M := M) g₀ (p + 2) p
     (pureTrace (I := I) (M := M) g₀ g₁ p) σ
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -46,10 +46,10 @@ theorem reindexedPureTrace_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (p
   rw [show
       ((show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
         (reindexedPureTrace (I := I) (M := M) g₀ g₁ p σ).toSection x) D) =
-        reindexCoeffFibGen (I := I) (p + 2) p σ x
+        reindexCoefficientInputSlotsFiber (I := I) (p + 2) p σ x
           (show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
             (pureTrace (I := I) (M := M) g₀ g₁ p).toSection x) D from rfl]
-  rw [reindexCoeffFibGen_apply (I := I) (p + 2) p σ x _ D,
+  rw [reindexCoefficientInputSlotsFiber_apply (I := I) (p + 2) p σ x _ D,
     pureTrace_toSection (I := I) (M := M) g₀ g₁ p x,
     lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply]
   congr 1

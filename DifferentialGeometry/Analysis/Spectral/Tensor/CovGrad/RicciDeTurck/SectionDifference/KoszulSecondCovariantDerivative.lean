@@ -858,7 +858,7 @@ private lemma covGrad2UnitV_nabla3_eq_iteratedCovGrad
       covGrad (I := I) (M := M) g₀ 0 3 (covGrad (I := I) (M := M) g₀ 0 2 S) := by
     rw [iteratedCovGrad_succ, iteratedCovGrad_succ, iteratedCovGrad_zero]
   rw [hiter, unitEvalSection_apply,
-    covGrad_apply_unit_eval_genVal (I := I) (M := M) g₀ 3
+    covGrad_apply_unit_eval (I := I) (M := M) g₀ 3
       (covGrad (I := I) (M := M) g₀ 0 2 S) x (Fin.cons v m)]
   have hvt : Matrix.vecTail (Fin.cons v m) = m := by
     funext k; simp only [Matrix.vecTail, Function.comp]; rw [Fin.cons_succ]
@@ -867,7 +867,7 @@ private lemma covGrad2UnitV_nabla3_eq_iteratedCovGrad
       (covGrad (I := I) (M := M) g₀ 0 2 S) x
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v),
     ContinuousLinearEquiv.symm_apply_apply,
-    covDeriv_unit_eval_eq_genVal (I := I) (M := M) g₀ 3
+    covDeriv_unit_eval_eq (I := I) (M := M) g₀ 3
       (covGrad (I := I) (M := M) g₀ 0 2 S).toSection x v]
   rfl
 

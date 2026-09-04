@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.FullEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.FirstDerivativeNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.IteratedCovariantDerivativeFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Components
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.TimeDerivative
@@ -215,7 +215,7 @@ theorem nablaKNormHeatAt
             (gInv (t : Real)) ric Tdot))
       D.carrier (t : Real) := by
   classical
-  have hmc : IsMetricCompatibleGen (I := I)
+  have hmc : IsMetricCompatible (I := I)
       (S.family.connection (t : Real)) (S.base.metric (t : Real)) :=
     solution_isMetricCompatible (I := I) S (t : Real)
   let X : Idx → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -377,7 +377,7 @@ theorem nablaKRm04NormHeatEquationOn_intrinsic
       (nablaKRm04ReactionIntrinsic (I := I) S k basis gInv ric Tdot) := by
   classical
   intro t x
-  have hmc : IsMetricCompatibleGen (I := I)
+  have hmc : IsMetricCompatible (I := I)
       (S.family.connection (t : Real)) (S.base.metric (t : Real)) :=
     solution_isMetricCompatible (I := I) S (t : Real)
   have hdt :=

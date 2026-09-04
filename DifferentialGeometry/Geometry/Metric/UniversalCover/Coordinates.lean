@@ -12,7 +12,7 @@ import Mathlib.Topology.VectorBundle.Basic
 open Set Function Filter
 open scoped Topology ContDiff Manifold
 open DifferentialGeometry (SmoothRiemannianMetric)
-open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Curvature
   (chartRiemannTensor chartRicciTensor)
 open DifferentialGeometry.Geometry.Operator
   (chartInvGramMatrix chartGramOnE chartChristoffel)
@@ -431,11 +431,11 @@ theorem chartRiemannTensor_lifted
   have hy_eq : extChartAt I α' x' = extChartAt I (proj α') (proj x') :=
     extChartAt_proj_eq (I := I) (M := M) α' x'
   rw [show extChartAt I (proj (X := M) α') (proj (X := M) x') = y₀ from hy_eq.symm]
-  rw [DifferentialGeometry.Integral.DivergenceTheorem.chartRiemannTensor_def
+  rw [DifferentialGeometry.Geometry.Curvature.chartRiemannTensor_def
         (I := I)
         (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
         (liftedMetric (I := I) g) α' i j k l y₀,
-      DifferentialGeometry.Integral.DivergenceTheorem.chartRiemannTensor_def
+      DifferentialGeometry.Geometry.Curvature.chartRiemannTensor_def
         (I := I) (M := M) g (proj α') i j k l y₀]
   have hChristAt : ∀ (a b c : Fin (Module.finrank ℝ E)),
       chartChristoffel
@@ -494,11 +494,11 @@ theorem chartRicciTensor_lifted
       chartRicciTensor (M := M) g (proj (X := M) α') i k
         (extChartAt I (proj (X := M) α') (proj (X := M) x')) := by
   classical
-  rw [DifferentialGeometry.Integral.DivergenceTheorem.chartRicciTensor_def
+  rw [DifferentialGeometry.Geometry.Curvature.chartRicciTensor_def
         (I := I)
         (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
         (liftedMetric (I := I) g) α' i k (extChartAt I α' x'),
-      DifferentialGeometry.Integral.DivergenceTheorem.chartRicciTensor_def
+      DifferentialGeometry.Geometry.Curvature.chartRicciTensor_def
         (I := I) (M := M) g (proj α') i k
         (extChartAt I (proj (X := M) α') (proj (X := M) x'))]
   refine Finset.sum_congr rfl ?_

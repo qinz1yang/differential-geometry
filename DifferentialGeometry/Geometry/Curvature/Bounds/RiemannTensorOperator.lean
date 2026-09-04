@@ -6,8 +6,8 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open scoped BigOperators Manifold ContDiff
 open DifferentialGeometry.Tensor0SBundle
@@ -35,7 +35,7 @@ theorem rm04_eq_inner
   rw [metricRm04StdAt_apply,
     DifferentialGeometry.metricRm04At_eq_riemannCurvature04At,
     CovariantDerivative.riemannCurvature04At_apply_const,
-    DifferentialGeometry.riemannCurvatureAux_tangentConst_eq_riemannOp
+    DifferentialGeometry.connectionRiemannCurvatureField_tangentConst_eq_riemannOp
       (cov := LeviCivita (I := I) g) (hcov := hcov)]
 
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
@@ -202,6 +202,6 @@ theorem riemannOp_sq_le
           Real.sqrt (g.inner q J J) *
           (Real.sqrt (g.inner q V V)) ^ 2) ^ 2 := rfl
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry

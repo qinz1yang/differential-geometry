@@ -491,7 +491,7 @@ lemma ricciContractionRemainderField_eq_decomposition (S : SmoothCcTensor g₀ 0
   rw [hfold]
   ring
 
-lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeightGeneral_boundedFactorGridWindow_le
+lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeight_boundedFactorGridWindow_le
     (σ : Equiv.Perm (Fin 6))
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ w, 0 ≤ C w) ∧
@@ -891,7 +891,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [SigmaCompactSpace M] in
-lemma koszulConnectionDifferenceContractionWeight_unitModel_general (σ : Equiv.Perm (Fin 6))
+lemma koszulConnectionDifferenceContractionWeight_unitModel (σ : Equiv.Perm (Fin 6))
     (P : SmoothCcTensor g₀ 0 2) (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4
         (ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
@@ -1029,7 +1029,7 @@ private lemma sharpGradKoszulKernel_contractionWeights_unitModel (P : SmoothCcTe
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -1086,7 +1086,7 @@ private lemma sharpGradKoszulKernel_contractionWeights_unitModel (P : SmoothCcTe
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -1143,7 +1143,7 @@ private lemma sharpGradKoszulKernel_contractionWeights_unitModel (P : SmoothCcTe
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -1200,7 +1200,7 @@ private lemma sharpGradKoszulKernel_contractionWeights_unitModel (P : SmoothCcTe
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceContractionWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P x
+    rw [koszulConnectionDifferenceContractionWeight_unitModel (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x

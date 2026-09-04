@@ -200,14 +200,14 @@ theorem phi_dev_h3_uniform
   let ρAT : Equiv.Perm (Fin 4) :=
     traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT
   have hdev_eq : Dev =
-      reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρA +
-        reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρAT -
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρA +
+        reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρAT -
           (DRs + DRs) := by
     dsimp [Dev, DTHs, DRs]
     rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g₁,
       deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g g,
-      reindexCoeffGen_sub g _ _ ρA,
-      reindexCoeffGen_sub g _ _ ρAT]
+      reindexCoefficientInputSlots_sub g _ _ ρA,
+      reindexCoefficientInputSlots_sub g _ _ ρAT]
     abel
   have hDTHsum : (∑ i ∈ Finset.range 4,
       ‖iteratedCovGrad (I := I) g 4 2 i DTHs‖ ^ 2) ≤
@@ -273,16 +273,16 @@ theorem phi_dev_h3_uniform
         ‖iteratedCovGrad (I := I) g 4 2 i Dev‖ ^ 2) ≤
         2 * (∑ i ∈ Finset.range 4,
           ‖iteratedCovGrad (I := I) g 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρA +
-              reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρAT)‖ ^ 2) +
+            (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρA +
+              reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρAT)‖ ^ 2) +
         2 * (∑ i ∈ Finset.range 4,
           ‖iteratedCovGrad (I := I) g 4 2 i (DRs + DRs)‖ ^ 2) := by
       calc
         (∑ i ∈ Finset.range 4, ‖iteratedCovGrad (I := I) g 4 2 i Dev‖ ^ 2)
             ≤ ∑ i ∈ Finset.range 4,
               (2 * ‖iteratedCovGrad (I := I) g 4 2 i
-                  (reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρA +
-                    reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρAT)‖ ^ 2 +
+                  (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρA +
+                    reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρAT)‖ ^ 2 +
                 2 * ‖iteratedCovGrad (I := I) g 4 2 i (DRs + DRs)‖ ^ 2) := by
                   apply Finset.sum_le_sum
                   intro i hi
@@ -290,23 +290,23 @@ theorem phi_dev_h3_uniform
                   exact norm_sq_sub_le _ _
         _ = 2 * (∑ i ∈ Finset.range 4,
               ‖iteratedCovGrad (I := I) g 4 2 i
-                (reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρA +
-                  reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρAT)‖ ^ 2) +
+                (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρA +
+                  reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρAT)‖ ^ 2) +
             2 * (∑ i ∈ Finset.range 4,
               ‖iteratedCovGrad (I := I) g 4 2 i (DRs + DRs)‖ ^ 2) := by
                 rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
     have hAB : (∑ i ∈ Finset.range 4,
         ‖iteratedCovGrad (I := I) g 4 2 i
-          (reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρA +
-            reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρAT)‖ ^ 2) ≤
+          (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρA +
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρAT)‖ ^ 2) ≤
         4 * (∑ i ∈ Finset.range 4,
           ‖iteratedCovGrad (I := I) g 4 2 i DTHs‖ ^ 2) := by
       calc
         _ ≤ ∑ i ∈ Finset.range 4,
             (2 * ‖iteratedCovGrad (I := I) g 4 2 i
-                (reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρA)‖ ^ 2 +
+                (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρA)‖ ^ 2 +
               2 * ‖iteratedCovGrad (I := I) g 4 2 i
-                (reindexCoeffGen (I := I) (M := M) g 4 2 DTHs ρAT)‖ ^ 2) := by
+                (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 DTHs ρAT)‖ ^ 2) := by
                 apply Finset.sum_le_sum
                 intro i hi
                 rw [iteratedCovGrad_add]
@@ -316,7 +316,7 @@ theorem phi_dev_h3_uniform
               rw [Finset.mul_sum]
               apply Finset.sum_congr rfl
               intro i hi
-              simp only [norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g 4 2]
+              simp only [norm_sq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g 4 2]
               ring
     have hCC : (∑ i ∈ Finset.range 4,
         ‖iteratedCovGrad (I := I) g 4 2 i (DRs + DRs)‖ ^ 2) ≤

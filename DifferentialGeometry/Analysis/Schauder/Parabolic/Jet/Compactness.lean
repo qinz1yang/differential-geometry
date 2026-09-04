@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Schauder.Holder.Compactness
-import DifferentialGeometry.Analysis.Schauder.Parabolic.Jet.Limit
+import DifferentialGeometry.Analysis.Schauder.Parabolic.Jet.Convergence
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 noncomputable section

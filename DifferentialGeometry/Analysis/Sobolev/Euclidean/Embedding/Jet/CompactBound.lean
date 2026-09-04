@@ -51,7 +51,7 @@ theorem wkp_bdd_of_jet
     hK.of_isClosed_subset (isClosed_tsupport _) (hF_supp i)
   have hF_supp_Ω : tsupport (F i) ⊆ Ω := (hF_supp i).trans hKΩ
   have hF_mem : MemWkp (d := d) k p (F i) Ω :=
-    MemWkp_of_smooth_compactSupport_pub
+    MemWkp_of_smooth_compactSupport
       (d := d) hΩ (hF_smooth i) hF_cpt hF_supp_Ω hp k
   refine ⟨hF_mem, ?_⟩
   rw [wkpNorm_eq_sum]

@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.MetricCompatibility
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -29,7 +28,7 @@ def IsTorsionFreeAt
 def IsLeviCivitaAt
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M) (x : M) : Prop :=
-  IsMetricCompatibleAtGen (I := I) cov g x /\ IsTorsionFreeAt (I := I) cov x
+  IsMetricCompatibleOn cov.toFun g {x} /\ IsTorsionFreeAt (I := I) cov x
 
 def IsTorsionFree
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _)) : Prop :=
@@ -39,14 +38,14 @@ def IsTorsionFree
 def IsLeviCivita
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M) : Prop :=
-  IsMetricCompatibleGen (I := I) cov g /\ IsTorsionFree (I := I) cov
+  IsMetricCompatible (I := I) cov g /\ IsTorsionFree (I := I) cov
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricCompatible_of_isLeviCivita
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {g : SmoothRiemannianMetric I M}
     (h : IsLeviCivita (I := I) cov g) :
-    IsMetricCompatibleGen (I := I) cov g :=
+    IsMetricCompatible (I := I) cov g :=
   h.1
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -61,7 +60,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem isLeviCivita_of_parts
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {g : SmoothRiemannianMetric I M}
-    (hmc : IsMetricCompatibleGen (I := I) cov g)
+    (hmc : IsMetricCompatible (I := I) cov g)
     (htf : IsTorsionFree (I := I) cov) :
     IsLeviCivita (I := I) cov g :=
   ⟨hmc, htf⟩

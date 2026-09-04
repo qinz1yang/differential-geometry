@@ -21,7 +21,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedFlowSeq (I := I)}
 
-theorem open_upgrade_of_raw
+theorem exists_complete_flowUpgrade_of_open_metric_bounds
     (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
     (Phi : PointedCGHMaps (I := I) X mc.limit mc.subseq)
     (bf : BumpFamily (I := I) Phi)
@@ -138,21 +138,21 @@ theorem open_upgrade_of_raw
   let : IsManifold I ((∞ : WithTop ℕ∞) + 1) mc.limit.M := by
     change IsManifold I ∞ mc.limit.M
     infer_instance
-  obtain ⟨co⟩ := exists_openConv_raw (I := I) (Φ := Phi)
+  obtain ⟨co⟩ := exists_openMetricConvergenceData_of_bounds (I := I) (Φ := Phi)
     (R := mc.limit.metric) (bf := bf) (hsrc := hsrc) (htgt := htgt)
     hzero_mem cLow hcLow hbound hcovTail hlipTail hlipSrc
-  have hsol := OpenConvOut.isSolution (I := I) (Φ := Phi)
+  have hsol := OpenMetricConvergenceData.isSolution (I := I) (Φ := Phi)
     hzero_mem hD co cLow hcLow hbound hcovTail
   have hzero : co.gInf 0 = mc.limit.metric :=
-    OpenConvOut.gInf_zero_eq (I := I) Phi mc.limit.metric bf hsrc htgt co
+    OpenMetricConvergenceData.gInf_zero_eq (I := I) Phi mc.limit.metric bf hsrc htgt co
       hzero_mem mc.limit.metric
       (conv0_of_cp (I := I) Phi mc.limit.metric hsrc htgt mc.limit.metric hcp)
   let L := flowOfMetric (I := I) X.D mc.limit co.gInf hsol
   have hL0 : L.atTime (I := I) 0 = mc.limit :=
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
-  have hscalarRaw := OpenConvOut.scalar_conv (I := I) (Φ := Phi)
+  have hscalarRaw := OpenMetricConvergenceData.scalar_conv (I := I) (Φ := Phi)
     hzero_mem hD co cLow hcLow hbound hcovTail
-  have hricRaw := OpenConvOut.ricNorm_conv (I := I) (Φ := Phi)
+  have hricRaw := OpenMetricConvergenceData.ricNorm_conv (I := I) (Φ := Phi)
     hzero_mem hD co cLow hcLow hbound hcovTail
   have map_cast {P Q : PointedRiemannianManifold (I := I)}
       {s : Nat -> Nat} (h : P = Q) (maps : PointedCGHMaps (I := I) X Q s)
@@ -249,7 +249,7 @@ theorem open_upgrade_of_raw
       (cLow n) (RealTimeInterval.openWindowLeft a 0 n)
       (RealTimeInterval.openWindowRight b 0 n) (hcLow n)
       (fun j u hu => hbound n j u hu) (co.φ k) s hs x v
-  have hcomplete := OpenConvOut.complete_at (I := I) Phi mc.limit_complete co
+  have hcomplete := OpenMetricConvergenceData.complete_at (I := I) Phi mc.limit_complete co
     (fun n => min (cLow n) 1) hcExt hseq htOpen
   have hdL : d.data.L = L := by
     exact flowUpgrade_open_L (I := I) mc L mc.limit rfl hL0 Phi

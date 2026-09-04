@@ -33,7 +33,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
     domDomCongrFib domDomCongrFib_apply deTurckPrincipalCometricCoeff
     deTurckPrincipalCometricCoeff_toSection_clm_eq
     deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
-    reindexCoeffGen reindexCoeffGen_toSection reindexCoeffFibGen_apply
+    reindexCoefficientInputSlots reindexCoefficientInputSlots_toSection reindexCoefficientInputSlotsFiber_apply
     ricciOrderZeroRiemannCoeff ricciOrderZeroCurvCoeff ricciFirstOrderKoszulCoeff raisedKoszul)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (metricPerturbationPath)
@@ -74,7 +74,7 @@ theorem linearizedRicciOrderZeroBaseCoeff_metricPerturbationPath_jetL2_perOrder_
         ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
               (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
-  obtain ⟨K, hK_nn, hK⟩ := ricciOrderZeroBaseCoeff_perOrder_l2_ballUniform_generic
+  obtain ⟨K, hK_nn, hK⟩ := ricciOrderZeroBaseCoeff_perOrder_l2_ballUniform
     (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨K, hK_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
@@ -141,7 +141,7 @@ theorem linearizedRicciFirstOrderBaseCoeff_metricPerturbationPath_jetL2_perOrder
         ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
               (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
-  obtain ⟨K, hK_nn, hK⟩ := ricciFirstOrderKoszulCoeff_perOrder_l2_ballUniform_generic
+  obtain ⟨K, hK_nn, hK⟩ := ricciFirstOrderKoszulCoeff_perOrder_l2_ballUniform
     (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨K, hK_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
@@ -334,16 +334,16 @@ omit [I.Boundaryless] in
 private theorem traceHessianCoeff_sub_eq_reindex_deTurckPrincipalCometricCoeff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g₀ g₁ - traceHessianCoeff (I := I) (M := M) g₀ g₀ =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
         (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁) traceHessianSlotPerm := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    traceHessianCoeff_toSection, traceHessianCoeff_toSection, reindexCoeffGen_toSection]
+    traceHessianCoeff_toSection, traceHessianCoeff_toSection, reindexCoefficientInputSlots_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [sub_apply, reindexCoeffFibGen_apply,
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply,
     deTurckPrincipalCometricCoeff_toSection_clm_eq, sub_apply,
     traceHessianFib, traceHessianFib, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, domDomCongrFib_apply]
@@ -365,7 +365,7 @@ theorem traceHessianCoeff_sub_background_perOrder_riemannianFiberNormSq_le_inver
   refine ⟨C, hC_nn, ?_⟩
   intro g₁ i x
   rw [traceHessianCoeff_sub_eq_reindex_deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁,
-    riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2
+    riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 4 2
       (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁) traceHessianSlotPerm i x]
   exact hC g₁ i x
 
@@ -514,7 +514,7 @@ theorem linearizedRicciOrderZeroBaseCoeff_metricPerturbationPath_jetL2_perOrder_
             K i * (1 + ∑ j ∈ Finset.range (i + 3),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
-  obtain ⟨K, hK_nn, hK⟩ := ricciOrderZeroBaseCoeff_perOrder_l2_tameEnvelope_generic
+  obtain ⟨K, hK_nn, hK⟩ := ricciOrderZeroBaseCoeff_perOrder_l2_tameEnvelope
     (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨K, hK_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i s hs
@@ -634,7 +634,7 @@ theorem linearizedRicciFirstOrderBaseCoeff_metricPerturbationPath_jetL2_perOrder
             K i * (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
-  obtain ⟨K, hK_nn, hK⟩ := ricciFirstOrderKoszulCoeff_perOrder_l2_tameEnvelope_generic
+  obtain ⟨K, hK_nn, hK⟩ := ricciFirstOrderKoszulCoeff_perOrder_l2_tameEnvelope
     (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨K, hK_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i s hs
@@ -1128,7 +1128,7 @@ private theorem ricciFirstOrderKoszulCoeff_lowerTerms_pointwise_le
       rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
       ring
 
-theorem ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_generic
+theorem ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_up_to_order
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1154,9 +1154,9 @@ theorem ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_generic
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨ΛA, FA, hΛA_nn, hFA_nn, hAfeed⟩ :=
-    raisedKoszul_order0sup_jetL2_ballUniform_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    raisedKoszul_order0sup_jetL2_ballUniform (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛB, FB, hΛB_nn, hFB_nn, hBfeed⟩ :=
-    cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic
+    cometricDoubleTraceField_order0sup_jetL2_ballUniform
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Cemb, hCemb_nn, hCemb⟩ :=
     DifferentialGeometry.Analysis.Spectral.deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
@@ -1542,7 +1542,7 @@ theorem linearizedRicciOrderZeroBaseCoeff_metricPerturbationPath_jetL2_perOrder_
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   classical
   obtain ⟨Kt, hKt_nn, Kc, hKc_nn, hgen⟩ :=
-    ricciOrderZeroBaseCoeff_perOrder_l2_topOrderSeparated_generic (I := I) (M := M) g₀ a
+    ricciOrderZeroBaseCoeff_perOrder_l2_topOrderSeparated_up_to_order (I := I) (M := M) g₀ a
       ha_super hR hδ₀
   refine ⟨2 * Kt, by linarith, ?_⟩
   refine ⟨fun i => 2 * Kc i, fun i => by have := hKc_nn i; linarith, ?_⟩
@@ -1675,7 +1675,7 @@ theorem linearizedRicciFirstOrderBaseCoeff_metricPerturbationPath_jetL2_perOrder
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   classical
   obtain ⟨Kt, hKt_nn, Kc, hKc_nn, hgen⟩ :=
-    ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_generic (I := I) (M := M) g₀ a
+    ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_up_to_order (I := I) (M := M) g₀ a
       ha_super hR hδ₀
   refine ⟨2 * Kt, by linarith, ?_⟩
   refine ⟨fun i => 2 * Kc i, fun i => by have := hKc_nn i; linarith, ?_⟩
@@ -1810,7 +1810,7 @@ theorem linearizedRicciOrderZeroBaseCoeff_metricPerturbationPath_jetL2_perOrder_
                   ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T'‖ ^ 2) := by
   classical
   obtain ⟨Kt, hKt_nn, Kc, hKc_nn, hgen⟩ :=
-    ricciOrderZeroBaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders (I := I) (M := M) g₀ a
+    ricciOrderZeroBaseCoeff_perOrder_l2_topOrderSeparated (I := I) (M := M) g₀ a
       ha_super hR hδ₀
   refine ⟨2 * Kt, by linarith, ?_⟩
   refine ⟨fun i => 2 * Kc i, fun i => by have := hKc_nn i; linarith, 0, le_refl 0, ?_⟩
@@ -1946,7 +1946,7 @@ theorem linearizedRicciFirstOrderBaseCoeff_metricPerturbationPath_jetL2_perOrder
                   ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 1) T'‖ ^ 2) := by
   classical
   obtain ⟨Kt, hKt_nn, Kc, hKc_nn, Kleak, hKleak_nn, hgen⟩ :=
-    ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_generic_allOrders (I := I) (M := M) g₀ a
+    ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_all_orders_with_top_order_leak (I := I) (M := M) g₀ a
       ha_super hR hδ₀
   refine ⟨2 * Kt, by linarith, ?_⟩
   refine ⟨fun i => 2 * Kc i, fun i => by have := hKc_nn i; linarith, 2 * Kleak,

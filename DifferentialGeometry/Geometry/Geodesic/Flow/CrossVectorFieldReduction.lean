@@ -146,84 +146,6 @@ private lemma fderiv_applyJac_apply [I.Boundaryless]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma chartCoord_fderiv_chartTransitionAt [I.Boundaryless]
-    (α : M) {p : TangentBundle I M}
-    (hp : p.proj ∈ (chartAt H α).source)
-    (c : Fin (Module.finrank ℝ E)) (v : E) :
-    chartCoord (E := E) c
-        ((fderiv ℝ (fun z => chartTransitionAt (I := I) p.proj α z)
-          (extChartAt I p.proj p.proj) v) v) =
-      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
-          (fun z => chartTransitionJacEntry (I := I) p.proj α z c j)
-          (extChartAt I p.proj p.proj) *
-          chartCoord (E := E) i v * chartCoord (E := E) j v := by
-  classical
-  set x₀ := extChartAt I p.proj p.proj with hx₀
-  set A : E → (E →L[ℝ] E) := fun z => chartTransitionAt (I := I) p.proj α z with hA
-  have hx_src : x₀ ∈ chartTransitionSource (I := I) p.proj α :=
-    extChartAt_mem_chartTransitionSource (I := I) p.proj α (mem_chart_source H p.proj) hp
-  have hcA : DifferentiableAt ℝ A x₀ :=
-    differentiableAt_chartTransitionAt (I := I) p.proj α hx_src
-  set coordCLM : E →L[ℝ] ℝ :=
-    LinearMap.toContinuousLinearMap ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord c) with hcoordCLM
-  set eval : (E →L[ℝ] E) →L[ℝ] ℝ :=
-    coordCLM.comp (ContinuousLinearMap.apply ℝ E v) with heval
-  have hstep1 :
-      chartCoord (E := E) c ((fderiv ℝ A x₀ v) v) = eval (fderiv ℝ A x₀ v) := by
-    rw [heval, ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply,
-      hcoordCLM]
-    simp only [LinearMap.coe_toContinuousLinearMap', Module.Basis.coord_apply]
-    rfl
-  have hstep2 : eval (fderiv ℝ A x₀ v) = fderiv ℝ (fun z => eval (A z)) x₀ v := by
-    have hcomp_hasD : HasFDerivAt (fun z => eval (A z))
-        (eval.comp (fderiv ℝ A x₀)) x₀ :=
-      eval.hasFDerivAt.comp x₀ hcA.hasFDerivAt
-    rw [hcomp_hasD.fderiv]
-    rfl
-  have heval_eq : (fun z => eval (A z)) =
-      (fun z => ∑ i : Fin (Module.finrank ℝ E),
-        chartTransitionJacEntry (I := I) p.proj α z c i * chartCoord (E := E) i v) := by
-    funext z
-    rw [heval, ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply, hA,
-      hcoordCLM]
-    simp only [LinearMap.coe_toContinuousLinearMap', Module.Basis.coord_apply]
-    change chartCoord (E := E) c (chartTransitionAt (I := I) p.proj α z v) = _
-    exact chartCoord_chartTransitionAt (I := I) p.proj α z v c
-  rw [hstep1, hstep2, heval_eq]
-  have hsum_fderiv :
-      fderiv ℝ (fun z => ∑ i : Fin (Module.finrank ℝ E),
-          chartTransitionJacEntry (I := I) p.proj α z c i * chartCoord (E := E) i v) x₀ v =
-        ∑ i : Fin (Module.finrank ℝ E),
-          fderiv ℝ (fun z => chartTransitionJacEntry (I := I) p.proj α z c i *
-            chartCoord (E := E) i v) x₀ v := by
-    have hdiff : ∀ i : Fin (Module.finrank ℝ E),
-        DifferentiableAt ℝ (fun z => chartTransitionJacEntry (I := I) p.proj α z c i *
-          chartCoord (E := E) i v) x₀ := by
-      intro i
-      exact (chartTransitionJacEntry_differentiableAt (I := I) p.proj α c i hx_src).mul_const _
-    rw [fderiv_fun_sum (fun i _ => hdiff i)]
-    rw [sum_apply]
-  rw [hsum_fderiv]
-  have hLHS_expand :
-      (∑ i : Fin (Module.finrank ℝ E),
-          fderiv ℝ (fun z => chartTransitionJacEntry (I := I) p.proj α z c i *
-            chartCoord (E := E) i v) x₀ v) =
-        ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
-            (fun z => chartTransitionJacEntry (I := I) p.proj α z c i) x₀ *
-            chartCoord (E := E) k v * chartCoord (E := E) i v := by
-    refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [fderiv_mul_const (chartTransitionJacEntry_differentiableAt (I := I) p.proj α c i hx_src) _]
-    rw [smul_apply, smul_eq_mul]
-    rw [fderiv_chartTransitionJacEntry_eq_sum_partialDeriv (I := I) p.proj α c i x₀ v]
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl (fun k _ => ?_)
-    ring
-  rw [hLHS_expand]
-  rw [Finset.sum_comm]
-
-omit [NeZero (Module.finrank ℝ E)] in
 theorem geodesicVectorFieldChart_eq_geodesicVectorField
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -244,6 +166,9 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
     rw [hpModel, tangentSpaceModelContinuousLinearEquiv_apply]
     exact tangentCoordChange_self (I := I) (x := p.proj) (z := p.proj) (v := p.snd)
       (mem_extChartAt_source (I := I) p.proj)
+  have hx_src : x₀ ∈ chartTransitionSource (I := I) p.proj α :=
+    extChartAt_mem_chartTransitionSource (I := I) p.proj α
+      (mem_chart_source H p.proj) hp
   have hfst : (geodesicVectorFieldChart (I := I) g α p : E × E).1 =
       (geodesicVectorField (I := I) g p : E × E).1 := by
     rw [geodesicVectorFieldChart_fst (I := I) g α hp]
@@ -351,7 +276,8 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
                     chartCoord (E := E) i pModel * chartCoord (E := E) j pModel) from ?_]
       · rw [hTx₀]
         refine Finset.sum_congr rfl (fun c _ => ?_)
-        rw [hDterm, chartCoord_fderiv_chartTransitionAt (I := I) α hp c pModel]
+        rw [hDterm, chartCoord_fderiv_chartTransitionAt
+          (I := I) p.proj α hx_src c pModel pModel]
       · rw [chartCoord_def, map_sum, Finsupp.finsetSum_apply]
         rw [Finset.sum_eq_single k]
         · rw [map_smul, Finsupp.smul_apply, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self k,
@@ -360,8 +286,6 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
           rw [map_smul, Finsupp.smul_apply, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self k']
           rw [Finsupp.single_eq_of_ne (Ne.symm hk'), smul_zero]
         · intro hk; exact absurd (Finset.mem_univ k) hk
-    have hx_src : x₀ ∈ chartTransitionSource (I := I) p.proj α :=
-      extChartAt_mem_chartTransitionSource (I := I) p.proj α (mem_chart_source H p.proj) hp
     have hinv : chartTransitionAt (I := I) α p.proj
         (chartTransitionMap (I := I) p.proj α x₀)
         (chartTransitionAt (I := I) p.proj α x₀ X) = X := by

@@ -92,7 +92,7 @@ theorem rawTensorConnLap_covGrad_unit_eval_eq_abstract_roughLap
   refine Finset.sum_congr rfl (fun i _ => ?_)
   have hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (smoothOrthoFrame (I := I) g x i)) :=
     smoothOrthoFrame_smooth (I := I) g x i
-  exact tensorSecondCovDeriv_covGrad_unit_eval (I := I) (M := M) g T₀ hB x
+  exact tensorSecondCovDeriv_covGrad_unit_eval_two (I := I) (M := M) g T₀ hB x
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -117,19 +117,19 @@ theorem abstract_succ_covDeriv_unfold_at
           ((LeviCivita (I := I) g).toFun Y x (Vfield x)) := by
   classical
   have hHom := HomConnection.homBundleCovariantDerivativeFun_apply_eq
-    (I := I) (M := M) (F := Tensor0SModel 2 ℝ E)
+    (I := I) (M := M) (E_U := E) (U := TangentSpace I) (F := Tensor0SModel 2 ℝ E)
     (V := fun z : M => Tensor0SSpace 2 I z)
-    (cov_TM := LeviCivita (I := I) g)
+    (cov_U := LeviCivita (I := I) g)
     (cov_V := tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g))
     (τ := curriedSection I M W) (x := x) hC
     (V_field := fun y => Vfield y) (Y := fun y => Y y) hVfield hYfield
   have hsucc : tensor0SCurry (I := I) (M := M) 2 x
       ((Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)).toFun
         W x (Vfield x)) =
-      HomConnection.homBundleCovariantDerivativeFun (I := I) (M := M)
+      HomConnection.homBundleCovariantDerivativeFun (I := I) (M := M) (E_U := E) (U := TangentSpace I)
         (F := Tensor0SModel 2 ℝ E)
         (V := fun z : M => Tensor0SSpace 2 I z)
-        (cov_TM := LeviCivita (I := I) g)
+        (cov_U := LeviCivita (I := I) g)
         (cov_V := tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g))
         (τ := curriedSection I M W) x (Vfield x) := by
     rw [show

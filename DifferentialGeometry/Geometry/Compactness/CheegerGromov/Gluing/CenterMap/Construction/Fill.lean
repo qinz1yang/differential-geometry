@@ -257,7 +257,7 @@ theorem stageClamp_mapsTo (lam : Real) (hlam : 0 < lam) :
       (Metric.ball 0 (8 * lam)) := by
   exact (safetyBump (E := E) lam hlam).radial_mapsTo
 
-theorem stageFill_eq_raw (lam : Real) (hlam : 0 < lam)
+theorem stageFill_eq_of_image_mem_closedBall (lam : Real) (hlam : 0 < lam)
     (F R : E → E) {x : E}
     (hx : F x ∈ Metric.closedBall 0 (6 * lam)) :
     stageFill lam hlam F R x = R (F x) := by
@@ -526,7 +526,7 @@ theorem HasSuppConvDataOn.weightSub_ev_raw
   have hf : Set.MapsTo f (U alpha) s := by
     intro z hz
     exact (((hgeom k).1 alpha).2 hz).2
-  have hw := seqWeights_data_raw (I := I) inp.decay inp.hD P L inp.pack r (phi k)
+  have hw := seqWeights_data (I := I) inp.decay inp.hD P L inp.pack r (phi k)
     i0 (s := s) Set.Subset.rfl
   have hpull := hw.comp hf
   have hweight : centerAverage.WeightDataOn (U alpha)
@@ -883,7 +883,7 @@ theorem stageCfgSub_conv
   exact mapCInfConv_prodMk hU hweightKn hpts
     (fun m => hweightc (kn m)) hweightInfc hptsc hdiagc
 
-theorem stagePts_eq_raw
+theorem stagePts_eq_of_transition_mem_closedBall
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -913,7 +913,7 @@ theorem stagePts_eq_raw
       exact (h ⟨target, rfl⟩).elim
   simp only [stagePts, stageTotal, hlookup]
   simpa only [pairStageFill] using
-    (stageFill_eq_raw (E := E) (L.lamInf (target.1.1 : Nat))
+    (stageFill_eq_of_image_mem_closedBall (E := E) (L.lamInf (target.1.1 : Nat))
       (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))
       (normalTransition (I := I) (X.obj (L.φ k))
         (seqCenterD inp.decay P L k (alpha.1 : Nat))
@@ -922,7 +922,7 @@ theorem stagePts_eq_raw
         (seqCenterD inp.decay P L l (target.1.1 : Nat))
         (seqCenterD inp.decay P L l (alpha.1 : Nat))) hsmall)
 
-theorem stagePts_eq_weight
+theorem stagePts_eq_of_weight_ne_zero
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -950,10 +950,10 @@ theorem stagePts_eq_weight
         (normalTransition (I := I) (X.obj (L.φ k))
           (seqCenterD inp.decay P L k (alpha.1 : Nat))
           (seqCenterD inp.decay P L k (target.1.1 : Nat)) z) := by
-  exact stagePts_eq_raw inp P L alpha target k l z
+  exact stagePts_eq_of_transition_mem_closedBall inp P L alpha target k l z
     (stageWeight_small inp P L hr alpha k hgp target.1.1 hC2 z hweight)
 
-theorem stagePtsSub_eq_raw
+theorem stagePtsSub_eq_of_transition_mem_closedBall
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -989,7 +989,7 @@ theorem stagePtsSub_eq_raw
   simp only [stagePtsSub, stageTotal, hlookup]
   simpa only [pairStageFillSub, NormalChartFamily.transition,
     c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_transition] using
-    (stageFill_eq_raw (E := E) (L.lamInf (target.1.1 : Nat))
+    (stageFill_eq_of_image_mem_closedBall (E := E) (L.lamInf (target.1.1 : Nat))
       (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))
       (chart.transition (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
@@ -999,7 +999,7 @@ theorem stagePtsSub_eq_raw
         (seqCenterD inp.decay P L (phi l) (alpha.1 : Nat))) hsmall)
 
 
-theorem stagePtsSub_eq_ne
+theorem stagePtsSub_eq_of_weight_ne_zero
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -1045,7 +1045,7 @@ theorem stagePtsSub_eq_ne
     exact stageWeight_small inp P L hr alpha (phi k) hgp target.1.1 hC2 z hweight'
   simpa only [NormalChartFamily.transition, c2RadiusNormalChartFamily,
     c2_radius_normal_ball_chart_transition, MetricCompactnessInputs.toCore] using
-      (stagePtsSub_eq_raw inp.toCore P L phi hphi alpha target k l z
+      (stagePtsSub_eq_of_transition_mem_closedBall inp.toCore P L phi hphi alpha target k l z
         (chart := c2RadiusNormalChartFamily (I := I) X) (hsmall := by
           simpa only [NormalChartFamily.transition, c2RadiusNormalChartFamily,
             c2_radius_normal_ball_chart_transition, MetricCompactnessInputs.toCore] using hsmall))
@@ -1931,7 +1931,7 @@ theorem HasSuppConvData.pts_eq_ne
   refine ⟨target, htarget, ?_⟩
   simpa only [htarget, Lphi, NetLimitData.subseq_phi,
     seqCenterD_subseq, Function.comp_apply] using
-    (stagePtsSub_eq_ne inp P L hr phi hphi alpha target k l hgpK (by
+    (stagePtsSub_eq_of_weight_ne_zero inp P L hr phi hphi alpha target k l hgpK (by
       simpa only [htarget] using hC2gamma) z (by
       simpa only [htarget] using hweight))
 

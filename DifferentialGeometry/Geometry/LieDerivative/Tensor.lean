@@ -286,21 +286,21 @@ theorem lieDeriv_correctionOpL_apply (DX : E →L[𝕜] E) :
       lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s DX := by
   simp [lieDerivCorrectionOpL]
 
-noncomputable def lieDerivTensorRSWithin (r s : ℕ)
+noncomputable def directionalDerivTensorRSWithin (r s : ℕ)
     (X : E → E)
     (T : E → Tensor0SModel (𝕜 := 𝕜) (E := E) r →L[𝕜] Tensor0SModel (𝕜 := 𝕜) (E := E) s)
     (t : Set E) (x : E) :
     Tensor0SModel (𝕜 := 𝕜) (E := E) r →L[𝕜] Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
   fderivWithin 𝕜 T t x (X x)
 
-noncomputable def lieDerivTensorRS (r s : ℕ)
+noncomputable def directionalDerivTensorRS (r s : ℕ)
     (X : E → E)
     (T : E → Tensor0SModel (𝕜 := 𝕜) (E := E) r →L[𝕜] Tensor0SModel (𝕜 := 𝕜) (E := E) s)
     (x : E) :
     Tensor0SModel (𝕜 := 𝕜) (E := E) r →L[𝕜] Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
   fderiv 𝕜 T x (X x)
 
-noncomputable def lieDerivTensorRSFullWithin (r s : ℕ)
+noncomputable def lieDerivTensorRSWithin (r s : ℕ)
     (X : E → E)
     (T : E → Tensor0SModel (𝕜 := 𝕜) (E := E) r →L[𝕜] Tensor0SModel (𝕜 := 𝕜) (E := E) s)
     (t : Set E) (x : E) :
@@ -310,7 +310,7 @@ noncomputable def lieDerivTensorRSFullWithin (r s : ℕ)
     - (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s DX).comp (T x)
     + (T x).comp (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r DX)
 
-noncomputable def lieDerivTensorRSFull (r s : ℕ)
+noncomputable def lieDerivTensorRS (r s : ℕ)
     (X : E → E)
     (T : E → Tensor0SModel (𝕜 := 𝕜) (E := E) r →L[𝕜] Tensor0SModel (𝕜 := 𝕜) (E := E) s)
     (x : E) :
@@ -321,27 +321,27 @@ noncomputable def lieDerivTensorRSFull (r s : ℕ)
     + (T x).comp (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r DX)
 
 omit [CompleteSpace 𝕜] in
-theorem contDiffWithinAt_lieDeriv_tensorRSWithin (r s : ℕ) {m n' : WithTop ℕ∞}
+theorem contDiffWithinAt_directionalDeriv_tensorRSWithin (r s : ℕ) {m n' : WithTop ℕ∞}
     {X : E → E}
     {T : E → Tensor0SModel (𝕜 := 𝕜) (E := E) r →L[𝕜] Tensor0SModel (𝕜 := 𝕜) (E := E) s}
     {u : Set E} {x : E}
     (hT : ContDiffWithinAt 𝕜 n' T u x)
     (hX : ContDiffWithinAt 𝕜 m X u x)
     (hu : UniqueDiffOn 𝕜 u) (hmn : m + 1 ≤ n') (hx : x ∈ u) :
-    ContDiffWithinAt 𝕜 m (fun y => lieDerivTensorRSWithin r s X T u y) u x := by
-  simpa [lieDerivTensorRSWithin] using hT.fderivWithin_right_apply hX hu hmn hx
+    ContDiffWithinAt 𝕜 m (fun y => directionalDerivTensorRSWithin r s X T u y) u x := by
+  simpa [directionalDerivTensorRSWithin] using hT.fderivWithin_right_apply hX hu hmn hx
 
-theorem contDiffWithinAt_lieDeriv_tensorRSFullWithin (r s : ℕ) {m n' : WithTop ℕ∞}
+theorem contDiffWithinAt_lieDeriv_tensorRSWithin (r s : ℕ) {m n' : WithTop ℕ∞}
     {X : E → E}
     {T : E → Tensor0SModel (𝕜 := 𝕜) (E := E) r →L[𝕜] Tensor0SModel (𝕜 := 𝕜) (E := E) s}
     {u : Set E} {x : E}
     (hT : ContDiffWithinAt 𝕜 n' T u x)
     (hX : ContDiffWithinAt 𝕜 n' X u x)
     (hu : UniqueDiffOn 𝕜 u) (hmn : m + 1 ≤ n') (hx : x ∈ u) :
-    ContDiffWithinAt 𝕜 m (fun y => lieDerivTensorRSFullWithin r s X T u y) u x := by
+    ContDiffWithinAt 𝕜 m (fun y => lieDerivTensorRSWithin r s X T u y) u x := by
   have hprincipal :
-      ContDiffWithinAt 𝕜 m (fun y => lieDerivTensorRSWithin r s X T u y) u x :=
-    contDiffWithinAt_lieDeriv_tensorRSWithin r s hT
+      ContDiffWithinAt 𝕜 m (fun y => directionalDerivTensorRSWithin r s X T u y) u x :=
+    contDiffWithinAt_directionalDeriv_tensorRSWithin r s hT
       (hX.of_le (le_trans le_self_add hmn)) hu hmn hx
   have hT_m : ContDiffWithinAt 𝕜 m T u x :=
     hT.of_le (le_trans le_self_add hmn)
@@ -371,14 +371,14 @@ theorem contDiffWithinAt_lieDeriv_tensorRSFullWithin (r s : ℕ) {m n' : WithTop
         (fun y => (T y).comp (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r
           (fderivWithin 𝕜 X u y))) u x :=
     hT_m.clm_comp hCorrR
-  simpa [lieDerivTensorRSFullWithin, lieDerivTensorRSWithin] using
+  simpa [lieDerivTensorRSWithin, directionalDerivTensorRSWithin] using
     (hprincipal.sub hOut).add hIn
 
 section SmoothVectorFieldRSLieDeriv
 
 variable [IsManifold I 1 M] [IsManifold I (n + 1) M]
 
-noncomputable def mlieDerivTensorRSWithin (r s : ℕ)
+noncomputable def mdirectionalDerivTensorRSWithin (r s : ℕ)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s)
     (u : Set M) (x₀ : M) : TensorRSSpace r s I x₀ := by
@@ -387,15 +387,15 @@ noncomputable def mlieDerivTensorRSWithin (r s : ℕ)
     fun y => tensorRSSpaceContinuousLinearEquiv (I := I) r s
       ((extChartAt I x₀).symm y) (T.toFun ((extChartAt I x₀).symm y))
   exact (tensorRSSpaceContinuousLinearEquiv (I := I) r s x₀).symm
-    (lieDerivTensorRSFullWithin r s X' T'
+    (lieDerivTensorRSWithin r s X' T'
       ((extChartAt I x₀).symm ⁻¹' u ∩ range I)
       (extChartAt I x₀ x₀))
 
-noncomputable def mlieDerivTensorRS (r s : ℕ)
+noncomputable def mdirectionalDerivTensorRS (r s : ℕ)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s)
     (x₀ : M) : TensorRSSpace r s I x₀ :=
-  mlieDerivTensorRSWithin (n := n) r s X T univ x₀
+  mdirectionalDerivTensorRSWithin (n := n) r s X T univ x₀
 
 end SmoothVectorFieldRSLieDeriv
 

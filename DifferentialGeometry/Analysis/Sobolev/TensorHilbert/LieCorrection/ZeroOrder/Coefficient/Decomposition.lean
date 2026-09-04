@@ -24,7 +24,7 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckLieEndoTermField deTurckLieEndoTermField_toSection deTurckLieCovariantDerivativeInsertionFib
-    reindexCoeffGen reindexCoeffGen_toSection reindexCoeffFibGen reindexCoeffFibGen_apply
+    reindexCoefficientInputSlots reindexCoefficientInputSlots_toSection reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply
     domDomCongrFibRank domDomCongrFibRank_apply tensor0SProdKappaFib
     tensor0SProdKappaFib_apply unitModel unitTensor
     metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_contMDiff
@@ -104,7 +104,7 @@ private def reindexedCometricDoubleTracePerm : Equiv.Perm (Fin 4) :=
 
 noncomputable def reindexedCometricDoubleTrace (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 :=
-  reindexCoeffGen (I := I) (M := M) g₀ 4 2
+  reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
     (slotExtend (I := I) (M := M) g₀ 3 1 (cometricCastG0 (I := I) g₀ g₁))
       reindexedCometricDoubleTracePerm
 
@@ -123,10 +123,10 @@ theorem reindexedCometricDoubleTrace_toSection (g₀ g₁ : SmoothRiemannianMetr
   rw [show (m : Fin 2 → E) = Fin.cons (m 0) (Fin.tail m) from (Fin.cons_self_tail m).symm]
   change Tensor0SSpace.toModel
       ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
           (slotExtend (I := I) (M := M) g₀ 3 1 (cometricCastG0 (I := I) g₀ g₁))
           reindexedCometricDoubleTracePerm).toSection x) D) _ = _
-  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply, slotExtend_toSection,
+  rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply, slotExtend_toSection,
     DifferentialGeometry.Analysis.Spectral.slotExtendFib_apply_eval]
   have hcast : (cometricCastG0 (I := I) g₀ g₁).toSection x
       = (cometricDoubleTraceField (I := I) g₁ 1).toSection x := rfl
@@ -371,7 +371,7 @@ private lemma lieCorrectionZeroRiemannDecomposition_toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
           (rsDomDomCongrSection (I := I) (M := M) g 2 4
             lieCorrectionZeroVectorBundleTracePermutation
-            (reindexCoeffGen (I := I) (M := M) g 2 4
+            (reindexCoefficientInputSlots (I := I) (M := M) g 2 4
               (slotExtendIter (I := I) (M := M) g 1 3 1
                 (slotFreeOpCc (I := I) (M := M) g 1))
               (Equiv.swap (0 : Fin 2) 1))).toSection x) D) v =
@@ -405,7 +405,7 @@ private lemma lieCorrectionZeroRiemannDecomposition_toModel
         (Tensor0SSpace.toModel D)) with hD'_def
   have hreindex :
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
-        (reindexCoeffGen (I := I) (M := M) g 2 4
+        (reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (slotExtend (I := I) (M := M) g 1 3
             (slotFreeOpCc (I := I) (M := M) g 1))
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) =
@@ -413,7 +413,7 @@ private lemma lieCorrectionZeroRiemannDecomposition_toModel
           (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
             (slotFreeOpCc (I := I) (M := M) g 1).toSection x) D' := by
     rw [hD'_def]
-    exact reindexCoeffFibGen_apply
+    exact reindexCoefficientInputSlotsFiber_apply
       (I := I) 2 4 (Equiv.swap (0 : Fin 2) 1) x _ D
   rw [hreindex]
   rw [show
@@ -522,7 +522,7 @@ theorem lieCorrectionZeroRiemannLift_eq_decomposition
     lieCorrectionZeroRiemannLift (I := I) (M := M) g =
       -rsDomDomCongrSection (I := I) (M := M) g 2 4
         lieCorrectionZeroVectorBundleTracePermutation
-        (reindexCoeffGen (I := I) (M := M) g 2 4
+        (reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (slotExtendIter (I := I) (M := M) g 1 3 1
             (slotFreeOpCc (I := I) (M := M) g 1))
           (Equiv.swap (0 : Fin 2) 1)) := by
@@ -544,7 +544,7 @@ theorem lieCorrectionZeroRiemannLift_eq_decomposition
       (-((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
         (rsDomDomCongrSection (I := I) (M := M) g 2 4
           lieCorrectionZeroVectorBundleTracePermutation
-          (reindexCoeffGen (I := I) (M := M) g 2 4
+          (reindexCoefficientInputSlots (I := I) (M := M) g 2 4
             (slotExtendIter (I := I) (M := M) g 1 3 1
               (slotFreeOpCc (I := I) (M := M) g 1))
             (Equiv.swap (0 : Fin 2) 1))).toSection x) D)) v
@@ -585,7 +585,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_reindexedCometricDoubleTrace_le (g
       (Module.finrank ℝ E : ℝ) *
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 (1 + m) x
           ((iteratedCovGrad (I := I) g₀ 3 1 m (cometricCastG0 (I := I) g₀ g₁)).toSection x) := by
-  rw [reindexedCometricDoubleTrace, riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq]
+  rw [reindexedCometricDoubleTrace, riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq]
   exact riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 3 1
     (cometricCastG0 (I := I) g₀ g₁) m x
 
@@ -634,7 +634,7 @@ private theorem lieCorrectionZeroRiem_metricPerturbationPath_perOrder_topOrderSe
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   classical
   obtain ⟨Λ, F, hΛ_nn, hF_nn, hcom⟩ :=
-    cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic (I := I) (M := M) g₀ a
+    cometricDoubleTraceField_order0sup_jetL2_ballUniform (I := I) (M := M) g₀ a
       ha_super hR hδ₀
   obtain ⟨KP, hKP_nn, hKP⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 2 4 (lieCorrectionZeroRiemannLift (I := I) g₀)
@@ -839,7 +839,7 @@ omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroInsDiff_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg - lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀ =
       slotInsertEndoCc (I := I) (M := M) g₀ 1 (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)
-        + reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (slotInsertEndoCc (I := I) (M := M) g₀ 1
                 (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)))
@@ -857,7 +857,7 @@ theorem lieCorrectionZeroInsDiff_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M
   have hsum : (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)).toSection x
-          + (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          + (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (slotInsertEndoCc (I := I) (M := M) g₀ 1
                   (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)))
@@ -866,7 +866,7 @@ theorem lieCorrectionZeroInsDiff_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)).toSection x) D
         + (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (slotInsertEndoCc (I := I) (M := M) g₀ 1
                   (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)))
@@ -879,7 +879,7 @@ theorem lieCorrectionZeroInsDiff_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)).toSection x
-          + (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+          + (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (slotInsertEndoCc (I := I) (M := M) g₀ 1
                   (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)))
@@ -901,17 +901,17 @@ theorem lieCorrectionZeroInsDiff_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M
   rw [slotInsertEndoFib_apply_eval (I := I) (M := M) 2 0 x
     (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg x) D m]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (slotInsertEndoCc (I := I) (M := M) g₀ 1
                 (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)))
             (Equiv.swap (0 : Fin 2) 1)).toSection x) D
-      = reindexCoeffFibGen (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+      = reindexCoefficientInputSlotsFiber (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
           (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (slotInsertEndoCc (I := I) (M := M) g₀ 1
                 (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg))).toSection x) D from rfl]
-  rw [reindexCoeffFibGen_apply (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+  rw [reindexCoefficientInputSlotsFiber_apply (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
         (slotInsertEndoCc (I := I) (M := M) g₀ 1
@@ -1006,7 +1006,7 @@ theorem normSq_iteratedCovGrad_lieCorrectionZeroInsertionDiff_le (g₀ g₁ g_bg
           (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg) i x
         rwa [pow_one] at h)
   have hL2B : ‖iteratedCovGrad (I := I) g₀ 2 2 i
-      (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)))
@@ -1016,7 +1016,7 @@ theorem normSq_iteratedCovGrad_lieCorrectionZeroInsertionDiff_le (g₀ g₁ g_bg
           (slotInsertEndoCc (I := I) (M := M) g₀ 0
             (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg))‖ ^ 2 :=
     normSq_iteratedCovGrad_le_scaled (I := I) (M := M) g₀
-      (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)))
@@ -1038,7 +1038,7 @@ theorem normSq_iteratedCovGrad_lieCorrectionZeroInsertionDiff_le (g₀ g₁ g_bg
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg))
         + iteratedCovGrad (I := I) g₀ 2 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 2 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
               (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
                 (slotInsertEndoCc (I := I) (M := M) g₀ 1
                   (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)))
@@ -1419,7 +1419,7 @@ private theorem vbPass_jetL2
             ‖iteratedCovGrad (I := I) g₀ 2 4 q (lieCorrectionZeroVectorBundleLift (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤ F i := by
   classical
   obtain ⟨Λmcd, Fmcd, hΛmcd_nn, hFmcd_nn, hmcd⟩ :=
-    metricConnectionDifferenceLoweredCoefficient_jetL2_ballUniform_generic (I := I) (M := M) g₀ g₀ a ha_super hR hδ₀
+    metricConnectionDifferenceLoweredCoefficient_jetL2_ballUniform (I := I) (M := M) g₀ g₀ a ha_super hR hδ₀
   obtain ⟨cip, hcip_nn, hcip⟩ := riemannianFiberNormSq_iteratedCovGrad_ipLow_le (I := I) (M := M) g₀
   obtain ⟨cipL, hcipL_nn, hcipL⟩ := norm_iteratedCovGrad_ipLow_le (I := I) (M := M) g₀
   obtain ⟨ΛΩ, FΩ, hΛΩ_nn, hFΩ_nn, hΩgen⟩ :=
@@ -1570,7 +1570,7 @@ private theorem lieCorrectionZeroVectorBundle_ballUniform
             ≤ K i := by
   classical
   obtain ⟨Λ, F, hΛ_nn, hF_nn, hcom⟩ :=
-    cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic (I := I) (M := M) g₀ a
+    cometricDoubleTraceField_order0sup_jetL2_ballUniform (I := I) (M := M) g₀ a
       ha_super hR hδ₀
   obtain ⟨ΛP, FP, hΛP_nn, hFP_nn, hvb⟩ := vbPass_jetL2 (I := I) (M := M) g₀ a ha_super hR hδ₀
   choose Cint hCint_nn hCint using

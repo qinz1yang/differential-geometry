@@ -276,7 +276,7 @@ theorem exists_intrMean_on
       have hcurve :
           ∀ᶠ t in 𝓝[>] (0 : Real),
             γ t = radialCurve (I := I) g p (u : E) t := by
-        filter_upwards [intrJacobi_raw (I := I) g hEnorm p (u : E) (0 : E)]
+        filter_upwards [intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p (u : E) (0 : E)]
           with t ht
         simpa only [γ] using ht.1
       have hfield_i : ∀ i,
@@ -285,7 +285,7 @@ theorem exists_intrMean_on
               (radialJacobiField (I := I) g p (u : E) (v i : E) t : E) := by
         intro i
         filter_upwards [
-          intrJacobi_raw (I := I) g hEnorm p (u : E) (v i : E)] with t ht
+          intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p (u : E) (v i : E)] with t ht
         simpa only [V] using ht.2
       have hfields :
           ∀ᶠ t in 𝓝[>] (0 : Real), ∀ i,

@@ -195,7 +195,7 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
       with hraw_def
     have h_evEq : tensorChartComponent (I := I) (M := M) g r s D α P.1 P.2 =ᶠ[nhds y]
         (fun z => ρ z * raw z) :=
-      tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw_raw
+      tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw
         (I := I) (M := M) g r s D α P.1 P.2 hyT
     rw [(Filter.EventuallyEq.iteratedFDeriv ℝ h_evEq j).self_of_nhds]
     have hO_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=

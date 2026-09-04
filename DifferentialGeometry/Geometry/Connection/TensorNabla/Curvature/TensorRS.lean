@@ -45,7 +45,7 @@ theorem riemannSec_tensorCov_apply_eval
               (fun b => X b) (fun b => W b) (fun b => Y b) x)) u := by
   classical
   have hkey :=
-    HomConnectionGen.riemannSec_homBundleGen_apply_eq I M
+    HomConnection.riemannSec_homBundle_apply_eq I M
       (Tensor0SModel r ℝ E) (fun x : M => Tensor0SSpace r I x)
       (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
       (tensor0SCovariantDerivative I M r (LeviCivita (I := I) g))
@@ -57,7 +57,7 @@ theorem riemannSec_tensorCov_apply_eval
             (fun b => X b) (fun b => W b) (fun b => τ b) x) (Y x) =
         riemannSec (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
             (fun b => X b) (fun b => W b)
-            (HomConnectionGen.pairedSection (M := M)
+            (HomConnection.pairedSection (M := M)
               (U := fun x : M => Tensor0SSpace r I x) (V := fun x : M => Tensor0SSpace s I x)
               (fun b => τ b) (fun b => Y b)) x -
           (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from τ x)

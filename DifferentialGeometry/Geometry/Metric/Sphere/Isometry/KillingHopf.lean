@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Pullback.LocalIsometryRigidity
+import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Rigidity
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 import DifferentialGeometry.Geometry.Metric.Sphere.Polar.PuncturedCartan
 import DifferentialGeometry.Geometry.Metric.Sphere.Polar.PuncturedOverlap

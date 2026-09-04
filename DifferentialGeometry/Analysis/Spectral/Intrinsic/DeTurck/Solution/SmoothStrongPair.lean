@@ -809,7 +809,7 @@ theorem metricRD_unique
       smoothCcTensorBilinForm (I := I) q T x v w)
     (hPhiEq t ht)
   dsimp only [Phi₁, Phi₂] at h
-  rw [metricDifference_raw, metricDifference_raw] at h
+  rw [smoothCcTensorBilinForm_metricDifferenceCcTensor, smoothCcTensorBilinForm_metricDifferenceCcTensor] at h
   linarith
 theorem metricRD_local
     {D : RealTimeInterval}

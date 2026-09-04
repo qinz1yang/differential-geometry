@@ -206,7 +206,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_gridWindow_le
               (fr ^ 2 * ∑ q ∈ Finset.range (l + 1), C q))) * BFGW := by ring
 
 omit [SigmaCompactSpace M] in
-private lemma riemannianFiberNormSq_operatorFieldComposition_coeffLower_general_le (g : SmoothRiemannianMetric I M)
+private lemma riemannianFiberNormSq_operatorFieldComposition_coeffLower_le (g : SmoothRiemannianMetric I M)
     (p a b : ℕ) (Φ : SmoothCcTensor g a b) (W : SmoothCcTensor g p a) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g p (b + i) x
         ((∑ k ∈ Finset.range i,
@@ -354,7 +354,7 @@ theorem ricciFirstOrderKoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_all
           ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x) with hbP_def
         have hbP_nn : ∀ l, 0 ≤ bP l :=
           fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _
-        refine le_trans (riemannianFiberNormSq_operatorFieldComposition_coeffLower_general_le (I := I) (M := M) g₀ 3
+        refine le_trans (riemannianFiberNormSq_operatorFieldComposition_coeffLower_le (I := I) (M := M) g₀ 3
           1 2
           (raisedKoszul (I := I) g₀ g₁) (cometricDoubleTraceCastG0 (I := I) g₀ g₁) i x) ?_
         have hsumcell : (∑ k ∈ Finset.range i,
@@ -472,7 +472,7 @@ theorem ricciFirstOrderKoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_all
         Finset.sum_nonneg (fun j _ => sq_nonneg _)
       positivity
 
-theorem ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
+theorem ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_all_orders_with_top_order_leak
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -499,7 +499,7 @@ theorem ricciFirstOrderKoszulCoeff_perOrder_l2_topOrderSeparated_generic_allOrde
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨ΛB, _, hΛB_nn, _, hBfeed⟩ :=
-    cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic
+    cometricDoubleTraceField_order0sup_jetL2_ballUniform
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Kc, hKc_nn, Kleak, hKleak_nn, hleaf⟩ :=
     ricciFirstOrderKoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allOrders

@@ -194,7 +194,7 @@ private theorem rhs_cov_raw_eq
     simpa using (extChartAt I α).left_inv hb_src
   have hcons : (Fin.cons d Jdx : Fin 3 → Fin (Module.finrank ℝ E)) = Kdx :=
     Fin.cons_self_tail Kdx
-  have hinv := euclidPartial_chartPushedRaw_general_eq_covGrad_sub_lowerOrder
+  have hinv := euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder
     (I := I) (M := M) gBase 2
       (deTurckRHSSectionBackground (I := I) gBase g) α d Jdx hy
   rw [hcons, hround] at hinv
@@ -592,7 +592,7 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
     rw [show S k = deTurckRHSSectionBackground (I := I) gBase (gSeq k) from rfl,
       rhs_raw_eq (I := I) (M := M) gBase (gSeq k) α hb_good]
     exact hD.rhs_bound α hα k b hb (Jdx 0) (Jdx 1)
-  obtain ⟨C₀, hC₀, hL2₀⟩ := l2_bdd_of_raw
+  obtain ⟨C₀, hC₀, hL2₀⟩ := exists_uniform_l2_bound_of_raw_component_bound
     (I := I) (M := M) gBase 0 2 S D.rhsBound hD.rhsBound_pos.le hraw0
   choose Cα hCα hCα_bd using fun α : M =>
     exists_lowerOrderCoeff_uniform_boundR
@@ -691,7 +691,7 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
       simpa using (extChartAt I α).left_inv hb_src
     have hcons : (Fin.cons d Jdx : Fin 3 → Fin (Module.finrank ℝ E)) = Kdx := by
       exact Fin.cons_self_tail Kdx
-    have hinv := euclidPartial_chartPushedRaw_general_eq_covGrad_sub_lowerOrder
+    have hinv := euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder
       (I := I) (M := M) gBase 2 (S k) α d Jdx hy
     rw [hcons, hround] at hinv
     have hderiv := rhs_partial_eq
@@ -728,7 +728,7 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
         (hD.rhs_d1_bound α hα k b hb d (Jdx 0) (Jdx 1))
         (by simpa [y] using hlower α hα k b hb d Jdx)
       _ = B₁ := rfl
-  obtain ⟨C₁, hC₁, hL2₁⟩ := l2_bdd_of_raw
+  obtain ⟨C₁, hC₁, hL2₁⟩ := exists_uniform_l2_bound_of_raw_component_bound
     (I := I) (M := M) gBase 0 3
     (fun k => covGrad (I := I) (M := M) gBase 0 2 (S k))
     B₁ hB₁ hraw1

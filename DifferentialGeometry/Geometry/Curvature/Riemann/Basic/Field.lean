@@ -401,21 +401,6 @@ theorem cov_tangentConst_smul_apply_eventuallyEq
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hv]
   rfl
 
-def riemannCurvatureAux
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (X Y Z : (p : M) → TangentSpace I p) (x : M) : TangentSpace I x :=
-  (cov (fun p => (cov Z p) (Y p)) x) (X x) -
-    (cov (fun p => (cov Z p) (X p)) x) (Y x) -
-      (cov Z x) (VectorField.mlieBracket I X Y x)
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-@[simp]
-theorem riemannCurvatureAux_eq_connectionRiemannCurvatureField
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (X Y Z : (p : M) → TangentSpace I p) (x : M) :
-    riemannCurvatureAux cov X Y Z x =
-      connectionRiemannCurvatureField cov X Y Z x := rfl
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem connectionRiemannCurvatureField_congr_of_eventuallyEq
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))

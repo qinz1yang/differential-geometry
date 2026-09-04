@@ -54,7 +54,7 @@ private lemma metricDifference_apply (q h : SmoothRiemannianMetric I M)
   rw [heval, ← smul_sub]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem metricDifference_raw (q h : SmoothRiemannianMetric I M)
+theorem smoothCcTensorBilinForm_metricDifferenceCcTensor (q h : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) q
         (metricDifferenceCcTensor (I := I) (M := M) q h) x v w =
@@ -85,7 +85,7 @@ theorem metricDifference_unit (q h : SmoothRiemannianMetric I M)
           (show TangentSpace I x from slots 0)
           (show TangentSpace I x from slots 1) using 1
     _ = h.inner x (slots 0) (slots 1) - q.inner x (slots 0) (slots 1) := by
-      convert metricDifference_raw (I := I) (M := M) q h x
+      convert smoothCcTensorBilinForm_metricDifferenceCcTensor (I := I) (M := M) q h x
         (show TangentSpace I x from slots 0)
         (show TangentSpace I x from slots 1) using 1
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
@@ -96,7 +96,7 @@ theorem metricDifference_symm (q h : SmoothRiemannianMetric I M)
         (metricDifferenceCcTensor (I := I) (M := M) q h) x v w =
       smoothCcTensorBilinForm (I := I) q
         (metricDifferenceCcTensor (I := I) (M := M) q h) x w v := by
-  rw [metricDifference_raw, metricDifference_raw, h.symm x v w, q.symm x v w]
+  rw [smoothCcTensorBilinForm_metricDifferenceCcTensor, smoothCcTensorBilinForm_metricDifferenceCcTensor, h.symm x v w, q.symm x v w]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -105,7 +105,7 @@ theorem metricDifference_symVal (q h : SmoothRiemannianMetric I M)
     ccTensorBilinSymm (I := I) q
         (metricDifferenceCcTensor (I := I) (M := M) q h) x v w =
       h.inner x v w - q.inner x v w := by
-  rw [ccTensorBilinSymm_apply, metricDifference_raw, metricDifference_raw,
+  rw [ccTensorBilinSymm_apply, smoothCcTensorBilinForm_metricDifferenceCcTensor, smoothCcTensorBilinForm_metricDifferenceCcTensor,
     h.symm x v w, q.symm x v w]
   ring
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]

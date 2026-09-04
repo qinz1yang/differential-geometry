@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.WeakPartial
 import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.WeakPartialLimit
 import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.ToLpChartBridge
 import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.GradientH1LipschitzBound
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.Limit
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.SmoothApproximation
 
 
 noncomputable section
@@ -1170,7 +1170,7 @@ private lemma general_lhs_principal_eq_sum_inner
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma rhs_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz_general
+private lemma rhs_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
@@ -1359,7 +1359,7 @@ private lemma rhs_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz_general
   rw [← h_target_eq]
   exact h_sum_lim
 
-theorem laplacianDomain_variational_identity_general
+theorem laplacianDomain_variational_identity
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
@@ -1552,7 +1552,7 @@ theorem laplacianDomain_variational_identity_general
     exact tendsto_finsetSum _ (fun i _ => h_per_i_tendsto i)
   have h_lhs_mass_tendsto :=
     smooth_lhs_mass_tendsto (I := I) (M := M) g α hψ hψ_cs hψ_supp h_v_tendsto
-  have h_rhs_tendsto := rhs_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz_general
+  have h_rhs_tendsto := rhs_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
     (I := I) (M := M) g α hψ hψ_cs hψ_supp hu_h h_v_tendsto
   have h_lhs_sum_tendsto := h_lhs_principal_tendsto.add h_lhs_mass_tendsto
   have h_smooth_eq_fun : (fun n =>

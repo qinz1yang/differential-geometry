@@ -303,7 +303,7 @@ theorem curvOpN_eq_sharp
     (g : SmoothRiemannianMetric I M) (k : Nat) (x : M)
     (v : Fin (k + 3) -> TangentSpace I x) :
     curvOpN (I := I) g k x v =
-      Tensor0SBundle.cotangentSharpGen (I := I) g x
+      Tensor0SBundle.cotangentSharp (I := I) g x
         (DifferentialGeometry.Tensor.RSTensor.oneFormAtSlot0S
           (I := I) (curvCovDeriv (I := I) (M := M) g k x)
           (Fin.snoc v 0) (Fin.last (k + 3))) := by
@@ -311,7 +311,7 @@ theorem curvOpN_eq_sharp
   unfold curvOpN
   congr 1
   ext w
-  rw [Tensor0SBundle.cotangentToDual_apply_gen,
+  rw [Tensor0SBundle.cotangentToDual_apply,
     DifferentialGeometry.Tensor.RSTensor.oneFormAtSlot0S_apply]
   exact congrArg (curvCovDeriv (I := I) (M := M) g k x)
     (update_snoc_last v 0 w).symm
@@ -356,7 +356,7 @@ noncomputable def curvOpNField
       (TangentSpace I : M -> Type _) := by
   exact ContMDiffSection.mk
     (fun x : M =>
-      Tensor0SBundle.cotangentSharpGen (I := I) g x
+      Tensor0SBundle.cotangentSharp (I := I) g x
         (curvOpNForm (I := I) g k Y x))
     (DifferentialGeometry.Geometry.Operator.cotangentSharp_gen_contMDiff_total
       (I := I) g (fun a j => by
@@ -375,7 +375,7 @@ omit boundarylessI in
     curvOpNField (I := I) g k Y x =
       curvOpN (I := I) g k x (fun i => Y i x) := by
   rw [curvOpN_eq_sharp]
-  change Tensor0SBundle.cotangentSharpGen (I := I) g x
+  change Tensor0SBundle.cotangentSharp (I := I) g x
       (curvOpNForm (I := I) g k Y x) = _
   rw [curvOpNForm_apply]
 
@@ -556,7 +556,7 @@ private theorem curvOpNabla_real
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [SigmaCompactSpace M] in
-private theorem curvOpNabla_eval_raw
+private theorem curvOpNablaForm_apply
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
@@ -685,7 +685,7 @@ private theorem curvOpNabla_eval_sum
               (Function.update (fun j : Fin (k + 3) => Y j x) i
                 (curvSlotCov (I := I) g k X Y x i))
               U) := by
-  rw [curvOpNabla_eval_raw (I := I) g k X Y x U]
+  rw [curvOpNablaForm_apply (I := I) g k X Y x U]
   rw [update_snoc_last]
   congr 1
   rw [sum_erase_last]
@@ -863,9 +863,9 @@ theorem curvOpN_cov_sum
   let cov :=
     DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := M) g
   have hmc :
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatible
         (I := I) cov g := by
-    change DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+    change DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) g
     exact DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -873,7 +873,7 @@ theorem curvOpN_cov_sum
   have hSharp :
       MDiffAt
         (T% (fun p : M =>
-          Tensor0SBundle.cotangentSharpGen (I := I) g p
+          Tensor0SBundle.cotangentSharp (I := I) g p
             (curvOpNForm (I := I) g k Y p))) x := by
     change MDiffAt (T% (fun p : M => curvOpNField (I := I) g k Y p)) x
     exact
@@ -888,7 +888,7 @@ theorem curvOpN_cov_sum
   change
     cov
         (fun p : M =>
-          Tensor0SBundle.cotangentSharpGen (I := I) g p
+          Tensor0SBundle.cotangentSharp (I := I) g p
             (curvOpNForm (I := I) g k Y p))
         x (X x) =
       curvOpN (I := I) g (k + 1) x
@@ -899,7 +899,7 @@ theorem curvOpN_cov_sum
               (curvSlotCov (I := I) g k X Y x i))
   rw [hcov, curvOpNabla_curry (I := I) g k X Y x]
   change
-    Tensor0SBundle.cotangentSharpLinearGen (I := I) g x
+    Tensor0SBundle.cotangentSharpLinear (I := I) g x
         (curvNextForm (I := I) g k X Y x +
           ∑ i : Fin (k + 3), curvCorrForm (I := I) g k X Y x i) =
       _
@@ -1803,9 +1803,9 @@ theorem curvOpN_cov
   let cov :=
     DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := M) g
   have hmc :
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatible
         (I := I) cov g := by
-    change DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+    change DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) g
     exact DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -1813,7 +1813,7 @@ theorem curvOpN_cov
   have hSharp :
       MDiffAt
         (T% (fun p : M =>
-          Tensor0SBundle.cotangentSharpGen (I := I) g p
+          Tensor0SBundle.cotangentSharp (I := I) g p
             (curvOpNForm (I := I) g k Y p))) x := by
     change MDiffAt (T% (fun p : M => curvOpNField (I := I) g k Y p)) x
     exact
@@ -1828,7 +1828,7 @@ theorem curvOpN_cov
   change
     cov
         (fun p : M =>
-          Tensor0SBundle.cotangentSharpGen (I := I) g p
+          Tensor0SBundle.cotangentSharp (I := I) g p
             (curvOpNForm (I := I) g k Y p))
         x (X x) =
       curvOpN (I := I) g (k + 1) x
@@ -2000,7 +2000,7 @@ theorem curvOpN_one
     (D X Y Z : TangentSpace I x) :
     curvOpN (I := I) g 1 x
         (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) D X Y Z) =
-      DifferentialGeometry.Integral.Connection.nablaRiemannOp
+      DifferentialGeometry.Geometry.Curvature.nablaRiemannOp
         (I := I) g x D X Y Z := by
   apply DifferentialGeometry.Geometry.Connection.SmoothRiemannianMetric.eq_of_inner_eq g
   intro W
@@ -2019,11 +2019,11 @@ theorem curvOpN_one
             (I := I) D X Y Z W) := by
       rw [curvOpN_inner, snoc_vec4]
     _ = g.inner x W
-          (DifferentialGeometry.Integral.Connection.nablaRiemannOp
+          (DifferentialGeometry.Geometry.Curvature.nablaRiemannOp
             (I := I) g x D X Y Z) :=
       curvOne_apply (I := I) g x D X Y Z W
     _ = g.inner x
-          (DifferentialGeometry.Integral.Connection.nablaRiemannOp
+          (DifferentialGeometry.Geometry.Curvature.nablaRiemannOp
             (I := I) g x D X Y Z) W :=
       (g.symm x _ _).symm
 
@@ -2063,7 +2063,7 @@ theorem curvDeriv_eq_op1
           (X t) (Y t) (Z t)) := by
   calc
     curvDerivAlong (I := I) g gamma X Y Z t =
-        DifferentialGeometry.Integral.Connection.nablaRiemannOp
+        DifferentialGeometry.Geometry.Curvature.nablaRiemannOp
           (I := I) g (gamma t)
           ((mfderiv 𝓘(Real, Real) I gamma t : Real →L[Real] _) (1 : Real))
           (X t) (Y t) (Z t) :=

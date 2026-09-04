@@ -694,7 +694,7 @@ theorem exists_appHsDeriv
         inv_smul_smul₀ hh0 _
   exact htarget.congr' (hslope.mono fun _ hh => hh.symm)
 
-theorem exists_appHsFull
+theorem exists_timeDerivative_appHs
     (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : ℝ → SmoothCcTensor g b c) {S : Set ℝ} (hS : IsOpen S)
     (hjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))

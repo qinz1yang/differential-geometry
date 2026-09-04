@@ -275,7 +275,7 @@ theorem intrPull_quad_le
   obtain ⟨basis, hON⟩ :=
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g q
   have hquad :=
-    Integral.Connection.riemann_quad_le (I := I) g basis hON
+    DifferentialGeometry.Geometry.Curvature.riemann_quad_le (I := I) g basis hON
       hRm' dJ dV
   have hJJ : gPull.inner z Jz Jz = g.inner q dJ dJ := by
     simp only [gPull, Jz, F, q, dJ]
@@ -298,7 +298,7 @@ theorem intrPull_quad_le
     _ = Geometry.Curvature.metricRm04StdAt
           (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
           gPull z Jz Vz Vz Jz := by
-      rw [Integral.Connection.rm04_eq_inner]
+      rw [DifferentialGeometry.Geometry.Curvature.rm04_eq_inner]
     _ = Geometry.Curvature.metricRm04StdAt
           (I := I) (M := M) g q dJ dV dV dJ := by
       simpa only [gPull, Jz, Vz, F, q, dJ, dV] using
@@ -307,7 +307,7 @@ theorem intrPull_quad_le
           (Geometry.Curvature.riemannOp
             (Geometry.Connection.LeviCivita (I := I) g)
             q dJ dV dV) := by
-      rw [Integral.Connection.rm04_eq_inner]
+      rw [DifferentialGeometry.Geometry.Curvature.rm04_eq_inner]
     _ = g.inner q
           (Geometry.Curvature.riemannOp
             (Geometry.Connection.LeviCivita (I := I) g)

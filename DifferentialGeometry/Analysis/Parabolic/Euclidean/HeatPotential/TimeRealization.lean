@@ -856,7 +856,7 @@ theorem heatDuh_eq_integral_add_heatLapPotential
     _ = ∫ r : Real in 0..t, f r x + heatLapPotential r f x :=
       (intervalIntegral.integral_add hftime hlapInt).symm
 
-theorem heatDuhTimeCandidate_continuousAt
+theorem heatDuhTimeDerivative_continuousAt
     {alpha K Csource : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S t : Real} (ht : t ∈ Ioo (0 : Real) S)
     (f : Real → BoundedContinuousFunction V F)
@@ -870,17 +870,17 @@ theorem heatDuhTimeCandidate_continuousAt
         (volume.restrict (uIoc (0 : Real) q)))
     (x : V) :
     ContinuousAt
-      (fun q : Real => heatDuhTimeCandidateField (fun r z => f r z)
+      (fun q : Real => heatDuhTimeDerivativeField (fun r z => f r z)
         (parabolicPoint q x)) t := by
   let Q : Set (ParabolicPoint V) :=
     parabolicCylinder (Ioc (0 : Real) S) Set.univ
-  have hcand := heatDuhTimeCandidateField_holderWith_restrict_of_holder
+  have hcand := heatDuhTimeDerivativeField_holderWith_restrict_of_holder
     halpha0 halpha1 (fun r z => f r z) hf hsource
       (fun q hq z i => heatD2Conv_time_aestronglyMeasurable hq.1 f
         (hmeas2 q hq) ((stdOrthonormalBasis Real V) i)
         ((stdOrthonormalBasis Real V) i) z)
   have hcandCont : Continuous
-      (Q.domRestrict (heatDuhTimeCandidateField (fun r z => f r z))) :=
+      (Q.domRestrict (heatDuhTimeDerivativeField (fun r z => f r z))) :=
     hcand.continuous halpha0
   let phi : Ioc (0 : Real) S → Q := fun q =>
     ⟨parabolicPoint q.1 x, ⟨q.2, Set.mem_univ x⟩⟩
@@ -888,11 +888,11 @@ theorem heatDuhTimeCandidate_continuousAt
     unfold phi parabolicPoint
     fun_prop
   have hcomp : Continuous (fun q : Ioc (0 : Real) S =>
-      heatDuhTimeCandidateField (fun r z => f r z)
+      heatDuhTimeDerivativeField (fun r z => f r z)
         (parabolicPoint q.1 x)) := by
     exact (hcandCont.comp hphi).congr fun _ => rfl
   have hOn : ContinuousOn
-      (fun q : Real => heatDuhTimeCandidateField (fun r z => f r z)
+      (fun q : Real => heatDuhTimeDerivativeField (fun r z => f r z)
         (parabolicPoint q x)) (Ioc (0 : Real) S) :=
     continuousOn_iff_continuous_domRestrict.mpr hcomp
   exact (hOn t ⟨ht.1, ht.2.le⟩).continuousAt (Ioc_mem_nhds ht.1 ht.2)
@@ -917,12 +917,12 @@ theorem heatDuh_time_of_integrable_triangle
           (volume.restrict (Ioc (0 : Real) q))))
     (x : V) :
     HasDerivAt (fun q : Real => heatDuh q f x)
-      (heatDuhTimeCandidateField (fun r z => f r z)
+      (heatDuhTimeDerivativeField (fun r z => f r z)
         (parabolicPoint t x)) t := by
   let g : Real → F := fun q =>
-    heatDuhTimeCandidateField (fun r z => f r z) (parabolicPoint q x)
+    heatDuhTimeDerivativeField (fun r z => f r z) (parabolicPoint q x)
   have hg : ContinuousAt g t := by
-    simpa only [g] using heatDuhTimeCandidate_continuousAt
+    simpa only [g] using heatDuhTimeDerivative_continuousAt
       halpha0 halpha1 ht f hf hsource hmeas2 x
   have heq : ∀ q ∈ Ioc (0 : Real) S,
       heatDuh q f x = ∫ r : Real in 0..q, g r := by
@@ -963,7 +963,7 @@ theorem heatDuh_time_of_integrable_triangle
   have hgMeas : StronglyMeasurableAtFilter g (nhds t) volume := by
     apply ContinuousAt.stronglyMeasurableAtFilter isOpen_Ioo
       (fun q hq => ?_) t ht
-    simpa only [g] using heatDuhTimeCandidate_continuousAt
+    simpa only [g] using heatDuhTimeDerivative_continuousAt
       halpha0 halpha1 hq f hf hsource hmeas2 x
   have hprim : HasDerivAt (fun q : Real => ∫ r : Real in 0..q, g r) (g t) t :=
     intervalIntegral.integral_hasDerivAt_right hgInt hgMeas hg
@@ -987,7 +987,7 @@ theorem heatDuh_time_of_intervalIntegrable
       IntervalIntegrable (fun s : Real => f s z) volume 0 q)
     (x : V) :
     HasDerivAt (fun q : Real => heatDuh q f x)
-      (heatDuhTimeCandidateField (fun r z => f r z)
+      (heatDuhTimeDerivativeField (fun r z => f r z)
         (parabolicPoint t x)) t := by
   apply heatDuh_time_of_integrable_triangle halpha0 halpha1 ht f hf hsource
     hmeas2 hftime
@@ -1066,7 +1066,7 @@ theorem heatDuh_time
         (volume.restrict (uIoc (0 : Real) q)))
     (x : V) :
     HasDerivAt (fun q : Real => heatDuh q f x)
-      (heatDuhTimeCandidateField (fun r z => f r z)
+      (heatDuhTimeDerivativeField (fun r z => f r z)
         (parabolicPoint t x)) t := by
   apply heatDuh_time_of_intervalIntegrable halpha0 halpha1 ht f hf hsource
     hmeas2

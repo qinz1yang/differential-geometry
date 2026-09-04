@@ -19,24 +19,6 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma chartInvGramOnE_symm
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j : Fin (Module.finrank ℝ E)) (y : E) :
-    chartInvGramOnE (I := I) g α i j y = chartInvGramOnE (I := I) g α j i y := by
-  unfold chartInvGramOnE
-  set z := (extChartAt I α).symm y
-  have hG_hermit : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z).IsHermitian :=
-    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α z
-  have hGinv_hermit : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹.IsHermitian := hG_hermit.inv
-  have hentry := hGinv_hermit.apply i j
-  unfold chartInvGramMatrix
-  have hstar : star ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i) =
-      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ i j := hentry
-  rw [show star ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i) =
-      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i from rfl] at hstar
-  exact hstar.symm
-
-omit [NeZero (Module.finrank ℝ E)] in
 private lemma sum_chartInvGramOnE_chartGramOnE_left
     (g : SmoothRiemannianMetric I M) (α : M) {y : E}
     (hy : y ∈ (extChartAt I α).target)

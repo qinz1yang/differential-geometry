@@ -69,11 +69,11 @@ lemma curry_unitGradField_eq (g : SmoothRiemannianMetric I M)
           (tangentSpaceModelContinuousLinearEquiv (I := I) y w))
         (unitZeroSec (I := I) (M := M) y) := by
   rw [unitGradField_apply]
-  exact curry_covGrad_unit_eval_general (I := I) (M := M) g 2 T₀ y w
+  exact curry_covGrad_unit_eval (I := I) (M := M) g 2 T₀ y w
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-lemma curry_covGrad_unit_eval (g : SmoothRiemannianMetric I M)
+lemma curry_covGrad_unit_eval_two (g : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (x : M) (w : TangentSpace I x) :
     tensor0SCurry (I := I) (M := M) 2 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
@@ -83,7 +83,7 @@ lemma curry_covGrad_unit_eval (g : SmoothRiemannianMetric I M)
         tensorCovDerivAt (I := I) (M := M) g 0 2 S x
           (tangentSpaceModelContinuousLinearEquiv (I := I) x w))
         (unitZeroSec (I := I) (M := M) x) := by
-  exact curry_covGrad_unit_eval_general (I := I) (M := M) g 2 S x w
+  exact curry_covGrad_unit_eval (I := I) (M := M) g 2 S x w
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma curry_abstract_covDeriv_unitGrad_unfold

@@ -84,10 +84,10 @@ theorem metricCovDeriv_restrictOpen_apply
             metricCovDeriv (I := I) h gRef (a + 1) (x : M)
               (Fin.cons (X (x : M)) (fun q : Fin (a + 2) => V q (x : M))) := by
         have hleft :=
-          metricCovDeriv_succ_eval_smooth_slots_gen
+          metricCovDeriv_succ_eval_smooth_slots
             (I := I) (M := U) hU refU a XU VU x
         have hright :=
-          metricCovDeriv_succ_eval_smooth_slots_gen
+          metricCovDeriv_succ_eval_smooth_slots
             (I := I) (M := M) h gRef a X V (x : M)
         rw [hleft, hright]
         have hderiv :
@@ -262,24 +262,24 @@ theorem normSq0S_restrictOpen_apply
     intro i j
     exact hON i j
   have hinvU :
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := U)
+      Tensor0SBundle.MetricInverseInBasis (I := I) (M := U)
         (g.restrictOpen (I := I) U) x basis
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' :=
       DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
         (I := I) (M := U) (g.restrictOpen (I := I) U) basis hONU
-    change Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := U)
+    change Tensor0SBundle.MetricInverseInBasis (I := I) (M := U)
       (g.restrictOpen (I := I) U) x basis
         (fun a k => if a = k then (1 : Real) else 0)
     exact h'
   have hinvM :
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M)
+      Tensor0SBundle.MetricInverseInBasis (I := I) (M := M)
         g (x : M) basis
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
-    change Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M)
+    change Tensor0SBundle.MetricInverseInBasis (I := I) (M := M)
       g (x : M) basis (fun a k => if a = k then (1 : Real) else 0)
     exact h'
   rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq

@@ -20,7 +20,7 @@ variable {X : PointedFlowSeq (I := I)}
 variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 
-noncomputable def convOutOfSrc
+noncomputable def metricConvergenceDataOfSourceCovariantLipschitz
     (Φ : PointedCGHMaps (I := I) X P subseq)
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -53,7 +53,7 @@ noncomputable def convOutOfSrc
             (refRes (I := I) Φ R k)
             (srcMetric (I := I) Φ hsrc htgt k t) Bmax)
     (src : SrcCovLipData (I := I) Φ R hsrc htgt β ψ) :
-    ConvOut (I := I) Φ R bf hsrc htgt β ψ := by
+    FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ := by
   letI : TopologicalSpace P.M := P.topology
   letI : ChartedSpace H P.M := P.charted
   letI : T2Space P.M := P.t2
@@ -162,7 +162,7 @@ noncomputable def convOutOfSrc
     obtain ⟨Ls, hLs, hlip⟩ := src.lip p
     exact ⟨Ls, hLs, fun s t hs ht q hq y _hy =>
       hlip k s t hs ht q hq y⟩
-  exact convOut (I := I) (Φ := Φ) R bf hsrc htgt β ψ hβψ cLow hcLow
+  exact flowMetricConvergenceData (I := I) (Φ := Φ) R bf hsrc htgt β ψ hβψ cLow hcLow
     hbound hcovTail hlipTail hlipSrc
 
 end HCGCompactness

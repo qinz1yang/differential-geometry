@@ -748,7 +748,7 @@ theorem exists_smooth_supp
   let : MeasurableSpace M := borel M
   have : BorelSpace M := ⟨rfl⟩
   obtain ⟨Cl2, hCl2, hl2⟩ :=
-    DifferentialGeometry.Analysis.Sobolev.EquivalenceFull.eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
+    DifferentialGeometry.Analysis.Sobolev.Equivalence.eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
       (I := I) (M := M) g (p := (2 : ENNReal)) (by norm_num) (by norm_num)
   obtain ⟨Cg, hCg, hgrad⟩ := grad_sub_l2_le (I := I) (M := M) g
   obtain ⟨χ, hχ, _hχc, hχone, hχsupp, _hχrange⟩ :=

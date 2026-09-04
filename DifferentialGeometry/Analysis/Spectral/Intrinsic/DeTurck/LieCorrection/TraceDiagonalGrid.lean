@@ -188,7 +188,7 @@ theorem lieCorrectionZeroTr_pointwise_antidiagonalGrid_le
           ((iteratedCovGrad (I := I) g₀ (p + 2) p i Φ).toSection x) ≤
         S i * G :=
     (hS i x).trans (by nlinarith [hS_nn i, hG_one])
-  rw [lieCorrectionZeroTr, riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+  rw [lieCorrectionZeroTr, riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
     (I := I) (M := M) g₀ (p + 2) p
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p) σ i x]
   rw [show lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p =

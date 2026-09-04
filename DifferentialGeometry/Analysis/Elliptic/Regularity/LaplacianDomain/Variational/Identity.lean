@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.PulledIntegralContinuity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.ArbitraryTest
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.Limit
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.SmoothApproximation
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.LeibnizSource
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Defs
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothScalar.MulLp

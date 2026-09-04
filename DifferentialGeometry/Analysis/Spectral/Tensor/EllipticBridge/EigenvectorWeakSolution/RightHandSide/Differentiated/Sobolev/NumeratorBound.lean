@@ -515,7 +515,7 @@ def diffNumeratorAggregateK
     + iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 fChartEffPrev
         (chartTargetEuclid (I := I) (M := M) α)
 
-section AtomBoundsUnconditional
+section AtomBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -566,9 +566,9 @@ private lemma wkpNorm_chosenWeakPartial_iteratedPartial_succ_le
     K _ b) ?_
   exact wkpNorm_mono_order (d := Module.finrank ℝ E) (by omega) _ _
 
-end AtomBoundsUnconditional
+end AtomBounds
 
-section LayerBoundsUnconditional
+section LayerBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -964,9 +964,9 @@ private lemma eigenvectorChartRHSDiffNumerator_layerE_wkpNorm_le
   rw [hA_def, diffNumeratorAggregateK]
   exact le_trans le_add_self le_self_add
 
-end LayerBoundsUnconditional
+end LayerBounds
 
-section MainBoundUnconditional
+section MainBound
 
 omit [CompleteSpace E] in
 theorem eigenvectorChartRHSDiffNumerator_wkpNorm_le
@@ -1115,9 +1115,9 @@ theorem eigenvectorChartRHSDiffNumerator_wkpNorm_le
     ENNReal.ofReal_add hCA_nn hCB_nn]
   rw [add_mul, add_mul, add_mul, add_mul]
 
-end MainBoundUnconditional
+end MainBound
 
-section MainBoundUniformUnconditional
+section MainBoundUniform
 
 omit [CompleteSpace E] in
 private lemma eigenvectorChartRHSDiffNumerator_layerA_wkpNorm_le_uniform
@@ -1764,7 +1764,7 @@ theorem eigenvectorChartRHSDiffNumerator_wkpNorm_le_uniform
     ENNReal.ofReal_add hCA_nn hCB_nn]
   rw [add_mul, add_mul, add_mul, add_mul]
 
-end MainBoundUniformUnconditional
+end MainBoundUniform
 
 end TensorSpectral
 end Parabolic

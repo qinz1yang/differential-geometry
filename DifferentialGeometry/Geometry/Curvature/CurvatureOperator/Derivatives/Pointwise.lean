@@ -10,8 +10,8 @@ open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curv
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [CompleteSpace E]
@@ -129,18 +129,15 @@ theorem canNablaRm_apply
             (fun q : M => X q) (fun q : M => Y q) (fun q : M => Z q) p)
     exact CovariantDerivative.rm04Section_apply_smooth
       (I := I) g cov hcov X Y Z W p
-  have hDmd : MDiffAt (T% fun p : M => D p) x :=
-    (D.contMDiff.contMDiffAt (x := x)).mdifferentiableAt (by simp)
   have hWmd : MDiffAt (T% fun p : M => W p) x :=
     (W.contMDiff.contMDiffAt (x := x)).mdifferentiableAt (by simp)
   have hRmd : MDiffAt (T% fun p : M => Rcurv p) x :=
     (Rcurv.contMDiff.contMDiffAt (x := x)).mdifferentiableAt (by simp)
   have hmetric :=
-    metric_compatible_apply
+    IsMetricCompatible.mvfderiv_inner
       (I := I) (x := x)
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
-      (fun p : M => D p) (fun p : M => W p) (fun p : M => Rcurv p)
-      hDmd hWmd hRmd
+      (D x) hWmd hRmd
   have hderiv :
       mvfderiv (I := I)
           (fun p : M => Rm04 p (fun a : Fin 4 => slots a p))
@@ -329,8 +326,8 @@ theorem nablaRiemannOp_sec
   rw [nablaRiemannOp_eq]
   rfl
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry
 
 end

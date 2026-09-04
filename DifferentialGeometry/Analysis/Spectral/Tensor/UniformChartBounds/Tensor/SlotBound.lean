@@ -432,7 +432,7 @@ theorem chartLeviCivitaParallelCLM_chartBasisVec_opNorm_isBounded_on_pouTsupport
   have hK_base : K ⊆ (trivializationAt E (TangentSpace I) α).baseSet :=
     pouTsupport_subset_baseSet (I := I) (M := M) α
   obtain ⟨C_B, hC_B_nn, hC_B⟩ :=
-    chartLeviCivitaParallelCLM_general_X_opNorm_isBounded_on_pouTsupport
+    chartLeviCivitaParallelCLM_opNorm_isBounded_on_pouTsupport
       (I := I) (M := M) g α
   obtain ⟨C_Jinv, hCJinv_nn, hCJinv_bound⟩ :=
     DifferentialGeometry.Analysis.Sobolev.HebeyBlock.chartTrivInv_opNorm_isBounded_on_compact

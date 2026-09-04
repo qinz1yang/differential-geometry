@@ -99,7 +99,7 @@ noncomputable def chartRepack (r s : ℕ) (α : M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-theorem chartRepack_raw (r s : ℕ) (α : M)
+theorem secCompRaw_chartRepack (r s : ℕ) (α : M)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ)
     (P : TensorCompIdx (E := E) r s) {x : M}
     (hx : x ∈ (chartAt H α).source) :

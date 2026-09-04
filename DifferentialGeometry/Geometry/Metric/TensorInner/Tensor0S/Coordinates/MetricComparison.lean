@@ -76,10 +76,10 @@ variable [Fintype Idx]
 
 omit [FiniteDimensional ℝ E] in
 theorem metricInverseInBasis_identity_of_orthonormal
-    (g : SmoothMetricGen I M) (basis : Module.Basis Idx Real (TangentSpace I x))
+    (g : SmoothRiemannianMetric I M) (basis : Module.Basis Idx Real (TangentSpace I x))
     (horth : ∀ i j : Idx,
       g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
+    MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
   classical
   intro i j
   constructor
@@ -163,10 +163,10 @@ theorem coordInner0S_identity_eq_sum
     exact False.elim (hnotmem (Finset.mem_univ I0))
 
 theorem inner0S_basisTensor_left_identity
-    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (slots : Fin s -> Idx) (A : Tensor0SSpace s I x) :
     inner0S (I := I) g x s (basisTensor0S (I := I) basis slots) A =
       component0S (I := I) basis A slots := by
@@ -195,10 +195,10 @@ theorem inner0S_basisTensor_left_identity
     exact False.elim (hnotmem (Finset.mem_univ slots))
 
 theorem inner0S_basisTensor_right_identity
-    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     inner0S (I := I) g x s A (basisTensor0S (I := I) basis slots) =
       component0S (I := I) basis A slots := by
@@ -227,10 +227,10 @@ theorem inner0S_basisTensor_right_identity
     exact False.elim (hnotmem (Finset.mem_univ slots))
 
 theorem normSq0S_identity_eq_sum_sq
-    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : Tensor0SSpace s I x) :
     normSq0S (I := I) g x s A =
       ∑ slots : Fin s -> Idx,
@@ -243,10 +243,10 @@ theorem normSq0S_identity_eq_sum_sq
   rfl
 
 theorem normSq0S_curry_sum
-    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : Tensor0SSpace (s + 1) I x) :
     (∑ i : Idx,
         normSq0S (I := I) g x s
@@ -268,10 +268,10 @@ theorem normSq0S_curry_sum
   exact Fin.cases rfl (fun _ => rfl) a
 
 theorem normSq0S_le_card_of_component_bound
-    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : Tensor0SSpace s I x) (B : Real) (hBnn : 0 ≤ B)
     (hB : ∀ slots : Fin s -> Idx,
       |component0S (I := I) basis A slots| ≤ B) :
@@ -293,10 +293,10 @@ theorem normSq0S_le_card_of_component_bound
           rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
 theorem sqrt_normSq0S_le_card_of_component_bound
-    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : Tensor0SSpace s I x) (B : Real) (hBnn : 0 ≤ B)
     (hB : ∀ slots : Fin s -> Idx,
       |component0S (I := I) basis A slots| ≤ B) :
@@ -314,10 +314,10 @@ theorem sqrt_normSq0S_le_card_of_component_bound
       rw [Real.sqrt_sq_eq_abs, abs_of_nonneg hBnn]
 
 theorem normSq0S_three_identity_eq_sum
-    (g : SmoothMetricGen I M) (x : M)
+    (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : Tensor0SSpace 3 I x) :
     normSq0S (I := I) g x 3 A =
       ∑ d : Idx, ∑ a : Idx, ∑ b : Idx,
@@ -376,13 +376,13 @@ theorem coordInner0S_identity_le_pow_diagonal
   nlinarith [hge1, sq_nonneg (tensor0SComponent (I := I) A (fun i => basis i) I0)]
 
 theorem normSq0S_diag_le
-    (g h : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g h : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (μ : Idx -> Real) (C : Real)
     (hginv :
-      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (hhinv :
-      MetricInverseInBasisGen (I := I) h x basis (diagonalInvMetric μ))
+      MetricInverseInBasis (I := I) h x basis (diagonalInvMetric μ))
     (hμ_nonneg : forall i : Idx, 0 <= μ i)
     (hμ_le : forall i : Idx, μ i <= C)
     (A : Tensor0SSpace s I x) :
@@ -427,10 +427,10 @@ theorem coordInner0S_identity_le_pow_quad
         mul_le_mul_of_nonneg_left hkey (le_of_lt (pow_pos hC s))
 
 theorem sum_comp_sq_le_pow_normSq0S
-    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Q : Idx -> Idx -> Real) (C : Real) (hC : 0 < C)
-    (hginv : MetricInverseInBasisGen (I := I) g x basis Q)
+    (hginv : MetricInverseInBasis (I := I) g x basis Q)
     (hQsymm : forall i j : Idx, Q i j = Q j i)
     (hQlb : forall w : Idx -> Real,
       (1 / C) * ∑ i : Idx, w i ^ 2 <= ∑ i : Idx, ∑ j : Idx, Q i j * (w i * w j))
@@ -443,10 +443,10 @@ theorem sum_comp_sq_le_pow_normSq0S
   exact coordInner0S_identity_le_pow_quad (I := I) (x := x) s Q C hC hQsymm hQlb A basis
 
 theorem normSq0S_le_pow_sum_comp_sq
-    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Q : Idx -> Idx -> Real) (ε : Real) (hε0 : 0 <= ε)
-    (hginv : MetricInverseInBasisGen (I := I) g x basis Q)
+    (hginv : MetricInverseInBasis (I := I) g x basis Q)
     (hnear : forall i j : Idx, |Q i j - (if i = j then (1 : Real) else 0)| <= ε)
     (A : Tensor0SSpace s I x) :
     normSq0S (I := I) g x s A <=
@@ -472,7 +472,7 @@ end DiagonalCoordinate
 section MetricEquiv
 
 theorem exists_diagInv_of_equiv
-    (g h : SmoothMetricGen I M) (x : M) {C : Real}
+    (g h : SmoothRiemannianMetric I M) (x : M) {C : Real}
     (hC : 1 <= C)
     (hequiv :
       forall v : TangentSpace I x,
@@ -482,16 +482,16 @@ theorem exists_diagInv_of_equiv
     exists basis :
       Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
         (TangentSpace I x),
-      MetricInverseInBasisGen
+      MetricInverseInBasis
         (I := I) g x basis
         (identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I x)))) /\
-      MetricInverseInBasisGen
+      MetricInverseInBasis
         (I := I) h x basis (diagonalInvMetric mu) /\
       (forall i : Fin (Module.finrank Real (TangentSpace I x)), 0 <= mu i) /\
       (forall i : Fin (Module.finrank Real (TangentSpace I x)), mu i <= C) := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
@@ -499,15 +499,15 @@ theorem exists_diagInv_of_equiv
   let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let T : TangentSpace I x →ₗ[Real] TangentSpace I x :=
-    ((tangentFlatEquivGen (I := I) g x).symm.toLinearMap).comp
-      (tangentFlatEquivGen (I := I) h x).toLinearMap
+    ((tangentFlatEquiv (I := I) g x).symm.toLinearMap).comp
+      (tangentFlatEquiv (I := I) h x).toLinearMap
   have hTg (X Y : TangentSpace I x) :
       g.inner x (T X) Y = h.inner x X Y := by
-    change (tangentFlatEquivGen (I := I) g x
-        ((tangentFlatEquivGen (I := I) g x).symm
-          ((tangentFlatEquivGen (I := I) h x) X))) Y =
+    change (tangentFlatEquiv (I := I) g x
+        ((tangentFlatEquiv (I := I) g x).symm
+          ((tangentFlatEquiv (I := I) h x) X))) Y =
       h.inner x X Y
-    rw [(tangentFlatEquivGen (I := I) g x).apply_symm_apply]
+    rw [(tangentFlatEquiv (I := I) g x).apply_symm_apply]
     rfl
   have hT : T.IsSymmetric := by
     intro X Y
@@ -533,7 +533,7 @@ theorem exists_diagInv_of_equiv
         Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
       MetricFiberData.toCore_inner D (ob i) (ob j)
     change g.inner x (basis i) (basis j) = if i = j then 1 else 0
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
       (basis i) (basis j)]
     change D.inner (ob i) (ob j) = if i = j then 1 else 0
     rw [← hinner]
@@ -554,7 +554,7 @@ theorem exists_diagInv_of_equiv
           · simp [hij, hg_orth]
           · simp [hij, hg_orth]
   have hginv :
-      MetricInverseInBasisGen
+      MetricInverseInBasis
         (I := I) g x basis (identityInvMetric (Idx := Fin n)) := by
     intro i j
     constructor
@@ -585,7 +585,7 @@ theorem exists_diagInv_of_equiv
         simpa [one_div] using hlam_lower i)
     simpa [mu, one_div] using h
   have hhinv :
-      MetricInverseInBasisGen
+      MetricInverseInBasis
         (I := I) h x basis (diagonalInvMetric mu) := by
     intro i j
     have hmulam (i : Fin n) : mu i * lam i = 1 := by
@@ -615,7 +615,7 @@ theorem exists_diagInv_of_equiv
 
 omit [FiniteDimensional ℝ E] in
 theorem metric_equiv_symm
-    (g h : SmoothMetricGen I M) (x : M) {C : Real}
+    (g h : SmoothRiemannianMetric I M) (x : M) {C : Real}
     (hC : 1 <= C)
     (hequiv :
       forall v : TangentSpace I x,
@@ -643,7 +643,7 @@ theorem metric_equiv_symm
         mul_le_mul_of_nonneg_left hlow hC_nonneg
 
 theorem normSq0S_upper_le_of_equiv
-    (g h : SmoothMetricGen I M) (x : M) (s : Nat) {C : Real}
+    (g h : SmoothRiemannianMetric I M) (x : M) (s : Nat) {C : Real}
     (hC : 1 <= C)
     (hequiv :
       forall v : TangentSpace I x,
@@ -659,7 +659,7 @@ theorem normSq0S_upper_le_of_equiv
     basis mu C hginv hhinv hmu_nonneg hmu_le T
 
 theorem normSq0S_lower_le_of_equiv
-    (g h : SmoothMetricGen I M) (x : M) (s : Nat) {C : Real}
+    (g h : SmoothRiemannianMetric I M) (x : M) (s : Nat) {C : Real}
     (hC : 1 <= C)
     (hequiv :
       forall v : TangentSpace I x,
@@ -678,7 +678,7 @@ theorem normSq0S_lower_le_of_equiv
   exact hupper
 
 theorem normSq0S_le_of_metric_equiv
-    (g h : SmoothMetricGen I M) (x : M) (s : Nat) {C : Real}
+    (g h : SmoothRiemannianMetric I M) (x : M) (s : Nat) {C : Real}
     (hC : 1 <= C)
     (hequiv :
       forall v : TangentSpace I x,
@@ -700,7 +700,7 @@ theorem normSq0S_le_of_metric_equiv
   · simpa using hupper
 
 theorem sqrt_normSq0S_le_of_metric_equiv
-    (g h : SmoothMetricGen I M) (x : M) (s : Nat) {C : Real}
+    (g h : SmoothRiemannianMetric I M) (x : M) (s : Nat) {C : Real}
     (hC : 1 <= C)
     (hequiv :
       forall v : TangentSpace I x,
@@ -721,7 +721,7 @@ end MetricEquiv
 section PointwiseCS
 
 theorem exists_orthonormal_basis
-    (g : SmoothMetricGen I M) (x : M) :
+    (g : SmoothRiemannianMetric I M) (x : M) :
     ∃ basis :
         Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
           (TangentSpace I x),
@@ -729,7 +729,7 @@ theorem exists_orthonormal_basis
         g.inner x (basis i) (basis j) =
           if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x)
@@ -745,8 +745,8 @@ theorem exists_orthonormal_basis
     MetricFiberData.toCore_inner D (ob i) (ob j)
   change g.inner x (ob.toBasis i) (ob.toBasis j) =
     if i = j then (1 : Real) else 0
-  rw [← TangentMetricDataGen.inner_eq_gen
-    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricData.inner_eq
+    (tangentMetricData (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j
@@ -755,10 +755,10 @@ variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
 omit [FiniteDimensional ℝ E] in
 theorem metricInverseInBasis_of_orthonormal
-    (g : SmoothMetricGen I M) {x : M}
+    (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then 1 else 0) :
-    MetricInverseInBasisGen (I := I) g x basis
+    MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx)) := by
   classical
   intro i j
@@ -777,7 +777,7 @@ private theorem sqrt_prod {α : Type*} (s : Finset α) (f : α -> Real)
 
 omit [Fintype Idx] in
 theorem abs_apply_le_sqrt_normSq0S [Finite Idx]
-    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hON : forall i j : Idx,
       g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
@@ -787,7 +787,7 @@ theorem abs_apply_le_sqrt_normSq0S [Finite Idx]
         ∏ a : Fin s, Real.sqrt (g.inner x (v a) (v a)) := by
   classical
   let := Fintype.ofFinite Idx
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx)) := by
     intro i j
     constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
@@ -858,7 +858,7 @@ theorem abs_apply_le_sqrt_normSq0S [Finite Idx]
   rw [hPar a]
 
 theorem abs_apply_le_norm0S
-    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (T : Tensor0SSpace s I x) (v : Fin s -> TangentSpace I x) :
     |T v| <=
       Real.sqrt (normSq0S (I := I) g x s T) *

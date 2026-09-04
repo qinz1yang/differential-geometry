@@ -26,15 +26,7 @@ theorem leviCivitaConnectionOfMetric_apply_eq_leviCivita
   refine LeviCivita_unique g (leviCivitaConnectionOfMetric (I := I) g) ?_ ?_ hσ v
   · funext y
     exact (leviCivitaConnectionOfMetric_isLeviCivita (I := I) g).2 y
-  · intro Y Z x hY hZ _ w
-    classical
-    obtain ⟨X, hXx⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
-      (F := E) (V := (TangentSpace I : M → Type _)) x w
-    have hX : MDiffAt (T% fun y => X y) x := X.mdifferentiableAt
-    have h := metric_compatible_at_apply
-      ((leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g) x) X Y Z hX hY hZ
-    rw [hXx] at h
-    exact h
+  · exact leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g
 
 end Connection
 end Geometry

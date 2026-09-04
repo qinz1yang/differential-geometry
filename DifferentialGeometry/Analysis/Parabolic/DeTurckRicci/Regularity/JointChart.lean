@@ -716,11 +716,11 @@ private lemma jointChartRiemann_contDiffOn
     (i j k l : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
       (fun q : ℝ × E =>
-        Integral.DivergenceTheorem.chartRiemannTensor (I := I) (g_DT q.1) α i j k l q.2)
+        DifferentialGeometry.Geometry.Curvature.chartRiemannTensor (I := I) (g_DT q.1) α i j k l q.2)
       (Set.Icc 0 T ×ˢ interior (extChartAt I α).target) := by
   classical
   have hexp : (fun q : ℝ × E =>
-        Integral.DivergenceTheorem.chartRiemannTensor (I := I) (g_DT q.1) α i j k l q.2) =
+        DifferentialGeometry.Geometry.Curvature.chartRiemannTensor (I := I) (g_DT q.1) α i j k l q.2) =
       fun q : ℝ × E =>
         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (chartChristoffel (I := I) (g_DT q.1) α i k l) q.2 -
@@ -731,7 +731,7 @@ private lemma jointChartRiemann_contDiffOn
               chartChristoffel (I := I) (g_DT q.1) α i k m q.2 -
             chartChristoffel (I := I) (g_DT q.1) α k m l q.2 *
               chartChristoffel (I := I) (g_DT q.1) α i j m q.2)) := by
-    funext q; rw [Integral.DivergenceTheorem.chartRiemannTensor_def]
+    funext q; rw [DifferentialGeometry.Geometry.Curvature.chartRiemannTensor_def]
   rw [hexp]
   refine ((jointChartChristoffel_partialDeriv_contDiffOn T g_DT hJ α j i k l).sub
     (jointChartChristoffel_partialDeriv_contDiffOn T g_DT hJ α k i j l)).add ?_
@@ -749,14 +749,14 @@ private lemma jointChartRicci_contDiffOn
     (i k : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
       (fun q : ℝ × E =>
-        Integral.DivergenceTheorem.chartRicciTensor (I := I) (g_DT q.1) α i k q.2)
+        DifferentialGeometry.Geometry.Curvature.chartRicciTensor (I := I) (g_DT q.1) α i k q.2)
       (Set.Icc 0 T ×ˢ interior (extChartAt I α).target) := by
   classical
   have hexp : (fun q : ℝ × E =>
-        Integral.DivergenceTheorem.chartRicciTensor (I := I) (g_DT q.1) α i k q.2) =
+        DifferentialGeometry.Geometry.Curvature.chartRicciTensor (I := I) (g_DT q.1) α i k q.2) =
       fun q : ℝ × E => ∑ j : Fin (Module.finrank ℝ E),
-        Integral.DivergenceTheorem.chartRiemannTensor (I := I) (g_DT q.1) α i j k j q.2 := by
-    funext q; rw [Integral.DivergenceTheorem.chartRicciTensor_def]
+        DifferentialGeometry.Geometry.Curvature.chartRiemannTensor (I := I) (g_DT q.1) α i j k j q.2 := by
+    funext q; rw [DifferentialGeometry.Geometry.Curvature.chartRicciTensor_def]
   rw [hexp]
   exact ContDiffOn.sum (fun j _ => jointChartRiemann_contDiffOn T g_DT hJ α i j k j)
 
@@ -860,7 +860,7 @@ private lemma jointChartDeTurckRicciRHS_contDiffOn
         DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.chartDeTurckRicciRHS
           (I := I) (g_DT q.1) g_bg α i k q.2) =
       fun q : ℝ × E =>
-        -2 * Integral.DivergenceTheorem.chartRicciTensor (I := I) (g_DT q.1) α i k q.2 +
+        -2 * DifferentialGeometry.Geometry.Curvature.chartRicciTensor (I := I) (g_DT q.1) α i k q.2 +
           DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.chartLieDeTurckComp
             (I := I) (g_DT q.1) g_bg α i k q.2 := by
     funext q

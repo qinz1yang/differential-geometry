@@ -115,14 +115,14 @@ private def oneIn120 : Equiv.Perm (Fin 3) :=
 
 private def oneTerm0 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 3 4 :=
-  reindexCoeffGen (I := I) (M := M) g 3 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 3 4
     (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
       (permCoeff (I := I) (M := M) g oneOut0312)
       (connectionDifferenceContravariantInsertionField (I := I) g gm)) oneIn102
 
 private def oneTerm1 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 3 4 :=
-  reindexCoeffGen (I := I) (M := M) g 3 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 3 4
     (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
       (permCoeff (I := I) (M := M) g oneOut0213)
       (connectionDifferenceContravariantInsertionField (I := I) g gm)) oneIn120
@@ -135,14 +135,14 @@ private def oneTerm2 (g gm : SmoothRiemannianMetric I M) :
 
 private def oneTerm3 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 3 4 :=
-  reindexCoeffGen (I := I) (M := M) g 3 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 3 4
     (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
       (permCoeff (I := I) (M := M) g oneOut1302)
       (connectionDifferenceContravariantInsertionField (I := I) g gm)) oneIn102
 
 private def oneTerm4 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 3 4 :=
-  reindexCoeffGen (I := I) (M := M) g 3 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 3 4
     (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
       (permCoeff (I := I) (M := M) g oneOut1203)
       (connectionDifferenceContravariantInsertionField (I := I) g gm)) oneIn120
@@ -189,20 +189,20 @@ private theorem oneTerm_riemannianFiberNormSq
   rw [hy, slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
 omit [SigmaCompactSpace M] in
-private theorem oneFull_riemannianFiberNormSq
+private theorem reindexedOneTerm_riemannianFiberNormSq
     (g gm : SmoothRiemannianMetric I M)
     (sigma : Equiv.Perm (Fin 4)) (rho : Equiv.Perm (Fin 3))
     (q : Nat) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 3 (4 + q) x
         ((iteratedCovGrad (I := I) g 3 4 q
-          (reindexCoeffGen (I := I) (M := M) g 3 4
+          (reindexCoefficientInputSlots (I := I) (M := M) g 3 4
             (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
               (permCoeff (I := I) (M := M) g sigma)
               (connectionDifferenceContravariantInsertionField (I := I) g gm)) rho)).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g 3 (4 + q) x
         ((iteratedCovGrad (I := I) g 3 4 q
           (connectionDifferenceContravariantInsertionField (I := I) g gm)).toSection x) := by
-  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
     (I := I) (M := M) g 3 4
     (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
       (permCoeff (I := I) (M := M) g sigma)
@@ -243,19 +243,19 @@ theorem linearizedRicciConnectionDifferenceOrderOneKernel_fiberNormSq_le
   let A4 := (oneTerm4 (I := I) (M := M) g gm).toSection x
   have h0 : riemannianFiberNormSq (I := I) (M := M) g 3 4 x A0 = Q := by
     simpa only [A0, oneTerm0, Q, iteratedCovGrad_zero, Nat.add_zero] using
-      oneFull_riemannianFiberNormSq (I := I) (M := M) g gm oneOut0312 oneIn102 0 x
+      reindexedOneTerm_riemannianFiberNormSq (I := I) (M := M) g gm oneOut0312 oneIn102 0 x
   have h1 : riemannianFiberNormSq (I := I) (M := M) g 3 4 x A1 = Q := by
     simpa only [A1, oneTerm1, Q, iteratedCovGrad_zero, Nat.add_zero] using
-      oneFull_riemannianFiberNormSq (I := I) (M := M) g gm oneOut0213 oneIn120 0 x
+      reindexedOneTerm_riemannianFiberNormSq (I := I) (M := M) g gm oneOut0213 oneIn120 0 x
   have h2 : riemannianFiberNormSq (I := I) (M := M) g 3 4 x A2 = Q := by
     simpa only [A2, oneTerm2, Q, iteratedCovGrad_zero, Nat.add_zero] using
       oneTerm_riemannianFiberNormSq (I := I) (M := M) g gm oneOut2301 0 x
   have h3 : riemannianFiberNormSq (I := I) (M := M) g 3 4 x A3 = Q := by
     simpa only [A3, oneTerm3, Q, iteratedCovGrad_zero, Nat.add_zero] using
-      oneFull_riemannianFiberNormSq (I := I) (M := M) g gm oneOut1302 oneIn102 0 x
+      reindexedOneTerm_riemannianFiberNormSq (I := I) (M := M) g gm oneOut1302 oneIn102 0 x
   have h4 : riemannianFiberNormSq (I := I) (M := M) g 3 4 x A4 = Q := by
     simpa only [A4, oneTerm4, Q, iteratedCovGrad_zero, Nat.add_zero] using
-      oneFull_riemannianFiberNormSq (I := I) (M := M) g gm oneOut1203 oneIn120 0 x
+      reindexedOneTerm_riemannianFiberNormSq (I := I) (M := M) g gm oneOut1203 oneIn120 0 x
   have h01 := riemannianFiberNormSq_add_le
     (I := I) (M := M) g 3 4 x A0 A1
   have h012 := riemannianFiberNormSq_add_le
@@ -298,7 +298,7 @@ private theorem one_insert_riemannianFiberNormSq
     rw [connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two
       (I := I) (M := M) g gm]
     simpa only [A, B, iteratedCovGrad_zero, Nat.add_zero] using
-      riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+      riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
         (I := I) (M := M) g 3 4
         (slotExtend (I := I) (M := M) g 2 3 B)
         connectionDifferenceContrInsertionReindexPerm 0 x

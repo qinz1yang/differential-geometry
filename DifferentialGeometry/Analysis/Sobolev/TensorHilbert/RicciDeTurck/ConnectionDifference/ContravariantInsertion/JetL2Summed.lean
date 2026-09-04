@@ -111,7 +111,7 @@ private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s 
   | succ j ih => rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih,
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_smul]
 
-theorem connectionDifferenceContravariantInsertionField_perOrder_l2_topOrderSeparated_generic
+theorem connectionDifferenceContravariantInsertionField_perOrder_l2_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -191,7 +191,7 @@ theorem connectionDifferenceContravariantInsertionField_perOrder_l2_topOrderSepa
                   (slotExtend (I := I) (M := M) g₀ 1 2
                     (connectionDifferenceSection (I := I) g₁ g₀)))).toSection x) := by
           rw [connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two (I := I) (M := M) g₀ g₁]
-          exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+          exact riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
             (I := I) (M := M) g₀ 3 4
             (slotExtend (I := I) (M := M) g₀ 2 3
               (slotExtend (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)))
@@ -352,7 +352,7 @@ theorem connectionDifferenceContravariantInsertionField_metricPerturbationPath_j
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hgen⟩ :=
-    connectionDifferenceContravariantInsertionField_perOrder_l2_topOrderSeparated_generic
+    connectionDifferenceContravariantInsertionField_perOrder_l2_topOrderSeparated
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨Ktop, hKtop_nn, Kc, hKc_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs i hi

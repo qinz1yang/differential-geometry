@@ -42,14 +42,14 @@ private theorem operatorFieldComposition_permutation_eq_reindexCoefficient
     (Φ : SmoothCcTensor g d d) (ρ : Equiv.Perm (Fin d)) :
     ccOperatorFieldComp (I := I) (M := M) g d d d Φ
         (permCoeff (I := I) (M := M) g ρ) =
-      reindexCoeffGen (I := I) (M := M) g d d Φ ρ := by
+      reindexCoefficientInputSlots (I := I) (M := M) g d d Φ ρ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   apply ContinuousLinearMap.ext
   intro D
   rw [operatorFieldComposition_toSection, ContinuousLinearMap.comp_apply,
-    reindexCoeffGen_toSection, reindexCoeffFibGen_apply]
+    reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply]
   change (show Tensor0SSpace d I x →L[ℝ] Tensor0SSpace d I x from
       Φ.toSection x) (slotPermCLM (I := I) ρ x D) = _
   rw [slotPermCLM_apply]
@@ -144,10 +144,10 @@ theorem exists_uniform_riemannianFiberNormSq_ricciConnectionPrincipalCoefficient
   let Y : SmoothCcTensor g 3 3 :=
     ccOperatorFieldComp (I := I) (M := M) g 3 3 3 E1 Z
   have hYsplit : Y = (1 / 2 : ℝ) •
-      (reindexCoeffGen (I := I) (M := M) g 3 3 E1
+      (reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1
           (Equiv.swap (0 : Fin 3) 2) +
-        reindexCoeffGen (I := I) (M := M) g 3 3 E1 (finRotate 3) -
-        reindexCoeffGen (I := I) (M := M) g 3 3 E1
+        reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1 (finRotate 3) -
+        reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1
           (Equiv.swap (1 : Fin 3) 2)) := by
     dsimp only [Y, Z]
     let A : SmoothCcTensor g 3 3 :=
@@ -158,10 +158,10 @@ theorem exists_uniform_riemannianFiberNormSq_ricciConnectionPrincipalCoefficient
       permCoeff (I := I) (M := M) g (Equiv.swap (1 : Fin 3) 2)
     have hinner :
         ccOperatorFieldComp (I := I) (M := M) g 3 3 3 E1 (A + Bp - C) =
-          reindexCoeffGen (I := I) (M := M) g 3 3 E1
+          reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1
               (Equiv.swap (0 : Fin 3) 2) +
-            reindexCoeffGen (I := I) (M := M) g 3 3 E1 (finRotate 3) -
-            reindexCoeffGen (I := I) (M := M) g 3 3 E1
+            reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1 (finRotate 3) -
+            reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1
               (Equiv.swap (1 : Fin 3) 2) := by
       calc
         ccOperatorFieldComp (I := I) (M := M) g 3 3 3 E1 (A + Bp - C) =
@@ -190,17 +190,17 @@ theorem exists_uniform_riemannianFiberNormSq_ricciConnectionPrincipalCoefficient
   have hq0 : 0 ≤ q := riemannianFiberNormSq_nonneg _ _ _ _ _
   have hre : ∀ ρ : Equiv.Perm (Fin 3),
       riemannianFiberNormSq (I := I) (M := M) g 3 3 x
-          ((reindexCoeffGen (I := I) (M := M) g 3 3 E1 ρ).toSection x) = q := by
+          ((reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1 ρ).toSection x) = q := by
     intro ρ
-    have h := DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+    have h := DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g 3 3 E1 ρ 0 x
     simpa only [iteratedCovGrad_zero, Nat.add_zero, q] using h
   have hYq : riemannianFiberNormSq (I := I) (M := M) g 3 3 x
       (Y.toSection x) ≤ 3 * q := by
-    let A := reindexCoeffGen (I := I) (M := M) g 3 3 E1
+    let A := reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1
       (Equiv.swap (0 : Fin 3) 2)
-    let B := reindexCoeffGen (I := I) (M := M) g 3 3 E1 (finRotate 3)
-    let C := reindexCoeffGen (I := I) (M := M) g 3 3 E1
+    let B := reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1 (finRotate 3)
+    let C := reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1
       (Equiv.swap (1 : Fin 3) 2)
     rw [hYsplit, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
       Pi.smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]

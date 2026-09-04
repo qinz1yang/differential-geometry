@@ -86,8 +86,8 @@ theorem trace_eq_line_add
   let q : Option ι → Option ι → Real :=
     basisInvMetric (I := I) g x b
   have hq :
-      MetricInverseInBasisGen (I := I) g x b q := by
-    simpa only [q] using basisInvMetric_real (I := I) g x b
+      MetricInverseInBasis (I := I) g x b q := by
+    simpa only [q] using basisInvMetric_isInverse (I := I) g x b
   have hqsymm (i j : Option ι) : q i j = q j i := by
     simpa only [q] using basisInvMetric_symm (I := I) g x b i j
   have hperp' (i : ι) : g.inner x (V i) Z = 0 := by

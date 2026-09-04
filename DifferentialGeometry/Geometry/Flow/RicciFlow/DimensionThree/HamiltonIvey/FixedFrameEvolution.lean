@@ -322,7 +322,7 @@ private lemma roughLapRm04_fixedFrame_pullback
   let Tt : Tensor0SSpace 4 I x :=
     metricTrace0S2TensorInBasis (I := I) f (identityInvMetric (Idx := Fin 3))
       (nablaKRm04Field (I := I) S t 2 x)
-  have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x f
+  have hinv : MetricInverseInBasis (I := I) (S.base.metric t) x f
       (identityInvMetric (Idx := Fin 3)) := by
     exact DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (S.base.metric t) f horth
   have hconv : metricTraceFirstTwo0SAt (I := I) (S.base.metric t)

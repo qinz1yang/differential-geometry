@@ -28,13 +28,13 @@ variable [CompleteSpace E]
 def endoCovariantDerivative (g : SmoothRiemannianMetric I M) :
     CovariantDerivative I (E →L[ℝ] E)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x) :=
-  HomConnectionGen.homBundleCovariantDerivativeGen I M
+  HomConnection.homBundleCovariantDerivative I M
     E (fun x : M => TangentSpace I x) E (fun x : M => TangentSpace I x)
     (LeviCivita (I := I) g) (LeviCivita (I := I) g)
 
 instance endoCovariantDerivative_contMDiff (g : SmoothRiemannianMetric I M) :
     (endoCovariantDerivative (I := I) (M := M) g).ContMDiffCovariantDerivative ∞ :=
-  HomConnectionGen.homBundleCovariantDerivativeGen_contMDiff I M
+  HomConnection.homBundleCovariantDerivative_contMDiff I M
     E (fun x : M => TangentSpace I x) E (fun x : M => TangentSpace I x)
     (LeviCivita (I := I) g) (LeviCivita (I := I) g)
 
@@ -47,7 +47,7 @@ theorem endoCovariantDerivative_apply (g : SmoothRiemannianMetric I M)
     ((endoCovariantDerivative (I := I) (M := M) g) Λ x v) (Y x) =
       (LeviCivita (I := I) g) (fun y => (Λ y) (Y y)) x v -
         (Λ x) ((LeviCivita (I := I) g) (fun y => Y y) x v) :=
-  HomConnectionGen.homBundleCovariantDerivativeGen_apply I M
+  HomConnection.homBundleCovariantDerivative_apply I M
     E (fun x : M => TangentSpace I x) E (fun x : M => TangentSpace I x)
     (LeviCivita (I := I) g) (LeviCivita (I := I) g) Λ Y x v
 
@@ -362,14 +362,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
-lemma appFullSec_idHomTensorRSField (g : SmoothRiemannianMetric I M) (r a : ℕ)
+lemma homTensorRSFieldApply_idHomTensorRSField (g : SmoothRiemannianMetric I M) (r a : ℕ)
     (W : SmoothCcTensor g r a) :
     homTensorRSFieldApply (I := I) (M := M) g r a a
       (identityHomTensorRSField (E := E) (M := M) (I := I) r a) W = W := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [appFullSec_toSection, idHomTensorRSField_apply, ContinuousLinearMap.id_apply]
+  rw [homTensorRSFieldApply_toSection, idHomTensorRSField_apply, ContinuousLinearMap.id_apply]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -387,7 +387,7 @@ theorem iteratedCovGrad_slotInsertEndoCc_expansion (g : SmoothRiemannianMetric I
       (identityHomTensorRSField (E := E) (M := M) (I := I) (s + 1) (s + 1)) k
   refine ⟨D, ?_⟩
   have hbase := hD (endoSlotZeroCcTensor (I := I) (M := M) g s Λ)
-  rw [appFullSec_idHomTensorRSField (I := I) (M := M) g (s + 1) (s + 1)
+  rw [homTensorRSFieldApply_idHomTensorRSField (I := I) (M := M) g (s + 1) (s + 1)
     (endoSlotZeroCcTensor (I := I) (M := M) g s Λ)] at hbase
   exact hbase
 omit [CompleteSpace E] in

@@ -167,7 +167,7 @@ theorem metricDifference_fam_jet
               (![] : Fin 0 → Fin (Module.finrank ℝ E)) ![a, c] =ᶠ[nhds y]
             (fun z => ρ z * raw z) := by
         simpa only [tensorChartComp_def, hρ_def, hraw_def] using
-          tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw_raw
+          tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw
             (I := I) (M := M) gBase 0 2 T α
             (![] : Fin 0 → Fin (Module.finrank ℝ E)) ![a, c] hyT
       change ‖iteratedFDeriv ℝ j

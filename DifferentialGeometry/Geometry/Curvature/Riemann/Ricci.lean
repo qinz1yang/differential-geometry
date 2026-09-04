@@ -14,8 +14,8 @@ open scoped Manifold Topology ContDiff Matrix
 
 open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry
-namespace Integral
-namespace DivergenceTheorem
+namespace Geometry
+namespace Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -23,24 +23,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 open DifferentialGeometry.Integral.Measure
-
-omit [NeZero (Module.finrank ℝ E)] in
-lemma chartInvGramOnE_symm
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j : Fin (Module.finrank ℝ E)) (y : E) :
-    chartInvGramOnE (I := I) g α i j y = chartInvGramOnE (I := I) g α j i y := by
-  unfold chartInvGramOnE
-  set z := (extChartAt I α).symm y
-  have hG_hermit : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z).IsHermitian :=
-    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α z
-  have hGinv_hermit : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹.IsHermitian := hG_hermit.inv
-  have hentry := hGinv_hermit.apply i j
-  unfold chartInvGramMatrix
-  have hstar : star ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i) =
-      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ i j := hentry
-  rw [show star ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i) =
-      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i from rfl] at hstar
-  exact hstar.symm
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_partialDeriv_chartGramOnE_swap
@@ -1057,7 +1039,8 @@ theorem chartRicciTensor_symm_of_boundaryless [I.Boundaryless]
   have hx_target : extChartAt I α x ∈ (extChartAt I α).target :=
     (extChartAt I α).map_source hxsrc
   have hx_int : extChartAt I α x ∈ interior (extChartAt I α).target :=
-    extChartAt_target_subset_interior_of_boundaryless (I := I) α hx_target
+    DifferentialGeometry.Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
+      (I := I) α hx_target
   exact chartRicciTensor_symm (I := I) g α i k hx_int
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1069,6 +1052,6 @@ theorem ricciFun_isPointwiseSymm_of_boundaryless [I.Boundaryless]
   have hxsrc : x ∈ (chartAt H x).source := mem_chart_source H x
   exact chartRicciTensor_symm_of_boundaryless (I := I) g x i k hxsrc
 
-end DivergenceTheorem
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry

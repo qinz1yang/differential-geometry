@@ -169,7 +169,7 @@ theorem supOn_resSrc_eq
     P.M P.topology P.charted P.t2 P.smooth
     g₁ g₂ g₃ (sourceOpen (I := I) Φ k) sourceSigma sourceT2 C p
 
-structure ConvOut
+structure FlowMetricConvergenceData
     (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
@@ -205,7 +205,7 @@ structure ConvOut
           metricDerivNorm (I := I) a
             (gSeqExt (I := I) Φ R bf hsrc htgt (φ k) t) (gInf t) R x < ε
 
-namespace ConvOut
+namespace FlowMetricConvergenceData
 
 noncomputable def restrict
     {R : letI : TopologicalSpace P.M := P.topology
@@ -214,9 +214,9 @@ noncomputable def restrict
       SmoothRiemannianMetric I P.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
     {β ψ c d : Real}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hsub : Set.Icc c d ⊆ Set.Icc β ψ) :
-    ConvOut (I := I) Φ R bf hsrc htgt c d where
+    FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt c d where
   φ := co.φ
   hφ := co.hφ
   gInf := co.gInf
@@ -237,9 +237,9 @@ noncomputable def compSubseq
       SmoothRiemannianMetric I P.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
     {β ψ : Real}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (η : Nat → Nat) (hη : StrictMono η) :
-    ConvOut (I := I) Φ R bf hsrc htgt β ψ where
+    FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ where
   φ := co.φ ∘ η
   hφ := co.hφ.comp hη
   gInf := co.gInf
@@ -256,9 +256,9 @@ noncomputable def compSubseq
     simpa only [Function.comp_apply] using
       hk₀ (η k) (hk.trans (hη.id_le k)) t ht a ha x hx
 
-end ConvOut
+end FlowMetricConvergenceData
 
-noncomputable def convOut
+noncomputable def flowMetricConvergenceData
     (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
@@ -311,7 +311,7 @@ noncomputable def convOut
                 metricDerivNorm (I := I) b (srcMetric (I := I) Φ hsrc htgt k s)
                   (srcMetric (I := I) Φ hsrc htgt k t)
                   (refRes (I := I) Φ R k) y <= Ls * |s - t|) :
-    ConvOut (I := I) Φ R bf hsrc htgt β ψ := by
+    FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ := by
   classical
   letI : TopologicalSpace P.M := P.topology
   letI : ChartedSpace H P.M := P.charted
@@ -324,7 +324,7 @@ noncomputable def convOut
   haveI : WeaklyLocallyCompactSpace P.M := inferInstance
   have hne : Nonempty P.M := ⟨P.basepoint⟩
   have hd := denseIccSeq (beta := β) (psiT := ψ) hβψ
-  have hAA := windowGInfAll (I := I) hne β ψ R
+  have hAA := exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uniformly_on_time_interval (I := I) hne β ψ R
     (gSeqExt (I := I) Φ R bf hsrc htgt)
     hd.choose hd.choose_spec.1 hd.choose_spec.2
     (hgLip_gSeqExt (I := I) Φ R bf hsrc htgt β ψ hlipTail hlipSrc)
@@ -558,7 +558,7 @@ theorem ofRP_supOn_conv
       SmoothRiemannianMetric I P.M)
     (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
     (β ψ : Real)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (gInf : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       Real -> SmoothRiemannianMetric I P.M)
@@ -598,7 +598,7 @@ theorem gInf_zero_eq
       SmoothRiemannianMetric I P.M)
     (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
     (β ψ : Real)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (h0 : (0 : Real) ∈ Set.Icc β ψ)
     (g0 : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;

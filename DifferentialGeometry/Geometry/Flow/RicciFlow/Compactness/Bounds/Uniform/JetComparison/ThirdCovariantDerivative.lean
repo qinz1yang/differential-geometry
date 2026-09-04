@@ -38,7 +38,7 @@ private theorem sqrt_covariant_tensor_norm_sq_zero (g : SmoothRiemannianMetric I
   classical
   obtain ⟨basis, hON⟩ :=
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j; constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
   rw [normSq0S_identity_eq_sum_sq (I := I) g x s basis hinv]
@@ -134,7 +134,7 @@ theorem covariant_derivative_step_accumulation_two_le_comparison_constant
     rw [hsplit]; rfl
   obtain ⟨basis, hON⟩ :=
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₂ x
-  have hinv : MetricInverseInBasisGen (I := I) g₂ x basis
+  have hinv : MetricInverseInBasis (I := I) g₂ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j; constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
   rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one]

@@ -72,8 +72,8 @@ theorem normSq0S_moving_deriv {s : Nat} {x : M} {t : Real}
   let Tdt : (Fin s → Fin (Module.finrank Real (TangentSpace I x))) → Real := fun I0 =>
     tensor0SComponent (I := I) Tdot (fun i => basis i) I0
   have hinvAll (r : Real) :
-      MetricInverseInBasisGen (I := I) (g r) x basis (gInv r) := by
-    simpa [gInv] using basisInvMetric_real (I := I) (g r) x basis
+      MetricInverseInBasis (I := I) (g r) x basis (gInv r) := by
+    simpa [gInv] using basisInvMetric_isInverse (I := I) (g r) x basis
   have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by
     simpa [gInv, gInvDt, ric] using

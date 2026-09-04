@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Compactness
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
@@ -30,7 +30,7 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
 
-theorem windowGInfPt (hne : Nonempty M)
+theorem exists_metric_subsequence_tendsto_in_derivative_norm_uniformly_on_time_interval (hne : Nonempty M)
     (K : Set M) (hK : IsCompact K) (beta psiT : Real) (p : Nat)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M)
@@ -58,7 +58,7 @@ theorem windowGInfPt (hne : Nonempty M)
             metricDerivNorm (I := I) a (gSeq (phi k) t) (gInf t) gRef x < eps) := by
   classical
   obtain ⟨phi, hphi, gNet, _hnetInner, hnetNorm⟩ :=
-    netFullDiag (I := I) hne K hK p gRef gSeq e
+    exists_metric_subsequence_tendsto_on_countable_times (I := I) hne K hK p gRef gSeq e
       (fun n rho hrho q K' hK' => hbdd rho hrho (e n) (he n) q K' hK')
       (fun n rho hrho => hlow rho hrho (e n) (he n))
   have htime : forall t, t ∈ Set.Icc beta psiT ->
@@ -71,7 +71,7 @@ theorem windowGInfPt (hne : Nonempty M)
               metricDerivNorm (I := I) a (gSeq (phi (psi k)) t) gT gRef x < eps := by
     intro t ht
     obtain ⟨psi, hpsi, gT, hinner, hnorm⟩ :=
-      metricPreconvFull (I := I) hne K hK p gRef (fun k => gSeq (phi k) t)
+      exists_metric_subsequence_tendsto_on_compact (I := I) hne K hK p gRef (fun k => gSeq (phi k) t)
         (hbdd phi hphi t ht) (hlow phi hphi t ht)
     refine ⟨psi, hpsi, gT, ?_, ?_⟩
     · intro x
@@ -103,7 +103,7 @@ theorem windowGInfPt (hne : Nonempty M)
           metricDerivNorm (I := I) a (gSeq (phi k) t) (gInf t) gRef x < eps := by
     intro t ht eps heps
     have hcauchy :=
-      netCauchyAt (I := I) K beta psiT p gSeq gNet gRef phi L hL hgLip e he hdense hnetNorm
+      metric_subsequence_cauchy_at_time_of_dense_time_convergence (I := I) K beta psiT p gSeq gNet gRef phi L hL hgLip e he hdense hnetNorm
         t ht
     have hsub : forall eps : Real, 0 < eps -> exists k0 : Nat,
         forall k : Nat, k0 <= k -> forall a : Nat, a <= p -> forall x, x ∈ K ->
@@ -112,7 +112,7 @@ theorem windowGInfPt (hne : Nonempty M)
       intro eps heps
       exact (hgAt t ht).2 eps heps
     obtain ⟨k0, hk0⟩ :=
-      fullOfSubseq (I := I) K p (fun k => gSeq (phi k) t) (gAt t ht) gRef
+      metric_sequence_tendsto_of_cauchy_and_subsequence_tendsto (I := I) K p (fun k => gSeq (phi k) t) (gAt t ht) gRef
         (psiAt t ht) (hpsiAt t ht) hcauchy hsub eps heps
     refine ⟨k0, fun k hk a ha x hx => ?_⟩
     have hgInf_t : gInf t = gAt t ht := by
@@ -124,7 +124,7 @@ theorem windowGInfPt (hne : Nonempty M)
       forall s, s ∈ Set.Icc beta psiT -> forall t, t ∈ Set.Icc beta psiT ->
         forall a : Nat, a <= p -> forall x, x ∈ K ->
           metricDerivNorm (I := I) a (gInf s) (gInf t) gRef x <= L * |s - t| :=
-    infLipOfConv (I := I) K beta psiT p gSeq gInf gRef phi L hgLip hfull
+    metric_limit_derivative_norm_lipschitz (I := I) K beta psiT p gSeq gInf gRef phi L hgLip hfull
   have hwinPt : forall eps : Real, 0 < eps -> exists k0 : Nat, forall k : Nat, k0 <= k ->
       forall t, t ∈ Set.Icc beta psiT -> forall a : Nat, a <= p -> forall x, x ∈ K ->
         metricDerivNorm (I := I) a (gSeq (phi k) t) (gInf t) gRef x < eps := by
@@ -187,7 +187,7 @@ theorem windowGInfPt (hne : Nonempty M)
   rw [hgInf_t]
   exact (hgAt t ht).1
 
-theorem windowGInfAll
+theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uniformly_on_time_interval
     [WeaklyLocallyCompactSpace M]
     (hne : Nonempty M)
     (beta psiT : Real)
@@ -229,7 +229,7 @@ theorem windowGInfAll
       exists psi : Nat -> Nat, StrictMono psi /\ P j (phi ∘ psi) := by
     intro j phi hphi
     obtain ⟨psi, hpsi, gNet, htend, hconv⟩ :=
-      netFullDiag (I := I) hne (Kx j) (hKxc j) j gRef (fun k => gSeq (phi k)) e
+      exists_metric_subsequence_tendsto_on_countable_times (I := I) hne (Kx j) (hKxc j) j gRef (fun k => gSeq (phi k)) e
         (fun n rho hrho q K' hK' => hbdd (phi ∘ rho) (hphi.comp hrho) (e n) (he n) q K' hK')
         (fun n rho hrho => hlow (phi ∘ rho) (hphi.comp hrho) (e n) (he n))
     refine ⟨psi, hpsi, gNet, ?_, ?_⟩
@@ -294,7 +294,7 @@ theorem windowGInfAll
     obtain ⟨m0, hm0⟩ := Kx.exists_superset_of_isCompact (isCompact_singleton (x := x))
     have hxKm : x ∈ Kx m0 := hm0 (Set.mem_singleton x)
     obtain ⟨k0, hk0⟩ :=
-      netCauchyAt (I := I) (Kx m0) beta psiT m0 gSeq gNet gRef phi (Lf m0) (hLfnn m0)
+      metric_subsequence_cauchy_at_time_of_dense_time_convergence (I := I) (Kx m0) beta psiT m0 gSeq gNet gRef phi (Lf m0) (hLfnn m0)
         (hLipAll m0) e he hdense (hnetConv m0) t ht eps heps
     exact ⟨k0, fun m hm l hl => hk0 m hm l hl 0 (Nat.zero_le m0) x hxKm⟩
   have hcauchyInner : forall t, t ∈ Set.Icc beta psiT -> forall x : M,
@@ -309,7 +309,7 @@ theorem windowGInfAll
             Filter.atTop (nhds (gT.inner x))) := by
     intro t ht
     obtain ⟨psi, hpsi, gT, hinner, _⟩ :=
-      metricPreconvFull (I := I) hne (Kx 0) (hKxc 0) 0 gRef (fun k => gSeq (phi k) t)
+      exists_metric_subsequence_tendsto_on_compact (I := I) hne (Kx 0) (hKxc 0) 0 gRef (fun k => gSeq (phi k) t)
         (hbdd phi hphi t ht) (hlow phi hphi t ht)
     exact ⟨psi, hpsi, gT, fun x => by simpa only [Function.comp_apply] using hinner x⟩
   let psi0 : (t : Real) -> t ∈ Set.Icc beta psiT -> Nat -> Nat :=
@@ -331,7 +331,7 @@ theorem windowGInfAll
         metricDerivNorm (I := I) a (gSeq (phi k) t) (gInf t) gRef x < eps := by
     intro j t ht eps heps
     obtain ⟨psi, hpsi, gT, hinnerT, hnormT⟩ :=
-      metricPreconvFull (I := I) hne (Kx j) (hKxc j) j gRef (fun k => gSeq (phi k) t)
+      exists_metric_subsequence_tendsto_on_compact (I := I) hne (Kx j) (hKxc j) j gRef (fun k => gSeq (phi k) t)
         (hbdd phi hphi t ht) (hlow phi hphi t ht)
     have hinnerT' : forall x : M, Filter.Tendsto (fun m => (gSeq (phi (psi m)) t).inner x)
         Filter.atTop (nhds (gT.inner x)) := fun x => by
@@ -340,7 +340,7 @@ theorem windowGInfAll
       rw [hgInf_eq t ht]
       exact metricLimit_uniq (I := I) (fun k => gSeq (phi k) t) gT (gAt0 t ht)
         (hcauchyInner t ht) psi hpsi (psi0 t ht) (hpsi0 t ht) hinnerT' (hgAt0 t ht)
-    have hcauchyj := netCauchyAt (I := I) (Kx j) beta psiT j gSeq gNet gRef phi (Lf j)
+    have hcauchyj := metric_subsequence_cauchy_at_time_of_dense_time_convergence (I := I) (Kx j) beta psiT j gSeq gNet gRef phi (Lf j)
       (hLfnn j) (hLipAll j) e he hdense (hnetConv j) t ht
     have hsubj : forall eps : Real, 0 < eps -> exists k0 : Nat,
         forall k : Nat, k0 <= k -> forall a : Nat, a <= j -> forall x, x ∈ Kx j ->
@@ -350,7 +350,7 @@ theorem windowGInfAll
       exact ⟨k0, fun k hk a ha x hx => by
         simpa only [Function.comp_apply] using hk0 k hk a ha x hx⟩
     obtain ⟨k0, hk0⟩ :=
-      fullOfSubseq (I := I) (Kx j) j (fun k => gSeq (phi k) t) gT gRef psi hpsi
+      metric_sequence_tendsto_of_cauchy_and_subsequence_tendsto (I := I) (Kx j) j (fun k => gSeq (phi k) t) gT gRef psi hpsi
         hcauchyj hsubj eps heps
     refine ⟨k0, fun k hk a ha x hx => ?_⟩
     rw [← hgTeq]; exact hk0 k hk a ha x hx
@@ -358,7 +358,7 @@ theorem windowGInfAll
       forall s, s ∈ Set.Icc beta psiT -> forall t, t ∈ Set.Icc beta psiT ->
         forall a : Nat, a <= j -> forall x, x ∈ Kx j ->
           metricDerivNorm (I := I) a (gInf s) (gInf t) gRef x <= Lf j * |s - t| := fun j =>
-    infLipOfConv (I := I) (Kx j) beta psiT j gSeq gInf gRef phi (Lf j) (hLipAll j)
+    metric_limit_derivative_norm_lipschitz (I := I) (Kx j) beta psiT j gSeq gInf gRef phi (Lf j) (hLipAll j)
       (fun t ht eps heps => hfullj j t ht eps heps)
   have hwinj : forall j : Nat, forall eps : Real, 0 < eps -> exists k0 : Nat,
       forall k : Nat, k0 <= k -> forall t, t ∈ Set.Icc beta psiT -> forall a : Nat, a <= j ->

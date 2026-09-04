@@ -88,8 +88,8 @@ theorem inner_raiseAt (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x)) (a : Idx -> Real) (m : Idx) :
     g.inner x (raiseAt (I := I) g x basis a) (basis m) = a m := by
   classical
-  have hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
-      (basisInvMetric (I := I) g x basis) := basisInvMetric_real (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) (M := M) g x basis
+      (basisInvMetric (I := I) g x basis) := basisInvMetric_isInverse (I := I) g x basis
   have hrepr : ∀ p : Idx,
       basis.repr (raiseAt (I := I) g x basis a) p =
         ∑ l : Idx, basisInvMetric (I := I) g x basis p l * a l := by
@@ -123,19 +123,19 @@ omit [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace 
 theorem inner_sharpFlat (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     (V W : TangentSpace I x) :
     g₁.inner x V (sharpFlat (I := I) g₂ g₁ x W) = g₂.inner x V W := by
-  have hflat : tangentFlatEquivGen (I := I) g₁ x (sharpFlat (I := I) g₂ g₁ x W) =
-      tangentFlatEquivGen (I := I) g₂ x W := by
-    change tangentFlatEquivGen (I := I) g₁ x
-      ((tangentFlatEquivGen (I := I) g₁ x).symm
-        ((tangentFlatEquivGen (I := I) g₂ x) W)) = _
-    exact (tangentFlatEquivGen (I := I) g₁ x).apply_symm_apply _
+  have hflat : tangentFlatEquiv (I := I) g₁ x (sharpFlat (I := I) g₂ g₁ x W) =
+      tangentFlatEquiv (I := I) g₂ x W := by
+    change tangentFlatEquiv (I := I) g₁ x
+      ((tangentFlatEquiv (I := I) g₁ x).symm
+        ((tangentFlatEquiv (I := I) g₂ x) W)) = _
+    exact (tangentFlatEquiv (I := I) g₁ x).apply_symm_apply _
   calc g₁.inner x V (sharpFlat (I := I) g₂ g₁ x W)
       = g₁.inner x (sharpFlat (I := I) g₂ g₁ x W) V :=
         g₁.symm x V (sharpFlat (I := I) g₂ g₁ x W)
-    _ = tangentFlatEquivGen (I := I) g₁ x (sharpFlat (I := I) g₂ g₁ x W) V :=
-        (tangentFlatEquiv_apply_gen (I := I) g₁ x _ V).symm
-    _ = tangentFlatEquivGen (I := I) g₂ x W V := by rw [hflat]
-    _ = g₂.inner x W V := tangentFlatEquiv_apply_gen (I := I) g₂ x W V
+    _ = tangentFlatEquiv (I := I) g₁ x (sharpFlat (I := I) g₂ g₁ x W) V :=
+        (tangentFlatEquiv_apply (I := I) g₁ x _ V).symm
+    _ = tangentFlatEquiv (I := I) g₂ x W V := by rw [hflat]
+    _ = g₂.inner x W V := tangentFlatEquiv_apply (I := I) g₂ x W V
     _ = g₂.inner x V W := g₂.symm x W V
 
 
@@ -147,7 +147,7 @@ theorem rm04mix_inner (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
       g₁.inner x (riemannOp (metricCov (I := I) g₂) x X Y Z) W := by
   have h := CovariantDerivative.riemannCurvature04At_apply_const
     (I := I) g₁ (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) X Y Z W
-  rw [DifferentialGeometry.riemannCurvatureAux_tangentConst_eq_riemannOp
+  rw [DifferentialGeometry.connectionRiemannCurvatureField_tangentConst_eq_riemannOp
     (I := I) (metricCov (I := I) g₂) (metricCov_smooth (I := I) g₂) x X Y Z] at h
   rw [h]
   exact g₁.symm x W _

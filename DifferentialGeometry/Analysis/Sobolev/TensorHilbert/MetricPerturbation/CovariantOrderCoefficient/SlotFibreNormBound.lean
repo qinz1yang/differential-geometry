@@ -48,7 +48,7 @@ open DifferentialGeometry.TensorMultilinear
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma curry_symm_smul_aux (s : ℕ) (x : M) (c : ℝ)
+private lemma curry_symm_smul (s : ℕ) (x : M) (c : ℝ)
     (a : TangentSpace I x →L[ℝ] Tensor0SSpace (s + 1) I x) :
     (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm (c • a) =
       c • (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm a := by
@@ -65,7 +65,7 @@ private lemma curry_symm_smul_aux (s : ℕ) (x : M) (c : ℝ)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma curry_symm_add_aux (s : ℕ) (x : M)
+private lemma curry_symm_add (s : ℕ) (x : M)
     (a b : TangentSpace I x →L[ℝ] Tensor0SSpace (s + 1) I x) :
     (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm (a + b) =
       (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm a +
@@ -135,9 +135,9 @@ def bilinearSlotInsertCLM (s : ℕ) (x : M)
     { toFun := fun D => (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
         (bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Term D)
       map_add' := fun D D' => by
-        rw [termCurryCLM_add, curry_symm_add_aux]
+        rw [termCurryCLM_add, curry_symm_add]
       map_smul' := fun c D => by
-        rw [termCurryCLM_smul, curry_symm_smul_aux]; rfl }
+        rw [termCurryCLM_smul, curry_symm_smul]; rfl }
 
 abbrev termSlotFib (s : ℕ) (x : M)
     (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :

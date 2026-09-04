@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ProductLeibniz
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.SlotPermutation
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
-import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantDerivative
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RiemannFromRicci
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RicciControlsRiemann
@@ -94,8 +94,8 @@ theorem solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients
       (coordinateFrameAt (I := I) x₀ (m 3) x₀),
     DifferentialGeometry.Geometry.Curvature.rm13_eval_eq_christoffelCurvCoord
       (I := I) (S.family.connection t) hcov (S.base.rm13 t) x₀
-      (dualToCotangentGen (I := I)
-        ((tangentFlatLinearGen (I := I) (S.base.metric t) x₀)
+      (dualToCotangent (I := I)
+        ((tangentFlatLinear (I := I) (S.base.metric t) x₀)
           (coordinateFrameAt (I := I) x₀ (m 3) x₀)))
       hRm hcurv (m 0) (m 1) (m 2)]
   refine Finset.sum_congr rfl fun p _ => ?_
@@ -535,7 +535,7 @@ theorem ricDot_of_solution
     unfold rm kd
     ring
   have hinv :
-      MetricInverseInBasisGen (I := I) (S.base.metric (t : Real)) x basis
+      MetricInverseInBasis (I := I) (S.base.metric (t : Real)) x basis
         (identityInvMetric (Idx := Fin 3)) :=
     by
       have hinv' :=
@@ -720,7 +720,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricCompatSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
       (S.family.connection t) (S.family.metric t) := by
   simpa [SolutionFamily.connection, SolutionOn.family_metric] using
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -1298,7 +1298,7 @@ private theorem traceRicWit
       = Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e
           (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
             (metricTraceFirstTwoField (I := I) (M := M) gm A) gf) := by
-  rw [metricTraceFirstTwoField_domDomCongr]
+  rw [metricTraceFirstTwoField_domDomCongr_frontExtendEquiv]
   congr 1
   simp only [tensor0SField_product_zero, Tensor0SField.domDomCongr_zero,
     add_zero]
@@ -1360,7 +1360,7 @@ private theorem traceScalWit
             (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 0) (q := 2)
               (metricTraceFirstTwoField (I := I) (M := M) gm Hess) gf)
             gf) := by
-  rw [metricTraceFirstTwoField_domDomCongr]
+  rw [metricTraceFirstTwoField_domDomCongr_frontExtendEquiv]
   congr 1
   simp only [tensor0SField_product_zero, Tensor0SField.domDomCongr_zero,
     add_zero]
@@ -1601,7 +1601,7 @@ theorem roughRm04_comp
             kd (I0 1) (I0 2) * kd (I0 0) (I0 3)) := by
   classical
   let v : Fin 4 → TangentSpace I x := fun p => basis (I0 p)
-  have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
+  have hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis
       (identityInvMetric (Idx := Fin 3)) := by
     have hinv' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := I) (S.base.metric t) basis horth

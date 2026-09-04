@@ -1769,13 +1769,13 @@ theorem heatLapDuhField_holderOnWith_of_holder
       (lapDuhParabolicHolderConst_nonneg (V := V) halpha1.le K)]
   simpa only [dist_eq_norm] using ENNReal.ofReal_le_ofReal hreal
 
-def heatDuhTimeCandidate (t : Real) (f : Real → V → F) (x : V) : F :=
+def heatDuhTimeDerivative (t : Real) (f : Real → V → F) (x : V) : F :=
   f t x + heatLapDuh t f x
 
-def heatDuhTimeCandidateField (f : Real → V → F) : ParabolicPoint V → F :=
-  fun p ↦ heatDuhTimeCandidate p.time f p.space
+def heatDuhTimeDerivativeField (f : Real → V → F) : ParabolicPoint V → F :=
+  fun p ↦ heatDuhTimeDerivative p.time f p.space
 
-theorem heatDuhTimeCandidateField_holderWith_restrict_of_holder
+theorem heatDuhTimeDerivativeField_holderWith_restrict_of_holder
     {alpha K C : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {T : Real} (f : Real → V → F)
     (hf : ∀ r ∈ Icc (0 : Real) T, HolderWith K alpha (f r))
@@ -1791,22 +1791,22 @@ theorem heatDuhTimeCandidateField_holderWith_restrict_of_holder
     HolderWith (C + Real.toNNReal
       (lapDuhParabolicHolderConst (V := V) alpha K)) alpha
       ((parabolicCylinder (Ioc (0 : Real) T) Set.univ).domRestrict
-        (heatDuhTimeCandidateField f)) := by
+        (heatDuhTimeDerivativeField f)) := by
   have hlap :=
     (heatLapDuhField_holderOnWith_of_holder halpha0 halpha1 f hf hmeas).holderWith
   intro p q
-  simpa only [heatDuhTimeCandidateField, heatDuhTimeCandidate,
+  simpa only [heatDuhTimeDerivativeField, heatDuhTimeDerivative,
     heatLapDuhField, Set.domRestrict_apply, Pi.add_apply, edist_dist] using
       (hsource.add hlap) p q
 
-theorem parabolicTimeDerivative_norm_le_of_heatDuhTimeCandidate
+theorem parabolicTimeDerivative_norm_le_of_heatDuhTimeDerivative
     {alpha K B : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {T : Real} (hT : 0 ≤ T) (u f : Real → V → F)
     (hbound : ∀ r ∈ Icc (0 : Real) T, ∀ x : V, ‖f r x‖ ≤ B)
     (hf : ∀ r ∈ Icc (0 : Real) T, HolderWith K alpha (f r))
     (hrealize : ∀ p ∈ parabolicCylinder (Ioc (0 : Real) T) Set.univ,
       HasDerivAt (fun t : Real ↦ u t p.space)
-        (heatDuhTimeCandidateField f p) p.time)
+        (heatDuhTimeDerivativeField f p) p.time)
     (hmeas : ∀ t ∈ Ioc (0 : Real) T, ∀ x : V,
       ∀ i : Fin (Module.finrank Real V),
       AEStronglyMeasurable
@@ -1818,17 +1818,17 @@ theorem parabolicTimeDerivative_norm_le_of_heatDuhTimeCandidate
     (hp : p ∈ parabolicCylinder (Ioc (0 : Real) T) Set.univ) :
     ‖parabolicTimeDerivative u p‖ ≤
       B + lapDuhNormConst (V := V) alpha K T := by
-  have heq : parabolicTimeDerivative u p = heatDuhTimeCandidateField f p := by
+  have heq : parabolicTimeDerivative u p = heatDuhTimeDerivativeField f p := by
     unfold parabolicTimeDerivative
     rw [(hrealize p hp).hasFDerivAt.fderiv]
     simp
   rw [heq]
-  unfold heatDuhTimeCandidateField heatDuhTimeCandidate
+  unfold heatDuhTimeDerivativeField heatDuhTimeDerivative
   exact (norm_add_le _ _).trans
     (add_le_add (hbound p.time ⟨hp.1.1.le, hp.1.2⟩ p.space)
       (heatLapDuh_norm_le_of_holder halpha0 halpha1 hT f hf hmeas hp.1 p.space))
 
-theorem parabolicTimeDerivative_holderWith_restrict_of_heatDuhTimeCandidate
+theorem parabolicTimeDerivative_holderWith_restrict_of_heatDuhTimeDerivative
     {alpha K C : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {T : Real} (u f : Real → V → F)
     (hf : ∀ r ∈ Icc (0 : Real) T, HolderWith K alpha (f r))
@@ -1837,7 +1837,7 @@ theorem parabolicTimeDerivative_holderWith_restrict_of_heatDuhTimeCandidate
         (fun p ↦ f p.time p.space)))
     (hu : ∀ p ∈ parabolicCylinder (Ioc (0 : Real) T) Set.univ,
       HasDerivAt (fun t : Real ↦ u t p.space)
-        (heatDuhTimeCandidateField f p) p.time)
+        (heatDuhTimeDerivativeField f p) p.time)
     (hmeas : ∀ t ∈ Ioc (0 : Real) T, ∀ x : V,
       ∀ i : Fin (Module.finrank Real V),
       AEStronglyMeasurable
@@ -1848,17 +1848,17 @@ theorem parabolicTimeDerivative_holderWith_restrict_of_heatDuhTimeCandidate
       (lapDuhParabolicHolderConst (V := V) alpha K)) alpha
       ((parabolicCylinder (Ioc (0 : Real) T) Set.univ).domRestrict
         (parabolicTimeDerivative u)) := by
-  have hcand := heatDuhTimeCandidateField_holderWith_restrict_of_holder
+  have hcand := heatDuhTimeDerivativeField_holderWith_restrict_of_holder
     halpha0 halpha1 f hf hsource hmeas
   have heq :
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ).domRestrict
           (parabolicTimeDerivative u) =
         (parabolicCylinder (Ioc (0 : Real) T) Set.univ).domRestrict
-          (heatDuhTimeCandidateField f) := by
+          (heatDuhTimeDerivativeField f) := by
     funext p
     unfold parabolicTimeDerivative
     change (fderiv Real (fun t : Real ↦ u t p.1.space) p.1.time) 1 =
-      heatDuhTimeCandidateField f p.1
+      heatDuhTimeDerivativeField f p.1
     rw [(hu p p.2).hasFDerivAt.fderiv]
     simp
   rw [heq]
@@ -1883,7 +1883,7 @@ theorem eParabolicC2HolderGaugeOn_le_of_heat_potential_jets
           heatD2Duh p.time (m 0) (m 1) f p.space)
     (htimeRealize : ∀ p ∈ parabolicCylinder (Ioc (0 : Real) T) Set.univ,
       HasDerivAt (fun t : Real ↦ u t p.space)
-        (heatDuhTimeCandidateField f p) p.time)
+        (heatDuhTimeDerivativeField f p) p.time)
     (hmeas : ∀ t ∈ Ioc (0 : Real) T, ∀ x : V,
       ∀ β : Fin 2 → Fin (Module.finrank Real V),
       AEStronglyMeasurable
@@ -1903,7 +1903,7 @@ theorem eParabolicC2HolderGaugeOn_le_of_heat_potential_jets
       (lapDuhParabolicHolderConst (V := V) alpha K)) hspatial htime
   · exact parabolicSpatialJet_two_holderWith_restrict_of_heatD2Duh
       halpha0 halpha1 u f hf hspaceRealize hmeas
-  · exact parabolicTimeDerivative_holderWith_restrict_of_heatDuhTimeCandidate
+  · exact parabolicTimeDerivative_holderWith_restrict_of_heatDuhTimeDerivative
       halpha0 halpha1 u f hf hsource htimeRealize (fun t ht x i => by
         simpa using hmeas t ht x (fun _ => i))
 
@@ -1934,7 +1934,7 @@ theorem eParabolicC2HolderGaugeOn_le_of_heat_potential_lower_jets
           heatD2Duh p.time (m 0) (m 1) f p.space)
     (htimeRealize : ∀ p ∈ parabolicCylinder (Ioc (0 : Real) T) Set.univ,
       HasDerivAt (fun t : Real ↦ u t p.space)
-        (heatDuhTimeCandidateField f p) p.time)
+        (heatDuhTimeDerivativeField f p) p.time)
     (hmeas : ∀ t ∈ Ioc (0 : Real) T, ∀ x : V,
       ∀ β : Fin 2 → Fin (Module.finrank Real V),
       AEStronglyMeasurable
@@ -1963,7 +1963,7 @@ theorem eParabolicC2HolderGaugeOn_le_of_heat_potential_lower_jets
   have htime : ∀ p ∈ parabolicCylinder (Ioc (0 : Real) T) Set.univ,
       ‖parabolicTimeDerivative u p‖ ≤
         B + lapDuhNormConst (V := V) alpha K T :=
-    fun p hp => parabolicTimeDerivative_norm_le_of_heatDuhTimeCandidate
+    fun p hp => parabolicTimeDerivative_norm_le_of_heatDuhTimeDerivative
       halpha0 halpha1.le hT u f hbound hf htimeRealize
         (fun t ht x i => by simpa using hmeas t ht x (fun _ => i)) p hp
   have hraw := eParabolicC2HolderGaugeOn_le_of_heat_potential_jets
@@ -1990,7 +1990,7 @@ theorem eParabolicC2HolderGaugeOn_heatDuh_le_of_lower_jets_of_time_realization
         (fun p => f p.time p.space)))
     (htimeRealize : ∀ p ∈ parabolicCylinder (Ioc (0 : Real) T) Set.univ,
       HasDerivAt (fun t : Real => heatDuh t f p.space)
-        (heatDuhTimeCandidateField (fun r x => f r x) p) p.time)
+        (heatDuhTimeDerivativeField (fun r x => f r x) p) p.time)
     (hmeas0 : ∀ t ∈ Ioc (0 : Real) T, ∀ z : V,
       AEStronglyMeasurable
         (fun s : Real => heatSup (t - s) (f s) z)

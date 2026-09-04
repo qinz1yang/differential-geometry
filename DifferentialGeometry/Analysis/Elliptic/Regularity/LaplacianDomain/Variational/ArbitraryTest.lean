@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.Limit
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.SmoothApproximation
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.IntrinsicToChart.ComponentNormBound
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.PartitionOfUnity
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic

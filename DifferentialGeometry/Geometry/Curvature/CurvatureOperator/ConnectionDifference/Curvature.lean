@@ -152,7 +152,7 @@ theorem covApply_cov1_bracket_expand {x : M} (hZx : MDiffAt (T% Z) x) (w : Tange
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [BoundarylessManifold I M] in
 include hX hY hZ in
-theorem riemannSec_difference_raw (x : M) :
+theorem riemannSec_difference_expansion (x : M) :
     riemannSec cov₁ X Y Z x =
       riemannSec cov₀ X Y Z x
       + (cov₀.toFun (diffSec cov₀ cov₁ Y Z) x (X x)
@@ -220,7 +220,7 @@ theorem riemannSec_difference (htor : cov₀.torsion = 0) (x : M) :
   classical
   have hXx : MDiffAt (T% X) x := (hX x).mdifferentiableAt (by simp)
   have hYx : MDiffAt (T% Y) x := (hY x).mdifferentiableAt (by simp)
-  rw [riemannSec_difference_raw cov₀ cov₁ hX hY hZ x]
+  rw [riemannSec_difference_expansion cov₀ cov₁ hX hY hZ x]
   unfold covDerivDiff
   have htf : covApply cov₀ X Y x - covApply cov₀ Y X x = VectorField.mlieBracket I X Y x :=
     covApply_sub_eq_mlieBracket cov₀ htor hXx hYx

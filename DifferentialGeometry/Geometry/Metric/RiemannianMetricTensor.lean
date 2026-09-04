@@ -1,7 +1,3 @@
-/-
-Authors: Jack McCarthy
-Modified by: Ziyang Qin
--/
 import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.RSTensor.Algebra.Contraction
 import DifferentialGeometry.Tensor.RSTensor.Defs
@@ -93,9 +89,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
 variable (n : WithTop ℕ∞)
 variable (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
-
-abbrev RiemannianMetricGen := _root_.Bundle.ContMDiffRiemannianMetric I n E
-    (TangentSpace I : M → Type _)
 
 private noncomputable def to02Tensor_eCLM :
     (E →L[ℝ] ℝ) →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : Fin 1 => E) ℝ :=
@@ -210,7 +203,8 @@ theorem joint_to02 {S : Set ℝ}
   · exact to02Tensor_trivialization_eq (I := I) (M := M)
       (A := A p₀) (mem_baseSet_trivializationAt E (TangentSpace I) p₀.1)
 
-def RiemannianMetricGen.to02TensorGen {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
+def _root_.Bundle.ContMDiffRiemannianMetric.toTensor0S
+    {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M] [hM : IsManifold I (n + 1) M]
     (g : _root_.Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _)) :
@@ -246,14 +240,16 @@ def RiemannianMetricGen.to02TensorGen {I : ModelWithCorners ℝ E H} {n : WithTo
       (A := gI x) (x := x) (x₀ := x₀) hx⟩
 
 @[simp]
-theorem RiemannianMetricGen.to02Tensor_apply {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
+theorem _root_.Bundle.ContMDiffRiemannianMetric.toTensor0S_apply
+    {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M] [IsManifold I (n + 1) M]
     (g : _root_.Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _))
     (x : M) (v : Fin 2 -> TangentSpace I x) :
-    RiemannianMetricGen.to02TensorGen (I := I) (n := n) g x v =
+    g.toTensor0S (I := I) (n := n) x v =
       (_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0) (v 1) := by
-  simp only [to02TensorGen, tensor0SBundleFiber.eq_1,     id_eq, Fin.isValue]
+  simp only [_root_.Bundle.ContMDiffRiemannianMetric.toTensor0S,
+    tensor0SBundleFiber.eq_1, id_eq, Fin.isValue]
   change ((_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (Fin.tail v 0) =
     ((_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (v 1)
   simp [Fin.tail]

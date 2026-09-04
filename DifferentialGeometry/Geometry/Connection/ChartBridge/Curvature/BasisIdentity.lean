@@ -387,7 +387,7 @@ lemma mlieBracket_chartBasisVec_ext_self_eq_zero [I.Boundaryless]
   have hXk_at : MDiffAt (T% Xk) x := (hXk x).mdifferentiableAt (by simp)
   apply (tangentSpaceModelContinuousLinearEquiv (I := I) x).injective
   rw [map_zero]
-  rw [mlieBracket_eq_chart_fderiv_diff (I := I) x Xj Xk hxint]
+  rw [mlieBracket_eq_chart_fderiv_diff_at_center (I := I) x Xj Xk hxint]
   rw [fderiv_chartE_section_repr_eq_zero_of_eventuallyEq (I := I) x k hU_open hxU hXk_eq]
   rw [fderiv_chartE_section_repr_eq_zero_of_eventuallyEq (I := I) x j hU_open hxU hXj_eq]
   change (0 : E) - 0 = 0

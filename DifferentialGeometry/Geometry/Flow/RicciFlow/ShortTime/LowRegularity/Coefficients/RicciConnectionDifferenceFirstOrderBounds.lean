@@ -147,8 +147,8 @@ private theorem core_h2
     intro i
     rw [connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two
       (I := I) (M := M) g₀ g₁,
-      iteratedCovGrad_reindexCoeffGen (I := I) (M := M),
-      norm_reindexCoeffGen_eq (I := I) (M := M)]
+      iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M),
+      norm_reindexCoefficientInputSlots_eq (I := I) (M := M)]
     calc
       _ ≤ Real.sqrt (Module.finrank ℝ E) *
           ‖iteratedCovGrad (I := I) g₀ 2 3 i
@@ -250,22 +250,22 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem kernel_split
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder1KernelField (I := I) g₀ g₁ =
-      -(reindexCoeffGen (I := I) (M := M) g₀ 3 4
+      -(reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
           (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4
             (slotPermutationCoefficient (I := I) (M := M) g₀ ko0312)
             (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ki102
-        + reindexCoeffGen (I := I) (M := M) g₀ 3 4
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
             (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4
               (slotPermutationCoefficient (I := I) (M := M) g₀ ko0213)
               (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ki120
         + ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4
             (slotPermutationCoefficient (I := I) (M := M) g₀ ko2301)
             (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)
-        + reindexCoeffGen (I := I) (M := M) g₀ 3 4
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
             (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4
               (slotPermutationCoefficient (I := I) (M := M) g₀ ko1302)
               (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ki102
-        + reindexCoeffGen (I := I) (M := M) g₀ 3 4
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
             (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4
               (slotPermutationCoefficient (I := I) (M := M) g₀ ko1203)
               (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ki120) := rfl
@@ -308,14 +308,14 @@ private theorem fullTerm_riemannianFiberNormSq
     (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 3 4 q
-          (reindexCoeffGen (I := I) (M := M) g₀ 3 4
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
             (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4
               (slotPermutationCoefficient (I := I) (M := M) g₀ σ)
               (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ρ)).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
         ((iteratedCovGrad (I := I) g₀ 3 4 q
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)).toSection x) := by
-  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
     (I := I) (M := M) g₀ 3 4
     (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4
       (slotPermutationCoefficient (I := I) (M := M) g₀ σ)
@@ -345,7 +345,7 @@ private theorem fullTerm_norm
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (q : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ 3 4 q
-        (reindexCoeffGen (I := I) (M := M) g₀ 3 4
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
           (ccOperatorFieldComp (I := I) (M := M) g₀ 3 4 4
             (slotPermutationCoefficient (I := I) (M := M) g₀ σ)
             (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ρ)‖ =
@@ -462,11 +462,11 @@ theorem exists_linearizedRicciConnectionDifferenceOrderOneCoefficient_covariantJ
   let pureF : SmoothCcTensor g₀ 4 2 :=
     cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁
   let R1 : SmoothCcTensor g₀ 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 4 2 pureF fourTraceCyclePerm123
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 pureF fourTraceCyclePerm123
   let R2 : SmoothCcTensor g₀ 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 4 2 pureF fourTraceSwap13Perm
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 pureF fourTraceSwap13Perm
   let R3 : SmoothCcTensor g₀ 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 4 2 pureF fourTraceDoubleTranspositionPerm
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 pureF fourTraceDoubleTranspositionPerm
   have hcomb : ricciCometricFourTraceCastG0 (I := I) g₀ g₁ =
       ((1 : ℝ) / 2) • (R1 + R2 - pureF - R3) := by
     simpa only [pureF, R1, R2, R3] using
@@ -474,11 +474,11 @@ theorem exists_linearizedRicciConnectionDifferenceOrderOneCoefficient_covariantJ
         (I := I) (M := M) g₀ g₁
   have hreindex : ∀ (ρ : Equiv.Perm (Fin 4)) (i : ℕ),
       ‖iteratedCovGrad (I := I) g₀ 4 2 i
-        (reindexCoeffGen (I := I) (M := M) g₀ 4 2 pureF ρ)‖ =
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 pureF ρ)‖ =
       ‖iteratedCovGrad (I := I) g₀ 4 2 i pureF‖ := by
     intro ρ i
-    rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M),
-      norm_reindexCoeffGen_eq (I := I) (M := M)]
+    rw [iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M),
+      norm_reindexCoefficientInputSlots_eq (I := I) (M := M)]
   have hpure : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 4 2 i pureF‖ ^ 2) ≤
       (Bt R) ^ 2 := by
@@ -492,9 +492,9 @@ theorem exists_linearizedRicciConnectionDifferenceOrderOneCoefficient_covariantJ
         apply Finset.sum_congr rfl
         intro i _
         dsimp only [pureF]
-        rw [lieCorrectionZeroTr, iteratedCovGrad_reindexCoeffGen
+        rw [lieCorrectionZeroTr, iteratedCovGrad_reindexCoefficientInputSlots
           (I := I) (M := M),
-          norm_reindexCoeffGen_eq (I := I) (M := M),
+          norm_reindexCoefficientInputSlots_eq (I := I) (M := M),
           pure_eq (I := I) (M := M) g₀ g₁]
       _ ≤ (Bt R) ^ 2 := ht
   have hcastNorm : ∀ i : ℕ,
@@ -637,11 +637,11 @@ theorem exists_uniform_linearizedRicciConnectionDifferenceOrderOneCoefficient_co
   let pureF : SmoothCcTensor g₀ 4 2 :=
     cometricDoubleTraceCoefficient (I := IU) (M := MU) g₀ g₁
   let R1 : SmoothCcTensor g₀ 4 2 :=
-    reindexCoeffGen (I := IU) (M := MU) g₀ 4 2 pureF fourTraceArgPerm0231
+    reindexCoefficientInputSlots (I := IU) (M := MU) g₀ 4 2 pureF fourTraceArgPerm0231
   let R2 : SmoothCcTensor g₀ 4 2 :=
-    reindexCoeffGen (I := IU) (M := MU) g₀ 4 2 pureF fourTraceArgPerm0321
+    reindexCoefficientInputSlots (I := IU) (M := MU) g₀ 4 2 pureF fourTraceArgPerm0321
   let R3 : SmoothCcTensor g₀ 4 2 :=
-    reindexCoeffGen (I := IU) (M := MU) g₀ 4 2 pureF fourTraceArgPerm2301
+    reindexCoefficientInputSlots (I := IU) (M := MU) g₀ 4 2 pureF fourTraceArgPerm2301
   have hcomb : ricciCometricFourTraceCastG0 (I := IU) g₀ g₁ =
       ((1 : ℝ) / 2) • (R1 + R2 - pureF - R3) := by
     simpa only [pureF, R1, R2, R3] using
@@ -649,11 +649,11 @@ theorem exists_uniform_linearizedRicciConnectionDifferenceOrderOneCoefficient_co
         (I := IU) (M := MU) g₀ g₁
   have hreindex : ∀ (ρ : Equiv.Perm (Fin 4)) (i : ℕ),
       ‖iteratedCovGrad (I := IU) g₀ 4 2 i
-        (reindexCoeffGen (I := IU) (M := MU) g₀ 4 2 pureF ρ)‖ =
+        (reindexCoefficientInputSlots (I := IU) (M := MU) g₀ 4 2 pureF ρ)‖ =
       ‖iteratedCovGrad (I := IU) g₀ 4 2 i pureF‖ := by
     intro ρ i
-    rw [iteratedCovGrad_reindexCoeffGen (I := IU) (M := MU),
-      norm_reindexCoeffGen_eq (I := IU) (M := MU)]
+    rw [iteratedCovGrad_reindexCoefficientInputSlots (I := IU) (M := MU),
+      norm_reindexCoefficientInputSlots_eq (I := IU) (M := MU)]
   have hpure : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := IU) g₀ 4 2 i pureF‖ ^ 2) ≤
       (Bt R) ^ 2 := by
@@ -666,9 +666,9 @@ theorem exists_uniform_linearizedRicciConnectionDifferenceOrderOneCoefficient_co
               (Equiv.refl (Fin 4)))‖ ^ 2 := by
         apply Finset.sum_congr rfl
         intro i _
-        rw [reindexedPureTrace, iteratedCovGrad_reindexCoeffGen
+        rw [reindexedPureTrace, iteratedCovGrad_reindexCoefficientInputSlots
           (I := IU) (M := MU),
-          norm_reindexCoeffGen_eq (I := IU) (M := MU)]
+          norm_reindexCoefficientInputSlots_eq (I := IU) (M := MU)]
         dsimp only [pureF]
         rw [pure_eq (I := IU) (M := MU) g₀ g₁,
           lieCorrectionZeroPureDT_eq_pureTrace (I := IU) (M := MU) g₀ g₁]

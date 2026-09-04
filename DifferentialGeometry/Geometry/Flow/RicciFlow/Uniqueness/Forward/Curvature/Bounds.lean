@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Curvature.Difference
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.VectorField.SmoothGlobalExtension
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Generic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Riemannian
 
 set_option autoImplicit false
 
@@ -42,7 +42,7 @@ private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
+    MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
   intro i j
   constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
 
@@ -53,12 +53,14 @@ private theorem metricCS (g : SmoothRiemannianMetric I M) (x : M)
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   set α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
-    dualToCotangentGen (I := I) (tangentFlatLinearGen (I := I) g x u) with hα
+    dualToCotangent (I := I) (tangentFlatLinear (I := I) g x u) with hα
   have hαnorm : normSq0S (I := I) g x 1 α = g.inner x u u := by
     rw [hα, normSq0S_eq_inner, inner0S_one_eq_cotangent]
-    exact cotangentInner_dualToCotangent_tangentFlat_gen (I := I) g x u u
+    exact cotangentInner_dualToCotangent_tangentFlat (I := I) g x u u
   have hαv : Tensor0SSpace.eval α (fun _ : Fin 1 => v) = g.inner x u v := by
-    rw [hα, dualToCotangent_apply_gen, tangentFlatLinear_apply_gen]
+    rw [hα]
+    change tangentFlatLinear (I := I) g x u v = g.inner x u v
+    exact tangentFlatLinear_apply (I := I) g x u v
   have h := abs_apply_le_sqrt_normSq0S (I := I) g x 1 basis hON α (fun _ : Fin 1 => v)
   change |Tensor0SSpace.eval α (fun _ : Fin 1 => v)| ≤ _ at h
   rw [hαv, hαnorm] at h
@@ -103,7 +105,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 private theorem normSqAdd_le {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M} {k : ℕ}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (hinv : MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) k x) :
     normSq0S (I := I) g x k (A + B) ≤
       2 * normSq0S (I := I) g x k A + 2 * normSq0S (I := I) g x k B := by
@@ -407,11 +409,11 @@ private theorem invDiag_le (g₁ g₂ : SmoothRiemannianMetric I M) {x : M} {Λ 
       basisInvMetric (I := I) g₂ x basis k k ≤ Λ := by
   classical
   set u : TangentSpace I x :=
-    (tangentFlatEquivGen (I := I) g₂ x).symm (basis.coord k) with hu
+    (tangentFlatEquiv (I := I) g₂ x).symm (basis.coord k) with hu
   have hflat : ∀ w : TangentSpace I x, g₂.inner x u w = basis.coord k w := by
     intro w
-    change (tangentFlatEquivGen (I := I) g₂ x u) w = basis.coord k w
-    rw [hu, (tangentFlatEquivGen (I := I) g₂ x).apply_symm_apply]
+    change (tangentFlatEquiv (I := I) g₂ x u) w = basis.coord k w
+    rw [hu, (tangentFlatEquiv (I := I) g₂ x).apply_symm_apply]
   have hQ : basisInvMetric (I := I) g₂ x basis k k = g₂.inner x u u := by
     simp only [basisInvMetric]
     rw [← hu]
@@ -450,16 +452,16 @@ private theorem invEntry_le (g₁ g₂ : SmoothRiemannianMetric I M) {x : M} {Λ
     |basisInvMetric (I := I) g₂ x basis i j| ≤ Λ := by
   classical
   set ui : TangentSpace I x :=
-    (tangentFlatEquivGen (I := I) g₂ x).symm (basis.coord i) with hui
+    (tangentFlatEquiv (I := I) g₂ x).symm (basis.coord i) with hui
   set uj : TangentSpace I x :=
-    (tangentFlatEquivGen (I := I) g₂ x).symm (basis.coord j) with huj
+    (tangentFlatEquiv (I := I) g₂ x).symm (basis.coord j) with huj
   have hflat : ∀ (m : Idx) (w : TangentSpace I x),
-      g₂.inner x ((tangentFlatEquivGen (I := I) g₂ x).symm (basis.coord m)) w
+      g₂.inner x ((tangentFlatEquiv (I := I) g₂ x).symm (basis.coord m)) w
         = basis.coord m w := by
     intro m w
-    change (tangentFlatEquivGen (I := I) g₂ x
-      ((tangentFlatEquivGen (I := I) g₂ x).symm (basis.coord m))) w = basis.coord m w
-    rw [(tangentFlatEquivGen (I := I) g₂ x).apply_symm_apply]
+    change (tangentFlatEquiv (I := I) g₂ x
+      ((tangentFlatEquiv (I := I) g₂ x).symm (basis.coord m))) w = basis.coord m w
+    rw [(tangentFlatEquiv (I := I) g₂ x).apply_symm_apply]
   have hval : basisInvMetric (I := I) g₂ x basis i j = g₂.inner x uj ui := by
     simp only [basisInvMetric]
     rw [← hui, huj]
@@ -491,7 +493,7 @@ private theorem invDiff_le (g₁ g₂ : SmoothRiemannianMetric I M) {x : M} {Λ 
     |(if i = j then (1 : Real) else 0) - basisInvMetric (I := I) g₂ x basis i j| ≤
       (Fintype.card Idx : Real) * Λ * Real.sqrt (metricDiffSq (I := I) g₁ g₂ x) := by
   classical
-  have hrow := (basisInvMetric_real (I := I) g₂ x basis i j).1
+  have hrow := (basisInvMetric_isInverse (I := I) g₂ x basis i j).1
   have hH : ∀ k : Idx, g₂.inner x (basis k) (basis j)
       = (if k = j then (1 : Real) else 0) -
         metricDiffAt (I := I) g₁ g₂ x ![basis k, basis j] := by
@@ -559,7 +561,7 @@ theorem traceDiffNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) {s :
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   have hinv1 := onFrame_inv (I := I) g₁ basis hON
-  have hinv2 := basisInvMetric_real (I := I) g₂ x basis
+  have hinv2 := basisInvMetric_isInverse (I := I) g₂ x basis
   set nR : Real := (Module.finrank Real E : Real) with hnR
   have hnRnn : 0 ≤ nR := by rw [hnR]; positivity
   set NW := Real.sqrt (normSq0S (I := I) g₁ x (s + 2) W) with hNW

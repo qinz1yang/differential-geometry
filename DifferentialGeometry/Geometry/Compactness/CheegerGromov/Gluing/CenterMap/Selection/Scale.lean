@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Data
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.HatBounds
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.ExponentialBallCovering
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Transition.Refinement

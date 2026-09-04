@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.MemW1pResidualFull
+import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.DensityIdentification
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.H2
 import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothBridge
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.NormEquivalence
@@ -27,8 +27,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Sobolev.Chart
-open DifferentialGeometry.Analysis.Laplacian.MemW1pFChartResidualFull
-open Analysis.Sobolev.EquivalenceFull
+open DifferentialGeometry.Analysis.Laplacian.FChartResidualDensityIdentification
+open Analysis.Sobolev.Equivalence
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -104,7 +104,7 @@ private lemma eLpNorm_gNormGrad_smoothScalar_le_const_mul_wkpNormChart_one
             wkpNormChart (I := I) (M := M) 1 2 f.toFun := by
   classical
   obtain ⟨C, hC_nn, hbound⟩ :=
-    Analysis.Sobolev.EquivalenceFull.eLpNorm_g_norm_gradFun_le_const_mul_wkpNormChart_smooth_uniform
+    Analysis.Sobolev.Equivalence.eLpNorm_g_norm_gradFun_le_const_mul_wkpNormChart_smooth_uniform
       (I := I) (M := M) g (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
   refine ⟨C, hC_nn, ?_⟩
@@ -712,7 +712,7 @@ theorem smoothApproxSeq_tendsto_h1Compl
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     Tendsto (fun n =>
       smoothToH1Compl (I := I) (M := M) g
-        (MemW1pFChartResidualFull.smoothApproxSeq
+        (FChartResidualDensityIdentification.smoothApproxSeq
           (I := I) (M := M) g hu_h n))
       atTop (𝓝 u_h) := by
   classical

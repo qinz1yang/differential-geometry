@@ -290,7 +290,7 @@ private lemma nablaCurvSec_add_right
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma mvfderiv_apply_smooth_aux
+private lemma mvfderiv_apply_smooth
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {X : Π b : M, TangentSpace I b} (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X)) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => mvfderiv (I := I) f b (X b)) := by
@@ -355,7 +355,7 @@ private lemma nablaCurvSec_smul_right
       ((hf b).mdifferentiableAt (by simp))]
     simp [covApply, Xf, add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply]
-  have hXfsm : ContMDiff I 𝓘(ℝ, ℝ) ∞ Xf := mvfderiv_apply_smooth_aux hf hX
+  have hXfsm : ContMDiff I 𝓘(ℝ, ℝ) ∞ Xf := mvfderiv_apply_smooth hf hX
   have hcXY := covApply_contMDiff (cov := cov) hX hY
   have h2 : riemannSec cov (covApply cov (fun b => X b) (f • fun b => Y b)) (fun b => Z b)
         (fun b => W b) x =

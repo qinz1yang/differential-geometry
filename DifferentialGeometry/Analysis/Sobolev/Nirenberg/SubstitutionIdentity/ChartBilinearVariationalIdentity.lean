@@ -31,7 +31,7 @@ open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeSmoothApprox
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeGradTendsto
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeIBPExpand
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeIBP
-open DifferentialGeometry.Analysis.Sobolev.SubstitutionDischargeFinal
+open DifferentialGeometry.Analysis.Sobolev.SubstitutionChartBilinearTrivialCases
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionNonSmoothChartBilinear
 
 private local instance : MeasurableSpace E := borel E

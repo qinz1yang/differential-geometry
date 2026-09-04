@@ -51,7 +51,7 @@ private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s 
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_smul]
 
 
-theorem linearizedRicciConnectionDifferenceOrder1CoeffField_perOrder_l2_tameEnvelope_generic
+theorem linearizedRicciConnectionDifferenceOrder1CoeffField_perOrder_l2_tameEnvelope
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -69,10 +69,10 @@ theorem linearizedRicciConnectionDifferenceOrder1CoeffField_perOrder_l2_tameEnve
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨ΛΦ, KΦ, hΛΦ, hKΦ_nn, hΦfeed⟩ :=
-    ricciCometricFourTraceCastG0_order0sup_perOrder_l2_tameEnvelope_generic
+    ricciCometricFourTraceCastG0_order0sup_perOrder_l2_tameEnvelope
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛW, KW, hΛW, hKW_nn, hWfeed⟩ :=
-    linearizedRicciConnectionDifferenceOrder1KernelField_order0sup_perOrder_l2_tameEnvelope_generic
+    linearizedRicciConnectionDifferenceOrder1KernelField_order0sup_perOrder_l2_tameEnvelope
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨fun i => diagonalGridGrowthFactor (E := E) i *
       (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_rs_le
@@ -225,10 +225,10 @@ theorem exists_corrTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   classical
   obtain ⟨KA, hKA_nn, hKA⟩ :=
-    linearizedRicciConnectionDifferenceOrder1CoeffField_perOrder_l2_tameEnvelope_generic
+    linearizedRicciConnectionDifferenceOrder1CoeffField_perOrder_l2_tameEnvelope
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨KB, hKB_nn, hKB⟩ :=
-    ricciFirstOrderKoszulCoeff_perOrder_l2_tameEnvelope_generic
+    ricciFirstOrderKoszulCoeff_perOrder_l2_tameEnvelope
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨fun i => 2 * KA i + 2 * KB i,
     fun i => by linarith [hKA_nn i, hKB_nn i], ?_⟩
@@ -1316,7 +1316,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfCombInput
   linarith [hGi, hXb]
 
 
-theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder_l2_tameEnvelope_generic
+theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder_l2_tameEnvelope
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1586,7 +1586,7 @@ theorem exists_corrTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   classical
   obtain ⟨K0, hK0_nn, hK0⟩ :=
-    linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder_l2_tameEnvelope_generic
+    linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder_l2_tameEnvelope
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨K0, hK0_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs

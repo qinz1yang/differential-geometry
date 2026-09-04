@@ -144,9 +144,9 @@ theorem aN_intrinsic_point
       nlinarith [hC0, hg, hcb, hgnn]
     · exact ⟨0, le_rfl, fun h => absurd h hc⟩
   choose B hB0 hBb using hBd
-  obtain ⟨Ctop, hCtop0, htopGen⟩ := exists_connection_difference_component_bound_in_frame hu gRef frame hframe hframeS hchrH
+  obtain ⟨Ctop, hCtop0, htopForMetric⟩ := exists_connection_difference_component_bound_in_frame hu gRef frame hframe hframeS hchrH
     C0 Kg (N - 1)
-  have htop := htopGen g hchrG hgsm Ginv hinv hGinv
+  have htop := htopForMetric g hchrG hgsm Ginv hinv hGinv
     (fun x hx j h1 h2 => hgB x hx j h1 h2)
   have hDtop : ∀ x ∈ u,
       compL2 (iterCovCompU (I := I) frame
@@ -164,12 +164,12 @@ theorem aN_intrinsic_point
     intro x hx
     have h := htop x hx
     rwa [show N - 1 + 1 = N from by omega] at h
-  obtain ⟨Cpp, Cppp, hpp0, hppp0, hcompGen⟩ := aN_component (r₀ := 2) (rg := 2)
+  obtain ⟨Cpp, Cppp, hpp0, hppp0, hcomponentsForMetric⟩ := aN_component (r₀ := 2) (rg := 2)
     hu frame
     (fun y' => christoffelSymbolInFrame
       (leviCivitaConnectionOfMetric (I := I) gRef) frame hframe y')
     hframeS hchrH N hN B hB0 Ctop hCtop0 KShi hKShi0
-  have hcomp := hcompGen
+  have hcomp := hcomponentsForMetric
     (fun y' => christoffelSymbolInFrame
       (leviCivitaConnectionOfMetric (I := I) g) frame hframe y')
     hchrG

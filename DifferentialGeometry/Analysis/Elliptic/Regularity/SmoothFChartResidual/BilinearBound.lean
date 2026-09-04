@@ -49,7 +49,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-private lemma wkpNorm_chartPushedRaw_lapPiece_le_etaTimesV_aux
+private lemma wkpNorm_chartPushedRaw_lapPiece_le_etaTimesV
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ C : ℝ, 0 < C ∧ ∀ v : SmoothScalar g,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -1079,7 +1079,7 @@ private lemma wkpNorm_chartPushedRaw_lapPiece_le
         (fun x : M => v.toFun x) := by
   classical
   obtain ⟨C_lap, hC_lap_pos, hC_lap_bound⟩ :=
-    wkpNorm_chartPushedRaw_lapPiece_le_etaTimesV_aux (I := I) (M := M) g α
+    wkpNorm_chartPushedRaw_lapPiece_le_etaTimesV (I := I) (M := M) g α
   obtain ⟨C_strict, hC_strict_pos, hC_strict_bound⟩ :=
     wkpNorm_chartPushedRaw_etaTimesV_le (I := I) (M := M) g α
   set Cfinal : ℝ := C_lap * C_strict with hCfinal_def

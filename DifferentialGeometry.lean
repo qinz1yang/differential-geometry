@@ -40,10 +40,10 @@ import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Basic
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Parametric
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BoundaryDerivLimit
-import DifferentialGeometry.Analysis.Calculus.SmoothExtension.ChartRicciJet
+import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.Curvature
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.ProductMatching
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Parametric
-import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetPartialDeriv
+import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.EntryDerivatives
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Local
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Smooth
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.SpaceJets
@@ -142,9 +142,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Chart.PartitionOfUnityDerivative
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Chart.FirstDerivativeRepresentation
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Chart.Representation
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.ZerothOrder.Reduction
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.ZerothOrder.SobolevBound
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.ZerothOrder.Aggregate
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Intrinsic.RoughLaplacianSecondDerivative
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Chart.Norm
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Section.L2Bound
@@ -194,7 +192,7 @@ import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothDenseLp
 import DifferentialGeometry.Analysis.Elliptic.Operator.Variational
 import DifferentialGeometry.Analysis.Elliptic.Operator.VariationalLaplacian
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Bochner.Polarised
-import DifferentialGeometry.Analysis.Elliptic.Regularity.Bochner.PolarisedLpFull
+import DifferentialGeometry.Analysis.Elliptic.Regularity.Bochner.PolarisedLp
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Bochner.PolarisedLpSmooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1Compl
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1ComplFromDom
@@ -223,7 +221,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiate
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedDataConstructor
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedH2Interior
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.FChartEffDef
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.EffectiveSource
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow2
@@ -237,7 +235,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegul
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.BilinearH1Compl
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.DerivedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.DerivedH2Interior
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.FChartEffDef
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.EffectiveSource
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityBaseDataLocalRegularity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityIntegrationByParts
@@ -246,13 +244,13 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferen
 import DifferentialGeometry.Analysis.Elliptic.Regularity.EllipticRegularity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.LpDecomposition
 import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.MemW1pResidual
-import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.MemW1pResidualFull
+import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.DensityIdentification
 import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.Residual
 import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.ResidualMemW1p
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.ChartFormula
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Defs
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Leibniz
-import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.Candidate
+import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.Rhs.Pairings
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.DensityExtension
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.IntegralForm
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.LpIdentity
@@ -304,7 +302,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIde
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIdentity.InductiveSuccessor
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIdentity.LeibnizCoefficients
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIdentity.SuccessorSource
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.Data
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.H1Data
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.H2
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.LeibnizSource
@@ -316,7 +314,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multipl
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.H1Completion
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.Identity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.IntegralIdentity
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.Limit
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.SmoothApproximation
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.ArbitraryTest
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ManifoldH2.NonSmooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ManifoldH2.Smooth
@@ -376,10 +374,10 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorH1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorSmoothBridge
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorSmoothScalarPreH1
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorVariational
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.FullH1Compl
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.FullSmoothBridgeInteriorSupport
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.FullSmoothBridgeNeumannCondition
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.FullSmoothScalarPreH1
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Unrestricted.H1
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Unrestricted.InteriorSupport
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Unrestricted.BoundaryCondition
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Unrestricted.SmoothScalar
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.H1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Reilly
 import DifferentialGeometry.Analysis.Heat.MaximumPrinciple
@@ -417,7 +415,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.PartitionOfUnity
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.Support
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenFull
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenBoundaryIntegral
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenWithBoundary
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.Stokes
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.SurfaceIntegralIdentification
@@ -447,7 +445,7 @@ import DifferentialGeometry.Analysis.Integration.L2.Parametric.FiniteOrderRegula
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Defs
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Operators
-import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SimpLemmas
+import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SmoothSectionMap
 import DifferentialGeometry.Analysis.Integration.L2.MultiplicationOperator
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.Algebra
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.CauchySchwarz
@@ -546,7 +544,7 @@ import DifferentialGeometry.Analysis.ODE.Existence.SecondOrderLinear
 import DifferentialGeometry.Analysis.ODE.Existence.StateCoerciveMass
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.ChartCoverBijective
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.UniformBijective
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.FullIntervalFlow
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.ClosedInterval
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.SeeleyTimeExtension
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
@@ -562,8 +560,8 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ManifoldOrbit.Existence
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ManifoldOrbit.Uniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.InteriorBareFlowFullHorizon
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Global.InteriorInterval
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.ChartLocalPicardRegular
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.ChartFieldLipschitz
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.FieldTimeExtension
@@ -608,7 +606,7 @@ import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.Duhame
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.Semigroup
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.SemigroupContinuity
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.SemigroupLaw
-import DifferentialGeometry.Analysis.Parabolic.Data.Limit
+import DifferentialGeometry.Analysis.Parabolic.ConditionStability
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.Remainder
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.SecondOrder
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.Basic
@@ -687,7 +685,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.Holder.Path
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.BasisPotential
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Carleson
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Carrier
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Data
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Defs
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Early.Basic
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Early.Flux
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Exponents
@@ -966,7 +964,7 @@ import DifferentialGeometry.Analysis.Schauder.Parabolic.Chart.Regularity
 import DifferentialGeometry.Analysis.Schauder.Parabolic.Composition
 import DifferentialGeometry.Analysis.Schauder.Cutoff.Parabolic.Basic
 import DifferentialGeometry.Analysis.Schauder.Parabolic.Jet.Compactness
-import DifferentialGeometry.Analysis.Schauder.Parabolic.Jet.Limit
+import DifferentialGeometry.Analysis.Schauder.Parabolic.Jet.Convergence
 import DifferentialGeometry.Analysis.Schauder.Holder.Scaling
 import DifferentialGeometry.Analysis.Schauder.Elliptic.VariableCoefficient.BallInterior
 import DifferentialGeometry.Analysis.Schauder.Elliptic.VariableCoefficient.Basic
@@ -988,8 +986,8 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.Banach
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.BanachManifold
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.Completeness
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.CompletenessLp
-import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.ManifoldLimitConv
-import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.ManifoldLimitWkp
+import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.ManifoldLimitConvergence
+import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.ManifoldLimitRegularity
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.WkpForcingBridge
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.ChartPullbackSmooth
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.MeasurablePullback
@@ -1063,7 +1061,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Distributi
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.DiscreteLogConvexity
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.GeneralTensor
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.TensorRS
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.HolderIntegrability
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.KatoSecondDerivative
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.SecondOrderInterpolation
@@ -1179,7 +1177,7 @@ import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.HigherOrderBounds
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Compatibility
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Completeness
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.FixedPointLimit
-import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Limit
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.SectionLimit
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Morrey
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Quotient
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Support
@@ -1397,7 +1395,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Inve
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Jets.ChartRicciLieLipschitz
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Jets.CovariantDerivativeChartPeeling
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.InverseGram.IteratedJetLipschitz
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.Core
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.FiberOperators
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.Field
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.JointSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.NormalForm.Basic
@@ -1433,7 +1431,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Ricc
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.GalerkinCompactness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Regularity.AllOrderBootstrap
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.Balanced
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.BareLaplacianSpectralIdentification
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.LaplacianSpectralIdentification
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.ConnectionLaplacian
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.CrossMetricEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
@@ -1535,7 +1533,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.Inn
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerPointwiseUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.ApplicationJets
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.BareTensor
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.Tensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricFamilyRegularity
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricRaiseCovariantDerivative
@@ -1659,10 +1657,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cutoff.WeakPartials
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.CompactResolventSobolevBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.GradientEnergyBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.LimitEnergyBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.PartialLpLimitBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.PartitionOfUnitySobolev.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.PartitionOfUnitySobolev.ChristoffelTerm
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.PartitionOfUnitySobolev.ComponentNormAggregate
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.PartitionOfUnitySobolev.ComponentNormComparison
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.PartitionOfUnitySobolev.LeibnizCrossTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.PartitionOfUnitySobolev.WeakPartials
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.WeightedCoefficientL2Bound
@@ -1708,7 +1706,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Lp.EigenvalueInverse
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Lp.NumeratorBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Lp.RestrictedVolume
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Lp.UniformAggregate
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Lp.UniformBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Sobolev.Bounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Sobolev.IteratedStepBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Sobolev.NumeratorBound
@@ -2104,7 +2102,6 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Torsion
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.LogDensity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Extension.LinearTangent
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Hessian.LocalFrame
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.MetricCompatibility
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Metric
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.CanonicalConnection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Hessian.ScalarBochner
@@ -2150,7 +2147,7 @@ import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
 import DifferentialGeometry.Geometry.Connection.Realization.Basic
 import DifferentialGeometry.Geometry.Connection.Realization.ConcreteConnection
 import DifferentialGeometry.Geometry.Connection.Realization.Embedding
-import DifferentialGeometry.Geometry.Connection.Realization.HomNabla
+import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSectionsLocal
 import DifferentialGeometry.Geometry.Connection.Realization.Tensor0SBridge
@@ -2161,7 +2158,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CotangentCovari
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Cotangent
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SelfAdjointDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.CovariantCalculus
-import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.Application
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.NormalForm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.SectionCalculus
@@ -2377,7 +2373,7 @@ import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
 import DifferentialGeometry.Geometry.Exponential.Cartan.Local
 import DifferentialGeometry.Geometry.Exponential.Cartan.Norm
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Continuity
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Data
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Existence
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Basic
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.TangentLift
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.Chart
@@ -2484,7 +2480,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Span
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Monotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.WeightedHessian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.AllBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Limit.Data
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Limit.CurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Estimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.First
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Higher
@@ -2492,7 +2488,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.TimeTruncation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RegularityHypotheses
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TensorInnerLaplacian
-import DifferentialGeometry.Geometry.Curvature.Coordinates.RicciJet
+import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.ChartBridge
 import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Limit.Smooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Christoffel
@@ -2564,7 +2560,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivati
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Commutator.Bound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Frame.Invariant
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.FullEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.FirstDerivativeNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Solution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Frame.Orthonormal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.ReactionBound
@@ -2588,7 +2584,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormEvol
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormHeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TailEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Reduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.UhlenbeckReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Variation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.CoordinateRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.FrozenSlot
@@ -2607,7 +2603,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.ScalarLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.RicciTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Basic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Data
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicciReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.Reaction
@@ -2666,11 +2662,11 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.N
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.ChartConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.CompactPoints
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.CompositionPoints
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.Data
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.HatWeights
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.Cage
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Cage
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Composition
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Data
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.HatBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Identity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Source
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.IntrinsicComparison
@@ -2691,7 +2687,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Existence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Branch
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.InverseVelocityConvergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.LimitFlow
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.FlowLimit
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.DiagonalSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
@@ -2762,7 +2758,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoo
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Smoothness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.Buffer
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.Cover
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Convergence.Root
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Convergence.StageRoot
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageConstruction.Diagonal
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.Fill
@@ -2879,7 +2875,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Diagonal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.WindowPrecompactness
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllOrders
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllPoints
-import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Compactness
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.Bounds
 import DifferentialGeometry.Geometry.Metric.Variation.TimeDerivativeBounds
@@ -3029,7 +3025,7 @@ import DifferentialGeometry.Geometry.Geodesic.Flow.FlatPhase
 import DifferentialGeometry.Geometry.Geodesic.Equation.FromIntegralCurve
 import DifferentialGeometry.Geometry.Geodesic.Naturality.GramPullback
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Homogeneity
-import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry
+import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Geodesic
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Rescaling
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
@@ -3065,7 +3061,7 @@ import DifferentialGeometry.Geometry.Metric.LieDerivative.Basic
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Cartan
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Naturality
 import DifferentialGeometry.Geometry.Operator.Gradient.LipschitzBound
-import DifferentialGeometry.Geometry.Metric.Pullback.LocalIsometryRigidity
+import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Rigidity
 import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Construction.Existence
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
@@ -3080,7 +3076,6 @@ import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.DerivativeDecomp
 import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.Derivative
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
-import DifferentialGeometry.Geometry.Metric.RiemannianMetric
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.Construction.SmoothMetricFromCoefficients
 import DifferentialGeometry.Geometry.Metric.VectorField.SmoothExtension
@@ -3279,7 +3274,7 @@ import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.ChartJacobianMa
 import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.Tensor0SBundleLocalityIdentities
 import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleLocalityIdentities
 import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleTransition
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.FieldComponents
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ContractionLeibniz
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Conventions
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Expansion
@@ -3288,7 +3283,7 @@ import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.OpenRestriction
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.BasisEvaluation
-import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.CurvatureAction
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.RSTensor.Algebra.Product
@@ -3314,10 +3309,10 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metri
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Connection
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
 import DifferentialGeometry.Geometry.Connection.MetricTrace.LineSplit
-import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTrace02
-import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantTwoTensor
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantDerivative
 import DifferentialGeometry.Geometry.Connection.MetricTrace.NormBound
-import DifferentialGeometry.Geometry.Connection.MetricTrace.Trace04
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantFourTensor
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.SlotPermutation
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Endomorphism
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.OneJet
@@ -3350,7 +3345,6 @@ import DifferentialGeometry.Geometry.Metric.QuadraticBounds.FiniteArrayNorm
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.LoweringNorm
 import DifferentialGeometry.Tensor.RSTensor.RankZero
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Generic
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.LinearAlgebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
@@ -3452,7 +3446,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Ener
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Remainder.MoserTameBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.MetricCoefficientBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.SelfBound
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.CoreIdentification
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.SmoothCoreIdentification
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.H2
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.Pairing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.MetricPerturbation.InverseH2
@@ -3530,7 +3524,7 @@ import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Intrinsic
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.Jets
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.CurvatureDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.EndpointPositivity
-import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.GeneralCurvatureCommutation
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.TwoParameterFields
 import DifferentialGeometry.Geometry.Comparison.Volume.Intrinsic.BallVolume
 import DifferentialGeometry.Geometry.Comparison.Volume.Intrinsic.Gronwall
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.FrameBound
@@ -3582,7 +3576,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.N
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.MetricLimits
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.CageScale
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.ChartSolution
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Data.Indexing
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Indexing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.HigherRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.ChartEquation

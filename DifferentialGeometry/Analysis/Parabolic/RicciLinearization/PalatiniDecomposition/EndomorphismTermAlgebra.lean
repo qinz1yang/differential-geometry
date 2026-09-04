@@ -277,7 +277,7 @@ private lemma bdVFSec_apply (g₁ gA gB : SmoothRiemannianMetric I M) (b : M) :
 def bdXiFix (g₀ g_bg : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0 3 :=
   metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₀ - metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg
 
-private def bdOmegaGen (g₀ g₁ gc : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0 1 :=
+private def bdOmegaAtConnectionMetric (g₀ g₁ gc : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0 1 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 1 (cometricDoubleTraceCastG0 (I := I) g₀ g₁)
     (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁ - metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gc)
 
@@ -289,8 +289,8 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma bdOmega_eq_sub (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     bdOmega (I := I) (M := M) g₀ g₁ g_bg =
-      bdOmegaGen (I := I) (M := M) g₀ g₁ g_bg - bdOmegaGen (I := I) (M := M) g₀ g₁ g₀ := by
-  rw [bdOmegaGen, bdOmegaGen, ← bdOperatorFieldComposition_sub_right, bdOmega]
+      bdOmegaAtConnectionMetric (I := I) (M := M) g₀ g₁ g_bg - bdOmegaAtConnectionMetric (I := I) (M := M) g₀ g₁ g₀ := by
+  rw [bdOmegaAtConnectionMetric, bdOmegaAtConnectionMetric, ← bdOperatorFieldComposition_sub_right, bdOmega]
   congr 1
   rw [bdXiFix]
   abel
@@ -348,7 +348,7 @@ lemma bdConnectionDifferenceLoweredCc_unitModel_apply (g₀ g₁ : SmoothRiemann
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma bdXiGen_unitModel_apply (g₀ g₁ gc : SmoothRiemannianMetric I M) (x : M)
+private lemma unitModel_metricLoweredConnectionDifferenceCoefficient_sub_apply (g₀ g₁ gc : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → E) :
     unitModel (I := I) (M := M) g₀ 3
         (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁ - metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gc) x m =
@@ -385,27 +385,27 @@ private lemma bdXiGen_unitModel_apply (g₀ g₁ gc : SmoothRiemannianMetric I M
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdOmegaGen_toSection_unit (g₀ g₁ gc : SmoothRiemannianMetric I M) (x : M) :
+private lemma bdOmegaAtConnectionMetric_toSection_unit (g₀ g₁ gc : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
-        (bdOmegaGen (I := I) (M := M) g₀ g₁ gc).toSection x)
+        (bdOmegaAtConnectionMetric (I := I) (M := M) g₀ g₁ gc).toSection x)
       (unitTensor (I := I) (M := M) x) =
       cometricDoubleTraceFib (I := I) g₁ 1 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁ - metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gc).toSection x)
           (unitTensor (I := I) (M := M) x)) := by
-  rw [bdOmegaGen, operatorFieldComposition_toSection]
+  rw [bdOmegaAtConnectionMetric, operatorFieldComposition_toSection]
   rfl
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdOmegaGen_unitModel_apply (g₀ g₁ gc : SmoothRiemannianMetric I M) (x : M)
+private lemma bdOmegaAtConnectionMetric_unitModel_apply (g₀ g₁ gc : SmoothRiemannianMetric I M) (x : M)
     (z : TangentSpace I x) :
-    unitModel (I := I) (M := M) g₀ 1 (bdOmegaGen (I := I) (M := M) g₀ g₁ gc) x
+    unitModel (I := I) (M := M) g₀ 1 (bdOmegaAtConnectionMetric (I := I) (M := M) g₀ g₁ gc) x
         (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x z) =
       g₀.inner x ((PDE.DeTurck.deTurckVF (I := I) g₁ gc :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) z := by
   classical
-  rw [unitModel, bdOmegaGen_toSection_unit]
+  rw [unitModel, bdOmegaAtConnectionMetric_toSection_unit]
   set D : Tensor0SSpace 3 I x :=
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁ - metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gc).toSection x)
@@ -468,7 +468,7 @@ private lemma bdOmegaGen_unitModel_apply (g₀ g₁ gc : SmoothRiemannianMetric 
       congr 1
       funext k
       fin_cases k <;> rfl
-    rw [hm, bdXiGen_unitModel_apply]
+    rw [hm, unitModel_metricLoweredConnectionDifferenceCoefficient_sub_apply]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
       Matrix.cons_val_two, Matrix.tail_cons, ContinuousLinearEquiv.symm_apply_apply]
   rw [Finset.sum_congr rfl (fun i _ => hterm i)]
@@ -491,7 +491,7 @@ private lemma bdOmega_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I
         (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x z) =
       g₀.inner x (bdVFSec (I := I) (M := M) g₁ g_bg g₀ x) z := by
   rw [bdOmega_eq_sub, bdUnitModel_sub, sub_apply,
-    bdOmegaGen_unitModel_apply, bdOmegaGen_unitModel_apply, bdVFSec_apply]
+    bdOmegaAtConnectionMetric_unitModel_apply, bdOmegaAtConnectionMetric_unitModel_apply, bdVFSec_apply]
   rw [map_sub, sub_apply]
 
 def bdAlphaA (g₀ g₁ g_bg : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0 2 :=
@@ -665,7 +665,7 @@ private lemma bdAlphaA_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric 
     (tangentSpaceModelContinuousLinearEquiv (I := I) x w)]
   rw [ContinuousLinearEquiv.symm_apply_apply]
   rw [show unitTensor (I := I) (M := M) x = unitZeroSec (I := I) (M := M) x from rfl]
-  rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g₀ 1
+  rw [covDeriv_unit_eval_eq (I := I) (M := M) g₀ 1
     (bdOmega (I := I) (M := M) g₀ g₁ g_bg).toSection x w]
   have hV : TensorSectionMDiffAt (I := I) 1
       (unitEvalSection (I := I) (M := M) g₀ 1 (bdOmega (I := I) (M := M) g₀ g₁ g_bg)) x :=

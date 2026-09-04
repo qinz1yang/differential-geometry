@@ -3362,13 +3362,13 @@ private theorem reindex_h2
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (ρ : Equiv.Perm (Fin r)) :
     covariantJetNormSq (I := I) (M := M) g 2
-        (reindexCoeffGen (I := I) (M := M) g r s Φ ρ) =
+        (reindexCoefficientInputSlots (I := I) (M := M) g r s Φ ρ) =
       covariantJetNormSq (I := I) (M := M) g 2 Φ := by
   unfold covariantJetNormSq
   apply Finset.sum_congr rfl
   intro i _
-  rw [iteratedCovGrad_reindexCoeffGen,
-    norm_reindexCoeffGen_eq]
+  rw [iteratedCovGrad_reindexCoefficientInputSlots,
+    norm_reindexCoefficientInputSlots_eq]
 
 private theorem app_h2_mul
     (hDim : Module.finrank ℝ E = 3)
@@ -4128,13 +4128,13 @@ private theorem fourtrace_h2_rf
   let F : SmoothCcTensor g 4 2 :=
     cometricDoubleTraceCoefficient (I := I) (M := M) g g₁
   let R₁ : SmoothCcTensor g 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g 4 2 F
+    reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F
       fourTraceArgPerm0231
   let R₂ : SmoothCcTensor g 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g 4 2 F
+    reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F
       fourTraceArgPerm0321
   let R₃ : SmoothCcTensor g 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g 4 2 F
+    reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F
       fourTraceArgPerm2301
   have hF :
       covariantJetNormSq (I := I) (M := M) g 2 F ≤
@@ -4311,7 +4311,7 @@ private theorem hp_reindex
     (ρ : Equiv.Perm (Fin r))
     (hS : H2Poly (I := I) (M := M) g P n A S) :
     H2Poly (I := I) (M := M) g P n A
-      (reindexCoeffGen (I := I) (M := M) g r s S ρ) := by
+      (reindexCoefficientInputSlots (I := I) (M := M) g r s S ρ) := by
   refine ⟨hS.1, ?_⟩
   rw [reindex_h2]
   exact hS.2
@@ -4440,7 +4440,7 @@ private def nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTw
 private def reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks
     (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -4461,10 +4461,10 @@ private def nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo
         (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
         (connectionDifferenceContrInsertionInnerField (I := I) g g₁)))
 
-private def reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
+private def reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
     (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -4472,7 +4472,7 @@ private def reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
         (connectionDifferenceContrInsertionInnerField (I := I) g g₁)))
     innerCoreInPerm10
 
-private def bareConnectionDifferenceKernelTerm_cycleZeroOneTwo
+private def directConnectionDifferenceKernelTerm_cycleZeroOneTwo
     (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
@@ -4484,7 +4484,7 @@ private def bareConnectionDifferenceKernelTerm_cycleZeroOneTwo
 private def reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo
     (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -4501,8 +4501,8 @@ private theorem ricciConnectionDifferenceQuadraticKernel_eq_sum
       nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo (I := I) (M := M) g g₁ +
       reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks (I := I) (M := M) g g₁ +
       nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo (I := I) (M := M) g g₁ +
-      reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁ +
-      bareConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g g₁ +
+      reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁ +
+      directConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g g₁ +
       reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo (I := I) (M := M) g g₁ := by
   rw [ricciConnectionDifferenceQuadraticKernel]
   apply congrArg₂ (· + ·)
@@ -4767,14 +4767,14 @@ private theorem ricciConnectionDifferenceQuadratic_secondOrder_radiusFree_bound
       (h244 _ _) hp1302 hcore3
   have h3 :
       H2Poly (I := I) (M := M) g P 2 K3
-        (reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁) := by
+        (reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁) := by
     have hr := hp_reindex (I := I) (M := M) g P
       innerCoreInPerm10 h3r
-    simpa only [K3, reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo, Nat.zero_add] using hr
+    simpa only [K3, reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo, Nat.zero_add] using hr
   have h4 :
       H2Poly (I := I) (M := M) g P 2 K4
-        (bareConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g g₁) := by
-    simpa only [K4, bareConnectionDifferenceKernelTerm_cycleZeroOneTwo, Nat.zero_add] using
+        (directConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g g₁) := by
+    simpa only [K4, directConnectionDifferenceKernelTerm_cycleZeroOneTwo, Nat.zero_add] using
       hp_app_of (I := I) (M := M) g P C244 hC244
         (h244 _ _) hp1203 hcore3
   have h5r :=
@@ -4802,15 +4802,15 @@ private theorem ricciConnectionDifferenceQuadratic_secondOrder_radiusFree_bound
         (nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo (I := I) (M := M) g g₁ +
           reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks (I := I) (M := M) g g₁ +
           nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo (I := I) (M := M) g g₁ +
-          reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁) := by
+          reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁) := by
     simpa only [K0123] using hp_add (I := I) (M := M) g P h012 h3
   have h01234 :
       H2Poly (I := I) (M := M) g P 2 K01234
         (nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo (I := I) (M := M) g g₁ +
           reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks (I := I) (M := M) g g₁ +
           nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo (I := I) (M := M) g g₁ +
-          reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁ +
-          bareConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g g₁) := by
+          reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁ +
+          directConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g g₁) := by
     simpa only [K01234] using hp_add (I := I) (M := M) g P h0123 h4
   have hk :
       H2Poly (I := I) (M := M) g P 2 Kker
@@ -5079,16 +5079,16 @@ private theorem aa_h2_of
     (h244 _ _) hp1302 hcore3
   have h3 :
       H2Poly (I := I) (M := M) g Z 0 (D3 * Q ^ 2)
-        (reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁) := by
-    unfold reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
+        (reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁) := by
+    unfold reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
     have hr := hp_reindex (I := I) (M := M) g Z
       innerCoreInPerm10 h3r
     convert hr using 1;
       simp only [D3]; ring
   have h4 :
       H2Poly (I := I) (M := M) g Z 0 (D4 * Q ^ 2)
-        (bareConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g g₁) := by
-    unfold bareConnectionDifferenceKernelTerm_cycleZeroOneTwo
+        (directConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g g₁) := by
+    unfold directConnectionDifferenceKernelTerm_cycleZeroOneTwo
     have hraw := hp_app_of (I := I) (M := M) g Z C244 hC244
       (h244 _ _) hp1203 hcore3
     convert hraw using 1;
@@ -5123,7 +5123,7 @@ private theorem aa_h2_of
         (nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo (I := I) (M := M) g g₁ +
           reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks (I := I) (M := M) g g₁ +
           nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo (I := I) (M := M) g g₁ +
-          reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁) := by
+          reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁) := by
     have hraw := hp_add (I := I) (M := M) g Z h012 h3
     convert hraw using 1;
       simp only [D0123]; ring
@@ -5132,8 +5132,8 @@ private theorem aa_h2_of
         (nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo (I := I) (M := M) g g₁ +
           reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks (I := I) (M := M) g g₁ +
           nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo (I := I) (M := M) g g₁ +
-          reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁ +
-          bareConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g g₁) := by
+          reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g g₁ +
+          directConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g g₁) := by
     have hraw := hp_add (I := I) (M := M) g Z h0123 h4
     convert hraw using 1;
       simp only [D01234]; ring
@@ -12119,10 +12119,10 @@ private theorem traceHess_eq
   apply ContMDiffSection.ext
   intro x
   rw [traceHessianCoeff_toSection, reindexedPureTrace,
-    reindexCoeffGen_toSection]
+    reindexCoefficientInputSlots_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffFibGen_apply, pureTrace_toSection,
+  rw [reindexCoefficientInputSlotsFiber_apply, pureTrace_toSection,
     traceHessianFib, ContinuousLinearMap.comp_apply,
     domDomCongrFib_apply]
 
@@ -12251,18 +12251,18 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem linearizedRicciConnectionDifferenceOrderOne_split
     (g g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder1KernelField (I := I) g g₁ =
-      -(reindexCoeffGen (I := I) (M := M) g 3 4
+      -(reindexCoefficientInputSlots (I := I) (M := M) g 3 4
           (rsDomDomCongrSection (I := I) (M := M) g 3 4 r1o0312
             (connectionDifferenceContravariantInsertionField (I := I) g g₁)) r1i102
-        + reindexCoeffGen (I := I) (M := M) g 3 4
+        + reindexCoefficientInputSlots (I := I) (M := M) g 3 4
             (rsDomDomCongrSection (I := I) (M := M) g 3 4 r1o0213
               (connectionDifferenceContravariantInsertionField (I := I) g g₁)) r1i120
         + rsDomDomCongrSection (I := I) (M := M) g 3 4 r1o2301
             (connectionDifferenceContravariantInsertionField (I := I) g g₁)
-        + reindexCoeffGen (I := I) (M := M) g 3 4
+        + reindexCoefficientInputSlots (I := I) (M := M) g 3 4
             (rsDomDomCongrSection (I := I) (M := M) g 3 4 r1o1302
               (connectionDifferenceContravariantInsertionField (I := I) g g₁)) r1i102
-        + reindexCoeffGen (I := I) (M := M) g 3 4
+        + reindexCoefficientInputSlots (I := I) (M := M) g 3 4
             (rsDomDomCongrSection (I := I) (M := M) g 3 4 r1o1203
               (connectionDifferenceContravariantInsertionField (I := I) g g₁)) r1i120) := by
   rw [← permApp_eq_rs (I := I) (M := M) g r1o0312,
@@ -12316,7 +12316,7 @@ private theorem ricciKer_h2_rf
       connectionDifferenceContrInsertionReindexPerm hs
     rw [connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two]
     change H2Poly (I := I) (M := M) g P 1 Ko
-      (reindexCoeffGen (I := I) (M := M) g 3 (2 + 2)
+      (reindexCoefficientInputSlots (I := I) (M := M) g 3 (2 + 2)
         (slotExtendIter (I := I) (M := M) g 1 2 2
           (connectionDifferenceSection (I := I) g₁ g))
         connectionDifferenceContrInsertionReindexPerm)
@@ -12324,18 +12324,18 @@ private theorem ricciKer_h2_rf
   let O : SmoothCcTensor g 3 4 :=
     connectionDifferenceContravariantInsertionField (I := I) g g₁
   let A0 : SmoothCcTensor g 3 4 :=
-    reindexCoeffGen (I := I) (M := M) g 3 4
+    reindexCoefficientInputSlots (I := I) (M := M) g 3 4
       (rsDomDomCongrSection (I := I) (M := M) g 3 4 r1o0312 O) r1i102
   let A1 : SmoothCcTensor g 3 4 :=
-    reindexCoeffGen (I := I) (M := M) g 3 4
+    reindexCoefficientInputSlots (I := I) (M := M) g 3 4
       (rsDomDomCongrSection (I := I) (M := M) g 3 4 r1o0213 O) r1i120
   let A2 : SmoothCcTensor g 3 4 :=
     rsDomDomCongrSection (I := I) (M := M) g 3 4 r1o2301 O
   let A3 : SmoothCcTensor g 3 4 :=
-    reindexCoeffGen (I := I) (M := M) g 3 4
+    reindexCoefficientInputSlots (I := I) (M := M) g 3 4
       (rsDomDomCongrSection (I := I) (M := M) g 3 4 r1o1302 O) r1i102
   let A4 : SmoothCcTensor g 3 4 :=
-    reindexCoeffGen (I := I) (M := M) g 3 4
+    reindexCoefficientInputSlots (I := I) (M := M) g 3 4
       (rsDomDomCongrSection (I := I) (M := M) g 3 4 r1o1203 O) r1i120
   have h0 : covariantJetNormSq (I := I) (M := M) g 2 A0 =
       covariantJetNormSq (I := I) (M := M) g 2 O := by

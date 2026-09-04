@@ -23,7 +23,7 @@ def oneFormAtSlot0S {x : M} {s : ℕ}
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
     (slots : Fin s → TangentSpace I x) (q : Fin s) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
-  dualToCotangentGen (I := I)
+  dualToCotangent (I := I)
     { toFun := fun W : TangentSpace I x => alpha (Function.update slots q W)
       map_add' := by
         intro A B
@@ -47,7 +47,7 @@ abbrev freezeSlot0SAt {x : M} {s : ℕ}
     oneFormAtSlot0S (I := I) alpha slots q (fun _ : Fin 1 => W) =
       alpha (Function.update slots q W) := by
   change Tensor0SSpace.eval
-      (dualToCotangentGen (I := I)
+      (dualToCotangent (I := I)
         { toFun := fun W : TangentSpace I x => alpha (Function.update slots q W)
           map_add' := by
             intro A B
@@ -57,7 +57,7 @@ abbrev freezeSlot0SAt {x : M} {s : ℕ}
             rw [alpha.map_update_smul]
             simp [smul_eq_mul] })
       (fun _ : Fin 1 => W) = alpha (Function.update slots q W)
-  exact dualToCotangent_apply_gen _ W
+  exact dualToCotangent_apply _ W
 
 def curvatureAction0SAtSlots {x : M} {s : ℕ}
     (alpha :
@@ -209,7 +209,7 @@ theorem curvatureAction0SAt_eq_slots_connectionRiemannCurvature
   intro q
   have hRm := hRm13 Xsec Ysec (Vsec q) x
     (oneFormAtSlot0S (I := I) alpha (fun r : Fin s => Vsec r x) q)
-  simpa [cotangentToDual_apply_gen, oneFormAtSlot0S_apply] using hRm
+  simpa [cotangentToDual_apply, oneFormAtSlot0S_apply] using hRm
 
 theorem curvatureAction0SAt_eq_neg_sum_connectionRiemannCurvature
     {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}

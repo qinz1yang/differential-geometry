@@ -132,17 +132,17 @@ lemma unitModel_eq_ccTensorBilin_pt (S : SmoothCcTensor g₀ 0 2) (b : M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma reindexCoeffGen_one_eq (r s : ℕ) (R : SmoothCcTensor g₀ r s) :
-    reindexCoeffGen (I := I) (M := M) g₀ r s R 1 = R := by
+private lemma reindexCoefficientInputSlots_one_eq (r s : ℕ) (R : SmoothCcTensor g₀ r s) :
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ r s R 1 = R := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  rw [show ((reindexCoeffGen (I := I) (M := M) g₀ r s R 1).toSection x) D =
-      reindexCoeffFibGen (I := I) r s 1 x
+  rw [show ((reindexCoefficientInputSlots (I := I) (M := M) g₀ r s R 1).toSection x) D =
+      reindexCoefficientInputSlotsFiber (I := I) r s 1 x
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from R.toSection x) D from rfl]
-  rw [reindexCoeffFibGen_apply]
+  rw [reindexCoefficientInputSlotsFiber_apply]
   refine congrArg _ ?_
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext

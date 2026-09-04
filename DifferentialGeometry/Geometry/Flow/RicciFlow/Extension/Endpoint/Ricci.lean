@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.Estimate
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
-import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Compactness
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import Mathlib.Order.Filter.AtTopBot.CountablyGenerated
@@ -107,7 +107,7 @@ theorem ricci_tendsto_left
   have hLambdaInv : 0 < Lambda⁻¹ :=
     inv_pos.mpr (lt_of_lt_of_le zero_lt_one hLambda)
   obtain ⟨phi, hPhi, gLim, hInner, hDerivConv⟩ :=
-    metricPreconvFull (I := I) ⟨x⟩
+    exists_metric_subsequence_tendsto_on_compact (I := I) ⟨x⟩
       Set.univ isCompact_univ 2 gRef gSeq hbdd
       ⟨Lambda⁻¹, hLambdaInv, hlowSeq⟩
   have hInnerEq : forall y : M, gLim.inner y = gInf.inner y := by

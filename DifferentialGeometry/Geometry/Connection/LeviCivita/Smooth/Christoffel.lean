@@ -223,7 +223,7 @@ theorem leviCivitaChristoffelModelRHS_center_eq_christoffel
         ((ContinuousLinearMap.inverse
             (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀)))
           (LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord l)))
-  have hinv : MetricInverseInBasisGen (I := I) g x₀
+  have hinv : MetricInverseInBasis (I := I) g x₀
       (coordinateFrameAtToBasis (I := I) x₀) gInv :=
     inverseMetricFlatModelInChart_metricInverseInBasis_center (I := I) g x₀
   have hformula :=
@@ -317,7 +317,7 @@ omit [CompleteSpace E] in
 private theorem inverseMetricFlatModelInChart_metricInverseInBasis_of_mem
     (g : SmoothRiemannianMetric I M) (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) :
-    MetricInverseInBasisGen (I := I) g x (coordinateFrameAtBasis (I := I) x₀ hx)
+    MetricInverseInBasis (I := I) g x (coordinateFrameAtBasis (I := I) x₀ hx)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
         (Module.finBasis Real E).coord k
           ((ContinuousLinearMap.inverse
@@ -574,7 +574,7 @@ theorem leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
         ((ContinuousLinearMap.inverse
             (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x)))
           (LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord l)))
-  have hinv : MetricInverseInBasisGen (I := I) g x
+  have hinv : MetricInverseInBasis (I := I) g x
       (coordinateFrameAtBasis (I := I) x₀ hx) gInv :=
     inverseMetricFlatModelInChart_metricInverseInBasis_of_mem (I := I) g x₀ hx
   have hformula :=

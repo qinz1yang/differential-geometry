@@ -162,7 +162,7 @@ private theorem eval_hasSum_high
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             hc hσ vH = SmoothCcTensor.toL2 T := by
     intro σ hσ
-    refine allHs_of_weighted_summable_pub (I := I) (M := M) g
+    refine allHs_of_weighted_summable (I := I) (M := M) g
       (SmoothCcTensor.toL2 T) (fun τ _ => ?_) σ hσ
     exact smoothCcTensor_tensorL2Coeff_weighted_summable
       (I := I) (M := M) g τ T hc

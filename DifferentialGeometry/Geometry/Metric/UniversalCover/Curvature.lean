@@ -24,7 +24,6 @@ open Set Function Filter Bundle
 open scoped Topology ContDiff
 open DifferentialGeometry (SmoothRiemannianMetric)
 
-open DifferentialGeometry.Integral.DivergenceTheorem (chartRiemannTensor)
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 
 noncomputable section

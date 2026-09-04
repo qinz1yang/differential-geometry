@@ -82,14 +82,14 @@ private theorem endoSlotZero_succ_eq_reindex_slotExtend
     (P : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     endoSlotZeroCcTensor (I := I) (M := M) g (q + 1) P =
-      reindexCoeffGen (I := I) (M := M) g (q + 1 + 1) (q + 1 + 1)
+      reindexCoefficientInputSlots (I := I) (M := M) g (q + 1 + 1) (q + 1 + 1)
         (rsDomDomCongrSection (I := I) (M := M) g (q + 1 + 1) (q + 1 + 1)
           (Equiv.swap (0 : Fin (q + 1 + 1)) 1)
           (slotExtend (I := I) (M := M) g (q + 1) (q + 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g q P)))
         (Equiv.swap (0 : Fin (q + 1 + 1)) 1) := by
   change slotInsertEndoCc (I := I) (M := M) g (q + 1) P =
-    reindexCoeffGen (I := I) (M := M) g (q + 1 + 1) (q + 1 + 1)
+    reindexCoefficientInputSlots (I := I) (M := M) g (q + 1 + 1) (q + 1 + 1)
       (rsDomDomCongrSection (I := I) (M := M) g (q + 1 + 1) (q + 1 + 1)
         (Equiv.swap (0 : Fin (q + 1 + 1)) 1)
         (slotExtend (I := I) (M := M) g (q + 1) (q + 1)

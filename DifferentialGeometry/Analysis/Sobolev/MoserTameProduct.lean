@@ -801,7 +801,7 @@ private theorem exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm
             (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad (I := I) g 0 (s' + 1)
               (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad (I := I) g 0 s'
                 S)).toFun :=
-  DifferentialGeometry.Analysis.Elliptic.exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen
+  DifferentialGeometry.Analysis.Elliptic.exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_covariantTensor
     (I := I) (M := M) g
 
 private theorem l2jet_logConvex_iteratedCovGrad
@@ -837,7 +837,7 @@ private theorem l2jet_logConvex_iteratedCovGrad
       Integral.L2.tensorL2Norm (I := I) g 0 (s + i)
           (rawTensorConnLapSmooth (I := I) g 0 (s + i) S).toFun * aS := by
     rw [haGrad_def, haS_def]
-    exact covGrad_l2NormSq_le_rawConnLap_mul_self_gen (I := I) (M := M) g (s + i) S
+    exact covGrad_l2NormSq_le_rawConnLap_mul_self_covariantTensor (I := I) (M := M) g (s + i) S
   have htr : Integral.L2.tensorL2Norm (I := I) g 0 (s + i)
         (rawTensorConnLapSmooth (I := I) g 0 (s + i) S).toFun ≤ K * aHess := by
     rw [haHess_def]

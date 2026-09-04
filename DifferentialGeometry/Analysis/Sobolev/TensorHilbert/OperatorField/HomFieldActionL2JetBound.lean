@@ -47,7 +47,7 @@ theorem sqrt_finset_sum_sq_le_sum {ι : Type*} (s : Finset ι) (f : ι → ℝ)
     _ = ∑ i ∈ s, f i := Real.sqrt_sq hsum_nn
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_appFullSec_iteratedCovGrad_l2_window_bound
+theorem exists_homTensorRSFieldApply_iteratedCovGrad_l2_window_bound
     (g : SmoothRiemannianMetric I M) (r m c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r m c I) :
     ∃ cc : ℕ → ℝ, (∀ k, 0 ≤ cc k) ∧
@@ -56,7 +56,7 @@ theorem exists_appFullSec_iteratedCovGrad_l2_window_bound
           cc k * ∑ i ∈ Finset.range (k + 1), ‖iteratedCovGrad g r m i W‖ := by
   classical
   obtain ⟨cp, hcp_nn, hcp⟩ :=
-    exists_appFullSec_iteratedCovGrad_window_bound (I := I) (M := M) g r m c Q
+    exists_homTensorRSFieldApply_iteratedCovGrad_window_bound (I := I) (M := M) g r m c Q
   refine ⟨fun k => Real.sqrt (cp k), fun k => Real.sqrt_nonneg _, fun W k => ?_⟩
   set Z : SmoothCcTensor g r (c + k) :=
     iteratedCovGrad g r c k (homTensorRSFieldApply (I := I) (M := M) g r m c Q W) with hZ_def
@@ -192,14 +192,14 @@ theorem exists_operatorFieldApplication_iteratedCovGrad_l2_window_bound (g : Smo
 end NormedOperatorFieldApplication
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_appFullSec_norm_le (g : SmoothRiemannianMetric I M) (r m c : ℕ)
+theorem exists_homTensorRSFieldApply_norm_le (g : SmoothRiemannianMetric I M) (r m c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r m c I) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ W : SmoothCcTensor g r m,
         ‖homTensorRSFieldApply (I := I) (M := M) g r m c Q W‖ ≤ C * ‖W‖ := by
   classical
   obtain ⟨cc, hcc_nn, hcc⟩ :=
-    exists_appFullSec_iteratedCovGrad_l2_window_bound (I := I) (M := M) g r m c Q
+    exists_homTensorRSFieldApply_iteratedCovGrad_l2_window_bound (I := I) (M := M) g r m c Q
   refine ⟨cc 0, hcc_nn 0, fun W => ?_⟩
   have h := hcc W 0
   simpa only [zero_add, Finset.sum_range_one, iteratedCovGrad_zero] using h

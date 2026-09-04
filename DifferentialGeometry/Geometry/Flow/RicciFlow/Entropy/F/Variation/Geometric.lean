@@ -373,7 +373,7 @@ theorem fFunctionalFirstVariationFormula_of_christoffel_variation_components
             nablaChristoffelVariation christoffelVariation gradPotential x =
           connTraceRawDiv (I := I) g A x -
             connTraceAction (I := I) g A potential x :=
-    weightedTrace_of_raw (I := I) g A potential nablaChristoffelVariation
+    christoffelWeightedDivergenceTrace_eq_connTrace_sub_action (I := I) g A potential nablaChristoffelVariation
       christoffelVariation gradPotential hraw hA hgrad
   exact fFunctionalFirstVariationFormula_of_connection_trace_components (I := I) g A
     (weightedDivergenceTrace :=

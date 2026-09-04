@@ -29,7 +29,7 @@ theorem metricRm04StdAt_eq_chartRiemannCLM
         = riemannCurvature04At g (metricCov (I := I) g) (metricCov_smooth (I := I) g) x from rfl,
     riemannCurvature04At_apply_const]
   have : ContMDiffCovariantDerivative (metricCov (I := I) g) ∞ := LeviCivita_isContMDiff g
-  rw [riemannCurvatureAux_tangentConst_eq_riemannOp (metricCov (I := I) g)
+  rw [connectionRiemannCurvatureField_tangentConst_eq_riemannOp (metricCov (I := I) g)
       (metricCov_smooth (I := I) g) x X Y Z,
     show riemannOp (cov := metricCov (I := I) g) x X Y Z
         = riemannOp (cov := LeviCivita (I := I) g) x X Y Z from rfl,

@@ -155,11 +155,11 @@ private theorem koszulNablaField_scaleMetric
     (koszulCovectorField (I := I) g X Y x)
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-private theorem leviCivitaConnectionCandidateAt_scaleMetric
+private theorem leviCivitaConnectionAt_scaleMetric
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
     (Y : (p : M) -> TangentSpace I p) (x : M) :
-    leviCivitaConnectionCandidateAt (I := I) (scaleMetric (I := I) c hc g) Y x =
-      leviCivitaConnectionCandidateAt (I := I) g Y x := by
+    leviCivitaConnectionAt (I := I) (scaleMetric (I := I) c hc g) Y x =
+      leviCivitaConnectionAt (I := I) g Y x := by
   classical
   let B : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
       (TangentSpace I x) := Module.finBasis Real (TangentSpace I x)
@@ -186,7 +186,7 @@ theorem lcConn_scaleMetric
       leviCivitaConnectionOfMetric (I := I) g := by
   ext Y x v
   simp [leviCivitaConnectionOfMetric,
-    leviCivitaConnectionCandidateAt_scaleMetric (I := I) c hc g Y x]
+    leviCivitaConnectionAt_scaleMetric (I := I) c hc g Y x]
 
 end
 

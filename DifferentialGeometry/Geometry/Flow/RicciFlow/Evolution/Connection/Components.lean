@@ -273,16 +273,14 @@ theorem metricCovDerivCompInFrameAtBase_eq_connectionDiff
       connectionDiffLoweredInFrame (I := I) S frame var base var x d a b +
         (S.family.metric var).inner x (frame a x)
           (connectionDiffVectorInFrame (I := I) S frame base var x d b) := by
-  have hfd : MDiffAt (T% (frame d)) x :=
-    localFrame_mdiffAt (I := I) frame hframe hu hx d
   have hfa : MDiffAt (T% (frame a)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx a
   have hfb : MDiffAt (T% (frame b)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx b
   have hmc :=
-    DifferentialGeometry.Geometry.Connection.metric_compatible_apply
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
       (I := I) (SolutionOn.leviCivita (I := I) S ⟨var, hvar⟩).1
-      (frame d) (frame a) (frame b) hfd hfa hfb
+      (frame d x) hfa hfb
   unfold metricCovDerivCompInFrameAtBase connectionDiffLoweredInFrame
     connectionDiffVectorInFrame
   have hmc' :

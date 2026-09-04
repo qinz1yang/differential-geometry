@@ -240,7 +240,7 @@ private theorem inverseMetricFlatModelInChart_component_center_eq_symm
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
-    MetricInverseInBasisGen (I := I) g x₀ (coordinateFrameAtToBasis (I := I) x₀)
+    MetricInverseInBasis (I := I) g x₀ (coordinateFrameAtToBasis (I := I) x₀)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
         (Module.finBasis Real E).coord k
           ((ContinuousLinearMap.inverse

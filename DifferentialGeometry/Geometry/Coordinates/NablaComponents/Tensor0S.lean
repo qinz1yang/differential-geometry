@@ -363,7 +363,7 @@ private theorem fderivWithin_tensor0S_eval_modelSlots_center_eq_mvfderiv {s : �
     (I := I) X x₀ φ f hpair heq
 
 omit [IsManifold I ∞ M] in
-theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
+theorem nabla0SFun_eval_coordFrame_moving {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (V : Fin s -> (x : M) -> TangentSpace I x)
@@ -864,7 +864,7 @@ theorem nabla0SFun_eval_coordinateFrame_contMDiffAt
     fun a i =>
       tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
         (I := I) (V a) p (hV_at a) i
-  rw [nabla0SFun_eval_coordFrame_moving_raw
+  rw [nabla0SFun_eval_coordFrame_moving
     (I := I) cov X V α p hpair_md hV_md hVmodel_p hcoord_p]
 
 theorem nabla0SFun_contMDiff_of_eval_coordinateFrame_contMDiffAt

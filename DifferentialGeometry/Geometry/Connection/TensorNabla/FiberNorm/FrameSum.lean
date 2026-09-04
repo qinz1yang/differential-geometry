@@ -390,7 +390,7 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_symm_reading_le
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry_of_orthoFrame
+lemma riemannianFiberNormSq_succ_eq_sum_tensor0SCurry_of_orthoFrame
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (T : TensorRSSpace 0 (s + 1) I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)

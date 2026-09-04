@@ -140,7 +140,7 @@ def klFluxPiece1 (R : ℝ) (w : V) (f : ℝ × V → F)
     ∂klTailMeasure (V := V) R S
 
 omit [CompleteSpace F] in
-theorem klFluxPiece_hold {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+theorem klFluxPiece_holder {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
     (hS : S ⊆ Metric.ball c R) :
@@ -173,7 +173,7 @@ theorem klFluxPiece_norm {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
         (klFluxTailC V * (Aₚ : ℝ)) := by
   have hkern := klFluxTailKern (V := V) hR hk w x hSm hfar
   have hsrc := klFluxPiece_src (V := V) h c hR hRT hS
-  have hhold := klFluxPiece_hold (V := V) h w x c hR hRT hS
+  have hhold := klFluxPiece_holder (V := V) h w x c hR hRT hS
   have hs : 0 < klLpScaleR (V := V) R :=
     Real.rpow_pos_of_pos hR _
   have hc : 0 ≤ klFluxTailC V := by

@@ -113,7 +113,7 @@ theorem exists_covariantDerivative_pointwise_bound_of_sobolev_ball (hDim : Modul
           ((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x) ≤ Λ₁ ^ 2 := by
   classical
   obtain ⟨C2, hC2_nn, hC2⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   obtain ⟨Λ₁, hΛ₁_nn, hΛ₁⟩ :=
     exists_covariantDerivative_pointwise_bound_of_jet_bounds (I := I) (M := M) hDim g₀ a ha (R₀ := C2 * R₀) (mul_nonneg hC2_nn hR₀)
   refine ⟨Λ₁, hΛ₁_nn, ?_⟩

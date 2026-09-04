@@ -138,7 +138,7 @@ theorem applyInput_coordFrame_eventually {r s : ℕ}
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
   let basis := coordinateFrameAtBasis (I := I) x₀ hy
   have h :=
-    Tensor0SBundle.componentRS_apply_input_eq_sum
+    Tensor0SBundle.componentRSField_apply_input_eq_sum
       (I := I) basis (T y) (θ y) lower
   calc
     (T y (θ y))
@@ -147,7 +147,7 @@ theorem applyInput_coordFrame_eventually {r s : ℕ}
           simp [basis, component0S_apply]
     _ = ∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
           component0S (I := I) basis (θ y) upper *
-            componentRSGen (I := I) basis (T y) upper lower := h
+            componentRSField (I := I) basis (T y) upper lower := h
     _ = ∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
         θ y (fun a : Fin r => coordinateFrameAt (I := I) x₀ (upper a) y) *
           (T y
@@ -159,7 +159,7 @@ theorem applyInput_coordFrame_eventually {r s : ℕ}
           refine Finset.sum_congr rfl fun upper _ => ?_
           have hconst := constInChart_basisTensor0S_coordFrame
             (I := I) (M := M) (r := r) x₀ hy upper
-          simp [basis, component0S_apply, componentRS_apply_gen, hconst]
+          simp [basis, component0S_apply, componentRSField_apply, hconst]
 
 omit [IsManifold I 2 M] in
 theorem tensorRS_eval_constInChart_coordinateFrame_contMDiffAt {r s : ℕ}

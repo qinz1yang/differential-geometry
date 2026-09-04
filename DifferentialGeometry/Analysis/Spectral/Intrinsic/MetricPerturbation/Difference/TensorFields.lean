@@ -140,7 +140,7 @@ private theorem tensor04_pairing_contMDiff
   exact tensor03_pairing_contMDiff h1 hZ hW hU
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem chartFrame_component_contMDiffOn_aux
+private theorem chartFrame_component_contMDiffOn
     {S : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ}
     (hS : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
@@ -223,7 +223,7 @@ def metricDifference02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
         (fun x : M => metricDifference02 (I := I) g₁ g₂ x
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x))
         (chartAt H x₀).source :=
-      chartFrame_component_contMDiffOn_aux (I := I)
+      chartFrame_component_contMDiffOn (I := I)
         (metricDifference02_contMDiff (I := I) g₁ g₂) x₀ (σ 0) (σ 1)
     have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
@@ -275,7 +275,7 @@ private theorem metricDifference02Cov_contMDiff (g₀ g₁ g₂ : SmoothRiemanni
     (tensor02Cov_metric_contMDiff (I := I) g₀ g₂)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem chartFrame_component3_contMDiffOn_aux
+private theorem chartFrame_component3_contMDiffOn
     {S : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ}
     (hS : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)
@@ -344,7 +344,7 @@ def metricDifference02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x)
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 2) x))
         (chartAt H x₀).source :=
-      chartFrame_component3_contMDiffOn_aux (I := I)
+      chartFrame_component3_contMDiffOn (I := I)
         (metricDifference02Cov_contMDiff (I := I) g₀ g₁ g₂) x₀ (σ 0) (σ 1) (σ 2)
     have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
@@ -399,7 +399,7 @@ private theorem metricDifference02CovIterate_contMDiff (g₀ g₁ g₂ : SmoothR
   exact hS₁.sub_section hS₂
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem chartFrame_component4_contMDiffOn_aux
+private theorem chartFrame_component4_contMDiffOn
     {S : Π x : M, TangentSpace I x →L[ℝ]
       (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)))}
     (hS : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] (E →L[ℝ] (E →L[ℝ] (E →L[ℝ] ℝ))))) ∞
@@ -469,7 +469,7 @@ def metricDifference02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x)
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 2) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 3) x))
         (chartAt H x₀).source :=
-      chartFrame_component4_contMDiffOn_aux (I := I)
+      chartFrame_component4_contMDiffOn (I := I)
         (metricDifference02CovIterate_contMDiff (I := I) g₀ g₁ g₂) x₀ (σ 0) (σ 1) (σ 2) (σ 3)
     have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=

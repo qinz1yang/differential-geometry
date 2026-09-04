@@ -66,7 +66,7 @@ theorem lieSlope_eq_terms
   have h0 := lie0_order0_eq (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg s x i j
   have h1 := lieTerm_firstOrder_value_eq_order1Raw_add_tail (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' s x i j
-  have h2 := lieTop_cov_eq_raw (I := I) g₀ T T'
+  have h2 := lieTop_cov_eq_principalSymbolExprRaw_add_tail (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j
   rw [lieTopTail] at h2
   refine hsplit.trans ?_

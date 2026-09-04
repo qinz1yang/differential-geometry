@@ -119,7 +119,7 @@ theorem klTerm_eq_tail (R : ℝ) :
       klTailMeasure (V := V) R Set.univ := by
   simp only [klTermMeasure, klTailMeasure, Measure.restrict_univ]
 
-def klLateFull0 {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+def klLatePotential {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (R : ℝ) (f : ℝ × V → F) (x : V) : F :=
   ∫ z : ℝ × V, klTermKernel (R ^ 2) x z • f z
     ∂klTermMeasure (V := V) (R ^ 2)
@@ -189,7 +189,7 @@ theorem klLateAbs_sum {T R : ℝ} {A₁ A_q : ℝ≥0}
     ((klLateWeight_sum (Module.finrank ℝ V)).mul_right C)
 
 omit [CompleteSpace F] in
-theorem klLateFull_int {T R : ℝ} {A₁ A_q : ℝ≥0}
+theorem klTermKernel_smul_integrable {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
     (hcard : ∀ k, (s k).card ≤
@@ -207,7 +207,7 @@ theorem klLateFull_int {T R : ℝ} {A₁ A_q : ℝ≥0}
   simpa only [IntegrableOn, Measure.restrict_univ] using hU
 
 omit [CompleteSpace F] in
-theorem klLateFull_sum {T R : ℝ} {A₁ A_q : ℝ≥0}
+theorem hasSum_klLatePiece_klLatePotential {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
     (hcard : ∀ k, (s k).card ≤
@@ -216,14 +216,14 @@ theorem klLateFull_sum {T R : ℝ} {A₁ A_q : ℝ≥0}
       ⋃ c ∈ s k, Metric.ball c R) :
     HasSum (fun k : ℕ ↦
       klLatePiece0 R f x (klLateShell x R k))
-      (klLateFull0 R f x) := by
+      (klLatePotential R f x) := by
   let μ := klTailMeasure (V := V) R Set.univ
   let g : ℝ × V → F := fun z ↦ klTermKernel (R ^ 2) x z • f z
   have hU : IntegrableOn g (⋃ k : ℕ, klLateStShell x R k) μ := by
     rw [klLateSt_union (V := V) x hR]
     simpa only [IntegrableOn, Measure.restrict_univ, μ, g,
       ← klTerm_eq_tail (V := V) R] using
-      (klLateFull_int (V := V) h x hR hRT s hcard hcover)
+      (klTermKernel_smul_integrable (V := V) h x hR hRT s hcard hcover)
   have hsum := hasSum_integral_iUnion
     (f := g) (μ := μ) (fun k ↦ klLateSt_mble (V := V) x R k)
     (klLateSt_disj (V := V) x hR) hU
@@ -231,19 +231,19 @@ theorem klLateFull_sum {T R : ℝ} {A₁ A_q : ℝ≥0}
   · funext k
     simp only [klLatePiece0, g, μ, klLateStShell]
     rw [klTail_restrict]
-  · simp only [klLateFull0, g, μ]
+  · simp only [klLatePotential, g, μ]
     rw [klLateSt_union (V := V) x hR, Measure.restrict_univ,
       klTerm_eq_tail (V := V) R]
 
 omit [CompleteSpace F] in
-theorem klLateFull_norm {T R : ℝ} {A₁ A_q : ℝ≥0}
+theorem norm_klLatePotential_le_of_shellCover {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
     (hcard : ∀ k, (s k).card ≤
       (5 * (k + 1)) ^ Module.finrank ℝ V)
     (hcover : ∀ k, Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) ⊆
       ⋃ c ∈ s k, Metric.ball c R) :
-    ‖klLateFull0 R f x‖ ≤
+    ‖klLatePotential R f x‖ ≤
       klLateSeries (Module.finrank ℝ V) *
         (klLateTailC V * (A_q : ℝ)) := by
   let μ := klTailMeasure (V := V) R Set.univ
@@ -251,7 +251,7 @@ theorem klLateFull_norm {T R : ℝ} {A₁ A_q : ℝ≥0}
   let C : ℝ := klLateTailC V * (A_q : ℝ)
   have hint : Integrable g μ := by
     simpa only [μ, g, ← klTerm_eq_tail (V := V) R] using
-      (klLateFull_int (V := V) h x hR hRT s hcard hcover)
+      (klTermKernel_smul_integrable (V := V) h x hR hRT s hcard hcover)
   have habs := klLateAbs_sum (V := V) h x hR hRT s hcard hcover
   have hmaj : Summable
       (fun k : ℕ ↦ klLateWeight (Module.finrank ℝ V) k * C) :=
@@ -266,8 +266,8 @@ theorem klLateFull_norm {T R : ℝ} {A₁ A_q : ℝ≥0}
     (klLateSt_disj (V := V) x hR) hnormU
   rw [klLateSt_union (V := V) x hR, Measure.restrict_univ] at hdecomp
   calc
-    ‖klLateFull0 R f x‖ = ‖∫ z, g z ∂μ‖ := by
-      simp only [klLateFull0, g, μ]
+    ‖klLatePotential R f x‖ = ‖∫ z, g z ∂μ‖ := by
+      simp only [klLatePotential, g, μ]
       rw [klTerm_eq_tail (V := V) R]
     _ ≤ ∫ z, ‖g z‖ ∂μ := norm_integral_le_integral_norm g
     _ = ∑' k : ℕ, ∫ z in klLateStShell x R k, ‖g z‖ ∂μ := hdecomp
@@ -284,16 +284,16 @@ theorem klLateFull_norm {T R : ℝ} {A₁ A_q : ℝ≥0}
         (klLateTailC V * (A_q : ℝ)) := rfl
 
 omit [CompleteSpace F] in
-theorem klLateFull_canon {T R : ℝ} {A₁ A_q : ℝ≥0}
+theorem norm_klLatePotential_le {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :
-    ‖klLateFull0 R f x‖ ≤
+    ‖klLatePotential R f x‖ ≤
       klLateSeries (Module.finrank ℝ V) *
         (klLateTailC V * (A_q : ℝ)) := by
   classical
   choose s hcard hcover using
     fun k : ℕ ↦ exists_shell_cover (V := V) x hR k
-  exact klLateFull_norm (V := V) h x hR hRT s hcard hcover
+  exact norm_klLatePotential_le_of_shellCover (V := V) h x hR hRT s hcard hcover
 
 end Euclidean
 end Parabolic

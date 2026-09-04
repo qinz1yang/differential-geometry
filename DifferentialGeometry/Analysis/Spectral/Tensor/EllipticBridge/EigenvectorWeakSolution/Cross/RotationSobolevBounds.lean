@@ -157,7 +157,7 @@ private lemma wkpNorm_doubleSum_le_const_mul_aggregateSum_uniform
 
 end CrossRotationWkpNormBoundsUniform
 
-section CrossRightWkpNormBoundUnconditional
+section CrossRightWkpNormBound
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s) (K : ℕ)
@@ -206,9 +206,9 @@ theorem wkpNorm_crossRightLimitComponent_le
       (eigenvectorResolvent (I := I) (M := M) g r s i))
     α P K h_pou
 
-end CrossRightWkpNormBoundUnconditional
+end CrossRightWkpNormBound
 
-section CrossRightWkpNormBoundUniformUnconditional
+section CrossRightWkpNormBoundUniform
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ) (K : ℕ)
 
@@ -261,9 +261,9 @@ theorem wkpNorm_crossRightLimitComponent_le_uniform
       (eigenvectorResolvent (I := I) (M := M) g r s i))
     (h_pou i)
 
-end CrossRightWkpNormBoundUniformUnconditional
+end CrossRightWkpNormBoundUniform
 
-section CrossRotationWkpNormBoundsUnconditional
+section CrossRotationWkpNormBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s) (K : ℕ)
@@ -385,9 +385,9 @@ theorem wkpNorm_crossLeftLimitComponent_le
   refine h_chain.trans ?_
   rw [← mul_assoc, ← ENNReal.ofReal_mul hC₀_nn]
 
-end CrossRotationWkpNormBoundsUnconditional
+end CrossRotationWkpNormBounds
 
-section CrossRotationWkpNormBoundsUniformUnconditional
+section CrossRotationWkpNormBoundsUniform
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ) (K : ℕ)
 
@@ -520,7 +520,7 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
   refine h_chain.trans ?_
   rw [← mul_assoc, ← ENNReal.ofReal_mul hC₀_nn]
 
-end CrossRotationWkpNormBoundsUniformUnconditional
+end CrossRotationWkpNormBoundsUniform
 
 end TensorSpectral
 end Parabolic

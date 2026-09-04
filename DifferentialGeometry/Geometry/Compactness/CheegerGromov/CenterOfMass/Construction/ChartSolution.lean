@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Cons
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.ChartSolution
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Data
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.HatBounds
 
 set_option autoImplicit false
 

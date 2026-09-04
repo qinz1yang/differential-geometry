@@ -33,7 +33,7 @@ private lemma chartGramMatrix_inv_isHermitian
     (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b)⁻¹.IsHermitian :=
   (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α b).inv
 
-private lemma chartTensorInnerPointwise_0s_symm_aux
+private lemma chartTensorInnerPointwise_0s_symm
     (g : SmoothRiemannianMetric I M) (α b : M) (n : ℕ)
     (S T : Tensor0SModel n ℝ E) :
     chartTensorInnerPointwise0s (I := I) (M := M) n g α b S T =
@@ -57,7 +57,7 @@ private lemma chartTensorInnerPointwise_0s_symm_aux
         simpa [star_trivial] using this
       rw [ih, hG]
 
-private lemma chartTensorInnerPointwise_0s_nonneg_aux
+private lemma chartTensorInnerPointwise_0s_nonneg
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (n : ℕ)
     (T : Tensor0SModel n ℝ E) :
@@ -130,7 +130,7 @@ lemma chartTensorInnerPointwise_rs_model_symm
       chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₁ T₀ := by
   rw [chartTensorInnerPointwise_rs_model_def,
       chartTensorInnerPointwise_rs_model_def]
-  exact chartTensorInnerPointwise_0s_symm_aux (I := I) (M := M) g α b (r + s) _ _
+  exact chartTensorInnerPointwise_0s_symm (I := I) (M := M) g α b (r + s) _ _
 
 lemma chartTensorInnerPointwise_rs_model_add_right
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α b : M)
@@ -162,7 +162,7 @@ lemma chartTensorInnerPointwise_rs_model_nonneg
     (T : TensorRSModel r s ℝ E) :
     0 ≤ chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T := by
   rw [chartTensorInnerPointwise_rs_model_def]
-  exact chartTensorInnerPointwise_0s_nonneg_aux (I := I) (M := M) g α hb (r + s) _
+  exact chartTensorInnerPointwise_0s_nonneg (I := I) (M := M) g α hb (r + s) _
 
 section Smoothness
 

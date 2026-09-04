@@ -272,7 +272,7 @@ theorem nablaRS_reg (r s : ℕ)
             (T p (βsec p))
               (Function.update (fun b : Fin s => V b p) a ((cov (V a) p) (X p)))
       rw [hVeq]
-      rw [nablaRSFun_eval_moving_raw
+      rw [nablaRSFun_eval_moving
         (I := I) cov X T βsec V p hpair_md hβmodel_p hV_md hVmodel_p hcoord_p]
     refine hintrinsic.congr_of_eventuallyEq ?_
     have hx₀Tan : x₀ ∈ eTan.baseSet := by

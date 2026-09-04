@@ -3323,7 +3323,7 @@ section jointSmoothness
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [CompactSpace M] in
-private lemma fiberNormSq_jointContinuousOn_aux
+private lemma fiberNormSq_jointContinuousOn
     (g : SmoothRiemannianMetric I M) (r sIdx : ℕ)
     (Ψ : ℝ → SmoothCcTensor g r sIdx) (S : Set ℝ)
     {a b : ℝ} (hSI : Set.Icc a b ⊆ S)
@@ -3630,7 +3630,7 @@ private lemma jet_l2Norm_contDiff
       riemannianFiberNormSq (I := I) (M := M) g 0 (0 + j) p.2
         ((Analysis.Sobolev.iteratedCovGrad g 0 0 j (scalarCcLift g (F p.1))).toSection p.2))
       (Set.Icc a b ×ˢ (Set.univ : Set M)) := by
-    exact fiberNormSq_jointContinuousOn_aux (I := I) (M := M) g 0 (0 + j)
+    exact fiberNormSq_jointContinuousOn (I := I) (M := M) g 0 (0 + j)
       (fun t => Analysis.Sobolev.iteratedCovGrad g 0 0 j (scalarCcLift g (F t))) U
       hU hjet
   have hbridge : (fun t : ℝ =>

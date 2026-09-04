@@ -52,7 +52,7 @@ lemma covGrad_rawConnLap_unit_eval_curry
           (rawTensorConnLapSmooth g 0 2 T₀) x
             (tangentSpaceModelContinuousLinearEquiv (I := I) x w))
         (unitZeroSec (I := I) (M := M) x) := by
-  have := curry_covGrad_unit_eval_general (I := I) (M := M) g 2
+  have := curry_covGrad_unit_eval (I := I) (M := M) g 2
     (rawTensorConnLapSmooth g 0 2 T₀) x w
   exact this
 

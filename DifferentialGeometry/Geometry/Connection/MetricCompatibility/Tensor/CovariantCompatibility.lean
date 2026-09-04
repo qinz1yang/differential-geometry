@@ -620,18 +620,18 @@ lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (Y y)) x :=
     Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hHom := HomConnection.homBundleCovariantDerivativeFun_apply_eq
-    (I := I) (M := M) (F := Tensor0SModel s ℝ E)
+    (I := I) (M := M) (E_U := E) (U := TangentSpace I) (F := Tensor0SModel s ℝ E)
     (V := fun x : M => Tensor0SSpace s I x)
-    (cov_TM := LeviCivita (I := I) g)
+    (cov_U := LeviCivita (I := I) g)
     (cov_V := tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
     (τ := curriedSection I M W) (x := x) hC
     (V_field := fun y => Vfield y) (Y := fun y => Y y) hVfield hYfield
   have hsucc : tensor0SCurry (I := I) (M := M) s x
       (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v) =
-      HomConnection.homBundleCovariantDerivativeFun (I := I) (M := M)
+      HomConnection.homBundleCovariantDerivativeFun (I := I) (M := M) (E_U := E) (U := TangentSpace I)
         (F := Tensor0SModel s ℝ E)
         (V := fun x : M => Tensor0SSpace s I x)
-        (cov_TM := LeviCivita (I := I) g)
+        (cov_U := LeviCivita (I := I) g)
         (cov_V := tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
         (τ := curriedSection I M W) x v := by
     rw [tensor0SCovariantDerivative_succ_eq, tensor0SCovariantDerivative_succ_apply]

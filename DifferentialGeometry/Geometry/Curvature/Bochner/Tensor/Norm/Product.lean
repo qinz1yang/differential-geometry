@@ -299,7 +299,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem freeze0S_deriv {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatibleGen (I := I) cov g)
+    (hmc : IsMetricCompatible (I := I) cov g)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (nablaT : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -380,7 +380,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem du_norm0S {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatibleGen (I := I) cov g)
+    (hmc : IsMetricCompatible (I := I) cov g)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (nablaT : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -429,7 +429,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem normSq0S_du_le {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatibleGen (I := I) cov g)
+    (hmc : IsMetricCompatible (I := I) cov g)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (nablaT : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -502,7 +502,7 @@ theorem hess_norm0S {s : ℕ}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatibleGen (I := I) cov g)
+    (hmc : IsMetricCompatible (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -611,7 +611,7 @@ theorem tensorNormBochnerSplit_mc {s : ℕ}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatibleGen (I := I) cov g)
+    (hmc : IsMetricCompatible (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)

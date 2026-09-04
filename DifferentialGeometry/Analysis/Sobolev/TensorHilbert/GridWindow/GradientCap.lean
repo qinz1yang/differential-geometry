@@ -243,9 +243,9 @@ theorem capReindex (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 
     {r c : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (ρ : Equiv.Perm (Fin r))
     (hX : HasCapWin (I := I) (M := M) g₀ P X K) :
     HasCapWin (I := I) (M := M) g₀ P
-      (reindexCoeffGen (I := I) (M := M) g₀ r c X ρ) K := by
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ r c X ρ) K := by
   intro i x
-  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r c X ρ i x]
+  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ r c X ρ i x]
   exact hX i x
 
 omit [SigmaCompactSpace M] in

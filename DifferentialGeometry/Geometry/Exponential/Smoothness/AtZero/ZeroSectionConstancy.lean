@@ -221,14 +221,14 @@ lemma chartFlow_zero_section_apply_eventually_eq_origin
 
 end FlowAtZeroEval
 
-section CandidateSliceSmoothness
+section GeneralTimeSliceSmoothness
 
 variable [I.Boundaryless] [CompleteSpace E]
   [T2Space (TangentBundle I M)]
 
 omit [IsManifold I ∞ M] [T2Space (TangentBundle I M)] in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-lemma extChartAt_symm_comp_chartFlowCandidate_at_zero_general
+lemma extChartAt_chartFlowSlice_eventually_eq_at_zero
     {p : M} {Φ : (E × E) × ℝ → E × E} {ρ T t' : ℝ}
     (hρ : 0 < ρ) (ht' : t' ∈ Set.Ioo (-T) T)
     (hcd : ContDiffOn ℝ 1 Φ
@@ -237,7 +237,7 @@ lemma extChartAt_symm_comp_chartFlowCandidate_at_zero_general
     (hval : (Φ (((extChartAt I p p, (0 : E)) : E × E), t')).1 ∈
       (extChartAt I p).target) :
     ∀ᶠ v in 𝓝 (0 : E),
-      extChartAt I p (chartFlowCandidate (I := I) Φ p t' v) =
+      extChartAt I p (chartFlowSlice (I := I) Φ p t' v) =
         (Φ (((extChartAt I p p, v) : E × E), t')).1 := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
@@ -256,12 +256,12 @@ lemma extChartAt_symm_comp_chartFlowCandidate_at_zero_general
     apply hcont0.preimage_mem_nhds
     exact htarget_nhds
   filter_upwards [htarget_preimage] with v hv
-  simp only [chartFlowCandidate_apply]
+  simp only [chartFlowSlice_apply]
   exact (extChartAt I p).right_inv hv
 
 omit [IsManifold I ∞ M] [T2Space (TangentBundle I M)] in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-lemma chartFlowCandidate_chart_contDiffAt_zero_at_general_time
+lemma chartFlowSlice_chart_contDiffAt_zero
     {p : M} {Φ : (E × E) × ℝ → E × E} {ρ T t' : ℝ}
     (hρ : 0 < ρ) (ht' : t' ∈ Set.Ioo (-T) T)
     (hcd : ContDiffOn ℝ 1 Φ
@@ -270,7 +270,7 @@ lemma chartFlowCandidate_chart_contDiffAt_zero_at_general_time
     (hval : (Φ (((extChartAt I p p, (0 : E)) : E × E), t')).1 ∈
       (extChartAt I p).target) :
     ContDiffAt ℝ 1
-      (fun v : E => extChartAt I p (chartFlowCandidate (I := I) Φ p t' v))
+      (fun v : E => extChartAt I p (chartFlowSlice (I := I) Φ p t' v))
       (0 : E) := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
@@ -278,11 +278,11 @@ lemma chartFlowCandidate_chart_contDiffAt_zero_at_general_time
       ContDiffAt ℝ 1 (fun v : E => (Φ (((x₀, v) : E × E), t')).1) (0 : E) :=
     contDiffAt_chartFlow_slice_fst_zero (Φ := Φ) (x₀ := x₀)
       (ρ := ρ) (T := T) (t' := t') hρ ht' hcd
-  have hev := extChartAt_symm_comp_chartFlowCandidate_at_zero_general
+  have hev := extChartAt_chartFlowSlice_eventually_eq_at_zero
     (I := I) (p := p) (Φ := Φ) (ρ := ρ) (T := T) (t' := t') hρ ht' hcd hval
   exact hslice.congr_of_eventuallyEq hev
 
-end CandidateSliceSmoothness
+end GeneralTimeSliceSmoothness
 
 section ManifoldGap
 
@@ -294,7 +294,7 @@ def ChartFlowGeodesicMatchAt
     (Φ : (E × E) × ℝ → E × E) (t' ρ : ℝ) : Prop :=
   ∀ v : E, v ∈ Metric.ball (0 : E) ρ →
     (expMap (I := I) g p (show TangentSpace I p from (t' • v)) : M) =
-      chartFlowCandidate (I := I) Φ p t' v
+      chartFlowSlice (I := I) Φ p t' v
 
 end ManifoldGap
 
@@ -324,12 +324,12 @@ theorem uniformChartFlowBridge_of_match
   set x₀ : E := extChartAt I p p with hx₀_def
   have hchart_cd :
       ContDiffAt ℝ 1
-        (fun v : E => extChartAt I p (chartFlowCandidate (I := I) Φ p t' v))
+        (fun v : E => extChartAt I p (chartFlowSlice (I := I) Φ p t' v))
         (0 : E) :=
-    chartFlowCandidate_chart_contDiffAt_zero_at_general_time
+    chartFlowSlice_chart_contDiffAt_zero
       (I := I) (p := p) (Φ := Φ) (ρ := ρ) (T := T) (t' := t')
       hρ ht'_in hcd hval
-  have hcand_zero : chartFlowCandidate (I := I) Φ p t' (0 : E) = p := by
+  have hcand_zero : chartFlowSlice (I := I) Φ p t' (0 : E) = p := by
     change (extChartAt I p).symm (Φ (((x₀, (0 : E)) : E × E), t')).1 = p
     exact hval_p
   have hcd_slice_fst :
@@ -344,7 +344,7 @@ theorem uniformChartFlowBridge_of_match
     continuousAt_extChartAt_symm'' (I := I) (x := p)
       (y := (Φ (((x₀, (0 : E)) : E × E), t')).1) hval
   have hcont_cand : ContinuousAt
-      (chartFlowCandidate (I := I) Φ p t') (0 : E) := by
+      (chartFlowSlice (I := I) Φ p t') (0 : E) := by
     have hinner : ContinuousAt
         (fun v : E => (Φ (((x₀, v) : E × E), t')).1) (0 : E) := hcont_slice0
     have hinner_eval : (fun v : E => (Φ (((x₀, v) : E × E), t')).1) (0 : E) =
@@ -363,9 +363,9 @@ theorem uniformChartFlowBridge_of_match
     simp [extChartAt, chartAt_self_eq]
   rw [hsimp_base, hsimp_range, hcand_zero]
   have hgoal_eq :
-      (extChartAt I p ∘ chartFlowCandidate (I := I) Φ p t' ∘
+      (extChartAt I p ∘ chartFlowSlice (I := I) Φ p t' ∘
       (extChartAt (𝓘(ℝ, E) : ModelWithCorners ℝ E E) (0 : E)).symm) =
-      (fun v : E => extChartAt I p (chartFlowCandidate (I := I) Φ p t' v)) := by
+      (fun v : E => extChartAt I p (chartFlowSlice (I := I) Φ p t' v)) := by
     ext v
     simp [Function.comp, extChartAt, chartAt_self_eq]
   rw [hgoal_eq]

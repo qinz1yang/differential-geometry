@@ -21,35 +21,35 @@ variable [T2Space M] [CompactSpace M] [I.Boundaryless]
 open DifferentialGeometry.Integral.Measure
 
 omit [T2Space M] [CompactSpace M] in
-private lemma isClosed_compl_chartAt_source_aux (α : M) :
+private lemma isClosed_compl_chartAt_source (α : M) :
     IsClosed ((chartAt H α).sourceᶜ) :=
   (chartAt H α).open_source.isClosed_compl
 
 omit [I.Boundaryless] in
-private lemma isClosed_tsupport_chartAtlasPOU_aux (α : M) :
+private lemma isClosed_tsupport_chartAtlasPOU (α : M) :
     IsClosed (tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
   isClosed_tsupport _
 
 omit [I.Boundaryless] in
-private lemma tsupport_chartAtlasPOU_subset_aux (α : M) :
+private lemma tsupport_chartAtlasPOU_subset (α : M) :
     tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆
       (chartAt H α).source :=
   (chartAtlasPOU_isSubordinate I M) α
 
 omit [I.Boundaryless] in
-private lemma disjoint_complSource_tsupport_chartAtlasPOU_aux (α : M) :
+private lemma disjoint_complSource_tsupport_chartAtlasPOU (α : M) :
     Disjoint ((chartAt H α).sourceᶜ)
       (tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
   Set.disjoint_compl_left_iff_subset.mpr
-    (tsupport_chartAtlasPOU_subset_aux (I := I) α)
+    (tsupport_chartAtlasPOU_subset (I := I) α)
 
 private def chartStrictCutoffBundled (α : M) : C^∞⟮I, M; ℝ⟯ :=
   ((Classical.choose
     (exists_contMDiffMap_zero_one_nhds_of_isClosed (I := I) (M := M)
       (n := (⊤ : ℕ∞))
-      (isClosed_compl_chartAt_source_aux (M := M) α)
-      (isClosed_tsupport_chartAtlasPOU_aux (I := I) α)
-      (disjoint_complSource_tsupport_chartAtlasPOU_aux (I := I) α))) :
+      (isClosed_compl_chartAt_source (M := M) α)
+      (isClosed_tsupport_chartAtlasPOU (I := I) α)
+      (disjoint_complSource_tsupport_chartAtlasPOU (I := I) α))) :
         C^∞⟮I, M; ℝ⟯)
 
 omit [I.Boundaryless] in
@@ -63,9 +63,9 @@ private lemma chartStrictCutoffBundled_spec (α : M) :
   Classical.choose_spec
     (exists_contMDiffMap_zero_one_nhds_of_isClosed (I := I) (M := M)
       (n := (⊤ : ℕ∞))
-      (isClosed_compl_chartAt_source_aux (M := M) α)
-      (isClosed_tsupport_chartAtlasPOU_aux (I := I) α)
-      (disjoint_complSource_tsupport_chartAtlasPOU_aux (I := I) α))
+      (isClosed_compl_chartAt_source (M := M) α)
+      (isClosed_tsupport_chartAtlasPOU (I := I) α)
+      (disjoint_complSource_tsupport_chartAtlasPOU (I := I) α))
 
 def chartStrictCutoff (α : M) : M → ℝ :=
   ((chartStrictCutoffBundled (I := I) α : C^∞⟮I, M; ℝ⟯) : M → ℝ)

@@ -66,35 +66,6 @@ theorem hasDerivWithinAt_tsum {α : Type*} {f : α → ℝ → ℝ} {f' : α →
     simp [ContinuousLinearMap.apply_apply, ContinuousLinearMap.toSpanSingleton_apply]
   rwa [heval] at hderiv
 
-omit [BoundarylessManifold I M] in
-theorem allHs_of_weighted_summable_pub
-    (g : SmoothRiemannianMetric I M) (u : TensorL2 0 2 g)
-    (hsum : ∀ σ : ℝ, 0 ≤ σ →
-      Summable (fun i : TensorEigenIdx (I := I) (M := M) g 0 2 =>
-        tensorSobolevWeight (I := I) (M := M) i σ *
-          (tensorL2Coeff (I := I) (M := M)
-            (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) u i) ^ 2)) :
-    ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ v : TensorHs (I := I) (M := M) g 0 2 σ,
-        tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
-            (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) hσ v = u := by
-  intro σ hσ
-  classical
-  set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  set v : TensorHs (I := I) (M := M) g 0 2 σ :=
-    { coeff := fun i => tensorL2Coeff (I := I) (M := M) hc u i
-      weighted_summable := hsum σ hσ } with hv
-  refine ⟨v, ?_⟩
-  set b := Analysis.Parabolic.TensorSpectral.tensorResolventHilbertEigenbasisSigma
-    (I := I) (M := M) hc with hb
-  apply b.repr.injective
-  ext i
-  have hlhs : (b.repr (tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2) hc hσ v)) i =
-      tensorL2Coeff (I := I) (M := M) hc
-        (tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2) hc hσ v) i := rfl
-  have hrhs : (b.repr u) i = tensorL2Coeff (I := I) (M := M) hc u i := rfl
-  rw [hlhs, hrhs, tensorHsToL2_tensorL2Coeff]
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem ccTensorBilinSymm_toSection_congr

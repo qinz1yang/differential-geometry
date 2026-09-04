@@ -26,7 +26,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-theorem lCut_alt
+theorem isLConj_or_exists_distinct_minimizer_same_endpoint
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (tau : Real)
     (hcut : IsGreatest

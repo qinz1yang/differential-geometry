@@ -233,7 +233,7 @@ theorem branchEnergy_deriv
       (mfderiv I 𝓘(Real, E) invf q))
   exact hquad.congr_of_eventuallyEq heq
 
-private theorem exp_inv_mfderiv_legacy
+private theorem exp_inv_mfderiv_coe
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p q : M}
@@ -327,7 +327,7 @@ theorem exp_inv_mfderiv
         eInv.symm dInv := by
     apply eInv.injective
     simp only [dInv, ContinuousLinearEquiv.apply_symm_apply]
-  have h := exp_inv_mfderiv_legacy (I := I) B hq Y
+  have h := exp_inv_mfderiv_coe (I := I) B hq Y
   change
     ((mfderiv 𝓘(Real, E) I expOld uB
       (show TangentSpace 𝓘(Real, E) uB from (dInvT : E)) :

@@ -136,27 +136,30 @@ theorem mc_scaleMetric
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {g : SmoothRiemannianMetric I M}
     {c : Real} (hc : 0 < c)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g) :
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov
       (scaleMetric (I := I) c hc g) := by
-  intro x X Y Z hX hY hZ
+  change DifferentialGeometry.Geometry.Connection.IsMetricCompatibleOn cov.toFun
+    (scaleMetric (I := I) c hc g) Set.univ
+  intro Y Z x hY hZ _ v
   let f : M -> Real := fun y : M => g.inner y (Y y) (Z y)
   have hf : MDiffAt f x :=
     mdifferentiableAt_metric_inner (I := I) g hY hZ
   have hderivMap : mvfderiv (I := I) (c • f) x = c • mvfderiv (I := I) f x := by
     change mvfderiv (I := I) (fun y : M => c * f y) x = c • mvfderiv (I := I) f x
     exact mvfderiv_const_mul I c hf
-  have hcompat := hmc x X Y Z hX hY hZ
+  have hcompat :=
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible.apply hmc hY hZ v
   simp only [scaleMetric_inner]
   change
-    mvfderiv (I := I) (c • f) x (X x) =
-      c * g.inner x (cov Y x (X x)) (Z x) +
-        c * g.inner x (Y x) (cov Z x (X x))
+    mvfderiv (I := I) (c • f) x v =
+      c * g.inner x (cov Y x v) (Z x) +
+        c * g.inner x (Y x) (cov Z x v)
   have hcompat' :
-      mvfderiv (I := I) f x (X x) =
-        g.inner x (cov Y x (X x)) (Z x) +
-          g.inner x (Y x) (cov Z x (X x)) := by
-    change mvfderiv (I := I) f x (X x) = _ at hcompat
+      mvfderiv (I := I) f x v =
+        g.inner x (cov Y x v) (Z x) +
+          g.inner x (Y x) (cov Z x v) := by
+    change mvfderiv (I := I) f x v = _ at hcompat
     exact hcompat
   rw [hderivMap, smul_apply, hcompat']
   rw [smul_eq_mul]

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ManifoldH2.NonSmooth
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.Data
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.H1Data
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.WeakPartialDerivativeBound
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartHk.H2NonSmooth
 import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth

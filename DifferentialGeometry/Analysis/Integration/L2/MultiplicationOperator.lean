@@ -39,7 +39,7 @@ variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem norm_appFullRS_sq_eq_integral
+theorem norm_homTensorRSApply_sq_eq_integral
     (Ψ : Π x : M, TensorRSSpace r s I x →L[ℝ] TensorRSSpace r s I x)
     (hΨ : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E)
@@ -59,11 +59,11 @@ theorem norm_appFullRS_sq_eq_integral
     tensorL2Norm_sq_eq_integral_riemannianFiberNormSq (I := I) (M := M) g r s
       (fun x => (homTensorRSApply (I := I) (M := M) g r s s Ψ hΨ W).toSection x)]
   refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
-  simp only [appFullRS_toSection (I := I) (M := M) g r s s Ψ hΨ W]
+  simp only [homTensorRSApply_toSection (I := I) (M := M) g r s s Ψ hΨ W]
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem integrable_riemannianFiberNormSq_appFullRS
+theorem integrable_riemannianFiberNormSq_homTensorRSApply
     (Ψ : Π x : M, TensorRSSpace r s I x →L[ℝ] TensorRSSpace r s I x)
     (hΨ : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E)
@@ -76,7 +76,7 @@ theorem integrable_riemannianFiberNormSq_appFullRS
     (g := g) (r := r) (s := s) (homTensorRSApply (I := I) (M := M) g r s s Ψ hΨ W)
   have hint := hmem.integrable_inner_self
   refine hint.congr (Filter.Eventually.of_forall (fun x => ?_))
-  simp only [SmoothCcTensor.toFun_apply, appFullRS_toSection (I := I) (M := M) g r s s Ψ hΨ W x]
+  simp only [SmoothCcTensor.toFun_apply, homTensorRSApply_toSection (I := I) (M := M) g r s s Ψ hΨ W x]
   exact (riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x
     (Ψ x (W.toSection x))).symm
 
@@ -96,7 +96,7 @@ theorem integrable_riemannianFiberNormSq_toSection
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem norm_appFullRS_le_sqrt_mul
+theorem norm_homTensorRSApply_le_sqrt_mul
     (Ψ : Π x : M, TensorRSSpace r s I x →L[ℝ] TensorRSSpace r s I x)
     (hΨ : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E)
@@ -109,7 +109,7 @@ theorem norm_appFullRS_le_sqrt_mul
     ‖homTensorRSApply (I := I) (M := M) g r s s Ψ hΨ W‖ ≤ Real.sqrt C * ‖W‖ := by
   have hsq_int :
       ‖homTensorRSApply (I := I) (M := M) g r s s Ψ hΨ W‖ ^ 2 ≤ C * ‖W‖ ^ 2 := by
-    rw [norm_appFullRS_sq_eq_integral (I := I) (M := M) Ψ hΨ W]
+    rw [norm_homTensorRSApply_sq_eq_integral (I := I) (M := M) Ψ hΨ W]
     have hWsq :
         ‖W‖ ^ 2 = ∫ x, riemannianFiberNormSq (I := I) (M := M) g r s x (W.toSection x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
@@ -122,7 +122,7 @@ theorem norm_appFullRS_le_sqrt_mul
           (fun x => W.toSection x)]
     rw [hWsq, ← integral_const_mul]
     refine integral_mono
-      (integrable_riemannianFiberNormSq_appFullRS (I := I) (M := M) Ψ hΨ W)
+      (integrable_riemannianFiberNormSq_homTensorRSApply (I := I) (M := M) Ψ hΨ W)
       ((integrable_riemannianFiberNormSq_toSection (I := I) (M := M) W).const_mul C)
       (fun x => hbound x (W.toSection x))
   have hrhs : (0 : ℝ) ≤ Real.sqrt C * ‖W‖ :=
@@ -147,10 +147,10 @@ def fibreFieldMulSmoothCLM
     SmoothCcTensor g r s →L[ℝ] SmoothCcTensor g r s :=
   LinearMap.mkContinuous
     { toFun := fun W => homTensorRSApply (I := I) (M := M) g r s s Ψ hΨ W
-      map_add' := fun W₁ W₂ => appFullRS_add_right (I := I) (M := M) g r s s Ψ hΨ W₁ W₂
-      map_smul' := fun k W => appFullRS_smul_right (I := I) (M := M) g r s s k Ψ hΨ W }
+      map_add' := fun W₁ W₂ => homTensorRSApply_add_right (I := I) (M := M) g r s s Ψ hΨ W₁ W₂
+      map_smul' := fun k W => homTensorRSApply_smul_right (I := I) (M := M) g r s s k Ψ hΨ W }
     (Real.sqrt C)
-    (fun W => norm_appFullRS_le_sqrt_mul (I := I) (M := M) Ψ hΨ hC hbound W)
+    (fun W => norm_homTensorRSApply_le_sqrt_mul (I := I) (M := M) Ψ hΨ hC hbound W)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 @[simp] theorem fibreFieldMulSmoothCLM_apply
@@ -236,7 +236,7 @@ theorem fibreFieldMulL2_opNorm_le_sqrt
       (SmoothCcTensor.toL2_apply (g := g) (r := r) (s := s) S).symm
     rw [hcoe, fibreFieldMulL2_apply_toL2 (I := I) (M := M) g r s Ψ hΨ hC hbound S,
       SmoothCcTensor.norm_toL2, SmoothCcTensor.norm_toL2]
-    exact norm_appFullRS_le_sqrt_mul (I := I) (M := M) Ψ hΨ hC hbound S
+    exact norm_homTensorRSApply_le_sqrt_mul (I := I) (M := M) Ψ hΨ hC hbound S
 
 end L2Operator
 

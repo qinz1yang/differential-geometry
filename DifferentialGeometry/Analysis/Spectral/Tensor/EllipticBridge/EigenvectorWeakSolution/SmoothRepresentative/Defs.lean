@@ -61,7 +61,7 @@ lemma symm_toEuclidean_symm_toEuclidean_extChartAt
   exact (extChartAt I α).left_inv
     (by rw [extChartAt_source (I := I)]; exact hx)
 
-section Unconditional
+section MainResults
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -182,7 +182,7 @@ lemma tensorChartComponentRaw_eigenvectorSmoothChart_eq_zero_off_source
         ((eigenvectorSmoothChart (I := I) (M := M) g r s i α).toSection x)
       from rfl, hsec, ContinuousLinearMap.map_zero, ContinuousLinearMap.map_zero]
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

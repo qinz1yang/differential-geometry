@@ -20,7 +20,7 @@ open DifferentialGeometry.Geometry.Connection
    leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally)
 open DifferentialGeometry.Geometry.Curvature
   (connectionRiemannCurvatureField covDerivConnectionDifference curvCovDerivOpAt
-   metricRm04 smoothExtensionTangent smoothExtensionTangent_contMDiff
+   metricRm04 nablaRiemannOp nablaRm04_apply smoothExtensionTangent smoothExtensionTangent_contMDiff
    smoothExtensionTangent_eq vec5)
 
 namespace DifferentialGeometry
@@ -59,7 +59,7 @@ theorem curvJet1_normSq_le_of_op
       Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5) * K := by
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j

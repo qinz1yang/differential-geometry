@@ -1675,7 +1675,7 @@ theorem covApply_covApply_eq_linExt_of_covApply_zero
     set τ : Cₛ^∞⟮I; E →L[ℝ] E, fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x⟯ :=
       ⟨fun x => (LeviCivita (I := I) g).toFun W x, hτ_sm⟩ with hτ_def
     set Dsec : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := ⟨D, hD_sm⟩ with hDsec_def
-    have hleib := HomConnectionGen.homBundleCovariantDerivativeGen_apply
+    have hleib := HomConnection.homBundleCovariantDerivative_apply
       (I := I) (M := M) (E_U := E) (U := (TangentSpace I : M → Type _)) (F := E)
       (V := (TangentSpace I : M → Type _)) (LeviCivita (I := I) g) (LeviCivita (I := I) g)
       τ Dsec x₀ (Y x₀)

@@ -802,7 +802,7 @@ theorem modelModifiedStretchMap_unstretchMap {n k : ℕ} (hk : k ≤ n) (ε r δ
 
 
 
-theorem recombine_contDiff_generic {n k : ℕ} (hk : k ≤ n) :
+theorem recombine_pair_contDiff {n k : ℕ} (hk : k ≤ n) :
     ContDiff ℝ (⊤ : ℕ∞)
       (fun p : EuclideanSpace ℝ (Fin k) × EuclideanSpace ℝ (Fin (n - k)) =>
         recombine hk p.1 p.2) := by
@@ -887,7 +887,7 @@ theorem contDiffAt_modelModifiedStretchMap {n k : ℕ} (hk : k ≤ n) (ε r δ :
     ContDiffAt.smul hfactor hpos
   have hrec : ContDiff ℝ (⊤ : ℕ∞)
       (fun p : EuclideanSpace ℝ (Fin k) × EuclideanSpace ℝ (Fin (n - k)) =>
-        recombine hk p.1 p.2) := recombine_contDiff_generic hk
+        recombine hk p.1 p.2) := recombine_pair_contDiff hk
   have hpair2 : ContDiffAt ℝ (⊤ : ℕ∞)
       (fun z : MorseModel n => (negPart hk z, (Real.sqrt ((‖negPart hk z‖ ^ 2 + r ^ 2) /
         (‖negPart hk z‖ ^ 2 + 2 * modelModifiedDip hk ε δ z - 2 * ε))) • posPart hk z)) y :=
@@ -1381,7 +1381,7 @@ theorem contDiffAt_modelModifiedUnstretchMap {n k : ℕ} (hk : k ≤ n) (ε r δ
     ContDiffAt.smul hfacAt hpos
   have hrec : ContDiff ℝ (⊤ : ℕ∞)
       (fun p : EuclideanSpace ℝ (Fin k) × EuclideanSpace ℝ (Fin (n - k)) =>
-        recombine hk p.1 p.2) := recombine_contDiff_generic hk
+        recombine hk p.1 p.2) := recombine_pair_contDiff hk
   have hpair2 : ContDiffAt ℝ (⊤ : ℕ∞)
       (fun z : MorseModel n => (negPart hk z,
         (modelModifiedUnstretchFactor ε δ r hε hδ hr (‖negPart hk z‖ ^ 2) (‖posPart hk z‖ ^ 2)) •
@@ -6017,7 +6017,7 @@ theorem contDiffOn_modelFlowField_of_posPart_ne_zero {n k : ℕ} (hk : k ≤ n) 
     exact hneg.smul (posPartCLM hk).contDiff.contDiffAt
   have hrec : ContDiff ℝ (⊤ : ℕ∞)
       (fun p : EuclideanSpace ℝ (Fin k) × EuclideanSpace ℝ (Fin (n - k)) =>
-        recombine hk p.1 p.2) := recombine_contDiff_generic hk
+        recombine hk p.1 p.2) := recombine_pair_contDiff hk
   have hmain : ContDiffAt ℝ (⊤ : ℕ∞) (modelFlowField hk) y := by
     change ContDiffAt ℝ (⊤ : ℕ∞)
       (fun z : MorseModel n => recombine hk 0

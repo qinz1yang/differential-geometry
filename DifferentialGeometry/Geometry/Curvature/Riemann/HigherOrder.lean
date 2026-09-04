@@ -66,18 +66,6 @@ theorem connectionRiemannCurvatureField_eq_nabla2VectorField_skew_of_torsion_zer
   rw [htor, map_zero, sub_zero] at h
   exact h.symm
 
-theorem riemannCurvatureAux_eq_nabla2VectorField_skew_of_torsion_zero
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    {X Y Z : RawTangentField (I := I) (M := M)} {x : M}
-    (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x)
-    (htor : cov.torsion x (X x) (Y x) = 0) :
-    CovariantDerivative.riemannCurvatureAux (I := I) cov X Y Z x =
-      nabla2VectorField (I := I) cov X Y Z x -
-        nabla2VectorField (I := I) cov Y X Z x := by
-  rw [CovariantDerivative.riemannCurvatureAux_eq_connectionRiemannCurvatureField]
-  exact connectionRiemannCurvatureField_eq_nabla2VectorField_skew_of_torsion_zero
-    (I := I) cov hX hY htor
-
 theorem leviCivita_connectionRiemannCurvatureField_eq_nabla2VectorField_skew
     (g : SmoothRiemannianMetric I M)
     {X Y Z : RawTangentField (I := I) (M := M)} {x : M}

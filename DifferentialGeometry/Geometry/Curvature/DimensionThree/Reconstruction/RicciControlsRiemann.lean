@@ -126,7 +126,7 @@ theorem ricciEigen3
         RicciDiagAt (I := I) Ric (ricciEigenScalar3 l1 l2 l3)
           l1 l2 l3 basis := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
@@ -159,7 +159,7 @@ theorem ricciEigen3
       MetricFiberData.toCore_inner D (ob i) (ob j)
     have hob := ob.inner_eq_ite i j
     change g.inner x (basis i) (basis j) = delta3 i j
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
       (basis i) (basis j)]
     change D.inner (basis i) (basis j) = delta3 i j
     change D.inner (ob i) (ob j) = delta3 i j
@@ -189,7 +189,7 @@ theorem ricciEigen3
                       Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
                     MetricFiberData.toCore_inner D (ob i) (ob j)
                   have hob := ob.inner_eq_ite i j
-                  rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+                  rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
                     (ob i) (ob j)]
                   change D.inner (ob i) (ob j) = delta3 i j
                   rw [← hinner]
@@ -210,7 +210,7 @@ theorem ricciEigen3_ordered
         RicciDiagAt (I := I) Ric (ricciEigenScalar3 l1 l2 l3)
           l1 l2 l3 basis := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
@@ -243,7 +243,7 @@ theorem ricciEigen3_ordered
       MetricFiberData.toCore_inner D (ob i) (ob j)
     have hob := ob.inner_eq_ite i j
     change g.inner x (basis i) (basis j) = delta3 i j
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
       (basis i) (basis j)]
     change D.inner (basis i) (basis j) = delta3 i j
     change D.inner (ob i) (ob j) = delta3 i j
@@ -275,8 +275,8 @@ theorem ricciEigen3_ordered
                       Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
                     MetricFiberData.toCore_inner D (ob i) (ob j)
                   have hob := ob.inner_eq_ite i j
-                  rw [← TangentMetricDataGen.inner_eq_gen
-                    (tangentMetricDataGen (I := I) g x) (ob i) (ob j)]
+                  rw [← TangentMetricData.inner_eq
+                    (tangentMetricData (I := I) g x) (ob i) (ob j)]
                   change D.inner (ob i) (ob j) = delta3 i j
                   rw [← hinner]
                   simpa [delta3] using hob
@@ -304,7 +304,7 @@ theorem ricciEigenBasis3
           l1 l2 l3 basis /\
         0 <= l1 /\ 0 <= l2 /\ 0 <= l3 := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
@@ -337,7 +337,7 @@ theorem ricciEigenBasis3
       MetricFiberData.toCore_inner D (ob i) (ob j)
     have hob := ob.inner_eq_ite i j
     change g.inner x (basis i) (basis j) = delta3 i j
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
       (basis i) (basis j)]
     change D.inner (basis i) (basis j) = delta3 i j
     change D.inner (ob i) (ob j) = delta3 i j
@@ -367,7 +367,7 @@ theorem ricciEigenBasis3
                       Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
                     MetricFiberData.toCore_inner D (ob i) (ob j)
                   have hob := ob.inner_eq_ite i j
-                  rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+                  rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
                     (ob i) (ob j)]
                   change D.inner (ob i) (ob j) = delta3 i j
                   rw [← hinner]
@@ -402,7 +402,7 @@ theorem ricciEigenBasis3
                         Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
                       MetricFiberData.toCore_inner D (ob i) (ob j)
                     have hob := ob.inner_eq_ite i j
-                    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+                    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
                       (ob i) (ob j)]
                     change D.inner (ob i) (ob j) = delta3 i j
                     rw [← hinner]
@@ -442,7 +442,7 @@ theorem ricciEigenBasis3
                         Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
                       MetricFiberData.toCore_inner D (ob i) (ob j)
                     have hob := ob.inner_eq_ite i j
-                    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+                    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
                       (ob i) (ob j)]
                     change D.inner (ob i) (ob j) = delta3 i j
                     rw [← hinner]
@@ -482,7 +482,7 @@ theorem ricciEigenBasis3
                         Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
                       MetricFiberData.toCore_inner D (ob i) (ob j)
                     have hob := ob.inner_eq_ite i j
-                    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+                    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
                       (ob i) (ob j)]
                     change D.inner (ob i) (ob j) = delta3 i j
                     rw [← hinner]
@@ -523,7 +523,7 @@ theorem metricTrace_eq_ricciEnd
     DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
       (I := I) g x k l (extChartAt I x x)
   have hinv :
-      MetricInverseInBasisGen (I := I) g x basis gInv := by
+      MetricInverseInBasis (I := I) g x basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) g x
@@ -542,7 +542,7 @@ theorem metricTrace_pos_of_posDef
       0 < Ric (vec2 (I := I) v v)) :
     0 < DifferentialGeometry.Geometry.Operator.metricTracePair0SAt (I := I) g Ric := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
@@ -622,7 +622,7 @@ theorem orthonormal_invBasis3
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth : OrthonormalBasisAt (I := I) g x basis) :
-    MetricInverseInBasisGen (I := I) g x basis delta3 := by
+    MetricInverseInBasis (I := I) g x basis delta3 := by
   have h00 : g.inner x (basis 0) (basis 0) = 1 := by
     simpa [delta3] using horth 0 0
   have h01 : g.inner x (basis 0) (basis 1) = 0 := by
@@ -751,7 +751,7 @@ theorem normSq0S_four_eq_stdRmNormSq3
     (horth : OrthonormalBasisAt (I := I) g x basis) :
     normSq0S (I := I) g x 4 Rm04 =
       stdRmNormSq3 (standardRmCompAt (I := I) basis Rm04) := by
-  have hinv : MetricInverseInBasisGen (I := I) g x basis delta3 :=
+  have hinv : MetricInverseInBasis (I := I) g x basis delta3 :=
     orthonormal_invBasis3 (I := I) g basis horth
   rw [normSq0S_eq_coord (I := I) g x 4 basis delta3 hinv Rm04]
   exact coordInner0S_four_delta3_eq_stdRmNormSq3 (I := I)

@@ -180,14 +180,14 @@ theorem curveDensity_pole
     filter_upwards [hball] with t ht
     simpa only [Metric.mem_ball, dist_zero_right] using ht
   have hraw0 :=
-    intrJacobi_raw (I := I) g hEnorm p uE (0 : E)
+    intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p uE (0 : E)
   have hraw : ∀ᶠ t in 𝓝[>] (0 : Real), ∀ i,
       intrinsicGeodesic (I := I) g hEnorm p u t =
           radialCurve (I := I) g p uE t ∧
         (intrinsicJacobi (I := I) g hEnorm p u (v i) t : E) =
           (radialJacobiField (I := I) g p uE (vE i) t : E) :=
     Filter.eventually_all.mpr fun i =>
-      intrJacobi_raw (I := I) g hEnorm p uE (vE i)
+      intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p uE (vE i)
   have hgram : ∀ᶠ t in 𝓝[>] (0 : Real),
       curveGram (I := I) g (intrinsicGeodesic (I := I) g hEnorm p u)
           (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) t =

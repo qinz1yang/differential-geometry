@@ -198,16 +198,16 @@ theorem metricScalarAt_restrictOpen
         exact (SmoothRiemannianMetric.restrictOpen_inner g U x
           (basisU i) (basisU j)).symm
       _ = _ := hONU i j
-  have hinvU : MetricInverseInBasisGen (I := I) (M := U)
+  have hinvU : MetricInverseInBasis (I := I) (M := U)
       (g.restrictOpen (I := I) U) x basisU
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
-    change MetricInverseInBasisGen (I := I) (M := U)
+    change MetricInverseInBasis (I := I) (M := U)
       (g.restrictOpen (I := I) U) x basisU (fun a k => if a = k then 1 else 0)
     exact DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (M := U)
       (g.restrictOpen (I := I) U) basisU hONU
-  have hinvM : MetricInverseInBasisGen (I := I) (M := M) g (x : M) basisM
+  have hinvM : MetricInverseInBasis (I := I) (M := M) g (x : M) basisM
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
-    change MetricInverseInBasisGen (I := I) (M := M) g (x : M) basisM
+    change MetricInverseInBasis (I := I) (M := M) g (x : M) basisM
       (fun a k => if a = k then 1 else 0)
     exact DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (M := M) g basisM hONM
   rw [metricScalarAt_def, metricScalarAt_def,

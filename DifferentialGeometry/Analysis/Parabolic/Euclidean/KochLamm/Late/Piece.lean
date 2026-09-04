@@ -79,7 +79,7 @@ def klLatePiece0 (R : ℝ) (f : ℝ × V → F) (x : V) (S : Set V) : F :=
     ∂klTailMeasure (V := V) R S
 
 omit [CompleteSpace F] in
-theorem klLatePiece_hold {T R : ℝ} {A₁ A_q : ℝ≥0}
+theorem klLatePiece_holder {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
     (hS : S ⊆ Metric.ball c R) :
@@ -110,7 +110,7 @@ theorem klLatePiece_norm {T R k : ℝ} {A₁ A_q : ℝ≥0}
       Real.exp (-(k ^ 2) / 4) * (klLateTailC V * (A_q : ℝ)) := by
   have hkern := klTailKern_fac (V := V) hR hk x hSm hfar
   have hsrc := klPieceSrc_fac (V := V) h c hR hRT hS
-  have hhold := klLatePiece_hold (V := V) h x c hR hRT hS
+  have hhold := klLatePiece_holder (V := V) h x c hR hRT hS
   have hs : 0 < klLqScaleR (V := V) R :=
     Real.rpow_pos_of_pos hR _
   have hc : 0 < klLateTailC V := by

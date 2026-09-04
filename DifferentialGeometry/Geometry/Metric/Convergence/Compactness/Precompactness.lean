@@ -12,7 +12,7 @@ import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Analysis.Calculus.ContDiff.Bounds
 import DifferentialGeometry.Analysis.Calculus.Compactness.SmoothMap
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
-import DifferentialGeometry.Geometry.Curvature.Coordinates.RicciJet
+import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.ChartBridge
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Pi
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.SpaceJets
 open DifferentialGeometry.PDE.RicciFlow

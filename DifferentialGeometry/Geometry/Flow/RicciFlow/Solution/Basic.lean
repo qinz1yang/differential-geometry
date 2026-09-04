@@ -162,7 +162,7 @@ def MetricCompatibleOn
     (G : SolutionFamily (I := I) (M := M))
     (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval) : Prop :=
   forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D,
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
       (G.connection (t : Real)) (G.metric (t : Real))
 
 end SolutionFamily
@@ -306,17 +306,17 @@ theorem timeShift_self_initial_metric
   simp
 
 
-def toRicciFlowCandidate {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+def toMetricEvolutionData {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) :
-    DifferentialGeometry.PDE.RicciFlow.RicciFlowCandidateOn (I := I) (M := M) D where
+    DifferentialGeometry.PDE.RicciFlow.MetricEvolutionDataOn (I := I) (M := M) D where
   family := S.family
-  ricci := RicciAtFamily.toTensorField (I := I) S.ricciAt
+  drivingTensor := RicciAtFamily.toTensorField (I := I) S.ricciAt
 
 omit [SigmaCompactSpace M] [T2Space M] in
-@[simp] theorem toRicciFlowCandidate_family
+@[simp] theorem toMetricEvolutionData_family
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) :
-    S.toRicciFlowCandidate.family = S.family := by
+    S.toMetricEvolutionData.family = S.family := by
   rfl
 
 end SolutionOn
@@ -758,12 +758,12 @@ theorem isSolutionOn_timeShift
     exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [SigmaCompactSpace M] in
-theorem isRicciFlowCandidateOn_of_isSolutionOn
+theorem isMetricEvolutionOn_of_isSolutionOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSolutionOn (I := I) S) :
-    DifferentialGeometry.PDE.RicciFlow.IsRicciFlowCandidateOn (I := I)
-      S.toRicciFlowCandidate := by
+    DifferentialGeometry.PDE.RicciFlow.IsMetricEvolutionOn (I := I)
+      S.toMetricEvolutionData := by
   exact
     { smoothMetric := hS.smoothMetric
       smoothConnection := hS.smoothConnection

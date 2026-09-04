@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Comparison
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Pullback
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Basic
-import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Compactness
 
 open DifferentialGeometry.Geometry.Curvature
 

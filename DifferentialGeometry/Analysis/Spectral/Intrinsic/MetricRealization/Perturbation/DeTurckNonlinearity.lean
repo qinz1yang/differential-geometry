@@ -894,7 +894,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
 
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem covApplyGenFamily_jointContMDiffOn
+private theorem covApplyFamily_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M)
     (S : Set ℝ)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -978,7 +978,7 @@ private theorem traceTerm1_jointContMDiffOn
             B.toFun (fun z : M => (F p.2).toSection z)) p.1 (B.toFun p.1)))
       ((Set.univ : Set M) ×ˢ S) := by
   have hInner := smoothCcCovApplySection_jointContMDiffOn (I := I) g₀ F S B hF
-  have hStep := covApplyGenFamily_jointContMDiffOn (I := I) g₀ S B
+  have hStep := covApplyFamily_jointContMDiffOn (I := I) g₀ S B
     (fun t => covApplySection (I := I) g₀ B (F t)) hInner
   exact hStep
 

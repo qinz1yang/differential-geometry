@@ -779,7 +779,7 @@ theorem exists_lieCorrectionZeroVectorBundle_covariantJetNormSq_difference_bound
     exact htb1'.2
   have hTr1d2 : covariantJetNormSq (I := I) (M := M) g 2 (Tr1T - Tr1U) ≤
       Ct1 ^ 2 * u := by
-    rw [hTr1T, hTr1U, reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [hTr1T, hTr1U, reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp1'
   have hWTform : WT = ccOperatorFieldComp (I := I) (M := M) g 0 3 1 Tr1T cdT := by
     rw [hWTdef, hTr1T, hcdT, deTurckVectorFieldCovector_eq_reindexedPureTrace_ccOperatorFieldComp]
@@ -3464,11 +3464,11 @@ theorem connectionDifferenceInsertionInnerActionCoefficient_apply
   rw [operatorFieldComposition_zero_eq_operatorFieldApply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem operatorFieldApplication_reindexCoeffGen_symmetrized_input
+private theorem operatorFieldApplication_reindexCoefficientInputSlots_symmetrized_input
     (g : SmoothRiemannianMetric I M) {s : ℕ}
     (R : SmoothCcTensor g 2 s) (W : SmoothCcTensor g 0 2) :
     operatorFieldApply (I := I) (M := M) g 2 s
-        (reindexCoeffGen (I := I) (M := M) g 2 s R innerCoreInPerm10)
+        (reindexCoefficientInputSlots (I := I) (M := M) g 2 s R innerCoreInPerm10)
         (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 2 s R
         (ccTensor02Symm (I := I) (M := M) g W) := by
@@ -3480,7 +3480,7 @@ private theorem operatorFieldApplication_reindexCoeffGen_symmetrized_input
   intro x
   rw [unitModel, unitModel, operatorFieldApplication_toSection, operatorFieldApplication_toSection,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
-  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply]
+  rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply]
   have hu : Tensor0SSpace.ofModel
       (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
         (Tensor0SSpace.toModel
@@ -3638,7 +3638,7 @@ private theorem nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeO
 
 private noncomputable def reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks
     (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -3658,9 +3658,9 @@ private noncomputable def nestedConnectionDifferenceKernelTerm_rotateInputs_cycl
         (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
         (connectionDifferenceContrInsertionInnerField (I := I) g gm)))
 
-private noncomputable def reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
+private noncomputable def reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
     (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -3668,7 +3668,7 @@ private noncomputable def reindexedBareConnectionDifferenceKernelTerm_cycleZeroO
         (connectionDifferenceContrInsertionInnerField (I := I) g gm)))
     innerCoreInPerm10
 
-private noncomputable def bareConnectionDifferenceKernelTerm_cycleZeroOneTwo
+private noncomputable def directConnectionDifferenceKernelTerm_cycleZeroOneTwo
     (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo)
@@ -3678,7 +3678,7 @@ private noncomputable def bareConnectionDifferenceKernelTerm_cycleZeroOneTwo
 
 private noncomputable def reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo
     (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -3695,8 +3695,8 @@ private noncomputable def ricciConnectionDifferenceQuadraticKernelSum
       nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo (I := I) (M := M) g gm +
       reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks (I := I) (M := M) g gm +
       nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo (I := I) (M := M) g gm +
-      reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g gm +
-      bareConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g gm +
+      reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g gm +
+      directConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g gm +
       reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo (I := I) (M := M) g gm
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -3715,7 +3715,7 @@ private theorem ricciConnectionDifferenceQuadraticKernel_eq_sum
   unfold ricciConnectionDifferenceQuadraticKernel ricciConnectionDifferenceQuadraticKernelSum
   rfl
 
-noncomputable def ricciQuadraticKernelDerivativeBareTerm
+noncomputable def ricciQuadraticKernelDerivativeDirectTerm
     (g gm : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     (out : Equiv.Perm (Fin 4)) : SmoothCcTensor g 3 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 3 4 4
@@ -3726,7 +3726,7 @@ noncomputable def ricciQuadraticKernelDerivativeBareTerm
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ricciQuadraticKernelDerivativeBareTerm_apply
+theorem ricciQuadraticKernelDerivativeDirectTerm_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
     (out : Equiv.Perm (Fin 4))
     (hP : ∀ (x : M) (u v : TangentSpace I x),
@@ -3743,13 +3743,13 @@ theorem ricciQuadraticKernelDerivativeBareTerm_apply
             (connectionDifferenceContrInsertionInnerField (I := I) g gm)))
         (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
-        (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gm W out)
+        (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gm W out)
         (covGrad (I := I) (M := M) g 0 2 P) := by
   have hinner := connectionDifferenceInsertionInnerActionCoefficient_apply (I := I) (M := M) g gm P W hP htie
   conv_lhs =>
     rw [← operatorFieldApplication_assoc, ← operatorFieldApplication_assoc]
   rw [hinner]
-  rw [ricciQuadraticKernelDerivativeBareTerm]
+  rw [ricciQuadraticKernelDerivativeDirectTerm]
   conv_rhs =>
     rw [← operatorFieldApplication_assoc, ← operatorFieldApplication_assoc]
 
@@ -3768,7 +3768,7 @@ private theorem reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBl
       operatorFieldApply (I := I) (M := M) g 3 4
         (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks)
         (covGrad (I := I) (M := M) g 0 2 P) := by
-  rw [reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks, operatorFieldApplication_reindexCoeffGen_symmetrized_input]
+  rw [reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks, operatorFieldApplication_reindexCoefficientInputSlots_symmetrized_input]
   exact ricciQuadraticKernelDerivativeNestedTerm_apply (I := I) (M := M) g gm P W
     ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks hP htie
 
@@ -3793,7 +3793,7 @@ private theorem nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThree
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo_apply
+private theorem reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
     (hP : ∀ (x : M) (u v : TangentSpace I x),
       ccTensorBilin (I := I) g P x u v =
@@ -3801,17 +3801,17 @@ private theorem reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
     (htie : ∀ (x : M) (u v : TangentSpace I x),
       gm.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
-    operatorFieldApply (I := I) (M := M) g 2 4 (reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g gm)
+    operatorFieldApply (I := I) (M := M) g 2 4 (reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g gm)
         (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
-        (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gm W ricciQuadraticPermutationCycleZeroOneThreeTwo)
+        (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gm W ricciQuadraticPermutationCycleZeroOneThreeTwo)
         (covGrad (I := I) (M := M) g 0 2 P) := by
-  rw [reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo, operatorFieldApplication_reindexCoeffGen_symmetrized_input]
-  exact ricciQuadraticKernelDerivativeBareTerm_apply (I := I) (M := M) g gm P W ricciQuadraticPermutationCycleZeroOneThreeTwo hP htie
+  rw [reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo, operatorFieldApplication_reindexCoefficientInputSlots_symmetrized_input]
+  exact ricciQuadraticKernelDerivativeDirectTerm_apply (I := I) (M := M) g gm P W ricciQuadraticPermutationCycleZeroOneThreeTwo hP htie
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem bareConnectionDifferenceKernelTerm_cycleZeroOneTwo_apply
+private theorem directConnectionDifferenceKernelTerm_cycleZeroOneTwo_apply
     (g gm : SmoothRiemannianMetric I M) (P W : SmoothCcTensor g 0 2)
     (hP : ∀ (x : M) (u v : TangentSpace I x),
       ccTensorBilin (I := I) g P x u v =
@@ -3819,13 +3819,13 @@ private theorem bareConnectionDifferenceKernelTerm_cycleZeroOneTwo_apply
     (htie : ∀ (x : M) (u v : TangentSpace I x),
       gm.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
-    operatorFieldApply (I := I) (M := M) g 2 4 (bareConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g gm)
+    operatorFieldApply (I := I) (M := M) g 2 4 (directConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g gm)
         (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
-        (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gm W ricciQuadraticPermutationCycleZeroOneTwo)
+        (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gm W ricciQuadraticPermutationCycleZeroOneTwo)
         (covGrad (I := I) (M := M) g 0 2 P) := by
-  rw [bareConnectionDifferenceKernelTerm_cycleZeroOneTwo]
-  exact ricciQuadraticKernelDerivativeBareTerm_apply (I := I) (M := M) g gm P W ricciQuadraticPermutationCycleZeroOneTwo hP htie
+  rw [directConnectionDifferenceKernelTerm_cycleZeroOneTwo]
+  exact ricciQuadraticKernelDerivativeDirectTerm_apply (I := I) (M := M) g gm P W ricciQuadraticPermutationCycleZeroOneTwo hP htie
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -3842,7 +3842,7 @@ private theorem reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZ
       operatorFieldApply (I := I) (M := M) g 3 4
         (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo)
         (covGrad (I := I) (M := M) g 0 2 P) := by
-  rw [reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo, operatorFieldApplication_reindexCoeffGen_symmetrized_input]
+  rw [reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo, operatorFieldApplication_reindexCoefficientInputSlots_symmetrized_input]
   exact ricciQuadraticKernelDerivativeNestedTerm_apply (I := I) (M := M) g gm P W
     ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo hP htie
 
@@ -3852,8 +3852,8 @@ noncomputable def ricciQuadraticKernelDerivativeCoefficient
   ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationCycleZeroThreeOneTwo +
     ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks +
     ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo +
-    ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gm W ricciQuadraticPermutationCycleZeroOneThreeTwo +
-    ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gm W ricciQuadraticPermutationCycleZeroOneTwo +
+    ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gm W ricciQuadraticPermutationCycleZeroOneThreeTwo +
+    ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gm W ricciQuadraticPermutationCycleZeroOneTwo +
     ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo
 
 noncomputable def ricciConnectionDifferenceQuadraticDerivativeCoefficient
@@ -3885,8 +3885,8 @@ theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_apply
   have h0 := nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo_apply (I := I) (M := M) g gm P W hP htie
   have h1 := reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks_apply (I := I) (M := M) g gm P W hP htie
   have h2 := nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo_apply (I := I) (M := M) g gm P W hP htie
-  have h3 := reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo_apply (I := I) (M := M) g gm P W hP htie
-  have h4 := bareConnectionDifferenceKernelTerm_cycleZeroOneTwo_apply (I := I) (M := M) g gm P W hP htie
+  have h3 := reindexedDirectConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo_apply (I := I) (M := M) g gm P W hP htie
+  have h4 := directConnectionDifferenceKernelTerm_cycleZeroOneTwo_apply (I := I) (M := M) g gm P W hP htie
   have h5 := reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo_apply (I := I) (M := M) g gm P W hP htie
   rw [h0, h1, h2, h3, h4, h5]
   rw [ricciConnectionDifferenceQuadraticDerivativeCoefficient, ← operatorFieldApplication_assoc, ricciQuadraticKernelDerivativeCoefficient]

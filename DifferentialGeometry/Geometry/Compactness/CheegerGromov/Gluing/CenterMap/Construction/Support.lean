@@ -389,7 +389,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
       (∀ gamma : LiveSlot L inp.pack r,
         C1 gamma ⊆ Metric.ball 0 ((q gamma : Real) / 2)) ∧
       Filter.Eventually
-        (fun n ↦ HasLiveBrFull (I := I) P Lphi inp.pack r n
+        (fun n ↦ HasControlledLiveNormalBranches (I := I) P Lphi inp.pack r n
           hcomplete hconn aMin q δ)
         Filter.atTop ∧
       (∀ᶠ n in Filter.atTop, ∀ gamma : LiveSlot L inp.pack r,
@@ -679,7 +679,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
         ∀ z ∈ Ualpha, ∀ v : E,
           (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf alpha z v v ∧
             gInf alpha z v v ≤ 2 * ‖v‖ ^ 2) ∧
-      (∀ n, HasLiveBrFull (I := I) P Ltheta inp.pack r n
+      (∀ n, HasControlledLiveNormalBranches (I := I) P Ltheta inp.pack r n
         hcomplete hconn aMin q δ) ∧
       (∀ n (gamma : LiveSlot L inp.pack r),
         let Rgamma := Ltheta.rInf (gamma.1 : Nat) + 1
@@ -756,7 +756,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
     exact ⟨hcap, hscale⟩
   obtain ⟨psi, hpsi, gInf, deltaInf, e, eInf,
       hcenter0, hQAll, hmetric0, hbranchAll, hpair0⟩ :=
-    inp.exists_diag_full P Lphi r hcomplete hconn aMin q δ hq hδ
+    inp.exists_diagonal_subsequence_of_eventually P Lphi r hcomplete hconn aMin q δ hq hδ
       hqWidePhi hqAcc herr hinvErr hbranch Q hQ
   let theta := phi ∘ psi
   have htheta : StrictMono theta := hphi.comp hpsi
@@ -790,7 +790,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
     intro alpha
     with_unfolding_all exact hmetric0 alpha
   have hbranchTheta : ∀ n,
-      HasLiveBrFull (I := I) P Ltheta inp.pack r n
+      HasControlledLiveNormalBranches (I := I) P Ltheta inp.pack r n
         hcomplete hconn aMin q δ := by
     intro n
     with_unfolding_all exact hbranchAll n

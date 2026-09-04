@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
-import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantDerivative
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 open DifferentialGeometry.Tensor.RSTensor
@@ -33,7 +33,7 @@ theorem scalar_curvature_differential_eq_ricci_trace
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv) :
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
@@ -65,7 +65,7 @@ theorem scalar_curvature_differential_eq_ricci_trace
       2 cov Ric x
   let dScalar := differential1FormFun (I := I) scalar x
   simpa [cov, hcov, Ric, scalar, nablaRic, dScalar] using
-    nablaTrace02 (I := I) (M := M) cov g
+    differential_metricTrace_eq_trace_totalNabla_inBasis (I := I) (M := M) cov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       Ric basis gInv hinv X
@@ -76,7 +76,7 @@ theorem scalar_curvature_hessian_trace_symmetric
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (i j : Idx) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
@@ -587,7 +587,7 @@ theorem levi_civita_second_bianchi
         intro p
         exact DifferentialGeometry.Geometry.Curvature.CovariantDerivative.curvField_contMDiffAt
           (I := I) cov hcov Xsec Ysec Zsec p⟩
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g :=
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g :=
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
       (I := I) g
   have term_eq
@@ -659,16 +659,13 @@ theorem levi_civita_second_bianchi
         exact
           DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section_apply_smooth
             (I := I) g cov hcov P Q R Wsec p
-      have hDmd : MDiffAt (T% fun p : M => D p) x :=
-        (D.contMDiff.contMDiffAt (x := x)).mdifferentiableAt (by simp)
       have hWmd : MDiffAt (T% fun p : M => Wsec p) x :=
         (Wsec.contMDiff.contMDiffAt (x := x)).mdifferentiableAt (by simp)
       have hRmd : MDiffAt (T% fun p : M => Rcurv p) x :=
         (Rcurv.contMDiff.contMDiffAt (x := x)).mdifferentiableAt (by simp)
       have hmetric :=
-        DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-          (I := I) (x := x) hmc (fun p : M => D p) (fun p : M => Wsec p)
-          (fun p : M => Rcurv p) hDmd hWmd hRmd
+        DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+          (I := I) (x := x) hmc (D x) hWmd hRmd
       rw [hfun]
       rw [hmetric]
       rw [hcovW D]
@@ -958,7 +955,7 @@ theorem levi_civita_ricci_section_eq_riemann_trace
     let Ric : Tensor02Section (I := I) (M := M) :=
       DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection (I := I) (M := M)
         cov hcov
-    Ric = trace04Field (I := I) (M := M) g Rm04 := by
+    Ric = metricTraceCovariantFourField (I := I) (M := M) g Rm04 := by
   classical
   let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
   let hcov :=
@@ -995,7 +992,7 @@ theorem levi_civita_ricci_section_eq_riemann_trace
       DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g y k
         l (extChartAt I y y)
   have hinv :
-      MetricInverseInBasisGen (I := I) (M := M) g y basis gInv := by
+      MetricInverseInBasis (I := I) (M := M) g y basis gInv := by
     simpa [basis, gInv] using
       (Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) g y)
@@ -1026,7 +1023,7 @@ theorem levi_civita_ricci_section_eq_riemann_trace
         simpa using hTrace (slots 0) (slots 1)
     _ =
       metricTraceFirstTwo0SAt (I := I) g
-        ((Rm04 y).domDomCongr trace04Perm)
+        ((Rm04 y).domDomCongr covariantFourTracePerm)
         (vec2 (I := I) (basis (slots 0)) (basis (slots 1))) := by
         rw [metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv]
         apply Finset.sum_congr rfl
@@ -1035,7 +1032,7 @@ theorem levi_civita_ricci_section_eq_riemann_trace
         intro j _
         congr 1
     _ =
-      trace04Field (I := I) (M := M) g Rm04 y
+      metricTraceCovariantFourField (I := I) (M := M) g Rm04 y
         (vec2 (I := I) (basis (slots 0)) (basis (slots 1))) := by
         simp [metricTraceFirstTwo0STensor_apply, metricTraceFirstTwo0SAt]
 
@@ -1045,7 +1042,7 @@ theorem levi_civita_covariant_ricci_eq_riemann_trace
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv) :
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
@@ -1080,11 +1077,11 @@ theorem levi_civita_covariant_ricci_eq_riemann_trace
       2 cov Ric x
   dsimp
   intro A B C
-  have hRicField : Ric = trace04Field (I := I) (M := M) g Rm04 := by
+  have hRicField : Ric = metricTraceCovariantFourField (I := I) (M := M) g Rm04 := by
     simpa [cov, hcov, Rm04, Ric] using
       (levi_civita_ricci_section_eq_riemann_trace (I := I) (M := M) g)
   have htrace :=
-    nablaTrace04 (I := I) (M := M) cov g
+    nabla_metricTraceCovariantFourField (I := I) (M := M) cov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       Rm04 basis gInv hinv A B C
@@ -1097,7 +1094,7 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B C D : TangentSpace I x) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
@@ -1152,11 +1149,11 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
       3 cov nablaRic x
   let rmPerm : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4 :=
-    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) trace04Perm Rm04
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) covariantFourTracePerm Rm04
   let nablaRmPerm : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (2 + 2 + 1) :=
     Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
-      (frontExtendEquiv trace04Perm) nablaRm04
+      (frontExtendEquiv covariantFourTracePerm) nablaRm04
   let traceInput : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (3 + 2) :=
     Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle 2) nablaRmPerm
@@ -1169,7 +1166,7 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
       (M := M) 4 cov Rm04 _
   have hRmPerm : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 4 cov rmPerm nablaRmPerm := by
-    exact totalNabla0SRealizes_domDomCongr (I := I) cov trace04Perm
+    exact totalNabla0SRealizes_domDomCongr (I := I) cov covariantFourTracePerm
       Rm04 nablaRm04 hRm
   have hTrace : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 cov
@@ -1180,11 +1177,11 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
       rmPerm nablaRmPerm hRmPerm
   have hTraceField :
       metricTraceFirstTwoField (I := I) (M := M) g rmPerm =
-        trace04Field (I := I) (M := M) g Rm04 := by
+        metricTraceCovariantFourField (I := I) (M := M) g Rm04 := by
     apply ContMDiffSection.ext
     intro y
     rfl
-  have hRicField : Ric = trace04Field (I := I) (M := M) g Rm04 := by
+  have hRicField : Ric = metricTraceCovariantFourField (I := I) (M := M) g Rm04 := by
     simpa [cov, hcov, Rm04, Ric] using
       (levi_civita_ricci_section_eq_riemann_trace (I := I) (M := M) g)
   have hTraceRic : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
@@ -1219,7 +1216,7 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
     rw [totalNabla0SFun_domDomCongr (I := I)]
     rw [Tensor0SSpace.domDomCongr_apply]
     let e : Equiv.Perm (Fin 6) :=
-      (frontExtendEquiv (frontExtendEquiv trace04Perm)).trans
+      (frontExtendEquiv (frontExtendEquiv covariantFourTracePerm)).trans
         (frontExtendEquiv (traceNablaShuffle 2))
     change nabla2Rm04
         ((Fin.cons A (metricTraceInput (I := I) (basis i) (basis j)
@@ -1388,7 +1385,7 @@ theorem levi_civita_bianchi_trace_identities
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv) :
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
@@ -1440,7 +1437,7 @@ theorem levi_civita_bianchi_scalar_trace_identities
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv) :
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
@@ -1500,7 +1497,7 @@ theorem exists_levi_civita_bianchi_trace_data
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv) :
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally

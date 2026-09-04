@@ -98,7 +98,7 @@ theorem symmAbsorbedPrincipalCoeff_operatorFieldApplication_eq
   classical
   obtain ⟨σ', hσ'⟩ := exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀
     (Equiv.swap (0 : Fin 2) 1) S 2
-  refine ⟨(1 / 2 : ℝ) • R₂ + (1 / 2 : ℝ) • reindexCoeff (I := I) (M := M) g₀ R₂ σ', fun x v => ?_⟩
+  refine ⟨(1 / 2 : ℝ) • R₂ + (1 / 2 : ℝ) • reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 R₂ σ', fun x v => ?_⟩
   have hsymm : iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ S) =
       (1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 2 S +
         (1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 2
@@ -108,11 +108,11 @@ theorem symmAbsorbedPrincipalCoeff_operatorFieldApplication_eq
     (operatorFieldApply (I := I) (M := M) g₀ 4 2 R₂ (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x v with
       huR
   set uRein : ℝ := unitModel (I := I) (M := M) g₀ 2
-    (operatorFieldApply (I := I) (M := M) g₀ 4 2 (reindexCoeff (I := I) (M := M) g₀ R₂ σ')
+    (operatorFieldApply (I := I) (M := M) g₀ 4 2 (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 R₂ σ')
       (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x v with huRein
   have hLHS : unitModel (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ 4 2
-        ((1 / 2 : ℝ) • R₂ + (1 / 2 : ℝ) • reindexCoeff (I := I) (M := M) g₀ R₂ σ')
+        ((1 / 2 : ℝ) • R₂ + (1 / 2 : ℝ) • reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 R₂ σ')
         (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x v =
       (1 / 2 : ℝ) * uR + (1 / 2 : ℝ) * uRein := by
     rw [operatorFieldApplication_add_left, operatorFieldApplication_smul_left, operatorFieldApplication_smul_left, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add,
@@ -126,7 +126,7 @@ theorem symmAbsorbedPrincipalCoeff_operatorFieldApplication_eq
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S))) x v = uRein := by
     rw [huRein]
     exact congrFun (congrArg _
-      (reindexCoeff_operatorFieldApplication_eq (I := I) (M := M) g₀ R₂ σ'
+      (unitModel_operatorFieldApply_reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 R₂ σ'
         (iteratedCovGrad (I := I) g₀ 0 2 2 S)
         (iteratedCovGrad (I := I) g₀ 0 2 2
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S))
@@ -158,20 +158,20 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem reindexCoeffGen_operatorFieldApplication_eq (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+theorem reindexCoefficientInputSlots_operatorFieldApplication_eq (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (R : SmoothCcTensor g₀ r 2) (σ' : Equiv.Perm (Fin r))
     (W W' : SmoothCcTensor g₀ 0 r)
     (hWW' : ∀ x : M, unitModel (I := I) (M := M) g₀ r W' x =
       ContinuousMultilinearMap.domDomCongr σ' (unitModel (I := I) (M := M) g₀ r W x))
     (x : M) :
     unitModel (I := I) (M := M) g₀ 2
-        (operatorFieldApply (I := I) (M := M) g₀ r 2 (reindexCoeffGen (I := I) (M := M) g₀ r 2 R σ')
+        (operatorFieldApply (I := I) (M := M) g₀ r 2 (reindexCoefficientInputSlots (I := I) (M := M) g₀ r 2 R σ')
           W) x =
       unitModel (I := I) (M := M) g₀ 2 (operatorFieldApply (I := I) (M := M) g₀ r 2 R W') x := by
   rw [unitModel, unitModel, operatorFieldApplication_toSection, operatorFieldApplication_toSection,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
-  rw [reindexCoeffGen_toSection]
-  rw [reindexCoeffFibGen_apply (I := I) r 2 σ' x
+  rw [reindexCoefficientInputSlots_toSection]
+  rw [reindexCoefficientInputSlotsFiber_apply (I := I) r 2 σ' x
     (show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
       R.toSection x)
     ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace r I x from
@@ -224,7 +224,7 @@ theorem connectionDifference_endpoint_cocycle (g₀ g₁ g₁' : SmoothRiemannia
 noncomputable def symmAbsorbedCoeff (g₀ : SmoothRiemannianMetric I M) (i : ℕ)
     (R : SmoothCcTensor g₀ (2 + i) 2)
     (σ' : Equiv.Perm (Fin (2 + i))) : SmoothCcTensor g₀ (2 + i) 2 :=
-  (1 / 2 : ℝ) • R + (1 / 2 : ℝ) • reindexCoeffGen (I := I) (M := M) g₀ (2 + i) 2 R σ'
+  (1 / 2 : ℝ) • R + (1 / 2 : ℝ) • reindexCoefficientInputSlots (I := I) (M := M) g₀ (2 + i) 2 R σ'
 
 
 omit [BoundarylessManifold I M] in
@@ -257,11 +257,11 @@ theorem symmAbsorbedCoeff_operatorFieldApplication_eq (g₀ : SmoothRiemannianMe
       with huR
   set uRein : ℝ := unitModel (I := I) (M := M) g₀ 2
     (operatorFieldApply (I := I) (M := M) g₀ (2 + i) 2
-      (reindexCoeffGen (I := I) (M := M) g₀ (2 + i) 2 R σ')
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ (2 + i) 2 R σ')
       (iteratedCovGrad (I := I) g₀ 0 2 i S)) x v with huRein
   have hLHS : unitModel (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ (2 + i) 2
-        ((1 / 2 : ℝ) • R + (1 / 2 : ℝ) • reindexCoeffGen (I := I) (M := M) g₀ (2 + i) 2 R σ')
+        ((1 / 2 : ℝ) • R + (1 / 2 : ℝ) • reindexCoefficientInputSlots (I := I) (M := M) g₀ (2 + i) 2 R σ')
         (iteratedCovGrad (I := I) g₀ 0 2 i S)) x v =
       (1 / 2 : ℝ) * uR + (1 / 2 : ℝ) * uRein := by
     rw [operatorFieldApplication_add_left, operatorFieldApplication_smul_left,
@@ -277,7 +277,7 @@ theorem symmAbsorbedCoeff_operatorFieldApplication_eq (g₀ : SmoothRiemannianMe
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S))) x v = uRein := by
     rw [huRein]
     exact congrFun (congrArg _
-      (reindexCoeffGen_operatorFieldApplication_eq (I := I) (M := M) g₀ (2 + i) R σ'
+      (reindexCoefficientInputSlots_operatorFieldApplication_eq (I := I) (M := M) g₀ (2 + i) R σ'
         (iteratedCovGrad (I := I) g₀ 0 2 i S)
         (iteratedCovGrad (I := I) g₀ 0 2 i
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S))

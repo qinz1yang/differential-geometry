@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.BareTensor
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.Tensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.Bilinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionLeibnizGrid

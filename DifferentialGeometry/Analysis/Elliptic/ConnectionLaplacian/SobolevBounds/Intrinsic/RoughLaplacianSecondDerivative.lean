@@ -343,7 +343,7 @@ private theorem secondCovDeriv_unit_frame_fiberNormSq_le
       (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
       (fun y : M => S.toSection y) x) (fun m => ?_)
   exact
-    (DifferentialGeometry.Geometry.Curvature.tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
+    (DifferentialGeometry.Geometry.Curvature.tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval
     (I := I) (M := M) g s S (X := smoothOrthoFrame (I := I) g x i)
     (Y := smoothOrthoFrame (I := I) g x i)
     (smoothOrthoFrame_smooth (I := I) g x i) (smoothOrthoFrame_smooth (I := I) g x i) x m).symm
@@ -426,7 +426,7 @@ theorem rawConnLap_fiberNormSq_le_secondCovGrad
     _ = (n : ℝ) ^ 2 * rhs := by ring
 
 omit [CompactSpace M] in
-theorem exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen
+theorem exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_covariantTensor
     (g : SmoothRiemannianMetric I M) :
     ∃ K : ℝ, 1 ≤ K ∧
       ∀ (s : ℕ) (S : Integral.L2.SmoothCcTensor g 0 s),

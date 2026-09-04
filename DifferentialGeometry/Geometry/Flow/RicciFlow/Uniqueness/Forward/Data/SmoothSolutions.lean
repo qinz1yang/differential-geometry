@@ -133,14 +133,14 @@ theorem fuLapRm_real (g : Real → SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 private theorem fuInv_real (g : Real → SmoothRiemannianMetric I M)
     (t : Real) (x : M) :
-    MetricInverseInBasisGen (I := I) (g t) x (coordBasisAt (I := I) x)
+    MetricInverseInBasis (I := I) (g t) x (coordBasisAt (I := I) x)
       (fun i j => coordInv (I := I) (solOfMetric (I := I) (D := refD) g) x t x i j) := by
   have hbasis :
       coordBasisAt (I := I) x =
         coordinateFrameAtToBasis (I := I) x := by
     ext i
     simp
-  change MetricInverseInBasisGen (I := I)
+  change MetricInverseInBasis (I := I)
     ((solOfMetric (I := I) (D := refD) g).family.metric t) x
       (coordBasisAt (I := I) x)
       (fun i j => coordInv (I := I) (solOfMetric (I := I) (D := refD) g) x t x i j)
@@ -160,7 +160,7 @@ theorem fuB_low (gN g : Real → SmoothRiemannianMetric I M)
   let basis := coordBasisAt (I := I) x
   let gInv := fun i j =>
     coordInv (I := I) (solOfMetric (I := I) (D := refD) g) x t x i j
-  have hinv : MetricInverseInBasisGen (I := I) (g t) x basis gInv := by
+  have hinv : MetricInverseInBasis (I := I) (g t) x basis gInv := by
     simpa only [basis, gInv] using fuInv_real (I := I) g t x
   have hRm : ∀ i j k l,
       component0S (I := I) basis (fuTf (I := I) g t x) ![i, j, k, l] =
@@ -223,7 +223,7 @@ theorem fuDrift_low (gN g : Real → SmoothRiemannianMetric I M)
   let basis := coordBasisAt (I := I) x
   let gInv := fun i j =>
     coordInv (I := I) (solOfMetric (I := I) (D := refD) g) x t x i j
-  have hinv : MetricInverseInBasisGen (I := I) (g t) x basis gInv := by
+  have hinv : MetricInverseInBasis (I := I) (g t) x basis gInv := by
     simpa only [basis, gInv] using fuInv_real (I := I) g t x
   have hUp (i p : CoordinateIdx (𝕜 := Real) E) :
       fuRicUp (I := I) g t x i p =
@@ -423,7 +423,7 @@ theorem fuRmContAt (g : Real → SmoothRiemannianMetric I M) {a b t₀ : Real} {
           basisInvMetric (I := I) (g r) y (coordBasisAt (I := I) y) p l) = 1 := by
     intro r
     ext p q
-    have h := (basisInvMetric_real (I := I) (g r) y (coordBasisAt (I := I) y) p q).2
+    have h := (basisInvMetric_isInverse (I := I) (g r) y (coordBasisAt (I := I) y) p q).2
     simpa [Matrix.mul_apply, Matrix.one_apply] using h
   have hinvEq : ∀ r : Real,
       (Matrix.of fun l m : CoordinateIdx (𝕜 := Real) E =>
@@ -2012,19 +2012,19 @@ theorem fuAdotSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real
       (metricCov_smooth (I := I) (g₂ t)) y
   have hS : IsRmDiffField (I := I) (g₁ t) (g₂ t) (fuSfield (I := I) g₁ g₂ t) :=
     fun y => fuSfield_apply (I := I) g₁ g₂ t y
-  have hgInv₁ : MetricInverseInBasisGen (I := I) (g₁ t) x (hframe.toBasisAt hx)
+  have hgInv₁ : MetricInverseInBasis (I := I) (g₁ t) x (hframe.toBasisAt hx)
       (fun i j => chartFrameInv (I := I) g₁ x t x i j) := by
     have hlocal := localFrameInv_real (I := I) (D := refD)
       (solOfMetric (I := I) (D := refD) g₁)
       (chartFrame I x) (chartFrame_isFrameTop I x)
-    simpa [MetricInverseInBasisGen, InvMetricLocal, chartFrameInv, metricCompInFrame,
+    simpa [MetricInverseInBasis, InvMetricLocal, chartFrameInv, metricCompInFrame,
       frame, hframe] using hlocal t x hx
-  have hgInv₂ : MetricInverseInBasisGen (I := I) (g₂ t) x (hframe.toBasisAt hx)
+  have hgInv₂ : MetricInverseInBasis (I := I) (g₂ t) x (hframe.toBasisAt hx)
       (fun i j => chartFrameInv (I := I) g₂ x t x i j) := by
     have hlocal := localFrameInv_real (I := I) (D := refD)
       (solOfMetric (I := I) (D := refD) g₂)
       (chartFrame I x) (chartFrame_isFrameTop I x)
-    simpa [MetricInverseInBasisGen, InvMetricLocal, chartFrameInv, metricCompInFrame,
+    simpa [MetricInverseInBasis, InvMetricLocal, chartFrameInv, metricCompInFrame,
       frame, hframe] using hlocal t x hx
   have hNR₁ : ∀ d i j : Fin (Module.finrank Real E),
       chartNablaRic (I := I) g₁ x t x d i j =

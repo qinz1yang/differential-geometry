@@ -211,7 +211,7 @@ private lemma g_inner_gradFun_gradFun_continuousOn_chart_source
   · exact chartGramMatrix_entry_continuousOn_source (I := I) g α i j
 
 
-private lemma g_inner_gradFun_gradFun_continuous_general
+theorem continuous_g_inner_gradFun_gradFun
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -244,7 +244,7 @@ variable {M : Type*} [TopologicalSpace M]
 
 open DifferentialGeometry.Integral.Measure
 
-theorem continuous_g_inner_gradFun_gradFun
+theorem continuous_g_inner_gradFun_gradFun_euclideanHalfSpace
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f h : M → ℝ}
     (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
@@ -252,7 +252,7 @@ theorem continuous_g_inner_gradFun_gradFun
     Continuous (fun x : M =>
       g.inner x (gradFun (I := modelWithCornersEuclideanHalfSpace n) g f x)
         (gradFun (I := modelWithCornersEuclideanHalfSpace n) g h x)) :=
-  g_inner_gradFun_gradFun_continuous_general
+  continuous_g_inner_gradFun_gradFun
     (I := modelWithCornersEuclideanHalfSpace n) (M := M) g hf hh
 
 theorem bddAbove_g_inner_gradFun_gradFun_of_compactSpace
@@ -267,7 +267,7 @@ theorem bddAbove_g_inner_gradFun_gradFun_of_compactSpace
   have hcont : Continuous (fun x : M =>
       g.inner x (gradFun (I := modelWithCornersEuclideanHalfSpace n) g f x)
         (gradFun (I := modelWithCornersEuclideanHalfSpace n) g h x)) :=
-    continuous_g_inner_gradFun_gradFun (n := n) (M := M) g hf hh
+    continuous_g_inner_gradFun_gradFun_euclideanHalfSpace (n := n) (M := M) g hf hh
   exact (isCompact_range hcont).bddAbove
 
 private local instance instMeasurableSpaceM_gradContinuity :
@@ -293,7 +293,7 @@ theorem integrable_g_inner_gradFun_gradFun
   have hcont : Continuous (fun x : M =>
       g.inner x (gradFun (I := modelWithCornersEuclideanHalfSpace n) g f x)
         (gradFun (I := modelWithCornersEuclideanHalfSpace n) g h x)) :=
-    continuous_g_inner_gradFun_gradFun (n := n) (M := M) g hf hh
+    continuous_g_inner_gradFun_gradFun_euclideanHalfSpace (n := n) (M := M) g hf hh
   exact hcont.integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 

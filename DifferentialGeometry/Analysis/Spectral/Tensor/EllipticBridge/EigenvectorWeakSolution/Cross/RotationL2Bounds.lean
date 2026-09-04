@@ -236,7 +236,7 @@ private lemma eLpNorm_indicatorFactor_mul_atom_le_uniform
 
 end CrossRotationENormBoundsUniform
 
-section CrossRotationENormBoundsUnconditional
+section CrossRotationENormBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
@@ -537,7 +537,7 @@ theorem eLpNorm_covPrincipalRotationCoeffLimit_le_uniform
   rw [← h_eq, hμw_def, ← h_atom_eq]
   exact h_bound
 
-end CrossRotationENormBoundsUnconditional
+end CrossRotationENormBounds
 
 end TensorSpectral
 end Parabolic

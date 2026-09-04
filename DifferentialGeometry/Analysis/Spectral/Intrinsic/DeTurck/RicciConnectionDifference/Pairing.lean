@@ -116,14 +116,14 @@ private theorem permCoeff_toSection (g : SmoothRiemannianMetric I M) {d : Nat}
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
   [FiniteDimensional Real E] in
-private theorem ricciReindexCoeffFibGen_innerContractionSwapPerm_eq_comp
+private theorem reindexCoefficientInputSlotsFiber_innerContractionSwapPerm_eq_comp
     {s : ℕ} (x : M)
     (A : Tensor0SSpace 2 I x →L[Real] Tensor0SSpace s I x) :
-    reindexCoeffFibGen (I := I) 2 s innerContractionSwapPerm x A =
+    reindexCoefficientInputSlotsFiber (I := I) 2 s innerContractionSwapPerm x A =
       A.comp (slotPermCLM (I := I) perm210 x) := by
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffFibGen_apply, ContinuousLinearMap.comp_apply, slotPermCLM_apply]
+  rw [reindexCoefficientInputSlotsFiber_apply, ContinuousLinearMap.comp_apply, slotPermCLM_apply]
   rfl
 
 private def ricQuad0 (g gm : SmoothRiemannianMetric I M) :
@@ -138,7 +138,7 @@ private def ricQuad0 (g gm : SmoothRiemannianMetric I M) :
 
 private def ricQuad1 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -160,7 +160,7 @@ private def ricQuad2 (g gm : SmoothRiemannianMetric I M) :
 
 private def ricQuad3 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -178,7 +178,7 @@ private def ricQuad4 (g gm : SmoothRiemannianMetric I M) :
 
 private def ricQuad5 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
@@ -196,7 +196,7 @@ private def ricDer0 (g gm : SmoothRiemannianMetric I M) :
 
 private def ricDer1 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
-  reindexCoeffGen (I := I) (M := M) g 2 4
+  reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricPerm2013)
       (connectionDifferenceGradContrInsertionField (I := I) g gm))
@@ -235,12 +235,12 @@ theorem ricciKer_split (g gm : SmoothRiemannianMetric I M) :
       ricQuad2, ricQuad3, ricQuad4, ricQuad5, SmoothCcTensor.toSection_add,
       SmoothCcTensor.toSection_sub, ContMDiffSection.coe_add,
       ContMDiffSection.coe_sub, Pi.add_apply, Pi.sub_apply,
-      operatorFieldComposition_toSection, reindexCoeffGen_toSection,
+      operatorFieldComposition_toSection, reindexCoefficientInputSlots_toSection,
       connectionDifferenceContravariantInsertionField_toSection,
       connectionDifferenceContrInsertionInnerField_toSection,
       connectionDifferenceGradContrInsertionField_toSection, ricDer0, ricDer1,
       permCoeff_toSection]
-    simp only [ricciReindexCoeffFibGen_innerContractionSwapPerm_eq_comp]
+    simp only [reindexCoefficientInputSlotsFiber_innerContractionSwapPerm_eq_comp]
     rw [show ricciQuadraticPermutationCycleZeroThreeOneTwo = perm43201 from rfl,
       show ricciQuadraticPermutationSwapBlocks = perm42301 from rfl,
       show ricciQuadraticPermutationCycleZeroThreeTwo = perm43102 from rfl,
@@ -1418,17 +1418,17 @@ theorem ricFour_eval (g gm : SmoothRiemannianMetric I M)
     domDomCongrSection (I := I) g fourTraceSwap13Perm Z
   let Z3 : SmoothCcTensor g 0 4 :=
     domDomCongrSection (I := I) g fourTraceDoubleTranspositionPerm Z
-  have h1 := reindexCoeffGen_operatorFieldApplication_eq (I := I) (M := M) g 4
+  have h1 := reindexCoefficientInputSlots_operatorFieldApplication_eq (I := I) (M := M) g 4
     (cometricDoubleTraceCoefficient (I := I) (M := M) g gm)
     fourTraceCyclePerm123 Z Z1
     (fun y => domDomCongrSection_unitModel (I := I) g
       fourTraceCyclePerm123 Z y) x
-  have h2 := reindexCoeffGen_operatorFieldApplication_eq (I := I) (M := M) g 4
+  have h2 := reindexCoefficientInputSlots_operatorFieldApplication_eq (I := I) (M := M) g 4
     (cometricDoubleTraceCoefficient (I := I) (M := M) g gm)
     fourTraceSwap13Perm Z Z2
     (fun y => domDomCongrSection_unitModel (I := I) g
       fourTraceSwap13Perm Z y) x
-  have h3 := reindexCoeffGen_operatorFieldApplication_eq (I := I) (M := M) g 4
+  have h3 := reindexCoefficientInputSlots_operatorFieldApplication_eq (I := I) (M := M) g 4
     (cometricDoubleTraceCoefficient (I := I) (M := M) g gm)
     fourTraceDoubleTranspositionPerm Z Z3
     (fun y => domDomCongrSection_unitModel (I := I) g

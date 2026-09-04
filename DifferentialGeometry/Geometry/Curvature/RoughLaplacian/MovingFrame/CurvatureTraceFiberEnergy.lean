@@ -354,7 +354,7 @@ theorem genuineTrace_le_of
           rfl
         rw [hscalar, one_smul]
       rw [hslot]
-      rw [curry_covGrad_unit_eval_general (I := I) (M := M) g s S x (eF i)]
+      rw [curry_covGrad_unit_eval (I := I) (M := M) g s S x (eF i)]
       rw [covApply_apply, heF_def]
       rfl
     rw [← hslice_eq]
@@ -563,7 +563,7 @@ theorem exists_uniform_genuineCurvTracePureR_fiberNormSq_bound
           rw [← hone]; rfl
         rw [hscalar, one_smul]
       rw [hslot]
-      rw [curry_covGrad_unit_eval_general (I := I) (M := M) g s S x (eF i)]
+      rw [curry_covGrad_unit_eval (I := I) (M := M) g s S x (eF i)]
       rw [covApply_apply, heF_def]
       rfl
     rw [← hslice_eq]

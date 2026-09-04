@@ -83,7 +83,7 @@ private lemma second_order_garding_sobolev_curv_real
   nlinarith [sq_nonneg nT]
 
 
-theorem secondCovGrad_l2NormSq_le_rawConnLap_gen
+theorem secondCovGrad_l2NormSq_le_rawConnLap_covariantTensor
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (Curv : SmoothCcTensor g 0 3) (C₀ : ℝ) (hC₀ : 0 ≤ C₀)
     (hcomm :

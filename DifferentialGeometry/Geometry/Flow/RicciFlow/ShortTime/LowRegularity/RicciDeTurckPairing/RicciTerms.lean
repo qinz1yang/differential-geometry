@@ -203,7 +203,7 @@ private theorem exists_connectionDifferenceContrInsertionInnerField_covariantJet
     R A hR hA hT2 hT3
   rw [connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend
       (I := I) (M := M) g gm,
-    covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g]
+    covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g]
   calc
     covariantJetNormSq (I := I) (M := M) g 2
         (slotExtend (I := I) (M := M) g 1 2
@@ -254,7 +254,7 @@ private theorem exists_connectionDifferenceContravariantInsertionField_covariant
     R A hR hA hT2 hT3
   rw [connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two
       (I := I) (M := M) g gm,
-    covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g]
+    covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g]
   calc
     covariantJetNormSq (I := I) (M := M) g 2
         (slotExtend (I := I) (M := M) g 2 3
@@ -331,8 +331,8 @@ private theorem exists_connectionDifferenceContrInsertionInnerField_covariantJet
       (I := I) (M := M) g gT,
     connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend
       (I := I) (M := M) g gU,
-    ← reindexCoeffGen_sub (I := I) (M := M) g,
-    covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g,
+    ← reindexCoefficientInputSlots_sub (I := I) (M := M) g,
+    covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g,
     ← slotExtend_sub]
   calc
     covariantJetNormSq (I := I) (M := M) g 2
@@ -404,8 +404,8 @@ private theorem exists_connectionDifferenceContravariantInsertionField_covariant
       (I := I) (M := M) g gT,
     connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two
       (I := I) (M := M) g gU,
-    ← reindexCoeffGen_sub (I := I) (M := M) g,
-    covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g,
+    ← reindexCoefficientInputSlots_sub (I := I) (M := M) g,
+    covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g,
     ← slotExtend_sub, ← slotExtend_sub]
   calc
     covariantJetNormSq (I := I) (M := M) g 2
@@ -481,19 +481,19 @@ private noncomputable def ricciQuadraticConnectionBlockSum
     (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 2 4 :=
   ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroThreeOneTwo
           (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroOne) +
-        reindexCoeffGen (I := I) (M := M) g 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapBlocks
             (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroOne))
           innerCoreInPerm10 +
         ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroThreeTwo
           (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_rotateInputs) +
-        reindexCoeffGen (I := I) (M := M) g 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroOneThreeTwo
             (connectionDifferenceContrInsertionInnerField (I := I) g gm))
           innerCoreInPerm10 +
         ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroOneTwo
           (connectionDifferenceContrInsertionInnerField (I := I) g gm) +
-        reindexCoeffGen (I := I) (M := M) g 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroTwo
             (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_rotateInputs))
           innerCoreInPerm10
@@ -912,42 +912,42 @@ private theorem exists_ricciQuadraticConnectionKernel_covariantJetNormSq_bound
   unfold ricciQuadraticConnectionBlockSum
   set Y0 := ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroThreeOneTwo
     (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroOne)
-  set Y1 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set Y1 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapBlocks
       (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroOne))
     innerCoreInPerm10
   set Y2 := ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroThreeTwo
     (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_rotateInputs)
-  set Y3 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set Y3 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroOneThreeTwo
       (connectionDifferenceContrInsertionInnerField (I := I) g gm))
     innerCoreInPerm10
   set Y4 := ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroOneTwo
     (connectionDifferenceContrInsertionInnerField (I := I) g gm)
-  set Y5 := reindexCoeffGen (I := I) (M := M) g 2 4
+  set Y5 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroTwo
       (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_rotateInputs))
     innerCoreInPerm10
   have hY1 : covariantJetNormSq (I := I) (M := M) g 2 Y1 ≤ Q := by
-    rw [show Y1 = reindexCoeffGen (I := I) (M := M) g 2 4
+    rw [show Y1 = reindexCoefficientInputSlots (I := I) (M := M) g 2 4
       (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapBlocks
         (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroOne))
       innerCoreInPerm10 by rfl,
-      covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g]
+      covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g]
     exact hx1
   have hY3 : covariantJetNormSq (I := I) (M := M) g 2 Y3 ≤ Q := by
-    rw [show Y3 = reindexCoeffGen (I := I) (M := M) g 2 4
+    rw [show Y3 = reindexCoefficientInputSlots (I := I) (M := M) g 2 4
       (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroOneThreeTwo
         (connectionDifferenceContrInsertionInnerField (I := I) g gm))
       innerCoreInPerm10 by rfl,
-      covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g]
+      covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g]
     exact hx3
   have hY5 : covariantJetNormSq (I := I) (M := M) g 2 Y5 ≤ Q := by
-    rw [show Y5 = reindexCoeffGen (I := I) (M := M) g 2 4
+    rw [show Y5 = reindexCoefficientInputSlots (I := I) (M := M) g 2 4
       (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroTwo
         (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_rotateInputs))
       innerCoreInPerm10 by rfl,
-      covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g]
+      covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g]
     exact hx5
   have hsum :
       covariantJetNormSq (I := I) (M := M) g 2
@@ -1279,37 +1279,37 @@ private theorem exists_ricciQuadraticConnectionKernel_covariantJetNormSq_tame_di
   unfold ricciQuadraticConnectionBlockSum
   let Y0 := ricciQuadraticConnectionBlock (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_cycleZeroThreeOneTwo
     (ricciQuadraticConnectionInner (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_swapZeroOne)
-  let Y1 := reindexCoeffGen (I := I) (M := M) g 2 4
+  let Y1 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ricciQuadraticConnectionBlock (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_swapBlocks
       (ricciQuadraticConnectionInner (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_swapZeroOne))
     innerCoreInPerm10
   let Y2 := ricciQuadraticConnectionBlock (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_cycleZeroThreeTwo
     (ricciQuadraticConnectionInner (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_rotateInputs)
-  let Y3 := reindexCoeffGen (I := I) (M := M) g 2 4
+  let Y3 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ricciQuadraticConnectionBlock (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_cycleZeroOneThreeTwo
       (connectionDifferenceContrInsertionInnerField (I := I) g gT))
     innerCoreInPerm10
   let Y4 := ricciQuadraticConnectionBlock (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_cycleZeroOneTwo
     (connectionDifferenceContrInsertionInnerField (I := I) g gT)
-  let Y5 := reindexCoeffGen (I := I) (M := M) g 2 4
+  let Y5 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ricciQuadraticConnectionBlock (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_swapZeroTwo
       (ricciQuadraticConnectionInner (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_rotateInputs))
     innerCoreInPerm10
   let Z0 := ricciQuadraticConnectionBlock (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_cycleZeroThreeOneTwo
     (ricciQuadraticConnectionInner (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_swapZeroOne)
-  let Z1 := reindexCoeffGen (I := I) (M := M) g 2 4
+  let Z1 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ricciQuadraticConnectionBlock (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_swapBlocks
       (ricciQuadraticConnectionInner (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_swapZeroOne))
     innerCoreInPerm10
   let Z2 := ricciQuadraticConnectionBlock (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_cycleZeroThreeTwo
     (ricciQuadraticConnectionInner (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_rotateInputs)
-  let Z3 := reindexCoeffGen (I := I) (M := M) g 2 4
+  let Z3 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ricciQuadraticConnectionBlock (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_cycleZeroOneThreeTwo
       (connectionDifferenceContrInsertionInnerField (I := I) g gU))
     innerCoreInPerm10
   let Z4 := ricciQuadraticConnectionBlock (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_cycleZeroOneTwo
     (connectionDifferenceContrInsertionInnerField (I := I) g gU)
-  let Z5 := reindexCoeffGen (I := I) (M := M) g 2 4
+  let Z5 := reindexCoefficientInputSlots (I := I) (M := M) g 2 4
     (ricciQuadraticConnectionBlock (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_swapZeroTwo
       (ricciQuadraticConnectionInner (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_rotateInputs))
     innerCoreInPerm10
@@ -1325,42 +1325,42 @@ private theorem exists_ricciQuadraticConnectionKernel_covariantJetNormSq_tame_di
   rw [hsplit]
   have hY1 : covariantJetNormSq (I := I) (M := M) g 2 (Y1 - Z1) ≤ Q := by
     change covariantJetNormSq (I := I) (M := M) g 2
-      (reindexCoeffGen (I := I) (M := M) g 2 4
+      (reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_swapBlocks
             (ricciQuadraticConnectionInner (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_swapZeroOne))
           innerCoreInPerm10 -
-        reindexCoeffGen (I := I) (M := M) g 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_swapBlocks
             (ricciQuadraticConnectionInner (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_swapZeroOne))
           innerCoreInPerm10) ≤ Q
-    rw [← reindexCoeffGen_sub (I := I) (M := M) g,
-      covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g]
+    rw [← reindexCoefficientInputSlots_sub (I := I) (M := M) g,
+      covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g]
     exact hx1
   have hY3 : covariantJetNormSq (I := I) (M := M) g 2 (Y3 - Z3) ≤ Q := by
     change covariantJetNormSq (I := I) (M := M) g 2
-      (reindexCoeffGen (I := I) (M := M) g 2 4
+      (reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_cycleZeroOneThreeTwo
             (connectionDifferenceContrInsertionInnerField (I := I) g gT))
           innerCoreInPerm10 -
-        reindexCoeffGen (I := I) (M := M) g 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_cycleZeroOneThreeTwo
             (connectionDifferenceContrInsertionInnerField (I := I) g gU))
           innerCoreInPerm10) ≤ Q
-    rw [← reindexCoeffGen_sub (I := I) (M := M) g,
-      covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g]
+    rw [← reindexCoefficientInputSlots_sub (I := I) (M := M) g,
+      covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g]
     exact hx3
   have hY5 : covariantJetNormSq (I := I) (M := M) g 2 (Y5 - Z5) ≤ Q := by
     change covariantJetNormSq (I := I) (M := M) g 2
-      (reindexCoeffGen (I := I) (M := M) g 2 4
+      (reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_swapZeroTwo
             (ricciQuadraticConnectionInner (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_rotateInputs))
           innerCoreInPerm10 -
-        reindexCoeffGen (I := I) (M := M) g 2 4
+        reindexCoefficientInputSlots (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_swapZeroTwo
             (ricciQuadraticConnectionInner (I := I) (M := M) g gU ricciQuadraticConnectionPermutation_rotateInputs))
           innerCoreInPerm10) ≤ Q
-    rw [← reindexCoeffGen_sub (I := I) (M := M) g,
-      covariantJetNormSq_reindexCoeffGen (I := I) (M := M) g]
+    rw [← reindexCoefficientInputSlots_sub (I := I) (M := M) g,
+      covariantJetNormSq_reindexCoefficientInputSlots (I := I) (M := M) g]
     exact hx5
   have hsum :=
     covariantJetNormSq_ricciQuadraticConnectionKernel_sum_le (I := I) (M := M) g
@@ -1390,27 +1390,27 @@ private theorem covariantJetNormSq_ricciFourTrace_reindexCombination_le
     (g : SmoothRiemannianMetric I M) (F : SmoothCcTensor g 4 2) :
     covariantJetNormSq (I := I) (M := M) g 2
         (((1 : ℝ) / 2) •
-          (reindexCoeffGen (I := I) (M := M) g 4 2 F
+          (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F
                 fourTraceArgPerm0231 +
-            reindexCoeffGen (I := I) (M := M) g 4 2 F
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F
                 fourTraceArgPerm0321 -
             F -
-            reindexCoeffGen (I := I) (M := M) g 4 2 F
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F
                 fourTraceArgPerm2301)) ≤
       22 * covariantJetNormSq (I := I) (M := M) g 2 F := by
   have h0 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g F
   have h1 := covariantJetNormSq_add_le (I := I) (M := M) g 2
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231)
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321)
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231)
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321)
   have h2 := covariantJetNormSq_sub_le (I := I) (M := M) g 2
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
-      reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321) F
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321) F
   have h3 := covariantJetNormSq_sub_le (I := I) (M := M) g 2
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
-        reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm0321 - F)
-    (reindexCoeffGen (I := I) (M := M) g 4 2 F fourTraceArgPerm2301)
-  rw [covariantJetNormSq_reindexCoeffGen, covariantJetNormSq_reindexCoeffGen] at h1
-  rw [covariantJetNormSq_reindexCoeffGen] at h3
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0231 +
+        reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm0321 - F)
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 F fourTraceArgPerm2301)
+  rw [covariantJetNormSq_reindexCoefficientInputSlots, covariantJetNormSq_reindexCoefficientInputSlots] at h1
+  rw [covariantJetNormSq_reindexCoefficientInputSlots] at h3
   rw [covariantJetNormSq_smul]
   norm_num at h1 h2 h3 ⊢
   linarith
@@ -1482,17 +1482,17 @@ private theorem exists_ricciCometricFourTraceCastG0_covariantJetNormSq_differenc
       ricciCometricFourTraceCastG0 (I := I) g gT -
           ricciCometricFourTraceCastG0 (I := I) g gU =
         ((1 : ℝ) / 2) •
-          (reindexCoeffGen (I := I) (M := M) g 4 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                 (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                 fourTraceArgPerm0231 +
-            reindexCoeffGen (I := I) (M := M) g 4 2
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                 (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                 fourTraceArgPerm0321 -
             (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
               cometricDoubleTraceCoefficient (I := I) (M := M) g gU) -
-            reindexCoeffGen (I := I) (M := M) g 4 2
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                 (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                 fourTraceArgPerm2301) := by
@@ -1500,7 +1500,7 @@ private theorem exists_ricciCometricFourTraceCastG0_covariantJetNormSq_differenc
         (I := I) (M := M) g gT,
       ricciCometricFourTraceCastG0_eq_reindex_combination
         (I := I) (M := M) g gU,
-      reindexCoeffGen_sub, reindexCoeffGen_sub, reindexCoeffGen_sub]
+      reindexCoefficientInputSlots_sub, reindexCoefficientInputSlots_sub, reindexCoefficientInputSlots_sub]
     module
   rw [heq]
   refine (covariantJetNormSq_ricciFourTrace_reindexCombination_le (I := I) (M := M) g _).trans ?_
@@ -2040,7 +2040,7 @@ private theorem exists_ricciConnectionDerivativeTerm_fourthOrder_tame_difference
     exists_ricciConnectionDerivativeCoefficient_covariantJetNormSq_tame_difference_bound (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨Be, hBe, hslotB⟩ :=
-    RicciDeTurckLowOrder.full_slot_sobolev_two_bound (I := I) (M := M) g
+    RicciDeTurckLowOrder.exists_metricComparisonEndomorphism_slot_one_covariantJetNormSq_two_bound (I := I) (M := M) g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨Bed, hBed, hslotD⟩ :=
     exists_slotInsertEndoCc_metricComparisonEndomorphismField_covariantJetNormSq_difference_bound (I := I) (M := M) hDim g
@@ -3152,7 +3152,7 @@ private theorem exists_ricciConnectionDerivativeTerm_thirdOrder_tame_difference_
     exists_ricciConnectionDerivativeCoefficient_covariantJetNormSq_tame_difference_bound (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨Be, hBe, hslotB⟩ :=
-    RicciDeTurckLowOrder.full_slot_sobolev_two_bound (I := I) (M := M) g
+    RicciDeTurckLowOrder.exists_metricComparisonEndomorphism_slot_one_covariantJetNormSq_two_bound (I := I) (M := M) g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨Bed, hBed, hslotD⟩ :=
     exists_slotInsertEndoCc_metricComparisonEndomorphismField_covariantJetNormSq_difference_bound (I := I) (M := M) hDim g

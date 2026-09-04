@@ -111,11 +111,11 @@ private lemma iterCovGrad_unit_eq_iterCov
       refine Fin.cases ?_ ?_ i
       · simp
       · intro k; simp [Matrix.vecTail]
-    rw [covGrad_apply_unit_eval_genVal (I := I) (M := M) gBase (2 + j) Tj x v]
+    rw [covGrad_apply_unit_eval (I := I) (M := M) gBase (2 + j) Tj x v]
     rw [tensorCovDerivAt_def (I := I) (M := M) gBase 0 (2 + j) Tj x
       (tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0)),
       ContinuousLinearEquiv.symm_apply_apply]
-    rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) gBase (2 + j) (Tj.toSection) x (v 0)]
+    rw [covDeriv_unit_eval_eq (I := I) (M := M) gBase (2 + j) (Tj.toSection) x (v 0)]
     rw [ih]
     rw [← hXx]
     rw [← nabla0SFun_eq_tensor0SCovariantDerivative (I := I) gBase (2 + j) X
@@ -202,7 +202,7 @@ theorem normBridge (h gBase : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 (2 + j)
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gBase x
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gBase x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) gBase x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
     DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gBase basis hON

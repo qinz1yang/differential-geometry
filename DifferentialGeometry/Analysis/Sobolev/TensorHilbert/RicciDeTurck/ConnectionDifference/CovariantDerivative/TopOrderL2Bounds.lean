@@ -111,7 +111,7 @@ private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s 
   | succ j ih => rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih,
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_smul]
 
-theorem covGradConnectionDifferenceSection_perOrder_l2_topOrderSeparated_generic
+theorem covGradConnectionDifferenceSection_perOrder_l2_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -305,7 +305,7 @@ theorem covGradConnectionDifferenceSection_metricPerturbationPath_jetL2_perOrder
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hgen⟩ :=
-    covGradConnectionDifferenceSection_perOrder_l2_topOrderSeparated_generic
+    covGradConnectionDifferenceSection_perOrder_l2_topOrderSeparated
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨Ktop, hKtop_nn, Kc, hKc_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs i hi

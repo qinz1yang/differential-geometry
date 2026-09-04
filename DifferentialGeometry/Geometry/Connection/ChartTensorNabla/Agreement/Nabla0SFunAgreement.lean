@@ -181,40 +181,40 @@ theorem tensor0SCovariantDerivative_eval
         (cov_TM := cov) (cov_s := tensor0SCovariantDerivative I M s cov) T x (X x)]
     have hcurry : Tensor0SSpace.eval
         ((tensor0SCurry (I := I) (M := M) s x).symm
-          (HomConnection.homBundleCovariantDerivativeFun I M
+          (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
           (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)))
             (Fin.cons (V 0 x) (fun i : Fin s => V i.succ x)) =
-          HomConnection.homBundleCovariantDerivativeFun I M
+          HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
             (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)
               (V 0 x) (fun i : Fin s => V i.succ x) := by
       calc
         Tensor0SSpace.eval
             ((tensor0SCurry (I := I) (M := M) s x).symm
-              (HomConnection.homBundleCovariantDerivativeFun I M
+              (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
                 (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
                 (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)))
               (Fin.cons (V 0 x) (fun i : Fin s => V i.succ x)) =
           ((tensor0SCurry (I := I) (M := M) s x).symm
-            (HomConnection.homBundleCovariantDerivativeFun I M
+            (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
               (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
               (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)))
                 (Fin.cons (V 0 x) (fun i : Fin s => V i.succ x)) :=
           Tensor0SSpace.eval_eq _ _
         _ = _ := curry_symm_cons (I := I) (M := M) s
-          (Φ := HomConnection.homBundleCovariantDerivativeFun I M
+          (Φ := HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
             (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x))
           (V 0 x) (fun i : Fin s => V i.succ x)
     rw [hcurry]
     have hPsi := HomConnection.homBundleCovariantDerivativeFun_apply_eq
-      (I := I) (M := M) (F := Tensor0SModel s ℝ E)
+      (I := I) (M := M) (E_U := E) (U := TangentSpace I) (F := Tensor0SModel s ℝ E)
       (V := fun x : M => Tensor0SSpace s I x)
-      (cov_TM := cov) (cov_V := tensor0SCovariantDerivative I M s cov)
+      (cov_U := cov) (cov_V := tensor0SCovariantDerivative I M s cov)
       (τ := curriedSection I M T) (x := x) hτ_at
       (V_field := X) (Y := V 0) hX_at hV0_at
-    rw [show HomConnection.homBundleCovariantDerivativeFun I M
+    rw [show HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
           (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x) (V 0 x) =
         (tensor0SCovariantDerivative I M s cov)

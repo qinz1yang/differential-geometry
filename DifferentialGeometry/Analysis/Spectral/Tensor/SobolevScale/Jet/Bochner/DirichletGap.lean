@@ -128,7 +128,7 @@ private theorem covGrad_rawConnLapIter_l2NormSq_eq_tsum
     exact tensorL2Norm_sq_toFun (I := I) (M := M) g₀ 0 (s + 1)
       (covGrad (I := I) (M := M) g₀ 0 s U)
   rw [hnorm_sq,
-    tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_gen (I := I) (M := M) g₀ s U]
+    tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_covariantTensor (I := I) (M := M) g₀ s U]
   have hraw_eq : rawTensorConnLapSmooth (I := I) g₀ 0 s U =
       rawTensorConnLapIter (I := I) g₀ 0 s (i + 1) S := by
     rw [hU_def, rawTensorConnLapIter_succ]
@@ -786,7 +786,7 @@ private theorem exists_iteratedCovGrad_rawConnLap_l2Norm_le_local
           C * ∑ b ∈ Finset.range (a + 3), ‖iteratedCovGrad (I := I) g₀ 0 s b S‖ := by
   intro s
   obtain ⟨K, hK_one, hK⟩ :=
-    exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen (I := I) (M := M) g₀
+    exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_covariantTensor (I := I) (M := M) g₀
   obtain ⟨Cfun, hCfun_nn, hCfun⟩ :=
     iteratedRoughLapGrad_commutator_l2Norm_le_local (I := I) (M := M) g₀ a s
   have hK_nn : 0 ≤ K := le_trans (by norm_num) hK_one
@@ -1082,7 +1082,7 @@ private theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_odd_local
         add_le_add hlowsum htop_le
     _ = (Clow + Cgard * (((k + 1 : ℕ) : ℝ) + Ccommsum * Ceven)) * Nspec := by ring
 
-private theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general_local
+private theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_local
     (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ S : SmoothCcTensor g₀ 0 2,

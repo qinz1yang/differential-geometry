@@ -244,7 +244,7 @@ private theorem ric_quad_le_of_rm04
     (g : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (basis : Module.Basis (Fin n) ℝ (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : ℝ) else 0)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Fin n)))
+    (hinv : MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Fin n)))
     (Rm04 : Tensor04At (I := I) (M := M) x) {C : ℝ}
     (htrace : ∀ i j, metricRicciAt g x (vec2 (I := I) (basis i) (basis j))
         = ∑ a, Rm04 (vec4 (I := I) (basis a) (basis i) (basis j) (basis a)))
@@ -271,7 +271,7 @@ theorem ric_quad_le_of_realizes
       ≤ ((Module.finrank ℝ (TangentSpace I x) : ℝ) ^ 2 * Real.sqrt C) * g.inner x v v := by
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := I) g basis hON

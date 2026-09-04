@@ -182,7 +182,7 @@ private lemma eLpNorm_sum_le_const_mul_aggregate_uniform
     _ = ENNReal.ofReal ((∑ j : ι, Cf j) * (Fintype.card ι : ℝ)) * A n := by
         rw [h_cast]
 
-section TermMemLpUnconditional
+section TermMemLp
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -387,9 +387,9 @@ private lemma eigenvectorChartCrossRightDivergence_memLp_unconditional :
       crossRightGradCoeffDivLimit_eq_zero_off_chartPouKernel
         (I := I) (M := M) g r s i α P₀ hy))
 
-end TermMemLpUnconditional
+end TermMemLp
 
-section AggregateUnconditional
+section Aggregate
 
 open DifferentialGeometry.Analysis.Spectral in
 private def eigenvectorChartComponentELpNorm
@@ -527,9 +527,9 @@ private lemma cutoffPartialLimitELpNormSum_le_rhsELpControl
   rw [eigenvectorChartRHSELpControl]
   exact (le_sixSum _ _ _ _ _ _).2.2.2.2.2
 
-end AggregateUnconditional
+end Aggregate
 
-section TermBoundsUnconditional
+section TermBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (α : M) (P₀ : TensorCompIdx (E := E) r s)
@@ -1023,9 +1023,9 @@ private lemma eigenvectorChartCrossRightDivergence_eLpNorm_le_uniform_unconditio
           ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), ENNReal.ofReal_ofNat 2]
         ring
 
-end TermBoundsUnconditional
+end TermBounds
 
-section BracketBoundUnconditional
+section BracketBound
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (α : M) (P₀ : TensorCompIdx (E := E) r s)
@@ -1133,9 +1133,9 @@ private lemma eigenvectorChartRHSNumerator_eLpNorm_le_uniform_unconditional :
     ENNReal.ofReal_add hD1_nn hD2_nn]
   rw [add_mul, add_mul, add_mul, add_mul, add_mul, add_mul]
 
-end BracketBoundUnconditional
+end BracketBound
 
-section MainBoundUnconditional
+section MainBound
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
@@ -1220,7 +1220,7 @@ theorem eigenvectorChartRHS_eLpNorm_le_uniform
     gcongr
   exact h_step
 
-end MainBoundUnconditional
+end MainBound
 end TensorSpectral
 end Parabolic
 end Analysis

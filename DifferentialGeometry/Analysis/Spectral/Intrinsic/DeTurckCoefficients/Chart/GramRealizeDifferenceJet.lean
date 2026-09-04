@@ -115,7 +115,7 @@ def chartComponentJetSeminormSum (g : SmoothRiemannianMetric I M) (S : SmoothCcT
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma bareChartJetContentOnE_nonneg (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
+lemma chartComponentJetSeminormSum_nonneg (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
     (α : M) (N : ℕ) (y : E) :
     0 ≤ chartComponentJetSeminormSum (I := I) (M := M) g S α N y :=
   Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _
@@ -124,7 +124,7 @@ omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem chartGramJetDiffSeminormSum_realize_le_bareChartJetContentOnE
+theorem chartGramJetDiffSeminormSum_realize_le_chartComponentJetSeminormSum
     (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)

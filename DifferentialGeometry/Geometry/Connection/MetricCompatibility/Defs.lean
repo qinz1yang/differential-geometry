@@ -1,64 +1,175 @@
-import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
-import DifferentialGeometry.Geometry.Metric.Basic
-import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.MetricCompatibility
+import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
+import Mathlib.Geometry.Manifold.VectorBundle.Tangent
+import Mathlib.Geometry.Manifold.MFDeriv.Basic
+import DifferentialGeometry.Geometry.Metric.Basic
 
-set_option autoImplicit false
 
-namespace DifferentialGeometry.Geometry.Connection
+noncomputable section
 
-open Bundle
-open scoped Manifold ContDiff
+open Bundle Manifold Set
+open scoped Manifold Topology ContDiff
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-variable {H : Type*} [TopologicalSpace H]
-variable {I : ModelWithCorners Real E H}
+namespace DifferentialGeometry
+namespace Geometry
+namespace Connection
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-section Pointwise
+def IsMetricCompatibleOn
+    (cov : (Π x : M, TangentSpace I x) →
+      (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x))
+    (g : SmoothRiemannianMetric I M) (s : Set M := Set.univ) : Prop :=
+  ∀ ⦃Y Z : Π x : M, TangentSpace I x⦄ ⦃x : M⦄,
+    MDiffAt (T% Y) x → MDiffAt (T% Z) x → x ∈ s →
+    ∀ v : TangentSpace I x,
+      (mfderiv I 𝓘(ℝ) (fun b => g.inner b (Y b) (Z b)) x) v =
+        g.inner x (cov Y x v) (Z x) + g.inner x (Y x) (cov Z x v)
 
-def IsMetricCompatibleAtGen
-    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (g : SmoothRiemannianMetric I M) (x : M) : Prop :=
-  forall (X Y Z : (p : M) -> TangentSpace I p),
-    MDiffAt (T% X) x ->
-      MDiffAt (T% Y) x ->
-        MDiffAt (T% Z) x ->
-          mvfderiv I (fun y : M => g.inner y (Y y) (Z y)) x (X x) =
-            g.inner x (cov Y x (X x)) (Z x) +
-              g.inner x (Y x) (cov Z x (X x))
-
-
-def IsMetricCompatibleGen
-    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+def IsMetricCompatible (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (g : SmoothRiemannianMetric I M) : Prop :=
-  forall x : M, IsMetricCompatibleAtGen (I := I) cov g x
+  IsMetricCompatibleOn cov.toFun g Set.univ
 
-theorem metric_compatible_at_apply
-    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
-    {g : SmoothRiemannianMetric I M} {x : M}
-    (hmc : IsMetricCompatibleAtGen (I := I) cov g x)
-    (X Y Z : (p : M) -> TangentSpace I p)
-    (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
-    mvfderiv I (fun y : M => g.inner y (Y y) (Z y)) x (X x) =
-      g.inner x (cov Y x (X x)) (Z x) +
-        g.inner x (Y x) (cov Z x (X x)) :=
-  hmc X Y Z hX hY hZ
+def metricCompatibleDifferential
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (covY : TangentSpace I x →L[ℝ] TangentSpace I x)
+    (covZ : TangentSpace I x →L[ℝ] TangentSpace I x)
+    (Yx Zx : TangentSpace I x) : TangentSpace I x →L[ℝ] ℝ :=
+  (g.inner x Zx).comp covY + (g.inner x Yx).comp covZ
 
+omit [FiniteDimensional ℝ E] in
+@[simp]
+lemma metricCompatibleDifferential_apply
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (covY : TangentSpace I x →L[ℝ] TangentSpace I x)
+    (covZ : TangentSpace I x →L[ℝ] TangentSpace I x)
+    (Yx Zx : TangentSpace I x) (v : TangentSpace I x) :
+    metricCompatibleDifferential g covY covZ Yx Zx v =
+      g.inner x Zx (covY v) + g.inner x Yx (covZ v) := rfl
 
-theorem metric_compatible_apply
-    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+namespace IsMetricCompatibleOn
+
+variable
+    {cov : (Π x : M, TangentSpace I x) →
+      (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x)}
     {g : SmoothRiemannianMetric I M}
-    (hmc : IsMetricCompatibleGen (I := I) cov g)
-    {x : M}
-    (X Y Z : (p : M) -> TangentSpace I p)
-    (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
-    mvfderiv I (fun y : M => g.inner y (Y y) (Z y)) x (X x) =
-      g.inner x (cov Y x (X x)) (Z x) +
-        g.inner x (Y x) (cov Z x (X x)) :=
-  metric_compatible_at_apply (I := I) (hmc x) X Y Z hX hY hZ
 
-end Pointwise
+omit [FiniteDimensional ℝ E] in
+lemma mono {s t : Set M} (h : IsMetricCompatibleOn cov g t) (hst : s ⊆ t) :
+    IsMetricCompatibleOn cov g s :=
+  fun _Y _Z _x hY hZ hxs v => h hY hZ (hst hxs) v
 
-end DifferentialGeometry.Geometry.Connection
+omit [FiniteDimensional ℝ E] in
+lemma iUnion {ι : Type*} {s : ι → Set M}
+    (h : ∀ i, IsMetricCompatibleOn cov g (s i)) :
+    IsMetricCompatibleOn cov g (⋃ i, s i) := by
+  intro Y Z x hY hZ hx v
+  obtain ⟨si, ⟨i, rfl⟩, hxsi⟩ := hx
+  exact h i hY hZ hxsi v
+
+omit [FiniteDimensional ℝ E] in
+lemma swap {s : Set M} (h : IsMetricCompatibleOn cov g s)
+    {Y Z : Π x : M, TangentSpace I x} {x : M}
+    (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) (hxs : x ∈ s)
+    (v : TangentSpace I x) :
+    (mfderiv I 𝓘(ℝ) (fun b => g.inner b (Z b) (Y b)) x) v =
+      g.inner x (cov Z x v) (Y x) + g.inner x (Z x) (cov Y x v) := by
+  have hfun : (fun b => g.inner b (Z b) (Y b)) = (fun b => g.inner b (Y b) (Z b)) := by
+    funext b; exact (g.symm b (Z b) (Y b))
+  rw [hfun]
+  have hYZ := h hY hZ hxs v
+  rw [g.symm x (cov Z x v) (Y x), g.symm x (Z x) (cov Y x v),
+      add_comm]
+  exact hYZ
+
+omit [FiniteDimensional ℝ E] in
+lemma apply {s : Set M} (h : IsMetricCompatibleOn cov g s)
+    {Y Z : Π x : M, TangentSpace I x} {x : M}
+    (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) (hxs : x ∈ s)
+    (v : TangentSpace I x) :
+    (mfderiv I 𝓘(ℝ) (fun b => g.inner b (Y b) (Z b)) x) v =
+      g.inner x (cov Y x v) (Z x) + g.inner x (Y x) (cov Z x v) :=
+  h hY hZ hxs v
+
+omit [FiniteDimensional ℝ E] in
+lemma hasMFDerivAt {s : Set M} (h : IsMetricCompatibleOn cov g s)
+    {Y Z : Π x : M, TangentSpace I x} {x : M}
+    (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) (hxs : x ∈ s)
+    (hsmooth : MDifferentiableAt I 𝓘(ℝ) (fun b => g.inner b (Y b) (Z b)) x) :
+    HasMFDerivAt I 𝓘(ℝ) (fun b => g.inner b (Y b) (Z b)) x
+      (metricCompatibleDifferential g (cov Y x) (cov Z x) (Y x) (Z x)) := by
+  refine hsmooth.hasMFDerivAt.congr_mfderiv ?_
+  ext v
+  change (mfderiv I 𝓘(ℝ) (fun b => g.inner b (Y b) (Z b)) x) v =
+      g.inner x (Z x) (cov Y x v) + g.inner x (Y x) (cov Z x v)
+  rw [h hY hZ hxs v, g.symm x (cov Y x v) (Z x)]
+
+end IsMetricCompatibleOn
+
+namespace IsMetricCompatible
+
+variable {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
+variable {g : SmoothRiemannianMetric I M}
+
+omit [FiniteDimensional ℝ E] in
+lemma apply (h : IsMetricCompatible cov g)
+    {Y Z : Π x : M, TangentSpace I x} {x : M}
+    (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x)
+    (v : TangentSpace I x) :
+    (mfderiv I 𝓘(ℝ) (fun b => g.inner b (Y b) (Z b)) x) v =
+      g.inner x (cov.toFun Y x v) (Z x) + g.inner x (Y x) (cov.toFun Z x v) :=
+  h hY hZ (Set.mem_univ _) v
+
+omit [FiniteDimensional ℝ E] in
+lemma mvfderiv_inner (h : IsMetricCompatible cov g)
+    {Y Z : ∀ x : M, TangentSpace I x} {x : M}
+    (v : TangentSpace I x)
+    (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
+    mvfderiv I (fun b => g.inner b (Y b) (Z b)) x v =
+      g.inner x (cov.toFun Y x v) (Z x) +
+        g.inner x (Y x) (cov.toFun Z x v) :=
+  h.apply hY hZ v
+
+omit [FiniteDimensional ℝ E] in
+lemma swap (h : IsMetricCompatible cov g)
+    {Y Z : Π x : M, TangentSpace I x} {x : M}
+    (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x)
+    (v : TangentSpace I x) :
+    (mfderiv I 𝓘(ℝ) (fun b => g.inner b (Z b) (Y b)) x) v =
+      g.inner x (cov.toFun Z x v) (Y x) + g.inner x (Z x) (cov.toFun Y x v) :=
+  IsMetricCompatibleOn.swap h hY hZ (Set.mem_univ _) v
+
+omit [FiniteDimensional ℝ E] in
+lemma hasMFDerivAt (h : IsMetricCompatible cov g)
+    {Y Z : Π x : M, TangentSpace I x} {x : M}
+    (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x)
+    (hsmooth :
+      MDifferentiableAt I 𝓘(ℝ) (fun b => g.inner b (Y b) (Z b)) x) :
+    HasMFDerivAt I 𝓘(ℝ) (fun b => g.inner b (Y b) (Z b)) x
+      (metricCompatibleDifferential g (cov.toFun Y x) (cov.toFun Z x) (Y x) (Z x)) :=
+  IsMetricCompatibleOn.hasMFDerivAt h hY hZ (Set.mem_univ _) hsmooth
+
+omit [FiniteDimensional ℝ E] in
+lemma toIsMetricCompatibleOn (h : IsMetricCompatible cov g) {s : Set M} :
+    IsMetricCompatibleOn cov.toFun g s :=
+  IsMetricCompatibleOn.mono (t := Set.univ) h (fun _ _ => trivial)
+
+omit [FiniteDimensional ℝ E] in
+@[simp]
+lemma toIsMetricCompatibleOn_univ_iff :
+    IsMetricCompatibleOn cov.toFun g Set.univ ↔ IsMetricCompatible cov g := Iff.rfl
+
+end IsMetricCompatible
+
+omit [FiniteDimensional ℝ E] in
+lemma IsMetricCompatibleOn.toIsMetricCompatible
+    {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
+    {g : SmoothRiemannianMetric I M}
+    (h : IsMetricCompatibleOn cov.toFun g Set.univ) :
+    IsMetricCompatible cov g := h
+
+end Connection
+end Geometry
+end DifferentialGeometry

@@ -10,7 +10,7 @@ import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantTensor.Mixed
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.DiscreteLogConvexity
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.HolderIntegrability
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.GeneralTensor
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.TensorRS
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -131,7 +131,7 @@ private theorem secondCovDeriv_frame_diag_fiberNormSq_sum_le
       DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent,
       hco, htuple]
     rw [he_def]
-    exact (DifferentialGeometry.Geometry.Curvature.tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
+    exact (DifferentialGeometry.Geometry.Curvature.tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval
       (I := I) (M := M) g m w
       (X := DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x i)
       (Y := DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x i)
@@ -438,7 +438,7 @@ private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner
         Tensor0SBundle.Tensor0SSpace.toModel
           (DifferentialGeometry.Geometry.Connection.loweredCovDerivAt (I := I)
             (M := M) g 0 p Q.toSection x v) from
-      (DifferentialGeometry.Analysis.Elliptic.loweredCovDerivAt_eq_lower_tensorCovDerivAt_gen
+      (DifferentialGeometry.Analysis.Elliptic.loweredCovDerivAt_eq_lower_tensorCovDerivAt_covariantTensor
         (I := I) (M := M) g p Q.toSection x v).symm]
     rw [show Integral.L2.lowerAllUpperIndices (I := I) (M := M) g 0 p x
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x)) =
@@ -852,7 +852,7 @@ private theorem weightedCovIBP_lpFiberJet_fin_regIneq
   have hcentral : ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g 0 m w v x ∂μ =
       - ∫ x, Integral.L2.tensorInnerPointwise (I := I) (M := M) g 0 m x
           (Lw.toFun x) (v.toFun x) ∂μ := by
-    have hgreen := tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_gen
+    have hgreen := tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_covariantTensor
       (I := I) (M := M) g m w v
     have hdir := tensorL2Inner_covGrad_eq_integral_tensorCovDerivPointwiseInner
       (I := I) (M := M) g 0 m w v
@@ -1394,7 +1394,7 @@ private theorem weightedCovIBP_lpFiberJet_sup
   have hcentral : ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g 0 m w v x ∂μ =
       - ∫ x, Integral.L2.tensorInnerPointwise (I := I) (M := M) g 0 m x
           (Lw.toFun x) (v.toFun x) ∂μ := by
-    have hgreen := tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_gen
+    have hgreen := tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_covariantTensor
       (I := I) (M := M) g m w v
     have hdir := tensorL2Inner_covGrad_eq_integral_tensorCovDerivPointwiseInner
       (I := I) (M := M) g 0 m w v

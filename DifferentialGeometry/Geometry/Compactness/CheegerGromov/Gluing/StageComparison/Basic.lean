@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Map
 import DifferentialGeometry.Analysis.Calculus.Inverse.DerivativePerturbation
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.Fill
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Convergence.Root
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Convergence.StageRoot
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.Branch
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Hessian
@@ -555,7 +555,7 @@ theorem HasSuppConvData.actual_cm_tail
       3 * inp.normalBounds.metricC 1 * (2 * (q gamma : Real)) ^ 2 ≤
         (2 / 3 : Real) * (q gamma : Real))
     (hbranch : ∀ᶠ n in Filter.atTop,
-      HasLiveBrFull (I := I) P (L.subseq hphi) inp.pack r n
+      HasControlledLiveNormalBranches (I := I) P (L.subseq hphi) inp.pack r n
         hcomplete hconn aMin q δ)
     (hscale : ∀ᶠ n in Filter.atTop,
       ∀ gamma : LiveSlot L inp.pack r,
@@ -808,7 +808,7 @@ theorem HasSuppConvData.actual_cm_tail
   rcases hqdata alpha with ⟨_hq, _hδ, hρ, hρq⟩
   have hstrict : StrictDistInput (I := I) Yl.metric pts join p rad := by
     simpa only [Yl, x0, rho, pts, join, Lphi, NetLimitData.subseq] using
-      HasNormalBrFull.strict_dist_input (I := I) inp.normalBounds (Lphi.φ l)
+      HasControlledNormalBranch.strict_dist_input (I := I) inp.normalBounds (Lphi.φ l)
         (hcomplete.complete (Lphi.φ l)) (hconn (Lphi.φ l)) x0 hfull
         (hqAcc alpha) pts p rad (4 * L.lamInf (alpha.1 : Nat))
         hquarter hρ hρq hρmetric hρexp hrad hpq hptsFilled hcage
@@ -845,7 +845,7 @@ theorem HasSuppConvData.actual_cm_tail
         (X.obj (Lphi.φ l)).smooth
       letI : T2Space (TangentBundle I (X.obj (Lphi.φ l)).M) :=
         (X.obj (Lphi.φ l)).t2TangentBundle
-      HasNormalBrFull (I := I) (X.obj (Lphi.φ l))
+      HasControlledNormalBranch (I := I) (X.obj (Lphi.φ l))
           (hcomplete.complete (Lphi.φ l)) (hconn (Lphi.φ l)) xGamma
           (q gamma) (δ gamma) rhoGamma ∧
         rhoGamma ≤ inp.normalBounds.radius (Lphi.φ l) xGamma ∧
@@ -1405,7 +1405,7 @@ theorem weight_trans_mem
   let i0 := baseIndex inp.decay inp.realizes inp.pack hr
   let s : Set Y.M := ⋃ gamma : Fin (inp.pack.A r),
     L.innerBall inp.decay inp.D P inp.pack r (phi k) gamma
-  have hweights := seqWeights_data_raw (I := I) inp.decay inp.hD P L
+  have hweights := seqWeights_data (I := I) inp.decay inp.hD P L
     inp.pack r (phi k) i0 (s := s) Set.Subset.rfl
   have hxHat :
       x ∈ L.hatBall inp.decay inp.D P inp.pack r (phi k) target.1.1 := by
@@ -1679,7 +1679,7 @@ theorem pts_target_tail
   have hxGeom := hgeom.2 hz
   have hweightRaw := hweight
   rw [stageWeightSub_eq (chart := d.chart)] at hweightRaw
-  have hweights := seqWeights_data_raw (I := I) inp.decay inp.hD P L
+  have hweights := seqWeights_data (I := I) inp.decay inp.hD P L
     inp.pack r (phi k) i0 (s := sOrig) Set.Subset.rfl
   have hhatGammaOrig :
       xOrig ∈ L.hatBall inp.decay inp.D P inp.pack r (phi k) gamma := by
@@ -1757,7 +1757,7 @@ theorem pts_target_tail
       Geometry.Riemannian.NormalCoordinates.NormalBallChart.inv] using
         htargetMem
   have hraw :=
-    stagePtsSub_eq_raw inp P L phi hphi alpha target k l z
+    stagePtsSub_eq_of_transition_mem_closedBall inp P L phi hphi alpha target k l z
       (chart := d.chart) hsmallSub
   constructor
   · rw [hraw]
@@ -2227,7 +2227,7 @@ theorem HasSuppConvData.stage_root_tail
       3 * inp.normalBounds.metricC 1 * (2 * (q gamma : Real)) ^ 2 ≤
         (2 / 3 : Real) * (q gamma : Real))
     (hbranch : ∀ᶠ n in Filter.atTop,
-      HasLiveBrFull (I := I) P (L.subseq hphi) inp.pack r n
+      HasControlledLiveNormalBranches (I := I) P (L.subseq hphi) inp.pack r n
         hcomplete hconn aMin q δ)
     (hscale : ∀ᶠ n in Filter.atTop,
       ∀ gamma : LiveSlot L inp.pack r,
@@ -3009,7 +3009,7 @@ theorem HasSuppConvData.exists_stage_tail
         (2 / 3 : Real) * (q gamma : Real))
     (hC1q : ∀ gamma : LiveSlot L inp.pack r,
       C1 gamma ⊆ Metric.ball 0 ((q gamma : Real) / 2))
-    (hbranch : ∀ n, HasLiveBrFull (I := I) P (L.subseq hphi)
+    (hbranch : ∀ n, HasControlledLiveNormalBranches (I := I) P (L.subseq hphi)
       inp.pack r n hcomplete hconn aMin q δ)
     (hscale : ∀ n (gamma : LiveSlot L inp.pack r),
       let Lphi := L.subseq hphi

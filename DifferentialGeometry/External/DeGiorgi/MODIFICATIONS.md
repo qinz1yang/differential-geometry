@@ -527,3 +527,14 @@ declarations and qualified references. This is an API-only, semantic-preserving 
 statements and proof bodies are unchanged.
 
 <!-- Add entries below as modifications occur. -->
+
+### 2026-09-04 — theorem-name normalization
+
+**Files**:
+- `BallExtension/ApproximationControl.lean`
+- `BallExtension/RoughInput.lean`
+
+**Change**: renamed the equality theorem for `exactUnitBallExtensionGradApply` so that its
+declaration name identifies the `smoothUnitBallExtensionGradCandidate` on its right-hand side.
+Also removed the redundant `generic` suffix from a private norm-bound helper. The theorem
+statements and proofs are unchanged.

@@ -1132,7 +1132,7 @@ theorem deTurckVF_background_sub_eq_connectionDifference_trace
     add_sub_cancel_left]
 
 
-theorem exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope_generic
+theorem exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1205,7 +1205,7 @@ theorem exists_deTurckLieEndoTerm_backgroundDifference_l2JetWindow
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2) := by
   classical
   obtain ⟨K, hK_nn, hK⟩ :=
-    exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope_generic
+    exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope
       (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   refine ⟨K, hK_nn, ?_⟩
   intro T δ hδ_le hδ hδZ hball i s hs

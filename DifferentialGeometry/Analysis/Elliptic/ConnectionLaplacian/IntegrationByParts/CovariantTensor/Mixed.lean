@@ -57,7 +57,7 @@ omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem loweringIntertwinerRS_zero (g : SmoothRiemannianMetric I M) (s : ℕ) :
     LoweringIntertwinerRS (I := I) (M := M) g 0 s :=
-  fun S x v => loweredCovDerivAt_eq_lower_tensorCovDerivAt_gen (I := I) (M := M) g s S x v
+  fun S x v => loweredCovDerivAt_eq_lower_tensorCovDerivAt_covariantTensor (I := I) (M := M) g s S x v
 
 def covDerivAlongVFrawRS
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

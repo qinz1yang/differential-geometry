@@ -758,9 +758,9 @@ theorem ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
           - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)
         + (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
           - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀) =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
           (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁) koszulDoubleTraceSlotPerm
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 4 2 (Equiv.swap (0 : Fin 2) 1)
               (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)) koszulDoubleTraceSlotPerm
         - deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁ := by
@@ -783,7 +783,7 @@ theorem ricciDeTurckPrincipalCoefficient_sub_add_self_eq_reindex_sum
     ContMDiffSection.coe_add, Pi.sub_apply, Pi.add_apply, sub_apply,
     add_apply, Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_add,
     sub_apply, add_apply]
-  simp only [reindexCoeffGen_toSection, reindexCoeffFibGen_apply, rsDomDomCongrSection_toSection,
+  simp only [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply, rsDomDomCongrSection_toSection,
     toModel_rsDomDomCongr_apply, deTurckCoeff_clm_eq_doubleTrace_sub,
       cometricDoubleTraceFib_toModel,
     Tensor0SSpace.toModel_ofModel, Tensor0SSpace.toModel_sub, sub_apply,
@@ -802,8 +802,8 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_ricciDeTurckPrincipalCoeffic
           (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)).toSection x) := by
   classical
   set R3 := deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁ with hR3
-  set R1 := reindexCoeffGen (I := I) (M := M) g₀ 4 2 R3 koszulDoubleTraceSlotPerm with hR1
-  set R2 := reindexCoeffGen (I := I) (M := M) g₀ 4 2
+  set R1 := reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2 R3 koszulDoubleTraceSlotPerm with hR1
+  set R2 := reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
     (rsDomDomCongrSection (I := I) (M := M) g₀ 4 2 (Equiv.swap (0 : Fin 2) 1) R3)
     koszulDoubleTraceSlotPerm with hR2
   set A := ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
@@ -832,7 +832,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_ricciDeTurckPrincipalCoeffic
   have hbA : riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x PA =
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x PC := by
     rw [hPA, hPC, hR1]
-    exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 R3
+    exact riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 4 2 R3
       koszulDoubleTraceSlotPerm i x
   have hbB : riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x PB =
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x PC := by
@@ -872,7 +872,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend_local
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ (s + 1) Λ =
-      reindexCoeffGen (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
         (rsDomDomCongrSection (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
           (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
           (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
@@ -892,7 +892,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend_local
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ (s + 1) Λ).toSection x) D) m =
     Tensor0SSpace.toModel
       ((show Tensor0SSpace (s + 1 + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
           (rsDomDomCongrSection (I := I) (M := M) g₀ (s + 1 + 1) (s + 1 + 1)
             (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
             (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
@@ -900,7 +900,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend_local
           (Equiv.swap (0 : Fin (s + 1 + 1)) 1)).toSection x) D) m
   rw [DifferentialGeometry.Geometry.Connection.slotInsertEndoCc_toSection,
     slotInsertEndoFib_apply_eval]
-  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply, rsDomDomCongrSection_toSection,
+  rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply, rsDomDomCongrSection_toSection,
     toModel_rsDomDomCongr_apply, ContinuousMultilinearMap.domDomCongr_apply, slotExtend_toSection]
   rw [show (fun k : Fin (s + 1 + 1) => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) k)) =
       Fin.cons (m 1) (fun j : Fin (s + 1) =>

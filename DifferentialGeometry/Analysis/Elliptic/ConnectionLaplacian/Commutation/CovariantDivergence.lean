@@ -129,7 +129,7 @@ private lemma secondCovDeriv_frame_unitEval_eq_iteratedCovGrad_gen
           (Fin.cons
             (tangentSpaceModelContinuousLinearEquiv (I := I) x
               (smoothOrthoFrame (I := I) g₀ x i x)) v)) := by
-  have hbridge := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
+  have hbridge := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval
     (I := I) (M := M) g₀ t W
     (X := smoothOrthoFrame (I := I) g₀ x i)
     (Y := smoothOrthoFrame (I := I) g₀ x i)
@@ -137,7 +137,7 @@ private lemma secondCovDeriv_frame_unitEval_eq_iteratedCovGrad_gen
   exact hbridge.symm
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
-lemma unitModel_rawConnLap_eq_frame_sum_gen
+lemma unitModel_rawConnLap_eq_frame_sum_covariantTensor
     (g₀ : SmoothRiemannianMetric I M) (t : ℕ) (W : SmoothCcTensor g₀ 0 t) (x : M)
     (v : Fin t → E) :
     unitModel (I := I) (M := M) g₀ t (rawTensorConnLapSmooth (I := I) g₀ 0 t W) x v =
@@ -187,7 +187,7 @@ theorem rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace_o
   classical
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
   refine ContinuousMultilinearMap.ext (fun v => ?_)
-  rw [unitModel_rawConnLap_eq_frame_sum_gen (I := I) g₀ t W x v,
+  rw [unitModel_rawConnLap_eq_frame_sum_covariantTensor (I := I) g₀ t W x v,
     unitModel_operatorFieldApplication_cometricDoubleTrace_eq_dualTrace (I := I) g₀ t
       (iteratedCovGrad (I := I) g₀ 0 t 2 W) x v]
   exact
@@ -309,7 +309,7 @@ theorem covDivergence_eq_cometricDoubleTrace_apply_covGrad
       (Fin.cons (smoothOrthoFrame (I := I) g₀ x i x)
         (Fin.cons (smoothOrthoFrame (I := I) g₀ x i x)
           (fun j => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v j))))
-  have hcov := covGrad_apply_unit_eval_genVal (I := I) (M := M) g₀ (s + 1) V x
+  have hcov := covGrad_apply_unit_eval (I := I) (M := M) g₀ (s + 1) V x
     (Fin.cons (smoothOrthoFrame (I := I) g₀ x i x)
       (Fin.cons (smoothOrthoFrame (I := I) g₀ x i x)
         (fun j => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v j))))
@@ -508,7 +508,7 @@ theorem rawTensorConnLapSmooth_cometricDoubleTrace_apply_comm
   classical
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
   refine ContinuousMultilinearMap.ext (fun v => ?_)
-  rw [unitModel_rawConnLap_eq_frame_sum_gen (I := I) g₀ t
+  rw [unitModel_rawConnLap_eq_frame_sum_covariantTensor (I := I) g₀ t
     (operatorFieldApply (I := I) (M := M) g₀ (t + 2) t (cometricDoubleTraceField (I := I) g₀ t) W) x
       v]
   rw [unitModel_operatorFieldApplication_cometricDoubleTrace_eq_dualTrace (I := I) g₀ t
@@ -566,7 +566,7 @@ theorem rawTensorConnLapSmooth_cometricDoubleTrace_apply_comm
                       ((Module.finBasis ℝ E).cDualBasis k)))
                   (Fin.cons ((Module.finBasis ℝ E) k) v)))) := by
     intro k
-    exact unitModel_rawConnLap_eq_frame_sum_gen (I := I) g₀ (t + 2) W x
+    exact unitModel_rawConnLap_eq_frame_sum_covariantTensor (I := I) g₀ (t + 2) W x
       (Fin.cons (cometricLmodel (I := I) g₀ x
           (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))

@@ -36,7 +36,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-theorem oneMinusConnLapSmooth_toL2_inner_eq_h1_general
+theorem oneMinusConnLapSmooth_toL2_inner_eq_h1
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (hint : LoweringIntertwiner (I := I) (M := M) g s)
     (T v : SmoothCcTensor g 0 s) :
@@ -75,7 +75,7 @@ theorem oneMinusConnLapSmooth_toL2_inner_eq_h1_general
           (covGrad (I := I) (M := M) g 0 s v).toFun =
         - tensorL2Inner (I := I) (M := M) g 0 s
             (rawTensorConnLapSmooth (I := I) g 0 s T).toFun v.toFun :=
-    tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_general
+    tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap
       (I := I) (M := M) g s hint T v
   have h_lhs :
       ⟪((oneMinusConnLapSmooth (I := I) g 0 s T : SmoothCcTensor g 0 s) :
@@ -154,7 +154,7 @@ theorem inner_smoothToTensorH1Compl_eq_l2_oneMinusConnLap_of_green
       cases V; rfl
     rw [hV]
     rw [TensorH1ComplToTensorL2_smoothToTensorH1Compl_eq_coe]
-    rw [← oneMinusConnLapSmooth_toL2_inner_eq_h1_general
+    rw [← oneMinusConnLapSmooth_toL2_inner_eq_h1
       (I := I) (M := M) g s hint T V.toCcTensor]
   have h_dense :
       DenseRange ((↑) : SmoothCcTensorH1 g 0 s → TensorH1Compl g 0 s) :=
@@ -219,7 +219,7 @@ theorem smoothEigen_h1_eq
       (i.fst.val)⁻¹ •
         eigenvectorResolvent (I := I) (M := M) g 0 s i := by
   apply TensorH1ComplToTensorL2_injective_of_green (I := I) (M := M) g s
-    (loweringIntertwiner_gen (I := I) (M := M) g s)
+    (loweringIntertwiner (I := I) (M := M) g s)
   rw [TensorH1ComplToTensorL2_smoothToTensorH1Compl_eq_coe]
   change (eigenvectorSmooth (I := I) (M := M) g 0 s i :
         TensorL2 0 s g) =
@@ -292,8 +292,8 @@ theorem oneMinus_coeff
     ((oneMinusConnLapSmooth (I := I) g 0 s T : SmoothCcTensor g 0 s) :
       TensorL2 0 s g)
     (eigenvectorSmooth (I := I) (M := M) g 0 s i : TensorL2 0 s g),
-    oneMinusConnLapSmooth_toL2_inner_eq_h1_general (I := I) (M := M) g s
-      (loweringIntertwiner_gen (I := I) (M := M) g s) T
+    oneMinusConnLapSmooth_toL2_inner_eq_h1 (I := I) (M := M) g s
+      (loweringIntertwiner (I := I) (M := M) g s) T
       (eigenvectorSmooth (I := I) (M := M) g 0 s i)]
   rw [smoothEigen_h1_eq (I := I) (M := M) g s i,
     inner_smul_right]

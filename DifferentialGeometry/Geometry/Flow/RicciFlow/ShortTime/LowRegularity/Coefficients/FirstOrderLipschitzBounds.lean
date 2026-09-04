@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.Remainder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coefficients.SecondOrderLipschitzBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.CoreIdentification
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.SmoothCoreIdentification
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.Coefficient.RadiusFreeDifference
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.TopOrderSeparation
 
@@ -410,7 +410,7 @@ private noncomputable def corrPhi
     (g : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
     (σ : Equiv.Perm (Fin 5)) : SmoothCcTensor g 3 3 :=
   ccOperatorFieldComp (I := I) (M := M) g 3 5 3
-    (reindexCoeffGen (I := I) (M := M) g 5 3
+    (reindexCoefficientInputSlots (I := I) (M := M) g 5 3
       (cometricDoubleTraceField (I := I) g 3) σ)
     (corrPk3 (I := I) (M := M) g P)
 
@@ -1176,20 +1176,20 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
 private theorem reindex_sub_c1
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) (ρ : Equiv.Perm (Fin r)) :
-    reindexCoeffGen (I := I) (M := M) g r s (A - B) ρ =
-      reindexCoeffGen (I := I) (M := M) g r s A ρ -
-        reindexCoeffGen (I := I) (M := M) g r s B ρ := by
+    reindexCoefficientInputSlots (I := I) (M := M) g r s (A - B) ρ =
+      reindexCoefficientInputSlots (I := I) (M := M) g r s A ρ -
+        reindexCoefficientInputSlots (I := I) (M := M) g r s B ρ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    reindexCoeffGen_toSection, reindexCoeffGen_toSection,
-    reindexCoeffGen_toSection, SmoothCcTensor.toSection_sub,
+    reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlots_toSection,
+    reindexCoefficientInputSlots_toSection, SmoothCcTensor.toSection_sub,
     ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro D
-  rw [sub_apply, reindexCoeffFibGen_apply,
-    reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply,
+    reindexCoefficientInputSlotsFiber_apply, reindexCoefficientInputSlotsFiber_apply,
     sub_apply]
 
 private theorem insert_h2
@@ -1197,7 +1197,7 @@ private theorem insert_h2
     (g : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 1 2) :
     covariantJetNormSq (I := I) (M := M) g 2
-        (reindexCoeffGen (I := I) (M := M) g 3 4
+        (reindexCoefficientInputSlots (I := I) (M := M) g 3 4
           (slotExtend (I := I) (M := M) g 2 3
             (slotExtend (I := I) (M := M) g 1 2 S))
           coreInPerm201) ≤
@@ -1205,14 +1205,14 @@ private theorem insert_h2
   classical
   have hper : ∀ i : ℕ,
       ‖iteratedCovGrad (I := I) g 3 4 i
-          (reindexCoeffGen (I := I) (M := M) g 3 4
+          (reindexCoefficientInputSlots (I := I) (M := M) g 3 4
             (slotExtend (I := I) (M := M) g 2 3
               (slotExtend (I := I) (M := M) g 1 2 S))
             coreInPerm201)‖ ≤
         3 * ‖iteratedCovGrad (I := I) g 1 2 i S‖ := by
     intro i
-    rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M),
-      norm_reindexCoeffGen_eq (I := I) (M := M)]
+    rw [iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M),
+      norm_reindexCoefficientInputSlots_eq (I := I) (M := M)]
     calc
       _ ≤ Real.sqrt (Module.finrank ℝ E) *
           ‖iteratedCovGrad (I := I) g 2 3 i
@@ -1237,7 +1237,7 @@ private theorem insert_h2
           _ = 3 * ‖iteratedCovGrad (I := I) g 1 2 i S‖ := by rw [hs]
   have hsq : ∀ i : ℕ,
       ‖iteratedCovGrad (I := I) g 3 4 i
-          (reindexCoeffGen (I := I) (M := M) g 3 4
+          (reindexCoefficientInputSlots (I := I) (M := M) g 3 4
             (slotExtend (I := I) (M := M) g 2 3
               (slotExtend (I := I) (M := M) g 1 2 S))
             coreInPerm201)‖ ^ 2 ≤
@@ -1249,7 +1249,7 @@ private theorem insert_h2
   calc
     (∑ i ∈ Finset.range (2 + 1),
         ‖iteratedCovGrad (I := I) g 3 4 i
-          (reindexCoeffGen (I := I) (M := M) g 3 4
+          (reindexCoefficientInputSlots (I := I) (M := M) g 3 4
             (slotExtend (I := I) (M := M) g 2 3
               (slotExtend (I := I) (M := M) g 1 2 S))
             coreInPerm201)‖ ^ 2) ≤
@@ -1265,7 +1265,7 @@ private theorem connIns_sub_eq
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceContravariantInsertionField (I := I) g gT -
         connectionDifferenceContravariantInsertionField (I := I) g gU =
-      reindexCoeffGen (I := I) (M := M) g 3 4
+      reindexCoefficientInputSlots (I := I) (M := M) g 3 4
         (slotExtend (I := I) (M := M) g 2 3
           (slotExtend (I := I) (M := M) g 1 2
             (connectionDifferenceSection (I := I) gT g -
@@ -1303,18 +1303,18 @@ private def kI120 : Equiv.Perm (Fin 3) :=
 private noncomputable def kerOfIns
     (g : SmoothRiemannianMetric I M)
     (Q : SmoothCcTensor g 3 4) : SmoothCcTensor g 3 4 :=
-  -(reindexCoeffGen (I := I) (M := M) g 3 4
+  -(reindexCoefficientInputSlots (I := I) (M := M) g 3 4
         (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
           (permCoeff (I := I) (M := M) g kO0312) Q) kI102
-    + reindexCoeffGen (I := I) (M := M) g 3 4
+    + reindexCoefficientInputSlots (I := I) (M := M) g 3 4
         (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
           (permCoeff (I := I) (M := M) g kO0213) Q) kI120
     + ccOperatorFieldComp (I := I) (M := M) g 3 4 4
         (permCoeff (I := I) (M := M) g kO2301) Q
-    + reindexCoeffGen (I := I) (M := M) g 3 4
+    + reindexCoefficientInputSlots (I := I) (M := M) g 3 4
         (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
           (permCoeff (I := I) (M := M) g kO1302) Q) kI102
-    + reindexCoeffGen (I := I) (M := M) g 3 4
+    + reindexCoefficientInputSlots (I := I) (M := M) g 3 4
         (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
           (permCoeff (I := I) (M := M) g kO1203) Q) kI120)
 
@@ -1387,7 +1387,7 @@ private theorem fullPerm_norm
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3))
     (Q : SmoothCcTensor g 3 4) (q : ℕ) :
     ‖iteratedCovGrad (I := I) g 3 4 q
-        (reindexCoeffGen (I := I) (M := M) g 3 4
+        (reindexCoefficientInputSlots (I := I) (M := M) g 3 4
           (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
             (permCoeff (I := I) (M := M) g σ) Q) ρ)‖ =
       ‖iteratedCovGrad (I := I) g 3 4 q Q‖ := by
@@ -1395,8 +1395,8 @@ private theorem fullPerm_norm
     _ = ‖iteratedCovGrad (I := I) g 3 4 q
         (ccOperatorFieldComp (I := I) (M := M) g 3 4 4
           (permCoeff (I := I) (M := M) g σ) Q)‖ := by
-      rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M),
-        norm_reindexCoeffGen_eq (I := I) (M := M)]
+      rw [iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M),
+        norm_reindexCoefficientInputSlots_eq (I := I) (M := M)]
     _ = _ := outPerm_norm (I := I) (M := M) g σ Q q
 
 private theorem norm_five_le
@@ -2802,7 +2802,7 @@ theorem connIns_sub_tame
         (connectionDifferenceContravariantInsertionField (I := I) g gT -
           connectionDifferenceContravariantInsertionField (I := I) g gU) =
       covariantJetNormSq (I := I) (M := M) g 2
-        (reindexCoeffGen (I := I) (M := M) g 3 4
+        (reindexCoefficientInputSlots (I := I) (M := M) g 3 4
           (slotExtend (I := I) (M := M) g 2 3
             (slotExtend (I := I) (M := M) g 1 2
               (connectionDifferenceSection (I := I) gT g -
@@ -3137,13 +3137,13 @@ private theorem reindex_h2_eq
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (S : SmoothCcTensor g r s) (ρ : Equiv.Perm (Fin r)) :
     covariantJetNormSq (I := I) (M := M) g 2
-        (reindexCoeffGen (I := I) (M := M) g r s S ρ) =
+        (reindexCoefficientInputSlots (I := I) (M := M) g r s S ρ) =
       covariantJetNormSq (I := I) (M := M) g 2 S := by
   unfold covariantJetNormSq
   apply Finset.sum_congr rfl
   intro q _
-  rw [iteratedCovGrad_reindexCoeffGen (I := I) (M := M),
-    norm_reindexCoeffGen_eq (I := I) (M := M)]
+  rw [iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M),
+    norm_reindexCoefficientInputSlots_eq (I := I) (M := M)]
 
 private theorem corrPk3_h2
     (hDim : Module.finrank ℝ E = 3)
@@ -3253,7 +3253,7 @@ private theorem corrPhi_h2
   intro P σ
   have hpk := corrPk3_h2 (I := I) (M := M) hDim g P
   have hraw := happ
-    (reindexCoeffGen (I := I) (M := M) g 5 3
+    (reindexCoefficientInputSlots (I := I) (M := M) g 5 3
       (cometricDoubleTraceField (I := I) g 3) σ)
     (corrPk3 (I := I) (M := M) g P)
   rw [reindex_h2_eq (I := I) (M := M) g
@@ -3276,12 +3276,12 @@ private noncomputable def fourOf
     (g : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 4 2) :
     SmoothCcTensor g 4 2 :=
   ((1 : ℝ) / 2) •
-    (reindexCoeffGen (I := I) (M := M) g 4 2 P
+    (reindexCoefficientInputSlots (I := I) (M := M) g 4 2 P
         fourTraceArgPerm0231 +
-      reindexCoeffGen (I := I) (M := M) g 4 2 P
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 P
         fourTraceArgPerm0321 -
       P -
-      reindexCoeffGen (I := I) (M := M) g 4 2 P
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2 P
         fourTraceArgPerm2301)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -3324,13 +3324,13 @@ private theorem four_h2
         (fourOf (I := I) (M := M) g P) ≤
       22 * covariantJetNormSq (I := I) (M := M) g 2 P := by
   let R₁ : SmoothCcTensor g 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g 4 2 P
+    reindexCoefficientInputSlots (I := I) (M := M) g 4 2 P
       fourTraceArgPerm0231
   let R₂ : SmoothCcTensor g 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g 4 2 P
+    reindexCoefficientInputSlots (I := I) (M := M) g 4 2 P
       fourTraceArgPerm0321
   let R₃ : SmoothCcTensor g 4 2 :=
-    reindexCoeffGen (I := I) (M := M) g 4 2 P
+    reindexCoefficientInputSlots (I := I) (M := M) g 4 2 P
       fourTraceArgPerm2301
   have hR₁ :
       covariantJetNormSq (I := I) (M := M) g 2 R₁ =
@@ -3780,16 +3780,16 @@ private theorem lieTrace_eq
     (g gm : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
     deTurckLieTraceCoeff (I := I) (M := M) g gm σ =
-      reindexCoeffGen (I := I) (M := M) g 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g 4 2
         (pureTrace (I := I) (M := M) g gm 2) σ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [deTurckLieTraceCoeff_toSection, reindexCoeffGen_toSection,
+  rw [deTurckLieTraceCoeff_toSection, reindexCoefficientInputSlots_toSection,
     pureTrace_toSection]
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffFibGen_apply, deTurckLieTraceFib,
+  rw [reindexCoefficientInputSlotsFiber_apply, deTurckLieTraceFib,
     ContinuousLinearMap.comp_apply, domDomCongrFibPerm_apply]
 
 private theorem slots_h2
@@ -3811,7 +3811,7 @@ private theorem liePiece_sub
     (ΨT ΨU : SmoothCcTensor g 1 2) :
     lieFirstOrderPiece (I := I) (M := M) g gT σ ρ ΨT -
         lieFirstOrderPiece (I := I) (M := M) g gU σ ρ ΨU =
-      reindexCoeffGen (I := I) (M := M) g 3 2
+      reindexCoefficientInputSlots (I := I) (M := M) g 3 2
         (ccOperatorFieldComp (I := I) (M := M) g 3 4 2
             (deTurckLieTraceCoeff (I := I) (M := M) g gU σ)
             (slotExtend (I := I) (M := M) g 2 3
@@ -5179,7 +5179,7 @@ private theorem fullSlot1_h2
       simp only [K]
       ring
 
-theorem full_slot_sobolev_two_bound
+theorem exists_metricComparisonEndomorphism_slot_one_covariantJetNormSq_two_bound
     (g : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
     ∃ B : ℝ → ℝ,
@@ -6152,7 +6152,7 @@ theorem deTurckLieFirstOrder_pairing_h2_bound
     have heq :
         deTurckLieTraceCoeff (I := I) (M := M) g gT σ -
             deTurckLieTraceCoeff (I := I) (M := M) g gU σ =
-          reindexCoeffGen (I := I) (M := M) g 4 2
+          reindexCoefficientInputSlots (I := I) (M := M) g 4 2
             (pureTrace (I := I) (M := M) g gT 2 -
               pureTrace (I := I) (M := M) g gU 2) σ := by
       rw [lieTrace_eq (I := I) (M := M) g gT σ,

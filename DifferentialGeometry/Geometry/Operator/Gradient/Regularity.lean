@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
-import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
 open DifferentialGeometry.Geometry.Curvature
 
@@ -41,13 +41,13 @@ private theorem gradientFun_coeff_eq_sum
   have hbasis :
       basis = coordinateFrameAtBasis (I := I) x₀ hy := by
     rfl
-  have hinv : MetricInverseInBasisGen (I := I) g y basis gInv := by
+  have hinv : MetricInverseInBasis (I := I) g y basis gInv := by
     simpa [basis, hbasis, gInv] using
       gInvBasisAt (I := I) g x₀ (x := y) hy
   rw [(coordinateFrameAt_isLocalFrame (I := I) x₀).coeff_apply_of_mem
     hy (fun z : M => gradientFun (I := I) g f z) k]
   change basis.coord k (gradientFun (I := I) g f y) = _
-  rw [coord_eq_invInner (I := I) g y basis gInv hinv k
+  rw [coord_eq_sum_inverseMetric_mul_inner (I := I) g y basis gInv hinv k
     (gradientFun (I := I) g f y)]
   apply Finset.sum_congr rfl
   intro l _

@@ -35,7 +35,7 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-def HasLiveBrFull
+def HasControlledLiveNormalBranches
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -47,7 +47,7 @@ def HasLiveBrFull
     (aMin : Real) (q : LiveSlot L pb r → NNReal)
     (δ : LiveSlot L pb r → Real) : Prop :=
   ∀ gamma : LiveSlot L pb r,
-    HasNormalBrFull (I := I) (X.obj (L.φ n))
+    HasControlledNormalBranch (I := I) (X.obj (L.φ n))
       (hcomplete.complete (L.φ n)) (hconn (L.φ n))
       (seqCenterD hd P L n (gamma.1 : Nat)) (q gamma) (δ gamma)
       (aMin * hd.mu (L.rInf (gamma.1 : Nat) + 1))
@@ -115,7 +115,7 @@ theorem exists_slot_min
                 (X.obj (L.φ k)).smooth
               letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
                 (X.obj (L.φ k)).t2TangentBundle
-              HasNormalBrFull (I := I) (X.obj (L.φ k))
+              HasControlledNormalBranch (I := I) (X.obj (L.φ k))
                   (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x
                   (q gamma) (δ gamma) rho ∧
                 rho ≤ hb.radius (L.φ k) x ∧
@@ -149,7 +149,7 @@ theorem exists_slot_min
           letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
           letI : T2Space (TangentBundle I (X.obj k).M) :=
             (X.obj k).t2TangentBundle
-          HasNormalBrFull (I := I) (X.obj k) (hcomplete.complete k)
+          HasControlledNormalBranch (I := I) (X.obj k) (hcomplete.complete k)
               (hconn k) x q δ (aMin * hd.mu (L.rInf (gamma.1 : Nat) + 1)) ∧
             aMin * hd.mu (L.rInf (gamma.1 : Nat) + 1) ≤ hb.radius k x ∧
             (aMin * hd.mu (L.rInf (gamma.1 : Nat) + 1)) / 2 ≤
@@ -244,7 +244,7 @@ theorem exists_live_dom
           (seqCenterD hd P L k (gamma.1 : Nat)) q δ
           (aρ * hd.mu (2 * hd.lambda D 0 * (pb.A r : Real))) := by
   obtain ⟨aq, aδ, aρ, haq, haδ, haρ, hscale⟩ :=
-    normalBrScale (I := I) h hcomplete hconn
+    exists_normal_branch_domain_scales (I := I) h hcomplete hconn
   have hR : 0 ≤ 2 * hd.lambda D 0 * (pb.A r : Real) := by
     exact mul_nonneg
       (mul_nonneg (by norm_num) (hd.lambda_pos hD 0).le) (by positivity)
@@ -280,7 +280,7 @@ theorem exists_live_min
         letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
           (X.obj (L.φ k)).t2TangentBundle
         let x := seqCenterD hd P L k (gamma.1 : Nat)
-        HasNormalBrFull (I := I) (X.obj (L.φ k))
+        HasControlledNormalBranch (I := I) (X.obj (L.φ k))
             (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x q δ ρ ∧
           ρ ≤ hb.radius (L.φ k) x ∧
           ρ / 2 ≤ Geometry.Riemannian.metricCoerciveExpRadius
@@ -316,14 +316,14 @@ theorem exists_live_min
   simpa only [Rlive, ρ] using
     hcentres (L.φ k) (seqCenterD hd P L k (gamma.1 : Nat)) (hk gamma)
 
-theorem HasNormalBrFull.exists_cm_eqn
+theorem HasControlledNormalBranch.exists_centerOfMass_equation
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
     (x : (X.obj k).M) {q : NNReal} {δ ρ : Real}
-    (hfull : HasNormalBrFull (I := I) (X.obj k) hcomplete hconn x q δ ρ)
+    (hfull : HasControlledNormalBranch (I := I) (X.obj k) hcomplete hconn x q δ ρ)
     {ι : Type} [Fintype ι] (mu : ι → Real) (pts : ι → (X.obj k).M)
     (join : (X.obj k).M → (X.obj k).M → Real → (X.obj k).M)
     (p : (X.obj k).M) (r R : Real) :
@@ -429,7 +429,7 @@ theorem HasNormalBrFull.exists_cm_eqn
         (I := I) (X.obj k).metric x).symm (xi i)) join p r := by
     rw [hdecode]
     exact h
-  dsimp only [HasNormalBrFull] at hfull
+  dsimp only [HasControlledNormalBranch] at hfull
   rcases hfull with ⟨hq, e, he, hf, _hclosed, _hδdom, _htransport⟩
   refine ⟨hq, e, he, hf, ?_⟩
   have hpairs' := centerPairs_lt_le (I := I) (X.obj k).metric mu
@@ -450,14 +450,14 @@ theorem HasNormalBrFull.exists_cm_eqn
     mu xi join p r h' hρ hρq hρmetric hρexp hpairs''
   simpa only [xi, hdecode] using hz
 
-theorem HasNormalBrFull.exists_cm_deriv
+theorem HasControlledNormalBranch.exists_centerOfMass_derivative
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
     (x : (X.obj k).M) {q : NNReal} {δ ρ : Real}
-    (hfull : HasNormalBrFull (I := I) (X.obj k) hcomplete hconn x q δ ρ)
+    (hfull : HasControlledNormalBranch (I := I) (X.obj k) hcomplete hconn x q δ ρ)
     {ι : Type} [Fintype ι] (mu : ι → Real) (pts : ι → (X.obj k).M)
     (join : (X.obj k).M → (X.obj k).M → Real → (X.obj k).M)
     (p : (X.obj k).M) (r R : Real) (hsum : ∑ i, mu i = 1) :
@@ -584,7 +584,7 @@ theorem HasNormalBrFull.exists_cm_deriv
         (I := I) (X.obj k).metric x).symm (xi i)) join p r := by
     rw [hdecode]
     exact h
-  dsimp only [HasNormalBrFull] at hfull
+  dsimp only [HasControlledNormalBranch] at hfull
   rcases hfull with
     ⟨hq, e, he, hf, _hclosed, _hδdom, _hhom, _hpair, _hinv,
       _hδinv, eta, heta, happrox⟩
@@ -655,14 +655,14 @@ theorem HasNormalBrFull.exists_cm_deriv
     mu xi htgt h.μ_nonneg hsum hzero
   simpa only [c, xi] using ⟨hcSource, htgt, hzNormal, hzero, hsol⟩
 
-theorem HasNormalBrFull.exists_cmC
+theorem HasControlledNormalBranch.exists_centerOfMass_solution
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
     (x : (X.obj k).M) {q : NNReal} {δ ρ : Real}
-    (hfull : HasNormalBrFull (I := I) (X.obj k) hcomplete hconn x q δ ρ)
+    (hfull : HasControlledNormalBranch (I := I) (X.obj k) hcomplete hconn x q δ ρ)
     {ι : Type} [Fintype ι] (mu : ι → Real) (pts : ι → (X.obj k).M)
     (join : (X.obj k).M → (X.obj k).M → Real → (X.obj k).M)
     (p : (X.obj k).M) (r R : Real) (hsum : ∑ i, mu i = 1) :
@@ -759,7 +759,7 @@ theorem HasNormalBrFull.exists_cmC
         (I := I) (X.obj k).metric x).symm (xi i)) join p r := by
     rw [hdecode]
     exact h
-  dsimp only [HasNormalBrFull] at hfull
+  dsimp only [HasControlledNormalBranch] at hfull
   rcases hfull with
     ⟨hq, e, he, hf, _hclosed, _hδdom, _hhom, _hpair, _hinv,
       _hδinv, eta, heta, happrox⟩
@@ -881,7 +881,7 @@ theorem HasNormalBrFull.exists_cmC
       (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c := by
     have hpair :
         normalPair (I := I) (X.obj k) x (z, xi i) (c := c) ∈ B.dom := by
-      rw [← (IsNormalDiag.full_transport (I := I) (X.obj k)
+      rw [← (IsNormalDiag.branch_coordinate_transport (I := I) (X.obj k)
         hcomplete hconn x hq he hf).2.1]
       refine ⟨(z, xi i), htgtZ i, ?_⟩
       exact c.pairHome_apply (z, xi i)
@@ -934,7 +934,7 @@ theorem exists_hat_cm_eqn_at
         (X.obj (L.φ k)).smooth
       letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
         (X.obj (L.φ k)).t2TangentBundle
-      HasNormalBrFull (I := I) (X.obj (L.φ k))
+      HasControlledNormalBranch (I := I) (X.obj (L.φ k))
           (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0
           (q gamma) (δ gamma) rho ∧
         rho ≤ hb.radius (L.φ k) x0 ∧
@@ -1058,7 +1058,7 @@ theorem exists_hat_cm_eqn_at
     rw [HopfRinow.riemMetric_dist_eq, hed,
       ENNReal.toReal_ofReal (hre.dist_nonneg (L.φ k) x x0)]
     exact hhd.le
-  have hresult := HasNormalBrFull.exists_cm_eqn (I := I) hb (L.φ k)
+  have hresult := HasControlledNormalBranch.exists_centerOfMass_equation (I := I) hb (L.φ k)
     (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0 hfull
     mu pts join x rad (4 * L.lamInf (alpha.1 : Nat)) h hpq
     hradCage hρ hρq hρmetric hρexp
@@ -1093,7 +1093,7 @@ theorem exists_hat_cm_sol_at
         (X.obj (L.φ k)).smooth
       letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
         (X.obj (L.φ k)).t2TangentBundle
-      HasNormalBrFull (I := I) (X.obj (L.φ k))
+      HasControlledNormalBranch (I := I) (X.obj (L.φ k))
           (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0
           (q gamma) (δ gamma) rho ∧
         rho ≤ hb.radius (L.φ k) x0 ∧
@@ -1242,7 +1242,7 @@ theorem exists_hat_cm_sol_at
     rw [HopfRinow.riemMetric_dist_eq, hed,
       ENNReal.toReal_ofReal (hre.dist_nonneg (L.φ k) x x0)]
     exact hhd.le
-  have hresult := HasNormalBrFull.exists_cm_deriv (I := I) hb (L.φ k)
+  have hresult := HasControlledNormalBranch.exists_centerOfMass_derivative (I := I) hb (L.φ k)
     (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0 hfull
     mu pts join x rad (4 * L.lamInf (alpha.1 : Nat)) hsum h hpq
     hradCage hρ hρq hρmetric hρexp
@@ -1277,7 +1277,7 @@ theorem exists_hat_cmC_at
         (X.obj (L.φ k)).smooth
       letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
         (X.obj (L.φ k)).t2TangentBundle
-      HasNormalBrFull (I := I) (X.obj (L.φ k))
+      HasControlledNormalBranch (I := I) (X.obj (L.φ k))
           (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0
           (q gamma) (δ gamma) rho ∧
         rho ≤ hb.radius (L.φ k) x0 ∧
@@ -1386,7 +1386,7 @@ theorem exists_hat_cmC_at
     rw [HopfRinow.riemMetric_dist_eq, hed,
       ENNReal.toReal_ofReal (hre.dist_nonneg (L.φ k) x x0)]
     exact hhd.le
-  have hresult := HasNormalBrFull.exists_cmC (I := I) hb (L.φ k)
+  have hresult := HasControlledNormalBranch.exists_centerOfMass_solution (I := I) hb (L.φ k)
     (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0 hfull
     mu pts join x rad (4 * L.lamInf (alpha.1 : Nat)) hsum h hpq
     hradCage hρ hρq hρmetric hρexp
@@ -1424,7 +1424,7 @@ theorem exists_hat_cm_eqn
         (X.obj (L.φ k)).smooth
       letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
         (X.obj (L.φ k)).t2TangentBundle
-      HasNormalBrFull (I := I) (X.obj (L.φ k))
+      HasControlledNormalBranch (I := I) (X.obj (L.φ k))
           (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0
           (q gamma) (δ gamma) rho ∧
         rho ≤ hb.radius (L.φ k) x0 ∧

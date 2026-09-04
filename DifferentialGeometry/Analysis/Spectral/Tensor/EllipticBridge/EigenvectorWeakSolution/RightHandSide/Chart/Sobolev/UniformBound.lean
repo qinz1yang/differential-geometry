@@ -44,9 +44,9 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-section Unconditional
+section MainResults
 
-section UniformTermBoundsUnconditional
+section UniformTermBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
@@ -658,9 +658,9 @@ private lemma crossRightGradDivTerm_wkpNorm_le_uniform
           ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), ENNReal.ofReal_ofNat 2]
         ring
 
-end UniformTermBoundsUnconditional
+end UniformTermBounds
 
-section UniformBracketBoundUnconditional
+section UniformBracketBound
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
@@ -838,9 +838,9 @@ lemma eigenvectorChartRHSNumerator_wkpNorm_le_uniform
     ENNReal.ofReal_add hD1_nn hD2_nn]
   rw [add_mul, add_mul, add_mul, add_mul, add_mul, add_mul]
 
-end UniformBracketBoundUnconditional
+end UniformBracketBound
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

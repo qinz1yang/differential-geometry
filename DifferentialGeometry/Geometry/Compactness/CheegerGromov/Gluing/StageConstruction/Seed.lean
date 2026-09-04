@@ -325,7 +325,7 @@ theorem MetricCompactBase.exists_stage_seed
     exact ⟨hcapN, hscaleN⟩
   obtain ⟨psi, hpsi, gInf, deltaInf, e, eInf,
       _hcenter0, hQAll, hmetric0, hbranchAll, hpair0⟩ :=
-    inp.exists_diag_full P Lphi r hcomplete hconn aMin q δ hq hδ
+    inp.exists_diagonal_subsequence_of_eventually P Lphi r hcomplete hconn aMin q δ hq hδ
       hqWidePhi hqAcc0 herr0 hinvErr0 hbranchTail Q hQ
   let theta := phi ∘ psi
   have htheta : StrictMono theta := hphi.comp hpsi
@@ -353,7 +353,7 @@ theorem MetricCompactBase.exists_stage_seed
     with_unfolding_all
       exact hmetric0 alpha
   have hbranchTheta : ∀ n,
-      HasLiveBrFull (I := I) P Ltheta inp.pack r n
+      HasControlledLiveNormalBranches (I := I) P Ltheta inp.pack r n
         hcomplete hconn aMin q δ := by
     intro n
     with_unfolding_all

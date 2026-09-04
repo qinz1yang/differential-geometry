@@ -522,7 +522,7 @@ theorem exists_strict_strong_support_approx
   have hψ_mem :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) 1 p ψ Ωα :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := Module.finrank ℝ E) hΩα_open hψ_smooth hψ_cpt hψ_supp hp_one 1
   have hfψ_mem :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp

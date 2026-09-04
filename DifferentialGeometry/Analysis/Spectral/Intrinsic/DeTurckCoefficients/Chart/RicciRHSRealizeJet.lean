@@ -52,7 +52,7 @@ omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem chartDeTurckRicciRHS_realize_seminorm_le_bareChartJetContentOnE
+theorem chartDeTurckRicciRHS_realize_seminorm_le_chartComponentJetSeminormSum
     (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)
@@ -77,7 +77,7 @@ theorem chartDeTurckRicciRHS_realize_seminorm_le_bareChartJetContentOnE
   refine ⟨C * ((Module.finrank ℝ E) : ℝ), by positivity, fun y hy => ?_⟩
   have hyint : y ∈ interior (extChartAt I α).target := hKsub hy
   refine (hC y hy).trans ?_
-  have hgram := chartGramJetDiffSeminormSum_realize_le_bareChartJetContentOnE (I := I) (M := M)
+  have hgram := chartGramJetDiffSeminormSum_realize_le_chartComponentJetSeminormSum (I := I) (M := M)
     g_bg T T' hδ_lt hδ hδ'_lt hδ' α (N + 2) hyint
   rw [hg₁_def, hg₂_def]
   calc C * chartGramJetDiffSeminormSum (I := I) (M := M) (N + 2) g₁ g₂ α

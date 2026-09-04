@@ -629,7 +629,7 @@ theorem mfderiv_expMap_at_zero
     hLcomp_eq ▸ hcomp_mfd
   have hcand_eq :
       ((extChartAt I p).symm ∘ fun v : E => (Φ (((x₀, v) : E × E), t')).1) =
-        chartFlowCandidate (I := I) Φ p t' := by
+        chartFlowSlice (I := I) Φ p t' := by
     funext v; rfl
   rw [hcand_eq] at hcomp_mfd2
   have hT_match_lt_T : T_match < T := hT_match_lt_T
@@ -641,7 +641,7 @@ theorem mfderiv_expMap_at_zero
         (chartPhaseVF (I := I) g p (Φ (((x₀, v) : E × E), s))) s := hΦ_phase_v
   have hexp_eq : ∀ v ∈ Metric.ball (0 : E) ρ,
       expMap (I := I) g p (show TangentSpace I p from t' • v) =
-        chartFlowCandidate (I := I) Φ p t' v := by
+        chartFlowSlice (I := I) Φ p t' v := by
     intro v hv
     have hΦ_init_v_at : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) := hΦ_init_v v hv
     have hΦ_target_for_v : ∀ s ∈ Set.Icc (-T_match) T_match,
@@ -672,7 +672,7 @@ theorem mfderiv_expMap_at_zero
     rw [← hproj, hproj_def']
     rfl
   have hev_eq : (fun v : E => expMap (I := I) g p (show TangentSpace I p from t' • v)) =ᶠ[𝓝 (0 : E)]
-      chartFlowCandidate (I := I) Φ p t' := by
+      chartFlowSlice (I := I) Φ p t' := by
     refine Filter.eventuallyEq_of_mem (Metric.ball_mem_nhds (0 : E) hρ_pos) ?_
     intro v hv
     exact hexp_eq v hv

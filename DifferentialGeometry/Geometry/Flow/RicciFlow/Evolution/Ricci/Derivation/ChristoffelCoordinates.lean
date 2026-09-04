@@ -634,7 +634,7 @@ theorem christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame
     coordinateFrameAt_mem (I := I) x₀
   have hu : IsOpen (coordinateFrameSet (I := I) x₀) :=
     coordinateFrameSet_open (I := I) x₀
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
       (S.family.connection (t : Real)) (S.family.metric (t : Real)) :=
     DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.metricCompatibleAt_regular
       (I := I) S.family t
@@ -903,7 +903,7 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
             (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
             (t : Real) x₀ d k l = 0 := by
     intro t d k l
-    have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
+    have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
         (S.family.connection (t : Real)) (S.family.metric (t : Real)) :=
       DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.metricCompatibleAt_regular
         (I := I) S.family t

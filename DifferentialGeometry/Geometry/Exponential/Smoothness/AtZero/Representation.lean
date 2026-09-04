@@ -33,10 +33,10 @@ variable [I.Boundaryless] [CompleteSpace E]
 def HasC1ChartFlowRepresentationAtZero (g : SmoothRiemannianMetric I M) (p : M) : Prop :=
   ∃ (Φ : (E × E) × ℝ → E × E) (t' ρ : ℝ), 0 < t' ∧ 0 < ρ ∧
     ContMDiffAt 𝓘(ℝ, E) I 1
-      (chartFlowCandidate (I := I) Φ p t') (0 : E) ∧
+      (chartFlowSlice (I := I) Φ p t') (0 : E) ∧
     ∀ v : E, v ∈ Metric.ball (0 : E) ρ →
       (expMap (I := I) g p (show TangentSpace I p from (t' • v)) : M) =
-        chartFlowCandidate (I := I) Φ p t' v
+        chartFlowSlice (I := I) Φ p t' v
 
 end ChartFlowRepresentation
 
@@ -56,7 +56,7 @@ theorem expMap_contMDiffAt_zero_of_c1ChartFlowRepresentation
   classical
   obtain ⟨Φ, t', ρ, ht'_pos, hρ_pos, hcand_cd, heq⟩ := h
   set F : E → M := fun w : E =>
-    chartFlowCandidate (I := I) Φ p t' ((1 / t') • w)
+    chartFlowSlice (I := I) Φ p t' ((1 / t') • w)
     with hF_def
   have hsmul_cd : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, E) 1 (fun w : E => (1 / t') • w) := by
     have : ContDiff ℝ ∞ (fun w : E => (1 / t') • w) :=
@@ -69,14 +69,14 @@ theorem expMap_contMDiffAt_zero_of_c1ChartFlowRepresentation
   have hval0 : (1 / t') • (0 : E) = 0 := smul_zero _
   have hF_cd : ContMDiffAt 𝓘(ℝ, E) I 1 F (0 : E) := by
     have hcand_cd' : ContMDiffAt 𝓘(ℝ, E) I 1
-        (chartFlowCandidate (I := I) Φ p t')
+        (chartFlowSlice (I := I) Φ p t')
         ((fun w : E => (1 / t') • w) (0 : E)) := by
       change ContMDiffAt 𝓘(ℝ, E) I 1
-          (chartFlowCandidate (I := I) Φ p t') ((1 / t') • (0 : E))
+          (chartFlowSlice (I := I) Φ p t') ((1 / t') • (0 : E))
       rw [hval0]
       exact hcand_cd
     have hcomp : ContMDiffAt 𝓘(ℝ, E) I 1
-        ((chartFlowCandidate (I := I) Φ p t') ∘ (fun w : E => (1 / t') • w))
+        ((chartFlowSlice (I := I) Φ p t') ∘ (fun w : E => (1 / t') • w))
         (0 : E) := hcand_cd'.comp (0 : E) hsmul_cda
     exact hcomp
   have ht'_ne : t' ≠ 0 := ne_of_gt ht'_pos
@@ -110,17 +110,17 @@ variable [I.Boundaryless] [CompleteSpace E]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chartFlowCandidate_zero_matches_expMap_at_origin
+lemma chartFlowSlice_zero_matches_expMap_at_origin
     (g : SmoothRiemannianMetric I M) (p : M)
     {Φ : (E × E) × ℝ → E × E}
     (hinit : Φ (((extChartAt I p p, (0 : E)) : E × E), 0) =
       (extChartAt I p p, (0 : E))) :
-    chartFlowCandidate (I := I) Φ p 0 (0 : E) =
+    chartFlowSlice (I := I) Φ p 0 (0 : E) =
       expMap (I := I) g p (show TangentSpace I p from (0 : E)) := by
   classical
   rw [show expMap (I := I) g p (show TangentSpace I p from (0 : E)) = p from
     expMap_zero (I := I) g p]
-  exact chartFlowCandidate_zero_at_initial (I := I) (Φ := Φ) (p := p) hinit
+  exact chartFlowSlice_zero_at_initial (I := I) (Φ := Φ) (p := p) hinit
 
 end Origin
 

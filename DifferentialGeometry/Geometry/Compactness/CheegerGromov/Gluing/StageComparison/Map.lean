@@ -358,7 +358,7 @@ theorem stageCompare_subseq
         (Or.inl hx)]
     simp only [NetLimitData.subseq_phi, Function.comp_apply]
 
-theorem stageCmp_base_raw
+theorem stageCompare_base
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
@@ -404,7 +404,7 @@ theorem stageCmp_base_raw
         Yk.basepoint gamma
     have hdelta : mu i0 = 1 ∧ ∀ j, j ≠ i0 → mu j = 0 := by
       simpa only [mu, i0] using
-        seqWeights_base_raw inp.decay inp.hD P L inp.realizes inp.pack hs k
+        seqWeights_base inp.decay inp.hD P L inp.realizes inp.pack hs k
     have hcenterK :
         seqCenterD inp.decay P L k (i0 : Nat) = Yk.basepoint := by
       simp only [i0, baseIndex_val, seqCenterD, seqCenter_zero,
@@ -467,18 +467,6 @@ theorem stageCmp_base_raw
     · exact Classical.choose_spec huniq.exists
     · exact hmin
   · simp only [stageComparisonMap, hx, huniq, dite_true, dite_false]
-
-theorem stageCompare_base
-    (inp : MetricCompactCore (I := I) X)
-    (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
-    (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
-    (k l : Nat)
-    (chart : NormalChartFamily (I := I) X :=
-      c2RadiusNormalChartFamily (I := I) X) :
-    stageComparisonMap inp P L s hs k l
-        (X.obj (L.φ k)).basepoint (chart := chart) =
-      (X.obj (L.φ l)).basepoint :=
-  stageCmp_base_raw inp P L s hs k l chart
 
 end HCGCompactness
 end DifferentialGeometry

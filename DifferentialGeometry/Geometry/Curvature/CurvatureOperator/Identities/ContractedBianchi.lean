@@ -185,7 +185,7 @@ theorem metric_scalar_at_eq_chart_ricci_sum
     intro i j
     rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, chartBasisVecFiber_self, chartBasisVecFiber_self]
     simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply]
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) g x
       (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (fun i j => chartInvGramMatrix (I := I) g x x i j) := by
     intro i j
     constructor
@@ -260,7 +260,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private lemma mdiffAt_finsetSum_aux {ι : Type*} (t : Finset ι) (f : ι → M → ℝ) {x : M}
+private lemma mdiffAt_finsetSum {ι : Type*} (t : Finset ι) (f : ι → M → ℝ) {x : M}
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ) (f i) x) :
     MDifferentiableAt I 𝓘(ℝ) (t.sum f) x := by
   classical
@@ -279,7 +279,7 @@ private lemma mdiffAt_finsetSum_aux {ι : Type*} (t : Finset ι) (f : ι → M �
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private lemma mvfderiv_finsetSum_aux {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+private lemma mvfderiv_finsetSum {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
     {x : M} (v : TangentSpace I x)
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ) (f i) x) :
     mvfderiv (I := I) (t.sum f) x v =
@@ -292,7 +292,7 @@ private lemma mvfderiv_finsetSum_aux {ι : Type*} (t : Finset ι) (f : ι → M 
       have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(ℝ) (f j) x :=
         fun j hj => hf j (by simp [hj])
       have hsum : MDifferentiableAt I 𝓘(ℝ) (t.sum f) x :=
-        mdiffAt_finsetSum_aux (I := I) t f hft
+        mdiffAt_finsetSum (I := I) t f hft
       have hstep : mvfderiv (I := I) ((insert i t).sum f) x v =
           mvfderiv (I := I) (f i) x v + mvfderiv (I := I) (t.sum f) x v := by
         rw [Finset.sum_insert hit]
@@ -443,7 +443,7 @@ theorem nablaRicci_eq_frame_trace_nablaCurvSec
         (Finset.univ : Finset (Fin (Module.finrank ℝ E))).sum
           (fun i => fun b => g.inner b (S i b) (B i b)) from by
       funext b; rw [Finset.sum_apply]]
-    rw [mvfderiv_finsetSum_aux (I := I) _ _ (X x) (fun i _ => hmd i)]
+    rw [mvfderiv_finsetSum (I := I) _ _ (X x) (fun i _ => hmd i)]
     refine Finset.sum_congr rfl ?_
     intro i _
     have hmc := (LeviCivita_isMetricCompatible (I := I) g).apply
@@ -630,7 +630,7 @@ theorem nablaScalar_eq_frame_trace_nablaRicci
       (Finset.univ : Finset (Fin (Module.finrank ℝ E))).sum
         (fun i => fun b => ricciTensor (I := I) g b (B i b) (B i b)) from by
     funext b; rw [Finset.sum_apply]]
-  rw [mvfderiv_finsetSum_aux (I := I) _ _ (X x) (fun i _ => hmd i)]
+  rw [mvfderiv_finsetSum (I := I) _ _ (X x) (fun i _ => hmd i)]
   have hper : ∀ i, mvfderiv (I := I)
       (fun b => ricciTensor (I := I) g b (B i b) (B i b)) x (X x) =
       nablaRicci (I := I) g X (B i) (B i) x

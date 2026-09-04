@@ -83,7 +83,7 @@ private lemma eLpNorm_norm_iteratedFDeriv_chartSmoothExt_pou_mul_restrict_ball_e
   set BR : Set EuclN := Metric.ball (0 : EuclN) (chartRadius (I := I) (M := M) α)
     with hBR_def
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
-  have hK_BR : K ⊆ BR := chartCarrier_subset_full_ball (I := I) (M := M) α
+  have hK_BR : K ⊆ BR := chartCarrier_subset_radius_ball (I := I) (M := M) α
   have hK_Ω : K ⊆ Ω := chartCarrier_subset_chartTargetEuclid (I := I) (M := M) α
   have hBR_meas : MeasurableSet BR := measurableSet_ball
   have hΩ_meas : MeasurableSet Ω :=
@@ -243,7 +243,7 @@ private lemma memWkp_chartSmoothExt_pou_mul
       tsupport_chartSmoothExt_pou_mul_subset_chartCarrier (I := I) (M := M) α u
     exact h1.trans (chartCarrier_subset_chartTargetEuclid (I := I) (M := M) α)
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
     (d := Module.finrank ℝ E) hΩ_open hh_smooth_top hh_compact hh_supp hp_one k
 
 private lemma memWkp_chartPushed_of_contMDiff

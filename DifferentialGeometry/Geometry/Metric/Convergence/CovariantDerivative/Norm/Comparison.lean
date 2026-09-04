@@ -169,7 +169,7 @@ theorem metric_deriv_norm_change_le
   classical
   obtain ⟨bBase, hBaseON⟩ :=
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gBase x
-  have hBaseInv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gBase x bBase
+  have hBaseInv : Tensor0SBundle.MetricInverseInBasis (I := I) gBase x bBase
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
@@ -178,7 +178,7 @@ theorem metric_deriv_norm_change_le
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h i j
   obtain ⟨bInf, hInfON⟩ :=
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gInf x
-  have hInfInv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gInf x bInf
+  have hInfInv : Tensor0SBundle.MetricInverseInBasis (I := I) gInf x bInf
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
@@ -192,7 +192,7 @@ theorem metric_deriv_norm_change_le
     intro y hy j hj1 hjp
     obtain ⟨b, hON⟩ :=
       DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gBase y
-    have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gBase y b
+    have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) gBase y b
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I y)))) := by
       have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal

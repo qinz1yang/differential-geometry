@@ -165,7 +165,7 @@ private lemma exists_smooth_global_extension
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
     [CompactSpace M] in
-theorem generic_per_pair_ibp
+theorem chartTarget_integral_mul_fderiv_eq_neg_add_chosenWeakPartial
     (α : M)
     {v : EuclN → ℝ}
     (hv : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 v
@@ -535,11 +535,11 @@ theorem chartBilinear_diff_variational_identity
           ∂(volume : Measure EuclN)) = _
       refine setIntegral_congr_fun hΩ_meas (fun y _ => ?_)
       rw [partial_swap (ψ := ψ) hψ_smooth y j l]
-    have h_pp := generic_per_pair_ibp (I := I) (M := M) α
+    have h_pp := chartTarget_integral_mul_fderiv_eq_neg_add_chosenWeakPartial (I := I) (M := M) α
       (h_wp_memW1p i)
       (weightedInvGramOnEuclid_contDiffOn (I := I) g α i j)
       hψ_j_smooth hψ_j_cs hψ_j_supp l
-    have h_inner := generic_per_pair_ibp (I := I) (M := M) α
+    have h_inner := chartTarget_integral_mul_fderiv_eq_neg_add_chosenWeakPartial (I := I) (M := M) α
       (h_wp_memW1p i)
       (weightedInvGramDerivOnEuclid_contDiffOn (I := I) g α i j l)
       hψ_smooth hψ_cs hψ_supp j
@@ -655,7 +655,7 @@ theorem chartBilinear_diff_variational_identity
       chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.uChart Ω y * ψ y
       ∂(volume : Measure EuclN) with hN_mass_C2_def
   have h_mass_ibp : LHS_mass0 = -(N_C + N_mass_C2) := by
-    have hb := generic_per_pair_ibp (I := I) (M := M) α h_u_memW1p
+    have hb := chartTarget_integral_mul_fderiv_eq_neg_add_chosenWeakPartial (I := I) (M := M) α h_u_memW1p
       (densityOnEuclid_contDiffOn (I := I) g α) hψ_smooth hψ_cs hψ_supp l
     change (∫ y in Ω,
         densityOnEuclid (I := I) g α y * D.uChart y * ψ_l y
@@ -670,7 +670,7 @@ theorem chartBilinear_diff_variational_identity
       chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.fChart Ω y * ψ y
       ∂(volume : Measure EuclN) with hN_E_def
   have h_rhs_ibp : RHS0 = -(N_D + N_E) := by
-    have hb := generic_per_pair_ibp (I := I) (M := M) α h_f_memW1p
+    have hb := chartTarget_integral_mul_fderiv_eq_neg_add_chosenWeakPartial (I := I) (M := M) α h_f_memW1p
       (densityOnEuclid_contDiffOn (I := I) g α) hψ_smooth hψ_cs hψ_supp l
     change (∫ y in Ω,
         densityOnEuclid (I := I) g α y * D.fChart y * ψ_l y

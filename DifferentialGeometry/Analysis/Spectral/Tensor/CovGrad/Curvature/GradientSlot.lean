@@ -157,7 +157,7 @@ theorem gradSlotCurv_spec
           (unitZeroSec (I := I) (M := M) x)) m := by
     conv_lhs => rw [hv_eq]
     rw [unitModel]
-    exact tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
+    exact tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval
       (I := I) (M := M) g₀ 2 S Xs.contMDiff Ys.contMDiff x m
   have h2 : unitModel (I := I) (M := M) g₀ 4
         (iteratedCovGrad (I := I) g₀ 0 2 2 S) x
@@ -169,7 +169,7 @@ theorem gradSlotCurv_spec
           (unitZeroSec (I := I) (M := M) x)) m := by
     rw [hv_swap]
     rw [unitModel]
-    exact tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
+    exact tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval
       (I := I) (M := M) g₀ 2 S Ys.contMDiff Xs.contMDiff x m
   have h3 : tensorSecondCovDeriv (I := I) g₀ 0 2 (fun b => Xs b) (fun b => Ys b)
         (fun y : M => S.toSection y) x -

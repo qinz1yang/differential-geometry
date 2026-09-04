@@ -102,7 +102,7 @@ private lemma classical_partial_ae_eq_chosenWeakPartial_of_smooth
       =ᵐ[volume.restrict Ω]
       DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' p i f Ω := by
   have hf_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp (d := d) 1 p f Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := d) hΩ_open hf_smooth hf_compact hf_supp hp_one 1
   have hf_W1p : DeGiorgi.MemW1p (d := d) p f Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p.mp hf_mem
@@ -405,7 +405,7 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
   have h_φn_mem : ∀ n,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp (d := d)
         1 p_enn (φ n) Ω := fun n =>
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := d) hΩ_open (hφ_smooth n) (hφ_compact n) (hφ_supp n) hp_enn_one 1
   have h_diff_mem : ∀ n,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp (d := d)

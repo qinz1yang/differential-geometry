@@ -46,7 +46,7 @@ theorem chartAlphaMatrixIdentity_holds_chartSource
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-theorem chartAlpha_swap_aux_holds
+theorem chartHessian_contraction_comm
     (g : SmoothRiemannianMetric I M) (α : M)
     (f f' : M → ℝ) (x : M) :
     ∑ i : Fin (Module.finrank ℝ E), ∑ j, ∑ k, ∑ l,

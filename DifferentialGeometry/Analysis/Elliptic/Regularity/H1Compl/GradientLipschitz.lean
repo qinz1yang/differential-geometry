@@ -95,7 +95,7 @@ private lemma smoothChartExt_eq_chartPushed_on_target
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-private lemma smoothChartExt_smooth_aux
+private lemma smoothChartExt_smooth
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ fun x : M =>
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x :=
@@ -127,7 +127,7 @@ private lemma contDiffOn_extFormula
   set f : M → ℝ := fun x : M =>
     (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x with hf_def
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f :=
-    smoothChartExt_smooth_aux (I := I) (M := M) g α v
+    smoothChartExt_smooth (I := I) (M := M) g α v
   have hscalar : ContDiffOn ℝ ∞
       (fun y : E => f ((extChartAt I α).symm y))
       (extChartAt I α).target := scalarOnE_contDiffOn (I := I) α hf_smooth

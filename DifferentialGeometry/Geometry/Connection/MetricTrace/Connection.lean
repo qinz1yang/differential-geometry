@@ -4,8 +4,8 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ApplyI
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelBridge
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formula
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
-import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.FieldComponents
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.OneJet
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
@@ -69,21 +69,21 @@ def connTraceOneFormAt
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
-  dualToCotangentGen (I := I)
+  dualToCotangent (I := I)
     ((connTraceEvalLin (I := I) g A).comp
-      ((dualToCotangentLinear (I := I)).comp (tangentFlatLinearGen (I := I) g x)))
+      ((dualToCotangentLinear (I := I)).comp (tangentFlatLinear (I := I) g x)))
 
 theorem connTraceOneFormAt_apply
     (g : SmoothRiemannianMetric I M)
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
     (V : TangentSpace I x) :
-    cotangentToDualGen (I := I) (connTraceOneFormAt (I := I) g A) V =
+    cotangentToDual (I := I) (connTraceOneFormAt (I := I) g A) V =
       metricTraceFirstTwo0STensor (I := I) g
-        (A (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) V)))
+        (A (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) V)))
         Fin.elim0 := by
   unfold connTraceOneFormAt connTraceEvalLin
-  rw [cotangentToDual_dualToCotangent_gen]
+  rw [cotangentToDual_dualToCotangent]
   rw [metricTraceFirstTwo0STensor_apply]
   exact metricTrace0S2InBasis_eq_metricTrace (I := I) g
     (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
@@ -93,7 +93,7 @@ theorem connTraceOneFormAt_apply
         (extChartAt I x x))
     (inverseMetricFlatModelInChart_metricInverseInBasis_center
       (I := I) g x)
-    (A (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) V))) Fin.elim0
+    (A (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) V))) Fin.elim0
 
 theorem connTraceOneFormAt_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -102,12 +102,12 @@ theorem connTraceOneFormAt_coord
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (q : Idx) :
-    cotangentToDualGen (I := I) (connTraceOneFormAt (I := I) g A) (basis q) =
+    cotangentToDual (I := I) (connTraceOneFormAt (I := I) g A) (basis q) =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j *
-          (A (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis q))))
+          (A (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) (basis q))))
             (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0) := by
   rw [connTraceOneFormAt_apply]
   rw [metricTraceFirstTwo0STensor_apply]
@@ -119,14 +119,14 @@ def connTraceAt
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x) :
     TangentSpace I x :=
-  cotangentSharpGen (I := I) g x (connTraceOneFormAt (I := I) g A)
+  cotangentSharp (I := I) g x (connTraceOneFormAt (I := I) g A)
 
 @[simp] theorem connTraceAt_eq
     (g : SmoothRiemannianMetric I M)
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x) :
     connTraceAt (I := I) g A =
-      cotangentSharpGen (I := I) g x (connTraceOneFormAt (I := I) g A) := by
+      cotangentSharp (I := I) g x (connTraceOneFormAt (I := I) g A) := by
   rfl
 
 theorem connTraceAt_coord
@@ -136,19 +136,19 @@ theorem connTraceAt_coord
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv) :
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv) :
     connTraceAt (I := I) g A =
       ∑ p : Idx,
         (∑ q : Idx,
           gInv p q *
             (∑ i : Idx, ∑ j : Idx,
               gInv i j *
-                (A (dualToCotangentGen (I := I)
-                    ((tangentFlatLinearGen (I := I) g x) (basis q))))
+                (A (dualToCotangent (I := I)
+                    ((tangentFlatLinear (I := I) g x) (basis q))))
                   (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0))) •
           basis p := by
   rw [connTraceAt_eq]
-  rw [cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv hinv]
+  rw [cotangentSharp_eq_sum_inv (I := I) g x basis gInv hinv]
   apply Finset.sum_congr rfl
   intro p _
   congr 1
@@ -176,17 +176,17 @@ private theorem traceFlat_apply_sum
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (q i j : Idx) :
-    (A (dualToCotangentGen (I := I)
-        ((tangentFlatLinearGen (I := I) g x) (basis q))))
+    (A (dualToCotangent (I := I)
+        ((tangentFlatLinear (I := I) g x) (basis q))))
       (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0) =
       ∑ r : Idx,
         g.inner x (basis q) (basis r) *
-          componentRSGen (I := I) basis A
+          componentRSField (I := I) basis A
             (fun _ : Fin 1 => r)
             (fun a : Fin 2 => if a = 0 then i else j) := by
   classical
-  have h := componentRS_apply_input_eq_sum (I := I) basis A
-    (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis q)))
+  have h := componentRSField_apply_input_eq_sum (I := I) basis A
+    (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) (basis q)))
     (fun a : Fin 2 => if a = 0 then i else j)
   have hslots :
       metricTraceInput (I := I) (basis i) (basis j) Fin.elim0 =
@@ -194,21 +194,21 @@ private theorem traceFlat_apply_sum
     funext a
     fin_cases a <;> rfl
   calc
-    (A (dualToCotangentGen (I := I)
-        ((tangentFlatLinearGen (I := I) g x) (basis q))))
+    (A (dualToCotangent (I := I)
+        ((tangentFlatLinear (I := I) g x) (basis q))))
       (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0) =
         ∑ r : Fin 1 → Idx,
-          (dualToCotangentGen (I := I)
-            ((tangentFlatLinearGen (I := I) g x) (basis q)))
+          (dualToCotangent (I := I)
+            ((tangentFlatLinear (I := I) g x) (basis q)))
               (fun a : Fin 1 => basis (r a)) *
-            componentRSGen (I := I) basis A r
+            componentRSField (I := I) basis A r
               (fun a : Fin 2 => if a = 0 then i else j) := by
           rw [hslots]
           simpa only [component0S_apply, fin2_apply_ite] using h
     _ =
       ∑ r : Idx,
         g.inner x (basis q) (basis r) *
-          componentRSGen (I := I) basis A
+          componentRSField (I := I) basis A
             (fun _ : Fin 1 => r)
             (fun a : Fin 2 => if a = 0 then i else j) := by
         rw [sumFinOne]
@@ -335,12 +335,12 @@ theorem connTraceCoeff
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (p : Idx) :
     basis.repr (connTraceAt (I := I) g A) p =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j *
-          componentRSGen (I := I) basis A
+          componentRSField (I := I) basis A
             (fun _ : Fin 1 => p)
             (fun q : Fin 2 => if q = 0 then i else j) := by
   classical
@@ -349,8 +349,8 @@ theorem connTraceCoeff
       gInv p0 q *
         (∑ i : Idx, ∑ j : Idx,
           gInv i j *
-            (A (dualToCotangentGen (I := I)
-                ((tangentFlatLinearGen (I := I) g x) (basis q))))
+            (A (dualToCotangent (I := I)
+                ((tangentFlatLinear (I := I) g x) (basis q))))
               (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0))
   have hvec :
       connTraceAt (I := I) g A =
@@ -387,7 +387,7 @@ theorem connTraceCoeff
   simp_rw [traceFlat_apply_sum (I := I) g A basis]
   exact traceAlg gInv (fun q r => g.inner x (basis q) (basis r))
     (fun r i j =>
-      componentRSGen (I := I) basis A
+      componentRSField (I := I) basis A
         (fun _ : Fin 1 => r)
         (fun q : Fin 2 => if q = 0 then i else j))
     (fun a b => (hinv a b).1) p
@@ -696,7 +696,7 @@ theorem connTraceCoeff_eventually
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
             gInv i j *
-              componentRSGen (I := I) basis (A y)
+              componentRSField (I := I) basis (A y)
                 (fun _ : Fin 1 => p)
                 (fun q : Fin 2 => if q = 0 then i else j) := hcoeff
     _ =
@@ -720,7 +720,7 @@ theorem connTraceCoeff_eventually
           have hconst :=
             constInChart_basisTensor0S_coordFrame (𝕜 := Real) (I := I)
               (M := M) (r := 1) x₀ hy (fun _ : Fin 1 => p)
-          simp [basis, componentRS_apply_gen, coordinateFrameAt_basis_apply,
+          simp [basis, componentRSField_apply, coordinateFrameAt_basis_apply,
             hconst]
 
 private theorem connTraceCoeff_contMDiffAt
@@ -792,7 +792,7 @@ theorem connTraceField_coord
         ∑ j : CoordinateIdx (𝕜 := Real) E,
           inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
               (extChartAt I x₀ x) *
-            componentRSGen (I := I) (coordinateFrameAtBasis (I := I) x₀ hx)
+            componentRSField (I := I) (coordinateFrameAtBasis (I := I) x₀ hx)
               (A x) (fun _ : Fin 1 => p)
               (fun q : Fin 2 => if q = 0 then i else j) := by
   classical
@@ -814,14 +814,14 @@ theorem connTraceField_coord
       ∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
           gInv i j *
-            componentRSGen (I := I) basis (A x) (fun _ : Fin 1 => p)
+            componentRSField (I := I) basis (A x) (fun _ : Fin 1 => p)
               (fun q : Fin 2 => if q = 0 then i else j) := hcoeff
     _ =
       ∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
           inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
               (extChartAt I x₀ x) *
-            componentRSGen (I := I) (coordinateFrameAtBasis (I := I) x₀ hx)
+            componentRSField (I := I) (coordinateFrameAtBasis (I := I) x₀ hx)
               (A x) (fun _ : Fin 1 => p)
               (fun q : Fin 2 => if q = 0 then i else j) := rfl
 

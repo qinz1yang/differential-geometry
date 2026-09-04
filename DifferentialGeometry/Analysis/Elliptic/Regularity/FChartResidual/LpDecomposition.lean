@@ -33,7 +33,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma fHLeibnizGeneralResidualCLM_eq_fHLeibnizResidualLp
+lemma leibnizCompensatedSourceResidualCLMOfSmoothFactor_eq_fHLeibnizResidualLp
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) :
     leibnizCompensatedSourceResidualCLMOfSmoothFactor (I := I) (M := M) g
@@ -44,7 +44,7 @@ lemma fHLeibnizGeneralResidualCLM_eq_fHLeibnizResidualLp
           (laplacianOfChartPOU (I := I) (M := M) g α)
           (H1ComplToLp (I := I) (M := M) g u_h) := by
   classical
-  rw [fHLeibnizGeneralResidualCLM_apply]
+  rw [leibnizCompensatedSourceResidualCLMOfSmoothFactor_apply]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -77,7 +77,7 @@ theorem preimage_smoothMulH1Compl_eq_smoothMulLp_preimage_add_residual
   exact h_preimage_smoothMulH1Compl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fHLeibnizGeneralResidualCLM_eq_preimageDiff
+theorem leibnizCompensatedSourceResidualCLMOfSmoothFactor_eq_preimageDiff
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_dom : u_h ∈ laplacianDomain (I := I) (M := M) g) :

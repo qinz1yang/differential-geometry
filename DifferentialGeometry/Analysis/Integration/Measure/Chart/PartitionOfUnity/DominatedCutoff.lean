@@ -16,48 +16,48 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-def dominatedCutoffAux (t : ℝ) : ℝ := Real.smoothTransition (4 * t - 1)
+def dominatedCutoffProfile (t : ℝ) : ℝ := Real.smoothTransition (4 * t - 1)
 
-namespace dominatedCutoffAux
+namespace dominatedCutoffProfile
 
-@[simp] theorem zero : dominatedCutoffAux 0 = 0 := by
-  unfold dominatedCutoffAux
+@[simp] theorem zero : dominatedCutoffProfile 0 = 0 := by
+  unfold dominatedCutoffProfile
   have h : (4 : ℝ) * 0 - 1 ≤ 0 := by norm_num
   exact Real.smoothTransition.zero_of_nonpos h
 
-theorem zero_of_le_quarter {t : ℝ} (ht : t ≤ 1 / 4) : dominatedCutoffAux t = 0 := by
-  unfold dominatedCutoffAux
+theorem zero_of_le_quarter {t : ℝ} (ht : t ≤ 1 / 4) : dominatedCutoffProfile t = 0 := by
+  unfold dominatedCutoffProfile
   have h : (4 : ℝ) * t - 1 ≤ 0 := by linarith
   exact Real.smoothTransition.zero_of_nonpos h
 
-theorem one_of_half_le {t : ℝ} (ht : (1 : ℝ) / 2 ≤ t) : dominatedCutoffAux t = 1 := by
-  unfold dominatedCutoffAux
+theorem one_of_half_le {t : ℝ} (ht : (1 : ℝ) / 2 ≤ t) : dominatedCutoffProfile t = 1 := by
+  unfold dominatedCutoffProfile
   have h : (1 : ℝ) ≤ 4 * t - 1 := by linarith
   exact Real.smoothTransition.one_of_one_le h
 
-theorem nonneg (t : ℝ) : 0 ≤ dominatedCutoffAux t :=
+theorem nonneg (t : ℝ) : 0 ≤ dominatedCutoffProfile t :=
   Real.smoothTransition.nonneg _
 
-theorem le_one (t : ℝ) : dominatedCutoffAux t ≤ 1 :=
+theorem le_one (t : ℝ) : dominatedCutoffProfile t ≤ 1 :=
   Real.smoothTransition.le_one _
 
-theorem le_four_mul {t : ℝ} (ht : 0 ≤ t) : dominatedCutoffAux t ≤ 4 * t := by
+theorem le_four_mul {t : ℝ} (ht : 0 ≤ t) : dominatedCutoffProfile t ≤ 4 * t := by
   by_cases h : t ≤ 1/4
   · rw [zero_of_le_quarter h]
     linarith
   · have h' : (1 : ℝ)/4 < t := lt_of_not_ge h
     have h1 : (1 : ℝ) < 4 * t := by linarith
-    have h2 : dominatedCutoffAux t ≤ 1 := le_one t
+    have h2 : dominatedCutoffProfile t ≤ 1 := le_one t
     linarith
 
-theorem contDiff : ContDiff ℝ ∞ dominatedCutoffAux := by
+theorem contDiff : ContDiff ℝ ∞ dominatedCutoffProfile := by
   have h_affine : ContDiff ℝ ∞ (fun t : ℝ => 4 * t - 1) :=
     (contDiff_const.mul contDiff_id).sub contDiff_const
   have h_trans : ContDiff ℝ ∞ Real.smoothTransition :=
     (Real.smoothTransition.contDiff (n := ⊤))
   exact h_trans.comp h_affine
 
-end dominatedCutoffAux
+end dominatedCutoffProfile
 
 theorem chartAtlasPOU_exists_dominated_cutoff
     [T2Space M] [SigmaCompactSpace M]
@@ -70,22 +70,22 @@ theorem chartAtlasPOU_exists_dominated_cutoff
   set ρ : C^∞⟮I, M; ℝ⟯ := chartAtlasPOU I M α with hρ_def
   have hρ_contMDiff : ContMDiff I 𝓘(ℝ, ℝ) ∞ (ρ : M → ℝ) := ρ.contMDiff
   have hχ_contMDiff : ContMDiff I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => dominatedCutoffAux ((ρ : M → ℝ) x)) :=
-    dominatedCutoffAux.contDiff.comp_contMDiff hρ_contMDiff
-  refine ⟨⟨fun x => dominatedCutoffAux ((ρ : M → ℝ) x), hχ_contMDiff⟩,
+      (fun x : M => dominatedCutoffProfile ((ρ : M → ℝ) x)) :=
+    dominatedCutoffProfile.contDiff.comp_contMDiff hρ_contMDiff
+  refine ⟨⟨fun x => dominatedCutoffProfile ((ρ : M → ℝ) x), hχ_contMDiff⟩,
           4, 1/2, ?_, ?_, ?_, ?_, ?_⟩
   · norm_num
   · norm_num
   · intro x
     refine ⟨?_, ?_⟩
-    · exact dominatedCutoffAux.nonneg _
+    · exact dominatedCutoffProfile.nonneg _
     · have hρ_nonneg : 0 ≤ (ρ : M → ℝ) x := by
         exact (chartAtlasPOU I M).nonneg α x
-      exact dominatedCutoffAux.le_four_mul hρ_nonneg
+      exact dominatedCutoffProfile.le_four_mul hρ_nonneg
   · intro x hx
-    exact dominatedCutoffAux.one_of_half_le hx
-  · have h_zero : dominatedCutoffAux 0 = 0 := dominatedCutoffAux.zero
-    have h_subset : tsupport (dominatedCutoffAux ∘ (ρ : M → ℝ)) ⊆
+    exact dominatedCutoffProfile.one_of_half_le hx
+  · have h_zero : dominatedCutoffProfile 0 = 0 := dominatedCutoffProfile.zero
+    have h_subset : tsupport (dominatedCutoffProfile ∘ (ρ : M → ℝ)) ⊆
         tsupport (ρ : M → ℝ) :=
       tsupport_comp_subset h_zero (ρ : M → ℝ)
     exact h_subset

@@ -16,7 +16,7 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev (covariantJetNormSq
-  covariantJetNormSq_add_le covariantJetNormSq_sum_six_le reindexCoeffGen_sub)
+  covariantJetNormSq_add_le covariantJetNormSq_sum_six_le reindexCoefficientInputSlots_sub)
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
@@ -59,10 +59,10 @@ private theorem ricciQuadraticKernelDerivativeCoefficient_sub_eq_six_terms
         ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks) +
       (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo -
         ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo) +
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneThreeTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneThreeTwo) +
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneTwo) +
+      (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneThreeTwo -
+        ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneThreeTwo) +
+      (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneTwo -
+        ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneTwo) +
       (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo -
         ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo) := by
   simp only [ricciQuadraticKernelDerivativeCoefficient]
@@ -392,15 +392,15 @@ theorem exists_ricciQuadraticKernelDerivativeCoefficient_pairing_secondOrder_bou
         (hmidB ricciQuadraticPermutationRotateInputs (Or.inr rfl))
         (hmidD ricciQuadraticPermutationRotateInputs (Or.inr rfl))
   have hx3 : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneThreeTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneThreeTwo) ≤ Q := by
-    simpa only [ricciQuadraticKernelDerivativeBareTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
+      (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneThreeTwo -
+        ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneThreeTwo) ≤ Q := by
+    simpa only [ricciQuadraticKernelDerivativeDirectTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
       hblkFin ricciQuadraticPermutationCycleZeroOneThreeTwo
         (Or.inr (Or.inr (Or.inr (Or.inl rfl)))) IT IU hbareB hbareD
   have hx4 : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneTwo) ≤ Q := by
-    simpa only [ricciQuadraticKernelDerivativeBareTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
+      (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneTwo -
+        ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneTwo) ≤ Q := by
+    simpa only [ricciQuadraticKernelDerivativeDirectTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
       hblkFin ricciQuadraticPermutationCycleZeroOneTwo
         (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))
         IT IU hbareB hbareD
@@ -462,17 +462,17 @@ theorem exists_ricciCometricFourTraceCastG0_pairing_secondOrder_bound
       ricciCometricFourTraceCastG0 (I := I) g gT -
           ricciCometricFourTraceCastG0 (I := I) g gU =
         ((1 : ℝ) / 2) •
-          (reindexCoeffGen (I := I) (M := M) g 4 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                 (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                 fourTraceArgPerm0231 +
-            reindexCoeffGen (I := I) (M := M) g 4 2
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                 (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                 fourTraceArgPerm0321 -
             (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
               cometricDoubleTraceCoefficient (I := I) (M := M) g gU) -
-            reindexCoeffGen (I := I) (M := M) g 4 2
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                 (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                 fourTraceArgPerm2301) := by
@@ -480,7 +480,7 @@ theorem exists_ricciCometricFourTraceCastG0_pairing_secondOrder_bound
         (I := I) (M := M) g gT,
       ricciCometricFourTraceCastG0_eq_reindex_combination
         (I := I) (M := M) g gU,
-      reindexCoeffGen_sub, reindexCoeffGen_sub, reindexCoeffGen_sub]
+      reindexCoefficientInputSlots_sub, reindexCoefficientInputSlots_sub, reindexCoefficientInputSlots_sub]
     module
   rw [heq]
   refine (covariantJetNormSq_ricciFourTraceCombination_le (I := I) (M := M) g _).trans ?_
@@ -785,7 +785,7 @@ theorem exists_ricciConnectionDifferenceDerivativeMetricWeight_pairing_secondOrd
             RicciDeTurckLowOrder.ricciConnectionDifferenceDerivativeMetricWeight (I := I) (M := M) g gU U) ≤
         (B R * D2) ^ 2 := by
   obtain ⟨Be, hBe, hslotB⟩ :=
-    RicciDeTurckLowOrder.full_slot_sobolev_two_bound (I := I) (M := M) g
+    RicciDeTurckLowOrder.exists_metricComparisonEndomorphism_slot_one_covariantJetNormSq_two_bound (I := I) (M := M) g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨Bed, hBed, hslotD⟩ :=
     exists_slotInsertEndoCc_metricComparisonEndomorphismField_covariantJetNormSq_difference_bound (I := I) (M := M) hDim g

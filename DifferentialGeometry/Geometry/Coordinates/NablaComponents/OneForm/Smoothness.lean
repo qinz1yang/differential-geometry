@@ -127,7 +127,7 @@ theorem nabla0SFun_one_eval_smooth_slots
       1 cov X α x₀) (fun _ : Fin 1 => Z x₀) =
       mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
         α x₀ (fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀)) := by
-  rw [nabla0SFun_one_eval_coordFrame_moving
+  rw [nabla0SFun_one_eval_coordFrame_moving_of_contMDiffSection
     (I := I) cov X Z α x₀
     (modelDeriv_eq_coordDeriv0SAt (I := I) X x₀ α)
     (fun j =>
@@ -245,7 +245,7 @@ theorem nabla0SFun_one_eval_contMDiff
     hderiv.sub hcorr
   refine hmain.congr ?_
   intro p
-  rw [nabla0SFun_one_eval_coordFrame_moving
+  rw [nabla0SFun_one_eval_coordFrame_moving_of_contMDiffSection
     (I := I) cov X Z α p
     (modelDeriv_eq_coordDeriv0SAt (I := I) X p α)
     (fun j =>
@@ -326,7 +326,7 @@ theorem nabla0SFun_one_eval_coordinateFrame_contMDiffAt
     simpa [Z] using
       (coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
         (coordinateFrameSet_open (I := I) x₀) hp j
-  rw [nabla0SFun_one_eval_coordFrame_moving_raw
+  rw [nabla0SFun_one_eval_coordFrame_moving
     (I := I) cov X Z α p
     (modelDeriv_eq_coordDeriv0SAt (I := I) X p α)
     (fun k =>

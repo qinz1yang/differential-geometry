@@ -57,7 +57,7 @@ private lemma ofReal_sq_eq_enorm_sq (r : ℝ) :
   rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _), sq_abs]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-lemma tensorChartComponent_ae_eq_chartPushed_pou_mul_raw
+lemma tensorChartComponent_ae_eq_chartPushed_componentRaw
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
@@ -962,7 +962,7 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
     exists_iteratedFDeriv_bound_chartSmoothExt_chartAtlasPOU (I := I) (M := M) α k
   have hf_eq : f = fun y : EuclN => η y * v y := by
     rw [hf_def]
-    exact tensorChartComp_eq_chartSmoothExt_mul_chartPushedRaw_raw
+    exact tensorChartComp_eq_chartSmoothExt_mul_chartPushedRaw
       (I := I) (M := M) g r s T α Idx Jdx
   have hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f := by
     rw [hf_def]

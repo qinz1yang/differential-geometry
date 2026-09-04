@@ -404,7 +404,7 @@ private theorem trace_invGram
   have hGinv : ∀ i j, G⁻¹ i j = G⁻¹ j i := by
     intro i j
     simpa only [star_trivial] using hGherm.inv.apply j i
-  have hinv : MetricInverseInBasisGen (I := I) g y basis
+  have hinv : MetricInverseInBasis (I := I) g y basis
       (fun i j => G⁻¹ i j) := by
     intro i j
     constructor

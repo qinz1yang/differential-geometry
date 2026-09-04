@@ -175,7 +175,7 @@ private theorem norm_sq_shift
   classical
   let D := tensor0SMetricData (I := I) g x 2
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
@@ -847,7 +847,7 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
         normSq0S (I := I) g x 2
           (Ric x + Hess x - (1 / (2 * s)) • metricTensorField (I := I) g x)
     rw [hmetric x]
-  have hmc : IsMetricCompatibleGen (I := I)
+  have hmc : IsMetricCompatible (I := I)
       (metricCov (I := I) (M := M) g) g := by
     simpa only [metricCov] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)

@@ -132,7 +132,7 @@ theorem smoothHs_deriv
           (fun tau => smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (Phi tau))
           (smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (dPhi t)) t := by
   obtain ⟨dPhi, hdPhi, hcomp, hderiv⟩ :=
-    exists_appHsFull (I := I) (M := M) g 0 2 Phi hS hPhi
+    exists_timeDerivative_appHs (I := I) (M := M) g 0 2 Phi hS hPhi
   refine ⟨dPhi, hdPhi, hcomp, ?_⟩
   intro n t ht
   let U : TensorHs (I := I) (M := M) g 0 0 (n : ℝ) :=

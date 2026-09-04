@@ -53,7 +53,7 @@ def gradSlotCurv (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor 
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     Tensor0SSpace (s + 1) I x :=
   riemannSec (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
-    (fun b => X b) (fun b => W b) (unitGradFieldGen (I := I) (M := M) g s S) x
+    (fun b => X b) (fun b => W b) (unitGradFieldCovariantTensor (I := I) (M := M) g s S) x
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem gradSlotCurv_toModel_eq_baseSlot_sum
@@ -62,12 +62,12 @@ theorem gradSlotCurv_toModel_eq_baseSlot_sum
     (x : M) (u : Fin (s + 1) → TangentSpace I x) :
     Tensor0SSpace.eval (gradSlotCurv (I := I) (M := M) g s S X W x) u =
       - ∑ k : Fin (s + 1),
-          Tensor0SSpace.eval (unitGradFieldGen (I := I) (M := M) g s S x)
+          Tensor0SSpace.eval (unitGradFieldCovariantTensor (I := I) (M := M) g s S x)
             (Function.update u k (baseSlotCurv (I := I) g X W x (u k))) := by
   rw [gradSlotCurv]
   exact riemannSec_tensorCov_baseSlot_eval (I := I) (M := M) g (s + 1) X W
-    (unitGradFieldGen (I := I) (M := M) g s S)
-    (contMDiff_unitGradFieldGen (I := I) (M := M) g s S) x u
+    (unitGradFieldCovariantTensor (I := I) (M := M) g s S)
+    (contMDiff_unitGradFieldCovariantTensor (I := I) (M := M) g s S) x u
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem gradSlotCurv_toModel_eq_leading_add_tail
@@ -75,10 +75,10 @@ theorem gradSlotCurv_toModel_eq_leading_add_tail
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (x : M) (u : Fin (s + 1) → TangentSpace I x) :
     Tensor0SSpace.eval (gradSlotCurv (I := I) (M := M) g s S X W x) u =
-      - (Tensor0SSpace.eval (unitGradFieldGen (I := I) (M := M) g s S x)
+      - (Tensor0SSpace.eval (unitGradFieldCovariantTensor (I := I) (M := M) g s S x)
             (Function.update u 0 (baseSlotCurv (I := I) g X W x (u 0))) +
           ∑ k : Fin s,
-            Tensor0SSpace.eval (unitGradFieldGen (I := I) (M := M) g s S x)
+            Tensor0SSpace.eval (unitGradFieldCovariantTensor (I := I) (M := M) g s S x)
               (Function.update u k.succ
                 (baseSlotCurv (I := I) g X W x (u k.succ)))) := by
   rw [gradSlotCurv_toModel_eq_baseSlot_sum, Fin.sum_univ_succ]
@@ -102,12 +102,12 @@ theorem gradSlotCurv_frameSum_toModel_eq
         Tensor0SSpace.eval
           (gradSlotCurv (I := I) (M := M) g s S (orthoFrameSec (I := I) (M := M) g x i) W x) u) =
       ∑ i : Fin (Module.finrank ℝ E),
-        - (Tensor0SSpace.eval (unitGradFieldGen (I := I) (M := M) g s S x)
+        - (Tensor0SSpace.eval (unitGradFieldCovariantTensor (I := I) (M := M) g s S x)
               (Function.update u 0
                 (riemannOp (LeviCivita (I := I) g) x
                   (smoothOrthoFrame (I := I) g x i x) (W x) (u 0))) +
             ∑ k : Fin s,
-              Tensor0SSpace.eval (unitGradFieldGen (I := I) (M := M) g s S x)
+              Tensor0SSpace.eval (unitGradFieldCovariantTensor (I := I) (M := M) g s S x)
                 (Function.update u k.succ
                   (riemannOp (LeviCivita (I := I) g) x
                     (smoothOrthoFrame (I := I) g x i x) (W x) (u k.succ)))) := by
@@ -465,18 +465,18 @@ theorem gradSlotCurv_pairing_covGrad_eq_zero
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     covariantTensorInnerPointwise (I := I) (M := M) (s + 1) g x
         (Tensor0SSpace.toModel (gradSlotCurv (I := I) (M := M) g s S X W x))
-        (Tensor0SSpace.toModel (unitGradFieldGen (I := I) (M := M) g s S x)) = 0 := by
+        (Tensor0SSpace.toModel (unitGradFieldCovariantTensor (I := I) (M := M) g s S x)) = 0 := by
   classical
   have hskew := tensor0SCov_riemannSec_metric_skew_section (I := I) (M := M) g s X W
-    (unitGradFieldGen (I := I) (M := M) g s S) (unitGradFieldGen (I := I) (M := M) g s S)
-    (contMDiff_unitGradFieldGen (I := I) (M := M) g s S)
-    (contMDiff_unitGradFieldGen (I := I) (M := M) g s S) x
+    (unitGradFieldCovariantTensor (I := I) (M := M) g s S) (unitGradFieldCovariantTensor (I := I) (M := M) g s S)
+    (contMDiff_unitGradFieldCovariantTensor (I := I) (M := M) g s S)
+    (contMDiff_unitGradFieldCovariantTensor (I := I) (M := M) g s S) x
   rw [gradSlotCurv]
   have hsymm := tensorInnerPointwise_0s_symm (I := I) (M := M) g x (s + 1)
     (Tensor0SSpace.toModel
       (riemannSec (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
-        (fun b => X b) (fun b => W b) (unitGradFieldGen (I := I) (M := M) g s S) x))
-    (Tensor0SSpace.toModel (unitGradFieldGen (I := I) (M := M) g s S x))
+        (fun b => X b) (fun b => W b) (unitGradFieldCovariantTensor (I := I) (M := M) g s S) x))
+    (Tensor0SSpace.toModel (unitGradFieldCovariantTensor (I := I) (M := M) g s S x))
   rw [← hsymm] at hskew
   linarith [hskew]
 

@@ -32,7 +32,7 @@ variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
 omit [T2Space (TangentBundle I M)] in
-private theorem fullDens_eq_trans
+private theorem curveDensity_basis_eq_orthogonalComplement
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -62,7 +62,7 @@ private theorem fullDens_eq_trans
   let a : Option (Fin d) → TangentSpace I p
     | none => ell⁻¹ • u
     | some i => v ⟨i, by simpa only [d] using i.2⟩
-  let D := (tangentMetricDataGen (I := I) g p).metric
+  let D := (tangentMetricData (I := I) g p).metric
   let : InnerProductSpace.Core Real (TangentSpace I p) := D.toCore
   let : NormedAddCommGroup (TangentSpace I p) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I p) _ _ _
@@ -253,7 +253,7 @@ theorem expDens_scale
   have hperp' : ∀ i, g.inner p (t • u) (v i) = 0 := by
     intro i
     rw [(g.inner p).map_smul, _root_.smul_apply, hperp i, smul_zero]
-  rw [fullDens_eq_trans (I := I) g hEnorm p (t • u) htu B hB v hON hperp']
+  rw [curveDensity_basis_eq_orthogonalComplement (I := I) g hEnorm p (t • u) htu B hB v hON hperp']
   have hscale := transDens_scale (I := I) g hEnorm p u v t
   rw [abs_of_pos ht] at hscale
   exact hscale.symm
@@ -282,7 +282,7 @@ theorem expDens_le_hyp
   by_cases hd : 0 < Module.finrank Real E - 1
   · obtain ⟨v, hON, hperp, hbound⟩ :=
       transDens_le_one (I := I) g hEnorm p u q hq hd hu_pos hno hRic
-    rw [fullDens_eq_trans (I := I) g hEnorm p u hu_pos B hB v hON hperp]
+    rw [curveDensity_basis_eq_orthogonalComplement (I := I) g hEnorm p u hu_pos B hB v hON hperp]
     exact hbound
   · have hd0 : Module.finrank Real E - 1 = 0 := Nat.eq_zero_of_not_pos hd
     let v : Fin (Module.finrank Real E - 1) → TangentSpace I p :=
@@ -293,7 +293,7 @@ theorem expDens_le_hyp
     have hperp : ∀ i, g.inner p u (v i) = 0 := by
       intro i
       exact isEmptyElim (hd0 ▸ i)
-    rw [fullDens_eq_trans (I := I) g hEnorm p u hu_pos B hB v hON hperp]
+    rw [curveDensity_basis_eq_orthogonalComplement (I := I) g hEnorm p u hu_pos B hB v hON hperp]
     have hgram :
         curveGram (I := I) g
             (intrinsicGeodesic (I := I) g hEnorm p u)

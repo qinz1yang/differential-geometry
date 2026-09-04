@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Pullback.LocalIsometryRigidity
+import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Rigidity
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.Extension
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import Mathlib.Analysis.Normed.Module.Connected

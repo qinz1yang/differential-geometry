@@ -205,7 +205,7 @@ lemma slot0SliceFib_covGrad_eq (g : SmoothRiemannianMetric I M) (s : ℕ) (S : S
       =
       (tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x v := by
   rw [slot0SliceFib_apply]
-  rw [curry_covGrad_unit_eval_general (I := I) (M := M) g s S x v]
+  rw [curry_covGrad_unit_eval (I := I) (M := M) g s S x v]
   exact tensor0SAsRS_unit_recover (I := I) (M := M) s x
     ((tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x v)
 
@@ -394,7 +394,7 @@ lemma gradTermFib_covGrad_slice_eq
     fun i => smoothOrthoFrame (I := I) g x i with hB
   set Wx : TensorRSSpace 0 (s + 1) I x := (covGrad (I := I) (M := M) g 0 s S).toSection x with hWx
   rw [gradTermFib_apply (I := I) (M := M) g s B x Wx]
-  rw [tensor0S_curry_covGradBundleEquiv_unit_genVal (I := I) (M := M) s x
+  rw [tensor0S_curry_covGradBundleEquiv_unit (I := I) (M := M) s x
     (curvatureGradContractionDirCLM (I := I) (M := M) g s B x Wx) (B a x)]
   rw [tensor0SAsRS_unit_recover (I := I) (M := M) s x
     (curvatureGradContractionDirCLM (I := I) (M := M) g s B x Wx (B a x))]

@@ -61,7 +61,7 @@ theorem lap_eq_hess_on [I.Boundaryless]
     fun i j =>
       inverseMetricFlatModelInChartComponent (I := I) g x i j
         (extChartAt I x x)
-  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv :=
+  have hinv : MetricInverseInBasis (I := I) g x basis gInv :=
     inverseMetricFlatModelInChart_metricInverseInBasis_center (I := I) g x
   unfold laplacian divergence
   rw [linearMap_trace_eq_sum_inv_inner_apply
@@ -94,7 +94,7 @@ theorem laplacian_eq_chart_hessian_trace [I.Boundaryless]
     chartBasisFamily (I := I) α hbase
   let gInv : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i j => chartInvGramMatrix (I := I) g α x i j
-  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv := by
+  have hinv : MetricInverseInBasis (I := I) g x basis gInv := by
     intro i j
     constructor
     · have hmatrix := congrArg (fun A => A i j)

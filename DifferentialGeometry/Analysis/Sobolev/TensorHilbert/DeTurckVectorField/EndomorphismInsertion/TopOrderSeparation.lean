@@ -87,7 +87,7 @@ theorem connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise (g₀ g₁
   apply LinearMap.ext
   intro w
   rw [cotangentToDualLinear_apply, cotangentToDualLinear_apply]
-  rw [cotangentToDual_cometricRaiseSlot0_gen (I := I) (M := M) g₀
+  rw [cotangentToDual_cometricRaiseSlot0 (I := I) (M := M) g₀
     (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_ref) x om w]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
@@ -122,7 +122,7 @@ lemma norm_iteratedCovGrad_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMe
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   exact riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ s W i x
 
-private theorem wAlphaB_jetL2_perOrder_generic
+private theorem wAlphaB_jetL2_perOrder
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -139,7 +139,7 @@ private theorem wAlphaB_jetL2_perOrder_generic
   obtain ⟨ΛO, FO, hΛO_nn, hFO_nn, hOgen⟩ :=
     deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_succ_le (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   obtain ⟨ΛCd, FCd, hΛCd_nn, hFCd_nn, hCdgen⟩ :=
-    connectionDifferenceSection_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    connectionDifferenceSection_lowOrder_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   have hTA_ex : ∀ q : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g₀ 1 2) (T : SmoothCcTensor g₀ 0 1)
         (ΛS' ΛT' : ℝ), 0 ≤ ΛS' → 0 ≤ ΛT' →
@@ -378,9 +378,9 @@ theorem connectionDifferenceDeTurckVectorFieldInsertDiff_metricPerturbationPath_
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))‖ ^ 2 ≤ K i := by
   classical
   obtain ⟨F0, hF0_nn, hgen0⟩ :=
-    wAlphaB_jetL2_perOrder_generic (I := I) (M := M) g₀ g₀ a ha_super hR hδ₀
+    wAlphaB_jetL2_perOrder (I := I) (M := M) g₀ g₀ a ha_super hR hδ₀
   obtain ⟨Fbg, hFbg_nn, hgenbg⟩ :=
-    wAlphaB_jetL2_perOrder_generic (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
+    wAlphaB_jetL2_perOrder (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   refine ⟨fun i => 2 * (F0 i + Fbg i),
     fun i => by have := hF0_nn i; have := hFbg_nn i; linarith, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
@@ -846,7 +846,7 @@ private theorem wOmega_L2_topsep
   obtain ⟨ΛClow, hΛClow_nn, hClow⟩ :=
     cometricCastG0_riemannianFiberNormSq_lowOrder_le (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛCsup, FC, hΛCsup_nn, hFC_nn, hCgen⟩ :=
-    cometricCastG0_order0sup_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    cometricCastG0_order0sup_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛX, FX, hΛX_nn, hFX_nn, hXgen⟩ :=
     metricLoweredConnectionDifference_lowOrder_iteratedCovGrad_norm_sq_succ_le (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   have hTA_ex : ∀ q : ℕ, ∃ C : ℝ, 0 ≤ C ∧
@@ -1125,7 +1125,7 @@ private theorem wAlpha_L2_topsep
   obtain ⟨ΛO, FO, hΛO_nn, hFO_nn, hOgen⟩ :=
     deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_succ_le (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   obtain ⟨ΛCd, FCd, hΛCd_nn, hFCd_nn, hCdgen⟩ :=
-    connectionDifferenceSection_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    connectionDifferenceSection_lowOrder_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   have hTA_ex : ∀ q : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g₀ 1 2) (T : SmoothCcTensor g₀ 0 1)
         (ΛS' ΛT' : ℝ), 0 ≤ ΛS' → 0 ≤ ΛT' →

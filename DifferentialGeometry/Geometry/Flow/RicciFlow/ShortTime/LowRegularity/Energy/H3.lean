@@ -634,7 +634,7 @@ theorem exists_galerkin_action_h2_tame_bound (hDim : Module.finrank ℝ E = 3)
     mul_nonneg hKcap (div_nonneg hδ0 (sq_nonneg _)), ?_⟩
   simpa only [Cδ] using hmass
 
-private theorem exists_galerkin_energy_three_bound_parameters_raw (hDim : Module.finrank ℝ E = 3)
+private theorem exists_galerkin_energy_three_bound_parameters_explicit (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ Ctop₂ Kr2 Kr1 Kcap : ℝ,
       0 ≤ Ctop₂ ∧ 0 ≤ Kr2 ∧ 0 ≤ Kr1 ∧ 0 ≤ Kcap ∧
@@ -860,7 +860,7 @@ theorem exists_galerkin_energy_three_bound_parameters (hDim : Module.finrank ℝ
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ Ctop₂ Kr2 Kr1 Kcap : ℝ, HasGalerkinEnergyThreeBound (I := I) (M := M) g₀ Ctop₂ Kr2 Kr1 Kcap := by
   obtain ⟨Ctop₂, Kr2, Kr1, Kcap, hCtop₂, hKr2, hKr1, hKcap, hord⟩ :=
-    exists_galerkin_energy_three_bound_parameters_raw (I := I) (M := M) hDim g₀
+    exists_galerkin_energy_three_bound_parameters_explicit (I := I) (M := M) hDim g₀
   exact ⟨Ctop₂, Kr2, Kr1, Kcap, hCtop₂, hKr2, hKr1, hKcap, hord⟩
 
 theorem exists_uniform_galerkin_energy_three_bound (hDim : Module.finrank ℝ E = 3)
@@ -904,7 +904,7 @@ theorem exists_uniform_galerkin_energy_three_bound (hDim : Module.finrank ℝ E 
           galerkinEnergy (I := I) (M := M)
             (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) 3 t ≤ Φ := by
   obtain ⟨Ctop₂, Kr2, Kr1, Kcap, hCtop₂, hKr2, hKr1, hKcap, hord⟩ :=
-    exists_galerkin_energy_three_bound_parameters_raw (I := I) (M := M) hDim g₀
+    exists_galerkin_energy_three_bound_parameters_explicit (I := I) (M := M) hDim g₀
   let Cδ : ℝ := Kcap * (δ / (1 - δ) ^ 2)
   refine ⟨Ctop₂, Kr2, Kr1, Cδ, hCtop₂, hKr2, hKr1,
     mul_nonneg hKcap (div_nonneg hδ0 (sq_nonneg _)), ?_⟩

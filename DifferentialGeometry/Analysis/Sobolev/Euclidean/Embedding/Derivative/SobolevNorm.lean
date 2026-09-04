@@ -134,7 +134,7 @@ private lemma classical_partial_ae_eq_chosenWeakPartial
       chosenWeakPartial' (d := d) q i ψ Ω := by
   classical
   have hψ_mem : MemWkp (d := d) 1 q ψ Ω :=
-    MemWkp_of_smooth_compactSupport_pub
+    MemWkp_of_smooth_compactSupport
       (d := d) hΩ_open hψ_smooth hψ_compact hψ_supp hq_one 1
   have hψ_W1p : DeGiorgi.MemW1p (d := d) q ψ Ω :=
     MemWkp.one_iff_memW1p.mp hψ_mem

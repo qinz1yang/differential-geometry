@@ -55,18 +55,18 @@ theorem permAppEqRs (g : SmoothRiemannianMetric I M) {r s : ℕ}
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrderOneKernel_expansion (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder1KernelField (I := I) g₀ g₁ =
-      -(reindexCoeffGen (I := I) (M := M) g₀ 3 4
+      -(reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
           (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm0312
             (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) kInPerm102
-        + reindexCoeffGen (I := I) (M := M) g₀ 3 4
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
             (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm0213
               (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) kInPerm120
         + rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm2301
             (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)
-        + reindexCoeffGen (I := I) (M := M) g₀ 3 4
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
             (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm1302
               (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) kInPerm102
-        + reindexCoeffGen (I := I) (M := M) g₀ 3 4
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
             (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm1203
               (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) kInPerm120) := by
   rw [kernelField_eq_neg_term_combination (I := I) (M := M) g₀ g₁]
@@ -144,7 +144,7 @@ theorem insertAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {�
     fun l => mul_nonneg hfr_nn (mul_nonneg hfr_nn (hCcd_nn l)), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ l x
   rw [connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two (I := I) (M := M) g₀ g₁]
-  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 3 4
+  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 3 4
     (slotExtend (I := I) (M := M) g₀ 2 3
       (slotExtend (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)))
     connectionDifferenceContrInsertionReindexPerm l x]
@@ -191,18 +191,18 @@ theorem ricciKerAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) 
   intro g₁ P htie δ hδ_le hδ0 hδ l x
   set O : SmoothCcTensor g₀ 3 4 := connectionDifferenceContravariantInsertionField (I := I) g₀ g₁ with hO_def
   set A0 : SmoothCcTensor g₀ 3 4 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 3 4
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
       (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm0312 O) kInPerm102 with hA0_def
   set A1 : SmoothCcTensor g₀ 3 4 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 3 4
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
       (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm0213 O) kInPerm120 with hA1_def
   set A2 : SmoothCcTensor g₀ 3 4 :=
     rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm2301 O with hA2_def
   set A3 : SmoothCcTensor g₀ 3 4 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 3 4
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
       (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm1302 O) kInPerm102 with hA3_def
   set A4 : SmoothCcTensor g₀ 3 4 :=
-    reindexCoeffGen (I := I) (M := M) g₀ 3 4
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
       (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 kOutPerm1203 O) kInPerm120 with hA4_def
   set F : SmoothCcTensor g₀ 3 4 → ℝ := fun X =>
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + l) x
@@ -215,11 +215,11 @@ theorem ricciKerAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) 
       ContMDiffSection.coe_add, Pi.add_apply]
     exact riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 3 (4 + l) x _ _
   have harm : ∀ (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
-      F (reindexCoeffGen (I := I) (M := M) g₀ 3 4
+      F (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
         (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 σ O) ρ) = F O := by
     intro σ ρ
     simp only [hF_def]
-    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 3 4
+    rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 3 4
       (rsDomDomCongrSection (I := I) (M := M) g₀ 3 4 σ O) ρ l x]
     exact riemannianFiberNormSqTermEq (I := I) (M := M) g₀ g₁ σ l x
   have h0 : F A0 = F O := harm _ _

@@ -116,7 +116,7 @@ theorem traceField_eq_sum {s : ℕ} (g : SmoothRiemannianMetric I M)
       (n := (∞ : WithTop ℕ∞)) (s + 2))
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x)) (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (tail : Fin s -> TangentSpace I x) :
     Tensor0SSpace.eval (metricTraceFirstTwoField (I := I) (M := M) g A x) tail =
       ∑ i : Idx, ∑ j : Idx,
@@ -181,7 +181,7 @@ theorem reLower_eval (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
       (n := (∞ : WithTop ℕ∞)) (s + 1))
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x)) (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g₂ x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g₂ x basis gInv)
     (tail : Fin (s + 1) -> TangentSpace I x) :
     Tensor0SSpace.eval (reLower (I := I) g₁ g₂ T x) tail =
       ∑ i : Idx, ∑ j : Idx,
@@ -218,14 +218,14 @@ theorem sharpFlat_eq_raise (g₁ g₂ : SmoothRiemannianMetric I M)
   have hflat : ∀ l : Idx,
       g₂.inner x (sharpFlat (I := I) g₁ g₂ x V) (basis l) = g₁.inner x V (basis l) := by
     intro l
-    have h2 : tangentFlatEquivGen (I := I) g₂ x (sharpFlat (I := I) g₁ g₂ x V) =
-        tangentFlatEquivGen (I := I) g₁ x V := by
-      change tangentFlatEquivGen (I := I) g₂ x
-        ((tangentFlatEquivGen (I := I) g₂ x).symm
-          ((tangentFlatEquivGen (I := I) g₁ x) V)) = _
-      exact (tangentFlatEquivGen (I := I) g₂ x).apply_symm_apply _
-    rw [← tangentFlatEquiv_apply_gen (I := I) g₂ x, h2,
-      tangentFlatEquiv_apply_gen (I := I) g₁ x]
+    have h2 : tangentFlatEquiv (I := I) g₂ x (sharpFlat (I := I) g₁ g₂ x V) =
+        tangentFlatEquiv (I := I) g₁ x V := by
+      change tangentFlatEquiv (I := I) g₂ x
+        ((tangentFlatEquiv (I := I) g₂ x).symm
+          ((tangentFlatEquiv (I := I) g₁ x) V)) = _
+      exact (tangentFlatEquiv (I := I) g₂ x).apply_symm_apply _
+    rw [← tangentFlatEquiv_apply (I := I) g₂ x, h2,
+      tangentFlatEquiv_apply (I := I) g₁ x]
   rw [show (fun l : Idx => g₁.inner x V (basis l)) =
       fun l : Idx => g₂.inner x (sharpFlat (I := I) g₁ g₂ x V) (basis l) from
     (funext fun l => (hflat l).symm)]
@@ -243,8 +243,8 @@ theorem reLower_apply (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
   set basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
       (TangentSpace I x) := Module.finBasis Real (TangentSpace I x) with hbasis
   set gInv := basisInvMetric (I := I) g₂ x basis with hgInv
-  have hinv : MetricInverseInBasisGen (I := I) (M := M) g₂ x basis gInv :=
-    basisInvMetric_real (I := I) g₂ x basis
+  have hinv : MetricInverseInBasis (I := I) (M := M) g₂ x basis gInv :=
+    basisInvMetric_isInverse (I := I) g₂ x basis
   rw [reLower_eval (I := I) g₁ g₂ T basis gInv hinv tail,
     sharpFlat_eq_raise (I := I) g₁ g₂ basis (tail (Fin.last s)), raiseAt_eq,
     slot_expand (I := I) (T x) tail (Fin.last s)
@@ -400,7 +400,7 @@ theorem reLowerPair_eval (g₂ : SmoothRiemannianMetric I M) {s : ℕ}
       (n := (∞ : WithTop ℕ∞)) 3)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x)) (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g₂ x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g₂ x basis gInv)
     (u : Fin (s + 2) -> TangentSpace I x) :
     Tensor0SSpace.eval (reLowerPair (I := I) g₂ T K x) u =
       ∑ i : Idx, ∑ j : Idx,
@@ -577,9 +577,9 @@ theorem nabla_reLower_eval (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
   set basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
       (TangentSpace I x) := Module.finBasis Real (TangentSpace I x) with hbasis
   set gInv := basisInvMetric (I := I) g₂ x basis with hgInv
-  have hinv : MetricInverseInBasisGen (I := I) (M := M) g₂ x basis gInv :=
-    basisInvMetric_real (I := I) g₂ x basis
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+  have hinv : MetricInverseInBasis (I := I) (M := M) g₂ x basis gInv :=
+    basisInvMetric_isInverse (I := I) g₂ x basis
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) (metricCov (I := I) g₂) g₂ :=
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
       (I := I) g₂
@@ -736,7 +736,7 @@ theorem reLowerPair_self (g : SmoothRiemannianMetric I M) {s : ℕ}
       (TangentSpace I x) := Module.finBasis Real (TangentSpace I x) with hbasis
   with_unfolding_all
     rw [reLowerPair_eval (I := I) g T _ basis (basisInvMetric (I := I) g x basis)
-      (basisInvMetric_real (I := I) g x basis) u]
+      (basisInvMetric_isInverse (I := I) g x basis) u]
   have hz : metricNabla0S (I := I) g (metricTensorField (I := I) g) x = 0 := by
     rw [metricNabla0S_self (I := I) g]
     rfl
@@ -836,8 +836,8 @@ theorem trace_reLower (g₁ g₂ : SmoothRiemannianMetric I M) {k : ℕ}
   set basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
       (TangentSpace I x) := Module.finBasis Real (TangentSpace I x) with hbasis
   set gInv := basisInvMetric (I := I) g₂ x basis with hgInv
-  have hinv : MetricInverseInBasisGen (I := I) (M := M) g₂ x basis gInv :=
-    basisInvMetric_real (I := I) g₂ x basis
+  have hinv : MetricInverseInBasis (I := I) (M := M) g₂ x basis gInv :=
+    basisInvMetric_isInverse (I := I) g₂ x basis
   with_unfolding_all
     rw [traceField_eq_sum (I := I) g₂ (reLower (I := I) g₁ g₂ A) basis gInv hinv tail,
       reLower_eval (I := I) g₁ g₂

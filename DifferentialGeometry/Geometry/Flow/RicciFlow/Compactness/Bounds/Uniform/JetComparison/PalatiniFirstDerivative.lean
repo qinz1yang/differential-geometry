@@ -112,7 +112,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private theorem covD2_eq_hcg
     (gB g₀ : SmoothRiemannianMetric I M)
     (D X Y Z : Π b : M, TangentSpace I b) (x : M) :
-    Integral.Connection.covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x =
+    DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x =
       HCGCompactness.covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x :=
   rfl
 
@@ -344,9 +344,9 @@ theorem uniformPalatini1_le
   let Ys := extSec (I := I) x Y
   let Zs := extSec (I := I) x Z
   let A₂xy : TangentSpace I x :=
-    Integral.Connection.covDerivConnectionDifference2 (I := I) gBase g₀ Ds Xs Ys Zs x
+    DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2 (I := I) gBase g₀ Ds Xs Ys Zs x
   let A₂yx : TangentSpace I x :=
-    Integral.Connection.covDerivConnectionDifference2 (I := I) gBase g₀ Ds Ys Xs Zs x
+    DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2 (I := I) gBase g₀ Ds Ys Xs Zs x
   let AYZs : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     ContMDiffSection.mk

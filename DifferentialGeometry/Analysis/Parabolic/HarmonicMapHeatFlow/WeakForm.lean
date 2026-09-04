@@ -280,7 +280,7 @@ private theorem hmfSlot_self_app
   rw [Function.update_eq_self]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem hmfFlux_eq_full
+theorem hmfFlux_eq_operatorFieldApply
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     hmfFlux (I := I) (M := M) q h S =
       operatorFieldApply (I := I) (M := M) q 2 2
@@ -297,7 +297,7 @@ theorem hmfFlux_self
     (q : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     hmfFlux (I := I) (M := M) q q S =
       covGrad (I := I) (M := M) q 0 1 S := by
-  rw [hmfFlux_eq_full, hmfSlot_self_app]
+  rw [hmfFlux_eq_operatorFieldApply, hmfSlot_self_app]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem hmfDiff_add
@@ -584,7 +584,7 @@ theorem hmfWeakForm_eq
         ∂(riemannianVolumeMeasure (I := I) (M := M) h) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem hmfWeakForm_full
+theorem hmfWeakForm_eq_operatorFieldApply
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
     hmfWeakForm (I := I) (M := M) q h S T =
       ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
@@ -594,7 +594,7 @@ theorem hmfWeakForm_full
             (covGrad (I := I) (M := M) q 0 1 S)).toFun x)
           ((covGrad (I := I) (M := M) q 0 1 T).toFun x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) h) := by
-  rw [hmfWeakForm, hmfFlux_eq_full]
+  rw [hmfWeakForm, hmfFlux_eq_operatorFieldApply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem hmfWeakForm_self

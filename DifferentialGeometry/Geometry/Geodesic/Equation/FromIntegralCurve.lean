@@ -263,7 +263,7 @@ theorem hasGeodesicEquationAt_of_chartCentered_of_phase_identity
 
 end ConditionalHeadline
 
-section UnconditionalChartCentered
+section ChartCentered
 
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
@@ -343,7 +343,7 @@ theorem IsGeodesicAt.hasGeodesicEquationAt_chartCentered
   exact hasGeodesicEquationAt_of_chartCentered
     (g := g) (γ := γ) (t₀ := t₀) (f := f) hproj hf
 
-end UnconditionalChartCentered
+end ChartCentered
 
 section CrossVFReduction
 

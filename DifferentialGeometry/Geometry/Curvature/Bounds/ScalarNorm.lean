@@ -26,7 +26,7 @@ theorem scalar_abs_le_rm (g : SmoothRiemannianMetric I M) (x : M) :
           (metricRm04At (I := I) (M := M) g x)) := by
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
   have htrace : metricScalarAt (I := I) (M := M) g x =

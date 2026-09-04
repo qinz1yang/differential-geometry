@@ -194,9 +194,9 @@ theorem riemannOp_of_rm
       riemannOp (LeviCivita (I := I) g) x X Y Z =
         c • (g.inner x Y Z • X - g.inner x X Z • Y) := by
   intro X Y Z
-  apply tangentFlatLinear_injective_gen (I := I) g x
+  apply tangentFlatLinear_injective (I := I) g x
   ext W
-  rw [tangentFlatLinear_apply_gen, tangentFlatLinear_apply_gen,
+  rw [tangentFlatLinear_apply, tangentFlatLinear_apply,
     g.symm x (riemannOp (LeviCivita (I := I) g) x X Y Z) W,
     riemannOp_eq_chartRiemannCLM_apply,
     ← metricRm04StdAt_eq_chartRiemannCLM, hRm]

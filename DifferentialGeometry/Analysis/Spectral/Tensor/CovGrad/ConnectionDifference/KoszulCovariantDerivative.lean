@@ -175,7 +175,7 @@ theorem covGrad02_unitModel_eval_eq_leibnizDefect
   rw [tensorCovDerivAt_def (I := I) (M := M) g₀ 0 2 S x
     (tangentSpaceModelContinuousLinearEquiv (I := I) x v)]
   rw [ContinuousLinearEquiv.symm_apply_apply]
-  rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g₀ 2 S.toSection x v]
+  rw [covDeriv_unit_eval_eq (I := I) (M := M) g₀ 2 S.toSection x v]
   exact tensor0SCovariantDerivative02_consEval_leibnizDefect (I := I) (M := M) g₀
     (unitEvalSection (I := I) (M := M) g₀ 2 S) hV Y Z v
 

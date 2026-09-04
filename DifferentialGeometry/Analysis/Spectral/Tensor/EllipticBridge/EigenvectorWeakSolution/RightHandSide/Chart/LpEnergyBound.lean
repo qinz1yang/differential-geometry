@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Chart.WeightedLpBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.LimitEnergyBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.PartialLpLimitBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Chart.Regularity
 
 
@@ -240,7 +240,7 @@ theorem eLpNorm_tensorL2ChartComponent_le_uniform
     _ = ENNReal.ofReal (Ccmp * Cop) * ENNReal.ofReal ‖u‖ := by
         rw [ENNReal.ofReal_mul hCop_nn, ENNReal.ofReal_mul hCcmp_nn, mul_assoc]
 
-section AtomBoundsUnconditional
+section AtomBounds
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
@@ -508,7 +508,7 @@ private lemma cutoffPartialLpLimit_eLpNorm_le_energy
     show Ccmp * (Cvol * Real.sqrt i.fst.val) =
       Ccmp * Cvol * Real.sqrt i.fst.val from (mul_assoc _ _ _).symm]
 
-end AtomBoundsUnconditional
+end AtomBounds
 
 private lemma ofReal_mul_muPow_le_ofReal {C μ : ℝ} (hC : 0 ≤ C)
     (hμ_le : μ ≤ 1) :

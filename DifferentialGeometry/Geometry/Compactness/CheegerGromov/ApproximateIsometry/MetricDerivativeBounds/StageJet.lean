@@ -94,14 +94,14 @@ private theorem metricNorm_le_basis_comp
   obtain ⟨b, hbON⟩ :=
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := 𝓘(Real, E)) g z
-  have hbinv : Tensor0SBundle.MetricInverseInBasisGen
+  have hbinv : Tensor0SBundle.MetricInverseInBasis
       (I := 𝓘(Real, E)) g z b
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace 𝓘(Real, E) z)))) := by
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g b hbON
     with_unfolding_all
-      change Tensor0SBundle.MetricInverseInBasisGen
+      change Tensor0SBundle.MetricInverseInBasis
         (I := modelWithCornersSelf Real E) g z b
           (fun a k => if a = k then 1 else 0)
     exact h

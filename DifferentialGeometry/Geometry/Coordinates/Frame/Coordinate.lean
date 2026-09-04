@@ -2,7 +2,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.MFDeriv.Tangent
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.FieldComponents
 import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.Geometry.Manifold.IsManifold.ExtChartAt
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
@@ -755,7 +755,7 @@ def compRS {x₀ : M} {C : LocalChartAt (I := I) x₀} (F : C.Frame)
     (T : TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x)
     (upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E)
     (lower : Fin s -> CoordinateIdx (𝕜 := 𝕜) E) : 𝕜 :=
-  componentRSGen (I := I) (F.basisAt hx) T upper lower
+  componentRSField (I := I) (F.basisAt hx) T upper lower
 
 theorem compRS_apply {x₀ : M} {C : LocalChartAt (I := I) x₀} (F : C.Frame)
     {r s : ℕ} {x : M} (hx : x ∈ F.domain)
@@ -763,7 +763,7 @@ theorem compRS_apply {x₀ : M} {C : LocalChartAt (I := I) x₀} (F : C.Frame)
     (upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E)
     (lower : Fin s -> CoordinateIdx (𝕜 := 𝕜) E) :
     F.compRS hx T upper lower =
-      componentRSGen (I := I) (F.basisAt hx) T upper lower :=
+      componentRSField (I := I) (F.basisAt hx) T upper lower :=
   rfl
 
 end Frame
@@ -788,14 +788,14 @@ theorem coordComponent0SAt_apply {s : ℕ} {x₀ : M}
 def coordComponentRSAt {r s : ℕ} {x₀ : M}
     (T : TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x₀)
     (upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E) (lower : Fin s -> CoordinateIdx (𝕜 := 𝕜) E) : 𝕜 :=
-  componentRSGen (I := I) (coordinateFrameAtToBasis (I := I) x₀) T upper lower
+  componentRSField (I := I) (coordinateFrameAtToBasis (I := I) x₀) T upper lower
 
 @[simp]
 theorem coordComponentRSAt_apply {r s : ℕ} {x₀ : M}
     (T : TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x₀)
     (upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E) (lower : Fin s -> CoordinateIdx (𝕜 := 𝕜) E) :
     coordComponentRSAt (I := I) T upper lower =
-      componentRSGen (I := I) (coordinateFrameAtToBasis (I := I) x₀) T upper lower :=
+      componentRSField (I := I) (coordinateFrameAtToBasis (I := I) x₀) T upper lower :=
   rfl
 
 omit [CompleteSpace 𝕜] in
@@ -829,7 +829,7 @@ theorem coordExtRSAt {r s : ℕ} {x₀ : M}
       coordComponentRSAt (I := I) A upper lower =
         coordComponentRSAt (I := I) B upper lower) :
     A = B :=
-  extRS_basis_gen (I := I) (coordinateFrameAtToBasis (I := I) x₀) h
+  extRS_basis_field (I := I) (coordinateFrameAtToBasis (I := I) x₀) h
 
 namespace LocalChartAt
 namespace Frame

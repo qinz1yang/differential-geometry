@@ -95,7 +95,7 @@ private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
+    MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
   intro i j
   constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
 
@@ -635,8 +635,8 @@ private theorem reactOrtho {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     -(∑ p : Idx, ∑ q : Idx, gI t i p * ((-2 : Real) * ric p q) * gI t q j) with hgIDtdef
   have hinvAll : ∀ r : Real, MetricInverseInBasis (I := I) (g r) x basis (gI r) := by
     intro r
-    simpa only [gI, MetricInverseInBasis, MetricInverseInBasisGen] using
-      basisInvMetric_real (I := I) (g r) x basis
+    simpa only [gI, MetricInverseInBasis, MetricInverseInBasis] using
+      basisInvMetric_isInverse (I := I) (g r) x basis
   have hgI : ∀ i j : Idx,
       HasDerivWithinAt (fun r : Real => gI r i j) (gIDt i j) Set.univ t := by
     intro i j

@@ -29,7 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
-lemma covGrad_l2Inner_self_eq_neg_rawConnLap_inner_gen
+lemma covGrad_l2Inner_self_eq_neg_rawConnLap_inner_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     tensorL2Inner (I := I) (M := M) g 0 (s + 1 + 1)
         (covGrad (I := I) (M := M) g 0 (s + 1)
@@ -40,12 +40,12 @@ lemma covGrad_l2Inner_self_eq_neg_rawConnLap_inner_gen
           (rawTensorConnLapSmooth (I := I) g 0 (s + 1)
             (covGrad (I := I) (M := M) g 0 s S)).toFun
           (covGrad (I := I) (M := M) g 0 s S).toFun :=
-  tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_gen (I := I) (M := M) g (s + 1)
+  tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_covariantTensor (I := I) (M := M) g (s + 1)
     (covGrad (I := I) (M := M) g 0 s S)
     (covGrad (I := I) (M := M) g 0 s S)
 
 
-lemma covGrad_rawConnLap_l2Inner_covGrad_eq_neg_normSq_gen
+lemma covGrad_rawConnLap_l2Inner_covGrad_eq_neg_normSq_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     tensorL2Inner (I := I) (M := M) g 0 (s + 1)
         (covGrad (I := I) (M := M) g 0 s
@@ -57,13 +57,13 @@ lemma covGrad_rawConnLap_l2Inner_covGrad_eq_neg_normSq_gen
   rw [tensorL2Inner_symm (I := I) (M := M) g 0 (s + 1)
     (covGrad (I := I) (M := M) g 0 s ΔS).toFun
     (covGrad (I := I) (M := M) g 0 s S).toFun]
-  rw [tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_gen (I := I) (M := M) g s S ΔS]
+  rw [tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_covariantTensor (I := I) (M := M) g s S ΔS]
   rw [hΔS_def]
   rw [tensorL2Norm_sq_toFun (I := I) (M := M) g 0 s
     (rawTensorConnLapSmooth (I := I) g 0 s S)]
 
 
-lemma rawConnLap_l2Inner_covGrad_split_gen
+lemma rawConnLap_l2Inner_covGrad_split_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     tensorL2Inner (I := I) (M := M) g 0 (s + 1)
         (rawTensorConnLapSmooth (I := I) g 0 (s + 1)
@@ -91,7 +91,7 @@ lemma rawConnLap_l2Inner_covGrad_split_gen
     (SmoothCcTensor.integrable_inner_cross (I := I) (M := M) GΔ GS)
     (SmoothCcTensor.integrable_inner_cross (I := I) (M := M) (ΔGS - GΔ) GS)]
   rw [hGΔ_def, hGS_def]
-  rw [covGrad_rawConnLap_l2Inner_covGrad_eq_neg_normSq_gen (I := I) (M := M) g s S]
+  rw [covGrad_rawConnLap_l2Inner_covGrad_eq_neg_normSq_covariantTensor (I := I) (M := M) g s S]
 
 
 theorem weitzenbock_integrated_covGrad_l2_normSq
@@ -110,8 +110,8 @@ theorem weitzenbock_integrated_covGrad_l2_normSq
   rw [tensorL2Norm_sq_toFun (I := I) (M := M) g 0 (s + 1 + 1)
     (covGrad (I := I) (M := M) g 0 (s + 1)
       (covGrad (I := I) (M := M) g 0 s S))]
-  rw [covGrad_l2Inner_self_eq_neg_rawConnLap_inner_gen (I := I) (M := M) g s S]
-  rw [rawConnLap_l2Inner_covGrad_split_gen (I := I) (M := M) g s S]
+  rw [covGrad_l2Inner_self_eq_neg_rawConnLap_inner_covariantTensor (I := I) (M := M) g s S]
+  rw [rawConnLap_l2Inner_covGrad_split_covariantTensor (I := I) (M := M) g s S]
   ring
 
 end Elliptic

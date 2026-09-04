@@ -143,7 +143,7 @@ theorem chartBasisVec_continuousOn_baseSet
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
-private lemma continuousOn_g_inner_aux
+private lemma continuousOn_g_inner
     (g : SmoothRiemannianMetric I M)
     {v w : ∀ x : M, TangentSpace I x} {s : Set M}
     (hv : ContinuousOn (fun x : M => TotalSpace.mk' E
@@ -171,7 +171,7 @@ theorem metric_inner_sections_continuousOn
     (hw : ContinuousOn (fun x : M => TotalSpace.mk' E
       (E := (TangentSpace I : M → Type _)) x (w x)) s) :
     ContinuousOn (fun b : M => g.inner b (v b) (w b)) s :=
-  continuousOn_g_inner_aux (I := I) (M := M) g hv hw
+  continuousOn_g_inner (I := I) (M := M) g hv hw
 
 theorem metric_inner_chartBasisFiber_trivSymm_continuousOn
     (g : SmoothRiemannianMetric I M) (α : M)

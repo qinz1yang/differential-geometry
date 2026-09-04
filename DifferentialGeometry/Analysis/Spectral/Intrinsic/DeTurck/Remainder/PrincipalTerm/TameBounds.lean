@@ -3181,22 +3181,22 @@ theorem exists_smoothCcToTensorHs_real_le_of_iteratedCovGrad_jet_window
           Ctame k * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ)) V‖ := by
   classical
   set C1 : ℕ → ℝ := fun k =>
-    (exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general (I := I) (M := M) g₀
+    (exists_smoothCcToTensorHs_le_iteratedCovGrad_sum (I := I) (M := M) g₀
       (a + k - 1)).choose with hC1_def
   set C2 : ℕ → ℝ := fun k =>
-    (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀
+    (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀
       (a + k - 1 + 1)).choose with hC2_def
   have hC1_spec : ∀ k, 0 ≤ C1 k ∧ ∀ S : SmoothCcTensor g₀ 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a + k - 1 : ℕ) : ℝ) S‖ ≤
         C1 k * ∑ j ∈ Finset.range (a + k - 1 + 1),
           ‖iteratedCovGrad (I := I) g₀ 0 2 j S‖ :=
-    fun k => (exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general (I := I) (M := M) g₀
+    fun k => (exists_smoothCcToTensorHs_le_iteratedCovGrad_sum (I := I) (M := M) g₀
       (a + k - 1)).choose_spec
   have hC2_spec : ∀ k, 0 ≤ C2 k ∧ ∀ S : SmoothCcTensor g₀ 0 2,
       ∑ j ∈ Finset.range (a + k - 1 + 1 + 1),
           ‖iteratedCovGrad (I := I) g₀ 0 2 j S‖ ≤
         C2 k * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a + k - 1 + 1 : ℕ) : ℝ) S‖ :=
-    fun k => (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀
+    fun k => (exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀
       (a + k - 1 + 1)).choose_spec
   refine ⟨fun k => C1 k * (∑ j ∈ Finset.range (a + k - 1 + 1), Clow j) * C2 k,
     fun k => ?_, fun k U V hU => ?_⟩
@@ -3399,7 +3399,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨C2, hC2_nn, hC2⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   set B : ℝ := C2 * R₀ with hB_def
   have hB_nn : 0 ≤ B := mul_nonneg hC2_nn hR₀
   obtain ⟨Cemb, hCemb_nn, hCemb⟩ :=
@@ -3798,11 +3798,11 @@ theorem exists_deTurckPrincipalCometricCoeff_realize_coeffJetEnvelope_le
   obtain ⟨Cd, hCd_nn, hCd⟩ :=
     deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient (I := I) (M := M) g₀
   obtain ⟨C2, hC2_nn, hC2⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   set B : ℝ := C2 * R₀ with hB_def
   have hB_nn : 0 ≤ B := mul_nonneg hC2_nn hR₀
   obtain ⟨Klo, hKlo_nn, hKlo⟩ :=
-    inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform_generic (I := I) (M := M) g₀ a ha_super hB_nn
+    inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform (I := I) (M := M) g₀ a ha_super hB_nn
       (by norm_num : (1 : ℝ) / 3 < 1)
   obtain ⟨Cg, hCg_nn, hCg⟩ :=
     riemannianFiberNormSq_iteratedCovGrad_inverseMetricDifferenceSlotCoefficient_diagonalProductGrid_le (I := I) (M := M)
@@ -4058,11 +4058,11 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
   obtain ⟨Cr, hCr_nn, hCr⟩ :=
     ricciDeTurckPrincipalCoefficient_sub_background_jetL2_le_inverseMetricDifferenceSlotCoefficient_jetL2 (I := I) (M := M) g₀
   obtain ⟨C2, hC2_nn, hC2⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   set B : ℝ := C2 * R₀ with hB_def
   have hB_nn : 0 ≤ B := mul_nonneg hC2_nn hR₀
   obtain ⟨Klo, hKlo_nn, hKlo⟩ :=
-    inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform_generic (I := I) (M := M) g₀ a ha_super hB_nn
+    inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform (I := I) (M := M) g₀ a ha_super hB_nn
       (by norm_num : (1 : ℝ) / 3 < 1)
   obtain ⟨Cg, hCg_nn, hCg⟩ :=
     riemannianFiberNormSq_iteratedCovGrad_inverseMetricDifferenceSlotCoefficient_diagonalProductGrid_le (I := I) (M := M)
@@ -4374,11 +4374,11 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
       have hdev_eq :
           deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
             deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀ =
-          reindexCoeffGen (I := I) (M := M) g₀ 4 2
+          reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)
-            + reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)
@@ -4388,16 +4388,16 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                 - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)) := by
         rw [deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₁,
           deTurckMetricPrincipalDefectTotal_eq_reindex (I := I) (M := M) g₀ g₀,
-          reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _
+          reindexCoefficientInputSlots_map_sub (I := I) (M := M) g₀ _ _
             (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA),
-          reindexCoeffGen_map_sub (I := I) (M := M) g₀ _ _
+          reindexCoefficientInputSlots_map_sub (I := I) (M := M) g₀ _ _
             (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)]
         abel
-      have hreiA := norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2
+      have hreiA := norm_sq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 4 2
         (traceHessianCoeff (I := I) (M := M) g₀ g₁
           - traceHessianCoeff (I := I) (M := M) g₀ g₀)
         (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA) i
-      have hreiB := norm_sq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2
+      have hreiB := norm_sq_iteratedCovGrad_reindexCoefficientInputSlots_eq (I := I) (M := M) g₀ 4 2
         (traceHessianCoeff (I := I) (M := M) g₀ g₁
           - traceHessianCoeff (I := I) (M := M) g₀ g₀)
         (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT) i
@@ -4407,12 +4407,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
           (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
             deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ≤
           ‖iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA))‖ +
           ‖iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT))‖ +
@@ -4422,12 +4422,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
         rw [hdev_eq, iteratedCovGrad_sub, iteratedCovGrad_add, iteratedCovGrad_add]
         have h1 := norm_sub_le
           (iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)) +
             iteratedCovGrad (I := I) g₀ 4 2 i
-              (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+              (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
                 (traceHessianCoeff (I := I) (M := M) g₀ g₁
                   - traceHessianCoeff (I := I) (M := M) g₀ g₀)
                 (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)))
@@ -4439,12 +4439,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
               - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀))
         have h2 := norm_add_le
           (iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA)))
           (iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT)))
@@ -4460,12 +4460,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
           (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
             deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤
           3 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA))‖ ^ 2 +
           3 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT))‖ ^ 2 +
@@ -4477,12 +4477,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
             (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
               deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)))
           (norm_nonneg (iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA))))
           (norm_nonneg (iteratedCovGrad (I := I) g₀ 4 2 i
-            (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
               (traceHessianCoeff (I := I) (M := M) g₀ g₁
                 - traceHessianCoeff (I := I) (M := M) g₀ g₀)
               (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT))))
@@ -4493,12 +4493,12 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
             (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₁ -
               deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2
           ≤ 3 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
-              (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+              (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
                 (traceHessianCoeff (I := I) (M := M) g₀ g₁
                   - traceHessianCoeff (I := I) (M := M) g₀ g₀)
                 (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA))‖ ^ 2 +
             3 * ‖iteratedCovGrad (I := I) g₀ 4 2 i
-              (reindexCoeffGen (I := I) (M := M) g₀ 4 2
+              (reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
                 (traceHessianCoeff (I := I) (M := M) g₀ g₁
                   - traceHessianCoeff (I := I) (M := M) g₀ g₀)
                 (traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermAT))‖ ^ 2 +
@@ -5554,7 +5554,7 @@ theorem exists_coeffAction_iteratedCovGrad_l2_coeffJetEnvelope_dataJetWindow_le_
         (I := I) (M := M) g₀ (2 + m) (2 + i)
   choose Csh2 hCsh2_nn hCsh2 using hB2
   obtain ⟨C2, hC2_nn, hC2⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   set B : ℝ := C2 * R₀ with hB_def
   have hB_nn : 0 ≤ B := mul_nonneg hC2_nn hR₀
   set Lam : ℕ → ℕ → ℝ := fun m i => (Csh2 m i) ^ 2 *
@@ -5850,7 +5850,7 @@ theorem exists_coeffAction_iteratedCovGrad_l2_coeffJetEnvelope_dataJetWindow_le_
         (I := I) (M := M) g₀ 0 (2 + m)
   choose Csh hCsh_nn hCsh using hB
   obtain ⟨C2, hC2_nn, hC2⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   set B : ℝ := C2 * R₀ with hB_def
   have hB_nn : 0 ≤ B := mul_nonneg hC2_nn hR₀
   set D : ℕ → ℕ → ℝ := fun m q => Real.sqrt (CE m q *
@@ -6261,7 +6261,7 @@ theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le_zero
   classical
   obtain ⟨Ccross, hCcross_nn, hcross⟩ := exists_Ccross_for_secondCovGrad (I := I) (M := M) g₀
   obtain ⟨C21, hC21_nn, hC21⟩ :=
-    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ 1
+    exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ 1
   refine ⟨εC * Real.sqrt Ccross * (2 * C21),
     mul_nonneg (mul_nonneg hεC_nn (Real.sqrt_nonneg _)) (by linarith), ?_⟩
   intro C₂ T₀ hball hsup hjets

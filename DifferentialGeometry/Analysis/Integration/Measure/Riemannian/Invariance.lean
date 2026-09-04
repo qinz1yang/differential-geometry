@@ -1033,33 +1033,33 @@ lemma finBasis_repr_sum
             • (Module.finBasis ℝ E) k :=
   (((Module.finBasis ℝ E).sum_repr (L ((Module.finBasis ℝ E) i)))).symm
 
-def transitionMatrixGen (x₀ x₁ : M) (x : M) :
+def transitionMatrixFinBasis (x₀ x₁ : M) (x : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun k i =>
     (Module.finBasis ℝ E).repr
       ((tangentCoordChange I x₁ x₀ x) ((Module.finBasis ℝ E) i)) k
 
-@[simp] lemma transitionMatrix_apply_gen (x₀ x₁ : M) (x : M)
+@[simp] lemma transitionMatrixFinBasis_apply (x₀ x₁ : M) (x : M)
     (k i : Fin (Module.finrank ℝ E)) :
-    transitionMatrixGen (I := I) x₀ x₁ x k i =
+    transitionMatrixFinBasis (I := I) x₀ x₁ x k i =
       (Module.finBasis ℝ E).repr
         ((tangentCoordChange I x₁ x₀ x) ((Module.finBasis ℝ E) i)) k := rfl
 
 lemma tangentCoordChange_finBasis_eq_sum
     (x₀ x₁ : M) (x : M) (i : Fin (Module.finrank ℝ E)) :
     (tangentCoordChange I x₁ x₀ x) ((Module.finBasis ℝ E) i) =
-      ∑ k, transitionMatrixGen (I := I) x₀ x₁ x k i • (Module.finBasis ℝ E) k :=
+      ∑ k, transitionMatrixFinBasis (I := I) x₀ x₁ x k i • (Module.finBasis ℝ E) k :=
   finBasis_repr_sum (tangentCoordChange I x₁ x₀ x) i
 
-lemma transitionMatrix_det_gen (x₀ x₁ : M) (x : M) :
-    (transitionMatrixGen (I := I) x₀ x₁ x).det =
+lemma transitionMatrixFinBasis_det (x₀ x₁ : M) (x : M) :
+    (transitionMatrixFinBasis (I := I) x₀ x₁ x).det =
       (tangentCoordChange I x₁ x₀ x : E →L[ℝ] E).det := by
   have hL :
-      transitionMatrixGen (I := I) x₀ x₁ x =
+      transitionMatrixFinBasis (I := I) x₀ x₁ x =
         LinearMap.toMatrix (Module.finBasis ℝ E) (Module.finBasis ℝ E)
           (tangentCoordChange I x₁ x₀ x : E →L[ℝ] E).toLinearMap := by
     ext k i
-    simp [transitionMatrixGen, LinearMap.toMatrix_apply]
+    simp [transitionMatrixFinBasis, LinearMap.toMatrix_apply]
   rw [hL]
   rw [LinearMap.det_toMatrix]
 

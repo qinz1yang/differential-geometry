@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Riemann.RawFields
 import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
-import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Tensor.RSTensor.Algebra.Contraction
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
@@ -232,7 +232,7 @@ def rm13Comp
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E ∞ frame u)
     (x : M) (a b c d : Idx) : Real :=
-  Rm13 x (dualToCotangentGen (hframe.coeff a x)) (vec3 (frame b x) (frame c x) (frame d x))
+  Rm13 x (dualToCotangent (hframe.coeff a x)) (vec3 (frame b x) (frame c x) (frame d x))
 
 structure CurvatureSections where
   rm13 : Tensor13Section (I := I) (M := M)

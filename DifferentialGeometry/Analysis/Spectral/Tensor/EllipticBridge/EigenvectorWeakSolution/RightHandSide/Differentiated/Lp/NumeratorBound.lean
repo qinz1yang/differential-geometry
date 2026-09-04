@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.Iter
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Lp.RestrictedVolume
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Lp.AtomEnvelope
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Lp.EigenvalueInverse
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Lp.UniformAggregate
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RightHandSide.Differentiated.Lp.UniformBound
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -44,7 +44,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-section LayerBoundsUnconditional
+section LayerBounds
 
 omit [CompleteSpace E] in
 private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le
@@ -411,9 +411,9 @@ private lemma eigenvectorChartRHSDiffNumerator_layerE_eLpNorm_le
   exact le_trans (wkpNorm_chosenWeakPartial_le (d := Module.finrank ℝ E) 0
     _ (l (Fin.last m))) h_atom_le
 
-end LayerBoundsUnconditional
+end LayerBounds
 
-section MainBoundUnconditional
+section MainBound
 
 
 omit [CompleteSpace E] in
@@ -639,9 +639,9 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le
     ENNReal.ofReal_add hCA_nn hCB_nn]
   rw [add_mul, add_mul, add_mul, add_mul]
 
-end MainBoundUnconditional
+end MainBound
 
-section SharpAtomBoundsUnconditional
+section SharpAtomBounds
 
 omit [CompleteSpace E] in
 private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le_eigenIndexUniform
@@ -1098,9 +1098,9 @@ private lemma eigenvectorChartRHSDiffNumerator_layerE_eLpNorm_le_eigenIndexUnifo
                 g r s) i‖ := by
           rw [← mul_assoc, ← ENNReal.ofReal_mul hC₀_nn, mul_assoc C₀ CatomE]
 
-end SharpAtomBoundsUnconditional
+end SharpAtomBounds
 
-section SharpMainBoundUnconditional
+section SharpMainBound
 
 omit [CompleteSpace E] in
 theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_eigenIndexUniform
@@ -1459,7 +1459,7 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_eigenIndexUniform
           rw [h_sum_ofReal]
   rw [h_pull]
 
-end SharpMainBoundUnconditional
+end SharpMainBound
 
 end TensorSpectral
 end Parabolic

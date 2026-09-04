@@ -371,10 +371,10 @@ theorem chartInvGram_quad_le
   let basis := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb
   let ξDual : Module.Dual ℝ (TangentSpace I b) :=
     ∑ i : Fin (Module.finrank ℝ E), ξ i • basis.coord i
-  let A : Tensor0SSpace 1 I b := dualToCotangentGen (I := I) ξDual
+  let A : Tensor0SSpace 1 I b := dualToCotangent (I := I) ξDual
   have hA (i : Fin (Module.finrank ℝ E)) :
-      cotangentToDualGen (I := I) A (basis i) = ξ i := by
-    simp only [A, cotangentToDual_dualToCotangent_gen, ξDual,
+      cotangentToDual (I := I) A (basis i) = ξ i := by
+    simp only [A, cotangentToDual_dualToCotangent, ξDual,
       LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
     rw [Finset.sum_eq_single i]
     · simp
@@ -579,10 +579,10 @@ theorem chartInvGram_unif_lb
   let basis := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb_base
   let ξDual : Module.Dual ℝ (TangentSpace I b) :=
     ∑ i : Fin (Module.finrank ℝ E), ξ i • basis.coord i
-  let A : Tensor0SSpace 1 I b := dualToCotangentGen (I := I) ξDual
+  let A : Tensor0SSpace 1 I b := dualToCotangent (I := I) ξDual
   have hA (i : Fin (Module.finrank ℝ E)) :
-      cotangentToDualGen (I := I) A (basis i) = ξ i := by
-    simp only [A, cotangentToDual_dualToCotangent_gen, ξDual,
+      cotangentToDual (I := I) A (basis i) = ξ i := by
+    simp only [A, cotangentToDual_dualToCotangent, ξDual,
       LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
     rw [Finset.sum_eq_single i]
     · simp

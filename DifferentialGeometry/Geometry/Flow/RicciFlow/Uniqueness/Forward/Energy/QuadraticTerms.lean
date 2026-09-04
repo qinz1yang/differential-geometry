@@ -54,7 +54,7 @@ theorem curvatureQuadraticPairing_zero_one_two_three_component {Idx : Type*} [Fi
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
@@ -130,7 +130,7 @@ theorem curvatureQuadraticPairing_zero_one_three_two_component {Idx : Type*} [Fi
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
@@ -206,7 +206,7 @@ theorem curvatureQuadraticPairing_zero_two_one_three_component {Idx : Type*} [Fi
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
@@ -282,7 +282,7 @@ theorem curvatureQuadraticPairing_zero_three_one_two_component {Idx : Type*} [Fi
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
@@ -366,7 +366,7 @@ theorem curvatureQuadraticCombination_component {Idx : Type*} [Fintype Idx] [Dec
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
@@ -412,7 +412,7 @@ private theorem quad_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
         (TangentSpace I x),
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -424,8 +424,8 @@ private theorem quad_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
   have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
     MetricFiberData.toCore_inner D (ob i) (ob j)
   change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricDataGen.inner_eq_gen
-    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricData.inner_eq
+    (tangentMetricData (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j
@@ -439,7 +439,7 @@ private theorem routeProdSq (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin
       normSq0S (I := I) g x 4 (A x) * normSq0S (I := I) g x 4 (B x) := by
   classical
   obtain ⟨basis, hON⟩ := quad_onFrame (I := I) g x
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
     DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
   rw [Tensor0SBundle.normSq0S_domDomCongr (I := I) g x basis hinv σ]

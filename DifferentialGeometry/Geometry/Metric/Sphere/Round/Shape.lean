@@ -365,7 +365,7 @@ theorem dIncl_curv_inner
     (hDX : MDifferentiableAt (𝓡 n) 𝓘(ℝ, E)
       (fun p => ambDeriv (n := n) (⇑Z) p (X p)) x) :
     ⟪dIncl (n := n) x
-      (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvatureAux
+      (DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField
         (DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E) (n := n))) (⇑X)
           (⇑Y) (⇑Z) x),
         dIncl (n := n) x W⟫
@@ -389,7 +389,7 @@ theorem dIncl_curv_inner
       (DifferentialGeometry.Geometry.Curvature.metricCov g)
         (DifferentialGeometry.Geometry.Curvature.metricCov_smooth g) X Z
         x).mdifferentiableAt (by simp)
-  rw [show DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvatureAux
+  rw [show DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField
         (DifferentialGeometry.Geometry.Curvature.metricCov g) (⇑X) (⇑Y) (⇑Z) x
       = DifferentialGeometry.Geometry.Curvature.metricCov g
         (fun p => DifferentialGeometry.Geometry.Curvature.metricCov g (⇑Z) p (Y p)) x

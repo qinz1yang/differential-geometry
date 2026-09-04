@@ -164,7 +164,7 @@ theorem exists_redLen_le [ConnectedSpace M]
         (hUopen.mem_nhds hz)).mdifferentiableAt (by simp)
     have hgrad := gradientFun_mdiffOn (E := E) (I := I) (M := M)
       (S.base.metric (T - t)) hUopen hPhiSmooth hyU
-    have hmc : IsMetricCompatibleGen (I := I)
+    have hmc : IsMetricCompatible (I := I)
         (LeviCivita (I := I) (S.base.metric (T - t)))
         (S.base.metric (T - t)) := by
       simpa only [LeviCivita] using

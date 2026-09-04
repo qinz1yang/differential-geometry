@@ -24,7 +24,7 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat -> Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace OpenConvOut
+namespace OpenMetricConvergenceData
 
 theorem gInf_pde
     {R : letI : TopologicalSpace P.M := P.topology
@@ -34,7 +34,7 @@ theorem gInf_pde
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (cLow : Nat -> Real) (hcLow : ∀ n, 0 < cLow n)
     (hbound : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
@@ -90,14 +90,14 @@ theorem gInf_pde
     intro s hs
     have hsOpen := RealTimeInterval.openWindow_subset ht₀ n hs
     simpa only [hD, RealTimeInterval.openInterval] using hsOpen
-  have hd := ConvOut.gInf_pde (I := I) (Φ := Φ) R bf hsrc htgt
+  have hd := FlowMetricConvergenceData.gInf_pde (I := I) (Φ := Φ) R bf hsrc htgt
     (RealTimeInterval.openWindowLeft a t₀ n)
     (RealTimeInterval.openWindowRight b t₀ n) hwin (cLow n) (hcLow n)
     (fun k s hs => hbound n k s hs) (fun q => hcovTail n q)
-    (OpenConvOut.atWindow Φ co n) x v w htWin
+    (OpenMetricConvergenceData.atWindow Φ co n) x v w htWin
   exact hd.hasDerivAt hn
 
-end OpenConvOut
+end OpenMetricConvergenceData
 
 end HCGCompactness
 end DifferentialGeometry

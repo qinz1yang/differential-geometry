@@ -20,6 +20,7 @@ open DifferentialGeometry.HCGCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Sobolev
@@ -76,7 +77,7 @@ private lemma riemPass_riemannianFiberNormSq
       3 * C i := by
   classical
   let X : SmoothCcTensor g 2 4 :=
-    reindexCoeffGen (I := I) (M := M) g 2 4
+    reindexCoefficientInputSlots (I := I) (M := M) g 2 4
       (slotExtendIter (I := I) (M := M) g 1 3 1
         (slotFreeOpCc (I := I) (M := M) g 1))
       (Equiv.swap (0 : Fin 2) 1)
@@ -103,7 +104,7 @@ private lemma riemPass_riemannianFiberNormSq
             (slotExtendIter (I := I) (M := M) g 1 3 1
               (slotFreeOpCc (I := I) (M := M) g 1))).toSection x) := by
     dsimp only [X]
-    exact DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq
+    exact DifferentialGeometry.Analysis.Spectral.riemannianFiberNormSq_iteratedCovGrad_reindexCoefficientInputSlots_eq
       (I := I) (M := M) g 2 4
       (slotExtendIter (I := I) (M := M) g 1 3 1
         (slotFreeOpCc (I := I) (M := M) g 1))

@@ -100,7 +100,7 @@ theorem covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual
   rw [hswap]
   abel
 
-noncomputable def covGradRoughLapTraceDiscrepancyGen
+noncomputable def covGradRoughLapTraceDiscrepancyCovariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
     (x : M) (w : TangentSpace I x) :
     Tensor0SSpace s I x :=
@@ -121,7 +121,7 @@ omit [CompactSpace M] in
 lemma covGradRoughLapTraceDiscrepancy_gen_def
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
     (x : M) (w : TangentSpace I x) :
-    covGradRoughLapTraceDiscrepancyGen (I := I) (M := M) g s T₀ x w =
+    covGradRoughLapTraceDiscrepancyCovariantTensor (I := I) (M := M) g s T₀ x w =
       tensor0SCurry (I := I) (M := M) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             (rawTensorConnLapSmooth (I := I) g 0 (s + 1)
@@ -136,31 +136,31 @@ lemma covGradRoughLapTraceDiscrepancy_gen_def
           (unitZeroSec (I := I) (M := M) x) := rfl
 
 omit [CompactSpace M] in
-theorem covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual_gen
+theorem covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
     (x : M) (w : TangentSpace I x) :
     tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          (covGradRoughLapCurvGen (I := I) (M := M) g s T₀).toSection x)
+          (covGradRoughLapCurvCovariantTensor (I := I) (M := M) g s T₀).toSection x)
           (unitZeroSec (I := I) (M := M) x)) w =
-      covGradRoughLapTraceDiscrepancyGen (I := I) (M := M) g s T₀ x w +
+      covGradRoughLapTraceDiscrepancyCovariantTensor (I := I) (M := M) g s T₀ x w +
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           tensorThirdOrderCurvatureDefect (I := I) g 0 s (smoothExtensionTangent (I := I) x w)
             (fun y : M => T₀.toSection y) x)
           (unitZeroSec (I := I) (M := M) x) -
-        covGradRoughLapMovingFrameResidualGen (I := I) (M := M) g s T₀ x w := by
-  have hdef : (covGradRoughLapCurvGen (I := I) (M := M) g s T₀).toSection x =
+        covGradRoughLapMovingFrameResidualCovariantTensor (I := I) (M := M) g s T₀ x w := by
+  have hdef : (covGradRoughLapCurvCovariantTensor (I := I) (M := M) g s T₀).toSection x =
       (rawTensorConnLapSmooth (I := I) g 0 (s + 1)
           (covGrad (I := I) (M := M) g 0 s T₀)).toSection x -
         (covGrad (I := I) (M := M) g 0 s
           (rawTensorConnLapSmooth (I := I) g 0 s T₀)).toSection x := by
-    rw [covGradRoughLapCurvGen, SmoothCcTensor.toSection_sub]; rfl
+    rw [covGradRoughLapCurvCovariantTensor, SmoothCcTensor.toSection_sub]; rfl
   rw [hdef]
   rw [sub_apply, map_sub, sub_apply]
-  rw [covGrad_rawConnLap_unit_eval_curry_gen (I := I) (M := M) g s T₀ x w]
-  have hswap := frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv_gen
+  rw [covGrad_rawConnLap_unit_eval_curry_covariantTensor (I := I) (M := M) g s T₀ x w]
+  have hswap := frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv_covariantTensor
     (I := I) (M := M) g s T₀ x w
-  rw [covGrad_rawConnLap_unit_eval_curry_gen (I := I) (M := M) g s T₀ x w] at hswap
+  rw [covGrad_rawConnLap_unit_eval_curry_covariantTensor (I := I) (M := M) g s T₀ x w] at hswap
   rw [covGradRoughLapTraceDiscrepancy_gen_def (I := I) (M := M) g s T₀ x w]
   rw [hswap]
   abel

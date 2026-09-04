@@ -671,8 +671,8 @@ private lemma dualCotangentCLM_eq (x : M) (φ : TangentSpace I x →L[ℝ] ℝ) 
   rw [cotangentToDualLinear_apply, cotangentToDualLinear_apply, cotangentToDual_apply,
     cotangentToDual_dualToCotangent]
   rw [dualCotangentCLM]
-  change dualToCotangentGen (I := I) φ.toLinearMap (fun _ : Fin 1 => w) = φ w
-  rw [dualToCotangentGen]
+  change dualToCotangent (I := I) φ.toLinearMap (fun _ : Fin 1 => w) = φ w
+  rw [dualToCotangent]
   change ((continuousMultilinearCurryFin1 ℝ (TangentSpace I x) ℝ).symm
       (LinearMap.toContinuousLinearMap φ.toLinearMap)) (fun _ : Fin 1 => w) = φ w
   rw [continuousMultilinearCurryFin1_symm_apply]

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 open DifferentialGeometry.Geometry.Operator
 
@@ -10,8 +10,6 @@ open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry.Geometry.Connection
 
-open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -23,7 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 theorem chartInvGram_inverse
     (g : SmoothRiemannianMetric I M) (alpha : M) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) alpha).baseSet) :
-    MetricInverseInBasisGen (I := I) g x
+    MetricInverseInBasis (I := I) g x
       (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) alpha hx)
       (fun i j => chartInvGramMatrix (I := I) g alpha x i j) := by
   classical

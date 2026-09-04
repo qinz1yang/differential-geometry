@@ -98,11 +98,11 @@ theorem tensor02CovDerivNormWith_metricTensorField_eq_metricDerivNorm
       metricDerivNorm (I := I) a G g g x := by
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
-    change Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
+    change Tensor0SBundle.MetricInverseInBasis (I := I) g x basis
       (fun i j => if i = j then (1 : Real) else 0)
     exact h
   rw [tensor02CovDerivNormWith_eq_iterCov (I := I)

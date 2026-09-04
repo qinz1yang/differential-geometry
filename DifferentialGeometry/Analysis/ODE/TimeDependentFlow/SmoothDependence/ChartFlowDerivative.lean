@@ -52,7 +52,7 @@ theorem chart_flow_has_mfderiv
       exact (chartTrivRepr_eq_tangentCoordChange_of_target X α t (hconf t ht)).symm
     rw [hpt]
     exact hode t ht
-  exact chartflow_eq_bareflow_on_U (I := I) X α F
+  exact chartFlow_eq_integralCurve_on (I := I) X α F
     (fun cs => flow y cs.2) ((extChartAt I α).source) (a := a) (b := b)
     (fun p _ t ht => hode' t ht)
     hF

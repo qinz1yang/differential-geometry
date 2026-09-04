@@ -242,7 +242,7 @@ private theorem curvatureAction_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04At (I := I) (M := M) x)
@@ -303,7 +303,7 @@ private theorem canRmActionSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (A B C D : TangentSpace I x) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -417,7 +417,7 @@ private theorem canRic_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (a b : Idx) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -465,7 +465,7 @@ private theorem canRawLowering
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (a b c d : Idx) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -685,7 +685,7 @@ theorem canRicHessSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (A B C D : TangentSpace I x) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -797,7 +797,7 @@ theorem hamiltonRm04Id
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (m : Fin 4 -> Idx) :
     let cov := leviCivitaConnectionOfMetric (I := I) g

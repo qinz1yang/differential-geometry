@@ -234,7 +234,7 @@ theorem reprDiffChartCompOnE_comp_toEuclidean_symm_eqOn
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
-theorem euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder
+theorem euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder_two
     (g_bg : SmoothRiemannianMetric I M) (S : SmoothCcTensor g_bg 0 2) (α : M)
     (a l b : Fin (Module.finrank ℝ E)) {y' : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hy' : y' ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -353,9 +353,9 @@ theorem partialDeriv_reprDiffChartCompOnE_eq_covGrad_sub_lowerOrder
   rw [show fderiv ℝ Flb ys (EuclideanSpace.single a 1) = euclidPartial (E := E) a Flb ys from rfl,
     show fderiv ℝ Fbl ys (EuclideanSpace.single a 1) = euclidPartial (E := E) a Fbl ys from rfl]
   rw [hFlb_def, hFbl_def, hys_def,
-    euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder (I := I) g_bg S α a l b
+    euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder_two (I := I) g_bg S α a l b
       (by rw [← hys_def]; exact hys_mem),
-    euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder (I := I) g_bg S α a b l
+    euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder_two (I := I) g_bg S α a b l
       (by rw [← hys_def]; exact hys_mem)]
   rw [show (toEuclidean (E := E)).symm ys = y from by rw [hys_def]; simp]
 
@@ -504,7 +504,7 @@ theorem euclidPartial_congr_of_eqOn_isOpen
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
-theorem euclidPartial_chartPushedRaw_general_eq_covGrad_sub_lowerOrder
+theorem euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder
     (g_bg : SmoothRiemannianMetric I M) (s : ℕ)
     (T : SmoothCcTensor g_bg 0 s) (α : M)
     (m : Fin (Module.finrank ℝ E)) (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -624,7 +624,7 @@ theorem euclidPartial_covDerivComponentEuclid_abs_le
     rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hz]
   rw [(euclidPartial_congr_of_eqOn_isOpen (E := E) c (chartTargetEuclid_isOpen
     (I := I) (M := M) α) hbridge) hy'_tgt]
-  rw [euclidPartial_chartPushedRaw_general_eq_covGrad_sub_lowerOrder (I := I) g_bg 3
+  rw [euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder (I := I) g_bg 3
     (covGrad (I := I) (M := M) g_bg 0 2 S) α c (Fin.cons a Jdx) hy'_tgt]
   have h_raw4 := hCraw4_bd (covGrad (I := I) (M := M) g_bg 0 3
     (covGrad (I := I) (M := M) g_bg 0 2 S)) b₀ hb₀_img (Fin.cons c (Fin.cons a Jdx))
@@ -805,7 +805,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_covariantJet_terms
         rawComponentEuclid_eqOn_chartPushed (I := I) (M := M) g_bg 0 2 α S p.1 p.2
       rw [(euclidPartial_congr_of_eqOn_isOpen (E := E) c (chartTargetEuclid_isOpen
         (I := I) (M := M) α) hcongr) hy'_tgt, hp1]
-      rw [euclidPartial_chartPushedRaw_general_eq_covGrad_sub_lowerOrder (I := I) g_bg 2
+      rw [euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder (I := I) g_bg 2
         S α c p.2 hy'_tgt]
       have h_raw3 := hCraw3_bd (covGrad (I := I) (M := M) g_bg 0 2 S) b₀ hb₀_img (Fin.cons c p.2)
       have h_lo2 := hCLO2_bd S c p.2 y' hy'

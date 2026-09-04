@@ -143,7 +143,7 @@ private theorem rev_trace_eq
     have hy : y ∈ (trivializationAt E (TangentSpace I) y).baseSet := by
       exact mem_baseSet_trivializationAt E (TangentSpace I) y
     let b := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) y hy
-    have hinv : MetricInverseInBasisGen (I := I) (G.metric s) y b
+    have hinv : MetricInverseInBasis (I := I) (G.metric s) y b
         (fun i j => chartInvGramMatrix (I := I) (G.metric s) y y i j) := by
       simpa only [b] using
         chartInvGram_inverse (I := I) (G.metric s) y hy

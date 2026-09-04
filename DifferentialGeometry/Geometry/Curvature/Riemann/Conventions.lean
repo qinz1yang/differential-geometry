@@ -43,7 +43,7 @@ theorem rm04LowersRm13At_convention
     (h : DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x Rm13 Rm04)
     (X Y Z W : TangentSpace I x) :
   Rm04 (vec4 X Y Z W) =
-      Rm13 (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) W))
+      Rm13 (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) W))
         (vec3 X Y Z) :=
   h X Y Z W
 
@@ -60,7 +60,7 @@ theorem ricciFromRm13At_rm04_first_trace_convention
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (hLower : DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x Rm13 Rm04)

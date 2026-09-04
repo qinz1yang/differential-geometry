@@ -46,7 +46,7 @@ private theorem normSq0S_nonneg'
     0 ≤ Tensor0SBundle.normSq0S (I := I) g x s A := by
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
@@ -68,7 +68,7 @@ private theorem mcdNorm_eq_at
           (Tensor0SBundle.metricTensorField (I := I) h) N x)) := by
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
@@ -1004,7 +1004,7 @@ theorem nablaRicReal_normSq
         (ricCovTower (I := I) (gSeq i s) gRef p x) := by
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
@@ -1125,7 +1125,7 @@ theorem normsq_evol_of_comp
   intro i x hx s hs
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gRef basis hON

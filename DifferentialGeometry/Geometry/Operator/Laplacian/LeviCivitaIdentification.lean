@@ -54,7 +54,7 @@ theorem divergence_levi_eq
     rw [huniv]
     simp
   let : NeZero (Module.finrank Real E) := ⟨hdim⟩
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -70,12 +70,12 @@ theorem divergence_levi_eq
     have hob := ob.inner_eq_ite i j
     change g.inner x (ob.toBasis i) (ob.toBasis j) =
       if i = j then (1 : Real) else 0
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)
       (ob.toBasis i) (ob.toBasis j)]
     change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
     rw [← hinner]
     exact hob
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (fun i j => if i = j then (1 : Real) else 0) := by
     intro i j
     constructor <;> simp [hON]

@@ -215,7 +215,7 @@ private lemma curry_covGrad_unit_read (g : SmoothRiemannianMetric I M) (k : ℕ)
       (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace k I y from
         (tensorCov (I := I) g 0 k).toFun (fun z : M => P.toSection z) y w)
         (unitZeroSec (I := I) (M := M) y) :=
-  curry_unitGradFieldGen_eq (I := I) (M := M) g k P y w
+  curry_unitGradFieldCovariantTensor_eq (I := I) (M := M) g k P y w
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in

@@ -35,15 +35,15 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] in
-private theorem reindexCoeffGen_refl_local (g : SmoothRiemannianMetric I M)
+private theorem reindexCoefficientInputSlots_refl_local (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (R : SmoothCcTensor g r s) :
-    reindexCoeffGen (I := I) (M := M) g r s R (Equiv.refl _) = R := by
+    reindexCoefficientInputSlots (I := I) (M := M) g r s R (Equiv.refl _) = R := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply]
+  rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply]
   congr 1
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -701,12 +701,12 @@ theorem lieCorrectionZeroVectorBundle_h1_tame_bound
   rw [lieCorrectionZeroVectorBundle_eq_field (I := I) (M := M) g₀ g₁]
   have htwo := jet_two (I := I) (M := M) g₀ 2 2 2 Out
   have hT1_base : lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1 = T1 := by
-    exact (reindexCoeffGen_refl_local g₀ 3 1
+    exact (reindexCoefficientInputSlots_refl_local g₀ 3 1
       (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1)).symm
   have hVFlat : lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ g₀ = Vf := by
     rw [lieCorrectionZeroVFlat, hT1_base]
   have hT1i_def :
-      reindexCoeffGen (I := I) (M := M) g₀ 3 1
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 1
         (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1)
           lieCorrectionZeroIVPerm = T1i := by
     rfl

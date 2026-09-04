@@ -48,7 +48,7 @@ private theorem neg_tangent_cmdwa
       (e.linear ℝ (FiberBundle.mem_baseSet_trivializationAt' q₀.2)).map_neg (X q₀.1 q₀.2)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem full_gauge
+private theorem exists_conjugatingDiffeomorphismFamily
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (hT : 0 < T)
     (h_smooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -84,7 +84,7 @@ private theorem full_gauge
     forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
       (I := I) X_DT T hT hsmoothX
   obtain ⟨Φ_fam, hfam0, hfameq, hfamode⟩ :=
-    time_dependent_vf_bare_flow_family (I := I) X_DT T Φ
+    exists_diffeomorphism_family_of_integral_curves (I := I) X_DT T Φ
       (fun t ht htT => hdiffeo t ⟨ht, htT⟩)
       (fun t ht htT x => hflow t ⟨ht, htT⟩ x)
   have hfun_eqOn : ∀ s ∈ Set.Ico (0 : ℝ) T,
@@ -176,7 +176,7 @@ theorem ricci_gauge_of_dt
     deTurckRicci_chartRegularity_of_jointChartGramSmooth
       (I := I) g_bg T g_DT hJ
   obtain ⟨Φ_fam, hΦ0, hΦode, hΦorbit0, hΦmfderiv0, hΦjoint⟩ :=
-    full_gauge (I := I) g_DT g_bg T hT hsmooth
+    exists_conjugatingDiffeomorphismFamily (I := I) g_DT g_bg T hT hsmooth
   obtain ⟨hΦorbit, hΦtotal⟩ :=
     conjugating_flow_orbit_pushforward_continuity_data
       (I := I) g_DT g_bg T Φ_fam hΦode hreg hΦorbit0 hΦmfderiv0

@@ -330,7 +330,7 @@ def fluxShellMass (t : ℝ) (w : V) (f : ℝ × V → F)
       ∂(stVolume : Measure (ℝ × V))
 
 omit [CompleteSpace F] in
-theorem fluxShellMass_raw {T t : ℝ} {C : ℝ≥0∞}
+theorem fluxShellMass_le_of_finite_cover {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F)
     (x : V) (k : ℕ) (s : Finset V)
     (hcover : fluxShell t x k ⊆
@@ -503,7 +503,7 @@ theorem fluxShellMass_le {T t : ℝ} {C : ℝ≥0∞}
   have hweight : P * (q * G) ≤
       P * (q * Real.exp (-(4 : ℝ)⁻¹ * (k : ℝ))) := by
     gcongr
-  refine (fluxShellMass_raw ht htT w f x k s hcover hsrc).trans ?_
+  refine (fluxShellMass_le_of_finite_cover ht htT w f x k s hcover hsrc).trans ?_
   change ENNReal.ofReal K *
       ((s.card : ℝ≥0∞) *
         ((ENNReal.ofReal (heatScale t)) ^ (Module.finrank ℝ V + 1) *

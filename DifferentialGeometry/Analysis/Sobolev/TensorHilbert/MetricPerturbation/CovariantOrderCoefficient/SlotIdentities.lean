@@ -45,7 +45,7 @@ theorem termSlotEndoCc_succ
       (fun x : M => TangentSpace I x →L[ℝ]
         (TangentSpace I x →L[ℝ] TangentSpace I x))) :
     bilinearSlotInsertionCoefficient (I := I) (M := M) g (s + 1) A =
-      reindexCoeffGen (I := I) (M := M) g (s + 1 + 1) (s + 1 + 1 + 1)
+      reindexCoefficientInputSlots (I := I) (M := M) g (s + 1 + 1) (s + 1 + 1 + 1)
         (rsDomDomCongrSection (I := I) (M := M) g
           (s + 1 + 1) (s + 1 + 1 + 1)
           ((Equiv.swap (0 : Fin (s + 1 + 1 + 1)) 1).trans
@@ -70,7 +70,7 @@ theorem termSlotEndoCc_succ
           Tensor0SSpace (s + 1 + 1 + 1) I x) D =
     termSlotFib (I := I) (M := M) (s + 1) x (A x) D from rfl]
   rw [termSlotFib_toModel_apply]
-  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply,
+  rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply,
     rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply, slotExtend_toSection]
   rw [show (fun k : Fin (s + 1 + 1 + 1) =>

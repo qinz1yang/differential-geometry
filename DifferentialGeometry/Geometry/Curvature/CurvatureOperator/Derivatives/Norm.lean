@@ -114,7 +114,7 @@ theorem curvZero_apply
           (I := I) (M := M) g) ∞ :=
     DifferentialGeometry.Geometry.Connection.LeviCivita_isContMDiff
       (I := I) (M := M) g
-  rw [DifferentialGeometry.riemannCurvatureAux_tangentConst_eq_riemannOp
+  rw [DifferentialGeometry.connectionRiemannCurvatureField_tangentConst_eq_riemannOp
     (DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := M) g)
     (DifferentialGeometry.Geometry.Curvature.metricCov_smooth
       (I := I) (M := M) g) x X Y Z]
@@ -127,12 +127,12 @@ theorem curvOne_apply
     curvCovDeriv (I := I) (M := M) g 1 x
         (DifferentialGeometry.Geometry.Curvature.vec5 (I := I) D X Y Z W) =
       g.inner x W
-        (DifferentialGeometry.Integral.Connection.nablaRiemannOp
+        (DifferentialGeometry.Geometry.Curvature.nablaRiemannOp
           (I := I) g x D X Y Z) := by
   simpa [curvCovDeriv, curvCovDerivStep,
     DifferentialGeometry.Geometry.Curvature.metricCov,
     DifferentialGeometry.Geometry.Curvature.metricRm04] using
-    (DifferentialGeometry.Integral.Connection.nablaRm04_apply
+    (DifferentialGeometry.Geometry.Curvature.nablaRm04_apply
       (I := I) g x D X Y Z W)
 
 end PointwiseCurvature

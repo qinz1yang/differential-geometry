@@ -573,7 +573,7 @@ theorem inv_cov
   have hSopen : IsOpen S := by
     change IsOpen ((fun y : (X.obj k).M => (y, pt)) ⁻¹' B.hom.target)
     exact B.hom.open_target.preimage (continuous_id.prodMk continuous_const)
-  have htransport := IsNormalDiag.full_transport
+  have htransport := IsNormalDiag.branch_coordinate_transport
     (I := I) (X.obj k) hcomplete hconn x hq he hf
   have hpairDom :
       normalPair (I := I) (X.obj k) x (z, xi) (c := c) ∈ B.dom := by

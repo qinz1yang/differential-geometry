@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
-import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -98,7 +98,7 @@ theorem inner_eq_sum_repr3
       ∑ i : Fin 3, basis.repr X i * basis.repr Y i := by
   calc
     g.inner x X Y =
-        tangentFlatLinearGen (I := I) g x
+        tangentFlatLinear (I := I) g x
           (∑ i : Fin 3, basis.repr X i • basis i) Y := by
           rw [basis.sum_repr X]
           rfl
@@ -396,40 +396,40 @@ def ricciEndAt
     (Ric : Tensor02At (I := I) (M := M) x) :
     TangentSpace I x →ₗ[Real] TangentSpace I x where
   toFun := fun X =>
-    cotangentSharpGen (I := I) g x
-      (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric X))
+    cotangentSharp (I := I) g x
+      (dualToCotangent (I := I) (ricciCovAt (I := I) Ric X))
   map_add' := by
     intro X Y
     change
-      cotangentSharpLinearGen (I := I) g x
-          (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric (X + Y))) =
-        cotangentSharpLinearGen (I := I) g x
-          (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric X)) +
-          cotangentSharpLinearGen (I := I) g x
-          (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric Y))
+      cotangentSharpLinear (I := I) g x
+          (dualToCotangent (I := I) (ricciCovAt (I := I) Ric (X + Y))) =
+        cotangentSharpLinear (I := I) g x
+          (dualToCotangent (I := I) (ricciCovAt (I := I) Ric X)) +
+          cotangentSharpLinear (I := I) g x
+          (dualToCotangent (I := I) (ricciCovAt (I := I) Ric Y))
     rw [ricciCovAt_add (I := I) Ric X Y]
     change
-      cotangentSharpLinearGen (I := I) g x
+      cotangentSharpLinear (I := I) g x
           (dualToCotangentLinear (I := I)
             (ricciCovAt (I := I) Ric X + ricciCovAt (I := I) Ric Y)) =
-        cotangentSharpLinearGen (I := I) g x
+        cotangentSharpLinear (I := I) g x
           (dualToCotangentLinear (I := I) (ricciCovAt (I := I) Ric X)) +
-          cotangentSharpLinearGen (I := I) g x
+          cotangentSharpLinear (I := I) g x
           (dualToCotangentLinear (I := I) (ricciCovAt (I := I) Ric Y))
     rw [map_add, map_add]
   map_smul' := by
     intro c X
     change
-      cotangentSharpLinearGen (I := I) g x
-          (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric (c • X))) =
-        c • cotangentSharpLinearGen (I := I) g x
-          (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric X))
+      cotangentSharpLinear (I := I) g x
+          (dualToCotangent (I := I) (ricciCovAt (I := I) Ric (c • X))) =
+        c • cotangentSharpLinear (I := I) g x
+          (dualToCotangent (I := I) (ricciCovAt (I := I) Ric X))
     rw [ricciCovAt_smul (I := I) Ric c X]
     change
-      cotangentSharpLinearGen (I := I) g x
+      cotangentSharpLinear (I := I) g x
           (dualToCotangentLinear (I := I)
             (c • ricciCovAt (I := I) Ric X)) =
-        c • cotangentSharpLinearGen (I := I) g x
+        c • cotangentSharpLinear (I := I) g x
           (dualToCotangentLinear (I := I) (ricciCovAt (I := I) Ric X))
     rw [map_smul, map_smul]
 
@@ -438,7 +438,7 @@ theorem ricciEnd_inner
     (Ric : Tensor02At (I := I) (M := M) x)
     (X Y : TangentSpace I x) :
     g.inner x (ricciEndAt (I := I) g Ric X) Y = Ric (vec2 X Y) := by
-  simp [ricciEndAt, ricciCovAt, cotangentSharp_inner_gen]
+  simp [ricciEndAt, ricciCovAt, cotangentSharp_inner]
 
 omit [FiniteDimensional ℝ E] in
 @[simp]

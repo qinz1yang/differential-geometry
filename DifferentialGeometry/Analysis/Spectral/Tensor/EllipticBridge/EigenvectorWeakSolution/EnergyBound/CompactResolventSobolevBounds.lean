@@ -49,7 +49,7 @@ private lemma mu_mul_inv_pow_le_inv_pow
     mul_le_mul_of_nonneg_right hμ_le_one hμ_inv_pow_nn
   simpa using h
 
-section Unconditional
+section MainResults
 
 
 omit [CompleteSpace E] in
@@ -580,7 +580,7 @@ theorem eigenvector_resolventLow_perK_from_uniform_β
                 g r s) i‖ :=
       h_step2
 
-end Unconditional
+end MainResults
 
 end TensorSpectral
 end Parabolic

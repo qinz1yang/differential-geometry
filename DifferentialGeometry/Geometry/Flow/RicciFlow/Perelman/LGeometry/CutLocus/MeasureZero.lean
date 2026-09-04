@@ -75,7 +75,7 @@ theorem lCutMulti_null
     have hZmin : (Z, tau) ∈ lMinDomain S T x :=
       ((mem_lCutDomain S T x tau Z).1 hZcut).1
     have hWcut : (W : E) ∈ lCutDomain S T x tau :=
-      lCut_other S hS T x hZcut hWne hWmin hend
+      mem_lCutDomain_of_distinct_minimizer_same_endpoint S hS T x hZcut hWne hWmin hend
     by_cases hZconj : IsLConj S T x Z tau
     · exact Or.inl ⟨Z, hZcut, hZconj, rfl⟩
     by_cases hWconj : IsLConj S T x W tau

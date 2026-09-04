@@ -441,7 +441,7 @@ lemma coeffContract_Hs_bound
         c * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((j + 3 : ℕ) : ℝ)
           (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 p T₀)‖ := by
     intro j
-    obtain ⟨C1, hC1_nn, hC1⟩ := exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general g₀ j
+    obtain ⟨C1, hC1_nn, hC1⟩ := exists_smoothCcToTensorHs_le_iteratedCovGrad_sum g₀ j
     refine ⟨C1 * ∑ q ∈ Finset.range (j + 1), Cm q,
       mul_nonneg hC1_nn (Finset.sum_nonneg (fun q _ => hCm_nn q)),
       fun p T₀ hball Φ hΦ W hW => ?_⟩

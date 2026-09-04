@@ -46,12 +46,12 @@ theorem leviCivita_inner_eq_half_koszul
       (1 / 2 : Real) * koszulScalar (I := I) g X Y Z x := by
   have hmc := metricCompatible_of_isLeviCivita (I := I) hlc
   have htf := torsionFree_of_isLeviCivita (I := I) hlc
-  have hXYZ := DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-    (I := I) hmc X Y Z hX hY hZ
-  have hYZX := DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-    (I := I) hmc Y Z X hY hZ hX
-  have hZXY := DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-    (I := I) hmc Z X Y hZ hX hY
+  have hXYZ := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+    (I := I) hmc (X x) hY hZ
+  have hYZX := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+    (I := I) hmc (Y x) hZ hX
+  have hZXY := DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+    (I := I) hmc (Z x) hX hY
   have htYZ := torsion_free_apply (I := I) htf (X := Y) (Y := Z) hY hZ
   have htZX := torsion_free_apply (I := I) htf (X := Z) (Y := X) hZ hX
   have htXY := torsion_free_apply (I := I) htf (X := X) (Y := Y) hX hY
@@ -85,7 +85,7 @@ theorem coordinateFrame_christoffel_formula_point_of_isLeviCivita
     (hLC : IsLeviCivita (I := I) cov g)
     (x0 : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x0)
     (gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x
+    (hinv : MetricInverseInBasis (I := I) g x
       (coordinateFrameAtBasis (I := I) x0 hx) gInv)
     (i j k : CoordinateIdx (𝕜 := Real) E) :
     christoffelSymbolInFrame cov

@@ -118,13 +118,13 @@ private theorem riemannOp_tensorCov_homNatural
           (fun b => Ξsec b) x) (dSec x) =
       riemannSec (Tensor0SNabla.tensor0SCovariantDerivative I M m (LeviCivita (I := I) g))
           (fun b => X b) (fun b => Wfield b)
-          (HomConnectionGen.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
+          (HomConnection.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
             (V := fun z : M => Tensor0SSpace m I z)
             (fun b => Ξsec b) (fun b => dSec b)) x -
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace m I x from Ξsec x)
           (riemannSec (Tensor0SNabla.tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
             (fun b => X b) (fun b => Wfield b) (fun b => dSec b) x) from
-    HomConnectionGen.riemannSec_homBundleGen_apply_eq I M
+    HomConnection.riemannSec_homBundle_apply_eq I M
       (Tensor0SModel 0 ℝ E) (fun z : M => Tensor0SSpace 0 I z)
       (Tensor0SModel m ℝ E) (fun z : M => Tensor0SSpace m I z)
       (Tensor0SNabla.tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
@@ -139,14 +139,14 @@ private theorem riemannOp_tensorCov_homNatural
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace m I x from Ξ) d) =
       riemannSec (Tensor0SNabla.tensor0SCovariantDerivative I M m (LeviCivita (I := I) g))
           (fun b => X b) (fun b => Wfield b)
-          (HomConnectionGen.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
+          (HomConnection.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
             (V := fun z : M => Tensor0SSpace m I z)
             (fun b => Ξsec b) (fun b => dSec b)) x from by
     rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace m I x from Ξ) d =
-        HomConnectionGen.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
+        HomConnection.pairedSection (M := M) (U := fun z : M => Tensor0SSpace 0 I z)
           (V := fun z : M => Tensor0SSpace m I z)
           (fun b => Ξsec b) (fun b => dSec b) x from by
-      rw [HomConnectionGen.pairedSection_apply, show d = dSec x from hdSec.symm, hΞx]]
+      rw [HomConnection.pairedSection_apply, show d = dSec x from hdSec.symm, hΞx]]
     rw [← hXx, ← hWx]
     exact riemannOp_apply_smooth
       (cov := Tensor0SNabla.tensor0SCovariantDerivative I M m (LeviCivita (I := I) g)) hX hW

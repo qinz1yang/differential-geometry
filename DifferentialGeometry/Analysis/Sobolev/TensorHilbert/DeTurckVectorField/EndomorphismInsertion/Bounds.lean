@@ -614,7 +614,7 @@ private theorem diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform_s
 
 open DifferentialGeometry.Analysis.Spectral.DeTurck in
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert in
-theorem cometricCastG0_order0sup_jetL2_succ_generic
+theorem cometricCastG0_order0sup_jetL2_succ
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1104,7 +1104,7 @@ private lemma window_grid_le (g₀ : SmoothRiemannianMetric I M)
         intro m _
         rw [Finset.sum_const, nsmul_eq_mul]
 
-private theorem sharpFlatEndoCc_lowOrder_jetL2_succ_generic
+private theorem sharpFlatEndoCc_lowOrder_jetL2_succ
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1234,7 +1234,7 @@ private theorem sharpFlatEndoCc_lowOrder_jetL2_succ_generic
           ‖iteratedCovGrad (I := I) g₀ 1 1 q IdIns‖)]
     exact Finset.sum_le_sum hterm
 
-theorem connectionDifferenceSection_lowOrder_jetL2_succ_generic
+theorem connectionDifferenceSection_lowOrder_jetL2_succ
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1254,11 +1254,11 @@ theorem connectionDifferenceSection_lowOrder_jetL2_succ_generic
             ‖iteratedCovGrad (I := I) g₀ 1 2 q (connectionDifferenceSection (I := I) g₁ g₀)‖ ^ 2 ≤ F i) := by
   classical
   obtain ⟨ΛK, FK, hΛK_nn, hFK_nn, hK⟩ :=
-    raisedKoszul_order0sup_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    raisedKoszul_order0sup_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛKlow, hΛKlow_nn, hKlow⟩ :=
     raisedKoszul_riemannianFiberNormSq_lowOrder_le (I := I) (M := M) g₀ a ha_super hR
   obtain ⟨ΛS, FS, hΛS_nn, hFS_nn, hS⟩ :=
-    sharpFlatEndoCc_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    sharpFlatEndoCc_lowOrder_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   have hTA_ex : ∀ q : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g₀ 1 2) (T : SmoothCcTensor g₀ 1 1)
         (ΛS' ΛT' : ℝ), 0 ≤ ΛS' → 0 ≤ ΛT' →
@@ -1553,7 +1553,7 @@ theorem metricLoweredConnectionDifference_lowOrder_iteratedCovGrad_norm_sq_succ_
               F i) := by
   classical
   obtain ⟨ΛC, FC, hΛC_nn, hFC_nn, hC⟩ :=
-    connectionDifferenceSection_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    connectionDifferenceSection_lowOrder_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   have hSBackground_ex : ∀ n : ℕ, ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + n) x
         ((iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)).toSection x) ≤
@@ -1788,7 +1788,7 @@ theorem deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_succ_le
               F i) := by
   classical
   obtain ⟨ΛCsup, FC, hΛCsup_nn, hFC_nn, hCgen⟩ :=
-    cometricCastG0_order0sup_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    cometricCastG0_order0sup_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛClow, hΛClow_nn, hClow⟩ :=
     cometricCastG0_riemannianFiberNormSq_lowOrder_le (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨ΛX, FX, hΛX_nn, hFX_nn, hXgen⟩ :=
@@ -2017,7 +2017,7 @@ theorem deTurckVectorFieldCovariantDerivativeLowered_covariantJetNormSq_zero_bou
   obtain ⟨ΛO, FO, hΛO_nn, hFO_nn, hOgen⟩ :=
     deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_succ_le (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   obtain ⟨ΛCd, FCd, hΛCd_nn, hFCd_nn, hCdgen⟩ :=
-    connectionDifferenceSection_lowOrder_jetL2_succ_generic (I := I) (M := M) g₀ a ha_super hR hδ₀
+    connectionDifferenceSection_lowOrder_jetL2_succ (I := I) (M := M) g₀ a ha_super hR hδ₀
   have hTA_ex : ∀ q : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g₀ 1 2) (T : SmoothCcTensor g₀ 0 1)
         (ΛS' ΛT' : ℝ), 0 ≤ ΛS' → 0 ≤ ΛT' →

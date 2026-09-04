@@ -18,6 +18,7 @@ namespace DeTurckCoefficients
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
 
 section NormedSpaceModel

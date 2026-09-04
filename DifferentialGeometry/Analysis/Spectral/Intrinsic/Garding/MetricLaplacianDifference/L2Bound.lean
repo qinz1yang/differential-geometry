@@ -175,7 +175,7 @@ theorem lapDiffA20_graph
   refine ⟨v, Prod.ext rfl ?_⟩
   exact (hs v).symm
 
-theorem lapDiffA20_test
+theorem lapDiffA20_pairing_mem_closure
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (T : D.RegularTime) (s : Real)

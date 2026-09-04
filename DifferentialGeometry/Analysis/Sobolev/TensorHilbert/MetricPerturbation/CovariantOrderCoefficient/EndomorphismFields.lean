@@ -87,7 +87,7 @@ lemma endoCov_eq_connTerm_add_sharpTerm (g₀ g₁ : SmoothRiemannianMetric I M)
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem leviCivitaSection_contMDiff_aux (g : SmoothRiemannianMetric I M)
+private theorem leviCivitaSection_contMDiff (g : SmoothRiemannianMetric I M)
     {σ : Π x : M, TangentSpace I x}
     (hσ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% σ)) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
@@ -134,14 +134,14 @@ theorem sharpTermEndo_inner_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
           ((LeviCivita (I := I) g₀).toFun
             (fun y : M => (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ y) (W y)) x (V0 x))) :=
       ContMDiff.clm_bundle_apply (b := id)
-        (leviCivitaSection_contMDiff_aux (I := I) g₀
+        (leviCivitaSection_contMDiff (I := I) g₀
           (endoApplySection_contMDiff (I := I) (M := M) (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) W))
         V0.contMDiff
     have hcovWsec : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) x
           ((LeviCivita (I := I) g₀).toFun (fun y : M => W y) x (V0 x))) :=
       ContMDiff.clm_bundle_apply (b := id)
-        (leviCivitaSection_contMDiff_aux (I := I) g₀ W.contMDiff) V0.contMDiff
+        (leviCivitaSection_contMDiff (I := I) g₀ W.contMDiff) V0.contMDiff
     have hcovW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) x
           ((metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ x)
@@ -248,14 +248,14 @@ private local instance tensor0STotalSpaceTopology (s : ℕ) :
 def bilinEndoCovariantDerivative (g : SmoothRiemannianMetric I M) :
     CovariantDerivative I (E →L[ℝ] (E →L[ℝ] E))
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :=
-  HomConnectionGen.homBundleCovariantDerivativeGen I M
+  HomConnection.homBundleCovariantDerivative I M
     E (fun x : M => TangentSpace I x)
     (E →L[ℝ] E) (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (LeviCivita (I := I) g) (endoCovariantDerivative (I := I) (M := M) g)
 
 instance bilinEndoCovariantDerivative_contMDiff (g : SmoothRiemannianMetric I M) :
     (bilinEndoCovariantDerivative (I := I) (M := M) g).ContMDiffCovariantDerivative ∞ :=
-  HomConnectionGen.homBundleCovariantDerivativeGen_contMDiff I M
+  HomConnection.homBundleCovariantDerivative_contMDiff I M
     E (fun x : M => TangentSpace I x)
     (E →L[ℝ] E) (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (LeviCivita (I := I) g) (endoCovariantDerivative (I := I) (M := M) g)
@@ -269,7 +269,7 @@ theorem bilinEndoCovariantDerivative_apply (g : SmoothRiemannianMetric I M)
     ((bilinEndoCovariantDerivative (I := I) (M := M) g) Term x v) (Y x) =
       (endoCovariantDerivative (I := I) (M := M) g) (fun y => (Term y) (Y y)) x v -
         (Term x) ((LeviCivita (I := I) g) (fun y => Y y) x v) :=
-  HomConnectionGen.homBundleCovariantDerivativeGen_apply I M
+  HomConnection.homBundleCovariantDerivative_apply I M
     E (fun x : M => TangentSpace I x)
     (E →L[ℝ] E) (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (LeviCivita (I := I) g) (endoCovariantDerivative (I := I) (M := M) g) Term Y x v

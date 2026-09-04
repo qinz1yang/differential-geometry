@@ -93,7 +93,7 @@ variable {V : M → Type*} [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
 
 omit [BoundarylessManifold I M] in
 omit [CompleteSpace E_U] [CompleteSpace F] [ContMDiffVectorBundle ∞ F V I] in
-lemma nablaRiemannSec_homBundleGen_apply_eq
+lemma nablaRiemannSec_homBundle_apply_eq
     (cov_U : CovariantDerivative I E_U U) [ContMDiffCovariantDerivative cov_U ∞]
     (cov_V : CovariantDerivative I F V) [ContMDiffCovariantDerivative cov_V ∞]
     (covT : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -101,16 +101,16 @@ lemma nablaRiemannSec_homBundleGen_apply_eq
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (τ : Cₛ^∞⟮I; E_U →L[ℝ] F, (fun x : M => U x →L[ℝ] V x)⟯)
     (W : Cₛ^∞⟮I; E_U, U⟯) (x : M) :
-    (nablaRiemannSec covT (HomConnectionGen.homBundleCovariantDerivativeGen I M E_U U F V cov_U
+    (nablaRiemannSec covT (HomConnection.homBundleCovariantDerivative I M E_U U F V cov_U
       cov_V)
         (fun b => X b) (fun b => Y b) (fun b => Z b) (fun b => τ b) x) (W x) =
       nablaRiemannSec covT cov_V (fun b => X b) (fun b => Y b) (fun b => Z b)
-          (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
+          (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
             x
         - τ x (nablaRiemannSec covT cov_U (fun b => X b) (fun b => Y b) (fun b => Z b)
             (fun b => W b) x) := by
   classical
-  set covHom := HomConnectionGen.homBundleCovariantDerivativeGen I M E_U U F V cov_U cov_V with
+  set covHom := HomConnection.homBundleCovariantDerivative I M E_U U F V cov_U cov_V with
     hcovHom
   set BXY : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     ContMDiffSection.mk (covApply covT (fun b => X b) (fun b => Y b))
@@ -150,49 +150,49 @@ lemma nablaRiemannSec_homBundleGen_apply_eq
   have hRUW_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E_U))
       (fun y : M => TotalSpace.mk' E_U (E := U) y (RUW y)) x :=
     (RUW.contMDiff x).mdifferentiableAt (by simp)
-  have hPsec : (HomConnectionGen.pairedSection (M := M) (U := U) (V := V)
+  have hPsec : (HomConnection.pairedSection (M := M) (U := U) (V := V)
         (fun b => riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) b) (fun b => W b))
           =
       (fun b => riemannSec cov_V (fun b => Y b) (fun b => Z b)
-          (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
+          (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
             b)
-        - (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b)
+        - (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b)
             (fun b => RUW b)) := by
     funext b
-    have hstar := HomConnectionGen.riemannSec_homBundleGen_apply_eq I M E_U U F V cov_U cov_V
+    have hstar := HomConnection.riemannSec_homBundle_apply_eq I M E_U U F V cov_U cov_V
       Y Z τ W b
-    simp only [HomConnectionGen.pairedSection, Pi.sub_apply]
+    simp only [HomConnection.pairedSection, Pi.sub_apply]
     rw [show RUW b = riemannSec cov_U (fun b => Y b) (fun b => Z b) (fun b => W b) b from rfl]
     rw [hstar]
   have hsm1 : MDiffAt (T% (fun b => riemannSec cov_V (fun b => Y b) (fun b => Z b)
-      (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b)) b))
+      (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b)) b))
         x := by
     have := riemannSec_contMDiff (cov := cov_V) Y.contMDiff Z.contMDiff
-      (T := HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
+      (T := HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
       (ContMDiff.clm_bundle_apply (b := id) τ.contMDiff W.contMDiff)
     exact (this x).mdifferentiableAt (by simp)
-  have hsm2 : MDiffAt (T% (HomConnectionGen.pairedSection (M := M) (U := U) (V := V)
+  have hsm2 : MDiffAt (T% (HomConnection.pairedSection (M := M) (U := U) (V := V)
       (fun b => τ b) (fun b => RUW b))) x :=
     ((ContMDiff.clm_bundle_apply (b := id) τ.contMDiff RUW.contMDiff) x).mdifferentiableAt (by simp)
   have hVadd : cov_V.toFun (fun b => riemannSec cov_V (fun b => Y b) (fun b => Z b)
-          (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
+          (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
             b)
           x (X x) =
-      cov_V.toFun (HomConnectionGen.pairedSection (M := M) (U := U) (V := V)
+      cov_V.toFun (HomConnection.pairedSection (M := M) (U := U) (V := V)
           (fun b => riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) b)
           (fun b => W b)) x (X x)
-        + cov_V.toFun (HomConnectionGen.pairedSection (M := M) (U := U) (V := V)
+        + cov_V.toFun (HomConnection.pairedSection (M := M) (U := U) (V := V)
             (fun b => τ b) (fun b => RUW b)) x (X x) := by
     have hsplit : (fun b => riemannSec cov_V (fun b => Y b) (fun b => Z b)
-          (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
+          (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
             b) =
-        HomConnectionGen.pairedSection (M := M) (U := U) (V := V)
+        HomConnection.pairedSection (M := M) (U := U) (V := V)
             (fun b => riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) b)
               (fun b => W b)
-          + HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b)
+          + HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b)
             (fun b => RUW b) := by
       rw [hPsec]; abel
-    have hsmσW : MDiffAt (T% (HomConnectionGen.pairedSection (M := M) (U := U) (V := V)
+    have hsmσW : MDiffAt (T% (HomConnection.pairedSection (M := M) (U := U) (V := V)
         (fun b => riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) b) (fun b => W b)))
           x :=
       ((ContMDiff.clm_bundle_apply (b := id) hRHτ_smooth W.contMDiff) x).mdifferentiableAt (by simp)
@@ -202,30 +202,30 @@ lemma nablaRiemannSec_homBundleGen_apply_eq
   simp only [sub_apply]
   rw [show covHom.toFun
         (fun b => riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) b) x (X x) (W x) =
-      cov_V.toFun (HomConnectionGen.pairedSection (M := M) (U := U) (V := V)
+      cov_V.toFun (HomConnection.pairedSection (M := M) (U := U) (V := V)
           (fun b => riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) b)
           (fun b => W b)) x (X x)
         - (riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) x)
             (cov_U.toFun (fun b => W b) x (X x)) from by
-    have h := HomConnectionGen.cov_V_toFun_pairedSection_apply I M E_U U F V cov_U cov_V
+    have h := HomConnection.cov_V_toFun_pairedSection_apply I M E_U U F V cov_U cov_V
       (σ := fun b => riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) b)
       (Y := fun b => W b) hRHτ_at hWat (X x)
     rw [← hcovHom] at h
     rw [h]
     abel]
-  rw [show cov_V.toFun (HomConnectionGen.pairedSection (M := M) (U := U) (V := V)
+  rw [show cov_V.toFun (HomConnection.pairedSection (M := M) (U := U) (V := V)
           (fun b => τ b) (fun b => RUW b)) x (X x) =
       (covHom.toFun (fun b => τ b) x (X x)) (RUW x)
         + τ x (cov_U.toFun (fun b => RUW b) x (X x)) from by
-    have h := HomConnectionGen.cov_V_toFun_pairedSection_apply I M E_U U F V cov_U cov_V
+    have h := HomConnection.cov_V_toFun_pairedSection_apply I M E_U U F V cov_U cov_V
       (σ := fun b => τ b) (Y := fun b => RUW b) hτat hRUW_at (X x)
     rw [← hcovHom] at h
     exact h] at hVadd
-  rw [show cov_V.toFun (HomConnectionGen.pairedSection (M := M) (U := U) (V := V)
+  rw [show cov_V.toFun (HomConnection.pairedSection (M := M) (U := U) (V := V)
           (fun b => riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) b)
           (fun b => W b)) x (X x) =
       cov_V.toFun (fun b => riemannSec cov_V (fun b => Y b) (fun b => Z b)
-          (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
+          (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b))
             b)
           x (X x)
         - ((covHom.toFun (fun b => τ b) x (X x)) (RUW x)
@@ -234,45 +234,45 @@ lemma nablaRiemannSec_homBundleGen_apply_eq
   rw [show riemannSec covHom (covApply covT (fun b => X b) (fun b => Y b)) (fun b => Z b)
         (fun b => τ b) x (W x) =
       (riemannSec covHom (fun b => BXY b) (fun b => Z b) (fun b => τ b) x) (W x) from rfl,
-    HomConnectionGen.riemannSec_homBundleGen_apply_eq I M E_U U F V cov_U cov_V BXY Z τ W x]
+    HomConnection.riemannSec_homBundle_apply_eq I M E_U U F V cov_U cov_V BXY Z τ W x]
   rw [show riemannSec covHom (fun b => Y b) (covApply covT (fun b => X b) (fun b => Z b))
         (fun b => τ b) x (W x) =
       (riemannSec covHom (fun b => Y b) (fun b => BXZ b) (fun b => τ b) x) (W x) from rfl,
-    HomConnectionGen.riemannSec_homBundleGen_apply_eq I M E_U U F V cov_U cov_V Y BXZ τ W x]
+    HomConnection.riemannSec_homBundle_apply_eq I M E_U U F V cov_U cov_V Y BXZ τ W x]
   rw [show riemannSec covHom (fun b => Y b) (fun b => Z b)
         (covApply covHom (fun b => X b) (fun b => τ b)) x (W x) =
       (riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => Dτ b) x) (W x) from rfl,
-    HomConnectionGen.riemannSec_homBundleGen_apply_eq I M E_U U F V cov_U cov_V Y Z Dτ W x]
+    HomConnection.riemannSec_homBundle_apply_eq I M E_U U F V cov_U cov_V Y Z Dτ W x]
   rw [show (riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) x)
         (cov_U.toFun (fun b => W b) x (X x)) =
       (riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) x) (DXW x) from rfl,
-    HomConnectionGen.riemannSec_homBundleGen_apply_eq I M E_U U F V cov_U cov_V Y Z τ DXW x]
+    HomConnection.riemannSec_homBundle_apply_eq I M E_U U F V cov_U cov_V Y Z τ DXW x]
   rw [nablaRiemannSec_def, nablaRiemannSec_def, map_sub, map_sub, map_sub]
   rw [show covApply cov_V (fun b => X b)
-        (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b)) =
-      HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => Dτ b) (fun b => W b)
-        + HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => DXW b)
+        (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => W b)) =
+      HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => Dτ b) (fun b => W b)
+        + HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b) (fun b => DXW b)
           from by
-    have h := HomConnectionGen.covApply_cov_V_pairedSection_eq I M E_U U F V cov_U cov_V X τ W
+    have h := HomConnection.covApply_cov_V_pairedSection_eq I M E_U U F V cov_U cov_V X τ W
     rw [← hcovHom] at h
     rw [h]
     rfl]
   rw [show riemannSec cov_V (fun b => Y b) (fun b => Z b)
-        (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => Dτ b) (fun b => W b)
-          + HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b)
+        (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => Dτ b) (fun b => W b)
+          + HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b)
             (fun b => DXW b))
         x =
       riemannSec cov_V (fun b => Y b) (fun b => Z b)
-          (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => Dτ b) (fun b => W b))
+          (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => Dτ b) (fun b => W b))
             x
         + riemannSec cov_V (fun b => Y b) (fun b => Z b)
-            (HomConnectionGen.pairedSection (M := M) (U := U) (V := V) (fun b => τ b)
+            (HomConnection.pairedSection (M := M) (U := U) (V := V) (fun b => τ b)
               (fun b => DXW b)) x
       from by
-    have hP1sm : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞ (T% (HomConnectionGen.pairedSection
+    have hP1sm : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞ (T% (HomConnection.pairedSection
         (M := M) (U := U) (V := V) (fun b => Dτ b) (fun b => W b))) :=
       ContMDiff.clm_bundle_apply (b := id) Dτ.contMDiff W.contMDiff
-    have hP2sm : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞ (T% (HomConnectionGen.pairedSection
+    have hP2sm : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞ (T% (HomConnection.pairedSection
         (M := M) (U := U) (V := V) (fun b => τ b) (fun b => DXW b))) :=
       ContMDiff.clm_bundle_apply (b := id) τ.contMDiff DXW.contMDiff
     exact riemannSec_add_third (cov := cov_V)
@@ -398,7 +398,7 @@ lemma tensor0S_curry_nablaTensor0SCurv_succ_eq
     (A : Π b : M, Tensor0SSpace (s + 1) I b) (hA : TensorSmooth (I := I) (s + 1) A) (x : M) :
     tensor0SCurry (I := I) (M := M) s x
         (nablaTensor0SCurv (I := I) g (s + 1) X Y Z A x) =
-      nablaRiemannSec (LeviCivita (I := I) g) (homGenS (I := I) (M := M) g s)
+      nablaRiemannSec (LeviCivita (I := I) g) (tangentHomTensorCovariantDerivative (I := I) (M := M) g s)
         (fun b => X b) (fun b => Y b) (fun b => Z b) (curriedSection I M A) x := by
   classical
   have hA1 : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel (s + 1) ℝ E)) ((∞ : WithTop ℕ∞) + 1)
@@ -430,23 +430,23 @@ lemma tensor0S_curry_nablaTensor0SCurv_succ_eq
       curriedSection I M
           (covApply (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
             (fun b => P b) A) =
-        covApply (homGenS (I := I) (M := M) g s) (fun b => P b) (curriedSection I M A) := by
+        covApply (tangentHomTensorCovariantDerivative (I := I) (M := M) g s) (fun b => P b) (curriedSection I M A) := by
     intro P
     funext b
     rw [curriedSection_apply, covApply_apply, covApply_apply,
-      tensor0S_curry_tensor0SCov_succ_eq_homGenS (I := I) (M := M) g s A (hAatAll b) (P b)]
+      tensor0S_curry_tensor0SCov_succ_eq_tangentHomTensorCovariantDerivative (I := I) (M := M) g s A (hAatAll b) (P b)]
   have hcurry_RYZ :
       curriedSection I M
           (fun b => riemannSec (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
             (fun b => Y b) (fun b => Z b) A b) =
-        (fun b => riemannSec (homGenS (I := I) (M := M) g s)
+        (fun b => riemannSec (tangentHomTensorCovariantDerivative (I := I) (M := M) g s)
           (fun b => Y b) (fun b => Z b) (curriedSection I M A) b) := by
     funext b
     rw [curriedSection_apply,
       tensor0S_curry_riemannSec_tensor0SCov_succ_eq (I := I) (M := M) g s Y Z A hA b]
   rw [nablaTensor0SCurv_def, nablaRiemannSec_def]
   rw [map_sub, map_sub, map_sub]
-  rw [tensor0S_curry_tensor0SCov_succ_eq_homGenS (I := I) (M := M) g s
+  rw [tensor0S_curry_tensor0SCov_succ_eq_tangentHomTensorCovariantDerivative (I := I) (M := M) g s
       (fun b => riemannSec (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
         (fun b => Y b) (fun b => Z b) A b) hRYZ_at (X x), hcurry_RYZ]
   rw [show riemannSec (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
@@ -515,17 +515,17 @@ theorem nablaTensor0SCurv_succ_consEval
   rw [← TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     (T := nablaTensor0SCurv (I := I) g (s + 1) X Y Z A x) (v0 := u₀) (vs := u')]
   rw [tensor0S_curry_nablaTensor0SCurv_succ_eq (I := I) g s X Y Z A hA x]
-  rw [show nablaRiemannSec (LeviCivita (I := I) g) (homGenS (I := I) (M := M) g s)
+  rw [show nablaRiemannSec (LeviCivita (I := I) g) (tangentHomTensorCovariantDerivative (I := I) (M := M) g s)
         (fun b => X b) (fun b => Y b) (fun b => Z b) (curriedSection I M A) x =
       nablaRiemannSec (LeviCivita (I := I) g)
-          (HomConnectionGen.homBundleCovariantDerivativeGen I M E
+          (HomConnection.homBundleCovariantDerivative I M E
             (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
             (fun x : M => Tensor0SSpace s I x)
             (LeviCivita (I := I) g)
             (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)))
           (fun b => X b) (fun b => Y b) (fun b => Z b) (fun b => Acurry b) x from rfl]
   conv_lhs => rw [show (u₀ : TangentSpace I x) = (Y₀ : Π b : M, TangentSpace I b) x from hY₀x.symm]
-  rw [nablaRiemannSec_homBundleGen_apply_eq (I := I) (M := M)
+  rw [nablaRiemannSec_homBundle_apply_eq (I := I) (M := M)
     (E_U := E) (U := (TangentSpace I : M → Type _)) (F := Tensor0SModel s ℝ E)
     (V := (fun x : M => Tensor0SSpace s I x))
     (cov_U := LeviCivita (I := I) g)

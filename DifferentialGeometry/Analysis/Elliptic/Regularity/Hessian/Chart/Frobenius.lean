@@ -847,7 +847,7 @@ theorem smoothTensorPairingChart_eq_hessPairingChart_pullback
     have hf_sub : ContMDiff I 𝓘(ℝ) ∞ (fun z : M => (φ : M → ℝ) z - v.toFun z) :=
       φ.contMDiff.sub v.smooth
     exact chartFrobeniusSqHSBridge_holds (I := I) g α hf_sub hx_y_chart
-  have h_swap_aux := chartAlpha_swap_aux_holds (I := I) g α (φ : M → ℝ) v.toFun x_y
+  have h_swap_aux := chartHessian_contraction_comm (I := I) g α (φ : M → ℝ) v.toFun x_y
   exact smoothTensorPairingChart_eq_hessPairingChart_of_HSBridge
     (I := I) (M := M) g α φ v hy h_HS_add h_HS_sub h_swap_aux
 

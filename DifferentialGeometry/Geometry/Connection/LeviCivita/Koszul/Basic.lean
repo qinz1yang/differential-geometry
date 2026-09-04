@@ -3,7 +3,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.MetricCompatibility
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Bundle.Section
 
 noncomputable section

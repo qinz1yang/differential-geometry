@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.FieldComponents
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 
 set_option autoImplicit false
@@ -242,13 +242,13 @@ theorem componentRS_connectionDifferenceTensorAt
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (i j k : Idx) :
-    componentRSGen (I := I) basis (connectionDifferenceTensorAt (I := I) cov cov' x)
+    componentRSField (I := I) basis (connectionDifferenceTensorAt (I := I) cov cov' x)
         (fun _ : Fin 1 => k)
         (fun q : Fin 2 => if q = 0 then i else j) =
       basis.coord k
         (((CovariantDerivative.difference cov cov' x) (basis j)) (basis i)) := by
   classical
-  rw [componentRS_apply_gen]
+  rw [componentRSField_apply]
   change Tensor0SSpace.eval
       (connectionDifferenceTensorAt (I := I) cov cov' x
         (basisTensor0S (I := I) basis fun _ => k))

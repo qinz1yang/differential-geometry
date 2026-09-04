@@ -15,7 +15,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace IteratedFChartEffStepRegularity
+namespace IteratedEffectiveSourceSuccessorRegularity
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -1189,7 +1189,7 @@ theorem fChartEffStep_memW1p_two
   rw [MemWkp.one_iff_memW1p] at h_mem
   exact h_mem
 
-end IteratedFChartEffStepRegularity
+end IteratedEffectiveSourceSuccessorRegularity
 end Laplacian
 end Analysis
 end DifferentialGeometry

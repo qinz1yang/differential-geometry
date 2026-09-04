@@ -453,7 +453,7 @@ private lemma unitValueCovGrad3_contMDiff (g₀ : SmoothRiemannianMetric I M)
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] [SigmaCompactSpace M] in
-private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
+private lemma linearizedKoszulCovec_basis_contMDiffOn_smoothTensor
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (α : M) (j : Fin (Module.finrank ℝ E)) :
@@ -606,7 +606,7 @@ lemma sharpRaisedKoszulVec_section_contMDiff (g₀ g₁ : SmoothRiemannianMetric
   apply DifferentialGeometry.Geometry.Operator.metricSharp_contMDiff_total (I := I) g₁
     (cv := fun b : M => linearizedKoszulCovec (I := I) g₀ S b (U b) (Z b))
   intro α j
-  exact linearizedKoszulCovec_basis_contMDiffOn_generic (I := I) (M := M) g₀ S Z U α j
+  exact linearizedKoszulCovec_basis_contMDiffOn_smoothTensor (I := I) (M := M) g₀ S Z U α j
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] [SigmaCompactSpace M] in

@@ -284,12 +284,12 @@ lemma gradTermSection_value_local
   rw [gradTermSection_toSection, gradTermSection_toSection, hx]
 
 omit [I.Boundaryless] in
-theorem exists_gradTermSection_appFullSec (g : SmoothRiemannianMetric I M) (s : ℕ) :
+theorem exists_gradTermSection_homTensorRSFieldApply (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ∃ H_R : HomTensorRSField (E := E) (M := M) 0 (s + 1) (s + 1) I,
       ∀ W : SmoothCcTensor g 0 (s + 1),
         curvatureGradContractionSection (I := I) (M := M) g s W =
           homTensorRSFieldApply (I := I) (M := M) g 0 (s + 1) (s + 1) H_R W :=
-  exists_value_local_appFullSec (I := I) (M := M) g 0 (s + 1) (s + 1)
+  exists_value_local_homTensorRSFieldApply (I := I) (M := M) g 0 (s + 1) (s + 1)
     (fun W => curvatureGradContractionSection (I := I) (M := M) g s W)
     (fun W₁ W₂ x => gradTermSection_toSection_add (I := I) (M := M) g s W₁ W₂ x)
     (fun c W x => gradTermSection_toSection_smul (I := I) (M := M) g s c W x)
@@ -424,12 +424,12 @@ lemma diffTermSection_toSection_smul
       (covGrad (I := I) (M := M) g 0 s S) x]
   rw [smul_sub]
 
-theorem exists_diffTermSection_appFullSec (g : SmoothRiemannianMetric I M) (s : ℕ) :
+theorem exists_diffTermSection_homTensorRSFieldApply (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ∃ H_dR : HomTensorRSField (E := E) (M := M) 0 s (s + 1) I,
       ∀ S : SmoothCcTensor g 0 s,
         curvatureCommutatorRemainderSection (I := I) (M := M) g s S =
           homTensorRSFieldApply (I := I) (M := M) g 0 s (s + 1) H_dR S :=
-  exists_value_local_appFullSec (I := I) (M := M) g 0 s (s + 1)
+  exists_value_local_homTensorRSFieldApply (I := I) (M := M) g 0 s (s + 1)
     (fun S => curvatureCommutatorRemainderSection (I := I) (M := M) g s S)
     (fun S₁ S₂ x => diffTermSection_toSection_add (I := I) (M := M) g s S₁ S₂ x)
     (fun c S x => diffTermSection_toSection_smul (I := I) (M := M) g s c S x)
@@ -444,8 +444,8 @@ theorem exists_pointwiseTensorCurv_firstOrder_homField_section
           homTensorRSFieldApply (I := I) (M := M) g 0 (s + 1) (s + 1) H_R
             (covGrad (I := I) (M := M) g 0 s S) +
           homTensorRSFieldApply (I := I) (M := M) g 0 s (s + 1) H_dR S := by
-  obtain ⟨H_R, hH_R⟩ := exists_gradTermSection_appFullSec (I := I) (M := M) (E := E) g s
-  obtain ⟨H_dR, hH_dR⟩ := exists_diffTermSection_appFullSec (I := I) (M := M) (E := E) g s
+  obtain ⟨H_R, hH_R⟩ := exists_gradTermSection_homTensorRSFieldApply (I := I) (M := M) (E := E) g s
+  obtain ⟨H_dR, hH_dR⟩ := exists_diffTermSection_homTensorRSFieldApply (I := I) (M := M) (E := E) g s
   refine ⟨H_R, H_dR, fun S => ?_⟩
   have hdecomp : pointwiseTensorCurv (I := I) (M := M) g s S =
       curvatureGradContractionSection (I := I) (M := M) g s (covGrad (I := I) (M := M) g 0 s S) +

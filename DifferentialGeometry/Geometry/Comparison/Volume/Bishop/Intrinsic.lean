@@ -38,7 +38,7 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-theorem intrJacobi_raw
+theorem intrinsic_geodesic_and_jacobi_eventually_eq_radial
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u w : E) :
@@ -628,7 +628,7 @@ theorem exists_intrMean
       have hcurve :
           ∀ᶠ t in 𝓝[>] (0 : Real),
             γ t = radialCurve (I := I) g p (u : E) t := by
-        filter_upwards [intrJacobi_raw (I := I) g hEnorm p (u : E) (0 : E)]
+        filter_upwards [intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p (u : E) (0 : E)]
           with t ht
         simpa only [γ] using ht.1
       have hfield_i : ∀ i,
@@ -637,7 +637,7 @@ theorem exists_intrMean
               (radialJacobiField (I := I) g p (u : E) (v i : E) t : E) := by
         intro i
         filter_upwards [
-          intrJacobi_raw (I := I) g hEnorm p (u : E) (v i : E)] with t ht
+          intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p (u : E) (v i : E)] with t ht
         simpa only [V] using ht.2
       have hfields :
           ∀ᶠ t in 𝓝[>] (0 : Real), ∀ i,
@@ -799,7 +799,7 @@ theorem exists_intrRatio
     have hcurve :
         ∀ᶠ t in 𝓝[>] (0 : Real),
           γ t = radialCurve (I := I) g p (u : E) t := by
-      filter_upwards [intrJacobi_raw (I := I) g hEnorm p (u : E) (0 : E)]
+      filter_upwards [intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p (u : E) (0 : E)]
         with t ht
       simpa only [γ] using ht.1
     have hfield_i : ∀ i,
@@ -808,7 +808,7 @@ theorem exists_intrRatio
             (radialJacobiField (I := I) g p (u : E) (v i : E) t : E) := by
       intro i
       filter_upwards [
-        intrJacobi_raw (I := I) g hEnorm p (u : E) (v i : E)] with t ht
+        intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p (u : E) (v i : E)] with t ht
       simpa only [V] using ht.2
     have hfields :
         ∀ᶠ t in 𝓝[>] (0 : Real), ∀ i,
@@ -947,7 +947,7 @@ theorem intrRatioOfFrame
     have hcurve :
         ∀ᶠ t in 𝓝[>] (0 : Real),
           γ t = radialCurve (I := I) g p (u : E) t := by
-      filter_upwards [intrJacobi_raw (I := I) g hEnorm p (u : E) (0 : E)]
+      filter_upwards [intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p (u : E) (0 : E)]
         with t ht
       simpa only [γ] using ht.1
     have hfield_i : ∀ i,
@@ -956,7 +956,7 @@ theorem intrRatioOfFrame
             (radialJacobiField (I := I) g p (u : E) (v i : E) t : E) := by
       intro i
       filter_upwards [
-        intrJacobi_raw (I := I) g hEnorm p (u : E) (v i : E)] with t ht
+        intrinsic_geodesic_and_jacobi_eventually_eq_radial (I := I) g hEnorm p (u : E) (v i : E)] with t ht
       simpa only [V] using ht.2
     have hfields :
         ∀ᶠ t in 𝓝[>] (0 : Real), ∀ i,

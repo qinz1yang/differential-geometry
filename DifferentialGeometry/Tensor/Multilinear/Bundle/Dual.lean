@@ -80,7 +80,7 @@ theorem basisElem_eq_tensorOfDualLinearForms {d : ℕ}
     ContinuousMultilinearMap.compContinuousLinearMap_apply,
     ContinuousMultilinearMap.mkPiRing_apply]
 
-private noncomputable def dualMultilinearInverseAux (r : ℕ)
+private noncomputable def dualMultilinearInverse (r : ℕ)
     (Ψ : ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜) :
     haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
       continuousMultilinearMap_finiteDimensional r
@@ -94,10 +94,10 @@ private noncomputable def dualMultilinearInverseAux (r : ℕ)
 
 variable {𝕜 F}
 
-private theorem dualMultilinearInverseAux_basisElem (r : ℕ)
+private theorem dualMultilinearInverse_basisElem (r : ℕ)
     (Ψ : ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
     (σ : Fin r → Fin (Module.finrank 𝕜 F)) :
-    dualMultilinearInverseAux 𝕜 F r Ψ
+    dualMultilinearInverse 𝕜 F r Ψ
         (continuousMultilinearMapBasisElem (𝕜 := 𝕜) (F := F) (Module.finBasis 𝕜 F) r σ) =
       Ψ (fun i =>
         LinearMap.toContinuousLinearMap ((Module.finBasis 𝕜 F).coord (σ i))) := by
@@ -120,7 +120,7 @@ variable (𝕜 F)
 noncomputable def dualMultilinearInverseMap (r : ℕ) :
     ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜 →ₗ[𝕜]
     ((ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) →L[𝕜] 𝕜) where
-  toFun := dualMultilinearInverseAux 𝕜 F r
+  toFun := dualMultilinearInverse 𝕜 F r
   map_add' Ψ₁ Ψ₂ := by
     have : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) :=
       continuousMultilinearMap_finiteDimensional r
@@ -129,8 +129,8 @@ noncomputable def dualMultilinearInverseMap (r : ℕ) :
     let b := Module.finBasis 𝕜 F
     let bMLF := continuousMultilinearMapBasis (𝕜 := 𝕜) (F := F) b r
     have h_basis : ∀ σ,
-        dualMultilinearInverseAux 𝕜 F r (Ψ₁ + Ψ₂) (bMLF σ) =
-          (dualMultilinearInverseAux 𝕜 F r Ψ₁ + dualMultilinearInverseAux 𝕜 F r Ψ₂)
+        dualMultilinearInverse 𝕜 F r (Ψ₁ + Ψ₂) (bMLF σ) =
+          (dualMultilinearInverse 𝕜 F r Ψ₁ + dualMultilinearInverse 𝕜 F r Ψ₂)
             (bMLF σ) := by
       intro σ
       have hb_eq : (bMLF σ : ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) =
@@ -138,15 +138,15 @@ noncomputable def dualMultilinearInverseMap (r : ℕ) :
         congr_fun (Module.Basis.coe_mk
           (continuousMultilinearMap_basisElem_linearIndependent b r) _) σ
       rw [hb_eq, add_apply,
-        dualMultilinearInverseAux_basisElem,
-        dualMultilinearInverseAux_basisElem,
-        dualMultilinearInverseAux_basisElem]
+        dualMultilinearInverse_basisElem,
+        dualMultilinearInverse_basisElem,
+        dualMultilinearInverse_basisElem]
       rfl
-    have hLHS : ∀ x, dualMultilinearInverseAux 𝕜 F r (Ψ₁ + Ψ₂) x =
-        (dualMultilinearInverseAux 𝕜 F r Ψ₁ + dualMultilinearInverseAux 𝕜 F r Ψ₂) x := by
-      have := bMLF.ext (f₁ := (dualMultilinearInverseAux 𝕜 F r (Ψ₁ + Ψ₂)).toLinearMap)
-        (f₂ := ((dualMultilinearInverseAux 𝕜 F r Ψ₁ +
-          dualMultilinearInverseAux 𝕜 F r Ψ₂).toLinearMap)) h_basis
+    have hLHS : ∀ x, dualMultilinearInverse 𝕜 F r (Ψ₁ + Ψ₂) x =
+        (dualMultilinearInverse 𝕜 F r Ψ₁ + dualMultilinearInverse 𝕜 F r Ψ₂) x := by
+      have := bMLF.ext (f₁ := (dualMultilinearInverse 𝕜 F r (Ψ₁ + Ψ₂)).toLinearMap)
+        (f₂ := ((dualMultilinearInverse 𝕜 F r Ψ₁ +
+          dualMultilinearInverse 𝕜 F r Ψ₂).toLinearMap)) h_basis
       intro x
       exact congrFun (congrArg DFunLike.coe this) x
     exact hLHS x
@@ -158,21 +158,21 @@ noncomputable def dualMultilinearInverseMap (r : ℕ) :
     let b := Module.finBasis 𝕜 F
     let bMLF := continuousMultilinearMapBasis (𝕜 := 𝕜) (F := F) b r
     have h_basis : ∀ σ,
-        dualMultilinearInverseAux 𝕜 F r (c • Ψ) (bMLF σ) =
-          (c • dualMultilinearInverseAux 𝕜 F r Ψ) (bMLF σ) := by
+        dualMultilinearInverse 𝕜 F r (c • Ψ) (bMLF σ) =
+          (c • dualMultilinearInverse 𝕜 F r Ψ) (bMLF σ) := by
       intro σ
       have hb_eq : (bMLF σ : ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) =
           continuousMultilinearMapBasisElem b r σ :=
         congr_fun (Module.Basis.coe_mk
           (continuousMultilinearMap_basisElem_linearIndependent b r) _) σ
       rw [hb_eq, smul_apply,
-        dualMultilinearInverseAux_basisElem,
-        dualMultilinearInverseAux_basisElem]
+        dualMultilinearInverse_basisElem,
+        dualMultilinearInverse_basisElem]
       rfl
-    have hLHS : ∀ x, dualMultilinearInverseAux 𝕜 F r (c • Ψ) x =
-        (c • dualMultilinearInverseAux 𝕜 F r Ψ) x := by
-      have := bMLF.ext (f₁ := (dualMultilinearInverseAux 𝕜 F r (c • Ψ)).toLinearMap)
-        (f₂ := ((c • dualMultilinearInverseAux 𝕜 F r Ψ).toLinearMap)) h_basis
+    have hLHS : ∀ x, dualMultilinearInverse 𝕜 F r (c • Ψ) x =
+        (c • dualMultilinearInverse 𝕜 F r Ψ) x := by
+      have := bMLF.ext (f₁ := (dualMultilinearInverse 𝕜 F r (c • Ψ)).toLinearMap)
+        (f₂ := ((c • dualMultilinearInverse 𝕜 F r Ψ).toLinearMap)) h_basis
       intro x
       exact congrFun (congrArg DFunLike.coe this) x
     exact hLHS x
@@ -186,7 +186,7 @@ theorem dualMultilinearInverseMap_basisElem (r : ℕ)
         (continuousMultilinearMapBasisElem (𝕜 := 𝕜) (F := F) (Module.finBasis 𝕜 F) r σ) =
       Ψ (fun i =>
         LinearMap.toContinuousLinearMap ((Module.finBasis 𝕜 F).coord (σ i))) :=
-  dualMultilinearInverseAux_basisElem r Ψ σ
+  dualMultilinearInverse_basisElem r Ψ σ
 
 variable (𝕜 F)
 
@@ -244,7 +244,7 @@ theorem dualMultilinearLinearMap_dualMultilinearInverseMap (r : ℕ) :
       LinearMap.toContinuousLinearMap (b.coord k)) := funext hα
   change ((dualMultilinearLinearMap 𝕜 F r) ((dualMultilinearInverseMap 𝕜 F r) Ψ)) α = Ψ α
   rw [dualMultilinearLinearMap_apply]
-  change (dualMultilinearInverseAux 𝕜 F r Ψ : _ →L[𝕜] _)
+  change (dualMultilinearInverse 𝕜 F r Ψ : _ →L[𝕜] _)
       ((tensorOfDualLinearForms 𝕜 F r) α) = Ψ α
   change LinearMap.toContinuousLinearMap
       ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := F) b r).constr 𝕜

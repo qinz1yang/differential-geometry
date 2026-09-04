@@ -66,7 +66,7 @@ theorem linearizedDeTurckLieAt_eq_covariantJet_of_symm
     ccTensor02Symm_eq_self (I := I) (M := M) g₀ (T - T') hSsymm
   rw [linearizedDeTurckLieAt_eq_deriv_chartSum_on_Ioo (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) hs]
-  rw [(hasDerivAt_realizedDeTurckLieChartSum_general (I := I) g₀ g_bg T T'
+  rw [(hasDerivAt_realizedDeTurckLieChartSum (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) hs).deriv]
   simp only [vt, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
     ContinuousLinearEquiv.apply_symm_apply]

@@ -537,7 +537,7 @@ theorem conj_weak_ae
         abel
       rw [hres]
       simpa only [V2, U2] using
-        (lapDiffA20_test (I := I) (M := M) S.family.metric T t V2 w
+        (lapDiffA20_pairing_mem_closure (I := I) (M := M) S.family.metric T t V2 w
           (htgraph V2))
   · intro v
     let V1 : TensorHs (I := I) (M := M)
@@ -546,7 +546,7 @@ theorem conj_weak_ae
         (g := S.family.metric (T : Real)) (r := 0) (s := 0)
         (show (1 : Real) ≤ 0 + 1 by norm_num) (U1 t)
     simpa only [conjA1MR, conjA1, ContinuousLinearMap.comp_apply, V1, U1] using
-      (scalarPotH0_test (I := I) (M := M)
+      (scalarPotH0_inner_eq_smoothCore (I := I) (M := M)
         (S.family.metric (T : Real))
         (conjCoeff (I := I) (M := M) S ((T : Real) - t)) V1 v)
 

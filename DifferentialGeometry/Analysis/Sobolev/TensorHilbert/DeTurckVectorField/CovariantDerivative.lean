@@ -376,7 +376,7 @@ lemma deTurckVectorFieldCovariantDerivativeLoweredBase_unitModel_apply (g₀ g�
     (tangentSpaceModelContinuousLinearEquiv (I := I) x w),
     ContinuousLinearEquiv.symm_apply_apply]
   rw [show unitTensor (I := I) (M := M) x = unitZeroSec (I := I) (M := M) x from rfl]
-  rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g₀ 1
+  rw [covDeriv_unit_eval_eq (I := I) (M := M) g₀ 1
     (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g_bg).toSection x w]
   have hV : TensorSectionMDiffAt (I := I) 1
       (unitEvalSection (I := I) (M := M) g₀ 1 (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g_bg)) x :=
@@ -496,7 +496,7 @@ private lemma wEndo_eq_covDeriv_add_connectionDifference (g₀ g₁ g_bg : Smoot
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-lemma cotangentToDual_cometricRaiseSlot0_gen
+lemma cotangentToDual_cometricRaiseSlot0
     (g₀ : SmoothRiemannianMetric I M) (A : SmoothCcTensor g₀ 0 2) (x : M)
     (om : Tensor0SSpace 1 I x) (w : TangentSpace I x) :
     cotangentToDual (I := I)
@@ -549,7 +549,7 @@ private lemma cotangentToDual_cometricRaise_wAlpha
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
           ((![inverseMetricSharpFib (I := I) g₀ x om, w] :
             Fin 2 → TangentSpace I x) i)) :=
-  cotangentToDual_cometricRaiseSlot0_gen (I := I) (M := M) g₀
+  cotangentToDual_cometricRaiseSlot0 (I := I) (M := M) g₀
     (deTurckVectorFieldCovariantDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg) x om w
 
 omit [SigmaCompactSpace M] in

@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdent
 import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciFlowPdeAtZero
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
@@ -46,7 +46,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-namespace RicciContInMetricAux
+namespace RicciContinuityInMetric
 
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
@@ -497,9 +497,9 @@ private lemma chartLieDeTurckComp_continuous_of_hC2
   · exact continuousOn_finsetSum _ (fun k _ => (hgram k j).mul (hVFp i k))
   · exact continuousOn_finsetSum _ (fun k _ => (hgram i k).mul (hVFp j k))
 
-end RicciContInMetricAux
+end RicciContinuityInMetric
 
-namespace RicciContJointAux
+namespace JointRicciContinuity
 
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
@@ -557,7 +557,7 @@ private lemma jointGramPartialPartial_continuousOn
   have hy : extChartAt I α q.2 ∈ interior ((extChartAt I α).target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) (hgood q hq)
   simp only [Function.comp_apply, ContinuousMultilinearMap.apply_apply]
-  rw [← RicciContInMetricAux.partialDeriv_partialDeriv_chartGramOnE_eq_iteratedFDeriv_two
+  rw [← RicciContinuityInMetric.partialDeriv_partialDeriv_chartGramOnE_eq_iteratedFDeriv_two
     (I := I) (g_DT q.1) α a b m l hy]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
@@ -907,9 +907,9 @@ private lemma jointRicci_continuousOn
   refine continuousOn_finsetSum _ (fun j _ => ?_)
   exact jointRiemann_continuousOn g_DT α Sp hgood h0 h1 h2 i j k j
 
-end RicciContJointAux
+end JointRicciContinuity
 
-namespace MovingPushforwardAux
+namespace MovingPushforwardContinuity
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -1052,7 +1052,7 @@ private lemma ricci_moving_chart_sum
   rw [ricciTensor_chartBasisVec_alpha_eq (I := I) g α p q hy]
   ring
 
-end MovingPushforwardAux
+end MovingPushforwardContinuity
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1076,7 +1076,7 @@ theorem gfam_inner_continuous_on
       (fun s : ℝ => (Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)).inner x v w)
       (Set.Ico 0 T) := by
   classical
-  open MovingPushforwardAux in
+  open MovingPushforwardContinuity in
   rw [pullbackMetric_inner_funext g_DT Φ_fam x v w]
   intro s₀ hs₀
   set α : M := (Φ_fam s₀ : M → M) x with hα
@@ -1193,7 +1193,7 @@ theorem ricci_gfam_continuous_on
         (Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)) x v w)
       (Set.Ico 0 T) := by
   classical
-  open MovingPushforwardAux RicciContJointAux in
+  open MovingPushforwardContinuity JointRicciContinuity in
   have hnat : (fun s : ℝ => ricciTensor (I := I)
         (Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)) x v w)
       = fun s : ℝ => ricciTensor (I := I) (g_DT s) (Φ_fam s x)
@@ -1308,7 +1308,7 @@ theorem ricci_continuous_in_metric_time
           (Set.Icc 0 T)) :
     ContinuousOn (fun s : ℝ => ricciTensor (I := I) (g_DT s) x v w) (Set.Icc 0 T) := by
   classical
-  open RicciContInMetricAux in
+  open RicciContinuityInMetric in
   have hxgood : x ∈ chartLeviCivitaGoodSet (I := I) x :=
     self_mem_chartLeviCivitaGoodSet (I := I) (α := x)
   have hx_int : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E) :=
@@ -1372,7 +1372,7 @@ theorem chartRicci_jointContinuousOn
     (i k : Fin (Module.finrank ℝ E)) :
     ContinuousOn (fun q : ℝ × M =>
       chartRicciTensor (I := I) (g_DT q.1) α i k (extChartAt I α q.2)) Sp :=
-  RicciContJointAux.jointRicci_continuousOn g_DT α Sp hgood h0 h1 h2 i k
+  JointRicciContinuity.jointRicci_continuousOn g_DT α Sp hgood h0 h1 h2 i k
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -1391,7 +1391,7 @@ theorem chartRiemann_jointContinuousOn
     (i j k r : Fin (Module.finrank ℝ E)) :
     ContinuousOn (fun q : ℝ × M =>
       chartRiemannTensor (I := I) (g_DT q.1) α i j k r (extChartAt I α q.2)) Sp :=
-  RicciContJointAux.jointRiemann_continuousOn g_DT α Sp hgood h0 h1 h2 i j k r
+  JointRicciContinuity.jointRiemann_continuousOn g_DT α Sp hgood h0 h1 h2 i j k r
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1439,11 +1439,11 @@ theorem chartScalar_jointContinuousOn [I.Boundaryless]
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j q.2)) Sp).congr
     (fun q hq => metricScalar_chartTrace_eq (I := I) (g_DT q.1) α (hgood q hq))
   refine continuousOn_finsetSum _ (fun i _ => continuousOn_finsetSum _ (fun j _ => ?_))
-  exact (RicciContJointAux.jointInvGram_continuousOn g_DT α Sp hgood
-      (fun a b => RicciContJointAux.jointGram_continuousOn g_DT α Sp h0 a b) i j).mul
+  exact (JointRicciContinuity.jointInvGram_continuousOn g_DT α Sp hgood
+      (fun a b => JointRicciContinuity.jointGram_continuousOn g_DT α Sp h0 a b) i j).mul
     (ricciChartFrameComp_jointContinuousOn (I := I) g_DT α Sp hgood h0 h1 h2 i j)
 
-open RicciContInMetricAux
+open RicciContinuityInMetric
   DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in

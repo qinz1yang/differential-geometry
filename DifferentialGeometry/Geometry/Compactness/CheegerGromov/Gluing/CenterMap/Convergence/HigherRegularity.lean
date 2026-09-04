@@ -995,7 +995,7 @@ theorem atomOn_disjoint_conv
   by_contra hne
   apply hdisjointK
   exact L.binter_of_mem_hat hd hD P pb r k (hsourceK hz)
-    (seqAtom_mem_hat_raw hd hD P L pb r k gamma (by
+    (seqAtom_mem_hat hd hD P L pb r k gamma (by
       simpa only [seqAtomOn] using hne))
 
 theorem exists_supp_data
@@ -1614,7 +1614,7 @@ theorem exists_supp_data
               apply hdisjointK
               exact Lphi.binter_of_mem_hat inp.decay inp.hD P inp.pack r k
                 (((hpatchPhi k).1 alpha).2 hz).1
-                (seqAtom_mem_hat_raw inp.decay inp.hD P Lphi inp.pack r k
+                (seqAtom_mem_hat inp.decay inp.hD P Lphi inp.pack r k
                   gamma (by simpa only [seqAtomOn] using hne))
     have hatomInfSmooth (gamma : Fin (inp.pack.A r)) :
         ContDiffOn Real (∞ : WithTop ℕ∞) (aInf alpha gamma) (U alpha) := by

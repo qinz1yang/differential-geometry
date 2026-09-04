@@ -117,12 +117,12 @@ lemma rawCompJet_le
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-theorem bareOnE_le_bare
+theorem chartComponentJetSeminormSum_le_euclideanChartComponentJetNormSum
     (g : SmoothRiemannianMetric I M) (α : M) (N : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensor g 0 2) {y : E},
       y ∈ interior (extChartAt I α).target →
       chartComponentJetSeminormSum (I := I) (M := M) g S α N y ≤
-        C * bareChartJetContent (I := I) (M := M) g 0 2 S α N
+        C * euclideanChartComponentJetNormSum (I := I) (M := M) g 0 2 S α N
           (toEuclidean (E := E) y) := by
   classical
   let A : ℝ := ∑ m ∈ Finset.range (N + 1),
@@ -138,7 +138,7 @@ theorem bareOnE_le_bare
     exact Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => hA
   refine ⟨C, hC, ?_⟩
   intro S y hy
-  set B : ℝ := bareChartJetContent (I := I) (M := M) g 0 2 S α N
+  set B : ℝ := euclideanChartComponentJetNormSum (I := I) (M := M) g 0 2 S α N
     (toEuclidean (E := E) y) with hB_def
   have hB : 0 ≤ B := by
     rw [hB_def]
@@ -153,7 +153,7 @@ theorem bareOnE_le_bare
       dsimp [A]
       exact Finset.single_le_sum
         (fun q _ => pow_nonneg (norm_nonneg _) q) hm
-    have hraw := iteratedFDeriv_rawPullR_le_bareChartJetContent
+    have hraw := norm_iteratedFDeriv_tensorComponentEuclideanChart_le_euclideanChartComponentJetNormSum
       (I := I) (M := M) g 0 2 S α
       (![] : Fin 0 → Fin (Module.finrank ℝ E)) Jdx hmN
       (toEuclidean (E := E) y)
@@ -180,7 +180,7 @@ theorem bareOnE_le_bare
       simp only [Finset.sum_const, Finset.card_range, Finset.card_univ,
         nsmul_eq_mul]
       ring
-    _ = C * bareChartJetContent (I := I) (M := M) g 0 2 S α N
+    _ = C * euclideanChartComponentJetNormSum (I := I) (M := M) g 0 2 S α N
           (toEuclidean (E := E) y) := by rw [hB_def]
 
 end DifferentialGeometry.Analysis.Spectral

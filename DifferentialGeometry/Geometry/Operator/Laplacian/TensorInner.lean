@@ -124,7 +124,7 @@ theorem hessianSec_inner0S_slots {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov (∞ : WithTop ℕ∞))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (nablaA : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -393,7 +393,7 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
       (∞ : WithTop ℕ∞))
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (G.metric t) x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (G.metric t) x basis gInv)
     (hBflat1 : nablaB x = 0)
     (hBflat2 : metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2B x) = 0) :
     laplacianAt (I := I) G t
@@ -403,7 +403,7 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
   classical
   let g : DifferentialGeometry.SmoothRiemannianMetric I M := G.metric t
   let cov : CovariantDerivative I E (TangentSpace I : M -> Type _) := G.connection t
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g := by
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g := by
     simpa [cov, g] using (G.metricCompatible t)
   let phi : M -> Real := fun y => inner0S (I := I) g y s (A y) (B y)
   have hphi : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) phi := inner0S_contMDiff g A B

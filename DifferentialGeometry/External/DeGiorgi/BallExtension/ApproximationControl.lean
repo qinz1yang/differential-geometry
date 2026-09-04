@@ -612,7 +612,7 @@ lemma measurable_exactUnitBallExtensionGradApply
     hball (measurable_exactUnitBallShellGradApply (d := d) hψ i)
 
 omit [NeZero d] in
-lemma exactUnitBallExtensionGradApply_eq_candidate
+lemma exactUnitBallExtensionGradApply_eq_smoothUnitBallExtensionGradCandidate
     {ψ : E → ℝ} (i : Fin d) :
     exactUnitBallExtensionGradApply (d := d) ψ i =
       fun x => smoothUnitBallExtensionGradCandidate (d := d) ψ x i := by
@@ -646,7 +646,9 @@ lemma ae_eq_exactUnitBallExtensionGrad
     Filter.Eventually.of_forall fun x => by
       ext i
       simpa [exactUnitBallExtensionGrad] using
-        congrFun (exactUnitBallExtensionGradApply_eq_candidate (d := d) (ψ := ψ) i) x
+        congrFun
+          (exactUnitBallExtensionGradApply_eq_smoothUnitBallExtensionGradCandidate
+            (d := d) (ψ := ψ) i) x
   exact hcomp.trans (ae_eq_smoothUnitBallExtensionGradCandidate (d := d) (ψ := ψ))
 
 omit [NeZero d] in

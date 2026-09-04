@@ -20,7 +20,7 @@ open scoped Manifold ContDiff ENNReal NNReal
 namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
-namespace EquivalenceFull
+namespace Equivalence
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -439,7 +439,7 @@ private lemma classical_partial_ae_eq_chosenWeakPartial_local_local
   classical
   have hψ_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 q ψ Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport_pub
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := Module.finrank ℝ E) hΩ_open h_smooth hψ_compact hψ_supp hq_one 1
   have hψ_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) q ψ Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p.mp hψ_mem
@@ -648,7 +648,7 @@ lemma wkpNorm_chartSmoothExt_pou_mul_le_wkpNormChart
   unfold wkpNormChart
   exact ENNReal.le_tsum α
 
-end EquivalenceFull
+end Equivalence
 end Sobolev
 end Analysis
 end DifferentialGeometry

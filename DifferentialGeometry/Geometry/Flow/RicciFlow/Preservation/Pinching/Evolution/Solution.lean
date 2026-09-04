@@ -201,12 +201,12 @@ theorem ricci_is_symmetric
     DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
       (I := I) (S.base.metric t) x k l (extChartAt I x x)
   have hinv :
-      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv := by
+      MetricInverseInBasis (I := I) (S.base.metric t) x basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) (S.base.metric t) x
   have hInvSym : ∀ i j, gInv i j = gInv j i :=
-    invMetric_symm (I := I) (S.base.metric t) x basis gInv hinv
+    MetricInverseInBasis.symmetric (I := I) (S.base.metric t) x basis gInv hinv
   have hcov :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (I := I) (E := E) (M := M)
@@ -395,7 +395,7 @@ theorem trace_free_ricci_reaction_relation_of_smooth_solution
     (Ric := S.ricciAt t x) (Rm04 := S.base.rm04 t x)
     (basis := basis) (riemann_from_ricci_trace_data (I := I) S horth) hdiag hcube hR
   have hinv :
-      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
+      MetricInverseInBasis (I := I) (S.base.metric t) x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t) basis
       horth
@@ -637,7 +637,7 @@ theorem trace_free_ricci_norm_sq_nonneg
       _ = DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3 := by
             exact scalar_eq_diag (I := I) hscalarTrace hdiag
   have hinv :
-      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
+      MetricInverseInBasis (I := I) (S.base.metric t) x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t)
       basis horth

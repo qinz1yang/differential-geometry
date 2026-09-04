@@ -707,7 +707,7 @@ theorem gSeqExt_pde
   have hric := gSeqExt_ricci (I := I) Φ R bf hsrc htgt k t x hx v w
   exact hder.congr_deriv (congrArg (fun q : Real => (-2 : Real) * q) hric.symm)
 
-theorem ConvOut.gInf_pde
+theorem FlowMetricConvergenceData.gInf_pde
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
@@ -742,7 +742,7 @@ theorem ConvOut.gInf_pde
         ∀ z : P.M, z ∈ bf.grow k →
           metricCovDerivNorm (I := I) q
             (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (x : P.M)
     (v w : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -844,7 +844,7 @@ theorem ConvOut.gInf_pde
     gSeqExt_pde (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) β ψ u hwin hu x
       (hxgrow k) v w
 
-theorem ConvOut.scalar_conv_at
+theorem FlowMetricConvergenceData.scalar_conv_at
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
@@ -878,7 +878,7 @@ theorem ConvOut.scalar_conv_at
         ∀ z : P.M, z ∈ bf.grow k →
           metricCovDerivNorm (I := I) q
             (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     {t : Real} (ht : t ∈ Set.Icc β ψ) (x : P.M) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
@@ -998,7 +998,7 @@ theorem ConvOut.scalar_conv_at
   simpa only [gTail, Function.comp_apply] using
     gSeqExt_scalar (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) t x (hxgrow k)
 
-theorem ConvOut.ricNorm_conv_at
+theorem FlowMetricConvergenceData.ricNorm_conv_at
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
@@ -1032,7 +1032,7 @@ theorem ConvOut.ricNorm_conv_at
         ∀ z : P.M, z ∈ bf.grow k →
           metricCovDerivNorm (I := I) q
             (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     {t : Real} (ht : t ∈ Set.Icc β ψ) (x : P.M) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted

@@ -709,7 +709,7 @@ theorem exists_slotFreeCurvOpField_baseSlot_eval (g : SmoothRiemannianMetric I M
         (curvatureOperatorOnTensorHomField (I := I) (M := M) g s) S).toSection x =
       (show TensorRSSpace 0 s I x →L[ℝ] TensorRSSpace 0 (s + 2) I x from
         curvatureOperatorOnTensorHomField (I := I) (M := M) g s x) (S.toSection x) from
-      appFullSec_toSection (I := I) (M := M) g 0 s (s + 2)
+      homTensorRSFieldApply_toSection (I := I) (M := M) g 0 s (s + 2)
         (curvatureOperatorOnTensorHomField (I := I) (M := M) g s) S x]
     rw [slotFreeCurvHomField_apply, slotFreeCurvHomFib_apply]
     rfl

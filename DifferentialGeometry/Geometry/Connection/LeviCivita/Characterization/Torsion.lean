@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
-import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -68,7 +68,7 @@ theorem coordinate_basis_coord_eq_sum_inv_metric_inner
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (a : Idx) (V : TangentSpace I x) :
     basis.coord a V =
       ∑ k : Idx, gInv a k * g.inner x (basis k) V := by
@@ -257,7 +257,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivitaConnectionOfMetric_coordinate_christoffel_formula
     (g : SmoothRiemannianMetric I M) (x0 : M)
     (gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x0
+    (hinv : MetricInverseInBasis (I := I) g x0
       (coordinateFrameAtToBasis (I := I) x0) gInv)
     (i j k : CoordinateIdx (𝕜 := Real) E) :
     christoffelSymbolInFrame (leviCivitaConnectionOfMetric (I := I) g)

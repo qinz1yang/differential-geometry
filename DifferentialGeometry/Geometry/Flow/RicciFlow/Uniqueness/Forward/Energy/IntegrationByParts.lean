@@ -106,7 +106,7 @@ theorem covDerivLift_unit (g : SmoothRiemannianMetric I M)
         (unitZeroSec (I := I) (M := M) x) =
       nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
         (LeviCivita (I := I) g) X T x := by
-    rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g s
+    rw [covDeriv_unit_eval_eq (I := I) (M := M) g s
       (ccLift0S (I := I) g T).toSection x (X x)]
     rw [hsec]
     exact (nabla0SFun_eq_tensor0SCovariantDerivative (I := I) g s X T x).symm
@@ -298,7 +298,7 @@ theorem covGradLift_eq (g : SmoothRiemannianMetric I M)
         (covGrad (I := I) (M := M) g 0 s (ccLift0S (I := I) g T)).toSection x)
         (unitZeroSec (I := I) (M := M) x)) vt =
     Tensor0SSpace.eval (metricNabla0S (I := I) g T x) vt
-  rw [covGrad_apply_unit_eval_genVal (I := I) (M := M) g s
+  rw [covGrad_apply_unit_eval (I := I) (M := M) g s
     (ccLift0S (I := I) g T) x vt]
   rw [tensorCovDerivAt_def (I := I) (M := M) g 0 s (ccLift0S (I := I) g T) x
     (tangentSpaceModelContinuousLinearEquiv (I := I) x (vt 0)),

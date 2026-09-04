@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Connection
-import DifferentialGeometry.Geometry.Connection.MetricTrace.Trace04
-import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTrace02
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantFourTensor
+import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantTwoTensor
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
@@ -460,7 +460,7 @@ theorem dScalar_zero_ein3_at
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (gInv : Fin 3 -> Fin 3 -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (hEin : ∀ y : M, ∀ v w : TangentSpace I y,
       metricRicciAt (I := I) (M := M) g y
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) =
@@ -487,7 +487,7 @@ theorem dScalar_zero_ein3_at
   obtain ⟨nablaRm04, hsecond, hRmSymm, hRicTrace, hScalar⟩ :=
     DifferentialGeometry.Geometry.Connection.exists_levi_civita_bianchi_trace_data (I := I) (M := M) g basis gInv hinv
   have hInv : ∀ i j : Fin 3, gInv i j = gInv j i :=
-    invMetric_symm (I := I) (M := M) g x basis gInv hinv
+    MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInv hinv
   have hEinNabla : ∀ A B C : TangentSpace I x,
       nablaRic (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) A B C) =
         (1 / 3 : Real) * dScalar (fun _ : Fin 1 => A) * g.inner x B C := by
@@ -527,7 +527,7 @@ theorem metricRicciSymm
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (i j : Idx) :
     metricRicciAt (I := I) (M := M) g x
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (basis i) (basis j)) =
@@ -594,7 +594,7 @@ theorem metricRicciSymm
       (metricRicciAt (I := I) (M := M) g x)
       (metricRm04At (I := I) (M := M) g x)
       hTrace hPair hOutput hInput
-      (invMetric_symm (I := I) (M := M) g x basis gInv hinv) i j
+      (MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInv hinv) i j
 
 omit [SigmaCompactSpace M] in
 theorem metricNablaSymm
@@ -622,7 +622,7 @@ theorem metricNablaSymm
       fun i j =>
         DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
           (I := I) g y i j (extChartAt I y y)
-    have hinv : MetricInverseInBasisGen (I := I) (M := M) g y basis gInv := by
+    have hinv : MetricInverseInBasis (I := I) (M := M) g y basis gInv := by
       simpa [basis, gInv] using
         (Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
           (I := I) g y)

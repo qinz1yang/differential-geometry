@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Compactness
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.WindowPrecompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Tower
@@ -134,12 +134,12 @@ inductive SolWindowData : Type _ where
       (Hlip : SolLipData (I := I) K beta psiT p gSeq gRef D S)
       (hlow : SolLowData (I := I) beta psiT gSeq gRef)
 
-inductive WindowMetricPreconvConclusion : Type _ where
+inductive WindowMetricPrecompactnessConclusion : Type _ where
   | intro
       (K : Set M) (beta psiT : Real) (p : Nat)
       (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
       (gRef : SmoothRiemannianMetric I M)
-      (out : WindowGInfOut (E := E) (H := H) (I := I) (M := M) K beta psiT p gSeq gRef)
+      (out : MetricWindowSubsequence (E := E) (H := H) (I := I) (M := M) K beta psiT p gSeq gRef)
 
 omit [Module.Finite ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -178,7 +178,7 @@ theorem exists_uniform_zero_order_metric_covariant_derivative_bound
     (I := I) (g := gSeq i t) (h := gRef) z 2 hBmax1
     (fun v => (hsymm.2 z hz v)) (metricTensor0S (I := I) (gSeq i t) z)
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (gSeq i t) z
-  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (gSeq i t) z basis
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) (gSeq i t) z basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I z)))) := by
     have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (gSeq i t) basis hON
@@ -399,7 +399,7 @@ theorem denseIccSeq {beta psiT : Real} (hbeta : beta <= psiT) :
     simpa [tx, eX, X, Subtype.dist_eq, Real.dist_eq] using hn
 
 omit [Module.Finite ℝ E] in
-theorem winGInfOfSol
+theorem metricWindowSubsequence_of_solution
     [Module.Finite ℝ E]
     (hne : Nonempty M)
     (K : Set M) (hK : IsCompact K) (beta psiT t0 : Real) (hbeta : beta <= psiT)
@@ -416,7 +416,7 @@ theorem winGInfOfSol
     (Hcov : SolCovData (I := I) beta psiT t0 gSeq gRef D S)
     (Hlip : SolLipData (I := I) K beta psiT p gSeq gRef D S)
     (hlow : SolLowData (I := I) beta psiT gSeq gRef) :
-    WindowGInfOut (E := E) (H := H) (I := I) (M := M) K beta psiT p gSeq gRef := by
+    MetricWindowSubsequence (E := E) (H := H) (I := I) (M := M) K beta psiT p gSeq gRef := by
   classical
   obtain ⟨e, he, hdense⟩ := denseIccSeq hbeta
   have h0 := hgLip0Sol (I := I) H0.hKU0 H0.B0 H0.hequiv0 H0.Bmax0 H0.hBmax01
@@ -428,7 +428,7 @@ theorem winGInfOfSol
         exists c : Real, 0 < c /\ forall (k : Nat) (x : M) (v : TangentSpace I x),
           c * gRef.inner x v v <= (gSeq (rho k) t).inner x v v := by
     simpa [SolLowData] using hlow
-  exact windowGInfOut (E := E) (H := H) (I := I) (M := M)
+  exact metricWindowSubsequence_of_bounds (E := E) (H := H) (I := I) (M := M)
     hne K hK beta psiT p gSeq gRef e he hdense
     L hL hgLip
     (fun rho _hrho =>
@@ -436,14 +436,14 @@ theorem winGInfOfSol
         (I := I) hS hmet hreg Hcov rho)
     hlow'
 
-noncomputable def winGInfOfData (hne : Nonempty M)
+noncomputable def windowMetricPrecompactnessConclusion (hne : Nonempty M)
     (W : SolWindowData (I := I) (M := M)) :
-    WindowMetricPreconvConclusion (E := E) (H := H) (I := I) (M := M) := by
+    WindowMetricPrecompactnessConclusion (E := E) (H := H) (I := I) (M := M) := by
   classical
   cases W with
   | mk K hK beta psiT t0 hbeta p gSeq gRef D S hS hmet hreg H0 hswap Hcov Hlip hlow =>
-      exact WindowMetricPreconvConclusion.intro K beta psiT p gSeq gRef
-        (winGInfOfSol (I := I) hne K hK beta psiT t0 hbeta p gSeq gRef D S hS hmet
+      exact WindowMetricPrecompactnessConclusion.intro K beta psiT p gSeq gRef
+        (metricWindowSubsequence_of_solution (I := I) hne K hK beta psiT t0 hbeta p gSeq gRef D S hS hmet
           hreg H0 hswap Hcov Hlip hlow)
 
 end

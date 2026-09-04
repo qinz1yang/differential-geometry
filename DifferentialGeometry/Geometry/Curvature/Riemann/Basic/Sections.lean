@@ -183,7 +183,7 @@ theorem riemannCurvatureAt_apply_smooth
     {x : M}
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
     riemannCurvatureAt cov hcov x α (vec3 (X x) (Y x) (Z x)) =
-      cotangentToDualGen α
+      cotangentToDual α
         (connectionRiemannCurvatureField cov
           (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p) x) := by
   obtain ⟨Xc, hXc, hXcx⟩ :=
@@ -208,8 +208,7 @@ theorem riemannCurvatureAt_apply_smooth
     connectionRiemannCurvatureField_congr_point
       (I := I) cov hcov Xc X Yc Y Zc Z hXcx hYcx hZcx
   rw [riemannCurvatureAt_apply_const]
-  simpa [riemannCurvatureAux_eq_connectionRiemannCurvatureField] using
-    congrArg (cotangentToDualGen α) (hraw.trans hsmooth)
+  simpa using congrArg (cotangentToDual α) (hraw.trans hsmooth)
 
 theorem riemannCurvature04At_apply_smooth
     (g : SmoothRiemannianMetric I M)
@@ -225,9 +224,9 @@ theorem riemannCurvature04At_apply_smooth
           (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p) x) := by
   have h13 :=
     riemannCurvatureAt_apply_smooth (I := I) cov hcov X Y Z
-      (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (W x)))
+      (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) (W x)))
   rw [riemannCurvature04At_eq_lower_riemannCurvatureAt]
-  simpa [tangentFlatLinear_apply_gen] using h13
+  simpa [tangentFlatLinear_apply] using h13
 
 private theorem riemannCurvatureAt_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -314,7 +313,7 @@ private theorem riemannCurvatureAt_contMDiff
       simpa [Rsec] using
         curvField_contMDiffAt (I := I) cov hcov Xs Ys Zs x₀
     have hscalar : ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
-        (fun p : M => cotangentToDualGen (I := I) (βsec p) (Rsec p)) x₀ := by
+        (fun p : M => cotangentToDual (I := I) (βsec p) (Rsec p)) x₀ := by
       have hEval := TensorMultilinear.contMDiffAt_section_apply
         (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := 1) (x₀ := x₀) (T := βsec) hβ
@@ -360,7 +359,7 @@ private theorem riemannCurvatureAt_contMDiff
       _ = riemannCurvatureAt (I := I) cov hcov p (βsec p)
           (vec3 (I := I) (Xs p) (Ys p) (Zs p)) := by
           rw [hslots]
-      _ = cotangentToDualGen (I := I) (βsec p) (Rsec p) := by
+      _ = cotangentToDual (I := I) (βsec p) (Rsec p) := by
           simpa [Rsec] using hsmooth
   simpa [G, e] using hG
 
@@ -394,12 +393,11 @@ theorem rm13Section_apply_const
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (X Y Z : TangentSpace I x) :
     rm13Section (I := I) (M := M) cov hcov x α (vec3 X Y Z) =
-      cotangentToDualGen α
+      cotangentToDual α
         (connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x) := by
   rw [rm13Section_apply, riemannCurvatureAt_apply_const]
-  rfl
 
 theorem rm13Section_apply_smooth
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -410,7 +408,7 @@ theorem rm13Section_apply_smooth
     {x : M}
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
     rm13Section (I := I) (M := M) cov hcov x α (vec3 (X x) (Y x) (Z x)) =
-      cotangentToDualGen α
+      cotangentToDual α
         (connectionRiemannCurvatureField cov
           (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p) x) := by
   rw [rm13Section_apply]
@@ -543,7 +541,6 @@ theorem rm04Section_apply_const
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x) := by
   rw [rm04Section_apply, riemannCurvature04At_apply_const]
-  rfl
 
 
 theorem rm04Section_apply_smooth

@@ -55,7 +55,7 @@ theorem conjugating_flow_jointContMDiffOn
       funext q; simp only [hY_def, neg_one_smul]
     rw [hYeq]
     intro q hq
-    exact CutoffExtensionAux.smul_tangentMap_cmdwa
+    exact CutoffExtension.smul_tangentMap_cmdwa
       (fun s x => (deTurckVF (I := I) (g_DT s) g_bg x : TangentSpace I x)) (fun _ => (-1 : ℝ))
       contMDiffWithinAt_const (hfield_reg q hq)
   intro q₀ hq₀
@@ -109,7 +109,7 @@ theorem conjugating_flow_jointContMDiffOn
     have hstart : (fun u : ℝ => (Φ_fam u : M → M) y) q₀.1
         = (fun u : ℝ => Φ ((Φ_fam q₀.1 : M → M) y) u) q₀.1 := by
       simp only [hΦ_init]
-    exact bare_integral_flow_eqOn_of_jointC1 (a := c) (b := d) (t₀ := q₀.1)
+    exact integral_curves_eqOn_of_jointC1 (a := c) (b := d) (t₀ := q₀.1)
       Xt hXt_auto (fun u : ℝ => (Φ_fam u : M → M))
       (fun u : ℝ => fun p : M => Φ p u) y ((Φ_fam q₀.1 : M → M) y) ht₀_cd hflow hflow' hstart
   set W : Set (ℝ × M) := Set.Ioo c d ×ˢ (Set.univ : Set M) with hW_def

@@ -566,7 +566,7 @@ theorem metricJet3_le_gram (α : M) :
           (interior (extChartAt I α).target) y := by rw [hJ_def]
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem gramJet_le_bare
+theorem chartGramJetDiffSeminormSum_le_chartComponentJetSeminormSum
     (gBase g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (N : ℕ)
     {y : E} (hy : y ∈ interior (extChartAt I α).target) :
     chartGramJetDiffSeminormSum (I := I) (M := M) N g₁ g₂ α
@@ -584,7 +584,7 @@ theorem gramJet_le_bare
     with hB_def
   have hB : 0 ≤ B := by
     rw [hB_def]
-    exact bareChartJetContentOnE_nonneg (I := I) (M := M) gBase D α N y
+    exact chartComponentJetSeminormSum_nonneg (I := I) (M := M) gBase D α N y
   have hpair : ∀ a b : Fin (Module.finrank ℝ E),
       iteratedFDerivSeminorm N
         (fun z => chartGramOnE (I := I) g₁ α a b z -
@@ -655,9 +655,9 @@ theorem metricJet2_intrinsic
   obtain ⟨Cmetric, hCmetric, hmetric⟩ :=
     metricJet2_le_gram (I := I) (M := M) α
   obtain ⟨Ceucl, hCeucl, heucl⟩ :=
-    bareOnE_le_bare (I := I) (M := M) gBase α 2
+    chartComponentJetSeminormSum_le_euclideanChartComponentJetNormSum (I := I) (M := M) gBase α 2
   obtain ⟨Cfib, hCfib, hfib⟩ :=
-    bareJet_le_fiber (I := I) (M := M) gBase 0 2 α 2
+    euclideanChartComponentJetNormSum_le_fiberNormSum_uniform (I := I) (M := M) gBase 0 2 α 2
   let Npair : ℝ := ∑ _a : Fin (Module.finrank ℝ E),
     ∑ _b : Fin (Module.finrank ℝ E), (1 : ℝ)
   have hNpair : 0 ≤ Npair := by
@@ -684,7 +684,7 @@ theorem metricJet2_intrinsic
     rw [ContinuousLinearEquiv.symm_apply_apply]
     exact (extChartAt I α).left_inv hb_src
   have hmetric' := hmetric g₁ g₂ hy_int
-  have hgram := gramJet_le_bare (I := I) (M := M) gBase g₁ g₂ α 2 hy_int
+  have hgram := chartGramJetDiffSeminormSum_le_chartComponentJetSeminormSum (I := I) (M := M) gBase g₁ g₂ α 2 hy_int
   change chartGramJetDiffSeminormSum (I := I) (M := M) 2 g₁ g₂ α
       (interior (extChartAt I α).target) (extChartAt I α b) ≤
         Npair * chartComponentJetSeminormSum (I := I) (M := M) gBase D α 2
@@ -701,7 +701,7 @@ theorem metricJet2_intrinsic
             (extChartAt I α b)) :=
       mul_le_mul_of_nonneg_left hgram hCmetric
     _ ≤ Cmetric * (Npair * (Ceucl *
-          bareChartJetContent (I := I) (M := M) gBase 0 2 D α 2
+          euclideanChartComponentJetNormSum (I := I) (M := M) gBase 0 2 D α 2
             (toEuclidean (E := E) (extChartAt I α b)))) :=
       mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left heucl' hNpair) hCmetric
@@ -738,9 +738,9 @@ theorem metricJet3_intrinsic
   obtain ⟨Cmetric, hCmetric, hmetric⟩ :=
     metricJet3_le_gram (I := I) (M := M) α
   obtain ⟨Ceucl, hCeucl, heucl⟩ :=
-    bareOnE_le_bare (I := I) (M := M) gBase α 3
+    chartComponentJetSeminormSum_le_euclideanChartComponentJetNormSum (I := I) (M := M) gBase α 3
   obtain ⟨Cfib, hCfib, hfib⟩ :=
-    bareJet_le_fiber (I := I) (M := M) gBase 0 2 α 3
+    euclideanChartComponentJetNormSum_le_fiberNormSum_uniform (I := I) (M := M) gBase 0 2 α 3
   let Npair : ℝ := ∑ _a : Fin (Module.finrank ℝ E),
     ∑ _b : Fin (Module.finrank ℝ E), (1 : ℝ)
   have hNpair : 0 ≤ Npair := by
@@ -767,7 +767,7 @@ theorem metricJet3_intrinsic
     rw [ContinuousLinearEquiv.symm_apply_apply]
     exact (extChartAt I α).left_inv hb_src
   have hmetric' := hmetric g₁ g₂ hy_int
-  have hgram := gramJet_le_bare (I := I) (M := M) gBase g₁ g₂ α 3 hy_int
+  have hgram := chartGramJetDiffSeminormSum_le_chartComponentJetSeminormSum (I := I) (M := M) gBase g₁ g₂ α 3 hy_int
   change chartGramJetDiffSeminormSum (I := I) (M := M) 3 g₁ g₂ α
       (interior (extChartAt I α).target) (extChartAt I α b) ≤
         Npair * chartComponentJetSeminormSum (I := I) (M := M) gBase D α 3
@@ -784,7 +784,7 @@ theorem metricJet3_intrinsic
             (extChartAt I α b)) :=
       mul_le_mul_of_nonneg_left hgram hCmetric
     _ ≤ Cmetric * (Npair * (Ceucl *
-          bareChartJetContent (I := I) (M := M) gBase 0 2 D α 3
+          euclideanChartComponentJetNormSum (I := I) (M := M) gBase 0 2 D α 3
             (toEuclidean (E := E) (extChartAt I α b)))) :=
       mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left heucl' hNpair) hCmetric

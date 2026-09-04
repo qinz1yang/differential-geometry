@@ -1547,9 +1547,9 @@ private lemma lrRIC (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀
       Fin.cons (Y x) (Fin.cons (X x) ![c, d]) := by
     funext i
     fin_cases i <;> rfl
-  have hXY := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal (I := I) (M := M)
+  have hXY := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval (I := I) (M := M)
     g₀ 2 T hX hY x ![c, d]
-  have hYX := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal (I := I) (M := M)
+  have hYX := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval (I := I) (M := M)
     g₀ 2 T hY hX x ![c, d]
   have hUM : ∀ v : Fin 4 → E,
       unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 T) x v =

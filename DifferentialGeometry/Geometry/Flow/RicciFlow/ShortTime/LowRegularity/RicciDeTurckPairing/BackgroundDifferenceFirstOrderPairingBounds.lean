@@ -1672,7 +1672,7 @@ private noncomputable def endomorphismInsertionPair
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     SmoothCcTensor g 2 2 :=
   let X := slotInsertEndoCc (I := I) (M := M) g 1 Λ
-  X + reindexCoeffGen (I := I) (M := M) g 2 2
+  X + reindexCoefficientInputSlots (I := I) (M := M) g 2 2
     (rsDomDomCongrSection (I := I) (M := M) g 2 2
       (Equiv.swap (0 : Fin 2) 1) X)
     (Equiv.swap (0 : Fin 2) 1)
@@ -1689,14 +1689,14 @@ private theorem covariantJetNormSq_one_endomorphismInsertionPair_le
   let X : SmoothCcTensor g 2 2 :=
     slotInsertEndoCc (I := I) (M := M) g 1 Λ
   let Y : SmoothCcTensor g 2 2 :=
-    reindexCoeffGen (I := I) (M := M) g 2 2
+    reindexCoefficientInputSlots (I := I) (M := M) g 2 2
       (rsDomDomCongrSection (I := I) (M := M) g 2 2
         (Equiv.swap (0 : Fin 2) 1) X)
       (Equiv.swap (0 : Fin 2) 1)
   have hY : covariantJetNormSq (I := I) (M := M) g 1 Y =
       covariantJetNormSq (I := I) (M := M) g 1 X := by
     dsimp only [Y]
-    rw [covariantJetNormSq_reindexCoeffGen, covariantJetNormSq_one_rsDomDomCongrSection]
+    rw [covariantJetNormSq_reindexCoefficientInputSlots, covariantJetNormSq_one_rsDomDomCongrSection]
   have hX : covariantJetNormSq (I := I) (M := M) g 1 X ≤
       (Module.finrank ℝ E : ℝ) *
         covariantJetNormSq (I := I) (M := M) g 1
@@ -1731,7 +1731,7 @@ private theorem endomorphismInsertionPair_sub
   unfold endomorphismInsertionPair
   dsimp only
   rw [slotInsertEndoCc_sub]
-  rw [rsDomDomCongrSection_sub, reindexCoeffGen_sub]
+  rw [rsDomDomCongrSection_sub, reindexCoefficientInputSlots_sub]
   module
 
 private noncomputable def deTurckInsertionCorrectionEndomorphism
@@ -1785,7 +1785,7 @@ private theorem deTurckLieInsertionCorrection_eq_endomorphismInsertionPair
   intro m
   let Λ := deTurckInsertionCorrectionEndomorphism (I := I) (M := M) g gm g_bg
   let X := slotInsertEndoCc (I := I) (M := M) g 1 Λ
-  let Y := reindexCoeffGen (I := I) (M := M) g 2 2
+  let Y := reindexCoefficientInputSlots (I := I) (M := M) g 2 2
     (rsDomDomCongrSection (I := I) (M := M) g 2 2
       (Equiv.swap (0 : Fin 2) 1) X)
     (Equiv.swap (0 : Fin 2) 1)
@@ -1831,11 +1831,11 @@ private theorem deTurckLieInsertionCorrection_eq_endomorphismInsertionPair
   have hY :
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         Y.toSection x) D =
-      reindexCoeffFibGen (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+      reindexCoefficientInputSlotsFiber (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
         (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
           (rsDomDomCongrSection (I := I) (M := M) g 2 2
             (Equiv.swap (0 : Fin 2) 1) X).toSection x) D := rfl
-  rw [hY, reindexCoeffFibGen_apply]
+  rw [hY, reindexCoefficientInputSlotsFiber_apply]
   rw [show
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (rsDomDomCongrSection (I := I) (M := M) g 2 2
@@ -2026,7 +2026,7 @@ private theorem exists_deTurckVectorFieldCovector_backgroundDifference_pairing_s
   have hΦ : covariantJetNormSq (I := I) (M := M) g 2 Φ ≤
       (Ct * N) ^ 2 := by
     dsimp only [Φ, N]
-    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htrace T U gT gU hTtie hUtie hTHs hUHs
   have hprod : Ca * covariantJetNormSq (I := I) (M := M) g 2 Φ * JP ≤
       Ca * (Ct * N) ^ 2 * JP :=
@@ -2971,7 +2971,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionBackgroundHalf_pairing_fi
     rw [show Tr2T - Tr2U =
         reindexedPureTrace (I := I) (M := M) g gT 2 σ -
           reindexedPureTrace (I := I) (M := M) g gU 2 σ by rfl,
-      reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+      reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     simpa only [N] using hp2 T U gT gU hTtie hUtie hTHs2p hUHs2p
   have hTr3T : covariantJetNormSq (I := I) (M := M) g 2 Tr3T ≤ Bt3 ^ 2 := by
     rw [show Tr3T = reindexedPureTrace (I := I) (M := M) g gT 3
@@ -2986,7 +2986,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionBackgroundHalf_pairing_fi
     rw [show Tr3T - Tr3U =
         reindexedPureTrace (I := I) (M := M) g gT 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
           reindexedPureTrace (I := I) (M := M) g gU 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour by rfl,
-      reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+      reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     simpa only [N] using hp3 T U gT gU hTtie hUtie hTHs3p hUHs3p
   have hTr4T : covariantJetNormSq (I := I) (M := M) g 2 Tr4T ≤ Bt4 ^ 2 := by
     rw [show Tr4T = reindexedPureTrace (I := I) (M := M) g gT 4
@@ -3001,7 +3001,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionBackgroundHalf_pairing_fi
     rw [show Tr4T - Tr4U =
         reindexedPureTrace (I := I) (M := M) g gT 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
           reindexedPureTrace (I := I) (M := M) g gU 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne by rfl,
-      reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
+      reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     simpa only [N] using hp4 T U gT gU hTtie hUtie hTHs4p hUHs4p
   have hK0T : covariantJetNormSq (I := I) (M := M) g 1 K0T ≤ B0 ^ 2 := by
     simpa only [K0T] using h0One T gT hTtie hTHs1

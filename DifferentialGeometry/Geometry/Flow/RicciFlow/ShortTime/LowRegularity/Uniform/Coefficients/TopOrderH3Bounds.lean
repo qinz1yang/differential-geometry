@@ -89,7 +89,7 @@ private theorem endo_slot_succ_eq
     (P : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     endoSlotZeroCcTensor (I := I) (M := M) g (q + 1) P =
-      reindexCoeffGen (I := I) (M := M) g (q + 2) (q + 2)
+      reindexCoefficientInputSlots (I := I) (M := M) g (q + 2) (q + 2)
         (rsDomDomCongrSection (I := I) (M := M) g (q + 2) (q + 2)
           (Equiv.swap (0 : Fin (q + 2)) 1)
           (slotExtend (I := I) (M := M) g (q + 1) (q + 1)
@@ -836,13 +836,13 @@ private theorem reindex_jet_four_eq
     (A : SmoothCcTensor g r s) (e : Equiv.Perm (Fin r)) :
     (∑ j ∈ Finset.range 4,
       ‖iteratedCovGrad (I := I) g r s j
-        (reindexCoeffGen (I := I) (M := M) g r s A e)‖ ^ 2) =
+        (reindexCoefficientInputSlots (I := I) (M := M) g r s A e)‖ ^ 2) =
       ∑ j ∈ Finset.range 4,
         ‖iteratedCovGrad (I := I) g r s j A‖ ^ 2 := by
   apply Finset.sum_congr rfl
   intro j _
-  rw [iteratedCovGrad_reindexCoeffGen,
-    norm_reindexCoeffGen_eq (I := I) (M := M)]
+  rw [iteratedCovGrad_reindexCoefficientInputSlots,
+    norm_reindexCoefficientInputSlots_eq (I := I) (M := M)]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -851,14 +851,14 @@ private theorem perm_app_eq_reindex
     (A : SmoothCcTensor g d d) (e : Equiv.Perm (Fin d)) :
     ccOperatorFieldComp (I := I) (M := M) g d d d
         A (permCoeff (I := I) (M := M) g e) =
-      reindexCoeffGen (I := I) (M := M) g d d A e := by
+      reindexCoefficientInputSlots (I := I) (M := M) g d d A e := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   apply ContinuousLinearMap.ext
   intro D
   rw [operatorFieldComposition_toSection, ContinuousLinearMap.comp_apply,
-    reindexCoeffGen_toSection, reindexCoeffFibGen_apply]
+    reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply]
   change (show Tensor0SSpace d I x →L[ℝ] Tensor0SSpace d I x from
       A.toSection x) (slotPermCLM (I := I) e x D) = _
   rw [slotPermCLM_apply]
@@ -1025,12 +1025,12 @@ theorem ricciConnectionPrincipalCoefficient_h3_uniform
   let E1 : SmoothCcTensor g 3 3 :=
     slotInsertEndoCc (I := I) (M := M) g 2 F
   let A : SmoothCcTensor g 3 3 :=
-    reindexCoeffGen (I := I) (M := M) g 3 3 E1
+    reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1
       (Equiv.swap (0 : Fin 3) 2)
   let B : SmoothCcTensor g 3 3 :=
-    reindexCoeffGen (I := I) (M := M) g 3 3 E1 (finRotate 3)
+    reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1 (finRotate 3)
   let C : SmoothCcTensor g 3 3 :=
-    reindexCoeffGen (I := I) (M := M) g 3 3 E1
+    reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1
       (Equiv.swap (1 : Fin 3) 2)
   let Y : SmoothCcTensor g 3 3 := (1 / 2 : ℝ) • (A + B - C)
   have hE1 : (∑ j ∈ Finset.range 4,

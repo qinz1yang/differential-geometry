@@ -1139,7 +1139,7 @@ private theorem lieFirstOrder_loweredConnectionDifference_bounds (g₀ g_bg : Sm
         (hC2b q hq_le)
     linarith [hAsum, hCsum, hDsum, hBsum]
 
-theorem metricConnectionDifferenceLoweredCoefficient_jetL2_ballUniform_generic
+theorem metricConnectionDifferenceLoweredCoefficient_jetL2_ballUniform
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

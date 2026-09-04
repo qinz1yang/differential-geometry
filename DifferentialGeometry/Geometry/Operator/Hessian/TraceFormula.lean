@@ -798,7 +798,7 @@ theorem chartContractedChristoffel_holds
     refine Finset.sum_congr rfl (fun k _ => ?_)
     have hGUki : GU k i = GU i k := by
       change chartInvGramOnE (I := I) g α k i y₀ = chartInvGramOnE (I := I) g α i k y₀
-      exact chartInvGramOnE_symm_pointwise (I := I) g α k i y₀
+      exact chartInvGramOnE_symm (I := I) g α k i y₀
     rw [hGUki]
   have hLHS_simplified : ∑ i : Fin (Module.finrank ℝ E),
       ∑ k : Fin (Module.finrank ℝ E),
@@ -932,7 +932,7 @@ theorem chartContractedChristoffel_holds
       refine Finset.sum_congr rfl (fun k _ => ?_)
       have hGUki : GU k i = GU i k := by
         change chartInvGramOnE (I := I) g α k i y₀ = chartInvGramOnE (I := I) g α i k y₀
-        exact chartInvGramOnE_symm_pointwise (I := I) g α k i y₀
+        exact chartInvGramOnE_symm (I := I) g α k i y₀
       rw [hGUki]]
     rw [show (∑ i : Fin (Module.finrank ℝ E),
               ∑ l : Fin (Module.finrank ℝ E),

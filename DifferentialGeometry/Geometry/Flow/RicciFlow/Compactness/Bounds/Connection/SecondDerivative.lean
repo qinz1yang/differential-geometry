@@ -2195,7 +2195,7 @@ private theorem mixedComm_le
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₂ x
   have hbnorm : ∀ i, Real.sqrt (g₂.inner x (basis i) (basis i)) = 1 := by
     intro i; rw [hON i i]; simp
-  have hinv : MetricInverseInBasisGen (I := I) g₂ x basis
+  have hinv : MetricInverseInBasis (I := I) g₂ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j; constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
   set NS := Real.sqrt (normSq0S (I := I) g₂ x s (S x)) with hNSdef
@@ -2757,7 +2757,7 @@ theorem covStepDiff2_le
     rw [hop]; rfl
   obtain ⟨basis, hON⟩ :=
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₂ x
-  have hinv : MetricInverseInBasisGen (I := I) g₂ x basis
+  have hinv : MetricInverseInBasis (I := I) g₂ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j; constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
   have hp1 := DifferentialGeometry.PDE.RicciFlow.covStepDiff_of_jets (I := I) g₁ g₂ (s + 1)

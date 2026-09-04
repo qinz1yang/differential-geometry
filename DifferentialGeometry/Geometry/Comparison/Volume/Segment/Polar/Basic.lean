@@ -1901,7 +1901,7 @@ private lemma expMapIntrinsic_injective_early
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-private lemma intrinsicGeodesic_smul_general
+private lemma intrinsicGeodesic_smul_apply
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -1976,7 +1976,7 @@ private lemma intrinsicJacobi_smul
   have hfun : (fun ρ : ℝ => intrinsicGeodesic (I := I) g hEnorm x (c • u + ρ • w) 1)
       = fun ρ : ℝ => intrinsicGeodesic (I := I) g hEnorm x (u + (ρ / c) • w) c := by
     funext ρ
-    have hscal := intrinsicGeodesic_smul_general (I := I) g hEnorm x
+    have hscal := intrinsicGeodesic_smul_apply (I := I) g hEnorm x
       (u + (ρ / c) • w) c 1
     have hinner : c • (u + (ρ / c) • w) = c • u + ρ • w := by
       rw [smul_add, smul_smul, mul_div_cancel₀ ρ hc]
@@ -2160,7 +2160,7 @@ private lemma expJacDensity_radial_scaled
     ext i j
     have hpt : intrinsicGeodesic (I := I) g hEnorm x (r • u) 1
         = intrinsicGeodesic (I := I) g hEnorm x u r :=
-      by simpa using intrinsicGeodesic_smul_general (I := I) g hEnorm x u r 1
+      by simpa using intrinsicGeodesic_smul_apply (I := I) g hEnorm x u r 1
     rw [hpt]
   have hC : curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x (r • u))
       (fun i => intrinsicJacobi (I := I) g hEnorm x (r • u) (w i)) 1

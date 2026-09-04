@@ -637,7 +637,7 @@ theorem HasAtomWeightLimOn.of_raw
     (hatomInfSmooth : ∀ gamma : Fin (pb.A r),
       ContDiffOn Real (∞ : WithTop ℕ∞) (aInf gamma) U) :
     HasAtomWeightLimOn (I := I) chart hd hD P L hre pb r hr beta U aInf := by
-  exact atomWeightOn_raw (I := I) chart hD P L hre pb r hr beta U hU
+  exact atomWeightOn_of_atoms (I := I) chart hD P L hre pb r hr beta U hU
     hcoverU aInf hdead hatom hatomSmooth hatomInfSmooth
 
 theorem HasAtomWeightLimOn.of_atoms
@@ -774,7 +774,7 @@ theorem HasAtomWeightLimOn.weight_data_raw
           (cutRaw (seqAtom hd hD P L pb r k i0)
             (seqAtom hd hD P L pb r k) i0)) := by
     exact Filter.Eventually.of_forall fun k =>
-      seqWeights_data_raw hd hD P L pb r k i0 Set.Subset.rfl
+      seqWeights_data hd hD P L pb r k i0 Set.Subset.rfl
   dsimp only [HasAtomWeightLimOn] at hlim
   rcases hlim with
     ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConv,

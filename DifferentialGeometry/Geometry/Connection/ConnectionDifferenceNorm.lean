@@ -21,7 +21,7 @@ variable [IsManifold I ∞ M]
 theorem connOut_norm_le
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
-    (g : SmoothMetricGen I M)
+    (g : SmoothRiemannianMetric I M)
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     {x : M} (alpha : Tensor0SSpace 1 I x) :
     Real.sqrt (normSq0S (I := I) g x 2
@@ -38,7 +38,7 @@ theorem connOut_norm_le
 theorem connectionDifferenceVec_norm_le
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
-    (g : SmoothMetricGen I M)
+    (g : SmoothRiemannianMetric I M)
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     {x : M} (X Y : TangentSpace I x) :
     Real.sqrt (g.inner x
@@ -51,10 +51,10 @@ theorem connectionDifferenceVec_norm_le
   set w : TangentSpace I x :=
     CovariantDerivative.difference cov cov' x Y X with hw
   set α : Tensor0SSpace 1 I x :=
-    dualToCotangentGen (I := I) (tangentFlatLinearGen (I := I) g x w) with hα
+    dualToCotangent (I := I) (tangentFlatLinear (I := I) g x w) with hα
   have hαnorm : normSq0S (I := I) g x 1 α = g.inner x w w := by
     rw [hα, normSq0S_eq_inner, inner0S_one_eq_cotangent]
-    exact cotangentInner_dualToCotangent_tangentFlat_gen (I := I) g x w w
+    exact cotangentInner_dualToCotangent_tangentFlat (I := I) g x w w
   have hww : 0 <= g.inner x w w := by
     rw [← hαnorm]; exact normSq0S_nonneg (I := I) g x 1 α
   have hkey :
@@ -64,9 +64,10 @@ theorem connectionDifferenceVec_norm_le
         (connectionDifferenceOutput (I := I)
           (CovariantDerivative.difference cov cov' x) α)
         (fun q : Fin 2 => if q = 0 then X else Y) = g.inner x w w
-    rw [connectionDifferenceOutput_apply_slots, hα, dualToCotangent_apply_gen,
-      tangentFlatLinear_apply_gen, ← hw]
-  let D := (tangentMetricDataGen (I := I) g x).metric
+    rw [connectionDifferenceOutput_apply_slots, hα, ← hw]
+    change tangentFlatLinear (I := I) g x w w = g.inner x w w
+    exact tangentFlatLinear_apply (I := I) g x w w
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -80,8 +81,8 @@ theorem connectionDifferenceVec_norm_le
     have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
       MetricFiberData.toCore_inner D (ob i) (ob j)
     change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-    rw [← TangentMetricDataGen.inner_eq_gen
-      (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+    rw [← TangentMetricData.inner_eq
+      (tangentMetricData (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
     change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
     rw [← hinner]
     exact ob.inner_eq_ite i j

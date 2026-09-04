@@ -72,7 +72,7 @@ theorem scalarRmRicciTraceInFrame_of_rm04_first_trace
       DifferentialGeometry.Geometry.Curvature.ricciComp, IsLocalFrameOn.toBasisAt_coe] using
       hRicSym (t : Real) x i j
   have hinvAt :
-      MetricInverseInBasisGen
+      MetricInverseInBasis
         (I := I) (M := M) (S.family.metric (t : Real)) x
         basis (fun i j : Idx => gInv (t : Real) x i j) :=
     scalar_metricInverseInBasis_of_solution_frame
@@ -126,7 +126,7 @@ theorem scalarRmRicciTraceInFrame_of_rm04_first_trace_regular
       DifferentialGeometry.Geometry.Curvature.ricciComp, IsLocalFrameOn.toBasisAt_coe] using
       hRicSym t x i j
   have hinvAt :
-      MetricInverseInBasisGen
+      MetricInverseInBasis
         (I := I) (M := M) (S.family.metric (t : Real)) x
         basis (fun i j : Idx => gInv (t : Real) x i j) :=
     scalar_metricInverseInBasis_of_solution_frame
