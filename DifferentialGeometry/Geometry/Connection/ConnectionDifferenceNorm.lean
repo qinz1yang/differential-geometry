@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.ConnectionDifference
-import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS
+import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.Basic
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

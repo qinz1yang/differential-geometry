@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Metric.MetricBallMonotone
+import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
-import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricCompatible
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.MetricCompatibility
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Defs
-import DifferentialGeometry.Geometry.Metric.PathLengthComparison
+import DifferentialGeometry.Geometry.Metric.Comparison.PathLength
 
 set_option autoImplicit false
 

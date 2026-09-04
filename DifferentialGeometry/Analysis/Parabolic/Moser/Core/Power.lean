@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Energy.Supersolution
 import DifferentialGeometry.Analysis.Parabolic.Moser.Core.Sobolev
-import DifferentialGeometry.Geometry.Operator.LaplacianBridge
+import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 
 noncomputable section
 

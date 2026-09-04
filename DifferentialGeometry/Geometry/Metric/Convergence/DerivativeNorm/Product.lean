@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Alge
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Components
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ProductLeibniz
-import DifferentialGeometry.Geometry.Metric.TensorInner.TensorProductNorm
+import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.TensorProductNorm
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.SlotPermutation
 import DifferentialGeometry.Geometry.Connection.Coordinates.ComponentNorm
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components

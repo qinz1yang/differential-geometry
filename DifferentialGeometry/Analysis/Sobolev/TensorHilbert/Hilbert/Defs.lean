@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedHsNorm
+import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedSobolevNorm
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
 import Mathlib.Analysis.InnerProductSpace.Defs
 import Mathlib.Topology.UniformSpace.Completion

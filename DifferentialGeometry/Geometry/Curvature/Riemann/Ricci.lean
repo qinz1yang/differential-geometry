@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
-import DifferentialGeometry.Geometry.Operator.HessianTrace
-import DifferentialGeometry.Geometry.Operator.Gradient
-import DifferentialGeometry.Geometry.Operator.Hessian
-import DifferentialGeometry.Geometry.Operator.HessianTraceChartGramRegularity
-import DifferentialGeometry.Geometry.Operator.HessianTraceChartInverseGramDerivative
-import DifferentialGeometry.Geometry.Operator.VossWeyl
+import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Geometry.Operator.Hessian.Basic
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartGramRegularity
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartInverseGramDerivative
+import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 
 
 noncomputable section

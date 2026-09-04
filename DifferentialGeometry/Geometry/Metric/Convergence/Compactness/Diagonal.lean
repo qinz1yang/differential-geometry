@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Components
 
-import DifferentialGeometry.Geometry.Metric.SmoothMetricFromCoeff
+import DifferentialGeometry.Geometry.Metric.Construction.SmoothMetricFromCoefficients
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

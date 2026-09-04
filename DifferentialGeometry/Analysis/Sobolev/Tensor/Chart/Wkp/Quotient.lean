@@ -1,0 +1,758 @@
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Completeness
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
+open DifferentialGeometry.Geometry.Curvature
+
+noncomputable section
+
+
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
+open scoped Manifold Topology ContDiff ENNReal BigOperators
+
+namespace DifferentialGeometry
+namespace Analysis
+namespace Sobolev
+namespace Tensor
+
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Analysis.Sobolev.Chart
+open DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qadd_rel
+    {r s k : ℕ}
+    {p : ℝ≥0∞} {hp : 1 ≤ p}
+    {S₁ S₂ T₁ T₂ : WkpTensor (I := I) (M := M) r s k p hp}
+    (hS : TensorAEEq (I := I) (M := M) S₁.1 S₂.1)
+    (hT : TensorAEEq (I := I) (M := M) T₁.1 T₂.1) :
+    TensorAEEq (I := I) (M := M) (S₁ + T₁).1 (S₂ + T₂).1 := by
+  change TensorAEEq (I := I) (M := M) (S₁.1 + T₁.1) (S₂.1 + T₂.1)
+  exact hS.add hT
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qneg_rel
+    {r s k : ℕ}
+    {p : ℝ≥0∞} {hp : 1 ≤ p}
+    {S T : WkpTensor (I := I) (M := M) r s k p hp}
+    (h : TensorAEEq (I := I) (M := M) S.1 T.1) :
+    TensorAEEq (I := I) (M := M) (-S).1 (-T).1 := by
+  change TensorAEEq (I := I) (M := M) (-S.1) (-T.1)
+  exact h.neg
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qsmul_rel
+    {r s k : ℕ}
+    {p : ℝ≥0∞} {hp : 1 ≤ p} (c : ℝ)
+    {S T : WkpTensor (I := I) (M := M) r s k p hp}
+    (h : TensorAEEq (I := I) (M := M) S.1 T.1) :
+    TensorAEEq (I := I) (M := M) (c • S).1 (c • T).1 := by
+  change TensorAEEq (I := I) (M := M) (c • S.1) (c • T.1)
+  exact h.smul c
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qsub_rel
+    {r s k : ℕ}
+    {p : ℝ≥0∞} {hp : 1 ≤ p}
+    {S₁ S₂ T₁ T₂ : WkpTensor (I := I) (M := M) r s k p hp}
+    (hS : TensorAEEq (I := I) (M := M) S₁.1 S₂.1)
+    (hT : TensorAEEq (I := I) (M := M) T₁.1 T₂.1) :
+    TensorAEEq (I := I) (M := M) (S₁ - T₁).1 (S₂ - T₂).1 := by
+  change TensorAEEq (I := I) (M := M) (S₁.1 - T₁.1) (S₂.1 - T₂.1)
+  exact hS.sub hT
+
+def qzero
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p) :
+    WkpTensorQuot (I := I) (M := M) r s k p hp :=
+  Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp)
+    (0 : WkpTensor (I := I) (M := M) r s k p hp)
+
+def qadd
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p) :
+    WkpTensorQuot (I := I) (M := M) r s k p hp →
+      WkpTensorQuot (I := I) (M := M) r s k p hp →
+        WkpTensorQuot (I := I) (M := M) r s k p hp :=
+  Quotient.map₂ (fun S T => S + T) (by
+    intro S₁ S₂ hS T₁ T₂ hT
+    change TensorAEEq (I := I) (M := M) S₁.1 S₂.1 at hS
+    change TensorAEEq (I := I) (M := M) T₁.1 T₂.1 at hT
+    change TensorAEEq (I := I) (M := M)
+      (S₁.1 + T₁.1) (S₂.1 + T₂.1)
+    exact hS.add hT)
+
+def qneg
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p) :
+    WkpTensorQuot (I := I) (M := M) r s k p hp →
+      WkpTensorQuot (I := I) (M := M) r s k p hp :=
+  Quotient.map (fun S => -S) (by
+    intro S T h
+    change TensorAEEq (I := I) (M := M) S.1 T.1 at h
+    change TensorAEEq (I := I) (M := M) (-S.1) (-T.1)
+    exact h.neg)
+
+def qsmul
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p) (c : ℝ) :
+    WkpTensorQuot (I := I) (M := M) r s k p hp →
+      WkpTensorQuot (I := I) (M := M) r s k p hp :=
+  Quotient.map (fun S => c • S) (by
+    intro S T h
+    change TensorAEEq (I := I) (M := M) S.1 T.1 at h
+    change TensorAEEq (I := I) (M := M) (c • S.1) (c • T.1)
+    exact h.smul c)
+
+def qsub
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p) :
+    WkpTensorQuot (I := I) (M := M) r s k p hp →
+      WkpTensorQuot (I := I) (M := M) r s k p hp →
+        WkpTensorQuot (I := I) (M := M) r s k p hp :=
+  Quotient.map₂ (fun S T => S - T) (by
+    intro S₁ S₂ hS T₁ T₂ hT
+    change TensorAEEq (I := I) (M := M) S₁.1 S₂.1 at hS
+    change TensorAEEq (I := I) (M := M) T₁.1 T₂.1 at hT
+    change TensorAEEq (I := I) (M := M)
+      (S₁.1 - T₁.1) (S₂.1 - T₂.1)
+    exact hS.sub hT)
+
+noncomputable def qrep
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    WkpTensor (I := I) (M := M) r s k p hp :=
+  Quotient.out a
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qmk_qrep
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp)
+        (qrep (I := I) (M := M) r s k p hp a) = a :=
+  Quotient.out_eq a
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+@[simp] theorem qadd_mk
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p)
+    (S T : WkpTensor (I := I) (M := M) r s k p hp) :
+    qadd (I := I) (M := M) r s k p hp
+        (Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) S)
+        (Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) T) =
+      Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) (S + T) := rfl
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+@[simp] theorem qneg_mk
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p)
+    (S : WkpTensor (I := I) (M := M) r s k p hp) :
+    qneg (I := I) (M := M) r s k p hp
+        (Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) S) =
+      Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) (-S) := rfl
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+@[simp] theorem qsmul_mk
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p) (c : ℝ)
+    (S : WkpTensor (I := I) (M := M) r s k p hp) :
+    qsmul (I := I) (M := M) r s k p hp c
+        (Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) S) =
+      Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) (c • S) := rfl
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+@[simp] theorem qsub_mk
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p)
+    (S T : WkpTensor (I := I) (M := M) r s k p hp) :
+    qsub (I := I) (M := M) r s k p hp
+        (Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) S)
+        (Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) T) =
+      Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) (S - T) := rfl
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qadd_zero
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qadd (I := I) (M := M) r s k p hp a
+      (qzero (I := I) (M := M) r s k p hp) = a := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (S + 0) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) S
+  rw [add_zero]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qzero_add
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qadd (I := I) (M := M) r s k p hp
+      (qzero (I := I) (M := M) r s k p hp) a = a := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (0 + S) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) S
+  rw [zero_add]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qadd_assoc
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b c : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qadd (I := I) (M := M) r s k p hp
+        (qadd (I := I) (M := M) r s k p hp a b) c =
+      qadd (I := I) (M := M) r s k p hp a
+        (qadd (I := I) (M := M) r s k p hp b c) := by
+  refine Quotient.inductionOn₃ a b c ?_
+  intro S T U
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) ((S + T) + U) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp)
+      (S + (T + U))
+  rw [add_assoc]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qadd_comm
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qadd (I := I) (M := M) r s k p hp a b =
+      qadd (I := I) (M := M) r s k p hp b a := by
+  refine Quotient.inductionOn₂ a b ?_
+  intro S T
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (S + T) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) (T + S)
+  rw [add_comm]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qneg_zero
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p) :
+    qneg (I := I) (M := M) r s k p hp
+      (qzero (I := I) (M := M) r s k p hp) =
+        qzero (I := I) (M := M) r s k p hp := by
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp)
+        (-(0 : WkpTensor (I := I) (M := M) r s k p hp)) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) 0
+  rw [neg_zero]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qneg_neg
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qneg (I := I) (M := M) r s k p hp
+      (qneg (I := I) (M := M) r s k p hp a) = a := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (-(-S)) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) S
+  rw [neg_neg]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qadd_neg_self
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qadd (I := I) (M := M) r s k p hp a
+      (qneg (I := I) (M := M) r s k p hp a) =
+        qzero (I := I) (M := M) r s k p hp := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (S + -S) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) 0
+  rw [add_neg_cancel]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qneg_add_self
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qadd (I := I) (M := M) r s k p hp
+      (qneg (I := I) (M := M) r s k p hp a) a =
+        qzero (I := I) (M := M) r s k p hp := by
+  rw [qadd_comm (I := I) (M := M) r s k hp]
+  exact qadd_neg_self (I := I) (M := M) r s k hp a
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qneg_eq_smul
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qneg (I := I) (M := M) r s k p hp a =
+      qsmul (I := I) (M := M) r s k p hp (-1) a := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (-S) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) ((-1) • S)
+  rw [neg_one_smul]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qsub_eq_add_neg
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsub (I := I) (M := M) r s k p hp a b =
+      qadd (I := I) (M := M) r s k p hp a
+        (qneg (I := I) (M := M) r s k p hp b) := by
+  refine Quotient.inductionOn₂ a b ?_
+  intro S T
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (S - T) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) (S + -T)
+  rw [sub_eq_add_neg]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qsub_self
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsub (I := I) (M := M) r s k p hp a a =
+      qzero (I := I) (M := M) r s k p hp := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (S - S) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) 0
+  rw [sub_self]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qsub_zero
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsub (I := I) (M := M) r s k p hp a
+      (qzero (I := I) (M := M) r s k p hp) = a := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (S - 0) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) S
+  rw [sub_zero]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qzero_sub
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsub (I := I) (M := M) r s k p hp
+      (qzero (I := I) (M := M) r s k p hp) a =
+        qneg (I := I) (M := M) r s k p hp a := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (0 - S) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) (-S)
+  rw [zero_sub]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qsub_rev
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsub (I := I) (M := M) r s k p hp b a =
+      qneg (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp a b) := by
+  refine Quotient.inductionOn₂ a b ?_
+  intro S T
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (T - S) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) (-(S - T))
+  rw [neg_sub]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qsub_chain
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b c : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsub (I := I) (M := M) r s k p hp a c =
+      qadd (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp a b)
+        (qsub (I := I) (M := M) r s k p hp b c) := by
+  refine Quotient.inductionOn₃ a b c ?_
+  intro S T U
+  change Quotient.mk
+      (tensorChartSetoid (I := I) (M := M) r s k p hp) (S - U) =
+    Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp)
+      ((S - T) + (T - U))
+  have h : S - U = (S - T) + (T - U) := by abel
+  rw [h]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qsub_eq_zero
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qsub (I := I) (M := M) r s k p hp a b =
+        qzero (I := I) (M := M) r s k p hp ↔
+      a = b := by
+  refine Quotient.inductionOn₂ a b ?_
+  intro S T
+  constructor
+  · intro hzero
+    change Quotient.mk
+        (tensorChartSetoid (I := I) (M := M) r s k p hp) (S - T) =
+      Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) 0
+        at hzero
+    have hdiff : TensorAEEq (I := I) (M := M) (S - T).1
+        (0 : RSTensorSection I M r s) := Quotient.exact hzero
+    have hST : TensorAEEq (I := I) (M := M) S.1 T.1 := by
+      change TensorAEEq (I := I) (M := M) (S.1 - T.1)
+        (0 : RSTensorSection I M r s) at hdiff
+      intro α Idx Jdx
+      have hcomp := hdiff α Idx Jdx
+      rw [secChartComp_sub (I := I) (M := M),
+        secChartComp_zero (I := I) (M := M)] at hcomp
+      filter_upwards [hcomp] with y hy
+      simpa only [Pi.sub_apply, Pi.zero_apply, sub_eq_zero] using hy
+    exact Quotient.sound hST
+  · intro heq
+    have hST : TensorAEEq (I := I) (M := M) S.1 T.1 :=
+      Quotient.exact heq
+    have hdiff : TensorAEEq (I := I) (M := M) (S - T).1
+        (0 : RSTensorSection I M r s) := by
+      change TensorAEEq (I := I) (M := M) (S.1 - T.1)
+        (0 : RSTensorSection I M r s)
+      intro α Idx Jdx
+      rw [secChartComp_sub (I := I) (M := M),
+        secChartComp_zero (I := I) (M := M)]
+      filter_upwards [hST α Idx Jdx] with y hy
+      simp only [Pi.sub_apply, Pi.zero_apply, hy, sub_self]
+    change Quotient.mk
+        (tensorChartSetoid (I := I) (M := M) r s k p hp) (S - T) =
+      Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp) 0
+    exact Quotient.sound hdiff
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qnorm_zero
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p) :
+    wkpTensorQNorm (I := I) (M := M) r s k p hp
+      (qzero (I := I) (M := M) r s k p hp) = 0 := by
+  change wkpTensorNorm (I := I) (M := M) k p
+    (0 : RSTensorSection I M r s) = 0
+  exact wkpTensorNorm_zero (I := I) (M := M) r s k hp
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qnorm_add_le
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qadd (I := I) (M := M) r s k p hp a b) ≤
+      wkpTensorQNorm (I := I) (M := M) r s k p hp a +
+        wkpTensorQNorm (I := I) (M := M) r s k p hp b := by
+  refine Quotient.inductionOn₂ a b ?_
+  intro S T
+  change wkpTensorNorm (I := I) (M := M) k p (S.1 + T.1) ≤
+    wkpTensorNorm (I := I) (M := M) k p S.1 +
+      wkpTensorNorm (I := I) (M := M) k p T.1
+  exact wkpTensorNorm_add_le (I := I) (M := M) hp S.2 T.2
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qnorm_smul
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p) (c : ℝ)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsmul (I := I) (M := M) r s k p hp c a) =
+      ‖c‖₊ * wkpTensorQNorm (I := I) (M := M) r s k p hp a := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  change wkpTensorNorm (I := I) (M := M) k p (c • S.1) =
+    ‖c‖₊ * wkpTensorNorm (I := I) (M := M) k p S.1
+  exact wkpTensorNorm_smul (I := I) (M := M) hp c S.2
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem qnorm_lt_top
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    wkpTensorQNorm (I := I) (M := M) r s k p hp a < ⊤ := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  change wkpTensorNorm (I := I) (M := M) k p S.1 < ⊤
+  exact wkpTensorNorm_lt_top (I := I) (M := M) hp S.2
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qnorm_eq_zero
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    wkpTensorQNorm (I := I) (M := M) r s k p hp a = 0 ↔
+      a = qzero (I := I) (M := M) r s k p hp := by
+  refine Quotient.inductionOn a ?_
+  intro S
+  constructor
+  · intro hzero
+    change wkpTensorNorm (I := I) (M := M) k p S.1 = 0 at hzero
+    have hp_zero : p ≠ 0 := by
+      exact ne_of_gt (lt_of_lt_of_le (by norm_num) hp)
+    have hrel : TensorAEEq (I := I) (M := M) S.1
+        (0 : RSTensorSection I M r s) := by
+      intro α Idx Jdx
+      have hcomp_le := wkpNorm_secComp_le (I := I) (M := M) k p
+        S.1 α Idx Jdx
+      rw [hzero] at hcomp_le
+      have hcomp : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
+          (secChartComp (I := I) (M := M) r s S.1 α Idx Jdx)
+          (chartTargetEuclid (I := I) (M := M) α) = 0 :=
+        le_antisymm hcomp_le (zero_le)
+      have heLp_le := eLpNorm_le_wkpNorm (d := Module.finrank ℝ E) k p
+        (chartTargetEuclid (I := I) (M := M) α)
+        (secChartComp (I := I) (M := M) r s S.1 α Idx Jdx)
+      rw [hcomp] at heLp_le
+      have heLp : eLpNorm
+          (secChartComp (I := I) (M := M) r s S.1 α Idx Jdx) p
+          ((volume : Measure (EuclideanSpace ℝ
+            (Fin (Module.finrank ℝ E)))).restrict
+              (chartTargetEuclid (I := I) (M := M) α)) = 0 :=
+        le_antisymm heLp_le (zero_le)
+      have hae : secChartComp (I := I) (M := M) r s S.1 α Idx Jdx
+          =ᵐ[(volume : Measure (EuclideanSpace ℝ
+            (Fin (Module.finrank ℝ E)))).restrict
+              (chartTargetEuclid (I := I) (M := M) α)] 0 :=
+        (eLpNorm_eq_zero_iff
+          ((S.2 α Idx Jdx).memLp.aestronglyMeasurable) hp_zero).mp heLp
+      rw [secChartComp_zero (I := I) (M := M)]
+      exact hae
+    change Quotient.mk
+        (tensorChartSetoid (I := I) (M := M) r s k p hp) S =
+      Quotient.mk (tensorChartSetoid (I := I) (M := M) r s k p hp)
+        (0 : WkpTensor (I := I) (M := M) r s k p hp)
+    exact Quotient.sound hrel
+  · intro heq
+    rw [heq]
+    exact qnorm_zero (I := I) (M := M) r s k hp
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qnorm_neg
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qneg (I := I) (M := M) r s k p hp a) =
+      wkpTensorQNorm (I := I) (M := M) r s k p hp a := by
+  rw [qneg_eq_smul (I := I) (M := M) r s k hp,
+    qnorm_smul (I := I) (M := M) r s k hp]
+  norm_num
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qnorm_sub_symm
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp a b) =
+      wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp b a) := by
+  rw [qsub_rev (I := I) (M := M) r s k hp a b,
+    qnorm_neg (I := I) (M := M) r s k hp]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qnorm_sub_triangle
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b c : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp a c) ≤
+      wkpTensorQNorm (I := I) (M := M) r s k p hp
+          (qsub (I := I) (M := M) r s k p hp a b) +
+        wkpTensorQNorm (I := I) (M := M) r s k p hp
+          (qsub (I := I) (M := M) r s k p hp b c) := by
+  rw [qsub_chain (I := I) (M := M) r s k hp a b c]
+  exact qnorm_add_le (I := I) (M := M) r s k hp _ _
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qnorm_sub_sep
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp a b) = 0 ↔
+      a = b := by
+  rw [qnorm_eq_zero (I := I) (M := M) r s k hp,
+    qsub_eq_zero (I := I) (M := M) r s k hp]
+
+def qdist
+    (r s k : ℕ)
+    (p : ℝ≥0∞) (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) : ℝ :=
+  (wkpTensorQNorm (I := I) (M := M) r s k p hp
+    (qsub (I := I) (M := M) r s k p hp a b)).toReal
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qdist_nonneg
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    0 ≤ qdist (I := I) (M := M) r s k p hp a b :=
+  ENNReal.toReal_nonneg
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+theorem qdist_symm
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qdist (I := I) (M := M) r s k p hp a b =
+      qdist (I := I) (M := M) r s k p hp b a := by
+  unfold qdist
+  rw [qnorm_sub_symm (I := I) (M := M) r s k hp]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem qdist_eq_zero
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qdist (I := I) (M := M) r s k p hp a b = 0 ↔ a = b := by
+  unfold qdist
+  constructor
+  · intro hzero
+    rcases (ENNReal.toReal_eq_zero_iff _).mp hzero with hqzero | hqtop
+    · exact (qnorm_sub_sep (I := I) (M := M) r s k hp a b).mp hqzero
+    · exact ((qnorm_lt_top (I := I) (M := M) r s k hp
+        (qsub (I := I) (M := M) r s k p hp a b)).ne hqtop).elim
+  · intro hab
+    apply (ENNReal.toReal_eq_zero_iff _).mpr
+    exact Or.inl ((qnorm_sub_sep (I := I) (M := M) r s k hp a b).mpr hab)
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem qdist_self
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qdist (I := I) (M := M) r s k p hp a a = 0 :=
+  (qdist_eq_zero (I := I) (M := M) r s k hp a a).mpr rfl
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem qdist_triangle
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
+    (a b c : WkpTensorQuot (I := I) (M := M) r s k p hp) :
+    qdist (I := I) (M := M) r s k p hp a c ≤
+      qdist (I := I) (M := M) r s k p hp a b +
+        qdist (I := I) (M := M) r s k p hp b c := by
+  unfold qdist
+  have hab_ne : wkpTensorQNorm (I := I) (M := M) r s k p hp
+      (qsub (I := I) (M := M) r s k p hp a b) ≠ ⊤ :=
+    (qnorm_lt_top (I := I) (M := M) r s k hp
+      (qsub (I := I) (M := M) r s k p hp a b)).ne
+  have hbc_ne : wkpTensorQNorm (I := I) (M := M) r s k p hp
+      (qsub (I := I) (M := M) r s k p hp b c) ≠ ⊤ :=
+    (qnorm_lt_top (I := I) (M := M) r s k hp
+      (qsub (I := I) (M := M) r s k p hp b c)).ne
+  have hq := qnorm_sub_triangle (I := I) (M := M) r s k hp a b c
+  exact (ENNReal.toReal_mono
+    (ENNReal.add_ne_top.mpr ⟨hab_ne, hbc_ne⟩) hq).trans
+      ENNReal.toReal_add_le
+
+theorem qCauchy_limit
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
+    (u : ℕ → WkpTensorQuot (I := I) (M := M) r s k p hp)
+    (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
+      N ≤ m → N ≤ n →
+      wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp (u m) (u n)) ≤
+          ENNReal.ofReal ε) :
+    ∃ v : WkpTensorQuot (I := I) (M := M) r s k p hp,
+      Tendsto
+        (fun n => wkpTensorQNorm (I := I) (M := M) r s k p hp
+          (qsub (I := I) (M := M) r s k p hp (u n) v))
+        atTop (𝓝 0) := by
+  let rep : ℕ → WkpTensor (I := I) (M := M) r s k p hp := fun n =>
+    qrep (I := I) (M := M) r s k p hp (u n)
+  have hrep_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
+      N ≤ m → N ≤ n →
+      wkpTensorNorm (I := I) (M := M) k p
+        ((rep m).1 - (rep n).1) ≤ ENNReal.ofReal ε := by
+    intro ε hε
+    obtain ⟨N, hN⟩ := h_cauchy ε hε
+    refine ⟨N, ?_⟩
+    intro m n hm hn
+    have hq := hN m n hm hn
+    rw [← qmk_qrep (I := I) (M := M) r s k p hp (u m),
+      ← qmk_qrep (I := I) (M := M) r s k p hp (u n)] at hq
+    change wkpTensorNorm (I := I) (M := M) k p
+      ((rep m).1 - (rep n).1) ≤ ENNReal.ofReal ε at hq
+    exact hq
+  obtain ⟨v, hv⟩ :=
+    wkpTensor_limit (I := I) (M := M) r s k hp hp_top rep hrep_cauchy
+  refine ⟨Quotient.mk
+    (tensorChartSetoid (I := I) (M := M) r s k p hp) v, ?_⟩
+  have heq :
+      (fun n => wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp (u n)
+          (Quotient.mk
+            (tensorChartSetoid (I := I) (M := M) r s k p hp) v))) =
+        (fun n => wkpTensorNorm (I := I) (M := M) k p
+          ((rep n).1 - v.1)) := by
+    funext n
+    rw [← qmk_qrep (I := I) (M := M) r s k p hp (u n)]
+    rfl
+  rw [heq]
+  exact hv
+
+theorem qdist_limit
+    (r s k : ℕ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
+    (u : ℕ → WkpTensorQuot (I := I) (M := M) r s k p hp)
+    (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
+      N ≤ m → N ≤ n →
+      qdist (I := I) (M := M) r s k p hp (u m) (u n) < ε) :
+    ∃ v : WkpTensorQuot (I := I) (M := M) r s k p hp,
+      Tendsto
+        (fun n => qdist (I := I) (M := M) r s k p hp (u n) v)
+        atTop (𝓝 0) := by
+  have hq_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
+      N ≤ m → N ≤ n →
+      wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp (u m) (u n)) ≤
+          ENNReal.ofReal ε := by
+    intro ε hε
+    obtain ⟨N, hN⟩ := h_cauchy ε hε
+    refine ⟨N, ?_⟩
+    intro m n hm hn
+    have hlt := hN m n hm hn
+    have hfinite : wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp (u m) (u n)) ≠
+          (⊤ : ℝ≥0∞) :=
+      (qnorm_lt_top (I := I) (M := M) r s k hp
+        (qsub (I := I) (M := M) r s k p hp (u m) (u n))).ne
+    apply (ENNReal.le_ofReal_iff_toReal_le hfinite hε.le).2
+    simpa only [qdist] using hlt.le
+  obtain ⟨v, hv⟩ :=
+    qCauchy_limit (I := I) (M := M) r s k hp hp_top u hq_cauchy
+  refine ⟨v, ?_⟩
+  have hreal := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hv
+  change Filter.Tendsto
+      (fun n => (wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp (u n) v)).toReal)
+      Filter.atTop _ at hreal
+  exact hreal
+
+end Tensor
+end Sobolev
+end Analysis
+end DifferentialGeometry

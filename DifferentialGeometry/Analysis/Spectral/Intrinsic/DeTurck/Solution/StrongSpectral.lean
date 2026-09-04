@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.SmoothStrongPair
-import DifferentialGeometry.Analysis.ODE.ClosedEdgeGronwall
+import DifferentialGeometry.Analysis.ODE.Gronwall.ClosedEdge
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.ConnectionLaplacian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.HessFrobenius
-import DifferentialGeometry.Geometry.Operator.NormGradSq
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 open DifferentialGeometry.Geometry.Curvature
 

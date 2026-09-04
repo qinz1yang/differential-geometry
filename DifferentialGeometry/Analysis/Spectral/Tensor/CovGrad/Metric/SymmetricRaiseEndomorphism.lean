@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.CometricRaise
-import DifferentialGeometry.Geometry.Metric.ChartGram
-import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
+import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
 
 noncomputable section
 

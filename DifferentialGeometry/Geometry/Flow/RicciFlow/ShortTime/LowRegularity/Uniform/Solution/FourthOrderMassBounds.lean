@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.L2.Fatou
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.GalerkinCompactness
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.ParabolicInteriorSmoothing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Regularity.ParabolicInteriorSmoothing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Solution.FourthOrderBounds
 
 set_option autoImplicit false

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

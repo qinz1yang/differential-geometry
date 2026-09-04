@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
-import DifferentialGeometry.Geometry.Operator.HessianTrace
+import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCurve
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 import Mathlib.Topology.MetricSpace.Thickening
 import Mathlib.Analysis.Normed.Group.Bounded
 

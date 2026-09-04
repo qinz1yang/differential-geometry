@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Christoffel
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
 import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 
 set_option autoImplicit false

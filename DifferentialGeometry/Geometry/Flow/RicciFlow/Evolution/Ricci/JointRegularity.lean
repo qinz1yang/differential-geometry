@@ -1,7 +1,7 @@
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CovariantDerivativeCoordinates
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Connection.CovariantDerivativeCoordinates
 import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 
 set_option autoImplicit false

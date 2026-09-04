@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.Partition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
-import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
+import DifferentialGeometry.Geometry.Operator.Family.GramWeakConvergence
 
 set_option autoImplicit false
 

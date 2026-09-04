@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 open DifferentialGeometry.Geometry.Connection

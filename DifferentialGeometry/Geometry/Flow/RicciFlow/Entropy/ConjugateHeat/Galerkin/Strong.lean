@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.ODE.ChartLocalPicardIntegral
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionSpace
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.PicardIntegral
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.Space
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.RankZeroRealization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautonomous.Compatibility
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautonomous.TimeDependence

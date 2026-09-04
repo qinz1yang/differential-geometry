@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Manifold.IteratedSobolevEmbedding
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Embedding.Subcritical
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Euclidean.Morrey
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Chart.Defs

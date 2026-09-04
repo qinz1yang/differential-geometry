@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.MetricExistence
+import DifferentialGeometry.Geometry.Metric.Construction.Existence
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
 

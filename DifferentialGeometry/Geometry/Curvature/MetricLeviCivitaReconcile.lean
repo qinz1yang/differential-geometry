@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Reconcile
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.CanonicalConnection
 import DifferentialGeometry.Geometry.Curvature.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic

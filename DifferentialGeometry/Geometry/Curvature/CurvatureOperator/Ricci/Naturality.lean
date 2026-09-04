@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.LeviCivita.CovariantDerivativePointwise
+import DifferentialGeometry.Geometry.Connection.LeviCivita.CovariantDerivative.Pointwise
 import DifferentialGeometry.Bundle.VectorField.LieBracket
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs

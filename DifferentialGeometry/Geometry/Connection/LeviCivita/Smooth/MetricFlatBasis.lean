@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Uniqueness
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Uniqueness
 import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
 import DifferentialGeometry.Tensor.RSTensor.Basis
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Smooth

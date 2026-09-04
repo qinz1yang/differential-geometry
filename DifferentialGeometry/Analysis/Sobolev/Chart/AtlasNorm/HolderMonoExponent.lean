@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Manifold.IteratedSobolevEmbedding
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 
 

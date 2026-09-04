@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Basic
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChainedFlowContinuity

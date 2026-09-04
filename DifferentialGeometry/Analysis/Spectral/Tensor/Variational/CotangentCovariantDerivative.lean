@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Co
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParallelNaturality
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivCommutation
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetricCompatible
-import DifferentialGeometry.Geometry.Metric.TensorInner.CotangentRiemannian
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Riemannian
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 open DifferentialGeometry.Geometry.Curvature
 

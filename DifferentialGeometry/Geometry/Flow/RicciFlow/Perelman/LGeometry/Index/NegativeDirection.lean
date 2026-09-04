@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Alg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.JacobiCrossTerm
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.LocalVelocity
-import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal
+import DifferentialGeometry.Geometry.Metric.VectorField.SmoothGlobalExtension
 
 set_option autoImplicit false
 

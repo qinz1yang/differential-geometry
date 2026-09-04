@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartTensor0SCovariantDerivative
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.Tensor0SChartChristoffel
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartTorsion
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Torsion
 
 
 noncomputable section

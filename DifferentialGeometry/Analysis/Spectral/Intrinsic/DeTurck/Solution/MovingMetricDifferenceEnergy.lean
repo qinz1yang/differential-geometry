@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Continuity
 import DifferentialGeometry.Analysis.Integration.Measure.Family.LocalVariation
-import DifferentialGeometry.Analysis.ODE.ClosedEdgeGronwall
+import DifferentialGeometry.Analysis.ODE.Gronwall.ClosedEdge
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.DifferenceEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.StrongSpectral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.SmallC0

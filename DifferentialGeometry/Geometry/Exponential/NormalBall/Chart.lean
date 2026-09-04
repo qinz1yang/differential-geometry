@@ -3,7 +3,7 @@ import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
-import DifferentialGeometry.Geometry.Metric.TensorInner.MetricKoszul
+import DifferentialGeometry.Geometry.Geodesic.Equation.Koszul
 
 set_option autoImplicit false
 

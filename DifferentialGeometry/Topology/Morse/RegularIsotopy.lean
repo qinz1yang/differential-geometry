@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Morse.RegularVectorField
 import DifferentialGeometry.Topology.Morse.RegularSublevel
-import DifferentialGeometry.Analysis.ODE.CompactSupportFlow
+import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
 
 namespace DifferentialGeometry.Topology.Morse
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.CompactTrajectory
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Continuity
 import DifferentialGeometry.Bundle.FiberBundleHausdorff

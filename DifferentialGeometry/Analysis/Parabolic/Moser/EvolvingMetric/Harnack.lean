@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.EvolvingMetric.SmallExponentLocalBoundedness
 import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
-import DifferentialGeometry.Geometry.Operator.LaplacianBridge
+import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 
 
 set_option autoImplicit false

@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Geodesic.Naturality.PullbackCross
-import DifferentialGeometry.Geometry.Metric.OpenSubtype
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenSubtype
 import DifferentialGeometry.Topology.SigmaCompactOpen
 open DifferentialGeometry.Geometry.Curvature
 

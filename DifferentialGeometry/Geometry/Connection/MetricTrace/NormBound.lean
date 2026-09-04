@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Trace04
-import DifferentialGeometry.Geometry.Metric.TensorInner.TensorProductNorm
+import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.TensorProductNorm
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovariantDerivativeBounds.SlotCorrection.ChartComponentFormula
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartSmooth
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Smoothness
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartLeviCivitaParallelCLMOpNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.SlotUniformBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.SlotChartSourceContMDiff

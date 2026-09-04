@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Basic
-import DifferentialGeometry.Geometry.Operator.TensorHeat
+import DifferentialGeometry.Geometry.Operator.Heat.Tensor
 import Mathlib.Tactic.Ring
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

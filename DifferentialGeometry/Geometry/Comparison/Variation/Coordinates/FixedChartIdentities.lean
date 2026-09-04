@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Existence
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs

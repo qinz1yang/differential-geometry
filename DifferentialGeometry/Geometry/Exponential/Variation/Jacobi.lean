@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback

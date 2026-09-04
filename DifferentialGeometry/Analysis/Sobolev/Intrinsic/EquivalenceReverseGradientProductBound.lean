@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceForward
-import DifferentialGeometry.Analysis.Sobolev.Manifold.MeasureBridgeUniform
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
 open DifferentialGeometry.Geometry.Operator
 
 

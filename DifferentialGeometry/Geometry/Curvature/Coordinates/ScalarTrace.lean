@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
-import DifferentialGeometry.Geometry.Metric.ChartGram
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

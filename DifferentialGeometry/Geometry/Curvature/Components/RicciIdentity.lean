@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature

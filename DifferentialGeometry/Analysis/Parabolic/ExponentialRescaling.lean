@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Energy.Caccioppoli
-import DifferentialGeometry.Geometry.Operator.LaplacianBridge
+import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 
 set_option autoImplicit false
 

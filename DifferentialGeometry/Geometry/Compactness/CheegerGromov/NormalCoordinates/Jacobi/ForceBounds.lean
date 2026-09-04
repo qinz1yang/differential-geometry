@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.JacobiJets
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CurvatureOperatorBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
-import DifferentialGeometry.Geometry.Metric.InnerExpansion
+import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 
 set_option autoImplicit false
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal
+import DifferentialGeometry.Geometry.Metric.VectorField.SmoothGlobalExtension
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Minimizer
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 open DifferentialGeometry.Geometry.Curvature

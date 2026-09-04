@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Boundary.OutwardNormal
-import DifferentialGeometry.Geometry.Operator.Hessian
+import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 open DifferentialGeometry.Geometry.Operator
 
 

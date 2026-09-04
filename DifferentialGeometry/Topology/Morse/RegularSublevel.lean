@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Morse.LevelSet
 import DifferentialGeometry.Topology.Morse.Manifold
-import DifferentialGeometry.Analysis.ODE.CompactSupportFlow
+import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.Instances.Icc

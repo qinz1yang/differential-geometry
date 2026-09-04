@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.TraceAlgebra
-import DifferentialGeometry.Geometry.Connection.LeviCivita.DivergenceFrameInvariance
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Divergence.FrameInvariance
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature

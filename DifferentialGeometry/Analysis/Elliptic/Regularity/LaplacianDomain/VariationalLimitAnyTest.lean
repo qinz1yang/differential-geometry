@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.VariationalLimit
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
-import DifferentialGeometry.Geometry.Operator.Laplacian
-import DifferentialGeometry.Geometry.Operator.Gradient
+import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 open DifferentialGeometry.Geometry.Operator
 
 

@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TensorInnerLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.CurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.FixedFrameEvolution
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.RadialTensorExtension
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Radial.TensorExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric

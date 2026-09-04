@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.TubeStability
+import DifferentialGeometry.Analysis.ODE.Stability.Tube
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.IntrinsicCoreGeometry
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
-import DifferentialGeometry.Geometry.Metric.CompactPerturbationComplete
+import DifferentialGeometry.Geometry.Metric.Construction.CompactPerturbationCompleteness
 
 set_option autoImplicit false
 

@@ -7,13 +7,13 @@ import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Curvature.Bianchi
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Hessian
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Hessian.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Model
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Basic
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Pairing
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.ConnectionProduct

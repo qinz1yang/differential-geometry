@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.CompactJetWkpBound
-import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkp
-import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartComponentRawNorm
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Basic
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.RawNorm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metric.IntrinsicThirdJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.CovariantDerivative.PartitionOfUnityLeibniz
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.ChartL2Convergence

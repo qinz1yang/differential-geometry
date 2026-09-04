@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeScaling
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeScaling
 
 set_option autoImplicit false
 

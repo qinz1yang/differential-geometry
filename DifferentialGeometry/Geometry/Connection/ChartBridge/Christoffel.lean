@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.VossWeyl
+import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 
 noncomputable section
 

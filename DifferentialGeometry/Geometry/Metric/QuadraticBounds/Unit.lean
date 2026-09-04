@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.MetricBallMonotone
+import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Fiber

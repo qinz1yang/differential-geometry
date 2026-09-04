@@ -2,11 +2,11 @@ import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lp
 import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDense
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
-import DifferentialGeometry.Analysis.Sobolev.Manifold.MeasureBridgeUniform
-import DifferentialGeometry.Analysis.Sobolev.Manifold.EmbeddingSubcritical
-import DifferentialGeometry.Analysis.Sobolev.Manifold.MorreyManifold
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Subcritical
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.Basic
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.IntegrationByParts
-import DifferentialGeometry.Geometry.Operator.Laplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceForwardSmoothMemW1pIntrinsic
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceForwardELpNormWkpNormChartBound

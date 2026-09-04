@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
-import DifferentialGeometry.Geometry.Connection.LeviCivita.ChristoffelDiffKoszulDeriv
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.DifferenceKoszulDerivative
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralPointwiseFlowDeriv
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Spectral.PointwiseFlowDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.WeylSummability
 open DifferentialGeometry.Geometry.Curvature
 

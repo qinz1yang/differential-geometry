@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.Linearization
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivCommutation
-import DifferentialGeometry.Geometry.Connection.LeviCivita.ChristoffelDifferenceKoszul
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.DifferenceKoszul
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

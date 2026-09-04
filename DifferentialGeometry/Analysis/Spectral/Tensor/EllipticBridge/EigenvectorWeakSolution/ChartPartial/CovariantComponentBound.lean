@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ChartFor
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChristoffelCorrection.CovL2BoundFromH1
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentL2BoundUniform
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
-import DifferentialGeometry.Analysis.Sobolev.Manifold.MeasureBridgeUniform
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
 import Mathlib.MeasureTheory.Function.LpSeminorm.SMul
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
-import DifferentialGeometry.Geometry.Metric.CurveEnergy
+import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 
 set_option autoImplicit false

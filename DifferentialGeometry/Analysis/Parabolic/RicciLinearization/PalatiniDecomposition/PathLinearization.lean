@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.JetTower
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
-import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
+import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
 import Mathlib.Analysis.Calculus.Deriv.Slope
 open DifferentialGeometry.Geometry.Curvature

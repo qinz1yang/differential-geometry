@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Geometry.Metric.OpenSubtype
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Basic
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
-import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-import DifferentialGeometry.Geometry.Operator.Operators
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
+import DifferentialGeometry.Geometry.Operator.Basic
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection

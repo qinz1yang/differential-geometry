@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.LocalSecondDerivativeFormula
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartSmooth
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Smoothness
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.Defs
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

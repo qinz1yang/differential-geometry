@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartComponents
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Components
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

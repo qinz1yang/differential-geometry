@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Curvature.Algebraic.Tensor
 import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
-import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
+import DifferentialGeometry.Analysis.ODE.Existence.GlobalLipschitzAffine
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
 set_option autoImplicit false

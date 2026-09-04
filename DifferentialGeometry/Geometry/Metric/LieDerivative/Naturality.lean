@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Bundle.VectorField.LieBracket
 import DifferentialGeometry.Bundle.VectorField.Pushforward
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Cartan
-import DifferentialGeometry.Geometry.Connection.LeviCivita.CovariantDerivativePointwise
+import DifferentialGeometry.Geometry.Connection.LeviCivita.CovariantDerivative.Pointwise
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection

@@ -2,10 +2,10 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Nor
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.CurvatureDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.SmoothAlongExpansion
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.SmoothAlongExpansion
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
-import DifferentialGeometry.Geometry.Operator.Operators
-import DifferentialGeometry.Geometry.Operator.CotangentSharpSmooth
+import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Gradient.CotangentSharpSmoothness
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.FrozenSlot
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
 

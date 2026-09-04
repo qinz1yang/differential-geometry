@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Exponential.Intrinsic.FramedCoordinates
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
 import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
-import DifferentialGeometry.Geometry.Metric.LocalPullback
+import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import DifferentialGeometry.Topology.SigmaCompactOpen
 
 set_option autoImplicit false

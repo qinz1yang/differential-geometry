@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Defs
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Components
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.SlotPermutation
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
-import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannianBundle
+import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.RiemannianBundle
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Logic.Equiv.Fin.Basic
 import Mathlib.Data.Fin.Tuple.Basic

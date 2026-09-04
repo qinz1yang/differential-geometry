@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.HessianBound
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
-import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
-import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

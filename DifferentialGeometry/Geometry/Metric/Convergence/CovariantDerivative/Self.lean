@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
-import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
 
 set_option autoImplicit false

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.MassRegularity
-import DifferentialGeometry.Analysis.ODE.StateCoerciveMass
+import DifferentialGeometry.Analysis.ODE.Existence.StateCoerciveMass
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

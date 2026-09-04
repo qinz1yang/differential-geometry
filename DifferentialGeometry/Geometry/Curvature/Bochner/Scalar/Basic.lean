@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Curvature.Components.Basic
 import DifferentialGeometry.Geometry.Curvature.Components.Lowering
 import DifferentialGeometry.Geometry.Curvature.Components.TraceOneForm
@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Connection.RicciIdentity.OneForm.Realizatio
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Realization
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Formula
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.MixedComponents
-import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
@@ -22,7 +22,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Product
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
 import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
-import DifferentialGeometry.Geometry.Operator.Operators
+import DifferentialGeometry.Geometry.Operator.Basic
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
 

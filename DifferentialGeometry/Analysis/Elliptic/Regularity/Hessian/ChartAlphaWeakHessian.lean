@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.WeakPartial
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.TensorChartSmooth
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
-import DifferentialGeometry.Geometry.Operator.Hessian
+import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

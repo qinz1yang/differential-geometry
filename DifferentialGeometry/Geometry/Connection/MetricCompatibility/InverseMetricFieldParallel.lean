@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.InverseMetricField
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Cotangent
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Basic
 open DifferentialGeometry.Geometry.Curvature

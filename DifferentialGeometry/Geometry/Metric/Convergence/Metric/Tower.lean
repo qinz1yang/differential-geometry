@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.MapConvergence
 
-import DifferentialGeometry.Geometry.Metric.TensorInner.MetricGeodesicSpray
+import DifferentialGeometry.Geometry.Geodesic.Equation.MetricSpray
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

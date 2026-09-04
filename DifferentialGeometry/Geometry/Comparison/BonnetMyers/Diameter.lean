@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Basic
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCurve
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 import Mathlib.Topology.EMetricSpace.Diam
 import Mathlib.Analysis.Normed.Module.FiniteDimension

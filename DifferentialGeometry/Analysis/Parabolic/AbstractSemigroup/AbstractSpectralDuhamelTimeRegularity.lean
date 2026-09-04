@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.AbstractSpectralDuhamel
 import DifferentialGeometry.Analysis.Calculus.Derivative.HilbertBasis
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.TimeDeriv
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.TimeDerivative
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 
 noncomputable section

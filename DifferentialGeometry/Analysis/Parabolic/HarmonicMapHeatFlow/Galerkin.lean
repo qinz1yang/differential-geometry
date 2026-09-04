@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
+import DifferentialGeometry.Analysis.ODE.Existence.GlobalLipschitzAffine
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.WeakForm
-import DifferentialGeometry.Geometry.Metric.TensorInner.CoerciveBilinInverse
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.CoerciveBilinearInverse
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.SmoothRepresentative.Basic
 import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
 import Mathlib.Analysis.InnerProductSpace.PiL2

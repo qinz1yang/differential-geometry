@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.InverseMetricField
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
 
 
 noncomputable section

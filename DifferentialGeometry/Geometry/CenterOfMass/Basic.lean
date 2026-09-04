@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
-import DifferentialGeometry.Geometry.Operator.Operators
+import DifferentialGeometry.Geometry.Operator.Basic
 import Mathlib.Analysis.Convex.Function
 import Mathlib.Topology.UnitInterval
 open DifferentialGeometry.Geometry.Curvature

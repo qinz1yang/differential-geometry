@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Energy.Caccioppoli
 import DifferentialGeometry.Analysis.Parabolic.Energy.TimeCutoff
 import DifferentialGeometry.Analysis.Integration.Holder.Weighted
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.CompactIntegral
-import DifferentialGeometry.Analysis.Sobolev.Manifold.IntrinsicEmbedding
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Intrinsic
 
 noncomputable section
 

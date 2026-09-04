@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci
-import DifferentialGeometry.Geometry.Operator.TensorHeat
+import DifferentialGeometry.Geometry.Operator.Heat.Tensor
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

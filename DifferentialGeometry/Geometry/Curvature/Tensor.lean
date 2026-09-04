@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Basic
 import DifferentialGeometry.Geometry.Coordinates.Tensor
-import DifferentialGeometry.Geometry.Metric.TensorInner.GenericCotangent
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
 import DifferentialGeometry.Tensor.RSTensor.Contraction
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Fiber

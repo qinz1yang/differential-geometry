@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.ConnectionLaplacian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

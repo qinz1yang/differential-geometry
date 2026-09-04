@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.PointwiseBounds.PartitionOfUnitySobolevSummand
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartRepresentationBounds.ComponentDerivativeMeasurability
-import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedNorm
+import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedNorm
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich

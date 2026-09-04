@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Linearity
-import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal
+import DifferentialGeometry.Geometry.Metric.VectorField.SmoothGlobalExtension
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 open DifferentialGeometry.Tensor.RicciIdentity

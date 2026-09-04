@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.MetricBallMonotone
+import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
 import Mathlib.Geometry.Manifold.Diffeomorph

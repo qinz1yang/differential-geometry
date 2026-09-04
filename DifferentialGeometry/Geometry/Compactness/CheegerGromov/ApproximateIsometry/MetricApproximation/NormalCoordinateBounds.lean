@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Defs
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
-import DifferentialGeometry.Geometry.Metric.TensorInner.ComponentBounds
+import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.ComponentBounds
 import DifferentialGeometry.Analysis.Estimates.BilinearMapPerturbation
 
 set_option autoImplicit false

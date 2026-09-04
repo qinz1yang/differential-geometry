@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.HessianTraceChartGramRegularity
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartGramRegularity
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.EnergyVanishing
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureTimeDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Vanishing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Curvature.TimeDerivative
 
 set_option autoImplicit false
 

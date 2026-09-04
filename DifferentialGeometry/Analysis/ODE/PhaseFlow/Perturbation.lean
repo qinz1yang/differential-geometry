@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.SecondOrderGronwall
+import DifferentialGeometry.Analysis.ODE.Gronwall.SecondOrder
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn
 
 set_option autoImplicit false

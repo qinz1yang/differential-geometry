@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicciReaction
-import DifferentialGeometry.Geometry.Operator.TensorHeat
+import DifferentialGeometry.Geometry.Operator.Heat.Tensor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Lichnerowicz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricVariation
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Basic
@@ -15,7 +15,7 @@ import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
-import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 import DifferentialGeometry.Tensor.RSTensor.Product

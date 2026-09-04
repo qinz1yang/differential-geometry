@@ -8,9 +8,9 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Pointwise
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Smooth
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Tangent
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Endomorphism

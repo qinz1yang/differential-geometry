@@ -1,0 +1,242 @@
+import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
+import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
+import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
+import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
+open DifferentialGeometry.Geometry.Curvature
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.Geometry.Operator
+
+open Bundle DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Tensor.Coordinates
+open scoped BigOperators Manifold ContDiff Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+private theorem gradientFun_coeff_eq_sum
+    (g : SmoothRiemannianMetric I M) (f : M -> Real)
+    {x₀ y : M} (hy : y ∈ coordinateFrameSet (I := I) x₀)
+    (k : CoordinateIdx (𝕜 := Real) E) :
+    (coordinateFrameAt_isLocalFrame (I := I) x₀).coeff k y
+        (gradientFun (I := I) g f y) =
+      ∑ l : CoordinateIdx (𝕜 := Real) E,
+        inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
+            (extChartAt I x₀ y) *
+          mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y) := by
+  classical
+  let basis : Module.Basis (CoordinateIdx (𝕜 := Real) E) Real (TangentSpace I y) :=
+    (coordinateFrameAt_isLocalFrame (I := I) x₀).toBasisAt hy
+  let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
+    fun a b =>
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ a b
+        (extChartAt I x₀ y)
+  have hbasis :
+      basis = coordinateFrameAtBasis (I := I) x₀ hy := by
+    rfl
+  have hinv : MetricInverseInBasisGen (I := I) g y basis gInv := by
+    simpa [basis, hbasis, gInv] using
+      gInvBasisAt (I := I) g x₀ (x := y) hy
+  rw [(coordinateFrameAt_isLocalFrame (I := I) x₀).coeff_apply_of_mem
+    hy (fun z : M => gradientFun (I := I) g f z) k]
+  change basis.coord k (gradientFun (I := I) g f y) = _
+  rw [coord_eq_invInner (I := I) g y basis gInv hinv k
+    (gradientFun (I := I) g f y)]
+  apply Finset.sum_congr rfl
+  intro l _
+  have hbasis_l : basis l = coordinateFrameAt (I := I) x₀ l y := by
+    exact (coordinateFrameAt_isLocalFrame (I := I) x₀).toBasisAt_coe hy l
+  have hinner :
+      g.inner y (gradientFun (I := I) g f y) (basis l) =
+        mvfderiv (I := I) f y (basis l) := by
+    rw [inner_gradientFun (I := I) g f y (basis l)]
+  calc
+    gInv k l * g.inner y (basis l) (gradientFun (I := I) g f y)
+        = gInv k l * g.inner y (gradientFun (I := I) g f y) (basis l) := by
+          rw [g.symm y (basis l) (gradientFun (I := I) g f y)]
+    _ = gInv k l * mvfderiv (I := I) f y (basis l) := by
+          rw [hinner]
+    _ =
+          inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
+            (extChartAt I x₀ y) *
+          mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y) := by
+          rw [hbasis_l]
+
+theorem gradientFun_contMDiffAt
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x₀ : M}
+    (hf : ContMDiffAt I 𝓘(Real, Real) ∞ f x₀) :
+    ContMDiffAt I (I.prod 𝓘(Real, E)) ∞
+      (T% fun y : M => gradientFun (I := I) g f y) x₀ := by
+  classical
+  let frame := coordinateFrameAt_isLocalFrame (I := I) x₀
+  refine frame.contMDiffAt_of_coeff_aux ?_ (coordinateFrameSet_open (I := I) x₀)
+    (coordinateFrameAt_mem (I := I) x₀)
+  intro k
+  let rhs : M -> Real := fun y =>
+    ∑ l : CoordinateIdx (𝕜 := Real) E,
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
+          (extChartAt I x₀ y) *
+        mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y)
+  have hrhs : ContMDiffAt I 𝓘(Real, Real) ∞ rhs x₀ := by
+    refine ContMDiffAt.sum fun l _ => ?_
+    have hginv :
+        ContMDiffAt I 𝓘(Real, Real) ∞
+          (fun y : M =>
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
+              (extChartAt I x₀ y)) x₀ :=
+      gInvComp_contMDiffAt (I := I) g x₀ k l
+    have hframe :
+        ContMDiffAt I (I.prod 𝓘(Real, E)) ∞
+          (fun y : M =>
+            (⟨y, coordinateFrameAt (I := I) x₀ l y⟩ :
+              TotalSpace E (TangentSpace I : M -> Type _))) x₀ :=
+      (coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
+        (coordinateFrameSet_open (I := I) x₀)
+        (coordinateFrameAt_mem (I := I) x₀) l
+    have hderiv :
+        ContMDiffAt I 𝓘(Real, Real) ∞
+          (fun y : M =>
+            mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y)) x₀ :=
+      mvfderiv_apply_contMDiffAt_of_section (I := I)
+        (f := f) (X := coordinateFrameAt (I := I) x₀ l)
+        hf hframe
+    exact hginv.mul hderiv
+  refine hrhs.congr_of_eventuallyEq ?_
+  filter_upwards [(coordinateFrameSet_open (I := I) x₀).mem_nhds
+      (coordinateFrameAt_mem (I := I) x₀)] with y hy
+  exact gradientFun_coeff_eq_sum (I := I) g f hy k
+
+theorem gradientFun_smooth
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f) :
+    ContMDiff I (I.prod 𝓘(Real, E)) ∞
+      (T% fun y : M => gradientFun (I := I) g f y) := by
+  intro x₀
+  exact gradientFun_contMDiffAt (I := I) g hf.contMDiffAt
+
+theorem gradientFun_mdiffOn
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {U : Set M} (hU : IsOpen U)
+    (hf : ContMDiffOn I 𝓘(Real, Real) ∞ f U)
+    {x : M} (hx : x ∈ U) :
+    MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x := by
+  have hfx : ContMDiffAt I 𝓘(Real, Real) ∞ f x :=
+    (hf x hx).contMDiffAt (hU.mem_nhds hx)
+  exact
+    (gradientFun_contMDiffAt (I := I) g hfx).mdifferentiableAt
+      (by simp)
+
+theorem gradientFun_mdiffAt
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f) (x : M) :
+    MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x :=
+  (gradientFun_smooth (I := I) g hf).contMDiffAt.mdifferentiableAt (by simp)
+
+theorem laplacian_congr_of_eventuallyEq
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (g : SmoothRiemannianMetric I M) {f h : M → Real} {x : M}
+    (hf : ContMDiffAt I 𝓘(Real, Real) ∞ f x)
+    (hh : ContMDiffAt I 𝓘(Real, Real) ∞ h x)
+    (heq : f =ᶠ[nhds x] h) :
+    laplacian (I := I) cov g f x = laplacian (I := I) cov g h x := by
+  have hgrad_eq :
+      (fun y : M => gradientFun (I := I) g f y) =ᶠ[nhds x]
+        (fun y : M => gradientFun (I := I) g h y) := by
+    filter_upwards [heq.eventuallyEq_nhds] with y hy
+    have hmf := Filter.EventuallyEq.mfderiv_eq
+      (I := I) (I' := 𝓘(Real, Real)) hy
+    have hvalue := hy.eq_of_nhds
+    unfold gradientFun metricSharp mvfderiv
+    rw [hmf, hvalue]
+  have hgrad_f : MDiffAt
+      (T% fun y : M => gradientFun (I := I) g f y) x :=
+    (gradientFun_contMDiffAt (I := I) g hf).mdifferentiableAt (by simp)
+  have hgrad_h : MDiffAt
+      (T% fun y : M => gradientFun (I := I) g h y) x :=
+    (gradientFun_contMDiffAt (I := I) g hh).mdifferentiableAt (by simp)
+  have hcov :
+      cov (fun y : M => gradientFun (I := I) g f y) x =
+        cov (fun y : M => gradientFun (I := I) g h y) x :=
+    cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      hgrad_f hgrad_h Filter.univ_mem hgrad_eq
+  unfold laplacian divergence
+  rw [hcov]
+
+theorem grad_comp_mdiffAt
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (g : SmoothRiemannianMetric I M)
+    {φ : Real → Real} {f : M → Real} {x : M}
+    (hφ : Differentiable Real φ)
+    (hφ' : DifferentiableAt Real (deriv φ) (f x))
+    (hf : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hgrad : MDiffAt
+      (T% fun y : M => gradientFun (I := I) g f y) x) :
+    MDiffAt
+      (T% fun y : M =>
+        gradientFun (I := I) g (fun z => φ (f z)) y) x := by
+  let c : M → Real := fun y => deriv φ (f y)
+  have hc : MDifferentiableAt I 𝓘(Real, Real) c x :=
+    hφ'.mdifferentiableAt.comp x hf.self_of_nhds
+  have hs :
+      MDiffAt
+        (T% fun y : M => c y • gradientFun (I := I) g f y) x :=
+    hc.smul_section hgrad
+  refine hs.congr_of_eventuallyEq ?_
+  filter_upwards [hf] with y hy
+  exact congrArg
+    (fun v => (⟨y, v⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+    (gradientFun_comp (I := I) g (hφ (f y)) hy)
+
+theorem scalar_mul_grad_mdiffAt
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x : M}
+    (hf : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hgrad : ∀ y : M,
+      MDiffAt (T% fun z : M => gradientFun (I := I) g f z) y) :
+    MDiffAt (T% (f • fun y : M => gradientFun (I := I) g f y)) x := by
+  simpa using (hf x).smul_section (hgrad x)
+
+theorem mdiffAt_smul_gradientFun
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x : M}
+    (hf : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hgrad : ∀ y : M,
+      MDiffAt (T% fun z : M => gradientFun (I := I) g f z) y) :
+    MDiffAt (T% (f • fun y : M => gradientFun (I := I) g f y)) x :=
+  scalar_mul_grad_mdiffAt (I := I) g hf hgrad
+
+theorem mdiffAt_const_mul_sub_const_smul_gradientFun
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x : M} (a c : Real)
+    (hf : ContMDiff I 𝓘(Real, Real) ∞ f) :
+    MDiffAt
+      (T% ((fun y : M => a * (f y - c)) • fun y : M =>
+        gradientFun (I := I) g (fun z : M => a * (f z - c)) y)) x := by
+  let u : M -> Real := fun y => a * (f y - c)
+  have hu : ContMDiff I 𝓘(Real, Real) ∞ u := by
+    let h : ContMDiff I 𝓘(Real, Real) ∞
+        (fun y : M => a * (f y - c)) :=
+      contMDiff_const.mul (hf.sub contMDiff_const)
+    exact h
+  have hudiff : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) u y := by
+    intro y
+    exact hu.contMDiffAt.mdifferentiableAt (by simp)
+  have hugrad : ∀ y : M,
+      MDiffAt (T% fun z : M => gradientFun (I := I) g u z) y := by
+    intro y
+    exact gradientFun_mdiffAt (I := I) g hu y
+  simpa [u] using scalar_mul_grad_mdiffAt (I := I) g hudiff hugrad
+
+end DifferentialGeometry.Geometry.Operator

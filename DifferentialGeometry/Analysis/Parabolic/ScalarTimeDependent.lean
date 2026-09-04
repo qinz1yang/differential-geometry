@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Operator.MetricFamily
+import DifferentialGeometry.Geometry.Operator.Family.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Stationary
-import DifferentialGeometry.Geometry.Operator.GradientRegularity
+import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 
 open DifferentialGeometry.Geometry.Curvature
 

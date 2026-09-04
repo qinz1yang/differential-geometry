@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.MetricBallMonotone
+import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Matrix.Mul

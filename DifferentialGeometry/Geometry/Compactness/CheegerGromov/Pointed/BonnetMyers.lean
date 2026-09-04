@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Compactness
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 
 open DifferentialGeometry.Geometry.Curvature
 open scoped ContDiff Manifold Topology

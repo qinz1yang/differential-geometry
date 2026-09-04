@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Sobolev.Manifold.MeasureBridgeUniform
-import DifferentialGeometry.Analysis.Sobolev.Manifold.RellichManifold
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Rellich.Compactness
 
 noncomputable section
 

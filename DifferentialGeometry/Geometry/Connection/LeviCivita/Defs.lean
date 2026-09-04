@@ -1,12 +1,12 @@
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartTorsion
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartMetric
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartSmooth
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Basic
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Torsion
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Metric
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Smoothness
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
 open DifferentialGeometry.Geometry.Curvature
 
 

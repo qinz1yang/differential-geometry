@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
 
 
-import DifferentialGeometry.Geometry.Metric.DistanceScaling
+import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

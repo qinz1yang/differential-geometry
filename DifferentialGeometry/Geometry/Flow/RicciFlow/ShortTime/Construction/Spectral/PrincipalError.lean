@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Spectral.InverseGram
 import DifferentialGeometry.Analysis.FunctionalAnalysis.Parametrix.Basic
-import DifferentialGeometry.Geometry.Operator.VossWeyl
+import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

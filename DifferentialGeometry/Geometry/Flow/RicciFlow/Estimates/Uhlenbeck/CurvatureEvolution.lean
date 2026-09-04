@@ -10,7 +10,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.Pro
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.SlotPermutation
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
 import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen
-import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.UhlReaction3

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Boundary.Orientation
-import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
+import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
 
 set_option autoImplicit false
 

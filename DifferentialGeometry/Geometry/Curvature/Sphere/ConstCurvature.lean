@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Metric.Sphere.OrthogonalAction
+import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.OrthogonalAction
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Basic
-import DifferentialGeometry.Geometry.Metric.Sphere.RoundShape
+import DifferentialGeometry.Geometry.Metric.Sphere.Round.Shape
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Curvature.MetricSectional
 open DifferentialGeometry.Geometry.Curvature

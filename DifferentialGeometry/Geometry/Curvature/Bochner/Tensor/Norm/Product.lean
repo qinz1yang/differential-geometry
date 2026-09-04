@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Norm.Decomposition
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SInnerLeibniz
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.PartialEvaluation
-import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

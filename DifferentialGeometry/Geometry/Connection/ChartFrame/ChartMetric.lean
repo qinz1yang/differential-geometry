@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Operator.Hessian
-import DifferentialGeometry.Geometry.Operator.HessianTrace
+import DifferentialGeometry.Geometry.Operator.Hessian.Basic
+import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
 open DifferentialGeometry.Geometry.Operator
 

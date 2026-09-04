@@ -2,9 +2,9 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Window.Bounds
 import DifferentialGeometry.Geometry.Curvature.Bounds.QuadraticForm
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
-import DifferentialGeometry.Geometry.Metric.CompactMetricLowerBound
+import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 
 open DifferentialGeometry.Geometry.Curvature

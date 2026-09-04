@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Heat.Semigroup.Defs
-import DifferentialGeometry.Geometry.Operator.HessianTrace
-import DifferentialGeometry.Geometry.Operator.Laplacian
-import DifferentialGeometry.Geometry.Operator.VossWeyl
+import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
+import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
+import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.Calculus.DerivativeTest
 import Mathlib.Analysis.Matrix.Spectrum

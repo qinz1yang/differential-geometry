@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.SecondOrderBootstrap
+import DifferentialGeometry.Analysis.ODE.Regularity.SecondOrderBootstrap
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 open DifferentialGeometry.Geometry.Curvature

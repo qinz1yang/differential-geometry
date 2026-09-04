@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.PullbackMetric
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.RadialPaths
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.EndpointPositivity
-import DifferentialGeometry.Geometry.Metric.DistanceScaling
+import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 
 set_option autoImplicit false
 

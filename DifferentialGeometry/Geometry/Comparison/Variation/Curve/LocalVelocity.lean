@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeAlong
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
 
 set_option autoImplicit false
 

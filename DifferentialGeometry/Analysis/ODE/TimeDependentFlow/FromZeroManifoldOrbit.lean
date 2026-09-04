@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.ChartOperator.ConventionBridge
-import DifferentialGeometry.Analysis.ODE.ForwardVariationalFromZero
+import DifferentialGeometry.Analysis.ODE.Existence.ForwardVariationalFromZero
 import Mathlib.Geometry.Manifold.IntegralCurve.Basic
 open DifferentialGeometry.Geometry.Curvature
 

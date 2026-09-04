@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.SmoothRepresentative.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.ArbitraryOrderChartSobolev
-import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartLocality
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Locality
 
 open DifferentialGeometry.Analysis.Spectral
 noncomputable section

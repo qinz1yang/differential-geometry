@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Basic
-import DifferentialGeometry.Geometry.Metric.PullbackCross
+import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 
 
 open DifferentialGeometry.Geometry.Curvature

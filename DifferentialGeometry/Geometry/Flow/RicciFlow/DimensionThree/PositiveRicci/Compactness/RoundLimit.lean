@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Compactness.FlowUpgrade
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.LimitRoundness
-import DifferentialGeometry.Geometry.Metric.Sphere.SpaceForm
+import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
 
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Operator.VariationalLaplacian
-import DifferentialGeometry.Analysis.Sobolev.Manifold.RellichOnM
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Rellich.OnManifold
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceForward
 import Mathlib.Analysis.Normed.Operator.Compact.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint

@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
-import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
+import DifferentialGeometry.Geometry.Operator.Family.GramWeakConvergence
 
 set_option autoImplicit false
 

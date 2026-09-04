@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Time
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Coordinates
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Uniqueness
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Uniqueness
 import Mathlib.Topology.Instances.Matrix
 
 

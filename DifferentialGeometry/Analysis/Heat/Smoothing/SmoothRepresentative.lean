@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Heat.Semigroup.Defs
 import DifferentialGeometry.Analysis.Heat.Semigroup.SpectralBounds
-import DifferentialGeometry.Analysis.Sobolev.Manifold.IteratedSobolevEmbedding
-import DifferentialGeometry.Analysis.Sobolev.Manifold.IteratedSobolevEmbeddingCInfty
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.IteratedSmooth
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Sobolev.Solutions.SobolevToCinftyRep
 import Mathlib.MeasureTheory.Measure.OpenPos

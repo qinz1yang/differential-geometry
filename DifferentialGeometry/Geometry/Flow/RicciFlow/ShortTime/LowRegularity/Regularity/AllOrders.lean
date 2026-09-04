@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Energy.HigherOrder
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.MaxRegSolutionRegularity
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Regularity.Solution
 
 noncomputable section
 

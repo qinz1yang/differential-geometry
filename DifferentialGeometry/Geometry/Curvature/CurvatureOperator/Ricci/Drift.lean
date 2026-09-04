@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Hessian
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Curvature.Metric
-import DifferentialGeometry.Geometry.Operator.CotangentSharpSmooth
-import DifferentialGeometry.Geometry.Operator.LaplacianBridge
-import DifferentialGeometry.Geometry.Metric.InverseMetricField
+import DifferentialGeometry.Geometry.Operator.Gradient.CotangentSharpSmoothness
+import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Norm.Product
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TotalNabla0S
 open DifferentialGeometry.Tensor.RicciIdentity

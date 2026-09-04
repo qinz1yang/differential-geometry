@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.ODE.SecondOrderGronwall
+import DifferentialGeometry.Analysis.ODE.Gronwall.SecondOrder
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
-import DifferentialGeometry.Geometry.Metric.InnerExpansion
+import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Analysis.InnerProductSpace.PiL2
 open DifferentialGeometry.Geometry.Curvature

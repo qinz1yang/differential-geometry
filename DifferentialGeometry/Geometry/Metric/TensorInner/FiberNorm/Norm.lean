@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Defs
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.NormBridge
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
-import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannianBundle
+import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.RiemannianBundle
 
 
 noncomputable section

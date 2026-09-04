@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSmoothing
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Spectral.Smoothing
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

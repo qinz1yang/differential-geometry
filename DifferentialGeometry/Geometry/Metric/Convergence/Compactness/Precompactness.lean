@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.Inn
 import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Iterated
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
-import DifferentialGeometry.Geometry.Operator.Hessian
+import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Analysis.Calculus.ContDiff.Bounds
 import DifferentialGeometry.Analysis.Calculus.Compactness.SmoothMap

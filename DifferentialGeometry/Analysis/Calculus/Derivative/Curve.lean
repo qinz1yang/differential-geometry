@@ -1,5 +1,5 @@
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
-import DifferentialGeometry.Geometry.Operator.Operators
+import DifferentialGeometry.Geometry.Operator.Basic
 import DifferentialGeometry.Analysis.TimeInterval
 
 noncomputable section

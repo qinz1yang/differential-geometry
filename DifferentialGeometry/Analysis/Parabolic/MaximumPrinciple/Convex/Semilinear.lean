@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.Nagumo
+import DifferentialGeometry.Analysis.ODE.InvariantSet.Nagumo
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.InnerDual
 import Mathlib.Analysis.LocallyConvex.Separation

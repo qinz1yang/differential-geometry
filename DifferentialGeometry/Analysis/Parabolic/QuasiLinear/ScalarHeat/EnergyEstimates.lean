@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.IntegralGronwall
+import DifferentialGeometry.Analysis.ODE.Gronwall.Integral
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.ScalarHeat.MildSolution
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic

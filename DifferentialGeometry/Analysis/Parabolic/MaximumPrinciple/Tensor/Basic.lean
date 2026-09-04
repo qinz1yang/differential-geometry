@@ -5,9 +5,9 @@ import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.OneJet
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Tangent
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Realization
-import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
-import DifferentialGeometry.Geometry.Metric.MetricBallMonotone
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
+import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
+import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Topology.Order.IntermediateValue

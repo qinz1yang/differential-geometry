@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticBounds
-import DifferentialGeometry.Geometry.Metric.CurveEnergy
+import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 
 set_option autoImplicit false
 

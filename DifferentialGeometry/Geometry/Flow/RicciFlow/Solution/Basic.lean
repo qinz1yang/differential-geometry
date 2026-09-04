@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDeriv
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Model
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
 
 
 open DifferentialGeometry.PDE.RicciFlow

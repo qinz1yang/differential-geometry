@@ -12,7 +12,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryPars
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Strong
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Equation
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Weak
-import DifferentialGeometry.Geometry.Operator.NormGradSqTime
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquaredTime
 import DifferentialGeometry.Analysis.Spectral.Scalar.WeylBounds
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Analysis.Sobolev

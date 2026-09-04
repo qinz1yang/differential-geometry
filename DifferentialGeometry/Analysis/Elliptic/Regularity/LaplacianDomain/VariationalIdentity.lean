@@ -11,7 +11,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.WeakPartial
 import DifferentialGeometry.Analysis.Elliptic.Operator.VariationalLaplacian
 import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothBridge
 import DifferentialGeometry.Analysis.Elliptic.Operator.Variational
-import DifferentialGeometry.Geometry.Operator.NormGradSq
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 open DifferentialGeometry.Geometry.Operator
 
 

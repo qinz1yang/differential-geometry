@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.IteratedComponents
 
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
-import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulDifference
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Difference
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 open DifferentialGeometry.Geometry.Curvature

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.PullbackCross
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.PullbackCross
 
 
 set_option autoImplicit false

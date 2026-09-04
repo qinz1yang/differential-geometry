@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Regularity
-import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
+import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
 open DifferentialGeometry.PDE.RicciFlow
 
 set_option autoImplicit false

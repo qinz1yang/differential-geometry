@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReactionTensor
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
-import DifferentialGeometry.Geometry.Metric.InnerExpansion
+import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 
 set_option autoImplicit false
 

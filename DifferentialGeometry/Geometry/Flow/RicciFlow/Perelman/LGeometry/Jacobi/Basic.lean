@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Regularized
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.First
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.ConnectionBackward
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeDifference
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCurve
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeDifference
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 
 set_option autoImplicit false
 

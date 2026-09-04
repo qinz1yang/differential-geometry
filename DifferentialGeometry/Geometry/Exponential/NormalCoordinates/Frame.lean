@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.InnerExpansion
+import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 
 set_option autoImplicit false
 

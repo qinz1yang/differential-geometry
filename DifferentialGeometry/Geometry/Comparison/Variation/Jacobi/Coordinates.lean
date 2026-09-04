@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
-import DifferentialGeometry.Geometry.Metric.FiberExpansion
-import DifferentialGeometry.Analysis.ODE.SecondOrderLinearExistence
+import DifferentialGeometry.Geometry.Metric.Coordinates.FiberExpansion
+import DifferentialGeometry.Analysis.ODE.Existence.SecondOrderLinear
 
 open DifferentialGeometry.Geometry.Curvature
 

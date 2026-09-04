@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Boundary.InducedMetric
 import DifferentialGeometry.Geometry.Boundary.SurfaceMeasure
-import DifferentialGeometry.Geometry.Operator.Laplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 
 
 noncomputable section

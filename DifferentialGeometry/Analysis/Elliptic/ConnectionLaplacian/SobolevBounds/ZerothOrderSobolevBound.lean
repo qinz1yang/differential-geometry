@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.PointwiseBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartRepresentationBounds.EuclideanDerivativeComparison
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.ZerothOrderReduction
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.IntrinsicL2Bound
-import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedNorm
+import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedNorm
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

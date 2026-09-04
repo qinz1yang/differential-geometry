@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.SecondBianchi
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Weitzenbock
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
-import DifferentialGeometry.Geometry.Operator.NormGradSq
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 
 
 open DifferentialGeometry.Geometry.Curvature

@@ -19,7 +19,7 @@ import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
-import DifferentialGeometry.Geometry.Metric.ChartGram
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 
 
 noncomputable section

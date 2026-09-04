@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.OffCentreFibreCore
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.LocalBallL2Embedding
-import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedHsNorm
+import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedSobolevNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
 import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
 import Mathlib.Algebra.Order.Chebyshev

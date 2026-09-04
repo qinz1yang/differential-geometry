@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.Field.ChartConstructio
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
-import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
+import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Distribution.AEEqOfIntegralContDiff

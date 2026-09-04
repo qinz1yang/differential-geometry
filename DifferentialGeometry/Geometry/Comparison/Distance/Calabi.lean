@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInvers
 import DifferentialGeometry.Geometry.Exponential.Inverse.Branch
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Geometry.Metric.DistanceScaling
+import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.ForceRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.MovingMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Basic
-import DifferentialGeometry.Geometry.Operator.MetricFamilyGramInv
-import DifferentialGeometry.Geometry.Operator.MetricFamilyGramChristoffel
+import DifferentialGeometry.Geometry.Operator.Family.InverseGram
+import DifferentialGeometry.Geometry.Operator.Family.GramChristoffel
 
 set_option autoImplicit false
 

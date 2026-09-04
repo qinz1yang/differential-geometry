@@ -1,6 +1,6 @@
 import DifferentialGeometry.Bundle.VectorField.Pushforward
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identities
-import DifferentialGeometry.Geometry.Connection.LeviCivita.CovariantDerivativePointwise
+import DifferentialGeometry.Geometry.Connection.LeviCivita.CovariantDerivative.Pointwise
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 noncomputable section

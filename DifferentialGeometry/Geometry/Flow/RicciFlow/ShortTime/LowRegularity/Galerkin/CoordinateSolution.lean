@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Bounds.Class
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.GalerkinTameSol
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Galerkin.TameSolution
 
 noncomputable section
 

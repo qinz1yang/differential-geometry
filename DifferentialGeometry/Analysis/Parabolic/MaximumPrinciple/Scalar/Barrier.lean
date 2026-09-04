@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Geometry.Boundary.DefiningFunction
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
-import DifferentialGeometry.Geometry.Operator.LaplacianBridge
+import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 import Mathlib.Analysis.InnerProductSpace.Calculus
 
 

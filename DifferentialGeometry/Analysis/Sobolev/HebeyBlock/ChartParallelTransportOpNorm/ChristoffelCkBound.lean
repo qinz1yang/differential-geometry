@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.ChristoffelBilinear
-import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartComponents
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Components
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

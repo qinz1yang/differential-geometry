@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Reduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Trace
 import DifferentialGeometry.Geometry.Curvature.Contractions.CurvatureActionLowering
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureDifference
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Curvature.Difference
 
 set_option autoImplicit false
 

@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Solution.Adapted
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Galerkin.ForcingSequence
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DuhamelEstimates
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.Estimates
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.GalerkinParabolicEnergy
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.TimeL2EigenProjection
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Galerkin.Energy
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Projection.TimeL2EigenProjection
 
 noncomputable section
 

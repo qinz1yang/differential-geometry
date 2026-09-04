@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Bounds.Class
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2PointwiseUnif
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.MorreySecondDerivative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.CurvatureActionZero
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.MorreySecondDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Curvature.ActionZero
 
 noncomputable section
 

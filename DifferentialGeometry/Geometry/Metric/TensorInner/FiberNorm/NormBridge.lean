@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
-import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannianBundle
+import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.RiemannianBundle
 open DifferentialGeometry.Analysis.Elliptic
 
 

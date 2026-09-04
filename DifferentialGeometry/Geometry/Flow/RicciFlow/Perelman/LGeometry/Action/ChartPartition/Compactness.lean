@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
-import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
+import DifferentialGeometry.Geometry.Operator.Family.GramWeakConvergence
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.H1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.Partition
 import DifferentialGeometry.Topology.Manifold.CurveChart.Subdivision

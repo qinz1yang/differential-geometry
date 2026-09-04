@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldComposition
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.GridRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Grid.Regularity
 
 set_option autoImplicit false
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.TensorInnerLaplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.TensorInner
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 

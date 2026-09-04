@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Defs
-import DifferentialGeometry.Geometry.Operator.Operators
+import DifferentialGeometry.Geometry.Operator.Basic
 open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false

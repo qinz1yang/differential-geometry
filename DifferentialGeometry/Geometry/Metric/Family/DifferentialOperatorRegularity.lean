@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
-import DifferentialGeometry.Geometry.Operator.MetricFamily
-import DifferentialGeometry.Geometry.Operator.Gradient
-import DifferentialGeometry.Geometry.Operator.HessianTraceChartGramRegularity
+import DifferentialGeometry.Geometry.Operator.Family.Basic
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartGramRegularity
 
 set_option autoImplicit false
 

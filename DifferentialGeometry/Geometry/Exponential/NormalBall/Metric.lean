@@ -1,8 +1,8 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
-import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricKoszul
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Metric
 import DifferentialGeometry.Geometry.Exponential.NormalBall.Chart
-import DifferentialGeometry.Geometry.Metric.BumpExtend
-import DifferentialGeometry.Geometry.Metric.PullbackCross
+import DifferentialGeometry.Geometry.Metric.Construction.BumpExtension
+import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 
 set_option autoImplicit false

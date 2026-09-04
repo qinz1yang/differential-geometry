@@ -1,7 +1,7 @@
-import DifferentialGeometry.Analysis.ODE.InvariantSetEquiv
+import DifferentialGeometry.Analysis.ODE.InvariantSet.Naturality
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.InnerDual
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Convex.Semilinear
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.InvariantCone
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Cone.Invariant
 
 set_option autoImplicit false
 

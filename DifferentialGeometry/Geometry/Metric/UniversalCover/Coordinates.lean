@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Covering.Manifold
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
-import DifferentialGeometry.Geometry.Operator.Hessian
+import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic

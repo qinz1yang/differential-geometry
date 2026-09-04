@@ -4,9 +4,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldAppl
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2PointwiseUnif
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.FirstOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.LaplacianIterateLadder
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.H1L6
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.FiberLpThreeSixComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Morrey
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.H1L6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.FiberLpThreeSixComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.Morrey
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Grid.ConvexJets
 
 set_option autoImplicit false

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Bounds.Class
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.EigenProjTameSol
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.MaxRegSolutionRegularity
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Galerkin.TameSolutionProjection
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Regularity.Solution
 
 noncomputable section
 

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.ODE.IntegralCurveTransport
-import DifferentialGeometry.Analysis.ODE.CompactSupportFlow
+import DifferentialGeometry.Analysis.ODE.Flow.IntegralCurveTransport
+import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
 import DifferentialGeometry.Topology.Morse.Defs
 import DifferentialGeometry.Topology.Morse.LocalNormalForm
 import Mathlib.Geometry.Manifold.Diffeomorph

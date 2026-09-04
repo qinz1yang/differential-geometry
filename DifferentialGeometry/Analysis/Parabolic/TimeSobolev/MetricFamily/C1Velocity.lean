@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.C1Representative
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.C1Regularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamily.Velocity
-import DifferentialGeometry.Geometry.Operator.MetricFamilyGramInv
+import DifferentialGeometry.Geometry.Operator.Family.InverseGram
 
 set_option autoImplicit false
 

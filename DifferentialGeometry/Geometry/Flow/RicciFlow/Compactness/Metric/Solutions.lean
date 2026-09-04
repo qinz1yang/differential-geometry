@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.WindowPrecompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

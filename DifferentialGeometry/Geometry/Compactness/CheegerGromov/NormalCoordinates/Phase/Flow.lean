@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Analysis.ODE.PhaseFlow.Existence
-import DifferentialGeometry.Geometry.Metric.TensorInner.MetricGeodesicSpray
+import DifferentialGeometry.Geometry.Geodesic.Equation.MetricSpray
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
 
 open DifferentialGeometry.Geometry.Curvature

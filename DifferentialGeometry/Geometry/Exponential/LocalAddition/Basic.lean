@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
-import DifferentialGeometry.Geometry.Metric.OpenSubtype
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenSubtype
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 

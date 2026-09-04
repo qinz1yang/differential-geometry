@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Connection.Realization.SmoothSectionsLocal
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.IteratedComponents
-import DifferentialGeometry.Geometry.Metric.TensorInner.ComponentBounds
-import DifferentialGeometry.Geometry.Metric.TensorInner.MetricGeodesicSpray
+import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.ComponentBounds
+import DifferentialGeometry.Geometry.Geodesic.Equation.MetricSpray
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 
 set_option autoImplicit false

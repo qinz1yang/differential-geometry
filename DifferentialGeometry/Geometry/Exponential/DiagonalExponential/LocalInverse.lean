@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.InverseBranch
 import DifferentialGeometry.Geometry.Exponential.Variation.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicDerivativeAtZero

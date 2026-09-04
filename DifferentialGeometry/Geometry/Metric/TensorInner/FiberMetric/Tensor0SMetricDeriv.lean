@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
-import DifferentialGeometry.Geometry.Metric.TensorInner.GenericCotangent
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Prod

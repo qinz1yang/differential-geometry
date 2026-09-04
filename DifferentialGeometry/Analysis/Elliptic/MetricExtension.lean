@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.Defs
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Family
-import DifferentialGeometry.Geometry.Operator.Hessian
+import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 import Mathlib.Analysis.InnerProductSpace.EuclideanDist
 import Mathlib.Topology.Order.Compact
 open DifferentialGeometry.Geometry.Operator

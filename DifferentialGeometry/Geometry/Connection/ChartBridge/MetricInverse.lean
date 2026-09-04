@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Operator.Gradient
-import DifferentialGeometry.Geometry.Metric.TensorInner.GenericCotangent
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 open DifferentialGeometry.Geometry.Operator
 

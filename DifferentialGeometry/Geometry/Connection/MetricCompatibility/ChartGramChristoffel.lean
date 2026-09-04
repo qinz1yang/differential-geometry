@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.HessianTrace
+import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
 open DifferentialGeometry.Geometry.Operator
 
 

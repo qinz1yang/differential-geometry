@@ -12,8 +12,8 @@ import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothDenseLp
 import Mathlib.MeasureTheory.Function.L2Space
 import DifferentialGeometry.Geometry.Connection.Laplacian.RankZero
 import DifferentialGeometry.Geometry.Connection.Realization.Tensor0SBridge
-import DifferentialGeometry.Geometry.Operator.Laplacian
-import DifferentialGeometry.Geometry.Operator.LaplacianBridge
+import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
+import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Tensor.RSTensor.RankZero
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field

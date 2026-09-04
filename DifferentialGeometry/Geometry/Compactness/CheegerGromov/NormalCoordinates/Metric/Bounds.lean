@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
-import DifferentialGeometry.Geometry.Metric.TensorInner.MetricKoszul
+import DifferentialGeometry.Geometry.Geodesic.Equation.Koszul
 
 open DifferentialGeometry.Geometry.Curvature
 

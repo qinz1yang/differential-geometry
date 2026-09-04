@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Energy.Caccioppoli
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Geometry.Operator.LaplacianBridge
+import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 
 noncomputable section
 

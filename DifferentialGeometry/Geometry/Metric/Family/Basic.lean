@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Time
 import Mathlib.RingTheory.Derivation.Basic
 import Mathlib.Tactic
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
-import DifferentialGeometry.Geometry.Metric.MetricBallMonotone
+import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Analysis.TimeInterval
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor

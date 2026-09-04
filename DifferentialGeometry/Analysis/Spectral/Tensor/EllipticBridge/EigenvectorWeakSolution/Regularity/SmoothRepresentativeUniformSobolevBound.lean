@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Component.ArbitraryOrderSobolevBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.SmoothRepresentativeSecondOrderSobolev
-import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartLocality
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Locality
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 

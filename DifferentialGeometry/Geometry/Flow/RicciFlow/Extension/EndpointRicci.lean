@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Covariant
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets
-import DifferentialGeometry.Geometry.Metric.ChartGram
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import Mathlib.Order.Filter.AtTopBot.CountablyGenerated
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Geometry.Curvature

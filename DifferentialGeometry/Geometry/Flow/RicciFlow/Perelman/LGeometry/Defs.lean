@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCurve
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
 set_option autoImplicit false

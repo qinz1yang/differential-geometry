@@ -1,11 +1,11 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
-import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricKoszul
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Metric
 import DifferentialGeometry.Geometry.Exponential.NormalBall.Metric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
-import DifferentialGeometry.Geometry.Metric.BumpExtend
-import DifferentialGeometry.Geometry.Metric.MetricExistence
-import DifferentialGeometry.Geometry.Metric.PullbackCross
+import DifferentialGeometry.Geometry.Metric.Construction.BumpExtension
+import DifferentialGeometry.Geometry.Metric.Construction.Existence
+import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

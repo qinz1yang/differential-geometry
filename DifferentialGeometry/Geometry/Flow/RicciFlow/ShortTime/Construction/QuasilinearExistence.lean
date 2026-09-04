@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Existence.Quasilinear
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.MaxRegSolutionRegularity
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Regularity.Solution
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
 open DifferentialGeometry.Analysis.Elliptic

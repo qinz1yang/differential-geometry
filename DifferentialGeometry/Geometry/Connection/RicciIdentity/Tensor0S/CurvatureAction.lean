@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 open DifferentialGeometry.Geometry.Curvature
 

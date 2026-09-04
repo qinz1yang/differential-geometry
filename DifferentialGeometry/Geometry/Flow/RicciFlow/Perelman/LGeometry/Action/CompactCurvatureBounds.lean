@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
-import DifferentialGeometry.Geometry.Operator.NormGradSqTime
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquaredTime
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 
 set_option autoImplicit false

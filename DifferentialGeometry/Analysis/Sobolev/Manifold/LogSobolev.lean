@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.EntropyJensen
-import DifferentialGeometry.Analysis.Sobolev.Manifold.IntrinsicEmbedding
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Intrinsic
 open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.Retraction.Ball
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DenseMixedBound
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LowScaleCutoff
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TameForcingFixedPoint
+import DifferentialGeometry.Analysis.FunctionalAnalysis.DenseExtensionBounds
+import DifferentialGeometry.Analysis.Calculus.Retraction.LowScaleCutoff
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FixedPoint.TameForcing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.SecondOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.LowerScaleSobolevExtensions
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.ZeroState

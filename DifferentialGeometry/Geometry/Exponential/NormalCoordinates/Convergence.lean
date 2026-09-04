@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.ODE.CInfConvergence
-import DifferentialGeometry.Geometry.Metric.TensorInner.MetricGeodesicSpray
+import DifferentialGeometry.Analysis.ODE.Regularity.CInfinityConvergence
+import DifferentialGeometry.Geometry.Geodesic.Equation.MetricSpray
 
 set_option autoImplicit false
 

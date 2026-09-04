@@ -1,6 +1,6 @@
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Convex.Semilinear
-import DifferentialGeometry.Geometry.Operator.MetricFamily
+import DifferentialGeometry.Geometry.Operator.Family.Basic
 
 set_option autoImplicit false
 

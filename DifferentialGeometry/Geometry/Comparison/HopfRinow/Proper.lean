@@ -1,5 +1,5 @@
 import Mathlib.Topology.Order.IntermediateValue
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.Completeness
 open DifferentialGeometry.Geometry.Curvature

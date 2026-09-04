@@ -1,10 +1,10 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNull
-import DifferentialGeometry.Geometry.Operator.TensorHeat
-import DifferentialGeometry.Geometry.Operator.GradientRegularity
-import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
-import DifferentialGeometry.Geometry.Operator.Operators
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.Heat.Tensor
+import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
+import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
+import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

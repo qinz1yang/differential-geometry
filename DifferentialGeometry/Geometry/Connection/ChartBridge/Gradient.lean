@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.Gradient
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Cotangent
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

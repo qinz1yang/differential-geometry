@@ -1,12 +1,12 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.Banach
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.Completeness
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
-import DifferentialGeometry.Analysis.Sobolev.Manifold.MeasureBridgeUniform
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.CompletenessLp
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevBanach
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
-import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding
-import DifferentialGeometry.Analysis.Sobolev.Manifold.EmbeddingManifold
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Basic
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Manifold
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
 import DifferentialGeometry.Analysis.Sobolev.Chart.AtlasNorm.Atlas
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic

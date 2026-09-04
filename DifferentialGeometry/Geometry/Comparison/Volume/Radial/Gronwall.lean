@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartMeasure
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
-import DifferentialGeometry.Geometry.Metric.TensorInner.GenericCotangent
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Connection

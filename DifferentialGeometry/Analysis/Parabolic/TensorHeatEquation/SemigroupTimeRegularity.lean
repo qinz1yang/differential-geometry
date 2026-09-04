@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.OperatorEquation
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.BoundedC0Semigroup
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SmoothingHs
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.TimeDeriv
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.TimeDerivative
 
 noncomputable section
 

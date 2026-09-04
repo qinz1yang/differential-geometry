@@ -4,7 +4,7 @@ import DifferentialGeometry.Tensor.RSTensor.Components
 import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.RSTensor.Basis
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TensorRS
-import DifferentialGeometry.Geometry.Operator.Operators
+import DifferentialGeometry.Geometry.Operator.Basic
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Geometry.Operator
 

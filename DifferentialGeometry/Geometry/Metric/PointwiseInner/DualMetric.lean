@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ChartGram
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.LinearAlgebra.Matrix.PosDef

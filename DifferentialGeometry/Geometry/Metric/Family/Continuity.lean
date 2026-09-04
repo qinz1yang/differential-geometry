@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.BasisEvaluation
-import DifferentialGeometry.Geometry.Metric.OpenSubtype
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenSubtype
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 open DifferentialGeometry.Geometry.Curvature

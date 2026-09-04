@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Morse.RegularVectorField
 import DifferentialGeometry.Topology.Morse.Flow
-import DifferentialGeometry.Analysis.ODE.CompactSupportFlow
+import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
 import Mathlib.Geometry.Manifold.Diffeomorph
 
 namespace DifferentialGeometry.Topology.Morse

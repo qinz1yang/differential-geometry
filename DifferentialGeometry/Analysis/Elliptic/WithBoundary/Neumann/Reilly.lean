@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.NormGradSq
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenFull
 import DifferentialGeometry.Geometry.Boundary.SecondFundamentalForm
 import DifferentialGeometry.Geometry.Operator.WithBoundary.BoundaryLaplacian

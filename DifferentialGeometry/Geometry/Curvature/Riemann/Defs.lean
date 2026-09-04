@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.Hessian
+import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 
 
 noncomputable section

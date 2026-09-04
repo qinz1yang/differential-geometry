@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.BarrierCertification
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.BarrierContinuation
-import DifferentialGeometry.Geometry.Operator.TensorHeat
-import DifferentialGeometry.Geometry.Operator.Operators
+import DifferentialGeometry.Geometry.Operator.Heat.Tensor
+import DifferentialGeometry.Geometry.Operator.Basic
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

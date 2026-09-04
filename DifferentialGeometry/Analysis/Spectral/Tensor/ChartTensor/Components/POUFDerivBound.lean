@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
-import DifferentialGeometry.Analysis.Sobolev.Manifold.MorreyManifold
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 

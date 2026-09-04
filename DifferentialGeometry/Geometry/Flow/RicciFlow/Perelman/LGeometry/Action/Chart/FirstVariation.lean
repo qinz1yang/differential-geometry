@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Nonlinear.EulerLagran
 import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Force
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamily.Velocity
-import DifferentialGeometry.Geometry.Operator.Gradient
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 
 set_option autoImplicit false
 

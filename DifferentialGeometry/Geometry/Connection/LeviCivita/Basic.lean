@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
-import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricCompatible
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.MetricCompatibility
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

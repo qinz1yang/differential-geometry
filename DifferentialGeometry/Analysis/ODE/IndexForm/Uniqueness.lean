@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.IndexForm.Basic
-import DifferentialGeometry.Analysis.ODE.SecondOrderGronwall
+import DifferentialGeometry.Analysis.ODE.Gronwall.SecondOrder
 
 set_option autoImplicit false
 
