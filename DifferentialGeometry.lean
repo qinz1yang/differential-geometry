@@ -4010,6 +4010,4 @@ import DifferentialGeometry.Tensor.Alternating.Contraction
 import DifferentialGeometry.Tensor.Alternating.ContractionSubbundle
 import DifferentialGeometry.Tensor.Alternating.Section
 import DifferentialGeometry.Tensor.Exterior.Cotangent
-import DifferentialGeometry.Tensor.Exterior.GlobalPoincare
-import DifferentialGeometry.Tensor.Exterior.Poincare
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricPullback
