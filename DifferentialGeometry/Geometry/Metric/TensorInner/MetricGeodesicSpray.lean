@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.MetricKoszul
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 
 set_option autoImplicit false

@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartCoeffPullback
 import DifferentialGeometry.Analysis.Integration.Measure.Family
-import DifferentialGeometry.Analysis.Calculus.CompactCutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import Mathlib.Analysis.Calculus.Rademacher
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 import Mathlib.Analysis.Calculus.FDeriv.Basic

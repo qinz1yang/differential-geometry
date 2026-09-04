@@ -1,10 +1,10 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeRestriction
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
-import DifferentialGeometry.Geometry.Metric.Convergence.Tensor02CovariantDerivative
-import DifferentialGeometry.Geometry.Connection.TensorNabla.OpenRestriction
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Restriction
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.CovariantTwoTensor
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.OpenRestriction
 
 open DifferentialGeometry.Geometry.Curvature
 

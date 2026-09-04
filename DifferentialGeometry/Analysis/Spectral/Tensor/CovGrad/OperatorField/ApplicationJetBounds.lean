@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.RankRDiffBilinGrid
+import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Estimates.RankRaisingBilinearGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.CovariantCalculusRS
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

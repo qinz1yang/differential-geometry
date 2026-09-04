@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.NormalBall.Metric
-import DifferentialGeometry.Geometry.Geodesic.OpenSubtype
-import DifferentialGeometry.Geometry.Geodesic.PullbackCross
+import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
+import DifferentialGeometry.Geometry.Geodesic.Naturality.PullbackCross
 
 set_option autoImplicit false
 

@@ -1,11 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.AllTimesBounds
 
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.SolutionTimeRegularity
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciComponents
-import DifferentialGeometry.Geometry.Metric.Convergence.GoodFrame
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
+import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.GoodFrame
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

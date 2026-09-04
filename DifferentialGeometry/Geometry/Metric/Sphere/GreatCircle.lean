@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundProjConnLC
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
-import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import Mathlib.Analysis.InnerProductSpace.LinearMap
 
 

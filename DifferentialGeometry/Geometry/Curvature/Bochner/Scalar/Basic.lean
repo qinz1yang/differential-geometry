@@ -14,7 +14,7 @@ import DifferentialGeometry.Geometry.Connection.RicciIdentity.MixedComponents
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison

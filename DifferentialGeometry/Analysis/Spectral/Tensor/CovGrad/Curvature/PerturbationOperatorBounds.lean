@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ConnectionBicontraction
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.JetTower
-import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.RicciTraceCarrier
+import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.RicciTrace.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.OperatorNorm
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.Curvature
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.RiemannOperatorDifferenceBounds

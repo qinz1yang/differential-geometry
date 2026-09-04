@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.HyperbolicModel
 import DifferentialGeometry.Geometry.Comparison.Volume.JacobiRiccati.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.JacobianBounds
-import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
+import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

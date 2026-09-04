@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
 
-import DifferentialGeometry.Geometry.Metric.Convergence.ProductDerivativeNorm
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Product
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciTowerTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.HeatEquation
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm

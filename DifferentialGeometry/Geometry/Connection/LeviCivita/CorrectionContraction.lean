@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
-import DifferentialGeometry.Geometry.Geodesic.Equation
+import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Bundle.TangentSpace
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

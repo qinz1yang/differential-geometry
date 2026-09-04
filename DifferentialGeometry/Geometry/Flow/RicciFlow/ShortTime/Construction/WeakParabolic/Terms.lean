@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartLocality
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.MetricJet3Intrinsic
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.CovariantDerivative.PartitionOfUnityLeibniz
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.ChartL2Convergence
-import DifferentialGeometry.Geometry.Metric.Convergence.Precompactness
+import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature

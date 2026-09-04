@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.PuncturedDerivative
+import DifferentialGeometry.Analysis.Calculus.Derivative.Punctured
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.C1Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PiecewiseC2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PiecewiseAcceleration

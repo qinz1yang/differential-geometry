@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.ChartPullbackSmooth
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.CompletenessLp
-import DifferentialGeometry.Analysis.Calculus.IteratedCompositionBounds
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.CompositionBounds
 import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
 import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
 

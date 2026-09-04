@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Radius
 
 import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.BallChart
 import DifferentialGeometry.Geometry.Comparison.Volume.Intrinsic.Gronwall

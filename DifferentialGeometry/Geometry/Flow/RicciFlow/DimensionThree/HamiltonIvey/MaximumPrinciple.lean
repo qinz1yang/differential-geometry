@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.RadialTensorEx
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.Inverse.MatrixSmoothness
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 set_option autoImplicit false

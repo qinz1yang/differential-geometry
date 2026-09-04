@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
 
 noncomputable section
 

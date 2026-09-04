@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.CurvatureSupremum
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.CovariantSumCross
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 
 set_option autoImplicit false
 

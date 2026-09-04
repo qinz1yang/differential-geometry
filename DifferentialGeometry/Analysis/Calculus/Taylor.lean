@@ -8,7 +8,7 @@ import Mathlib.Analysis.Calculus.Deriv.Shift
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.ContDiff
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
-import DifferentialGeometry.Analysis.Calculus.ParametricIntervalIntegral
+import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 
 namespace DifferentialGeometry
 namespace Analysis

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.WindowBounds
+import DifferentialGeometry.Geometry.Metric.Convergence.Window.Bounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.FixedDomainBounds
 
 open DifferentialGeometry.PDE.RicciFlow

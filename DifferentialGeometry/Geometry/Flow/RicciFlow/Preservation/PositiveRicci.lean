@@ -19,7 +19,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 import DifferentialGeometry.Tensor.RSTensor.Product
-import DifferentialGeometry.Geometry.Connection.TensorNabla.ContractionLeibniz
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ContractionLeibniz
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.PDE.RicciFlow

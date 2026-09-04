@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Norm
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Fill
-import DifferentialGeometry.Analysis.Calculus.MovingImplicit
+import DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

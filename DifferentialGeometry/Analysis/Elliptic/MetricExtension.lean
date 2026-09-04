@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.CompactCutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.Defs
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Family
 import DifferentialGeometry.Geometry.Operator.Hessian

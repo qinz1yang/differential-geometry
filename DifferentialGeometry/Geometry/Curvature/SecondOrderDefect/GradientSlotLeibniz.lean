@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.FrameCurvatureCore
 import DifferentialGeometry.Geometry.Connection.Laplacian.FrozenFrameTrace
-import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRSCovariantDerivativeCongrLocally
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.LocalCongruence
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
-import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 import Mathlib.Analysis.Calculus.Deriv.Comp
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
 import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed

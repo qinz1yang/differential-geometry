@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Harnack.LiYau
 import DifferentialGeometry.Analysis.Parabolic.Harnack.PathIntegration
-import DifferentialGeometry.Analysis.Calculus.CurveDerivative
+import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 

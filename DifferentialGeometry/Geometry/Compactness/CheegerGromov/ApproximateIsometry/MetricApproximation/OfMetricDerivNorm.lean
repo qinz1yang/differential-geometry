@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Defs
-import DifferentialGeometry.Geometry.Metric.Convergence.MetricTensorError
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.TensorError
 
 set_option autoImplicit false
 

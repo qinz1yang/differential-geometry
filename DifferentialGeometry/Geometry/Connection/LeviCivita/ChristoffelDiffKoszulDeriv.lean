@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulDifference
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TotalNabla0S
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative

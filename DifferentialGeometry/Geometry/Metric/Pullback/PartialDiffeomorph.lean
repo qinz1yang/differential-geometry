@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.CompactCutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Metric.OpenSubtype

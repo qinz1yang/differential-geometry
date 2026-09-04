@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
-import DifferentialGeometry.Geometry.Comparison.Variation.MinimalGeodesicNoConjugate
+import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.MinimalGeodesic
 
 set_option autoImplicit false
 

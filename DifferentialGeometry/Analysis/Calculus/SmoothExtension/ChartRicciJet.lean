@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.Inverse.MatrixSmoothness
 
 noncomputable section
 

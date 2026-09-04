@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
 import DifferentialGeometry.Geometry.Metric.Completeness
-import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 
 open DifferentialGeometry.PDE.RicciFlow

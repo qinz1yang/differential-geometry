@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarHessBound
-import DifferentialGeometry.Geometry.Metric.Convergence.LaplacianDifference
-import DifferentialGeometry.Geometry.Metric.Convergence.TimeLipschitz
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
+import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

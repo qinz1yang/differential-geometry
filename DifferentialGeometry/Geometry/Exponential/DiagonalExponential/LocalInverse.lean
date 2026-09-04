@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.InverseBranch
 import DifferentialGeometry.Geometry.Exponential.Variation.Smoothness
-import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicDerivativeAtZero
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Analysis.ODE.PhaseFlow.Perturbation
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff

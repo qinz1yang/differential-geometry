@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.DistanceCalabi
+import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.RicciBound
 

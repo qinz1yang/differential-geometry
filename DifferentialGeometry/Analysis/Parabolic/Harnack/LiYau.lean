@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.Moser.LogEnergy
-import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
+import DifferentialGeometry.Analysis.Parabolic.Moser.Logarithmic.Energy
+import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Geometry.Operator.Operators
 import DifferentialGeometry.Geometry.Operator.VossWeyl

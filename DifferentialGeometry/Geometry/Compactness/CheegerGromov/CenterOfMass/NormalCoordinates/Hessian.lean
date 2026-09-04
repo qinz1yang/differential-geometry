@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Analysis.Calculus.CLMNeumann
+import DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann
 
 import DifferentialGeometry.Bundle.Frame
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.InverseDistance

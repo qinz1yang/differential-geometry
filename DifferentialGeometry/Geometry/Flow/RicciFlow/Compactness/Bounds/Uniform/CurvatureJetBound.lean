@@ -1,10 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.RiemannOperatorDifferenceBounds
-import DifferentialGeometry.Geometry.Metric.Convergence.SelfCovariantDerivative
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeNormBridge
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Bridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.SourceEstimates
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.ConvexCombination

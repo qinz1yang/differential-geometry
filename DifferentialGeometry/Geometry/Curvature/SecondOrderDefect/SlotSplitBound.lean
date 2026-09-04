@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.TraceDiscrepancyDecomposition
+import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.TraceDiscrepancy
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0Curry
 open DifferentialGeometry.Analysis.Elliptic

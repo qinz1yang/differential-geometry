@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.RightDerivative
+import DifferentialGeometry.Analysis.Calculus.Derivative.Right
 import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
 import DifferentialGeometry.Geometry.Operator.GradientRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Minimum.TimeRegularity

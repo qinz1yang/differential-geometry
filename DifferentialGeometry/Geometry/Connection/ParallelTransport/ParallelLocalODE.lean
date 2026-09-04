@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
-import DifferentialGeometry.Geometry.Geodesic.Equation
+import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import Mathlib.Analysis.ODE.PicardLindelof
 import Mathlib.Analysis.ODE.Gronwall

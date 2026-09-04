@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.InverseMetricField
-import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentExtension
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Cotangent
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

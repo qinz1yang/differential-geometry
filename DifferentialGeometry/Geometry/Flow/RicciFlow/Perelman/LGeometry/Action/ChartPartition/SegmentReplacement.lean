@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Partition
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadraticEuler
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.H1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.Partition
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.EulerLagrange
 
 set_option autoImplicit false
 

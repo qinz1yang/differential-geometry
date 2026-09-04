@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Geodesic.Equation
+import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ChartGramChristoffel
 import Mathlib.Analysis.ODE.ExistUnique
 import Mathlib.Analysis.ODE.Gronwall

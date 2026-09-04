@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
+import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Christoffel
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness

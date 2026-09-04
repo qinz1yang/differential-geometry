@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.IteratedCovariantDerivativeFields
 
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeComponents
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Components
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen

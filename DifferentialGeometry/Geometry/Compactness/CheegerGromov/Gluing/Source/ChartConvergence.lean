@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Aver
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.Basic
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceTwoParameter
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.TwoParameter
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarHessBound
-import DifferentialGeometry.Geometry.Metric.Convergence.LaplacianDifference
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

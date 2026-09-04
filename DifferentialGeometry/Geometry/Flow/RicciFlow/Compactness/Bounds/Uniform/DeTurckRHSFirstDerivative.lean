@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.DeTurckRHS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.ThirdCovariantDerivativeComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.ReverseJetSecondDerivative
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.CovariantDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciTowerTrace
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.OperatorFieldApplication

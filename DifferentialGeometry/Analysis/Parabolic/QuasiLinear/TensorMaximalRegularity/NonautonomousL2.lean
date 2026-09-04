@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.ZeroDuhamelCross
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorL2
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.L2
 
 noncomputable section
 

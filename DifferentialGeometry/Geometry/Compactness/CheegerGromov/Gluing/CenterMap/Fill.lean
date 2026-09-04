@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Analysis.Calculus.BumpClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.BumpClamp
 
 
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceTwoParameter
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.TwoParameter
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.SupportConvergence
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Family.ParameterControl
-import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Comparison.Volume.SmallBall
 open DifferentialGeometry.Geometry.Curvature
 

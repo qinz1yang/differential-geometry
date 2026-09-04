@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1C1
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocity
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.C1Representative
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamily.Velocity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.FirstVariation
 
 set_option autoImplicit false

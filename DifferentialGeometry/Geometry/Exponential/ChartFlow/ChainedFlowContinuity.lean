@@ -2,9 +2,9 @@ import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Exponential.Smoothness.ZeroSectionConstancy
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.PreconnectedPropagation
-import DifferentialGeometry.Geometry.Geodesic.Equation
-import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
-import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
+import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
+import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.ContDiffOnOne
 import Mathlib.Topology.MetricSpace.Pseudo.Lemmas

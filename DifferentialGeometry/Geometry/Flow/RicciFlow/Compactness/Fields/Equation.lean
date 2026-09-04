@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Convergen
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.SourceEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Equation
-import DifferentialGeometry.Geometry.Metric.Convergence.RicciFromJets
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeNormContinuity
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Continuity
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

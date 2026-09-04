@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.RescaledLift
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.UniformExistence
-import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
-import DifferentialGeometry.Geometry.Geodesic.MaximalRescaling
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Rescaling
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

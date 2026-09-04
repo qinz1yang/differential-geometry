@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Attainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.SegmentReplacement
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeNonlinearAction
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Nonlinear.Action
 
 set_option autoImplicit false
 

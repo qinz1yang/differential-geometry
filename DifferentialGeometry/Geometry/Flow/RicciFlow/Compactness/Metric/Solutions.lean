@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.LimitMetric
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.WindowPrecompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSmoothRepresentativeRealize
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 open DifferentialGeometry.Geometry.Curvature

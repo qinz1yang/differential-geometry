@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.MixedComponents
 import DifferentialGeometry.Tensor.RicciIdentity.SlotAlgebra
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.CurvatureAction
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.RicciIdentity

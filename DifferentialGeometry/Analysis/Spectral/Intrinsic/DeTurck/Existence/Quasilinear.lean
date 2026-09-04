@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.TimeL2InterpolationLimit
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FieldHa1TimeSupTrace
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DuhamelEstimates
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MixedNorm
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.MixedNorm
 open DifferentialGeometry.Geometry.Curvature
 
 

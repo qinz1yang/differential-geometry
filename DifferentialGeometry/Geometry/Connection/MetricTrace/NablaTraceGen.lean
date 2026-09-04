@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
-import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotPermutation
-import DifferentialGeometry.Geometry.Connection.TensorNabla.ContractionLeibniz
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.SlotPermutation
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ContractionLeibniz
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
 open DifferentialGeometry.Tensor.Multilinear

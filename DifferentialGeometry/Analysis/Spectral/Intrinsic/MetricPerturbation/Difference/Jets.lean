@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.PointwiseBundleInstances
-import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor03CovariantDerivativeCalculus
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor03.Calculus
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

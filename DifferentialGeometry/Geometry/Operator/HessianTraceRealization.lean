@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Formula
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.MixedComponents
 import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TotalNabla0S
-import DifferentialGeometry.Geometry.Connection.TensorNabla.ConnectionDifference
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.ConnectionDifference
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Christoffel
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
-import DifferentialGeometry.Geometry.Connection.TensorNabla.ConnectionDifference
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.ConnectionDifference
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 

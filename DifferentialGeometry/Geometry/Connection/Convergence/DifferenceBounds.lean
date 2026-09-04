@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
-import DifferentialGeometry.Geometry.Connection.TensorNabla.ConnectionDifference
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.ConnectionDifference
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 
 open DifferentialGeometry.Geometry.Curvature
 

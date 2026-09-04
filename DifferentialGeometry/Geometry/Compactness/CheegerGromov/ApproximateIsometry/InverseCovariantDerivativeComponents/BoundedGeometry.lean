@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.InverseChartConvergence.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalPullbackBounds.BoundedGeometry
-import DifferentialGeometry.Geometry.Metric.Convergence.MetricTowerConvergence
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Tower
 
 set_option autoImplicit false
 

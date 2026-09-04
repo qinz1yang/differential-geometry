@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.IteratedFDerivProductDifferenceBound
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.ProductDifferenceBounds
 import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Defs
 
 noncomputable section

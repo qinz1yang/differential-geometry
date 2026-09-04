@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
-import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRSCovariantDerivativeCongrLocally
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.LocalCongruence
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Defs
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic

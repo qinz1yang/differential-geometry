@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.AbstractSpectralDuhamel
-import DifferentialGeometry.Analysis.Calculus.HilbertBasisDerivative
+import DifferentialGeometry.Analysis.Calculus.Derivative.HilbertBasis
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.TimeDeriv
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeRestriction
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Restriction
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 open DifferentialGeometry.Geometry.Curvature

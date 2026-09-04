@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivativeEstimate
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeContinuity
-import DifferentialGeometry.Geometry.Metric.Convergence.LimitMetric
-import DifferentialGeometry.Geometry.Metric.Convergence.RicciFromJets
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import Mathlib.Order.Filter.AtTopBot.CountablyGenerated
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs

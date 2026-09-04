@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Boundary.DefiningFunction
-import DifferentialGeometry.Geometry.Comparison.Variation.SmoothCurveGerm
-import DifferentialGeometry.Analysis.Calculus.CurveDerivative
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SmoothCurveGerm
+import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import Mathlib.Analysis.Calculus.DerivativeTest
 import Mathlib.Geometry.Manifold.Instances.Icc
 

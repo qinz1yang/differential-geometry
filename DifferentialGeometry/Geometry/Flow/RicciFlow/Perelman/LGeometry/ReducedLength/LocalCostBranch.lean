@@ -4,11 +4,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
-import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
-import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
-import DifferentialGeometry.Analysis.Calculus.BumpClamp
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
+import DifferentialGeometry.Analysis.Calculus.Cutoff.BumpClamp
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 

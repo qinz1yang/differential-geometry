@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SubcriticalSmallTime
-import DifferentialGeometry.Analysis.Calculus.BallRetraction
+import DifferentialGeometry.Analysis.Calculus.Retraction.Ball
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Geometry.Curvature
 

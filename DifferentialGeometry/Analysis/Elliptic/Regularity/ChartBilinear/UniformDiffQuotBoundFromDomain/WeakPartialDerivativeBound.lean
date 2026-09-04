@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.CompactCutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension.DensityBounds
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.DataBounds
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.UniformDifferenceQuotient

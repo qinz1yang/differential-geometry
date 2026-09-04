@@ -3,9 +3,9 @@ import DifferentialGeometry.Topology.Exhaustion
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.CompatibleChainLimits
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
-import DifferentialGeometry.Geometry.Metric.Convergence.SelfCovariantDerivative
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence

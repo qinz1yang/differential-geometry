@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.DirectionalJet
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.DirectionalJets
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 import Mathlib.Analysis.Calculus.TangentCone.Prod
 

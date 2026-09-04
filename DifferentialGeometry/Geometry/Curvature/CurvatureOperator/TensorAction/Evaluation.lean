@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.UnitEvaluation
-import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorSlotwiseCurvatureRS
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Curvature.TensorRS
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.FiberNorm
 import Mathlib.Topology.Order.Compact
 open DifferentialGeometry.Tensor.Multilinear

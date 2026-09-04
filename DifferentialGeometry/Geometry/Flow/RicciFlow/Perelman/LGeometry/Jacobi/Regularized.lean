@@ -1,13 +1,13 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.MovingMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.ConnectionBackward
-import DifferentialGeometry.Geometry.Comparison.Variation.CovariantJet
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.Jets
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeDifference
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.TensorDerivativeAlong
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.CotangentRiemannian
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
 

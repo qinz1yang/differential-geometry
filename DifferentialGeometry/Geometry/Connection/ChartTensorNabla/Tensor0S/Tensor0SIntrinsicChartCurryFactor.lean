@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.Tensor0SChartChristoffel
-import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SPartialEval
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.PartialEvaluation
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartTensor0SCovariantDerivative
 import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
 

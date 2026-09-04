@@ -20,7 +20,7 @@ import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Data.Sign.Basic
 import Mathlib.LinearAlgebra.QuadraticForm.Real
 import Mathlib.LinearAlgebra.QuadraticForm.Signature
-import DifferentialGeometry.Analysis.Calculus.ParametricIntervalIntegral
+import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 
 open scoped Filter Interval Topology
 

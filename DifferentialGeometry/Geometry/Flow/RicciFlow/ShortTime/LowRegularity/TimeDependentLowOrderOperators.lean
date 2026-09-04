@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.BallRetraction
+import DifferentialGeometry.Analysis.Calculus.Retraction.Ball
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DenseMixedBound
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LowScaleCutoff
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TameForcingFixedPoint

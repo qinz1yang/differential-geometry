@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Slice
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadratic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Slice
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGram
 import Mathlib.Analysis.Calculus.Deriv.Shift

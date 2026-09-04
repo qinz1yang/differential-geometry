@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
-import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
+import DifferentialGeometry.Analysis.Calculus.Inverse.DerivativePerturbation
 import DifferentialGeometry.Analysis.Estimates.BilinearMapPerturbation
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Basic
 open DifferentialGeometry.Geometry.Curvature

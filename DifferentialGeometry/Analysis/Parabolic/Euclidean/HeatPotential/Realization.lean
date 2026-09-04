@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Duhamel.LowerOrder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Schauder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatPotential.Regularity
-import DifferentialGeometry.Analysis.Schauder.Holder
+import DifferentialGeometry.Analysis.Schauder.Holder.Basic
 import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
 
 noncomputable section

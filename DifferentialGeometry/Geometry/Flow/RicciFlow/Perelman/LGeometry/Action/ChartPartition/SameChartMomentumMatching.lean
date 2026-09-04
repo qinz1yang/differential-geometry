@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceActionMinimality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PieceLocalMinimality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.MomentumRegularity
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Ramp
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Buffer
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadraticBoundary
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Ramp
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.LineScale
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.BoundaryMomentum
 
 set_option autoImplicit false
 

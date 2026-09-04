@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HomTensorRSSectionCalculus
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.SectionCalculus
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffMeas
-import DifferentialGeometry.Geometry.Metric.Convergence.C1Continuity
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.C1Continuity
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

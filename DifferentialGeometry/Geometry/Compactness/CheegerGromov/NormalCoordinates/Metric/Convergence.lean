@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.Branch
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Subsequence
 open DifferentialGeometry.Geometry.Curvature

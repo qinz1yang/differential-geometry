@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
-import DifferentialGeometry.Geometry.Connection.TensorNabla.ContractionLeibniz
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ContractionLeibniz
 import DifferentialGeometry.Tensor.RSTensor.Product
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.DistanceTent
-import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.LipschitzApprox
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 open DifferentialGeometry.Geometry.Curvature

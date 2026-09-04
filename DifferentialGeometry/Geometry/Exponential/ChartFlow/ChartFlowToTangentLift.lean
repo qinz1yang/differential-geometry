@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartFlowGeodesicLink
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartIdentification
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartPushVFEq
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.VectorFieldIdentification
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.UniformExistence
-import DifferentialGeometry.Geometry.Geodesic.Existence
-import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
-import DifferentialGeometry.Geometry.Geodesic.Uniqueness
+import DifferentialGeometry.Geometry.Geodesic.Local.Existence
+import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
+import DifferentialGeometry.Geometry.Geodesic.Local.Uniqueness
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

@@ -1,11 +1,11 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartFlowGeodesicLink
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartIdentification
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartPushVFEq
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.VectorFieldIdentification
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling
 import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Exponential.Smoothness.ChartFlowVelocitySlice
 import DifferentialGeometry.Geometry.Exponential.Smoothness.ChartFlowRepresentation
-import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
+import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Defs
-import DifferentialGeometry.Analysis.Calculus.BanachAlgebraSmoothness
+import DifferentialGeometry.Analysis.Calculus.Smoothness.BanachAlgebra
 
 
 noncomputable section

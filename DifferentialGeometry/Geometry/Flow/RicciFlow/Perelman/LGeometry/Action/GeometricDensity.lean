@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1Density
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Partition
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.Density
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.Partition
 
 set_option autoImplicit false
 

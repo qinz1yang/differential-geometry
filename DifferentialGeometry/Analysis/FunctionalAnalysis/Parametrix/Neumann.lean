@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.CLMNeumann
+import DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann
 import DifferentialGeometry.Analysis.FunctionalAnalysis.Parametrix.Basic
 import Mathlib.Analysis.SpecificLimits.Normed
 

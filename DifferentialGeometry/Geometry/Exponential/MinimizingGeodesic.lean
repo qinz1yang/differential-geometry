@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Exponential.Intrinsic.Basic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Continuity
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
-import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
+import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
 import Mathlib.Topology.Order.Compact
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 open DifferentialGeometry.Geometry.Curvature

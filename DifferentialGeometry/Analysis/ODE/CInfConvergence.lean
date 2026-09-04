@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
 import DifferentialGeometry.Analysis.ODE.Flow.ParamTangent
 import DifferentialGeometry.Analysis.ODE.Flow.Variational

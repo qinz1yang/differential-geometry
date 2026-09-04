@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Comparison.Variation.CovariantGronwall
-import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.Gronwall
+import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartMeasure
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm

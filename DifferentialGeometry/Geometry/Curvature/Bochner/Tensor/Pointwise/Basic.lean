@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.IntegratedOrder2WeitzenbockCurvature
+import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Weitzenbock.IntegratedSecondOrder
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.GradientSlotLeibniz
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorThirdOrder

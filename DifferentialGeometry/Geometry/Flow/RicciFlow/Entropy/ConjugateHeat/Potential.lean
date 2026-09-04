@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarPotential
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarUniform
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral

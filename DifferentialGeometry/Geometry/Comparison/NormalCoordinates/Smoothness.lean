@@ -1,7 +1,7 @@
 import Mathlib.Analysis.Calculus.ContDiff.FaaDiBruno
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
-import DifferentialGeometry.Geometry.Exponential.Smoothness.OffZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero
 
 open DifferentialGeometry.Geometry.Curvature
 

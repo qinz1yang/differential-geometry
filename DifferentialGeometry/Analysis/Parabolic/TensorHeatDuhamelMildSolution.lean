@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SemigroupTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.AbstractSpectralDuhamel
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.DuhamelMap
-import DifferentialGeometry.Analysis.Calculus.HilbertBasisDerivative
+import DifferentialGeometry.Analysis.Calculus.Derivative.HilbertBasis
 
 noncomputable section
 

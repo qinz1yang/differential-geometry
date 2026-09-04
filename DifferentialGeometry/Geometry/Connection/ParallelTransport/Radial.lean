@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
-import DifferentialGeometry.Geometry.Exponential.Smoothness.OffZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Endpoint
-import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelLocalODE
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCurve
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs

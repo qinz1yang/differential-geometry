@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.AdjacentSegmentMinimality
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Slice
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Slice
 
 set_option autoImplicit false
 

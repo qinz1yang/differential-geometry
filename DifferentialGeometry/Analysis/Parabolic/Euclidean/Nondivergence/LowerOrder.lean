@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.Coefficients
-import DifferentialGeometry.Analysis.Schauder.Interpolation
+import DifferentialGeometry.Analysis.Schauder.Holder.Interpolation
 
 noncomputable section
 

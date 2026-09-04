@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Map
-import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
+import DifferentialGeometry.Analysis.Calculus.Inverse.DerivativePerturbation
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Fill
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.RootConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.NormalCoordinates

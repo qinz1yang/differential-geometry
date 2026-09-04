@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.SmoothInverseOn
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds

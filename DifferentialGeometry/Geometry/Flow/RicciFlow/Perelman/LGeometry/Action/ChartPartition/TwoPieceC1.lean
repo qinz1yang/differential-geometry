@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.VelocityMatching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PieceLocalMinimality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.VelocityRegularity
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeC1Overlap
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.CurveC1Glue
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.OverlapDerivative
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.ManifoldC1Gluing
 
 set_option autoImplicit false
 

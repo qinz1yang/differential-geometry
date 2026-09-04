@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
 import Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.MeasureTheory.Integral.Prod

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Hessian
 open DifferentialGeometry.Geometry.Curvature

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
 
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeContinuity
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

@@ -1,7 +1,7 @@
-import DifferentialGeometry.Analysis.Calculus.SmoothInverseLimitOn
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.SmoothInverseOn
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
-import DifferentialGeometry.Analysis.Calculus.RingInverseBounds
+import DifferentialGeometry.Analysis.Calculus.Inverse.RingBounds
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 open DifferentialGeometry.Geometry.Curvature

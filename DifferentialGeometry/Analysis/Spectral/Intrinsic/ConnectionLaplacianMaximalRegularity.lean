@@ -4,8 +4,8 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Operator.Unb
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionSpace
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.OperatorEquation
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
 open DifferentialGeometry.Geometry.Curvature

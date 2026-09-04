@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadratic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Defs
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramSmooth

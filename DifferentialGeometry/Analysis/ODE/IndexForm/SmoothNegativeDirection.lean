@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.ODE.IndexForm.NegativeDirection
-import DifferentialGeometry.Analysis.Calculus.CutoffProfile
-import DifferentialGeometry.Analysis.Calculus.CompactCutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import Mathlib.Analysis.Calculus.MeanValue
 
 set_option autoImplicit false

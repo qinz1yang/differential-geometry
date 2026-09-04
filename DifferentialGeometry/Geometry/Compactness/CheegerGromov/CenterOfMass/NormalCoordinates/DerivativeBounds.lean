@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
-import DifferentialGeometry.Analysis.Calculus.ImplicitDerivativeBounds
+import DifferentialGeometry.Analysis.Calculus.Inverse.ImplicitDerivativeBounds
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

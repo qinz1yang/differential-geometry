@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadraticRegularC1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.C1Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.ForceRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.VelocityRegularity
 import Mathlib.MeasureTheory.Measure.OpenPos

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Estimates.IteratedCovariantSums
 
 
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
-import DifferentialGeometry.Geometry.Connection.TensorNabla.ConnectionDifference
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.ConnectionDifference
 
 set_option autoImplicit false
 

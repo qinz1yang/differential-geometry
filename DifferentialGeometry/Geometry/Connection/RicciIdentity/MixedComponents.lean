@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formul
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
 import DifferentialGeometry.Tensor.RicciIdentity.ContractionProductRules
 import DifferentialGeometry.Tensor.RSTensor.Components
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 
 set_option autoImplicit false
 

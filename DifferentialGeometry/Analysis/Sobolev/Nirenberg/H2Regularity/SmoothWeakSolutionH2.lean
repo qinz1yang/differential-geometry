@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.CompactCutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.CrossBounds
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakLimit
 

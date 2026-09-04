@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Variation.JacobiGram
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 open DifferentialGeometry.Geometry.Curvature

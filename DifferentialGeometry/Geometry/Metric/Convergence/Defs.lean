@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Basic
 
 set_option autoImplicit false
 

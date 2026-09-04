@@ -8,11 +8,11 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Interior
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Measure
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.FrameBound
 import DifferentialGeometry.Geometry.Comparison.Volume.RatioIntegral
-import DifferentialGeometry.Geometry.Comparison.Variation.MinimalGeodesicNoConjugate
-import DifferentialGeometry.Geometry.Comparison.DistanceCalabi
+import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.MinimalGeodesic
+import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Gradient
-import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicDerivativeAtZero
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

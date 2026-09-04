@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HomBundleNabla
+import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
 open DifferentialGeometry.Geometry.Curvature
 

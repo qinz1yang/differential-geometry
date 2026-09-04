@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.MetricTensorError
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.TensorError
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 open DifferentialGeometry.Geometry.Curvature

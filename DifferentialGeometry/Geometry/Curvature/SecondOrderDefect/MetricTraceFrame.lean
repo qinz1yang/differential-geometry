@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.FrameComponentBound
-import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.CurvatureDefect
+import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.CurvatureDefect
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.PointwiseCurvatureBound
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FiberNorm

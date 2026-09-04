@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-import DifferentialGeometry.Analysis.Calculus.SmoothClamp
-import DifferentialGeometry.Geometry.Comparison.Variation.JacobiField
+import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 open DifferentialGeometry.Geometry.Curvature

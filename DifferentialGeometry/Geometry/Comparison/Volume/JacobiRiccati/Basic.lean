@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.LengthBound
-import DifferentialGeometry.Geometry.Comparison.Variation.JacobiShape
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Shape
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

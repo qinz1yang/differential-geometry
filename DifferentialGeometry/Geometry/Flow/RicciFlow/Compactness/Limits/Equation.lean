@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 
-import DifferentialGeometry.Geometry.Metric.Convergence.WindowAllOrders
+import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllOrders
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

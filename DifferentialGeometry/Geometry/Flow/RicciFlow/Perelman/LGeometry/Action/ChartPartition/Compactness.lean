@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Ch
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Partition
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.H1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.Partition
 import DifferentialGeometry.Topology.Manifold.CurveChart.Subdivision
 import DifferentialGeometry.Topology.UniformConvergence
 

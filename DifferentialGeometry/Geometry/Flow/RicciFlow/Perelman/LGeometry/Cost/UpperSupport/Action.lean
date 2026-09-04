@@ -2,10 +2,10 @@ import DifferentialGeometry.Topology.Manifold.ParametricInverseFunctionTheorem
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.MinimizingFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound
-import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve
-import DifferentialGeometry.Analysis.Calculus.BumpClamp
-import DifferentialGeometry.Analysis.Calculus.ParametricIntervalIntegral
-import DifferentialGeometry.Analysis.Calculus.SmoothClamp
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
+import DifferentialGeometry.Analysis.Calculus.Cutoff.BumpClamp
+import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
+import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
 
 set_option autoImplicit false
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Defs
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 

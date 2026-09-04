@@ -1,7 +1,7 @@
-import DifferentialGeometry.Analysis.Calculus.CurveDerivative
+import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Variation
-import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 
 
 open DifferentialGeometry.Geometry.Curvature

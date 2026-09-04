@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeTimeRegularity
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.TimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 
 open DifferentialGeometry.PDE.RicciFlow

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Variation.JacobiGram
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram
 import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Gronwall
 open DifferentialGeometry.Geometry.Curvature
 

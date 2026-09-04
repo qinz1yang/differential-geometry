@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.Ricc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
-import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
+import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor

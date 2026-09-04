@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.InverseChartConvergence.StageJet
-import DifferentialGeometry.Geometry.Metric.Convergence.MetricTowerConvergence
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Tower
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.PDE.RicciFlow

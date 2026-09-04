@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.CompactCutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Distribution
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
 import Mathlib.Analysis.InnerProductSpace.Dual

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
-import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.ConnectionDifferenceCovGradBridge
+import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.ConnectionDifference.CovariantDerivative
 import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateFormula
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Geometry.Curvature

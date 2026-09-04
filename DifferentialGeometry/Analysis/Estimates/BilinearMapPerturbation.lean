@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import Mathlib.Analysis.Normed.Operator.Bilinear
 import Mathlib.Tactic.Abel
 import Mathlib.Tactic.GCongr

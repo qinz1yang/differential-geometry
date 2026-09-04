@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LinearExtensionTangent
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator
 import DifferentialGeometry.Geometry.Operator.HessianTrace
-import DifferentialGeometry.Geometry.Connection.TensorNabla.HomBundleNabla
+import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

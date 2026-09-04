@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Derivation
-import DifferentialGeometry.Geometry.Connection.TensorNabla.LocalFrameRegularity
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.LocalFrame
 import DifferentialGeometry.Geometry.Connection.TensorNabla.InducedConnection
 open DifferentialGeometry.Tensor.Multilinear
 

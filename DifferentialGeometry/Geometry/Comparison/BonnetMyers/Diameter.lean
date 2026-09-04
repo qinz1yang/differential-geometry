@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Comparison.BonnetMyers.LengthBound
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Basic
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
+import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCurve
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 import Mathlib.Topology.EMetricSpace.Diam

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.ContDiffOnTsum
+import DifferentialGeometry.Analysis.Calculus.Smoothness.Tsum
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.ScalarEigenJet
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.SpectralSmoothRepresentative
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.RankZero

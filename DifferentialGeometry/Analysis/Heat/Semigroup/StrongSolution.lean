@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.HilbertBasisDerivative
+import DifferentialGeometry.Analysis.Calculus.Derivative.HilbertBasis
 import DifferentialGeometry.Analysis.Heat.Semigroup.MildSolutionPDE
 import DifferentialGeometry.Analysis.Heat.Smoothing.SmoothingOfClosed
 import Mathlib.Analysis.Calculus.ContDiff.Deriv

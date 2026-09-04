@@ -1,6 +1,6 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
 
 namespace DifferentialGeometry.Analysis.Parabolic
 

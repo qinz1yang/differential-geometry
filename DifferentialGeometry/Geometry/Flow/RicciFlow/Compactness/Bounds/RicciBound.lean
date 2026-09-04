@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciComponents
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 
-import DifferentialGeometry.Geometry.Metric.Convergence.CoordinateControl
+import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.Control
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

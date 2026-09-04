@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Basic
-import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
+import DifferentialGeometry.Analysis.Calculus.Inverse.DerivativePerturbation
 
 
 

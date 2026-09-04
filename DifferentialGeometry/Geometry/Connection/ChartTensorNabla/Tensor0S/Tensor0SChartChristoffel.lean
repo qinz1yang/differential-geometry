@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SNabla
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SRiemannian
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.ForceRegularity
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocityC1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamily.C1Velocity
 
 set_option autoImplicit false
 

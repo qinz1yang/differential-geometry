@@ -2,15 +2,15 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Poin
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Equation
-import DifferentialGeometry.Geometry.Metric.Convergence.Precompactness
+import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Connection.ChartBridge.DiffRiemannBasisIdentityOffCentre
 import DifferentialGeometry.Geometry.Metric.ChartGram
-import DifferentialGeometry.Analysis.Calculus.SpaceJet
-import DifferentialGeometry.Analysis.Calculus.TimeSliceSwap
-import DifferentialGeometry.Analysis.Calculus.TimeSliceBootstrap
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.SpaceJets
+import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceSwap
+import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceBootstrap
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

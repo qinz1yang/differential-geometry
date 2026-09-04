@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.ParametricIntervalIntegral
+import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 

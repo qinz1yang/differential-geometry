@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.MovingFrameIntegratedNullity
+import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.IntegratedNullity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorThirdOrder
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

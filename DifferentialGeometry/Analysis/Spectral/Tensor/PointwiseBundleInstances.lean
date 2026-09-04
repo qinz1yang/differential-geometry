@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorExtension
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Tensor
 import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
 
 noncomputable section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricExtension
 
-import DifferentialGeometry.Geometry.Metric.Convergence.WindowAllPoints
+import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllPoints
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

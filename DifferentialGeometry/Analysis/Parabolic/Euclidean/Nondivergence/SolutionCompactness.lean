@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.OperatorLimit
-import DifferentialGeometry.Analysis.Schauder.ParabolicJetCompactness
+import DifferentialGeometry.Analysis.Schauder.Parabolic.Jet.Compactness
 
 noncomputable section
 

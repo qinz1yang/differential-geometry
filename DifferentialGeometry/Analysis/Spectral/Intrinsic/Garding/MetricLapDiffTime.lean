@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffCore
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
-import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
-import DifferentialGeometry.Geometry.Metric.Convergence.C1Continuity
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.C1Continuity
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

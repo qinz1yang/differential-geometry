@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionSpace
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperator
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.Basic
 import Mathlib.Topology.MetricSpace.Contracting
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

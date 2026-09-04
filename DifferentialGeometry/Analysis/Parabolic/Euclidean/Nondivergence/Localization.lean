@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.LowerOrder
-import DifferentialGeometry.Analysis.Schauder.CompactRegularity
-import DifferentialGeometry.Analysis.Schauder.ParabolicBallRetraction
+import DifferentialGeometry.Analysis.Schauder.Holder.CompactRegularity
+import DifferentialGeometry.Analysis.Schauder.Parabolic.BallRetraction
 
 noncomputable section
 

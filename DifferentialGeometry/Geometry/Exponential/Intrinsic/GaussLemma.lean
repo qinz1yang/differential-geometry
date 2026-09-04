@@ -3,9 +3,9 @@ import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.FramedCoordinates
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Analysis.Calculus.RadialSeminorm
-import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
-import DifferentialGeometry.Geometry.Comparison.Variation.SpeedDerivative
+import DifferentialGeometry.Analysis.Calculus.Seminorm.Radial
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
 open DifferentialGeometry.Geometry.Curvature

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.FramedJacobi
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.JacobiJets
-import DifferentialGeometry.Analysis.Calculus.DirectionalJet
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.DirectionalJets
 import DifferentialGeometry.Tensor.Multilinear.Polarization
 import Mathlib.Analysis.Analytic.IteratedFDeriv
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.FineChartCover
-import DifferentialGeometry.Geometry.Metric.Convergence.Precompactness
+import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

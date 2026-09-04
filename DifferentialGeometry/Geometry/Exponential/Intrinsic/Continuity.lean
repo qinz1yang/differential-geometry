@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Basic
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChainedFlowContinuity
-import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
-import DifferentialGeometry.Geometry.Geodesic.CrossVFReduction
+import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
+import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
 import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
 import Mathlib.Topology.Compactness.Compact
 open DifferentialGeometry.Geometry.Curvature

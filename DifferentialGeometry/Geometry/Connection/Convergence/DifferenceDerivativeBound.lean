@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantDerivativeQuadraticBounds
 
-import DifferentialGeometry.Geometry.Metric.Convergence.LaplacianDifference
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
 import DifferentialGeometry.Geometry.Connection.LeviCivita.ChristoffelDiffKoszulDeriv
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.MovingImplicit
+import DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.TargetCoordinates
 
 open DifferentialGeometry.Geometry.Curvature

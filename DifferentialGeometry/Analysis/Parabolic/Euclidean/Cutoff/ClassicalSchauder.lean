@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.ClassicalSchauder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Cutoff.Estimate
-import DifferentialGeometry.Analysis.Schauder.VariableCoefficient
+import DifferentialGeometry.Analysis.Schauder.Elliptic.VariableCoefficient.Basic
 
 
 noncomputable section

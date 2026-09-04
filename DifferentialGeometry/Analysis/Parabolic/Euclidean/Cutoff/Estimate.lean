@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Cutoff.Basic
-import DifferentialGeometry.Analysis.Schauder.VariableCoefficient
+import DifferentialGeometry.Analysis.Schauder.Elliptic.VariableCoefficient.Basic
 
 noncomputable section
 

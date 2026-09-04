@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.TimeJetMatch
+import DifferentialGeometry.Analysis.Calculus.TimeJet.Matching
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.RankZeroRealization

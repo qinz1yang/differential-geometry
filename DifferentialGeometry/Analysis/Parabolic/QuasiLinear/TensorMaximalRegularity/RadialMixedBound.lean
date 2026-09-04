@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.BallRetraction
+import DifferentialGeometry.Analysis.Calculus.Retraction.Ball
 open DifferentialGeometry.Analysis.Calculus
 noncomputable section
 

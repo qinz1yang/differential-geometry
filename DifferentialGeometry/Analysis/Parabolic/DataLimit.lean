@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Schauder.Holder
+import DifferentialGeometry.Analysis.Schauder.Holder.Basic
 
 noncomputable section
 

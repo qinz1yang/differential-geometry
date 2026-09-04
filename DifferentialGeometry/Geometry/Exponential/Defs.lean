@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Geodesic.Equation
-import DifferentialGeometry.Geometry.Geodesic.Existence
-import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
-import DifferentialGeometry.Geometry.Geodesic.Uniqueness
+import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
+import DifferentialGeometry.Geometry.Geodesic.Local.Existence
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
+import DifferentialGeometry.Geometry.Geodesic.Local.Uniqueness
 import Mathlib.Topology.Connected.Clopen
 open DifferentialGeometry.Geometry.Curvature
 

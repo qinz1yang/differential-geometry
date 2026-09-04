@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.SectionCompD2
+import DifferentialGeometry.Analysis.Calculus.SecondDerivative.SectionComposition
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.VerticalInverse
 
 noncomputable section

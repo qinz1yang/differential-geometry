@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
-import DifferentialGeometry.Geometry.Comparison.Variation.JacobiGram
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
-import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicOffZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicAwayFromZero
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

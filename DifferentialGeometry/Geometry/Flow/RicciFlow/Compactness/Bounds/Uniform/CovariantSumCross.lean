@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.FixedDomainBounds
 
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivativeBound
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
-import DifferentialGeometry.Geometry.Metric.Convergence.LaplacianDifference
-import DifferentialGeometry.Geometry.Metric.Convergence.ProductDerivativeNorm
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Product
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 import DifferentialGeometry.Geometry.Connection.ConnectionDifferenceNorm
 import DifferentialGeometry.Geometry.Metric.ChartGram

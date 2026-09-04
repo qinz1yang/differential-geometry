@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.LowerOrder
-import DifferentialGeometry.Analysis.Schauder.CutoffProduct
+import DifferentialGeometry.Analysis.Schauder.Cutoff.Product
 
 noncomputable section
 

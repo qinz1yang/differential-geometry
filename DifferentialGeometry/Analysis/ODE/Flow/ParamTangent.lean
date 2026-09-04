@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
-import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
-import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
+import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.VariationalMapContDiffOnK
 

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.DistanceControl
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormFlat
-import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 import DifferentialGeometry.Topology.SigmaCompactOpen

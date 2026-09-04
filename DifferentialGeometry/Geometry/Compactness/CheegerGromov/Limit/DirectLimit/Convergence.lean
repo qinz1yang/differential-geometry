@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 import DifferentialGeometry.Topology.SigmaCompactOpen
 
 open DifferentialGeometry.Geometry.Curvature

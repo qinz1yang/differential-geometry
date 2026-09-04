@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadraticWeak
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Compact
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.WeakConvergence
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Compactness
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGram
 
 set_option autoImplicit false

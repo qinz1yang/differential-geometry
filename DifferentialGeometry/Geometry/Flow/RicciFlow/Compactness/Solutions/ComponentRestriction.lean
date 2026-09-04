@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
-import DifferentialGeometry.Geometry.Geodesic.OpenSubtype
+import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
 import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 
 

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Regio
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.Convex.SupportFunction
-import DifferentialGeometry.Analysis.Calculus.RightDerivative
+import DifferentialGeometry.Analysis.Calculus.Derivative.Right
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.Complex.ExponentialBounds

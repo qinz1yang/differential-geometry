@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatPotential.PositiveDefinite
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatSemigroup.Schauder
-import DifferentialGeometry.Analysis.Schauder.Absorption
-import DifferentialGeometry.Analysis.Schauder.BilinearHolder
-import DifferentialGeometry.Analysis.Schauder.Localization
+import DifferentialGeometry.Analysis.Estimates.Absorption
+import DifferentialGeometry.Analysis.Schauder.Holder.Bilinear
+import DifferentialGeometry.Analysis.Schauder.Holder.Localization
 
 noncomputable section
 

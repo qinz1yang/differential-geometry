@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LowerSemicontinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.GeometricDensity
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramStrong
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Density
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Density
 
 set_option autoImplicit false
 

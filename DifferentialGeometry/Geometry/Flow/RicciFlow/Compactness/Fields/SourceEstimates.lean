@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Convergence
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
-import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.WindowPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Pullback

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.CurveDerivative
+import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.TraceDensity

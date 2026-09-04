@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
-import DifferentialGeometry.Geometry.Comparison.Variation.CovariantJet
-import DifferentialGeometry.Geometry.Comparison.Variation.GeneralCurvatureCommutation
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.Jets
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.GeneralCurvatureCommutation
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 

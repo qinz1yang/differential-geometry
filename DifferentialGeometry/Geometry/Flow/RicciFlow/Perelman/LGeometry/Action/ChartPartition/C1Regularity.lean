@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.VelocityMatchingAtNodes
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PiecewiseC1
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.CurveC1Finite
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.FiniteManifoldC1Gluing
 
 set_option autoImplicit false
 

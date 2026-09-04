@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
+import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 
 open DifferentialGeometry.Geometry.Curvature
 

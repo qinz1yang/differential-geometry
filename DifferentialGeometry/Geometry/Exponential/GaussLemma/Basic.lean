@@ -1,21 +1,21 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 import DifferentialGeometry.Geometry.Exponential.Defs
-import DifferentialGeometry.Geometry.Exponential.Smoothness.MfderivZero
-import DifferentialGeometry.Geometry.Exponential.Smoothness.OffZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.DerivativeAtZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Basic
-import DifferentialGeometry.Geometry.Geodesic.Equation
-import DifferentialGeometry.Geometry.Geodesic.Uniqueness
-import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
-import DifferentialGeometry.Geometry.Geodesic.CrossVFReduction
+import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
+import DifferentialGeometry.Geometry.Geodesic.Local.Uniqueness
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
+import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.SmallVelocityRescaling
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.RescaledLift
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.UniformExistence
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
-import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
+import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
-import DifferentialGeometry.Analysis.Calculus.RadialSeminorm
+import DifferentialGeometry.Analysis.Calculus.Seminorm.Radial
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Ordered
 
 
-import DifferentialGeometry.Analysis.Calculus.DiagonalSubsequence
+import DifferentialGeometry.Analysis.Calculus.Compactness.DiagonalSubsequence
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

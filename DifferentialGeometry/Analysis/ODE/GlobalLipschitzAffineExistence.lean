@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.ForwardVariationalFromZero
-import DifferentialGeometry.Analysis.Calculus.BallRetraction
+import DifferentialGeometry.Analysis.Calculus.Retraction.Ball
 import Mathlib.Analysis.ODE.Gronwall
 open DifferentialGeometry.Analysis.Calculus
 

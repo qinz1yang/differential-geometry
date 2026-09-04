@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.SecondOrderHomBundle
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.SingleSlotFibreNormBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.TensorRSContRiemannianBundle
 import Mathlib.Topology.VectorBundle.Riemannian

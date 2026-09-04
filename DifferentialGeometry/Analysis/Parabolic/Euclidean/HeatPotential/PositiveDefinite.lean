@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.FrozenPositiveDefinite
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatPotential.Estimate
-import DifferentialGeometry.Analysis.Schauder.Scaling
+import DifferentialGeometry.Analysis.Schauder.Holder.Scaling
 
 noncomputable section
 

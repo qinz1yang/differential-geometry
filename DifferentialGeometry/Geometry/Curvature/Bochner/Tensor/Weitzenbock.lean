@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorSlotwiseCurvature
-import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorSlotwiseCurvatureRS
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Curvature.Tensor0S
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Curvature.TensorRS
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 open DifferentialGeometry.Geometry.Curvature

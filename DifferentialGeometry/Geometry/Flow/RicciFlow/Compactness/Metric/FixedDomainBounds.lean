@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Christoffel
 
 open DifferentialGeometry.PDE.RicciFlow

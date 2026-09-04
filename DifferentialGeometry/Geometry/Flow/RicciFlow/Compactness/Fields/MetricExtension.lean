@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.SourceDomain
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Restriction
-import DifferentialGeometry.Geometry.Metric.Convergence.WindowAllOrders
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeContinuity
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
+import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllOrders
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Metric.BumpExtend
 import DifferentialGeometry.Geometry.Metric.ChartGram

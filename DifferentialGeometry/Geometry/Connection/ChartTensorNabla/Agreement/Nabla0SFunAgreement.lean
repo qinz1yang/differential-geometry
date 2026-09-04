@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.ChartTensor0SCovariantDerivativeAgreementSucc
-import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SNabla
-import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SPartialEval
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Basic
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.PartialEvaluation
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
 open DifferentialGeometry.Geometry.Curvature
 

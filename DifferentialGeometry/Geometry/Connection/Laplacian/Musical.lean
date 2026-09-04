@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Operator.MixedTensor
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.InverseMetricFieldParallel
-import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentCovDerivIdentification
+import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CotangentCovariantDerivative
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian
 open DifferentialGeometry.Geometry.Curvature

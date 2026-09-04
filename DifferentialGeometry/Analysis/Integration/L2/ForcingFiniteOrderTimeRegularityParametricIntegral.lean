@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinear
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.PointwiseSpectralCoordinate
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerModeL2
-import DifferentialGeometry.Analysis.Calculus.ContDiffExtendInterval
+import DifferentialGeometry.Analysis.Calculus.Smoothness.ExtendInterval
 open DifferentialGeometry.Geometry.Curvature
 
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.AllTimesBounds
 
 open DifferentialGeometry.PDE.RicciFlow

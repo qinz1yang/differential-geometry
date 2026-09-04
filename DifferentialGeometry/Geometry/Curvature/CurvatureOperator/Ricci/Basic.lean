@@ -3,7 +3,7 @@ import Mathlib.LinearAlgebra.Dimension.Free
 import Mathlib.LinearAlgebra.Dual.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
-import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorExtension
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Tensor
 import DifferentialGeometry.Geometry.Metric.ChartGram
 open DifferentialGeometry.Geometry.Curvature
 

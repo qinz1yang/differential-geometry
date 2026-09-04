@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-import DifferentialGeometry.Geometry.Comparison.Variation.CartanTransfer
-import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.CoordinateTransfer
+import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi

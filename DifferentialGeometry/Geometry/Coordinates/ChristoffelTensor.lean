@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.Tensor
-import DifferentialGeometry.Geometry.Connection.TensorNabla.ConnectionDifference
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.ConnectionDifference
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS
 open DifferentialGeometry.Geometry.Curvature
 

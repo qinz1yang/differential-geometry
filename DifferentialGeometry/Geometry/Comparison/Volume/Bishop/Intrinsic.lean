@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Radial
-import DifferentialGeometry.Geometry.Comparison.RadialLaplacian
+import DifferentialGeometry.Geometry.Comparison.Laplacian.Radial
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Smoothness
 open DifferentialGeometry.Geometry.Curvature

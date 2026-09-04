@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeRecurrence
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Recurrence
 
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

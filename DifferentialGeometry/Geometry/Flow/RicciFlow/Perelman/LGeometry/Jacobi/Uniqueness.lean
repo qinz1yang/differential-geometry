@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegula
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SInnerSectionContinuity
 import DifferentialGeometry.Analysis.ODE.Flow.SolutionOperator
-import DifferentialGeometry.Geometry.Comparison.Variation.VelocityLocal
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.LocalVelocity
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
 
 set_option autoImplicit false

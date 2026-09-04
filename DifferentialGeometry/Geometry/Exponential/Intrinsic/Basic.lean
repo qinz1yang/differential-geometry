@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Basic
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeAlong
-import DifferentialGeometry.Geometry.Geodesic.ChartRegularity
-import DifferentialGeometry.Geometry.Geodesic.Equation
-import DifferentialGeometry.Geometry.Geodesic.CrossVFReduction
+import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
+import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
+import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
 import DifferentialGeometry.Geometry.Exponential.Defs
 
 open DifferentialGeometry.Geometry.Curvature

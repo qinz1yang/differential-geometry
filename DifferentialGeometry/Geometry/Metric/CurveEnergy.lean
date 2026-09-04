@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.MeasureTheory.Integral.MeanInequalities

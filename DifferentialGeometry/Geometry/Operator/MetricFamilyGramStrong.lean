@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadraticStrong
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.StrongConvergence
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGram
 
 set_option autoImplicit false

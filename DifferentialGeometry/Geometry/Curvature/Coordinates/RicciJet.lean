@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Operator.HessianTrace
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentityOffCentre
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetPartialDeriv
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGlueParam
-import DifferentialGeometry.Analysis.Calculus.TimeJetEvolution
+import DifferentialGeometry.Analysis.Calculus.TimeJet.Evolution
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
-import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicDerivativeAtZero
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

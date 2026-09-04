@@ -1,8 +1,8 @@
-import DifferentialGeometry.Analysis.Calculus.BumpClamp
-import DifferentialGeometry.Analysis.Calculus.CurveDerivative
-import DifferentialGeometry.Analysis.Calculus.MovingImplicit
+import DifferentialGeometry.Analysis.Calculus.Cutoff.BumpClamp
+import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
+import DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.CompleteMetricExtension
-import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
+import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 import Mathlib.Order.Filter.AtTopBot.CountablyGenerated
 
 set_option autoImplicit false

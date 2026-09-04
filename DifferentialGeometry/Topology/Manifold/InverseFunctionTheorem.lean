@@ -1,7 +1,7 @@
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import Mathlib.Geometry.Manifold.ContMDiff.Basic
-import DifferentialGeometry.Analysis.Calculus.CLMNeumann
+import DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann
 
 set_option autoImplicit false
 

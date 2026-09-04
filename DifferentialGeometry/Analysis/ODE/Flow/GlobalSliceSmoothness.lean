@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.Cutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Basic
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC
 
 open DifferentialGeometry.Analysis.ODE

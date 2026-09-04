@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
 
-import DifferentialGeometry.Geometry.Metric.Convergence.TimeLipschitz
+import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
-import DifferentialGeometry.Geometry.Comparison.Variation.FixedChartIdentities
-import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve
-import DifferentialGeometry.Analysis.Calculus.SmoothClamp
-import DifferentialGeometry.Analysis.Calculus.ParametricIntervalIntegral
+import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
+import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
+import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 
 set_option autoImplicit false
 
