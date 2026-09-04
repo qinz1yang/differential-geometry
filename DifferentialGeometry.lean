@@ -1519,9 +1519,6 @@ import DifferentialGeometry.Analysis.Spectral.Scalar.EigenIdx
 import DifferentialGeometry.Analysis.Spectral.Scalar.Enumeration
 import DifferentialGeometry.Analysis.Spectral.Scalar.Resolvent
 import DifferentialGeometry.Analysis.Spectral.Scalar.Spectrum
-import DifferentialGeometry.Analysis.Spectral.HamiltonGram
-import DifferentialGeometry.Analysis.Spectral.HamiltonTraceContractions
-import DifferentialGeometry.Analysis.Spectral.HamiltonGramReaction
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartLeviCivitaParallelCLMOpNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.IntrinsicL2Bridge
@@ -1973,8 +1970,6 @@ import DifferentialGeometry.Geometry.Comparison.CenterOfMass
 import DifferentialGeometry.Geometry.Comparison.ChartVelocityConvergence
 import DifferentialGeometry.Geometry.Comparison.ConvexBalls
 import DifferentialGeometry.Geometry.Comparison.DistanceCalabi
-import DifferentialGeometry.Geometry.Comparison.DistanceExhaustion
-import DifferentialGeometry.Geometry.Comparison.DistanceHessian
 import DifferentialGeometry.Geometry.Comparison.EndpointContinuation
 import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorph
 import DifferentialGeometry.Geometry.Comparison.ExpNonsingular
@@ -1989,7 +1984,6 @@ import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
 import DifferentialGeometry.Geometry.Comparison.InjectivityRadius
 import DifferentialGeometry.Geometry.Comparison.LocalGeodesicSeed
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
-import DifferentialGeometry.Geometry.Comparison.RadialHessian
 import DifferentialGeometry.Geometry.Comparison.RadialLaplacian
 import DifferentialGeometry.Geometry.Comparison.RadialSurjectivity
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
@@ -2305,7 +2299,6 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciDrift
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciHessian
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciIdentity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturality
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciUpperBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SecondBianchi
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorCurvatureUnitEvalBridge
@@ -2488,7 +2481,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.WeightedHessian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.AllDerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.LimitData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Complete
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CompactSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.HigherDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution
@@ -2561,9 +2553,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmoo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.LocalFrameInverse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.TailFrameRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricFirstOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricVariation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.SlabExhaustion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.MultiNormHeat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Commutator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.CommutatorBound
@@ -2638,8 +2628,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Curvatur
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.FrameExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.InverseMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Isometry
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.FullyPulledDerivative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.HeatCommutator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.ShiInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.ConnectionLeibniz
@@ -2891,7 +2879,6 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Weak
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNull
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Limit
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Reaction
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankOneSupport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.CollapseScale
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.CurvatureBound
