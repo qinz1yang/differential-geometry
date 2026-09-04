@@ -23,7 +23,37 @@ open CovariantDerivativeAlong
 open Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-  [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+
+private noncomputable def affineDiffeomorph
+    (L : E ≃L[Real] E) (u v : E) :
+    Diffeomorph (modelWithCornersSelf Real E) (modelWithCornersSelf Real E) E E ∞ where
+  toEquiv :=
+    { toFun := fun z => v + L (z - u)
+      invFun := fun z => u + L.symm (z - v)
+      left_inv := by
+        intro z
+        simp
+      right_inv := by
+        intro z
+        simp }
+  contMDiff_toFun :=
+    (contDiff_const.add (L.contDiff.comp (contDiff_id.sub contDiff_const))).contMDiff
+  contMDiff_invFun :=
+    (contDiff_const.add (L.symm.contDiff.comp (contDiff_id.sub contDiff_const))).contMDiff
+
+private theorem affineDiffeomorph_apply
+    (L : E ≃L[Real] E) (u v z : E) :
+    affineDiffeomorph L u v z = v + L (z - u) := rfl
+
+private theorem affineDiffeomorph_mfderiv
+    (L : E ≃L[Real] E) (u v z : E) :
+    mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+      (affineDiffeomorph L u v) z = L.toContinuousLinearMap := by
+  rw [mfderiv_eq_fderiv]
+  exact (((L.toContinuousLinearMap.hasFDerivAt.comp z
+    ((hasFDerivAt_id z).sub_const u))).const_add v).fderiv
+
+variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -402,20 +432,509 @@ theorem expMapIntrinsic_mfderiv_inner_of_riemannOp_eq_zero
     (show TangentSpace I p from v) (show TangentSpace I p from w)
     (fun t ht X => hR _ X _ _)).symm
 
-noncomputable def expMapIntrinsic_diffeomorph_of_isCoveringMap_of_riemannOp_eq_zero
+set_option backward.isDefEq.respectTransparency false in
+private theorem exists_flat_exp_deck_diffeomorph
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (hR : ∀ x (X Y Z : TangentSpace I x),
+      riemannOp (LeviCivita (I := I) g) x X Y Z = 0)
+    (p : M) (u v : E)
+    (huv : expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from u) =
+      expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from v)) :
+    ∃ A : Diffeomorph (modelWithCornersSelf Real E)
+        (modelWithCornersSelf Real E) E E ∞,
+      A u = v ∧
+      (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from A z)) =
+        (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+          (show TangentSpace I p from z)) ∧
+      ∀ z a b : E,
+        (inner Real (show TangentSpace I p from
+            mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+              A z a)
+          (show TangentSpace I p from
+            mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+              A z b) : Real) =
+        inner Real (show TangentSpace I p from a)
+          (show TangentSpace I p from b) := by
+  let F : E → M := fun z => expMapIntrinsic (I := I) g hEnorm p
+    (show TangentSpace I p from z)
+  change F u = F v at huv
+  let eP : TangentSpace I p ≃L[Real] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) p
+  let gE : SmoothRiemannianMetric (modelWithCornersSelf Real E) E :=
+    Diffeomorph.pullbackMetricCross (flatModelMetric (TangentSpace I p))
+      eP.symm.toDiffeomorph
+  have hePmf : ∀ z : E, ∀ a : TangentSpace (modelWithCornersSelf Real E) z,
+      mfderiv (modelWithCornersSelf Real E)
+          (modelWithCornersSelf Real (TangentSpace I p))
+          eP.symm.toDiffeomorph z a =
+        (show TangentSpace
+          (modelWithCornersSelf Real (TangentSpace I p))
+          (eP.symm.toDiffeomorph z) from
+            eP.symm (show E from a)) := by
+    intro z a
+    rw [mfderiv_eq_fderiv]
+    change fderiv Real (fun x : E => eP.symm x) z (show E from a) = _
+    rw [eP.symm.hasFDerivAt.fderiv]
+    rfl
+  have hgE : ∀ z a b : E,
+      gE.inner z a b =
+        inner Real (show TangentSpace I p from a)
+          (show TangentSpace I p from b) := by
+    intro z a b
+    with_unfolding_all
+      rw [show gE = Diffeomorph.pullbackMetricCross
+        (flatModelMetric (TangentSpace I p)) eP.symm.toDiffeomorph from rfl,
+        Diffeomorph.pullbackMetricCross_inner,
+        hePmf z a, hePmf z b]
+      rfl
+  have hlocal := expMapIntrinsic_isLocalDiffeomorph_of_riemannOp_eq_zero
+    (I := I) g hEnorm hR p
+  let dFu : E ≃L[Real] E :=
+    (hlocal.mfderivToContinuousLinearEquiv (by norm_num) u).trans
+      (tangentSpaceModelContinuousLinearEquiv (I := I) (F u))
+  let dFv : E ≃L[Real] E :=
+    (hlocal.mfderivToContinuousLinearEquiv (by norm_num) v).trans
+      (tangentSpaceModelContinuousLinearEquiv (I := I) (F v))
+  let L : E ≃L[Real] E := dFu.trans dFv.symm
+  let A := affineDiffeomorph L u v
+  have hAu : A u = v := by
+    simp [A, affineDiffeomorph_apply]
+  have hL_apply (a : E) : dFv (L a) = dFu a := by
+    simp [L]
+  have hLinner : ∀ a b : E,
+      inner Real (show TangentSpace I p from L a)
+          (show TangentSpace I p from L b) =
+        inner Real (show TangentSpace I p from a)
+          (show TangentSpace I p from b) := by
+    intro a b
+    have hu := expMapIntrinsic_mfderiv_inner_of_riemannOp_eq_zero
+      (I := I) g hEnorm hR p u a b
+    have hv := expMapIntrinsic_mfderiv_inner_of_riemannOp_eq_zero
+      (I := I) g hEnorm hR p v (L a) (L b)
+    change inner Real (show TangentSpace I p from a)
+        (show TangentSpace I p from b) =
+      g.inner (F u)
+        (show TangentSpace I (F u) from dFu a)
+        (show TangentSpace I (F u) from dFu b) at hu
+    change inner Real (show TangentSpace I p from L a)
+        (show TangentSpace I p from L b) =
+      g.inner (F v)
+        (show TangentSpace I (F v) from dFv (L a))
+        (show TangentSpace I (F v) from dFv (L b)) at hv
+    rw [← huv] at hv
+    rw [hL_apply a, hL_apply b] at hv
+    exact hv.trans hu.symm
+  have hApres : ∀ z a b : E,
+      gE.inner z a b =
+        gE.inner (A z)
+          (mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E) A z a)
+          (mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E) A z b) := by
+    intro z a b
+    with_unfolding_all
+      rw [hgE, hgE, affineDiffeomorph_mfderiv]
+      exact (hLinner a b).symm
+  have hFpres := expMapIntrinsic_mfderiv_inner_of_riemannOp_eq_zero
+    (I := I) g hEnorm hR p
+  have hFpres' : ∀ z : E,
+      ∀ a b : TangentSpace (modelWithCornersSelf Real E) z,
+        gE.inner z a b =
+          g.inner (F z)
+            (mfderiv (modelWithCornersSelf Real E) I F z a)
+            (mfderiv (modelWithCornersSelf Real E) I F z b) := by
+    intro z a b
+    with_unfolding_all
+      exact (hgE z a b).trans (hFpres z a b)
+  have hFApres : ∀ z a b : E,
+      gE.inner z a b =
+        g.inner (F (A z))
+          (mfderiv (modelWithCornersSelf Real E) I (F ∘ A) z a)
+          (mfderiv (modelWithCornersSelf Real E) I (F ∘ A) z b) := by
+    intro z a b
+    rw [mfderiv_comp_apply z
+        ((hlocal.mdifferentiable (by norm_num)) (A z))
+        ((A.mdifferentiable (by norm_num)) z) a,
+      mfderiv_comp_apply z
+        ((hlocal.mdifferentiable (by norm_num)) (A z))
+        ((A.mdifferentiable (by norm_num)) z) b]
+    exact (hApres z a b).trans (hFpres' (A z) _ _)
+  have hF_eq : F ∘ A = F := by
+    have hFAlocal : IsLocalDiffeomorph (modelWithCornersSelf Real E) I ∞
+        (F ∘ A) := fun z =>
+      (A.isLocalDiffeomorph z).comp I M (hlocal (A z))
+    apply DifferentialGeometry.Geometry.Riemannian.localIso_rigid
+      (I := modelWithCornersSelf Real E) (J := I)
+      gE g
+      hFAlocal
+      hlocal hFApres hFpres' u
+    · change F (A u) = F u
+      rw [hAu]
+      exact huv.symm
+    · apply ContinuousLinearMap.ext
+      intro a
+      rw [mfderiv_comp_apply u ((hlocal.mdifferentiable (by norm_num)) (A u))
+        ((A.mdifferentiable (by norm_num)) u) a,
+        affineDiffeomorph_mfderiv]
+      apply (tangentSpaceModelContinuousLinearEquiv (I := I) (F u)).injective
+      rw [hAu, huv]
+      change dFv (L a) = dFu a
+      exact hL_apply a
+  refine ⟨A, hAu, ?_, ?_⟩
+  · simpa [F, Function.comp_def] using hF_eq
+  · intro z a b
+    rw [affineDiffeomorph_mfderiv]
+    exact hLinner a b
+
+set_option backward.isDefEq.respectTransparency false in
+private theorem flat_exp_deck_diffeomorph_eq_of_eq
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (hR : ∀ x (X Y Z : TangentSpace I x),
+      riemannOp (LeviCivita (I := I) g) x X Y Z = 0)
+    (p : M)
+    (A B : Diffeomorph (modelWithCornersSelf Real E)
+      (modelWithCornersSelf Real E) E E ∞)
+    (hAF : (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from A z)) =
+      (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from z)))
+    (hBF : (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from B z)) =
+      (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from z)))
+    (hAinner : ∀ z a b : E,
+      (inner Real (show TangentSpace I p from
+          mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+            A z a)
+        (show TangentSpace I p from
+          mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+            A z b) : Real) =
+      inner Real (show TangentSpace I p from a)
+        (show TangentSpace I p from b))
+    (hBinner : ∀ z a b : E,
+      (inner Real (show TangentSpace I p from
+          mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+            B z a)
+        (show TangentSpace I p from
+          mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+            B z b) : Real) =
+      inner Real (show TangentSpace I p from a)
+        (show TangentSpace I p from b))
+    {z : E} (hz : A z = B z) : A = B := by
+  let F : E → M := fun y => expMapIntrinsic (I := I) g hEnorm p
+    (show TangentSpace I p from y)
+  let eP : TangentSpace I p ≃L[Real] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) p
+  let gE : SmoothRiemannianMetric (modelWithCornersSelf Real E) E :=
+    Diffeomorph.pullbackMetricCross (flatModelMetric (TangentSpace I p))
+      eP.symm.toDiffeomorph
+  have hePmf : ∀ y : E, ∀ a : TangentSpace (modelWithCornersSelf Real E) y,
+      mfderiv (modelWithCornersSelf Real E)
+          (modelWithCornersSelf Real (TangentSpace I p))
+          eP.symm.toDiffeomorph y a =
+        (show TangentSpace
+          (modelWithCornersSelf Real (TangentSpace I p))
+          (eP.symm.toDiffeomorph y) from
+            eP.symm (show E from a)) := by
+    intro y a
+    rw [mfderiv_eq_fderiv]
+    change fderiv Real (fun x : E => eP.symm x) y (show E from a) = _
+    rw [eP.symm.hasFDerivAt.fderiv]
+    rfl
+  have hgE : ∀ y : E, ∀ a b : TangentSpace (modelWithCornersSelf Real E) y,
+      gE.inner y a b =
+        inner Real (show TangentSpace I p from (show E from a))
+          (show TangentSpace I p from (show E from b)) := by
+    intro y a b
+    with_unfolding_all
+      rw [show gE = Diffeomorph.pullbackMetricCross
+        (flatModelMetric (TangentSpace I p)) eP.symm.toDiffeomorph from rfl,
+        Diffeomorph.pullbackMetricCross_inner,
+        hePmf y a, hePmf y b]
+      rfl
+  have hApres : ∀ y : E, ∀ a b : TangentSpace (modelWithCornersSelf Real E) y,
+      gE.inner y a b =
+        gE.inner (A y)
+          (mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E) A y a)
+          (mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E) A y b) := by
+    intro y a b
+    rw [hgE, hgE]
+    with_unfolding_all
+      exact (hAinner y a b).symm
+  have hBpres : ∀ y : E, ∀ a b : TangentSpace (modelWithCornersSelf Real E) y,
+      gE.inner y a b =
+        gE.inner (B y)
+          (mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E) B y a)
+          (mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E) B y b) := by
+    intro y a b
+    rw [hgE, hgE]
+    with_unfolding_all
+      exact (hBinner y a b).symm
+  have hlocal := expMapIntrinsic_isLocalDiffeomorph_of_riemannOp_eq_zero
+    (I := I) g hEnorm hR p
+  have hderiv :
+      mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E) A z =
+        mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E) B z := by
+    apply ContinuousLinearMap.ext
+    intro a
+    rw [hz]
+    apply (hlocal.mfderivToContinuousLinearEquiv (by norm_num) (B z)).injective
+    have hcomp : F ∘ A = F ∘ B := by
+      change (fun y : E => expMapIntrinsic (I := I) g hEnorm p
+          (show TangentSpace I p from A y)) =
+        (fun y : E => expMapIntrinsic (I := I) g hEnorm p
+          (show TangentSpace I p from B y))
+      exact hAF.trans hBF.symm
+    have hmf := congrArg
+      (fun f : E → M =>
+        mfderiv (modelWithCornersSelf Real E) I f z a) hcomp
+    rw [mfderiv_comp_apply z
+        ((hlocal.mdifferentiable (by norm_num)) (A z))
+        ((A.mdifferentiable (by norm_num)) z) a,
+      mfderiv_comp_apply z
+        ((hlocal.mdifferentiable (by norm_num)) (B z))
+        ((B.mdifferentiable (by norm_num)) z) a] at hmf
+    rw [hz] at hmf
+    exact hmf
+  apply Diffeomorph.ext
+  exact congrFun (DifferentialGeometry.Geometry.Riemannian.localIso_rigid
+    (I := modelWithCornersSelf Real E)
+    (J := modelWithCornersSelf Real E)
+    gE gE A.isLocalDiffeomorph B.isLocalDiffeomorph
+    hApres hBpres z hz hderiv)
+
+set_option backward.isDefEq.respectTransparency false in
+theorem expMapIntrinsic_isCoveringMap_of_riemannOp_eq_zero
+    [ConnectedSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (hR : ∀ x (X Y Z : TangentSpace I x),
+      riemannOp (LeviCivita (I := I) g) x X Y Z = 0)
+    (p : M) :
+    IsCoveringMap
+      (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from z)) := by
+  classical
+  let F : E → M := fun z => expMapIntrinsic (I := I) g hEnorm p
+    (show TangentSpace I p from z)
+  have hlocal := expMapIntrinsic_isLocalDiffeomorph_of_riemannOp_eq_zero
+    (I := I) g hEnorm hR p
+  have hsurj : Function.Surjective F := by
+    intro x
+    obtain ⟨v, hv, _⟩ := hopf_rinow_expMapIntrinsic_surjective_minimizing
+      (I := I) g hEnorm p x
+    exact ⟨show E from v, hv⟩
+  change IsCoveringMap F
+  intro x
+  obtain ⟨u₀, hu₀⟩ := hsurj x
+  obtain ⟨φ, hu₀U, hφ⟩ := hlocal u₀
+  let U : Set E := φ.source
+  let V : Set M := φ.target
+  have hφF : Set.EqOn F φ U := by
+    simpa only [F, U] using hφ
+  have hUopen : IsOpen U := φ.open_source
+  have hVopen : IsOpen V := φ.open_target
+  have hxV : x ∈ V := by
+    have hmap := φ.toPartialEquiv.map_source hu₀U
+    change φ u₀ ∈ V at hmap
+    rw [← hφF hu₀U] at hmap
+    rw [hu₀] at hmap
+    exact hmap
+  let Fx : Type _ := F ⁻¹' ({x} : Set M)
+  have hFxnonempty : Nonempty Fx := ⟨⟨u₀, hu₀⟩⟩
+  let _ : Nonempty Fx := hFxnonempty
+  let _ : DiscreteTopology Fx :=
+    (IsDiscrete.of_openPartialHomeomorph F subset_rfl
+      (fun e _ => by
+        obtain ⟨ψ, he, hψ⟩ := hlocal.isLocalHomeomorph e
+        exact ⟨ψ, he, by simpa only [F] using hψ.symm⟩)).1
+  have hdeck_exists (e : Fx) :
+      ∃ A : Diffeomorph (modelWithCornersSelf Real E)
+          (modelWithCornersSelf Real E) E E ∞,
+        A u₀ = e.1 ∧
+        F ∘ A = F ∧
+        ∀ z a b : E,
+          (inner Real (show TangentSpace I p from
+              mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+                A z a)
+            (show TangentSpace I p from
+              mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+                A z b) : Real) =
+            inner Real (show TangentSpace I p from a)
+              (show TangentSpace I p from b) := by
+    have heq : F u₀ = F e.1 := hu₀.trans e.2.symm
+    simpa only [F, Function.comp_def] using exists_flat_exp_deck_diffeomorph
+      (I := I) g hEnorm hR p u₀ e.1 heq
+  let deck (e : Fx) := (hdeck_exists e).choose
+  have hdeck_u (e : Fx) : deck e u₀ = e.1 :=
+    (hdeck_exists e).choose_spec.1
+  have hdeck_F (e : Fx) : F ∘ deck e = F :=
+    (hdeck_exists e).choose_spec.2.1
+  have hdeck_inner (e : Fx) : ∀ z a b : E,
+      (inner Real (show TangentSpace I p from
+          mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+            (deck e) z a)
+        (show TangentSpace I p from
+          mfderiv (modelWithCornersSelf Real E) (modelWithCornersSelf Real E)
+            (deck e) z b) : Real) =
+        inner Real (show TangentSpace I p from a)
+          (show TangentSpace I p from b) :=
+    (hdeck_exists e).choose_spec.2.2
+  let sheet : Fx → Set E := fun e => deck e '' U
+  have hsheet_open (e : Fx) : IsOpen (sheet e) :=
+    (deck e).toHomeomorph.isOpenMap U hUopen
+  have hlocal_surj : Set.SurjOn F U V := by
+    intro y hy
+    let z : E := φ.toPartialEquiv.invFun y
+    have hzU : z ∈ U := φ.toPartialEquiv.map_target hy
+    refine ⟨z, hzU, ?_⟩
+    rw [hφF hzU]
+    exact φ.toPartialEquiv.right_inv hy
+  have hsheet_surj (e : Fx) : Set.SurjOn F (sheet e) V := by
+    intro y hy
+    obtain ⟨z, hzU, hFz⟩ := hlocal_surj hy
+    refine ⟨deck e z, ⟨z, hzU, rfl⟩, ?_⟩
+    rw [show F (deck e z) = F z from congrFun (hdeck_F e) z]
+    exact hFz
+  have hsheet_inj (e : Fx) : Set.InjOn F (sheet e) := by
+    intro y₁ hy₁ y₂ hy₂ heq
+    obtain ⟨z₁, hz₁U, rfl⟩ := hy₁
+    obtain ⟨z₂, hz₂U, rfl⟩ := hy₂
+    have hz : z₁ = z₂ := by
+      apply φ.toPartialEquiv.injOn hz₁U hz₂U
+      rw [← hφF hz₁U, ← hφF hz₂U]
+      exact (congrFun (hdeck_F e) z₁).symm.trans
+        (heq.trans (congrFun (hdeck_F e) z₂))
+    exact congrArg (deck e) hz
+  have hsheet_disjoint : Pairwise (Function.onFun Disjoint sheet) := by
+    intro e₁ e₂ hne
+    change Disjoint (sheet e₁) (sheet e₂)
+    rw [Set.disjoint_left]
+    intro y hy₁ hy₂
+    obtain ⟨z₁, hz₁U, hz₁⟩ := hy₁
+    obtain ⟨z₂, hz₂U, hz₂⟩ := hy₂
+    have hFz : F z₁ = F z₂ := by
+      calc
+        F z₁ = F (deck e₁ z₁) := (congrFun (hdeck_F e₁) z₁).symm
+        _ = F y := congrArg F hz₁
+        _ = F (deck e₂ z₂) := congrArg F hz₂.symm
+        _ = F z₂ := congrFun (hdeck_F e₂) z₂
+    have hz : z₁ = z₂ := by
+      apply φ.toPartialEquiv.injOn hz₁U hz₂U
+      rw [← hφF hz₁U, ← hφF hz₂U]
+      exact hFz
+    subst z₂
+    have hdeck_eq : deck e₁ = deck e₂ :=
+      flat_exp_deck_diffeomorph_eq_of_eq
+        (I := I) g hEnorm hR p (deck e₁) (deck e₂)
+        (by simpa [F, Function.comp_def] using hdeck_F e₁)
+        (by simpa [F, Function.comp_def] using hdeck_F e₂)
+        (hdeck_inner e₁) (hdeck_inner e₂) (hz₁.trans hz₂.symm)
+    apply hne
+    apply Subtype.ext
+    calc
+      e₁.1 = deck e₁ u₀ := (hdeck_u e₁).symm
+      _ = deck e₂ u₀ := by rw [hdeck_eq]
+      _ = e₂.1 := hdeck_u e₂
+  have hsheet_exhaustive : F ⁻¹' V ⊆ ⋃ e, sheet e := by
+    intro y hy
+    obtain ⟨z, hzU, hFz⟩ := hlocal_surj hy
+    obtain ⟨B, hBz, hBF, hBinner⟩ :=
+      exists_flat_exp_deck_diffeomorph
+        (I := I) g hEnorm hR p z y hFz
+    have hBu₀_fiber : F (B u₀) = x := by
+      rw [show F (B u₀) = F u₀ by
+        simpa [F, Function.comp_def] using congrFun hBF u₀]
+      exact hu₀
+    let e : Fx := ⟨B u₀, hBu₀_fiber⟩
+    have hdeck_eq : deck e = B :=
+      flat_exp_deck_diffeomorph_eq_of_eq
+        (I := I) g hEnorm hR p (deck e) B
+        (by simpa [F, Function.comp_def] using hdeck_F e)
+        hBF (hdeck_inner e) hBinner (hdeck_u e)
+    apply Set.mem_iUnion.mpr
+    refine ⟨e, ?_⟩
+    refine ⟨z, hzU, ?_⟩
+    rw [hdeck_eq, hBz]
+  have hopen_iff (e : Fx) {W : Set M} (hWV : W ⊆ V) :
+      IsOpen W ↔ IsOpen (F ⁻¹' W ∩ sheet e) := by
+    constructor
+    · intro hW
+      exact (hW.preimage hlocal.contMDiff.continuous).inter (hsheet_open e)
+    · intro hpre
+      have himage : F '' (F ⁻¹' W ∩ sheet e) = W := by
+        apply Set.Subset.antisymm
+        · rintro _ ⟨y, ⟨hyW, _⟩, rfl⟩
+          exact hyW
+        · intro y hyW
+          obtain ⟨z, hzsheet, hFz⟩ := hsheet_surj e (hWV hyW)
+          have hzW : F z ∈ W := by rw [hFz]; exact hyW
+          exact ⟨z, ⟨hzW, hzsheet⟩, hFz⟩
+      rw [← himage]
+      exact hlocal.isOpenMap _ hpre
+  have hnonemptyME : Nonempty (M → E) := ⟨Function.surjInv hsurj⟩
+  let _ : Nonempty (M → E) := hnonemptyME
+  refine IsEvenlyCovered.of_trivialization
+    (t := hVopen.trivializationDiscrete (ι := Fx) sheet V hopen_iff
+      hsheet_inj hsheet_surj hsheet_disjoint hsheet_exhaustive) ?_
+  simpa only [IsOpen.trivializationDiscrete_baseSet] using hxV
+
+noncomputable def expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+    [ConnectedSpace M]
     [SimplyConnectedSpace M]
     [LocallyPathConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (hR : ∀ x (X Y Z : TangentSpace I x),
       riemannOp (LeviCivita (I := I) g) x X Y Z = 0)
-    (p : M)
-    (hcover : IsCoveringMap
-      (fun z : E => expMapIntrinsic (I := I) g hEnorm p
-        (show TangentSpace I p from z))) :
+    (p : M) :
     Diffeomorph (modelWithCornersSelf Real E) I E M ∞ := by
   have hlocal_infty := expMapIntrinsic_isLocalDiffeomorph_of_riemannOp_eq_zero
     (I := I) g hEnorm hR p
-  exact hcover.diffeomorphSc hlocal_infty
+  exact (expMapIntrinsic_isCoveringMap_of_riemannOp_eq_zero
+    (I := I) g hEnorm hR p).diffeomorphSc hlocal_infty
+
+@[simp] theorem expMapIntrinsic_diffeomorph_apply
+    [ConnectedSpace M]
+    [SimplyConnectedSpace M]
+    [LocallyPathConnectedSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (hR : ∀ x (X Y Z : TangentSpace I x),
+      riemannOp (LeviCivita (I := I) g) x X Y Z = 0)
+    (p : M) (z : E) :
+    expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+        (I := I) g hEnorm hR p z =
+      expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from z) := rfl
+
+set_option backward.isDefEq.respectTransparency false in
+theorem expMapIntrinsic_diffeomorph_isometry_of_riemannOp_eq_zero
+    [ConnectedSpace M]
+    [SimplyConnectedSpace M]
+    [LocallyPathConnectedSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (hR : ∀ x (X Y Z : TangentSpace I x),
+      riemannOp (LeviCivita (I := I) g) x X Y Z = 0)
+    (p : M) (z : E)
+    (a b : TangentSpace (modelWithCornersSelf Real E) z) :
+    g.inner
+        (expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+          (I := I) g hEnorm hR p z)
+        (mfderiv (modelWithCornersSelf Real E) I
+          (expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+            (I := I) g hEnorm hR p) z a)
+        (mfderiv (modelWithCornersSelf Real E) I
+          (expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+            (I := I) g hEnorm hR p) z b) =
+      inner Real
+        (show TangentSpace I p from (show E from a))
+        (show TangentSpace I p from (show E from b)) := by
+  exact (expMapIntrinsic_mfderiv_inner_of_riemannOp_eq_zero
+    (I := I) g hEnorm hR p z a b).symm
 
 end DifferentialGeometry.Geometry.Riemannian.Exponential
