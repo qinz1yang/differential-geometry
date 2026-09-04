@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacian
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Tensor.RSTensor.Field
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamilyChartLinearization
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci

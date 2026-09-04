@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradSlotPermutationNaturality
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.CovariantCalculus
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness

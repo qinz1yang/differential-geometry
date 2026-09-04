@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDe
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.ParallelRaise
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TopOrderSeparatedCurvatureBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TopOrder.CurvatureBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SlotPermJet
 
 set_option autoImplicit false

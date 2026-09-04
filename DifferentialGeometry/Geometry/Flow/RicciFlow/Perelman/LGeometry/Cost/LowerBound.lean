@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CurvatureBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Curvature
 
 set_option autoImplicit false
 

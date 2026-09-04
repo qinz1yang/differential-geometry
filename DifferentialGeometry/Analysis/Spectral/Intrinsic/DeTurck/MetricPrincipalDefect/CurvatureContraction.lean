@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.GramDifference
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.ProductTwoTerm
@@ -28,7 +28,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.L2JetMoser
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SymmAbsorbedCoeffInputReindexBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.PrincipalCoefficientBackgroundJetBounds
-import DifferentialGeometry.Analysis.Sobolev.Embedding.ContinuousSobolevRealization
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ContinuousRealization
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieHigherOrderCoefficientField
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.ChartLieDerivative
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit

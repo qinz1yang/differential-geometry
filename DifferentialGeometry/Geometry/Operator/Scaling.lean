@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Scaling
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

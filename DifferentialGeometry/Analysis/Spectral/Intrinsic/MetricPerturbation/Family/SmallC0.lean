@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.UnitSelfBound
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.UnitVectorBound
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Curvature.Bounds.QuadraticForm
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.PointwiseCurvatureBound
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingReverseHebey
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Reverse.Hebey
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.IntegratedSecondOrder
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.CurvatureCrossTerm
 open DifferentialGeometry.Analysis.Elliptic

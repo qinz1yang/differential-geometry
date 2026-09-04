@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.Logarithmic.Energy
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
@@ -12,7 +12,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 import DifferentialGeometry.Geometry.Operator.Family.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
 

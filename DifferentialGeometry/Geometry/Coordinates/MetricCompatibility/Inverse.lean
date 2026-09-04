@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Geometry.Curvature.Basic
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed

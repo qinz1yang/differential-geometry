@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.Global
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.FDeriv.Basic

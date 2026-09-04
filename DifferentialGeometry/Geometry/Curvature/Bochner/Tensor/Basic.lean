@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Product
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
 import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature

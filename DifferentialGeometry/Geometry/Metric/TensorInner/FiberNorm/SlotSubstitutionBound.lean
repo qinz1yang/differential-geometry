@@ -18,7 +18,6 @@ namespace DifferentialGeometry
 namespace Geometry
 namespace Curvature
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

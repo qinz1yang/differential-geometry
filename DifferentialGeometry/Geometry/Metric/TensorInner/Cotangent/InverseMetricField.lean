@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Riemannian
 import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
+import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Geometry.Operator
 
@@ -14,8 +15,6 @@ open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
 
-open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.TensorMultilinear (contMDiffAt_section_apply contMDiff_section_apply)
 

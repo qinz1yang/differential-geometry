@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Family.LocalVariation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.RankZeroRealization
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.LaplacianDifferenceCore
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Potential.Basic
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.ScalarPathReconstruct
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.ScalarPath
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Regularity.SeriesContinuity
 import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse

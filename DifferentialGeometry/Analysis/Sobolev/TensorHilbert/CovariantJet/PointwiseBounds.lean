@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.OperatorComposition
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingSharpC0JetSum
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalTerm.EnergyCrossTerm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
 

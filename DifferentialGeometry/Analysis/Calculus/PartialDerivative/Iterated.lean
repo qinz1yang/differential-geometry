@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.ProductDifferenceBounds
-import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Defs
+import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
 
 noncomputable section
 

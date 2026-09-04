@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Intrinsic
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Ball
 import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
-import DifferentialGeometry.Geometry.Comparison.Volume.Segment.FrameBound
-import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Measure
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.FrameBound
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.Measure
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.ExponentialFiberIteration
 
 set_option autoImplicit false

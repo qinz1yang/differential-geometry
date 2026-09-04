@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 
 set_option autoImplicit false
 

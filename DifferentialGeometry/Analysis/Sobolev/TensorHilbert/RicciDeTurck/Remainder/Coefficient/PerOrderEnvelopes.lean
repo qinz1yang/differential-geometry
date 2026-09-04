@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Coefficient.PerOrderJetTower
-import DifferentialGeometry.Analysis.Sobolev.Embedding.ConvexPerturbationPointwiseC2
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ConvexPerturbationC2
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.JetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic

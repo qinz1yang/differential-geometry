@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDiffe
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.RiemannOperatorDifferenceBounds
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PerturbedInnerUpperBound
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PerturbedInnerProductBound
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
 open DifferentialGeometry.Analysis.Elliptic

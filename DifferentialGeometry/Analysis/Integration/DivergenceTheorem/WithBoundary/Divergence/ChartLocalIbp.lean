@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartCoeffPullback
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts

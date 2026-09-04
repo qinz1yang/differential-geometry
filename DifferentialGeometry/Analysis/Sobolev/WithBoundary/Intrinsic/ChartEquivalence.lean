@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Operator.WithBoundary.Laplacian
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.IntegrationByParts
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.InteriorCompactSupport
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.Global
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
 open DifferentialGeometry.Geometry.Operator

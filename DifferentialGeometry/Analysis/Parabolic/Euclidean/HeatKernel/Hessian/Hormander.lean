@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.HigherDerivatives
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Derivatives.Higher
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Duhamel.Basic
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Exponential.Inverse.Branch
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.GaussLemma
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.SecondOrderEquivalence
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.AllOrder
-import DifferentialGeometry.Analysis.Sobolev.Embedding.RawConnLapToHsOrderDropping
+import DifferentialGeometry.Analysis.Sobolev.Embedding.ConnectionLaplacian.OrderDropping
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

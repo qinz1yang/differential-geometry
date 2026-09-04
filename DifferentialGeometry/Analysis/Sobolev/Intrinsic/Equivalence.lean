@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Algebra.CovariantSumCross
 
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingUnif
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.Uniform
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.GradientField
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivCommutation

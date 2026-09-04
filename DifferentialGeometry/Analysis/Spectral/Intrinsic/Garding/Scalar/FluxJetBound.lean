@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricFami
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricFamilyConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.GramDifference
 import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
 open DifferentialGeometry.Analysis.Sobolev

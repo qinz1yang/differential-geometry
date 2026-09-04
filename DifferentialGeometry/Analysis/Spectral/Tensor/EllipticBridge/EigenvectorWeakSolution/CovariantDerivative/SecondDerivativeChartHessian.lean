@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
+import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.CovariantDerivative.ChartIdentity
 open DifferentialGeometry.Geometry.Curvature
 

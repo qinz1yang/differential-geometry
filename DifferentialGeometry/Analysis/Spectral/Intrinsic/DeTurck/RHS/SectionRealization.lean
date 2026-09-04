@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRicciRHSSymmetric
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradSlotPermutationNaturality
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 
 noncomputable section
 

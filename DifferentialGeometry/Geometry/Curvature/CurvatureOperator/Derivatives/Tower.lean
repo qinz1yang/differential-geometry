@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Bas
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.SmoothAlongExpansion
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Gradient.CotangentSharpSmoothness
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.FrozenSlot
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth

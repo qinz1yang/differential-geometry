@@ -8,7 +8,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseMetricFibreBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormUniformBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
-import DifferentialGeometry.Analysis.Sobolev.Embedding.ConvexPerturbationPointwiseC2
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ConvexPerturbationC2
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral

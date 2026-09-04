@@ -1,6 +1,8 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Geometry.Coordinates.ScalarFunction
+import DifferentialGeometry.Geometry.Coordinates.VectorField
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
+import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
@@ -13,7 +15,7 @@ import Mathlib.LinearAlgebra.Matrix.Adjugate
 
 noncomputable section
 
-open Bundle Manifold Set MeasureTheory
+open Bundle Manifold Set
 open scoped Manifold Topology ContDiff Matrix
 open DifferentialGeometry.Integral.DivergenceTheorem
 
@@ -25,8 +27,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-open DifferentialGeometry.Integral.Measure
 
 def metricFlatLinear (g : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x →ₗ[ℝ] (TangentSpace I x →ₗ[ℝ] ℝ) where
@@ -371,8 +371,8 @@ lemma mfderiv_chartBasisVecFiber_of_mdifferentiableAt
           = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
       have heqsymm : T.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
             = T.symmL ℝ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
-        exact (Trivialization.symmL_apply T hbase _).symm
-      rw [heqsymm, Trivialization.continuousLinearMapAt_symmL T (b := x) hbase]
+        exact (Bundle.Trivialization.symmL_apply T hbase _).symm
+      rw [heqsymm, Bundle.Trivialization.continuousLinearMapAt_symmL T (b := x) hbase]
     exact h_apply
   change fderiv ℝ (scalarOnE (I := I) α f) (φ x)
         (mfderiv I 𝓘(ℝ, E) (extChartAt I α) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
+import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.PointwiseCurvatureBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.FirstDerivativeBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.IntegratedSecondOrder

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Approximation
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Cancellation
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.HigherDerivatives
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Derivatives.Cancellation
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Derivatives.Higher
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Convolution
 

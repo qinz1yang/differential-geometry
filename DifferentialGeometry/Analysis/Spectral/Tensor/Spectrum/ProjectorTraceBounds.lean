@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Spectral.SmoothRepresentativeRealization
-import DifferentialGeometry.Analysis.Sobolev.Embedding.ContinuousSobolevRealization
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ContinuousRealization
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.ReverseZerothOrderBound
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds

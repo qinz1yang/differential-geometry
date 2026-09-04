@@ -5,9 +5,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLine
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.HomFieldActionJetBounds
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingManifoldC0
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCmOrderDropping
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingReverseHebeyToHs
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ManifoldC0
+import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.OrderDropping
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Reverse.HebeyToHilbertSobolev
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.SingleSlotFibreNormBound
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

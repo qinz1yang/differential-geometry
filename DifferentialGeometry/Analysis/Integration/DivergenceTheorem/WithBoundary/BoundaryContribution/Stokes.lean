@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Boundary.ModelBoundary
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Closed
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Proper
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic

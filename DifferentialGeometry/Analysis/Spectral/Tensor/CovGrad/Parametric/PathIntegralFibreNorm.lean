@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.CoefficientIntegral
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
+import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import Mathlib.Analysis.Convex.Integral

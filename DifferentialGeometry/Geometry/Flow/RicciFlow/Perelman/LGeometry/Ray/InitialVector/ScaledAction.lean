@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Kinetic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ActionIntegrability
 
 set_option autoImplicit false

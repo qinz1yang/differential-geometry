@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Existence
-import DifferentialGeometry.Analysis.Sobolev.Embedding.TensorSobolevEmbeddingCm
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.Cm
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.Space
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic

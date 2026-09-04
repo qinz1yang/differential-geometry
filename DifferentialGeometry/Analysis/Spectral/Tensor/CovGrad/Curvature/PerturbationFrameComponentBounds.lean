@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.Perturbat
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.Field
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.FiberNorm
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PerturbedInnerUpperBound
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PerturbedInnerProductBound
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

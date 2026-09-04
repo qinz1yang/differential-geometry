@@ -10,7 +10,6 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

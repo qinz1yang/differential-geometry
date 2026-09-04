@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.SupremumConvolution
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Convolution.Supremum
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Carleson.Rough
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 

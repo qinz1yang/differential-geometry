@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Heat.Smoothing.SpectralBridge
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.ScalarPathReconstruct
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.ScalarPath
 import DifferentialGeometry.Analysis.Spectral.Scalar.WeylBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic

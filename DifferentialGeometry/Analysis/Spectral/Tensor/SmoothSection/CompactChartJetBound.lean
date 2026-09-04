@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingReverseOrderPeeling
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Reverse.OrderPeeling
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.SmoothTensorAllOrderCompleteness
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.NormComparison
 open DifferentialGeometry.Analysis.Sobolev

@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.SymmetricRaiseEndomorphism
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coefficients.FirstOrderLipschitzBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Remainder.MoserTameBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TopOrderSeparatedCurvatureBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TopOrder.CurvatureBounds
 
 noncomputable section
 

@@ -15,7 +15,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
 import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature
 

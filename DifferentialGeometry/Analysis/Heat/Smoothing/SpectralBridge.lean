@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Heat.Smoothing.SmoothingOfClosed
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.ScalarPathReconstruct
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.HeatOutputRealize
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.SpectralWeylCounting
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.ScalarPath
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.HeatOutput
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Counting.Weyl
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Semigroup
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.FaithfulH1Embedding
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.SmoothRepresentative.Basic

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.LinearChangeOfVariables
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Convolution.LinearChangeOfVariables
 import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Analysis.Matrix.Order
 import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform

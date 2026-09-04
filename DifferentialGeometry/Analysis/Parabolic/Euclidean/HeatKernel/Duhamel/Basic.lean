@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Cancellation
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Derivatives.Cancellation
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 noncomputable section

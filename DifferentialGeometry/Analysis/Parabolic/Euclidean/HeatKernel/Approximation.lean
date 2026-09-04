@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.SupremumConvolution
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Convolution.Supremum
 import Mathlib.Topology.MetricSpace.HolderNorm
 
 noncomputable section

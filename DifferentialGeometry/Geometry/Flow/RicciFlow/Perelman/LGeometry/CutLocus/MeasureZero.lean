@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Differentiation.Rademacher
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.ConjugateMeasureZero
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Conjugate.MeasureZero
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MultipleMinimizers
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.LocalCostBranch
 

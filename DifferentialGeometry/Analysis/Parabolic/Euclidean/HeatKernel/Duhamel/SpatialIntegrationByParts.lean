@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Cancellation
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Derivatives.Cancellation
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Potential
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 

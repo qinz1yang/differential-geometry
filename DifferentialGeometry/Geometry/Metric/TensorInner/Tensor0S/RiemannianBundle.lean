@@ -23,7 +23,6 @@ namespace DifferentialGeometry
 namespace Tensor
 namespace Tensor0SRiemannianBundle
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open DifferentialGeometry.Tensor0SBundle
@@ -252,7 +251,6 @@ namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 open DifferentialGeometry.Tensor.Tensor0SRiemannianBundle
-open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]

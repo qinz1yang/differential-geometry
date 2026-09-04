@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartLocalIbp
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartInvariance
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic

@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.RankZero
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.Tensor0SRSCovariantDerivativeAgreement
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.GradientField
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
+import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
 import DifferentialGeometry.Tensor.RSTensor.RankZero
 open DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs

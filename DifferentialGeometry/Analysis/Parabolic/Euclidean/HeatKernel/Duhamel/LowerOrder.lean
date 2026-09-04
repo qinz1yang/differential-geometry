@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Duhamel.Basic
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.SupremumConvolution
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Convolution.Supremum
 
 noncomputable section
 

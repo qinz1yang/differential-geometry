@@ -11,8 +11,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.Coeffici
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.JetTower
 import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateFormula
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
-import DifferentialGeometry.Analysis.Sobolev.Embedding.ConvexPerturbationPointwiseC2
+import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ConvexPerturbationC2
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseMetricFibreBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.CurvatureJetBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chart.MetricGramDifference

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.LpPower
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Convolution.LpPower
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Exponents
 import Mathlib.MeasureTheory.Integral.Prod
 

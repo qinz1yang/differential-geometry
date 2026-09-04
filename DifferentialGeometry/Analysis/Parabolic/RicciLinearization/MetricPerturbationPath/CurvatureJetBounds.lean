@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ConnectionBicontraction
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.JetTower
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
+import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.SingleSlotFibreNormBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.PerturbationFrameComponentBounds

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Operator.Heat.Tensor
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

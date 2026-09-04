@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius
 import DifferentialGeometry.Geometry.Comparison.Volume.Intrinsic.BallVolume
-import DifferentialGeometry.Geometry.Comparison.Volume.Segment.BallEuclideanUpper
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.EuclideanUpper
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Count
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.IntrinsicGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeOverlap

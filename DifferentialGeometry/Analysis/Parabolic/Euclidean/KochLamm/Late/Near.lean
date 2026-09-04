@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.HolderBounds
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Schauder.HolderConvolution
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLamm.Late.Kernel
 
 noncomputable section

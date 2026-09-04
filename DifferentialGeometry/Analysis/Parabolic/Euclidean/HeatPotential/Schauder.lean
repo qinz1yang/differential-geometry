@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.TimeSchauder
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Schauder.TimeDerivative
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatPotential.Realization
 import DifferentialGeometry.Analysis.Schauder.Holder.Basic
 import Mathlib.MeasureTheory.Integral.Prod

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 import DifferentialGeometry.Geometry.Metric.Family.Basic
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

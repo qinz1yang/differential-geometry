@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Basic

@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.POUReduction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.GradientLaplacian.Green
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import Mathlib.MeasureTheory.Integral.Bochner.Basic

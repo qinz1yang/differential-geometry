@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.SpectralChartRegularityAnyOrder
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Regularity.Chart
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

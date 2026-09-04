@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Lp
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Convolution.Lp
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.ReverseZerothOrderBound
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.SummandLipschitz
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormRawComponentBound
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Decomposition

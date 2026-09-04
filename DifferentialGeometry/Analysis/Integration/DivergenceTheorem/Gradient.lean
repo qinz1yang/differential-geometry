@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartCoeffPullback
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
@@ -22,7 +22,7 @@ import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.LinearAlgebra.Matrix.Adjugate
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-import DifferentialGeometry.Geometry.Operator.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 
 noncomputable section
 

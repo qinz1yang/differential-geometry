@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Fourier.LpCompatibility
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Duhamel.SpatialIntegrationByParts
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Hessian.L2
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Lp
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Convolution.Lp
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Resolvent
 import Mathlib.Analysis.Distribution.AEEqOfIntegralContDiff
 import Mathlib.Analysis.Fourier.Convolution

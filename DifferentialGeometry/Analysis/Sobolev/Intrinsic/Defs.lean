@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.IntegrationBy
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Proper
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.L2.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
