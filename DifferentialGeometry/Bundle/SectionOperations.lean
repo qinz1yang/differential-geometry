@@ -106,6 +106,36 @@ def ContMDiffOnSpacetimeEndomorphism
       ℝ × M → TotalSpace (F →L[ℝ] F)
         (fun p => V p.2 →L[ℝ] V p.2)) U
 
+theorem ContMDiffOnSpacetimeEndomorphism.mono
+    {A : ℝ → (x : M) → V x →L[ℝ] V x} {U W : Set (ℝ × M)}
+    (hA : ContMDiffOnSpacetimeEndomorphism (I := I) (F := F)
+      (V := V) (n := n) A U)
+    (hWU : W ⊆ U) :
+    ContMDiffOnSpacetimeEndomorphism (I := I) (F := F)
+      (V := V) (n := n) A W := by
+  let c : C^n⟮𝓘(ℝ, ℝ).prod I, ℝ × M; I, M⟯ := ContMDiffMap.snd
+  let _ : TopologicalSpace (TotalSpace F (fun p : ℝ × M => V p.2)) := by
+    change TopologicalSpace (TotalSpace F (c *ᵖ V)); infer_instance
+  let _ : FiberBundle F (fun p : ℝ × M => V p.2) := by
+    change FiberBundle F (c *ᵖ V); infer_instance
+  let _ : VectorBundle ℝ F (fun p : ℝ × M => V p.2) := by
+    change VectorBundle ℝ F (c *ᵖ V); infer_instance
+  let _ : ContMDiffVectorBundle n F (fun p : ℝ × M => V p.2)
+      (𝓘(ℝ, ℝ).prod I) := by
+    change ContMDiffVectorBundle n F (c *ᵖ V) (𝓘(ℝ, ℝ).prod I)
+    infer_instance
+  change ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+    ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, F →L[ℝ] F)) n
+    (fun p => TotalSpace.mk' (F →L[ℝ] F) p (A p.1 p.2) :
+      ℝ × M → TotalSpace (F →L[ℝ] F)
+        (fun p => V p.2 →L[ℝ] V p.2)) U at hA
+  change ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+    ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, F →L[ℝ] F)) n
+    (fun p => TotalSpace.mk' (F →L[ℝ] F) p (A p.1 p.2) :
+      ℝ × M → TotalSpace (F →L[ℝ] F)
+        (fun p => V p.2 →L[ℝ] V p.2)) W
+  exact hA.mono hWU
+
 theorem contDiffOn_fixed_spatial_of_contMDiffOn_pullback_section
     {w : (p : ℝ × M) → V p.2} {U : Set (ℝ × M)} (hU : IsOpen U)
     (hw : ContMDiffOn (𝓘(ℝ, ℝ).prod I)

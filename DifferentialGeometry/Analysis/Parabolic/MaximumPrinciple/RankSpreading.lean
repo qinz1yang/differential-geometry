@@ -233,7 +233,9 @@ theorem finrank_range_spatially_constant_and_locally_constant_from_left_of_sprea
   exact ContinuousLinearMap.IsPositive.eventually_finrank_range_ge_of_tendsto
     (hcontinuous x t ⟨ht.1.le, ht.2⟩)
 
-variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {EModel : Type*} [NormedAddCommGroup EModel] [NormedSpace ℝ EModel]
+  [FiniteDimensional ℝ EModel]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ EModel H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M]
 
@@ -297,8 +299,8 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [IsContMDiffRiemannianBundle I ∞ F V]
 
 theorem lowerKyFanSum_pos_at_of_local_dirichlet_solution_exists
-    [NeZero (Module.finrank ℝ E)]
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [NeZero (Module.finrank ℝ EModel)]
+    [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (cov : ℝ → CovariantDerivative I F V)
@@ -383,8 +385,8 @@ theorem lowerKyFanSum_pos_at_of_local_dirichlet_solution_exists
       hfEquation hGconn hAt hevolution t ⟨hst, le_rfl⟩ y hyKset
 
 theorem finrank_range_le_at_of_local_dirichlet_solution_exists
-    [NeZero (Module.finrank ℝ E)]
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [NeZero (Module.finrank ℝ EModel)]
+    [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (cov : ℝ → CovariantDerivative I F V)
@@ -448,8 +450,8 @@ theorem finrank_range_le_at_of_local_dirichlet_solution_exists
 
 theorem finrank_range_le_of_local_dirichlet_solution_exists
     [I.Boundaryless] [ConnectedSpace M]
-    [NeZero (Module.finrank ℝ E)]
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [NeZero (Module.finrank ℝ EModel)]
+    [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (cov : ℝ → CovariantDerivative I F V)
@@ -548,8 +550,8 @@ theorem finrank_range_le_of_local_dirichlet_solution_exists
 
 theorem finrank_range_spatially_constant_and_locally_constant_of_local_dirichlet_solution_exists
     [I.Boundaryless] [ConnectedSpace M] [Nonempty M]
-    [NeZero (Module.finrank ℝ E)]
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [NeZero (Module.finrank ℝ EModel)]
+    [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (cov : ℝ → CovariantDerivative I F V)
@@ -602,15 +604,20 @@ theorem finrank_range_spatially_constant_and_locally_constant_of_local_dirichlet
             Module.finrank ℝ (A t x).range) ∧
       ∃ δ ∈ Ioc 0 T, ∃ q : Nat, ∀ t ∈ Ioc 0 δ, ∀ x,
         Module.finrank ℝ (A t x).range = q := by
+  have hspread : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T → ∀ x y,
+      Module.finrank ℝ (A s x).range ≤
+        Module.finrank ℝ (A t y).range := by
+    intro s t hs hst ht x y
+    exact finrank_range_le_of_local_dirichlet_solution_exists
+      (I := I) G cov hcov hT A hAsymm hApos hphiCont hA_bound
+      X reaction hreactionNull hreactionLip hdirichlet hGconn hAt
+      hevolution hs hst ht x y
   apply rank_spatially_constant_and_locally_constant_from_left_of_spreading
     (rank := fun t x ↦ Module.finrank ℝ (A t x).range) hT
   · intro t ht x
     exact (ContinuousAt.eventually_finrank_range_ge
       (hAt t ht x).continuousAt).filter_mono inf_le_left
   · intro s t hs hst ht x y
-    exact finrank_range_le_of_local_dirichlet_solution_exists
-      (I := I) G cov hcov hT A hAsymm hApos hphiCont hA_bound
-      X reaction hreactionNull hreactionLip hdirichlet hGconn hAt
-      hevolution hs hst ht x y
+    exact hspread hs hst ht x y
 
 end PositiveSystem

@@ -13,7 +13,7 @@ theorem ContinuousLinearMap.ker_and_range_eq_on_Ioo_of_contDiffOn_spacetime_kern
     {E H M F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     [TopologicalSpace M] [ChartedSpace H M]
-    [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
     [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
     [FiberBundle F V] [VectorBundle ℝ F V]
@@ -55,7 +55,7 @@ theorem ContinuousLinearMap.ker_and_range_eq_on_Ioo_of_contMDiffOn_constant_finr
     {E H M F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     [TopologicalSpace M] [ChartedSpace H M]
-    [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
     [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
     [FiberBundle F V] [VectorBundle ℝ F V]
