@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KyFanBarrier
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.InitialData
+import DifferentialGeometry.Analysis.FiniteDimensional.Rank
+import DifferentialGeometry.Topology.ConnectedCompactNeighborhood
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Order.Lattice.Nat
 import Mathlib.Tactic.Linarith
@@ -443,5 +445,172 @@ theorem finrank_range_le_at_of_local_dirichlet_solution_exists
     (I := I) G cov hcov hT hs hst ht hkpos hkF hKset hKsetInterior
       hxKset hyKset A hAsymm hApos (hphiCont k hkF) hsource hR X
       reaction hreactionNull hreactionLip hdirichlet hGconn hAt hevolution
+
+theorem finrank_range_le_of_local_dirichlet_solution_exists
+    [I.Boundaryless] [ConnectedSpace M]
+    [NeZero (Module.finrank ℝ E)]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T : ℝ} (hT : 0 < T)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun z : M ↦ V z →L[ℝ] V z)⟯)
+    (hAsymm : ∀ q z,
+      ((A q z : V z →L[ℝ] V z) : V z →ₗ[ℝ] V z).IsSymmetric)
+    (hApos : ∀ q ∈ Icc 0 T, ∀ z, (A q z).IsPositive)
+    (hphiCont : ∀ k, k ≤ Module.finrank ℝ F →
+      ContinuousOn (fun p : ℝ × M ↦
+        (hAsymm p.1 p.2).lowerKyFanSum k)
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hA_bound : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset →
+        ∃ R, ∀ q ∈ Icc s t, ∀ z ∈ Kset, ‖A q z‖ ≤ R)
+    (X : ℝ → (z : M) → TangentSpace I z)
+    (reaction : ℝ → (z : M) →
+      (V z →L[ℝ] V z) → V z →L[ℝ] V z)
+    (hreactionNull : ∀ q z,
+      satisfiesNullEigenvectorCondition (reaction q z))
+    (hreactionLip : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset → ∀ R,
+        ∃ Klip : NNReal, ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
+          LipschitzOnWith Klip (reaction q z)
+            {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    (hdirichlet : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset →
+        HasLocalScalarDirichletSolution (I := I) G T X s t Kset)
+    (hGconn : ∀ q ∈ Ioc 0 T,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioc 0 T, ∀ z,
+      DifferentiableAt ℝ (fun r ↦ A r z) q)
+    (hevolution : ∀ q ∈ Ioc 0 T, ∀ z,
+      deriv (fun r ↦ A r z) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun w ↦ A q w) z +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
+          reaction q z (A q z))
+    {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
+    (x y : M) :
+    Module.finrank ℝ (A s x).range ≤ Module.finrank ℝ (A t y).range := by
+  let _ : LocallyCompactSpace H := I.locallyCompactSpace
+  let _ : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  let _ : LocallyPathConnectedSpace H :=
+    I.toHomeomorph.isOpenEmbedding.locallyPathConnectedSpace
+  let _ : LocallyPathConnectedSpace M :=
+    ChartedSpace.locallyPathConnectedSpace H M
+  obtain ⟨U, hU, -, hxU, hyU, hcompact⟩ :=
+    DifferentialGeometry.exists_isOpen_isConnected_isCompact_closure x y
+  let Kset := closure U
+  have hxKset : x ∈ interior Kset :=
+    (interior_maximal subset_closure hU) hxU
+  have hyKset : y ∈ interior Kset :=
+    (interior_maximal subset_closure hU) hyU
+  have hKsetInterior : interior Kset ⊆ I.interior M := by
+    rw [I.interior_eq_univ]
+    exact subset_univ _
+  obtain ⟨R, hR⟩ := hA_bound hs hst ht hcompact
+  obtain ⟨Klip, hKlip⟩ := hreactionLip hs hst ht hcompact R
+  have hApos' : ∀ q ∈ Icc s t, ∀ z ∈ Kset, (A q z).IsPositive := by
+    intro q hq z hz
+    exact hApos q ⟨hs.trans hq.1, hq.2.trans ht⟩ z
+  have hphiCont' : ∀ k, k ≤ Module.finrank ℝ F →
+      ContinuousOn (fun p : ℝ × M ↦
+        (hAsymm p.1 p.2).lowerKyFanSum k) (Icc s t ×ˢ Kset) := by
+    intro k hk
+    exact (hphiCont k hk).mono fun p hp ↦
+      ⟨⟨hs.trans hp.1.1, hp.1.2.trans ht⟩, Set.mem_univ p.2⟩
+  have hGconn' : ∀ q ∈ Ioc s t,
+      G.connection q = LeviCivita (I := I) (G.metric q) := by
+    intro q hq
+    exact hGconn q ⟨hs.trans_lt hq.1, hq.2.trans ht⟩
+  have hAt' : ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
+      DifferentiableAt ℝ (fun r ↦ A r z) q := by
+    intro q hq z hz
+    exact hAt q ⟨hs.trans_lt hq.1, hq.2.trans ht⟩ z
+  have hevolution' : ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
+      deriv (fun r ↦ A r z) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun w ↦ A q w) z +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
+          reaction q z (A q z) := by
+    intro q hq z hz
+    exact hevolution q ⟨hs.trans_lt hq.1, hq.2.trans ht⟩ z
+  exact finrank_range_le_at_of_local_dirichlet_solution_exists
+    (I := I) (G := G) (cov := cov) (T := T) (s := s) (t := t)
+    (Kset := Kset) (x := x) (y := y) (A := A) (R := R)
+    (X := X) (reaction := reaction) (Klip := Klip)
+    hcov hT hs hst ht hcompact hKsetInterior hxKset hyKset
+    hAsymm hApos' hphiCont' hR hreactionNull hKlip
+    (hdirichlet hs hst ht hcompact) hGconn' hAt' hevolution'
+
+theorem finrank_range_spatially_constant_and_locally_constant_of_local_dirichlet_solution_exists
+    [I.Boundaryless] [ConnectedSpace M] [Nonempty M]
+    [NeZero (Module.finrank ℝ E)]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T : ℝ} (hT : 0 < T)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun z : M ↦ V z →L[ℝ] V z)⟯)
+    (hAsymm : ∀ q z,
+      ((A q z : V z →L[ℝ] V z) : V z →ₗ[ℝ] V z).IsSymmetric)
+    (hApos : ∀ q ∈ Icc 0 T, ∀ z, (A q z).IsPositive)
+    (hphiCont : ∀ k, k ≤ Module.finrank ℝ F →
+      ContinuousOn (fun p : ℝ × M ↦
+        (hAsymm p.1 p.2).lowerKyFanSum k)
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hA_bound : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset →
+        ∃ R, ∀ q ∈ Icc s t, ∀ z ∈ Kset, ‖A q z‖ ≤ R)
+    (X : ℝ → (z : M) → TangentSpace I z)
+    (reaction : ℝ → (z : M) →
+      (V z →L[ℝ] V z) → V z →L[ℝ] V z)
+    (hreactionNull : ∀ q z,
+      satisfiesNullEigenvectorCondition (reaction q z))
+    (hreactionLip : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset → ∀ R,
+        ∃ Klip : NNReal, ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset,
+          LipschitzOnWith Klip (reaction q z)
+            {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    (hdirichlet : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset →
+        HasLocalScalarDirichletSolution (I := I) G T X s t Kset)
+    (hGconn : ∀ q ∈ Ioc 0 T,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioc 0 T, ∀ z,
+      DifferentiableAt ℝ (fun r ↦ A r z) q)
+    (hevolution : ∀ q ∈ Ioc 0 T, ∀ z,
+      deriv (fun r ↦ A r z) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun w ↦ A q w) z +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
+          reaction q z (A q z)) :
+    (∀ t ∈ Ioc 0 T, ∀ x y,
+      Module.finrank ℝ (A t x).range =
+        Module.finrank ℝ (A t y).range) ∧
+      (∀ x, MonotoneOn
+        (fun t ↦ Module.finrank ℝ (A t x).range) (Ioc 0 T)) ∧
+      (∀ t ∈ Ioc 0 T, ∀ x,
+        ∃ ε ∈ Ioc 0 t, ∀ s ∈ Ioc (t - ε) t,
+          Module.finrank ℝ (A s x).range =
+            Module.finrank ℝ (A t x).range) ∧
+      ∃ δ ∈ Ioc 0 T, ∃ q : Nat, ∀ t ∈ Ioc 0 δ, ∀ x,
+        Module.finrank ℝ (A t x).range = q := by
+  apply rank_spatially_constant_and_locally_constant_from_left_of_spreading
+    (rank := fun t x ↦ Module.finrank ℝ (A t x).range) hT
+  · intro t ht x
+    exact (ContinuousAt.eventually_finrank_range_ge
+      (hAt t ht x).continuousAt).filter_mono inf_le_left
+  · intro s t hs hst ht x y
+    exact finrank_range_le_of_local_dirichlet_solution_exists
+      (I := I) G cov hcov hT A hAsymm hApos hphiCont hA_bound
+      X reaction hreactionNull hreactionLip hdirichlet hGconn hAt
+      hevolution hs hst ht x y
 
 end PositiveSystem
