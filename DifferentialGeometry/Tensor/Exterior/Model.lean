@@ -19,7 +19,10 @@ theorem contDiffOn_extDeriv_infty {s : Set E} (alpha : E → E [⋀^Fin n]→L[�
   have hf : ContDiffOn ℝ ∞ (fderiv ℝ alpha) s := hAlpha.fderiv_of_isOpen hs (by simp)
   have hc : ContDiff ℝ ∞ (fun L : E →L[ℝ] E [⋀^Fin n]→L[ℝ] F =>
       alternatizeUncurryFinCLM ℝ E F L) :=
-    (alternatizeUncurryFinCLM ℝ E F).contDiff
+    ContinuousLinearMap.contDiff (𝕜 := ℝ)
+      (E := E →L[ℝ] E [⋀^Fin n]→L[ℝ] F)
+      (F := E [⋀^Fin (n + 1)]→L[ℝ] F)
+      (alternatizeUncurryFinCLM (n := n) ℝ E F)
   exact hc.comp_contDiffOn hf
 
 theorem contDiffOn_extDeriv {s : Set E} (alpha : E → E [⋀^Fin n]→L[ℝ] F)
@@ -28,28 +31,33 @@ theorem contDiffOn_extDeriv {s : Set E} (alpha : E → E [⋀^Fin n]→L[ℝ] F)
   have hf : ContDiffOn ℝ ⊤ (fderiv ℝ alpha) s := hAlpha.fderiv_of_isOpen hs le_top
   have hc : ContDiff ℝ ⊤ (fun L : E →L[ℝ] E [⋀^Fin n]→L[ℝ] F =>
       alternatizeUncurryFinCLM ℝ E F L) :=
-    (alternatizeUncurryFinCLM ℝ E F).contDiff
+    ContinuousLinearMap.contDiff (𝕜 := ℝ)
+      (E := E →L[ℝ] E [⋀^Fin n]→L[ℝ] F)
+      (F := E [⋀^Fin (n + 1)]→L[ℝ] F)
+      (alternatizeUncurryFinCLM (n := n) ℝ E F)
   exact hc.comp_contDiffOn hf
 
 theorem contDiffOn_wedge_product_infty {s : Set E} (a : E → E [⋀^Fin k]→L[ℝ] ℝ)
     (b : E → E [⋀^Fin l]→L[ℝ] ℝ) (ha : ContDiffOn ℝ ∞ a s) (hb : ContDiffOn ℝ ∞ b s) :
     ContDiffOn ℝ ∞ (fun x => a x ∧[ℝ] b x) s := by
-  let B : (E [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (E [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
-      (E [⋀^Fin (k + l)]→L[ℝ] ℝ) :=
-    wedgeProductL (ContinuousLinearMap.mul ℝ ℝ)
-  have h₁ : ContDiffOn ℝ ∞ (fun x => B (a x)) s := by
-    exact (contDiffOn_const (c := B)).clm_apply ha
-  exact h₁.clm_apply hb
+  let hW := isBoundedBilinearMap_wedgeProduct (M := E) (m := k) (n := l)
+    (ContinuousLinearMap.mul ℝ ℝ)
+  have hWdiff : ContDiff ℝ ∞ (fun p : (E [⋀^Fin k]→L[ℝ] ℝ) ×
+      (E [⋀^Fin l]→L[ℝ] ℝ) => wedgeProduct p.1 p.2 (ContinuousLinearMap.mul ℝ ℝ)) :=
+    IsBoundedBilinearMap.contDiff (n := ∞) hW
+  convert hWdiff.comp_contDiffOn (ha.prodMk hb) using 1
+  rfl
 
 theorem contDiffOn_wedge_product {s : Set E} (a : E → E [⋀^Fin k]→L[ℝ] ℝ)
     (b : E → E [⋀^Fin l]→L[ℝ] ℝ) (ha : ContDiffOn ℝ ⊤ a s) (hb : ContDiffOn ℝ ⊤ b s) :
     ContDiffOn ℝ ⊤ (fun x => a x ∧[ℝ] b x) s := by
-  let B : (E [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (E [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
-      (E [⋀^Fin (k + l)]→L[ℝ] ℝ) :=
-    wedgeProductL (ContinuousLinearMap.mul ℝ ℝ)
-  have h₁ : ContDiffOn ℝ ⊤ (fun x => B (a x)) s := by
-    exact (contDiffOn_const (c := B)).clm_apply ha
-  exact h₁.clm_apply hb
+  let hW := isBoundedBilinearMap_wedgeProduct (M := E) (m := k) (n := l)
+    (ContinuousLinearMap.mul ℝ ℝ)
+  have hWdiff : ContDiff ℝ ⊤ (fun p : (E [⋀^Fin k]→L[ℝ] ℝ) ×
+      (E [⋀^Fin l]→L[ℝ] ℝ) => wedgeProduct p.1 p.2 (ContinuousLinearMap.mul ℝ ℝ)) :=
+    IsBoundedBilinearMap.contDiff (n := ⊤) hW
+  convert hWdiff.comp_contDiffOn (ha.prodMk hb) using 1
+  rfl
 
 theorem contDiffOn_pullback_infty {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
     {s : Set E} {t : Set E'} (f : E → E')

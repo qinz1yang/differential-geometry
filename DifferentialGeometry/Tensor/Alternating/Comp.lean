@@ -218,103 +218,6 @@ theorem ContinuousAlternatingMap.compContinuousLinearMapL_continuous :
 end Continuous
 
 section Smooth
-variable {ι F₁ F₂} [Fintype ι]
-  [NormedAddCommGroup F₁] [NormedSpace ℝ F₁] [NormedAddCommGroup F₂] [NormedSpace ℝ F₂]
-
-open scoped Bundle Manifold
-
-theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_real :
-    ContDiff ℝ ⊤ (fun p : F₁ →L[ℝ] F₁ =>
-      (compContinuousLinearMapCLM p : (F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ]
-        (F₁ [⋀^ι]→L[ℝ] F₂))) := by
-  classical
-  let ψ : (F₁ [⋀^ι]→L[ℝ] F₂) →ₗᵢ[ℝ] ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂ :=
-    ContinuousAlternatingMap.toContinuousMultilinearMapLI
-  let Φ : ((F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ] (F₁ [⋀^ι]→L[ℝ] F₂)) →ₗᵢ[ℝ]
-      ((F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂) :=
-    ψ.compLeft _ (RingHom.id ℝ)
-  have hh : ContDiff ℝ ⊤ (fun p : F₁ →L[ℝ] F₁ =>
-      (Φ (compContinuousLinearMapCLM p) : (F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ]
-        ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) := by
-    have h₁ : ContDiff ℝ ⊤ (fun p : F₁ →L[ℝ] F₁ =>
-        (ContinuousMultilinearMap.compContinuousLinearMapL (fun _ : ι => p) :
-          ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂ →L[ℝ]
-          ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) :=
-      ContinuousMultilinearMap.compContinuousLinearMapL_diag_contDiff
-    have h₂ : ContDiff ℝ ⊤ (fun M : (ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂ →L[ℝ]
-          ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂) =>
-        (M.comp (ContinuousAlternatingMap.toContinuousMultilinearMapCLM ℝ) :
-          (F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) := by
-      fun_prop
-    convert h₂.comp h₁ using 1
-    rfl
-  have heψ : IsClosed (Set.range (ψ : F₁ [⋀^ι]→L[ℝ] F₂ →
-      ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) := by
-    exact (isClosedEmbedding_toContinuousMultilinearMap (𝕜 := ℝ) (E := F₁) (F := F₂)).isClosed_range
-  have heΦ : IsClosed (Set.range Φ) := by
-    simpa [Φ] using!
-      DifferentialGeometry.AnalyticTransfer.isClosed_range_comp ψ heψ
-  exact DifferentialGeometry.AnalyticTransfer.contDiff_of_comp_linearIsometry_omega Φ heΦ hh
-
-theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contMDiff_real :
-    let F : (F₁ →L[ℝ] F₁) → (F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ] (F₁ [⋀^ι]→L[ℝ] F₂)
-      := fun p ↦ ContinuousAlternatingMap.compContinuousLinearMapCLM p
-    ContMDiff (𝓘(ℝ, (F₁ →L[ℝ] F₁))) (𝓘(ℝ, ((F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ] (F₁ [⋀^ι]→L[ℝ] F₂)))) ⊤ F := by
-  rw [contMDiff_iff_contDiff]
-  exact ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_real
-
-theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_of_space_real
-    {F₁' : Type*} [NormedAddCommGroup F₁'] [NormedSpace ℝ F₁'] :
-    ContDiff ℝ ⊤ (fun p : F₁ →L[ℝ] F₁' =>
-      (compContinuousLinearMapCLM p : (F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ]
-        (F₁ [⋀^ι]→L[ℝ] F₂))) := by
-  classical
-  let ψ : (F₁' [⋀^ι]→L[ℝ] F₂) →ₗᵢ[ℝ] ContinuousMultilinearMap ℝ (fun _ : ι => F₁') F₂ :=
-    ContinuousAlternatingMap.toContinuousMultilinearMapLI
-  let ψ₀ : (F₁ [⋀^ι]→L[ℝ] F₂) →ₗᵢ[ℝ] ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂ :=
-    ContinuousAlternatingMap.toContinuousMultilinearMapLI
-  let Φ : ((F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ] (F₁ [⋀^ι]→L[ℝ] F₂)) →ₗᵢ[ℝ]
-      ((F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂) :=
-    ψ₀.compLeft _ (RingHom.id ℝ)
-  have hh : ContDiff ℝ ⊤ (fun p : F₁ →L[ℝ] F₁' =>
-      (Φ (compContinuousLinearMapCLM p) : (F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ]
-        ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) := by
-    have h₁ : ContDiff ℝ ⊤ (fun p : F₁ →L[ℝ] F₁' =>
-        (ContinuousMultilinearMap.compContinuousLinearMapL (fun _ : ι => p) :
-          ContinuousMultilinearMap ℝ (fun _ : ι => F₁') F₂ →L[ℝ]
-          ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) :=
-      ContinuousMultilinearMap.compContinuousLinearMapL_diag_contDiff_of_space
-    have h₂ : ContDiff ℝ ⊤ (fun M : (ContinuousMultilinearMap ℝ (fun _ : ι => F₁') F₂ →L[ℝ]
-          ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂) =>
-        (M.comp (ContinuousAlternatingMap.toContinuousMultilinearMapCLM ℝ) :
-          (F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) := by
-      fun_prop
-    convert h₂.comp h₁ using 1
-    rfl
-  have heψ : IsClosed (Set.range (ψ : F₁' [⋀^ι]→L[ℝ] F₂ →
-      ContinuousMultilinearMap ℝ (fun _ : ι => F₁') F₂)) := by
-    exact (isClosedEmbedding_toContinuousMultilinearMap (𝕜 := ℝ) (E := F₁')
-      (F := F₂)).isClosed_range
-  have heψ₀ : IsClosed (Set.range (ψ₀ : F₁ [⋀^ι]→L[ℝ] F₂ →
-      ContinuousMultilinearMap ℝ (fun _ : ι => F₁) F₂)) := by
-    exact (isClosedEmbedding_toContinuousMultilinearMap (𝕜 := ℝ) (E := F₁) (F := F₂)).isClosed_range
-  have heΦ : IsClosed (Set.range Φ) := by
-    simpa [Φ] using!
-      DifferentialGeometry.AnalyticTransfer.isClosed_range_comp ψ₀ heψ₀
-  exact DifferentialGeometry.AnalyticTransfer.contDiff_of_comp_linearIsometry_omega Φ heΦ hh
-
-theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contMDiff_of_space_real
-    {F₁' : Type*} [NormedAddCommGroup F₁'] [NormedSpace ℝ F₁'] :
-    let F : (F₁ →L[ℝ] F₁') → (F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ] (F₁ [⋀^ι]→L[ℝ] F₂)
-      := fun p ↦ ContinuousAlternatingMap.compContinuousLinearMapCLM p
-    ContMDiff (𝓘(ℝ, (F₁ →L[ℝ] F₁'))) (𝓘(ℝ,
-      ((F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ] (F₁ [⋀^ι]→L[ℝ] F₂)))) ⊤ F := by
-  rw [contMDiff_iff_contDiff]
-  exact ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_of_space_real
-
-end Smooth
-
-section Smooth
 variable {𝕜 ι F₁ F₂} [NontriviallyNormedField 𝕜] [CharZero 𝕜] [Fintype ι] [DecidableEq ι]
   [NormedAddCommGroup F₁] [NormedSpace 𝕜 F₁] [NormedAddCommGroup F₂] [NormedSpace 𝕜 F₂]
 
@@ -584,6 +487,43 @@ theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contMDiff_of_space
       ((F₁' [⋀^ι]→L[𝕜] F₂) →L[𝕜] (F₁ [⋀^ι]→L[𝕜] F₂)))) ⊤ F := by
   rw [contMDiff_iff_contDiff]
   exact ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_of_space
+
+end Smooth
+
+section Smooth
+variable {ι F₁ F₂} [Fintype ι]
+  [NormedAddCommGroup F₁] [NormedSpace ℝ F₁] [NormedAddCommGroup F₂] [NormedSpace ℝ F₂]
+
+open scoped Bundle Manifold
+
+theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_real :
+    ContDiff ℝ ⊤ (fun p : F₁ →L[ℝ] F₁ =>
+      (compContinuousLinearMapCLM p : (F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ]
+        (F₁ [⋀^ι]→L[ℝ] F₂))) := by
+  exact ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff
+
+theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contMDiff_real :
+    let F : (F₁ →L[ℝ] F₁) → (F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ] (F₁ [⋀^ι]→L[ℝ] F₂)
+      := fun p ↦ ContinuousAlternatingMap.compContinuousLinearMapCLM p
+    ContMDiff (𝓘(ℝ, (F₁ →L[ℝ] F₁))) (𝓘(ℝ, ((F₁ [⋀^ι]→L[ℝ] F₂) →L[ℝ] (F₁ [⋀^ι]→L[ℝ] F₂)))) ⊤ F := by
+  rw [contMDiff_iff_contDiff]
+  exact ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_real
+
+theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_of_space_real
+    {F₁' : Type*} [NormedAddCommGroup F₁'] [NormedSpace ℝ F₁'] :
+    ContDiff ℝ ⊤ (fun p : F₁ →L[ℝ] F₁' =>
+      (compContinuousLinearMapCLM p : (F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ]
+        (F₁ [⋀^ι]→L[ℝ] F₂))) := by
+  exact ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_of_space
+
+theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contMDiff_of_space_real
+    {F₁' : Type*} [NormedAddCommGroup F₁'] [NormedSpace ℝ F₁'] :
+    let F : (F₁ →L[ℝ] F₁') → (F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ] (F₁ [⋀^ι]→L[ℝ] F₂)
+      := fun p ↦ ContinuousAlternatingMap.compContinuousLinearMapCLM p
+    ContMDiff (𝓘(ℝ, (F₁ →L[ℝ] F₁'))) (𝓘(ℝ,
+      ((F₁' [⋀^ι]→L[ℝ] F₂) →L[ℝ] (F₁ [⋀^ι]→L[ℝ] F₂)))) ⊤ F := by
+  rw [contMDiff_iff_contDiff]
+  exact ContinuousAlternatingMap.compContinuousLinearMapCLM_contDiff_of_space_real
 
 end Smooth
 

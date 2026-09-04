@@ -196,12 +196,34 @@ noncomputable def wedge {k l : ℕ} (α : DifferentialForm IM M k)
             (Bundle.Trivial M ℝ)) x₀)
         (mem_baseSet_trivializationAt (EM [⋀^Fin l]→L[ℝ] ℝ)
           (Bundle.continuousAlternatingMap ℝ (Fin l) EM (TangentSpace IM) ℝ
-            (Bundle.Trivial M ℝ)) x₀)).mp (β.contMDiff_toFun x₀)
-    let W : (EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
-        (EM [⋀^Fin (k + l)]→L[ℝ] ℝ) :=
-      wedgeProductL (ContinuousLinearMap.mul ℝ ℝ)
-    have hW : ContMDiffAt IM 𝓘(ℝ, (EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
-        (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)) ∞ (fun _ : M => W) x₀ :=
+        (Bundle.Trivial M ℝ)) x₀)).mp (β.contMDiff_toFun x₀)
+    let dNorm : NormedAddCommGroup ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
+        (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)) :=
+      ContinuousLinearMap.toNormedAddCommGroup (𝕜 := ℝ) (𝕜₂ := ℝ)
+        (E := EM [⋀^Fin l]→L[ℝ] ℝ) (F := EM [⋀^Fin (k + l)]→L[ℝ] ℝ)
+        (σ₁₂ := RingHom.id ℝ)
+    let dSpace : NormedSpace ℝ ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
+        (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)) :=
+      ContinuousLinearMap.toNormedSpace (𝕜 := ℝ) (𝕜₂ := ℝ)
+        (E := EM [⋀^Fin l]→L[ℝ] ℝ) (F := EM [⋀^Fin (k + l)]→L[ℝ] ℝ)
+        (σ₁₂ := RingHom.id ℝ)
+    let oNorm : NormedAddCommGroup ((EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ]
+        ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ))) :=
+      ContinuousLinearMap.toNormedAddCommGroup (𝕜 := ℝ) (𝕜₂ := ℝ)
+        (E := EM [⋀^Fin k]→L[ℝ] ℝ)
+        (F := (EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ))
+        (σ₁₂ := RingHom.id ℝ)
+    let oSpace : NormedSpace ℝ ((EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ]
+        ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ))) :=
+      ContinuousLinearMap.toNormedSpace (𝕜 := ℝ) (𝕜₂ := ℝ)
+        (E := EM [⋀^Fin k]→L[ℝ] ℝ)
+        (F := (EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ))
+        (σ₁₂ := RingHom.id ℝ)
+    let W : (EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ]
+        ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)) :=
+      wedgeProductL (M := EM) (m := k) (n := l) (ContinuousLinearMap.mul ℝ ℝ)
+    have hW : ContMDiffAt IM 𝓘(ℝ, (EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ]
+        ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ))) ∞ (fun _ : M => W) x₀ :=
       contMDiffAt_const
     refine ((hW.clm_apply hα).clm_apply hβ).congr_of_eventuallyEq ?_
     exact eventually_of_mem (e.open_baseSet.mem_nhds (mem_baseSet_trivializationAt

@@ -177,6 +177,7 @@ def HasCurvatureSurfaceProductSplitting
               (I := 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2))
               P.metricN y)))
 
+omit [Nonempty M] in
 theorem _root_.DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.GlobalSurfaceProductSplitting.pullbackMetric_eq_prod
     {H : Type} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
@@ -184,7 +185,7 @@ theorem _root_.DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
-    [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
+    [SigmaCompactSpace M] [ConnectedSpace M]
     [LocallyPathConnectedSpace M]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
     [Inhabited M]
