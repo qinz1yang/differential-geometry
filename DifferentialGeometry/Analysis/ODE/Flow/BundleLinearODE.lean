@@ -66,6 +66,230 @@ private theorem continuousLinearMap_comp_hasDerivWithinAt
   simpa only [map_sub, map_smul, ContinuousLinearMap.toSpanSingleton_apply] using
     L.isBigOTVS_fun_comp.trans_isLittleOTVS h
 
+theorem fiberwise_linear_ode_solution_contMDiffOn
+    {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
+    (A Φ : ℝ → ∀ x : M, V x →L[ℝ] V x)
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M =>
+        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+      (Ioo a b ×ˢ (univ : Set M)))
+    (B : ∀ x : M, V x →L[ℝ] V x)
+    (hB : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun x : M =>
+        (⟨x, B x⟩ : TotalSpace (F →L[ℝ] F) (fun y => V y →L[ℝ] V y))))
+    (hΦ₀ : ∀ x : M, Φ t₀ x = B x)
+    (hΦ : ∀ x : M, ∀ v : V x, ∀ t ∈ Ioo a b,
+      HasDerivAt (fun s : ℝ => Φ s x v) (A t x (Φ t x v)) t) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M =>
+        (⟨p.2, Φ p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+      (Ioo a b ×ˢ (univ : Set M)) := by
+  intro p₀ hp₀
+  rw [contMDiffWithinAt_hom_bundle]
+  refine ⟨contMDiffWithinAt_snd, ?_⟩
+  let x₀ := p₀.2
+  change ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, F →L[ℝ] F) ∞
+    (fun p : ℝ × M =>
+      ContinuousLinearMap.inCoordinates F V F V x₀ p.2 x₀ p.2 (Φ p.1 p.2))
+    (Ioo a b ×ˢ (univ : Set M)) p₀
+  let c := extChartAt I x₀
+  let e := trivializationAt F V x₀
+  let eHom := e.continuousLinearMap (RingHom.id ℝ) e
+  let U : Set E := c.target ∩ c.symm ⁻¹' e.baseSet
+  have hU_open : IsOpen U := by
+    exact (contMDiffOn_extChartAt_symm (I := I) (n := ∞) x₀).continuousOn.isOpen_inter_preimage
+      (isOpen_extChartAt_target (I := I) x₀) e.open_baseSet
+  have hx₀_source : x₀ ∈ c.source := mem_extChartAt_source x₀
+  have hcx₀_target : c x₀ ∈ c.target := c.map_source hx₀_source
+  have hx₀_e : x₀ ∈ e.baseSet := mem_baseSet_trivializationAt F V x₀
+  have hcx₀_U : c x₀ ∈ U := by
+    refine ⟨hcx₀_target, ?_⟩
+    change c.symm (c x₀) ∈ e.baseSet
+    rw [c.left_inv hx₀_source]
+    exact hx₀_e
+  let Acoord : E → ℝ → (F →L[ℝ] F) := fun z t =>
+    ContinuousLinearMap.inCoordinates F V F V x₀ (c.symm z) x₀ (c.symm z)
+      (A t (c.symm z))
+  have hAcoord : ContDiffOn ℝ ∞ (Function.uncurry Acoord) (U ×ˢ Ioo a b) := by
+    have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ c.symm U :=
+      (contMDiffOn_extChartAt_symm (I := I) x₀).mono inter_subset_left
+    have hparam : ContMDiffOn (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod I) ∞
+        (fun p : E × ℝ => (p.2, c.symm p.1)) (U ×ˢ Ioo a b) :=
+      contMDiffOn_snd.prodMk (hsymm.comp contMDiffOn_fst fun p hp => hp.1)
+    have hsection := hA.comp hparam fun p hp => ⟨hp.2, mem_univ _⟩
+    have hbase : Set.MapsTo
+        (fun p : E × ℝ =>
+          (⟨c.symm p.1, A p.2 (c.symm p.1)⟩ :
+            TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+        (U ×ˢ Ioo a b) eHom.source := by
+      rintro ⟨z, t⟩ ⟨hz, ht⟩
+      rw [eHom.mem_source]
+      exact ⟨hz.2, hz.2⟩
+    have hcoord := eHom.contMDiffOn.comp hsection hbase
+    have hsnd : ContMDiffOn (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, F →L[ℝ] F) ∞
+        (fun p : E × ℝ =>
+          (eHom
+            (⟨c.symm p.1, A p.2 (c.symm p.1)⟩ :
+              TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))).2)
+        (U ×ˢ Ioo a b) := fun p hp => (hcoord p hp).snd
+    rw [← contMDiffOn_iff_contDiffOn, modelWithCornersSelf_prod,
+      ← chartedSpaceSelf_prod]
+    exact hsnd.congr fun p hp => by
+      obtain ⟨z, t⟩ := p
+      obtain ⟨hz, ht⟩ := hp
+      change (eHom
+          (⟨c.symm z, A t (c.symm z)⟩ :
+            TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))).2 = Acoord z t
+      simp only [eHom, e, Bundle.Trivialization.continuousLinearMap_apply, Acoord,
+        ContinuousLinearMap.inCoordinates]
+  let Bcoord : E → (F →L[ℝ] F) := fun z =>
+    ContinuousLinearMap.inCoordinates F V F V x₀ (c.symm z) x₀ (c.symm z)
+      (B (c.symm z))
+  have hBcoord : ContDiffOn ℝ ∞ Bcoord U := by
+    have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ c.symm U :=
+      (contMDiffOn_extChartAt_symm (I := I) x₀).mono inter_subset_left
+    have hsection : ContMDiffOn 𝓘(ℝ, E) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+        (fun z : E =>
+          (⟨c.symm z, B (c.symm z)⟩ :
+            TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))) U := by
+      exact (hB.comp_contMDiffOn hsymm).congr fun z hz => rfl
+    have hbase : Set.MapsTo
+        (fun z : E =>
+          (⟨c.symm z, B (c.symm z)⟩ :
+            TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+        U eHom.source := by
+      intro z hz
+      rw [eHom.mem_source]
+      exact ⟨hz.2, hz.2⟩
+    have hcoord := eHom.contMDiffOn.comp hsection hbase
+    have hsnd : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ, F →L[ℝ] F) ∞
+        (fun z : E =>
+          (eHom
+            (⟨c.symm z, B (c.symm z)⟩ :
+              TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))).2) U :=
+      fun z hz => (hcoord z hz).snd
+    rw [← contMDiffOn_iff_contDiffOn]
+    exact hsnd.congr fun z hz => by
+      change (eHom
+          (⟨c.symm z, B (c.symm z)⟩ :
+            TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))).2 = Bcoord z
+      simp only [eHom, e, Bundle.Trivialization.continuousLinearMap_apply, Bcoord,
+        ContinuousLinearMap.inCoordinates]
+  apply contMDiffWithinAt_clm_of_pointwise
+  intro v
+  let Z₀ : E → F := fun z => Bcoord z v
+  let Z : E → ℝ → F :=
+    linearODESolution Acoord a b t₀ Z₀
+  have hZ₀ : ContDiffOn ℝ ∞ Z₀ U := hBcoord.clm_apply contDiffOn_const
+  have hZ : ContDiffOn ℝ ∞ (Function.uncurry Z) (U ×ˢ Ioo a b) :=
+    linearODESolution_contDiffOn_top ht₀ hU_open hAcoord hZ₀
+  have hZ_mfld : ContMDiffOn (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, F) ∞
+      (Function.uncurry Z) (U ×ˢ Ioo a b) := by
+    rw [← contMDiffOn_iff_contDiffOn, modelWithCornersSelf_prod,
+      ← chartedSpaceSelf_prod] at hZ
+    exact hZ
+  have hchart : ContMDiffAt I 𝓘(ℝ, E) ∞ c x₀ :=
+    contMDiffAt_extChartAt' (I := I) (n := ∞) (by simp)
+  have hmove : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I)
+      (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) ∞
+      (fun p : ℝ × M => (c p.2, p.1))
+      (Ioo a b ×ˢ (univ : Set M)) p₀ :=
+    (hchart.comp p₀ contMDiffAt_snd).contMDiffWithinAt.prodMk contMDiffWithinAt_fst
+  have hZ_at : ContMDiffAt (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, F) ∞
+      (Function.uncurry Z) (c x₀, p₀.1) :=
+    hZ_mfld.contMDiffAt
+      ((hU_open.prod isOpen_Ioo).mem_nhds ⟨hcx₀_U, hp₀.1⟩)
+  have hcandidate : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, F) ∞
+      (fun p : ℝ × M => Z (c p.2) p.1)
+      (Ioo a b ×ˢ (univ : Set M)) p₀ :=
+    hZ_at.comp_contMDiffWithinAt p₀ hmove
+  apply hcandidate.congr_of_eventuallyEq
+  · have hc_source : ∀ᶠ p : ℝ × M in
+        𝓝[Ioo a b ×ˢ (univ : Set M)] p₀, p.2 ∈ c.source :=
+      continuousWithinAt_snd
+        ((isOpen_extChartAt_source (I := I) x₀).mem_nhds hx₀_source)
+    have he_base : ∀ᶠ p : ℝ × M in
+        𝓝[Ioo a b ×ˢ (univ : Set M)] p₀, p.2 ∈ e.baseSet :=
+      continuousWithinAt_snd (e.open_baseSet.mem_nhds hx₀_e)
+    filter_upwards [self_mem_nhdsWithin, hc_source, he_base] with p hp hp_c hp_e
+    have hcp_U : c p.2 ∈ U := by
+      refine ⟨c.map_source hp_c, ?_⟩
+      change c.symm (c p.2) ∈ e.baseSet
+      rw [c.left_inv hp_c]
+      exact hp_e
+    let Y : ℝ → F := fun s =>
+      ContinuousLinearMap.inCoordinates F V F V x₀ p.2 x₀ p.2 (Φ s p.2) v
+    have hAcoord_x : ContinuousOn (Acoord (c p.2)) (Ioo a b) :=
+      ContinuousOn.uncurry_left (a := c p.2) (sα := U) (sβ := Ioo a b)
+        hcp_U hAcoord.continuousOn
+    have hY_deriv : ∀ s ∈ Ioo a b,
+        HasDerivAt Y (Acoord (c p.2) s (Y s)) s := by
+      intro s hs
+      let vin : V p.2 := e.symmL ℝ p.2 v
+      have hraw := hΦ p.2 vin s hs
+      have hcomp :=
+        continuousLinearMap_comp_hasDerivAt (e.continuousLinearMapAt ℝ p.2) hraw
+      have hderiv :
+          Acoord (c p.2) s (Y s) =
+            e.continuousLinearMapAt ℝ p.2 (A s p.2 (Φ s p.2 vin)) := by
+        simp only [Acoord, Y, ContinuousLinearMap.inCoordinates,
+          ContinuousLinearMap.comp_apply]
+        rw [c.left_inv hp_c]
+        rw [e.symmL_continuousLinearMapAt hp_e]
+      have hfun : Y = fun t => e.continuousLinearMapAt ℝ p.2 (Φ t p.2 vin) := by
+        rfl
+      rw [hderiv, hfun]
+      exact hcomp
+    have hZ_deriv : ∀ s ∈ Ioo a b,
+        HasDerivAt (Z (c p.2)) (Acoord (c p.2) s (Z (c p.2) s)) s := by
+      intro s hs
+      exact linearODESolution_hasDerivAt ht₀ hAcoord.continuousOn hcp_U hs
+    have hinit : Y t₀ = Z (c p.2) t₀ := by
+      have hZ_init : Z (c p.2) t₀ = Z₀ (c p.2) :=
+        linearODESolution_init Acoord a b t₀ Z₀ (c p.2)
+      rw [hZ_init]
+      simp only [Y, hΦ₀, Z₀, Bcoord, ContinuousLinearMap.inCoordinates,
+        ContinuousLinearMap.comp_apply]
+      rw [c.left_inv hp_c]
+    have heq := linearODE_unique_on_Ioo ht₀ hAcoord_x hY_deriv hZ_deriv hinit
+    exact heq hp.1
+  · let Y : ℝ → F := fun s =>
+      ContinuousLinearMap.inCoordinates F V F V x₀ x₀ x₀ x₀ (Φ s x₀) v
+    have hAcoord_x : ContinuousOn (Acoord (c x₀)) (Ioo a b) :=
+      ContinuousOn.uncurry_left (a := c x₀) (sα := U) (sβ := Ioo a b)
+        hcx₀_U hAcoord.continuousOn
+    have hY_deriv : ∀ s ∈ Ioo a b,
+        HasDerivAt Y (Acoord (c x₀) s (Y s)) s := by
+      intro s hs
+      let vin : V x₀ := e.symmL ℝ x₀ v
+      have hraw := hΦ x₀ vin s hs
+      have hcomp :=
+        continuousLinearMap_comp_hasDerivAt (e.continuousLinearMapAt ℝ x₀) hraw
+      have hderiv :
+          Acoord (c x₀) s (Y s) =
+            e.continuousLinearMapAt ℝ x₀ (A s x₀ (Φ s x₀ vin)) := by
+        simp only [Acoord, Y, ContinuousLinearMap.inCoordinates,
+          ContinuousLinearMap.comp_apply]
+        rw [c.left_inv hx₀_source]
+        rw [e.symmL_continuousLinearMapAt hx₀_e]
+      have hfun : Y = fun t => e.continuousLinearMapAt ℝ x₀ (Φ t x₀ vin) := by
+        rfl
+      rw [hderiv, hfun]
+      exact hcomp
+    have hZ_deriv : ∀ s ∈ Ioo a b,
+        HasDerivAt (Z (c x₀)) (Acoord (c x₀) s (Z (c x₀) s)) s := by
+      intro s hs
+      exact linearODESolution_hasDerivAt ht₀ hAcoord.continuousOn hcx₀_U hs
+    have hinit : Y t₀ = Z (c x₀) t₀ := by
+      have hZ_init : Z (c x₀) t₀ = Z₀ (c x₀) :=
+        linearODESolution_init Acoord a b t₀ Z₀ (c x₀)
+      rw [hZ_init]
+      simp only [Y, hΦ₀, Z₀, Bcoord, ContinuousLinearMap.inCoordinates,
+        ContinuousLinearMap.comp_apply]
+      rw [c.left_inv hx₀_source]
+    have heq := linearODE_unique_on_Ioo ht₀ hAcoord_x hY_deriv hZ_deriv hinit
+    exact heq hp₀.1
+
 theorem fiberwise_linear_ode_solution_contMDiff
     {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
     (A Φ : ℝ → ∀ x : M, V x →L[ℝ] V x)
@@ -373,6 +597,49 @@ theorem fiberwise_linear_ode_solution_contMDiff_right
     hv_lip hY_cont hY_deriv (fun _ _ => mem_univ _)
     hZ_cont hZ_deriv (fun _ _ => mem_univ _) hinit
   exact heq ⟨le_of_lt htarget.1, le_rfl⟩
+
+theorem fiberwise_linear_ode_solution_contMDiffOn_right
+    {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
+    (A Φ : ℝ → ∀ x : M, V x →L[ℝ] V x)
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M =>
+        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+      (Ioo a b ×ˢ (univ : Set M)))
+    (hΦ₀ : ∀ x : M, Φ t₀ x = ContinuousLinearMap.id ℝ (V x))
+    (hΦ_cont : ∀ x : M, ∀ v : V x,
+      ContinuousOn (fun t : ℝ => Φ t x v) (Icc t₀ b))
+    (hΦ : ∀ x : M, ∀ v : V x, ∀ t ∈ Ico t₀ b,
+      HasDerivWithinAt (fun s : ℝ => Φ s x v) (A t x (Φ t x v)) (Ici t₀) t) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M =>
+        (⟨p.2, Φ p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+      (Ioo t₀ b ×ˢ (univ : Set M)) := by
+  let r : ℝ := (t₀ + b) / 2
+  have hr : r ∈ Ioo t₀ b := by
+    dsimp [r]
+    constructor <;> linarith [ht₀.2]
+  let B : ∀ x : M, V x →L[ℝ] V x := fun x => Φ r x
+  have hB : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun x : M =>
+        (⟨x, B x⟩ : TotalSpace (F →L[ℝ] F) (fun y => V y →L[ℝ] V y))) := by
+    exact fiberwise_linear_ode_solution_contMDiff_right
+      ht₀ A Φ hA hΦ₀ hΦ_cont hΦ r hr
+  have hA' : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M =>
+        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+      (Ioo t₀ b ×ˢ (univ : Set M)) := by
+    exact hA.mono fun p hp => ⟨⟨lt_trans ht₀.1 hp.1.1, hp.1.2⟩, hp.2⟩
+  have hΦ' : ∀ x : M, ∀ v : V x, ∀ t ∈ Ioo t₀ b,
+      HasDerivAt (fun s : ℝ => Φ s x v) (A t x (Φ t x v)) t := by
+    intro x v t ht
+    have hraw := hΦ x v t ⟨le_of_lt ht.1, ht.2⟩
+    change HasFDerivWithinAt (fun s : ℝ => Φ s x v)
+      (ContinuousLinearMap.toSpanSingleton ℝ (A t x (Φ t x v))) (Ici t₀) t at hraw
+    change HasFDerivAt (fun s : ℝ => Φ s x v)
+      (ContinuousLinearMap.toSpanSingleton ℝ (A t x (Φ t x v))) t
+    exact hraw.hasFDerivAt (Ici_mem_nhds ht.1)
+  exact fiberwise_linear_ode_solution_contMDiffOn
+    hr A Φ hA' B hB (fun x => rfl) hΦ'
 
 theorem fiberwise_linear_ode_total_map_contMDiff
     {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)

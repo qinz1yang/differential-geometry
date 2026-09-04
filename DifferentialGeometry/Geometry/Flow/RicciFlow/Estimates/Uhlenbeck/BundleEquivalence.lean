@@ -23,20 +23,22 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
 omit [SigmaCompactSpace M] in
-private theorem exists_uhlenbeck_endomorphism_between
+private theorem exists_uhlenbeck_endomorphism_after
     [I.Boundaryless]
     {T : Real} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
     (hEpos : 0 < Module.finrank Real E)
-    {s t : Real} (hs : 0 < s) (hst : s < t) (htT : t < T) :
-    ∃ Phi : ∀ x : M, TangentSpace I x →L[Real] TangentSpace I x,
-      ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
-        (fun p : TangentBundle I M =>
-          (⟨p.1, Phi p.1 p.2⟩ : TangentBundle I M)) ∧
-      (∀ x : M, Function.Bijective (Phi x)) ∧
-      ∀ x : M, ∀ v w : TangentSpace I x,
-        (S.family.metric t).inner x (Phi x v) (Phi x w) =
+    {s : Real} (hs : 0 < s) (hsT : s < T) :
+    ∃ Phi : Real → ∀ x : M, TangentSpace I x →L[Real] TangentSpace I x,
+      ContMDiffOn (𝓘(Real, Real).prod I) (I.prod 𝓘(Real, E →L[Real] E)) ∞
+        (fun p : Real × M =>
+          (⟨p.2, Phi p.1 p.2⟩ : TotalSpace (E →L[Real] E)
+            (fun x : M => TangentSpace I x →L[Real] TangentSpace I x)))
+        (Ioo 0 (T - s) ×ˢ (univ : Set M)) ∧
+      (∀ r ∈ Icc 0 (T - s), ∀ x : M, Function.Bijective (Phi r x)) ∧
+      ∀ r ∈ Icc 0 (T - s), ∀ x : M, ∀ v w : TangentSpace I x,
+        (S.family.metric (r + s)).inner x (Phi r x v) (Phi r x w) =
           (S.family.metric s).inner x v w := by
   let _ : NeZero (Module.finrank Real E) := ⟨Nat.ne_of_gt hEpos⟩
   let width : Real := T - s
@@ -140,26 +142,26 @@ private theorem exists_uhlenbeck_endomorphism_between
       hiotaForward hr x v
   have hzero : (0 : Real) ∈ Ioo (-s) width := by
     exact ⟨by linarith, hwidth⟩
-  have htarget : t - s ∈ Ioo 0 width := by
-    dsimp [width]
-    constructor <;> linarith
-  have hPhiSmooth : ContMDiff (I.prod 𝓘(Real, E))
-      (I.prod 𝓘(Real, E)) ∞
-      (fun p : TangentBundle I M =>
-        (⟨p.1, Phi0 (t - s) p.1 p.2⟩ : TangentBundle I M)) :=
-    fiberwise_linear_ode_total_map_contMDiff_right
-      hzero A Phi0 hA hPhi0 hPhiCont hPhiDeriv htarget
-  have htargetIcc : t - s ∈ Icc 0 width :=
-    ⟨le_of_lt htarget.1, le_of_lt htarget.2⟩
-  have hPhiBij : ∀ x : M, Function.Bijective (Phi0 (t - s) x) := by
-    intro x
+  have hPhiSmooth : ContMDiffOn (𝓘(Real, Real).prod I)
+      (I.prod 𝓘(Real, E →L[Real] E)) ∞
+      (fun p : Real × M =>
+        (⟨p.2, Phi0 p.1 p.2⟩ : TotalSpace (E →L[Real] E)
+          (fun x : M => TangentSpace I x →L[Real] TangentSpace I x)))
+      (Ioo 0 width ×ˢ (univ : Set M)) :=
+    fiberwise_linear_ode_solution_contMDiffOn_right
+      hzero A Phi0 hA hPhi0 hPhiCont hPhiDeriv
+  have hPhiBij : ∀ r ∈ Icc 0 width, ∀ x : M,
+      Function.Bijective (Phi0 r x) := by
+    intro r hr x
     exact uhlenbeckEndomorphism_invertible
-      hwidth S0 basisAt iota hiota0 hgram htargetIcc x
-  refine ⟨Phi0 (t - s), hPhiSmooth, hPhiBij, ?_⟩
-  intro x v w
+      hwidth S0 basisAt iota hiota0 hgram hr x
+  refine ⟨Phi0, ?_, ?_, ?_⟩
+  · simpa only [width] using hPhiSmooth
+  · simpa only [width] using hPhiBij
+  intro r hr x v w
   have hiso := uhlenbeckEndomorphism_isometry
     (I := I) (M := M) hwidth S0 basisAt iota hiota0
-      hgram htargetIcc x v w
+      hgram (by simpa only [width] using hr) x v w
   simpa [S0, Sshift, SolutionOn.timeRestrict, SolutionOn.timeShift,
     SolutionOn.family, SolutionFamily.timeShift] using hiso
 
@@ -207,9 +209,28 @@ theorem exists_uhlenbeck_tangent_bundle_isometry
         (show Module.finrank Real (TangentSpace I x) = 0 by exact hdim)) w
     simp [hv, hw]
   have hEpos : 0 < Module.finrank Real E := Nat.pos_of_ne_zero hdim
-  obtain ⟨Phi, hPhiSmooth, hPhiBij, hPhiIso⟩ :=
-    exists_uhlenbeck_endomorphism_between
-      (I := I) (M := M) hT S hS hEpos hs hst htT
+  obtain ⟨PhiFamily, hPhiJoint, hPhiBijFamily, hPhiIsoFamily⟩ :=
+    exists_uhlenbeck_endomorphism_after
+      (I := I) (M := M) hT S hS hEpos hs (lt_trans hst htT)
+  let target : Real := t - s
+  have htarget : target ∈ Ioo 0 (T - s) := by
+    dsimp [target]
+    constructor <;> linarith
+  let Phi : ∀ x : M, TangentSpace I x →L[Real] TangentSpace I x :=
+    fun x => PhiFamily target x
+  have hPhiBij : ∀ x : M, Function.Bijective (Phi x) := by
+    intro x
+    exact hPhiBijFamily target ⟨le_of_lt htarget.1, le_of_lt htarget.2⟩ x
+  have hPhiSection : ContMDiff I (I.prod 𝓘(Real, E →L[Real] E)) ∞
+      (fun x : M =>
+        (⟨x, Phi x⟩ : TotalSpace (E →L[Real] E)
+          (fun y : M => TangentSpace I y →L[Real] TangentSpace I y))) := by
+    have hpair : ContMDiff I (𝓘(Real, Real).prod I) ∞
+        (fun x : M => (target, x)) :=
+      contMDiff_const.prodMk contMDiff_id
+    have hcomp := hPhiJoint.comp_contMDiff hpair
+      (fun x => ⟨htarget, mem_univ x⟩)
+    exact hcomp.congr fun x => rfl
   let phi : ∀ x : M, TangentSpace I x ≃ₗ[Real] TangentSpace I x :=
     fun x => LinearEquiv.ofBijective (Phi x).toLinearMap (hPhiBij x)
   have hphiSmooth : ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
@@ -218,7 +239,13 @@ theorem exists_uhlenbeck_tangent_bundle_isometry
     change ContMDiff (I.prod 𝓘(Real, E)) (I.prod 𝓘(Real, E)) ∞
       (fun p : TangentBundle I M =>
         (⟨p.1, Phi p.1 p.2⟩ : TangentBundle I M))
-    exact hPhiSmooth
+    have hsection : ContMDiff (I.prod 𝓘(Real, E))
+        (I.prod 𝓘(Real, E →L[Real] E)) ∞
+        (fun p : TangentBundle I M =>
+          (⟨p.1, Phi p.1⟩ : TotalSpace (E →L[Real] E)
+            (fun x : M => TangentSpace I x →L[Real] TangentSpace I x))) :=
+      hPhiSection.comp (contMDiff_proj (TangentSpace I))
+    exact hsection.clm_bundle_apply contMDiff_id
   let total : TangentBundle I M → TangentBundle I M :=
     fun p => ⟨p.1, Phi p.1 p.2⟩
   have htotalBij : Function.Bijective total := by
@@ -234,7 +261,7 @@ theorem exists_uhlenbeck_tangent_bundle_isometry
   let hom := ContMDiffVectorBundleHom.ofFiberwiseLinearMap
     (𝕜 := Real) (IB := I) (n := (∞ : WithTop ℕ∞)) (F₁ := E) (F₂ := E)
     (E₁ := TangentSpace I) (E₂ := TangentSpace I)
-    (_root_.id : M → M) (fun x => (Phi x).toLinearMap) hPhiSmooth
+    (_root_.id : M → M) (fun x => (Phi x).toLinearMap) hphiSmooth
   have hhomBij : Function.Bijective hom.toFun := by
     change Function.Bijective
       (fun p : TangentBundle I M =>
@@ -257,6 +284,9 @@ theorem exists_uhlenbeck_tangent_bundle_isometry
     exact hinv
   refine ⟨phi, hphiSmooth, hphiInvSmooth, ?_⟩
   intro x v w
-  exact hPhiIso x v w
+  change (S.family.metric t).inner x (Phi x v) (Phi x w) =
+    (S.family.metric s).inner x v w
+  simpa only [Phi, target, sub_add_cancel] using
+    hPhiIsoFamily target ⟨le_of_lt htarget.1, le_of_lt htarget.2⟩ x v w
 
 end DifferentialGeometry.PDE.RicciFlow
