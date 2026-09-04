@@ -93,7 +93,7 @@ theorem hasEuclideanUniversalCover_of_riemannOp_eq_zero
     exact hR (proj x) X Y Z
   let p : UniversalCover M :=
     Classical.choice (inferInstance : Nonempty (UniversalCover M))
-  let F := Exponential.expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+  let F := Exponential.expMapIntrinsicDiffeomorphOfRiemannOpEqZero
     (I := I) gtilde hEnorm hRtilde p
   refine ⟨p, F, ?_⟩
   intro z a b

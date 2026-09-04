@@ -882,7 +882,7 @@ theorem expMapIntrinsic_isCoveringMap_of_riemannOp_eq_zero
       hsheet_inj hsheet_surj hsheet_disjoint hsheet_exhaustive) ?_
   simpa only [IsOpen.trivializationDiscrete_baseSet] using hxV
 
-noncomputable def expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+noncomputable def expMapIntrinsicDiffeomorphOfRiemannOpEqZero
     [ConnectedSpace M]
     [SimplyConnectedSpace M]
     [LocallyPathConnectedSpace M]
@@ -906,7 +906,7 @@ noncomputable def expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
     (hR : ∀ x (X Y Z : TangentSpace I x),
       riemannOp (LeviCivita (I := I) g) x X Y Z = 0)
     (p : M) (z : E) :
-    expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+    expMapIntrinsicDiffeomorphOfRiemannOpEqZero
         (I := I) g hEnorm hR p z =
       expMapIntrinsic (I := I) g hEnorm p
         (show TangentSpace I p from z) := rfl
@@ -923,13 +923,13 @@ theorem expMapIntrinsic_diffeomorph_isometry_of_riemannOp_eq_zero
     (p : M) (z : E)
     (a b : TangentSpace (modelWithCornersSelf Real E) z) :
     g.inner
-        (expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+        (expMapIntrinsicDiffeomorphOfRiemannOpEqZero
           (I := I) g hEnorm hR p z)
         (mfderiv (modelWithCornersSelf Real E) I
-          (expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+          (expMapIntrinsicDiffeomorphOfRiemannOpEqZero
             (I := I) g hEnorm hR p) z a)
         (mfderiv (modelWithCornersSelf Real E) I
-          (expMapIntrinsic_diffeomorph_of_riemannOp_eq_zero
+          (expMapIntrinsicDiffeomorphOfRiemannOpEqZero
             (I := I) g hEnorm hR p) z b) =
       inner Real
         (show TangentSpace I p from (show E from a))
