@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RankTrichotomy
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.AlgebraicCurvatureOperatorMetric
+import DifferentialGeometry.Geometry.Curvature.CoordRm04Bridge
 import DifferentialGeometry.Geometry.Metric.UniversalCover.ParallelLineSplitting
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Flat
 import DifferentialGeometry.Geometry.Metric.Product
 import DifferentialGeometry.Geometry.Metric.CompactPerturbationComplete
 import DifferentialGeometry.Geometry.Metric.PullbackCross
@@ -30,6 +33,56 @@ noncomputable local instance completeTrichotomyTwoFormFiniteDimensional
     FiniteDimensional Real (TangentSpace I x [⋀^Fin 2]→L[Real] Real) :=
     (ContinuousAlternatingMap.elementaryCovectorBasis (k := 2)
     (Module.finBasis Real (TangentSpace I x))).finiteDimensional_of_finite
+
+omit [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M] in
+private theorem riemannOp_eq_zero_of_curvatureOperatorEndomorphismAt_eq_zero
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hzero : curvatureOperatorEndomorphismAt (I := I) g x
+      ⟨metricRm04 (I := I) g x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ = 0) :
+    ∀ X Y Z : TangentSpace I x,
+      riemannOp (LeviCivita (I := I) g) x X Y Z = 0 := by
+  obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (I := I) g x
+    (by
+      exact (show Module.finrank Real (TangentSpace I x) =
+        Module.finrank Real
+          (DifferentialGeometry.Topology.Morse.MorseModel 3) from rfl).trans
+        (by simp [DifferentialGeometry.Topology.Morse.MorseModel]))
+  have hAzero :
+      (⟨metricRm04 (I := I) g x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ :
+        algebraicCurvatureTensorSubmodule (I := I) (M := M) x) = 0 := by
+    apply curvatureOperatorMatrixAt_eq_zero_of_orthonormal
+      (I := I) g x basis horth
+    ext i j
+    have hpair : curvatureOperatorPairingAt (I := I) g x
+        ⟨metricRm04 (I := I) g x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩
+        (curvatureTwoFormBasisAt (I := I) basis i)
+        (curvatureTwoFormBasisAt (I := I) basis j) = 0 := by
+      rw [← twoFormMetricData_inner_curvatureOperatorEndomorphismAt, hzero]
+      simp
+    rw [curvatureOperatorPairingAt_curvatureTwoFormBasisAt
+      (I := I) g x basis horth] at hpair
+    change 2 * curvatureOperatorMatrixAt (I := I) x basis
+      ⟨metricRm04 (I := I) g x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ i j = 0 at hpair
+    have hij : curvatureOperatorMatrixAt (I := I) x basis
+        ⟨metricRm04 (I := I) g x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ i j = 0 := by
+      linarith
+    simpa using hij
+  have hRmzero : metricRm04 (I := I) g x = 0 :=
+    congrArg Subtype.val hAzero
+  intro X Y Z
+  let R := riemannOp (LeviCivita (I := I) g) x X Y Z
+  have hinner : g.inner x R R = 0 := by
+    rw [← DifferentialGeometry.rm04_eq_inner_riem (I := I) g x X Y Z R]
+    have happly := congrArg
+      (fun A : Tensor04At (I := I) (M := M) x => A (vec4 X Y Z R)) hRmzero
+    simpa using happly
+  by_contra hR
+  exact (ne_of_gt (g.pos x R hR)) hinner
 
 omit [I.Boundaryless] [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M] in
 theorem metricScalarAt_pos_of_curvatureOperator_rank_one
@@ -523,9 +576,13 @@ theorem curvatureOperator_time_slice_rank_trichotomy_of_complete_metric
         ⟨metricRm04 (I := I) g x,
           metricRm04At_mem_algebraicCurvatureTensorSubmodule
             (I := I) g x⟩)) :
-    (∀ x, curvatureOperatorEndomorphismAt (I := I) g x
-      ⟨metricRm04 (I := I) g x,
-        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ = 0) ∨
+    (And
+      (∀ x, curvatureOperatorEndomorphismAt (I := I) g x
+        ⟨metricRm04 (I := I) g x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ = 0)
+      (HasEuclideanUniversalCover
+        (E := DifferentialGeometry.Topology.Morse.MorseModel 3)
+        (I := I) (M := M) g)) ∨
       (And
         (∀ x, Module.finrank Real
           (curvatureOperatorImageAt (I := I) g x
@@ -558,7 +615,14 @@ theorem curvatureOperator_time_slice_rank_trichotomy_of_complete_metric
   have htri := curvatureOperator_time_slice_trichotomy_of_metric
     (I := I) hE g hpositive hnull hrank hkernel
   rcases htri with hzero | hline | hpositiveRank
-  · exact Or.inl hzero
+  · refine Or.inl ⟨hzero, ?_⟩
+    let : NeZero (Module.finrank Real
+        (DifferentialGeometry.Topology.Morse.MorseModel 3)) :=
+      ⟨by rw [hE]; norm_num⟩
+    apply hasEuclideanUniversalCover_of_riemannOp_eq_zero (I := I) g hg
+    intro x
+    exact riemannOp_eq_zero_of_curvatureOperatorEndomorphismAt_eq_zero
+      (I := I) g x (hzero x)
   · refine Or.inr (Or.inl ⟨hline.1, ?_⟩)
     obtain ⟨S, hSrank, hSfiber, hSparallel⟩ :=
       exists_smooth_parallel_curvatureOperatorImageLine
