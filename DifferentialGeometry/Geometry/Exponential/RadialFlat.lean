@@ -1,8 +1,11 @@
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Exponential.IntrinsicSmooth
 import DifferentialGeometry.Geometry.Exponential.JacobiVariation
+import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiCoord
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
+import DifferentialGeometry.Geometry.Metric.CompactPerturbationComplete
+import DifferentialGeometry.Geometry.Metric.LocalIsometryRigidity
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 import DifferentialGeometry.Topology.Covering.SimplyConnected
 
@@ -305,6 +308,100 @@ theorem expMapIntrinsic_isLocalDiffeomorphAt_of_riemannOp_eq_zero
     (hF.of_le (by norm_num))
   exact ContinuousLinearMap.IsInvertible.of_inverse hleft hright
 
+theorem expMapIntrinsic_isLocalDiffeomorph_of_riemannOp_eq_zero
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (hR : ∀ x (X Y Z : TangentSpace I x),
+      riemannOp (LeviCivita (I := I) g) x X Y Z = 0)
+    (p : M) :
+    IsLocalDiffeomorph (modelWithCornersSelf Real E) I ∞
+      (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from z)) := by
+  rw [isLocalDiffeomorph_iff_isLocalDiffeomorphOn_univ]
+  apply DifferentialGeometry.Coordinates.contMDiffOn_isLocalDiffeomorphOn_infty
+    isOpen_univ
+    (intrinsicFiber_smooth (I := I) g hEnorm p).contMDiffOn
+  intro u _
+  let F : E → M := fun z => expMapIntrinsic (I := I) g hEnorm p
+    (show TangentSpace I p from z)
+  let q : M := F u
+  let Df : E →L[Real] TangentSpace I q :=
+    mfderiv (modelWithCornersSelf Real E) I F u
+  let eQ : TangentSpace I q ≃L[Real] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) q
+  let D : E →L[Real] E := eQ.toContinuousLinearMap.comp Df
+  have hinner : ∀ v w : E, g.inner q (Df v) (Df w) = g.inner p v w := by
+    intro v w
+    exact expMapIntrinsic_mfderiv_inner_of_radial_curvature_zero
+      (I := I) g hEnorm p (show TangentSpace I p from u)
+      (show TangentSpace I p from v) (show TangentSpace I p from w)
+      (fun t ht X => hR _ X _ _)
+  have hDinj : Function.Injective D := by
+    intro v w hvw
+    have hzero : D (v - w) = 0 := by
+      rw [map_sub, hvw, sub_self]
+    have hDfw : Df (v - w) = 0 := by
+      apply eQ.injective
+      simpa [D] using hzero
+    have hnorm : g.inner p (v - w) (v - w) = 0 := by
+      rw [← hinner (v - w) (v - w), hDfw]
+      simp
+    have hpos : v - w = 0 := by
+      by_contra hn
+      have := g.pos p (v - w) hn
+      linarith
+    exact sub_eq_zero.mp hpos
+  have hDker : D.toLinearMap.ker = ⊥ := LinearMap.ker_eq_bot.mpr hDinj
+  have hDsurj : Function.Surjective D := LinearMap.surjective_of_injective hDinj
+  let eD : E ≃L[Real] E :=
+    ContinuousLinearEquiv.ofBijective D hDker (LinearMap.range_eq_top.mpr hDsurj)
+  let G : TangentSpace I q →L[Real] E :=
+    eD.symm.toContinuousLinearMap.comp eQ.toContinuousLinearMap
+  have hleft : Df ∘L G = ContinuousLinearMap.id Real (TangentSpace I q) := by
+    apply ContinuousLinearMap.ext
+    intro y
+    apply eQ.injective
+    change D (eD.symm (eQ y)) = eQ y
+    exact eD.apply_symm_apply _
+  have hright : G ∘L Df = ContinuousLinearMap.id Real E := by
+    apply ContinuousLinearMap.ext
+    intro v
+    change eD.symm (D v) = v
+    exact eD.symm_apply_apply _
+  have hmf : (mfderiv (modelWithCornersSelf Real E) I F u).IsInvertible :=
+    ContinuousLinearMap.IsInvertible.of_inverse hleft hright
+  have hmdiff : MDifferentiableAt (modelWithCornersSelf Real E) I F u :=
+    ((intrinsicFiber_smooth (I := I) g hEnorm p).contMDiffAt).mdifferentiableAt
+      (by norm_num)
+  have hderiv :
+      fderiv Real (writtenInExtChartAt (modelWithCornersSelf Real E) I u F)
+        (extChartAt (modelWithCornersSelf Real E) u u) =
+        mfderiv (modelWithCornersSelf Real E) I F u := by
+    rw [hmdiff.mfderiv, ModelWithCorners.range_eq_univ, fderivWithin_univ]
+  exact hderiv ▸ hmf
+
+theorem expMapIntrinsic_mfderiv_inner_of_riemannOp_eq_zero
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (hR : ∀ x (X Y Z : TangentSpace I x),
+      riemannOp (LeviCivita (I := I) g) x X Y Z = 0)
+    (p : M) (u v w : E) :
+    (inner Real (show TangentSpace I p from v)
+      (show TangentSpace I p from w) : Real) =
+      g.inner (expMapIntrinsic (I := I) g hEnorm p
+          (show TangentSpace I p from u))
+        (mfderiv (modelWithCornersSelf Real E) I
+          (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+            (show TangentSpace I p from z)) u v)
+        (mfderiv (modelWithCornersSelf Real E) I
+          (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+            (show TangentSpace I p from z)) u w) := by
+  rw [inner_eq_of_isMetricNorm (I := I) g hEnorm p v w]
+  exact (expMapIntrinsic_mfderiv_inner_of_radial_curvature_zero
+    (I := I) g hEnorm p (show TangentSpace I p from u)
+    (show TangentSpace I p from v) (show TangentSpace I p from w)
+    (fun t ht X => hR _ X _ _)).symm
+
 noncomputable def expMapIntrinsic_diffeomorph_of_isCoveringMap_of_riemannOp_eq_zero
     [SimplyConnectedSpace M]
     [LocallyPathConnectedSpace M]
@@ -317,77 +414,8 @@ noncomputable def expMapIntrinsic_diffeomorph_of_isCoveringMap_of_riemannOp_eq_z
       (fun z : E => expMapIntrinsic (I := I) g hEnorm p
         (show TangentSpace I p from z))) :
     Diffeomorph (modelWithCornersSelf Real E) I E M ∞ := by
-  have hlocal : IsLocalDiffeomorph (modelWithCornersSelf Real E) I 1
-      (fun z : E => expMapIntrinsic (I := I) g hEnorm p
-        (show TangentSpace I p from z)) := by
-    intro u
-    exact expMapIntrinsic_isLocalDiffeomorphAt_of_riemannOp_eq_zero
-      (I := I) g hEnorm hR p u
-  have hlocal_infty : IsLocalDiffeomorph (modelWithCornersSelf Real E) I ∞
-      (fun z : E => expMapIntrinsic (I := I) g hEnorm p
-        (show TangentSpace I p from z)) := by
-    rw [isLocalDiffeomorph_iff_isLocalDiffeomorphOn_univ]
-    apply DifferentialGeometry.Coordinates.contMDiffOn_isLocalDiffeomorphOn_infty
-      isOpen_univ
-      (intrinsicFiber_smooth (I := I) g hEnorm p).contMDiffOn
-    intro u _
-    let F : E → M := fun z => expMapIntrinsic (I := I) g hEnorm p
-      (show TangentSpace I p from z)
-    let q : M := F u
-    let Df : E →L[Real] TangentSpace I q :=
-      mfderiv (modelWithCornersSelf Real E) I F u
-    let eQ : TangentSpace I q ≃L[Real] E :=
-      tangentSpaceModelContinuousLinearEquiv (I := I) q
-    let D : E →L[Real] E := eQ.toContinuousLinearMap.comp Df
-    have hinner : ∀ v w : E, g.inner q (Df v) (Df w) = g.inner p v w := by
-      intro v w
-      exact expMapIntrinsic_mfderiv_inner_of_radial_curvature_zero
-        (I := I) g hEnorm p (show TangentSpace I p from u)
-        (show TangentSpace I p from v) (show TangentSpace I p from w)
-        (fun t ht X => hR _ X _ _)
-    have hDinj : Function.Injective D := by
-      intro v w hvw
-      have hzero : D (v - w) = 0 := by
-        rw [map_sub, hvw, sub_self]
-      have hDfw : Df (v - w) = 0 := by
-        apply eQ.injective
-        simpa [D] using hzero
-      have hnorm : g.inner p (v - w) (v - w) = 0 := by
-        rw [← hinner (v - w) (v - w), hDfw]
-        simp
-      have hpos : v - w = 0 := by
-        by_contra hn
-        have := g.pos p (v - w) hn
-        linarith
-      exact sub_eq_zero.mp hpos
-    have hDker : D.toLinearMap.ker = ⊥ := LinearMap.ker_eq_bot.mpr hDinj
-    have hDsurj : Function.Surjective D := LinearMap.surjective_of_injective hDinj
-    let eD : E ≃L[Real] E :=
-      ContinuousLinearEquiv.ofBijective D hDker (LinearMap.range_eq_top.mpr hDsurj)
-    let G : TangentSpace I q →L[Real] E :=
-      eD.symm.toContinuousLinearMap.comp eQ.toContinuousLinearMap
-    have hleft : Df ∘L G = ContinuousLinearMap.id Real (TangentSpace I q) := by
-      apply ContinuousLinearMap.ext
-      intro y
-      apply eQ.injective
-      change D (eD.symm (eQ y)) = eQ y
-      exact eD.apply_symm_apply _
-    have hright : G ∘L Df = ContinuousLinearMap.id Real E := by
-      apply ContinuousLinearMap.ext
-      intro v
-      change eD.symm (D v) = v
-      exact eD.symm_apply_apply _
-    have hmf : (mfderiv (modelWithCornersSelf Real E) I F u).IsInvertible :=
-      ContinuousLinearMap.IsInvertible.of_inverse hleft hright
-    have hmdiff : MDifferentiableAt (modelWithCornersSelf Real E) I F u :=
-      ((intrinsicFiber_smooth (I := I) g hEnorm p).contMDiffAt).mdifferentiableAt
-        (by norm_num)
-    have hderiv :
-        fderiv Real (writtenInExtChartAt (modelWithCornersSelf Real E) I u F)
-          (extChartAt (modelWithCornersSelf Real E) u u) =
-          mfderiv (modelWithCornersSelf Real E) I F u := by
-      rw [hmdiff.mfderiv, ModelWithCorners.range_eq_univ, fderivWithin_univ]
-    exact hderiv ▸ hmf
+  have hlocal_infty := expMapIntrinsic_isLocalDiffeomorph_of_riemannOp_eq_zero
+    (I := I) g hEnorm hR p
   exact hcover.diffeomorphSc hlocal_infty
 
 end DifferentialGeometry.Geometry.Riemannian.Exponential
